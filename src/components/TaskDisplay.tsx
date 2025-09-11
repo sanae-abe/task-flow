@@ -27,7 +27,7 @@ const TaskDisplay: React.FC<TaskDisplayProps> = ({
 }) => {
   return (
     <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0, gap: 2 }}>
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center' }}>
         {onComplete && (
           <IconButton
             aria-label={isRightmostColumn ? "タスクを未完了にする" : "タスクを完了にする"}
@@ -39,7 +39,7 @@ const TaskDisplay: React.FC<TaskDisplayProps> = ({
               color: 'success.fg',
               '&:hover': {
                 bg: 'transparent',
-                color: 'success.fg'
+                color: 'success.fg',
               }
             }}
           />

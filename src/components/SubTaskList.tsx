@@ -87,25 +87,25 @@ const SubTaskList: React.FC<SubTaskListProps> = ({
         {subTasks.map((subTask) => (
           <Box
             key={subTask.id}
+            onClick={() => onToggleSubTask(subTask.id)}
             sx={{
               display: 'flex',
               alignItems: 'center',
               gap: 2,
               borderRadius: 2,
-              bg: 'canvas.default'
+              bg: 'canvas.default',
+              cursor: 'pointer',
             }}
           >
             <IconButton
               aria-label={`${subTask.title}を${subTask.completed ? '未完了' : '完了'}にする`}
               icon={subTask.completed ? CheckCircleFillIcon : CheckCircleIcon}
               size="small"
-              onClick={() => onToggleSubTask(subTask.id)}
               variant="invisible"
               sx={{
                 color: 'success.fg',
                 '&:hover': {
                   bg: 'transparent',
-                  color: 'success.fg'
                 }
               }}
             />
