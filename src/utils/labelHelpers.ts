@@ -5,8 +5,10 @@ export interface LabelColors {
 
 export const getLabelColors = (variant: string): LabelColors => {
   switch (variant) {
+    case 'default':
+      return { bg: 'canvas.default', color: 'fg.default' };
     case 'primary':
-      return { bg: 'accent.emphasis', color: 'fg.onEmphasis' };
+      return { bg: 'canvas.subtle', color: 'fg.emphasis' };
     case 'secondary':
       return { bg: 'neutral.emphasis', color: 'fg.onEmphasis' };
     case 'accent':

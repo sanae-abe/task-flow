@@ -3,6 +3,7 @@ import { Box, Button, TextInput, Text } from '@primer/react';
 import { XIcon, PlusIcon } from '@primer/octicons-react';
 import type { Label } from '../types';
 import { LABEL_COLORS, createLabel } from '../utils/labels';
+import { getLabelColors } from '../utils/labelHelpers';
 
 interface LabelSelectorProps {
   selectedLabels: Label[];
@@ -30,32 +31,7 @@ const LabelSelector: React.FC<LabelSelectorProps> = ({ selectedLabels, onLabelsC
   };
 
   const renderLabelChip = (label: Label, showRemove = true) => {
-    const getVariantColors = (variant: string) => {
-      switch (variant) {
-        case 'primary':
-          return { bg: 'accent.emphasis', color: 'fg.onEmphasis' };
-        case 'secondary':
-          return { bg: 'neutral.emphasis', color: 'fg.onEmphasis' };
-        case 'accent':
-          return { bg: 'accent.emphasis', color: 'fg.onEmphasis' };
-        case 'success':
-          return { bg: 'success.emphasis', color: 'fg.onEmphasis' };
-        case 'attention':
-          return { bg: 'attention.emphasis', color: 'fg.onEmphasis' };
-        case 'severe':
-          return { bg: 'severe.emphasis', color: 'fg.onEmphasis' };
-        case 'danger':
-          return { bg: 'danger.emphasis', color: 'fg.onEmphasis' };
-        case 'done':
-          return { bg: 'done.emphasis', color: 'fg.onEmphasis' };
-        case 'sponsors':
-          return { bg: 'sponsors.emphasis', color: 'fg.onEmphasis' };
-        default:
-          return { bg: 'neutral.emphasis', color: 'fg.onEmphasis' };
-      }
-    };
-
-    const colors = getVariantColors(label.color);
+    const colors = getLabelColors(label.color);
     
     return (
       <Box
@@ -145,30 +121,7 @@ const LabelSelector: React.FC<LabelSelectorProps> = ({ selectedLabels, onLabelsC
             <Text sx={{ fontSize: 1, fontWeight: '500', mb: 2, display: 'block' }}>Color</Text>
             <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(5, min-content)', gap: 1, justifyContent: 'start' }}>
               {LABEL_COLORS.map((color) => {
-                const getVariantBg = (variant: string) => {
-                  switch (variant) {
-                    case 'primary':
-                      return 'accent.emphasis';
-                    case 'secondary':
-                      return 'neutral.emphasis';
-                    case 'accent':
-                      return 'accent.emphasis';
-                    case 'success':
-                      return 'success.emphasis';
-                    case 'attention':
-                      return 'attention.emphasis';
-                    case 'severe':
-                      return 'severe.emphasis';
-                    case 'danger':
-                      return 'danger.emphasis';
-                    case 'done':
-                      return 'done.emphasis';
-                    case 'sponsors':
-                      return 'sponsors.emphasis';
-                    default:
-                      return 'neutral.emphasis';
-                  }
-                };
+                const colors = getLabelColors(color.variant);
 
                 return (
                   <Button
@@ -179,7 +132,7 @@ const LabelSelector: React.FC<LabelSelectorProps> = ({ selectedLabels, onLabelsC
                       height: '32px',
                       minHeight: '32px',
                       p: 0,
-                      bg: getVariantBg(color.variant),
+                      bg: colors.bg,
                       border: '2px solid',
                       borderColor: selectedColor === color.variant ? 'accent.emphasis' : 'transparent',
                       borderRadius: 2,
@@ -192,7 +145,7 @@ const LabelSelector: React.FC<LabelSelectorProps> = ({ selectedLabels, onLabelsC
                       }
                     }}
                   >
-                    <Text sx={{ fontSize: 0, color: 'fg.onEmphasis', textAlign: 'center', fontWeight: 'semibold' }}>
+                    <Text sx={{ fontSize: 0, color: colors.color, textAlign: 'center', fontWeight: 'semibold' }}>
                       {color.name.charAt(0)}
                     </Text>
                   </Button>

@@ -141,7 +141,6 @@ const KanbanBoard: React.FC = () => {
   return (
     <Box 
       width="100%" 
-      height="100vh" 
       bg="canvas.subtle"
       sx={{ overflow: 'hidden' }}
     >
@@ -155,11 +154,11 @@ const KanbanBoard: React.FC = () => {
         <Box 
           display="flex" 
           sx={{ 
-            overflowX: 'auto', 
-            gap: 6, 
+            overflow: 'auto', 
+            gap: 4, 
             px: 6,
             py: 5,
-            height: 'calc(100vh - 123px)',
+            height: '100%',
             '&::-webkit-scrollbar': {
               height: '8px'
             },
