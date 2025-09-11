@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Button, TextInput, Heading, Text, Box } from '@primer/react';
-import { PencilIcon } from '@primer/octicons-react';
+import { Button, TextInput, Text, Box } from '@primer/react';
 import {
   DndContext,
   DragOverlay,
@@ -16,12 +15,10 @@ import TaskDetailSidebar from './TaskDetailSidebar';
 import type { Task } from '../types';
 
 const KanbanBoard: React.FC = () => {
-  const { state, moveTask, createColumn, updateBoard } = useKanban();
+  const { state, moveTask, createColumn } = useKanban();
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   const [isAddingColumn, setIsAddingColumn] = useState(false);
   const [newColumnTitle, setNewColumnTitle] = useState('');
-  const [isEditingBoardTitle, setIsEditingBoardTitle] = useState(false);
-  const [editingBoardTitle, setEditingBoardTitle] = useState('');
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [isTaskDetailOpen, setIsTaskDetailOpen] = useState(false);
   
@@ -121,27 +118,6 @@ const KanbanBoard: React.FC = () => {
     setIsAddingColumn(false);
   };
 
-  const handleEditBoardTitle = () => {
-    if (!state.currentBoard) {
-      return;
-    }
-    setEditingBoardTitle(state.currentBoard.title);
-    setIsEditingBoardTitle(true);
-  };
-
-  const handleSaveBoardTitle = () => {
-    if (!state.currentBoard || !editingBoardTitle.trim()) {
-      return;
-    }
-    updateBoard(state.currentBoard.id, { title: editingBoardTitle.trim() });
-    setIsEditingBoardTitle(false);
-    setEditingBoardTitle('');
-  };
-
-  const handleCancelBoardTitleEdit = () => {
-    setIsEditingBoardTitle(false);
-    setEditingBoardTitle('');
-  };
 
   const handleTaskClick = (task: Task) => {
     setSelectedTask(task);
@@ -167,79 +143,23 @@ const KanbanBoard: React.FC = () => {
         px={6}
         py={4}
         sx={{ 
-          boxShadow: '0 1px 0 rgba(0, 0, 0, 0.06)'
+          boxShadow: '0 1px 0 rgba(0, 0, 0, 0.06)',
+          position: 'fixed',
+          top: '56px',
+          left: 0,
+          right: 0,
+          height: '56px',
+          zIndex: 999
         }}
       >
-        {isEditingBoardTitle ? (
-          <Box display="flex" alignItems="center" gap={3} mb={2}>
-            <TextInput
-              value={editingBoardTitle}
-              onChange={(e) => setEditingBoardTitle(e.target.value)}
-              autoFocus
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  handleSaveBoardTitle();
-                }
-                if (e.key === 'Escape') {
-                  handleCancelBoardTitleEdit();
-                }
-              }}
-              sx={{ 
-                fontSize: 4, 
-                fontWeight: '600', 
-                border: 'none',
-                backgroundColor: 'transparent',
-                '&:focus': {
-                  backgroundColor: 'canvas.subtle',
-                  border: '1px solid',
-                  borderColor: 'accent.emphasis'
-                }
-              }}
-            />
-            <Button onClick={handleSaveBoardTitle} size="small" variant="primary">
-              保存
-            </Button>
-            <Button onClick={handleCancelBoardTitleEdit} size="small">
-              キャンセル
-            </Button>
-          </Box>
-        ) : (
           <Box display="flex" alignItems="center" justifyContent="space-between">
             <Box>
-              <Box display="flex" alignItems="center" gap={2} mb={2}>
-                <Heading 
-                  sx={{ 
-                    fontSize: 4, 
-                    margin: 0, 
-                    cursor: 'pointer', 
-                    fontWeight: '600',
-                    color: 'fg.default',
-                    '&:hover': { color: 'accent.fg' } 
-                  }}
-                  onClick={handleEditBoardTitle}
-                  title="クリックして編集"
-                >
-                  {state.currentBoard.title}
-                </Heading>
-                <Button
-                  onClick={handleEditBoardTitle}
-                  variant="invisible"
-                  size="small"
-                  leadingVisual={PencilIcon}
-                  aria-label="ボード名を編集"
-                  sx={{ 
-                    color: 'fg.muted',
-                    '&:hover': { color: 'accent.fg' }
-                  }}
-                />
-              </Box>
               <Text fontSize={2} color="fg.muted">
                 {state.currentBoard.columns.length} カラム • 
                 {state.currentBoard.columns.reduce((total, col) => total + col.tasks.length, 0)} タスク
               </Text>
             </Box>
           </Box>
-        )}
       </Box>
       
       <DndContext
@@ -254,7 +174,7 @@ const KanbanBoard: React.FC = () => {
             gap: 6, 
             px: 6,
             py: 5,
-            height: 'calc(100vh - 160px)',
+            height: 'calc(100vh - 168px)',
             '&::-webkit-scrollbar': {
               height: '8px'
             },

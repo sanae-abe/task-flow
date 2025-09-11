@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Button, TextInput, Box, Heading, Label, ActionMenu, ActionList } from '@primer/react';
-import { ProjectIcon, ChevronDownIcon } from '@primer/octicons-react';
+import { Button, TextInput, Box, Heading, ActionMenu, ActionList } from '@primer/react';
+import { ChevronDownIcon, PlusIcon, CloudOfflineIcon } from '@primer/octicons-react';
 import { useKanban } from '../contexts/KanbanContext';
 
 const Header: React.FC = () => {
@@ -27,8 +27,10 @@ const Header: React.FC = () => {
         px: 4,
         py: 3,
         bg: 'canvas.default',
-        position: 'sticky',
+        position: 'fixed',
         top: 0,
+        left: 0,
+        right: 0,
         zIndex: 1000,
         borderBottom: '1px solid',
         borderColor: 'border.default'
@@ -37,28 +39,15 @@ const Header: React.FC = () => {
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', maxWidth: '1440px', mx: 'auto' }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 4 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <Box
-              sx={{
-                width: '32px',
-                height: '32px',
-                borderRadius: 2,
-                background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'white'
-              }}
-            >
-              <ProjectIcon size={20} />
-            </Box>
+            <CloudOfflineIcon size={20} />
             <Heading sx={{ fontSize: 3, margin: 0, color: 'fg.default', fontWeight: '600' }}>
-              Projects
+              Kanban
             </Heading>
           </Box>
           
           <Box sx={{ height: '24px', width: '1px', backgroundColor: 'border.muted' }} />
           
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, position: 'relative' }}>
             <ActionMenu>
               <ActionMenu.Anchor>
                 <Button
@@ -85,7 +74,9 @@ const Header: React.FC = () => {
                   border: '1px solid',
                   borderColor: 'border.default',
                   borderRadius: 2,
-                  boxShadow: '0 8px 24px rgba(0, 0, 0, 0.12)'
+                  boxShadow: '0 8px 24px rgba(0, 0, 0, 0.12)',
+                  zIndex: 1002,
+                  position: 'absolute'
                 }}
               >
                 <ActionList
@@ -151,35 +142,32 @@ const Header: React.FC = () => {
               </Button>
             </Box>
           ) : (
-            <Button 
-              onClick={() => setIsCreatingBoard(true)}
-              variant="primary"
-              sx={{
-                background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-                border: 'none',
-                fontWeight: '500',
-                '&:hover': {
-                  background: 'linear-gradient(135deg, #e084fc 0%, #e8506a 100%)'
-                }
-              }}
+            <div
+              title="新しいボードを追加"
+              style={{ display: 'inline-block', cursor: 'pointer' }}
             >
-              + 新しいボード
-            </Button>
+              <Button 
+                onClick={() => setIsCreatingBoard(true)}
+                variant="primary"
+                aria-label="新しいボードを追加"
+                leadingVisual={PlusIcon}
+                sx={{
+                  backgroundColor: '#1a7f37',
+                  color: '#dafbe1',
+                  border: 'none',
+                  borderRadius: '6px',
+                  padding: '12px 16px',
+                  '&:hover': {
+                    backgroundColor: '#166e2e'
+                  }
+                }}
+              >
+                新しいボード
+              </Button>
+            </div>
           )}
           
-          <Label 
-            variant="secondary" 
-            size="small"
-            sx={{
-              backgroundColor: 'success.subtle',
-              color: 'success.fg',
-              border: '1px solid',
-              borderColor: 'success.muted',
-              fontWeight: '500'
-            }}
-          >
-            オフライン対応
-          </Label>
+
         </Box>
       </Box>
     </Box>

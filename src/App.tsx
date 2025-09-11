@@ -28,7 +28,8 @@ function App() {
             <div style={{ 
               minHeight: '100vh',
               backgroundColor: '#f6f8fa',
-              fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif'
+              fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif',
+              paddingTop: '112px'
             }}>
               <Header />
               <main>
