@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Text, Heading, IconButton } from '@primer/react';
-import { CalendarIcon, CheckCircleIcon, CheckCircleFillIcon, TasklistIcon, PaperclipIcon } from '@primer/octicons-react';
+import { CalendarIcon, CheckCircleIcon, CheckCircleFillIcon, CheckIcon, PaperclipIcon } from '@primer/octicons-react';
 import type { Task } from '../types';
 
 interface TaskDisplayProps {
@@ -174,7 +174,7 @@ const TaskDisplay: React.FC<TaskDisplayProps> = ({
                 alignSelf: 'flex-start'
               }}
             >
-              <TasklistIcon size={12} />
+              <CheckIcon size={12} />
               {(() => {
                 const completed = task.subTasks.filter(sub => sub.completed).length;
                 const total = task.subTasks.length;
