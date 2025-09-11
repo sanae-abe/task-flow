@@ -31,7 +31,7 @@ const TaskEditDialog: React.FC<TaskEditDialogProps> = ({
       setTitle(task.title);
       setDescription(task.description || '');
       const dateValue = task.dueDate ? task.dueDate.toISOString().split('T')[0] : '';
-      setDueDate(dateValue);
+      setDueDate(dateValue || '');
       setLabels(task.labels || []);
     }
   }, [isOpen, task]);

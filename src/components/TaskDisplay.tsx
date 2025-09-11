@@ -114,7 +114,9 @@ const TaskDisplay: React.FC<TaskDisplayProps> = ({
           display: '-webkit-box',
           WebkitLineClamp: 3,
           WebkitBoxOrient: 'vertical',
-          overflow: 'hidden'
+          overflow: 'hidden',
+          wordBreak: 'break-word',
+          whiteSpace: 'normal'
         }}>
           {task.description}
         </Text>

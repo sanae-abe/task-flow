@@ -38,11 +38,14 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({ column, onTaskClick }) => {
   return (
     <Box 
       sx={{ 
-        minWidth: '320px', 
+        minWidth: '320px',
+        maxWidth: '320px',
+        width: '320px',
         flexShrink: 0, 
         minHeight: '600px',
         backgroundColor: 'transparent',
-        p: 0
+        p: 0,
+        overflow: 'hidden'
       }}
     >
       <ColumnHeader

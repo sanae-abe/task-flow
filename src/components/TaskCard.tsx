@@ -69,6 +69,11 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, columnId, onTaskClick }) => {
           boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
           transition: 'all 0.2s ease',
           opacity: isRightmostColumn ? 0.6 : 1,
+          width: '100%',
+          maxWidth: '100%',
+          minWidth: 0,
+          wordWrap: 'break-word',
+          overflowWrap: 'break-word',
           '&:hover': {
             boxShadow: '0 2px 12px rgba(0, 0, 0, 0.2)',
           },
