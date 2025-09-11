@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:design.m3pages.net)",
+      "Bash(yarn search @pulse)",
+      "Bash(yarn add @pulse/core @pulse/components @pulse/theme)",
+      "Bash(npm install --save-dev @typescript-eslint/parser @typescript-eslint/eslint-plugin eslint-plugin-react eslint-plugin-react-hooks eslint-plugin-jsx-a11y eslint-plugin-security)",
+      "Bash(npm install --save-dev @typescript-eslint/parser@^5.62.0 @typescript-eslint/eslint-plugin@^5.62.0 eslint-plugin-react@^7.33.0 eslint-plugin-react-hooks@^4.6.0 eslint-plugin-jsx-a11y@^6.7.0 eslint-plugin-security@^1.7.0)",
+      "Bash(npm run lint:check)",
+      "Bash(npm run typecheck)",
+      "Bash(npm install @pulse/core @pulse/components @pulse/theme)",
+      "Bash(npm search @pulse --registry=https://packages.m3internal.com/repository/npm-all/)",
+      "Bash(npm install react@latest styles@latest --registry=https://packages.m3internal.com/repository/npm-all/)",
+      "Bash(npm view react@latest --registry=https://packages.m3internal.com/repository/npm-all/)",
+      "Bash(npm view styles --registry=https://packages.m3internal.com/repository/npm-all/)",
+      "Bash(npm install react@0.2.5 styles@0.2.8 --registry=https://packages.m3internal.com/repository/npm-all/ --save-exact)",
+      "Bash(npm run build)",
+      "WebFetch(domain:assets.asana.biz)",
+      "Bash(npm start)",
+      "Bash(lsof -ti:3000)",
+      "Bash(xargs kill -9)",
+      "Bash(git checkout -- src/contexts/KanbanContext.tsx src/utils/storage.ts)",
+      "Bash(git checkout HEAD -- src/App.tsx)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

@@ -1,0 +1,416 @@
+import React, { createContext, useContext, useReducer, useEffect } from 'react';
+import type { ReactNode } from 'react';
+import { v4 as uuidv4 } from 'uuid';
+import type { KanbanBoard, Column, Task } from '../types';
+import { saveBoards, loadBoards } from '../utils/storage';
+
+interface KanbanState {
+  boards: KanbanBoard[];
+  currentBoard: KanbanBoard | null;
+}
+
+type KanbanAction =
+  | { type: 'LOAD_BOARDS'; payload: KanbanBoard[] }
+  | { type: 'CREATE_BOARD'; payload: { title: string } }
+  | { type: 'SET_CURRENT_BOARD'; payload: string }
+  | { type: 'UPDATE_BOARD'; payload: { boardId: string; updates: Partial<KanbanBoard> } }
+  | { type: 'CREATE_COLUMN'; payload: { boardId: string; title: string; color?: string } }
+  | { type: 'CREATE_TASK'; payload: { columnId: string; title: string; description: string; dueDate?: Date } }
+  | { type: 'MOVE_TASK'; payload: { taskId: string; sourceColumnId: string; targetColumnId: string; targetIndex: number } }
+  | { type: 'UPDATE_TASK'; payload: { taskId: string; updates: Partial<Task> } }
+  | { type: 'DELETE_TASK'; payload: { taskId: string; columnId: string } }
+  | { type: 'DELETE_COLUMN'; payload: { columnId: string } }
+  | { type: 'UPDATE_COLUMN'; payload: { columnId: string; updates: Partial<Column> } };
+
+interface KanbanContextType {
+  state: KanbanState;
+  dispatch: React.Dispatch<KanbanAction>;
+  createBoard: (title: string) => void;
+  setCurrentBoard: (boardId: string) => void;
+  updateBoard: (boardId: string, updates: Partial<KanbanBoard>) => void;
+  createColumn: (title: string, color?: string) => void;
+  createTask: (columnId: string, title: string, description: string, dueDate?: Date) => void;
+  moveTask: (taskId: string, sourceColumnId: string, targetColumnId: string, targetIndex: number) => void;
+  updateTask: (taskId: string, updates: Partial<Task>) => void;
+  deleteTask: (taskId: string, columnId: string) => void;
+  deleteColumn: (columnId: string) => void;
+  updateColumn: (columnId: string, updates: Partial<Column>) => void;
+}
+
+const KanbanContext = createContext<KanbanContextType | undefined>(undefined);
+
+const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState => {
+  switch (action.type) {
+    case 'LOAD_BOARDS': {
+      const boards = action.payload;
+      let currentBoard: KanbanBoard | null = null;
+      
+      if (boards.length > 0) {
+        const savedCurrentBoardId = localStorage.getItem('current-board-id');
+        if (savedCurrentBoardId) {
+          currentBoard = boards.find(board => board.id === savedCurrentBoardId) || boards[0] || null;
+        } else {
+          currentBoard = boards[0] || null;
+        }
+      }
+      
+      return {
+        ...state,
+        boards,
+        currentBoard,
+      };
+    }
+    
+    case 'CREATE_BOARD': {
+      const newBoard: KanbanBoard = {
+        id: uuidv4(),
+        title: action.payload.title,
+        columns: [
+          {
+            id: uuidv4(),
+            title: 'To Do',
+            tasks: [],
+            color: '#E96C7F',
+          },
+          {
+            id: uuidv4(),
+            title: 'In Progress',
+            tasks: [],
+            color: '#EDC369',
+          },
+          {
+            id: uuidv4(),
+            title: 'Done',
+            tasks: [],
+            color: '#10B981',
+          },
+        ],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+      localStorage.setItem('current-board-id', newBoard.id);
+      return {
+        ...state,
+        boards: [...state.boards, newBoard],
+        currentBoard: newBoard,
+      };
+    }
+    
+    case 'SET_CURRENT_BOARD':
+      return {
+        ...state,
+        currentBoard: state.boards.find(board => board.id === action.payload) || null,
+      };
+    
+    case 'UPDATE_BOARD': {
+      const updatedBoard = state.boards.find(board => board.id === action.payload.boardId);
+      if (!updatedBoard) {
+        return state;
+      }
+      
+      const newBoard = {
+        ...updatedBoard,
+        ...action.payload.updates,
+        updatedAt: new Date(),
+      };
+      
+      return {
+        ...state,
+        boards: state.boards.map(board => 
+          board.id === action.payload.boardId ? newBoard : board
+        ),
+        currentBoard: state.currentBoard?.id === action.payload.boardId ? newBoard : state.currentBoard,
+      };
+    }
+    
+    case 'CREATE_COLUMN': {
+      if (!state.currentBoard) {
+        return state;
+      }
+      
+      const newColumn: Column = {
+        id: uuidv4(),
+        title: action.payload.title,
+        tasks: [],
+        color: action.payload.color || '#6b7280',
+      };
+      
+      const updatedBoard = {
+        ...state.currentBoard,
+        columns: [...state.currentBoard.columns, newColumn],
+        updatedAt: new Date(),
+      };
+      
+      return {
+        ...state,
+        boards: state.boards.map(board => 
+          board.id === state.currentBoard?.id ? updatedBoard : board
+        ),
+        currentBoard: updatedBoard,
+      };
+    }
+    
+    case 'CREATE_TASK': {
+      if (!state.currentBoard) {
+        return state;
+      }
+      
+      const newTask: Task = {
+        id: uuidv4(),
+        title: action.payload.title,
+        description: action.payload.description,
+        dueDate: action.payload.dueDate,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+      
+      const updatedBoard = {
+        ...state.currentBoard,
+        columns: state.currentBoard.columns.map(column =>
+          column.id === action.payload.columnId
+            ? { ...column, tasks: [...column.tasks, newTask] }
+            : column
+        ),
+        updatedAt: new Date(),
+      };
+      
+      return {
+        ...state,
+        boards: state.boards.map(board => 
+          board.id === state.currentBoard?.id ? updatedBoard : board
+        ),
+        currentBoard: updatedBoard,
+      };
+    }
+    
+    case 'MOVE_TASK': {
+      if (!state.currentBoard) {
+        return state;
+      }
+      
+      const { taskId, sourceColumnId, targetColumnId, targetIndex } = action.payload;
+      
+      let taskToMove: Task | undefined;
+      
+      const updatedBoard = {
+        ...state.currentBoard,
+        columns: state.currentBoard.columns.map(column => {
+          if (column.id === sourceColumnId) {
+            taskToMove = column.tasks.find(task => task.id === taskId);
+            return {
+              ...column,
+              tasks: column.tasks.filter(task => task.id !== taskId),
+            };
+          }
+          return column;
+        }).map(column => {
+          if (column.id === targetColumnId && taskToMove) {
+            const newTasks = [...column.tasks];
+            newTasks.splice(targetIndex, 0, { ...taskToMove, updatedAt: new Date() });
+            return {
+              ...column,
+              tasks: newTasks,
+            };
+          }
+          return column;
+        }),
+        updatedAt: new Date(),
+      };
+      
+      return {
+        ...state,
+        boards: state.boards.map(board => 
+          board.id === state.currentBoard?.id ? updatedBoard : board
+        ),
+        currentBoard: updatedBoard,
+      };
+    }
+
+    case 'UPDATE_TASK': {
+      if (!state.currentBoard) {
+        return state;
+      }
+
+      const updatedBoard = {
+        ...state.currentBoard,
+        columns: state.currentBoard.columns.map(column => ({
+          ...column,
+          tasks: column.tasks.map(task =>
+            task.id === action.payload.taskId
+              ? { ...task, ...action.payload.updates, updatedAt: new Date() }
+              : task
+          ),
+        })),
+        updatedAt: new Date(),
+      };
+
+      return {
+        ...state,
+        boards: state.boards.map(board => 
+          board.id === state.currentBoard?.id ? updatedBoard : board
+        ),
+        currentBoard: updatedBoard,
+      };
+    }
+
+    case 'DELETE_TASK': {
+      if (!state.currentBoard) {
+        return state;
+      }
+
+      const updatedBoard = {
+        ...state.currentBoard,
+        columns: state.currentBoard.columns.map(column =>
+          column.id === action.payload.columnId
+            ? { ...column, tasks: column.tasks.filter(task => task.id !== action.payload.taskId) }
+            : column
+        ),
+        updatedAt: new Date(),
+      };
+
+      return {
+        ...state,
+        boards: state.boards.map(board => 
+          board.id === state.currentBoard?.id ? updatedBoard : board
+        ),
+        currentBoard: updatedBoard,
+      };
+    }
+
+    case 'DELETE_COLUMN': {
+      if (!state.currentBoard) {
+        return state;
+      }
+
+      const updatedBoard = {
+        ...state.currentBoard,
+        columns: state.currentBoard.columns.filter(column => column.id !== action.payload.columnId),
+        updatedAt: new Date(),
+      };
+
+      return {
+        ...state,
+        boards: state.boards.map(board => 
+          board.id === state.currentBoard?.id ? updatedBoard : board
+        ),
+        currentBoard: updatedBoard,
+      };
+    }
+
+    case 'UPDATE_COLUMN': {
+      if (!state.currentBoard) {
+        return state;
+      }
+
+      const updatedBoard = {
+        ...state.currentBoard,
+        columns: state.currentBoard.columns.map(column =>
+          column.id === action.payload.columnId
+            ? { ...column, ...action.payload.updates }
+            : column
+        ),
+        updatedAt: new Date(),
+      };
+
+      return {
+        ...state,
+        boards: state.boards.map(board => 
+          board.id === state.currentBoard?.id ? updatedBoard : board
+        ),
+        currentBoard: updatedBoard,
+      };
+    }
+    
+    default:
+      return state;
+  }
+};
+
+export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [state, dispatch] = useReducer(kanbanReducer, {
+    boards: [],
+    currentBoard: null,
+  });
+  
+  useEffect(() => {
+    const boards = loadBoards();
+    dispatch({ type: 'LOAD_BOARDS', payload: boards });
+  }, []);
+  
+  useEffect(() => {
+    saveBoards(state.boards);
+  }, [state.boards]);
+  
+  const createBoard = (title: string) => {
+    dispatch({ type: 'CREATE_BOARD', payload: { title } });
+  };
+  
+  const setCurrentBoard = (boardId: string) => {
+    localStorage.setItem('current-board-id', boardId);
+    dispatch({ type: 'SET_CURRENT_BOARD', payload: boardId });
+  };
+
+  const updateBoard = (boardId: string, updates: Partial<KanbanBoard>) => {
+    dispatch({ type: 'UPDATE_BOARD', payload: { boardId, updates } });
+  };
+  
+  const createColumn = (title: string, color?: string) => {
+    if (!state.currentBoard) {
+      return;
+    }
+    dispatch({ type: 'CREATE_COLUMN', payload: { boardId: state.currentBoard.id, title, color } });
+  };
+  
+  const createTask = (columnId: string, title: string, description: string, dueDate?: Date) => {
+    dispatch({ type: 'CREATE_TASK', payload: { columnId, title, description, dueDate } });
+  };
+  
+  const moveTask = (taskId: string, sourceColumnId: string, targetColumnId: string, targetIndex: number) => {
+    dispatch({ type: 'MOVE_TASK', payload: { taskId, sourceColumnId, targetColumnId, targetIndex } });
+  };
+  
+  const updateTask = (taskId: string, updates: Partial<Task>) => {
+    dispatch({ type: 'UPDATE_TASK', payload: { taskId, updates } });
+  };
+  
+  const deleteTask = (taskId: string, columnId: string) => {
+    dispatch({ type: 'DELETE_TASK', payload: { taskId, columnId } });
+  };
+  
+  const deleteColumn = (columnId: string) => {
+    dispatch({ type: 'DELETE_COLUMN', payload: { columnId } });
+  };
+  
+  const updateColumn = (columnId: string, updates: Partial<Column>) => {
+    dispatch({ type: 'UPDATE_COLUMN', payload: { columnId, updates } });
+  };
+  
+  return (
+    <KanbanContext.Provider
+      value={{
+        state,
+        dispatch,
+        createBoard,
+        setCurrentBoard,
+        updateBoard,
+        createColumn,
+        createTask,
+        moveTask,
+        updateTask,
+        deleteTask,
+        deleteColumn,
+        updateColumn,
+      }}
+    >
+      {children}
+    </KanbanContext.Provider>
+  );
+};
+
+export const useKanban = (): KanbanContextType => {
+  const context = useContext(KanbanContext);
+  if (context === undefined) {
+    throw new Error('useKanban must be used within a KanbanProvider');
+  }
+  return context;
+};
