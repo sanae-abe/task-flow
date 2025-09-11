@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Box, Text, Button, TextInput, ActionMenu, ActionList } from '@primer/react';
 import { PencilIcon, PlusIcon, CheckIcon, XIcon, TrashIcon, KebabHorizontalIcon } from '@primer/octicons-react';
 import { useKanban } from '../contexts/KanbanContext';
+import ConfirmDialog from './ConfirmDialog';
 
 const SubHeader: React.FC = () => {
   const { state, updateBoard, createColumn, deleteBoard } = useKanban();
@@ -205,59 +206,13 @@ const SubHeader: React.FC = () => {
         )}
       </Box>
 
-      {showDeleteConfirm && (
-        <Box
-          sx={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            bg: 'primer.canvas.backdrop',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 1000,
-          }}
-          onClick={() => setShowDeleteConfirm(false)}
-        >
-          <Box
-            sx={{
-              bg: 'canvas.default',
-              border: '1px solid',
-              borderColor: 'border.default',
-              borderRadius: 2,
-              p: 4,
-              maxWidth: '400px',
-              width: '90%',
-              boxShadow: 'shadow.large'
-            }}
-            onClick={(e: React.MouseEvent) => e.stopPropagation()}
-          >
-            <Text sx={{ fontSize: 2, fontWeight: 'bold', mb: 2, display: 'block' }}>
-              プロジェクトを削除
-            </Text>
-            <Text sx={{ color: 'fg.muted', mb: 3, display: 'block' }}>
-              「{state.currentBoard?.title}」を削除しますか？この操作は元に戻せません。
-            </Text>
-            <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
-              <Button
-                size="small"
-                onClick={() => setShowDeleteConfirm(false)}
-              >
-                キャンセル
-              </Button>
-              <Button
-                size="small"
-                variant="danger"
-                onClick={handleDeleteBoard}
-              >
-                削除
-              </Button>
-            </Box>
-          </Box>
-        </Box>
-      )}
+      <ConfirmDialog
+        isOpen={showDeleteConfirm}
+        title="プロジェクトを削除"
+        message={`「${state.currentBoard?.title}」を削除しますか？この操作は元に戻せません。`}
+        onConfirm={handleDeleteBoard}
+        onCancel={() => setShowDeleteConfirm(false)}
+      />
     </Box>
   );
 };
