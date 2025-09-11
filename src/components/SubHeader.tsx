@@ -19,7 +19,11 @@ const SubHeader: React.FC = () => {
     if (!state.currentBoard) {
       return [];
     }
-    return state.currentBoard.columns.flatMap(column => column.tasks);
+    // 右端のカラム（完了カラム）を除いた未完了タスクのみを取得
+    const incompleteTasks = state.currentBoard.columns
+      .slice(0, -1) // 右端のカラムを除外
+      .flatMap(column => column.tasks);
+    return incompleteTasks;
   }, [state.currentBoard]);
 
   const taskStats = useTaskStats(allTasks);
