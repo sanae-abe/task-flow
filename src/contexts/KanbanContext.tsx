@@ -21,7 +21,8 @@ type KanbanAction =
   | { type: 'UPDATE_TASK'; payload: { taskId: string; updates: Partial<Task> } }
   | { type: 'DELETE_TASK'; payload: { taskId: string; columnId: string } }
   | { type: 'DELETE_COLUMN'; payload: { columnId: string } }
-  | { type: 'UPDATE_COLUMN'; payload: { columnId: string; updates: Partial<Column> } };
+  | { type: 'UPDATE_COLUMN'; payload: { columnId: string; updates: Partial<Column> } }
+  | { type: 'CLEAR_COMPLETED_TASKS' };
 
 interface KanbanContextType {
   state: KanbanState;
@@ -37,6 +38,7 @@ interface KanbanContextType {
   deleteTask: (taskId: string, columnId: string) => void;
   deleteColumn: (columnId: string) => void;
   updateColumn: (columnId: string, updates: Partial<Column>) => void;
+  clearCompletedTasks: () => void;
 }
 
 const KanbanContext = createContext<KanbanContextType | undefined>(undefined);
@@ -82,7 +84,7 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
           },
           {
             id: uuidv4(),
-            title: 'Done',
+            title: 'Complete',
             tasks: [],
             color: '#d1fae5'
           },
@@ -356,6 +358,37 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
       };
     }
     
+    case 'CLEAR_COMPLETED_TASKS': {
+      if (!state.currentBoard) {
+        return state;
+      }
+
+      // 右端のカラム（完了カラム）のIDを取得
+      const rightmostColumnId = state.currentBoard.columns[state.currentBoard.columns.length - 1]?.id;
+      
+      if (!rightmostColumnId) {
+        return state;
+      }
+
+      const updatedBoard = {
+        ...state.currentBoard,
+        columns: state.currentBoard.columns.map(column =>
+          column.id === rightmostColumnId
+            ? { ...column, tasks: [] }
+            : column
+        ),
+        updatedAt: new Date(),
+      };
+
+      return {
+        ...state,
+        boards: state.boards.map(board => 
+          board.id === state.currentBoard?.id ? updatedBoard : board
+        ),
+        currentBoard: updatedBoard,
+      };
+    }
+    
     default:
       return state;
   }
@@ -490,6 +523,10 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   const updateColumn = (columnId: string, updates: Partial<Column>) => {
     dispatch({ type: 'UPDATE_COLUMN', payload: { columnId, updates } });
   };
+
+  const clearCompletedTasks = () => {
+    dispatch({ type: 'CLEAR_COMPLETED_TASKS' });
+  };
   
   return (
     <KanbanContext.Provider
@@ -507,6 +544,7 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         deleteTask,
         deleteColumn,
         updateColumn,
+        clearCompletedTasks,
       }}
     >
       {children}

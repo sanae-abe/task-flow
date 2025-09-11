@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { Box, Button, ActionMenu, ActionList } from '@primer/react';
-import { PencilIcon, PlusIcon, TrashIcon, KebabHorizontalIcon } from '@primer/octicons-react';
+import { PencilIcon, PlusIcon, TrashIcon, KebabHorizontalIcon, CheckCircleIcon } from '@primer/octicons-react';
 import { useKanban } from '../contexts/KanbanContext';
 import { useTaskStats } from '../hooks/useTaskStats';
 import ConfirmDialog from './ConfirmDialog';
@@ -9,10 +9,11 @@ import BoardEditDialog from './BoardEditDialog';
 import ColumnCreateDialog from './ColumnCreateDialog';
 
 const SubHeader: React.FC = () => {
-  const { state, updateBoard, createColumn, deleteBoard } = useKanban();
+  const { state, updateBoard, createColumn, deleteBoard, clearCompletedTasks } = useKanban();
   const [isCreatingColumn, setIsCreatingColumn] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
+  const [showClearCompletedConfirm, setShowClearCompletedConfirm] = useState(false);
 
   const allTasks = useMemo(() => {
     if (!state.currentBoard) {
@@ -22,6 +23,15 @@ const SubHeader: React.FC = () => {
   }, [state.currentBoard]);
 
   const taskStats = useTaskStats(allTasks);
+
+  // 完了したタスクがあるかどうかを確認
+  const hasCompletedTasks = useMemo(() => {
+    if (!state.currentBoard || state.currentBoard.columns.length === 0) {
+      return false;
+    }
+    const rightmostColumn = state.currentBoard.columns[state.currentBoard.columns.length - 1];
+    return rightmostColumn ? rightmostColumn.tasks.length > 0 : false;
+  }, [state.currentBoard]);
 
   if (!state.currentBoard) {
     return null;
@@ -52,6 +62,11 @@ const SubHeader: React.FC = () => {
       deleteBoard(state.currentBoard.id);
       setShowDeleteConfirm(false);
     }
+  };
+
+  const handleClearCompletedTasks = () => {
+    clearCompletedTasks();
+    setShowClearCompletedConfirm(false);
   };
 
 
@@ -108,6 +123,14 @@ const SubHeader: React.FC = () => {
           </ActionMenu.Anchor>
           <ActionMenu.Overlay>
             <ActionList>
+              {hasCompletedTasks && (
+                <ActionList.Item onSelect={() => setShowClearCompletedConfirm(true)}>
+                  <ActionList.LeadingVisual>
+                    <CheckCircleIcon size={16} />
+                  </ActionList.LeadingVisual>
+                  完了したタスクをクリア
+                </ActionList.Item>
+              )}
               <ActionList.Item onSelect={() => setShowEditDialog(true)}>
                 <ActionList.LeadingVisual>
                   <PencilIcon size={16} />
@@ -137,6 +160,14 @@ const SubHeader: React.FC = () => {
         message={`「${state.currentBoard?.title}」を削除しますか？この操作は元に戻せません。`}
         onConfirm={handleDeleteBoard}
         onCancel={() => setShowDeleteConfirm(false)}
+      />
+
+      <ConfirmDialog
+        isOpen={showClearCompletedConfirm}
+        title="完了したタスクをクリア"
+        message="完了したタスクをすべて削除しますか？この操作は元に戻せません。"
+        onConfirm={handleClearCompletedTasks}
+        onCancel={() => setShowClearCompletedConfirm(false)}
       />
 
       <BoardEditDialog
