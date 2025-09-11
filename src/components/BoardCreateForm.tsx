@@ -36,15 +36,15 @@ const BoardCreateForm: React.FC<BoardCreateFormProps> = ({
           value={newBoardTitle}
           onChange={(e) => onTitleChange(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="新しいボード名"
+          placeholder="Enter board title"
           autoFocus
           sx={{ minWidth: '200px' }}
         />
         <Button onClick={onCreate} variant="primary">
-          作成
+          Create
         </Button>
         <Button onClick={onCancel}>
-          キャンセル
+          Cancel
         </Button>
       </Box>
     );
@@ -54,7 +54,7 @@ const BoardCreateForm: React.FC<BoardCreateFormProps> = ({
     <Button 
       onClick={onStartCreate}
       variant="primary"
-      aria-label="新しいボードを追加"
+      aria-label="Add Board"
       leadingVisual={PlusIcon}
       sx={{
         backgroundColor: 'accent.emphasis',
@@ -65,7 +65,7 @@ const BoardCreateForm: React.FC<BoardCreateFormProps> = ({
         py: 3
       }}
     >
-      新しいボード
+      New Board
     </Button>
   );
 };

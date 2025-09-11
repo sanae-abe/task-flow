@@ -161,7 +161,7 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
               <Box
                 display="flex"
                 alignItems="center"
-                gap={2}
+                sx={{ gap: 2 }}
                 p={3}
                 bg={
                   isOverdue() 
@@ -180,7 +180,7 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
                     : 'border.default'
                 }
               >
-                <Box display="flex" alignItems="center" gap={2} flex="1">
+                <Box display="flex" alignItems="center" sx={{ gap: 2, flex: 1 }}>
                   <CalendarIcon size={16} />
                   <Text fontSize={1}>{formatDueDate(task.dueDate)}</Text>
                 </Box>
@@ -221,7 +221,7 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
             <Box
               display="flex"
               flexDirection="column"
-              gap={2}
+              sx={{ gap: 2 }}
               p={3}
               bg="canvas.subtle"
               borderRadius={2}

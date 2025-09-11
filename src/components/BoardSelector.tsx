@@ -23,7 +23,7 @@ const BoardSelector: React.FC = () => {
               }
             }}
           >
-            {state.currentBoard ? state.currentBoard.title : 'ボードを選択'}
+            {state.currentBoard ? state.currentBoard.title : 'Select a board'}
           </Button>
         </ActionMenu.Anchor>
         <ActionMenu.Overlay 
@@ -45,15 +45,15 @@ const BoardSelector: React.FC = () => {
             }}
           >
             {state.boards.length === 0 ? (
-              <ActionList.Item 
+                <ActionList.Item 
                 disabled
                 sx={{
                   backgroundColor: 'canvas.overlay',
                   color: 'fg.muted'
                 }}
-              >
-                ボードがありません
-              </ActionList.Item>
+                >
+                No boards available
+                </ActionList.Item>
             ) : (
               state.boards.map((board) => (
                 <ActionList.Item
