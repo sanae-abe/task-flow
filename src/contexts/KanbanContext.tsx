@@ -135,10 +135,17 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
       let newCurrentBoard = state.currentBoard;
       
       if (state.currentBoard?.id === action.payload.boardId) {
-        newCurrentBoard = newBoards.length > 0 ? newBoards[0] : null;
-        if (newCurrentBoard) {
-          localStorage.setItem('current-board-id', newCurrentBoard.id);
+        if (newBoards.length > 0) {
+          const firstBoard = newBoards[0];
+          if (firstBoard) {
+            newCurrentBoard = firstBoard;
+            localStorage.setItem('current-board-id', firstBoard.id);
+          } else {
+            newCurrentBoard = null;
+            localStorage.removeItem('current-board-id');
+          }
         } else {
+          newCurrentBoard = null;
           localStorage.removeItem('current-board-id');
         }
       }

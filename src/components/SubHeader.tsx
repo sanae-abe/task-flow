@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Box, Text, Button, TextInput } from '@primer/react';
-import { PencilIcon, PlusIcon, CheckIcon, XIcon, TrashIcon } from '@primer/octicons-react';
+import { Box, Text, Button, TextInput, ActionMenu, ActionList } from '@primer/react';
+import { PencilIcon, PlusIcon, CheckIcon, XIcon, TrashIcon, KebabHorizontalIcon } from '@primer/octicons-react';
 import { useKanban } from '../contexts/KanbanContext';
 
 const SubHeader: React.FC = () => {
@@ -125,26 +125,39 @@ const SubHeader: React.FC = () => {
             <Text sx={{ fontSize: 3, fontWeight: 'bold', color: 'fg.default' }}>
               {state.currentBoard.title}
             </Text>
-            <Button
-              size="small"
-              variant="invisible"
-              onClick={handleStartEditTitle}
-              sx={{ p: 1 }}
-            >
-              <PencilIcon size={16} />
-            </Button>
+            <ActionMenu>
+              <ActionMenu.Anchor>
+                <Button
+                  size="small"
+                  variant="invisible"
+                  sx={{ p: 1 }}
+                >
+                  <KebabHorizontalIcon size={16} />
+                </Button>
+              </ActionMenu.Anchor>
+              <ActionMenu.Overlay>
+                <ActionList>
+                  <ActionList.Item onSelect={handleStartEditTitle}>
+                    <ActionList.LeadingVisual>
+                      <PencilIcon size={16} />
+                    </ActionList.LeadingVisual>
+                    ボード名を編集
+                  </ActionList.Item>
+                  {state.boards.length > 1 && (
+                    <ActionList.Item
+                      variant="danger"
+                      onSelect={() => setShowDeleteConfirm(true)}
+                    >
+                      <ActionList.LeadingVisual>
+                        <TrashIcon size={16} />
+                      </ActionList.LeadingVisual>
+                      ボードを削除
+                    </ActionList.Item>
+                  )}
+                </ActionList>
+              </ActionMenu.Overlay>
+            </ActionMenu>
           </Box>
-        )}
-        
-        {state.boards.length > 1 && (
-          <Button
-            size="small"
-            variant="invisible"
-            onClick={() => setShowDeleteConfirm(true)}
-            sx={{ p: 1, color: 'danger.fg' }}
-          >
-            <TrashIcon size={16} />
-          </Button>
         )}
       </Box>
 
@@ -217,8 +230,9 @@ const SubHeader: React.FC = () => {
               p: 4,
               maxWidth: '400px',
               width: '90%',
+              boxShadow: 'shadow.large'
             }}
-            onClick={(e) => e.stopPropagation()}
+            onClick={(e: React.MouseEvent) => e.stopPropagation()}
           >
             <Text sx={{ fontSize: 2, fontWeight: 'bold', mb: 2, display: 'block' }}>
               プロジェクトを削除
