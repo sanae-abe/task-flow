@@ -14,12 +14,10 @@ const ColumnActions: React.FC<ColumnActionsProps> = ({
   onDeleteColumn
 }) => {
   const handleEditClick = () => {
-    console.log('ColumnActions: Edit column name clicked');
     onTitleEdit();
   };
 
   const handleDeleteClick = () => {
-    console.log('ColumnActions: Delete column clicked');
     onDeleteColumn();
   };
 

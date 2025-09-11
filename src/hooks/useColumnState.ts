@@ -7,11 +7,14 @@ interface UseColumnStateReturn {
   setIsAddingTask: (value: boolean) => void;
   isEditingTitle: boolean;
   editingTitle: string;
+  showDeleteConfirm: boolean;
   setEditingTitle: (title: string) => void;
   handleTitleEdit: () => void;
   handleTitleSave: () => void;
   handleTitleCancel: () => void;
   handleDeleteColumn: () => void;
+  handleConfirmDeleteColumn: () => void;
+  handleCancelDeleteColumn: () => void;
   handleAddTask: (title: string, description: string, dueDate?: Date, labels?: Label[]) => void;
   handleCancelTask: () => void;
 }
@@ -20,6 +23,7 @@ export const useColumnState = (column: Column): UseColumnStateReturn => {
   const [isAddingTask, setIsAddingTask] = useState(false);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [editingTitle, setEditingTitle] = useState(column.title);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const { createTask, updateColumn, deleteColumn } = useKanban();
 
   useEffect(() => {
@@ -47,10 +51,17 @@ export const useColumnState = (column: Column): UseColumnStateReturn => {
   }, [column.title]);
 
   const handleDeleteColumn = useCallback(() => {
-    if (window.confirm(`「${column.title}」カラムを削除しますか？このカラム内のすべてのタスクも削除されます。`)) {
-      deleteColumn(column.id);
-    }
-  }, [column.title, column.id, deleteColumn]);
+    setShowDeleteConfirm(true);
+  }, []);
+
+  const handleConfirmDeleteColumn = useCallback(() => {
+    deleteColumn(column.id);
+    setShowDeleteConfirm(false);
+  }, [column.id, deleteColumn]);
+
+  const handleCancelDeleteColumn = useCallback(() => {
+    setShowDeleteConfirm(false);
+  }, []);
 
   const handleAddTask = useCallback((title: string, description: string, dueDate?: Date, labels?: Label[]) => {
     if (title.trim()) {
@@ -68,11 +79,14 @@ export const useColumnState = (column: Column): UseColumnStateReturn => {
     setIsAddingTask,
     isEditingTitle,
     editingTitle,
+    showDeleteConfirm,
     setEditingTitle,
     handleTitleEdit,
     handleTitleSave,
     handleTitleCancel,
     handleDeleteColumn,
+    handleConfirmDeleteColumn,
+    handleCancelDeleteColumn,
     handleAddTask,
     handleCancelTask
   };

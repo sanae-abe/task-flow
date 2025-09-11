@@ -7,6 +7,7 @@ interface UseTaskCardReturn {
   editTitle: string;
   editDescription: string;
   editDueDate: string;
+  showDeleteConfirm: boolean;
   setEditTitle: (title: string) => void;
   setEditDescription: (description: string) => void;
   setEditDueDate: (date: string) => void;
@@ -14,6 +15,8 @@ interface UseTaskCardReturn {
   handleSave: () => void;
   handleCancel: () => void;
   handleDelete: () => void;
+  handleConfirmDelete: () => void;
+  handleCancelDelete: () => void;
   isOverdue: () => boolean;
   isDueToday: () => boolean;
   isDueTomorrow: () => boolean;
@@ -25,6 +28,7 @@ export const useTaskCard = (task: Task, columnId: string): UseTaskCardReturn => 
   const [editTitle, setEditTitle] = useState(task.title);
   const [editDescription, setEditDescription] = useState(task.description || '');
   const [editDueDate, setEditDueDate] = useState<string>('');
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const { updateTask, deleteTask } = useKanban();
 
   useEffect(() => {
@@ -56,10 +60,17 @@ export const useTaskCard = (task: Task, columnId: string): UseTaskCardReturn => 
   }, [task.title, task.description, task.dueDate]);
 
   const handleDelete = useCallback(() => {
-    if (window.confirm('Are you sure you want to delete this task?')) {
-      deleteTask(task.id, columnId);
-    }
+    setShowDeleteConfirm(true);
+  }, []);
+
+  const handleConfirmDelete = useCallback(() => {
+    deleteTask(task.id, columnId);
+    setShowDeleteConfirm(false);
   }, [task.id, columnId, deleteTask]);
+
+  const handleCancelDelete = useCallback(() => {
+    setShowDeleteConfirm(false);
+  }, []);
 
   const isOverdue = useCallback(() => {
     if (!task.dueDate) {
@@ -107,6 +118,7 @@ export const useTaskCard = (task: Task, columnId: string): UseTaskCardReturn => 
     editTitle,
     editDescription,
     editDueDate,
+    showDeleteConfirm,
     setEditTitle,
     setEditDescription,
     setEditDueDate,
@@ -114,6 +126,8 @@ export const useTaskCard = (task: Task, columnId: string): UseTaskCardReturn => 
     handleSave,
     handleCancel,
     handleDelete,
+    handleConfirmDelete,
+    handleCancelDelete,
     isOverdue,
     isDueToday,
     isDueTomorrow,

@@ -6,6 +6,7 @@ import type { Column, Task } from '../types';
 import TaskCard from './TaskCard';
 import ColumnHeader from './ColumnHeader';
 import AddTaskForm from './AddTaskForm';
+import ConfirmDialog from './ConfirmDialog';
 import { useColumnState } from '../hooks/useColumnState';
 
 interface KanbanColumnProps {
@@ -19,11 +20,14 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({ column, onTaskClick }) => {
     setIsAddingTask,
     isEditingTitle,
     editingTitle,
+    showDeleteConfirm,
     setEditingTitle,
     handleTitleEdit,
     handleTitleSave,
     handleTitleCancel,
     handleDeleteColumn,
+    handleConfirmDeleteColumn,
+    handleCancelDeleteColumn,
     handleAddTask,
     handleCancelTask
   } = useColumnState(column);
@@ -81,6 +85,14 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({ column, onTaskClick }) => {
           ))}
         </SortableContext>
       </Box>
+
+      <ConfirmDialog
+        isOpen={showDeleteConfirm}
+        title="カラムを削除"
+        message={`「${column.title}」カラムを削除しますか？このカラム内のすべてのタスクも削除されます。`}
+        onConfirm={handleConfirmDeleteColumn}
+        onCancel={handleCancelDeleteColumn}
+      />
     </Box>
   );
 };
