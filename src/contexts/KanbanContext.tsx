@@ -14,7 +14,7 @@ type KanbanAction =
   | { type: 'CREATE_BOARD'; payload: { title: string } }
   | { type: 'SET_CURRENT_BOARD'; payload: string }
   | { type: 'UPDATE_BOARD'; payload: { boardId: string; updates: Partial<KanbanBoard> } }
-  | { type: 'CREATE_COLUMN'; payload: { boardId: string; title: string} }
+  | { type: 'CREATE_COLUMN'; payload: { boardId: string; title: string } }
   | { type: 'CREATE_TASK'; payload: { columnId: string; title: string; description: string; dueDate?: Date } }
   | { type: 'MOVE_TASK'; payload: { taskId: string; sourceColumnId: string; targetColumnId: string; targetIndex: number } }
   | { type: 'UPDATE_TASK'; payload: { taskId: string; updates: Partial<Task> } }
@@ -69,17 +69,20 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
           {
             id: uuidv4(),
             title: 'To Do',
-            tasks: []
+            tasks: [],
+            color: '#f6f8fa'
           },
           {
             id: uuidv4(),
             title: 'In Progress',
-            tasks: []
+            tasks: [],
+            color: '#fef3c7'
           },
           {
             id: uuidv4(),
             title: 'Done',
-            tasks: []
+            tasks: [],
+            color: '#d1fae5'
           },
         ],
         createdAt: new Date(),
@@ -129,6 +132,7 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
         id: uuidv4(),
         title: action.payload.title,
         tasks: [],
+        color: '#f6f8fa',
       };
       
       const updatedBoard = {

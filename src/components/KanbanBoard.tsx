@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, TextInput, Text, Box } from '@primer/react';
+import { Text, Box } from '@primer/react';
 import {
   DndContext,
   DragOverlay,
@@ -15,10 +15,8 @@ import TaskDetailSidebar from './TaskDetailSidebar';
 import type { Task } from '../types';
 
 const KanbanBoard: React.FC = () => {
-  const { state, moveTask, createColumn } = useKanban();
+  const { state, moveTask } = useKanban();
   const [activeTask, setActiveTask] = useState<Task | null>(null);
-  const [isAddingColumn, setIsAddingColumn] = useState(false);
-  const [newColumnTitle, setNewColumnTitle] = useState('');
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [isTaskDetailOpen, setIsTaskDetailOpen] = useState(false);
   
@@ -105,18 +103,6 @@ const KanbanBoard: React.FC = () => {
     }
   };
   
-  const handleAddColumn = () => {
-    if (newColumnTitle.trim()) {
-      createColumn(newColumnTitle.trim());
-      setNewColumnTitle('');
-      setIsAddingColumn(false);
-    }
-  };
-  
-  const handleCancelAddColumn = () => {
-    setNewColumnTitle('');
-    setIsAddingColumn(false);
-  };
 
 
   const handleTaskClick = (task: Task) => {
@@ -136,31 +122,6 @@ const KanbanBoard: React.FC = () => {
       bg="canvas.subtle"
       sx={{ overflow: 'hidden' }}
     >
-      <Box 
-        bg="canvas.default" 
-        borderBottom="1px solid" 
-        borderColor="border.muted"
-        px={6}
-        py={4}
-        sx={{ 
-          boxShadow: '0 1px 0 rgba(0, 0, 0, 0.06)',
-          position: 'fixed',
-          top: '56px',
-          left: 0,
-          right: 0,
-          height: '56px',
-          zIndex: 999
-        }}
-      >
-          <Box display="flex" alignItems="center" justifyContent="space-between">
-            <Box>
-              <Text fontSize={2} color="fg.muted">
-                {state.currentBoard.columns.length} カラム • 
-                {state.currentBoard.columns.reduce((total, col) => total + col.tasks.length, 0)} タスク
-              </Text>
-            </Box>
-          </Box>
-      </Box>
       
       <DndContext
         sensors={sensors}
@@ -174,7 +135,7 @@ const KanbanBoard: React.FC = () => {
             gap: 6, 
             px: 6,
             py: 5,
-            height: 'calc(100vh - 168px)',
+            height: 'calc(100vh - 56px)',
             '&::-webkit-scrollbar': {
               height: '8px'
             },
@@ -198,89 +159,6 @@ const KanbanBoard: React.FC = () => {
             />
           ))}
           
-          {isAddingColumn ? (
-            <Box 
-              sx={{ 
-                bg: 'canvas.default',
-                borderRadius: 2,
-                p: 4,
-                border: '1px solid',
-                borderColor: 'border.default',
-                minWidth: '320px', 
-                flexShrink: 0,
-                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.12)'
-              }}
-            >
-              <TextInput
-                value={newColumnTitle}
-                onChange={(e) => setNewColumnTitle(e.target.value)}
-                placeholder="カラム名"
-                autoFocus
-                sx={{ mb: 4, fontSize: 2, fontWeight: '500' }}
-              />
-              <Box mb={4}>
-                <Text fontSize={2} fontWeight="600" display="block" mb={3} color="fg.default">
-                  カラーを選択
-                </Text>
-                <Box display="flex" gap={2} flexWrap="wrap">
-                    <Button
-                      variant="invisible"
-                      sx={{
-                        width: '32px',
-                        height: '32px',
-                        borderRadius: 2,
-                        cursor: 'pointer',
-                        '&:hover': {
-                          transform: 'scale(1.1)',
-                          transition: 'transform 0.2s ease'
-                        }
-                      }}
-                    />
-                </Box>
-              </Box>
-              <Box display="flex" gap={2}>
-                <Button onClick={handleAddColumn} variant="primary" sx={{ fontWeight: '500' }}>
-                  追加
-                </Button>
-                <Button onClick={handleCancelAddColumn}>
-                  キャンセル
-                </Button>
-              </Box>
-            </Box>
-          ) : (
-            <Box
-              onClick={() => setIsAddingColumn(true)}
-              sx={{
-                minWidth: '320px',
-                height: '160px',
-                flexShrink: 0,
-                border: '2px dashed',
-                borderColor: 'border.muted',
-                borderRadius: 2,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                backgroundColor: 'canvas.default',
-                transition: 'all 0.2s ease',
-                '&:hover': {
-                  borderColor: 'accent.emphasis',
-                  backgroundColor: 'canvas.subtle',
-                  transform: 'translateY(-2px)',
-                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
-                }
-              }}
-            >
-              <Box display="flex" flexDirection="column" alignItems="center" gap={2}>
-                <Text fontSize={3} fontWeight="600" color="fg.muted">
-                  + カラムを追加
-                </Text>
-                <Text fontSize={1} color="fg.muted" sx={{ textAlign: 'center' }}>
-                  新しいワークフローステップを作成
-                </Text>
-              </Box>
-            </Box>
-          )}
         </Box>
         
         <DragOverlay>

@@ -11,6 +11,7 @@ export interface Column {
   id: string;
   title: string;
   tasks: Task[];
+  color?: string;
 }
 
 export interface KanbanBoard {
