@@ -4,6 +4,15 @@ export interface Label {
   color: string;
 }
 
+export interface FileAttachment {
+  id: string;
+  name: string;
+  type: string;
+  size: number;
+  data: string; // Base64 encoded file data
+  uploadedAt: Date;
+}
+
 export interface SubTask {
   id: string;
   title: string;
@@ -20,6 +29,7 @@ export interface Task {
   dueDate?: Date;
   labels?: Label[];
   subTasks?: SubTask[];
+  attachments?: FileAttachment[];
 }
 
 export interface Column {

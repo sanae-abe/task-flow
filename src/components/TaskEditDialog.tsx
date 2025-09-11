@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Text, Button, TextInput, Textarea } from '@primer/react';
 import { XIcon, TrashIcon } from '@primer/octicons-react';
-import type { Task, Label } from '../types';
+import type { Task, Label, FileAttachment } from '../types';
 import LabelSelector from './LabelSelector';
+import FileUploader from './FileUploader';
 import ConfirmDialog from './ConfirmDialog';
 
 interface TaskEditDialogProps {
@@ -24,6 +25,7 @@ const TaskEditDialog: React.FC<TaskEditDialogProps> = ({
   const [description, setDescription] = useState('');
   const [dueDate, setDueDate] = useState('');
   const [labels, setLabels] = useState<Label[]>([]);
+  const [attachments, setAttachments] = useState<FileAttachment[]>([]);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   useEffect(() => {
@@ -33,6 +35,7 @@ const TaskEditDialog: React.FC<TaskEditDialogProps> = ({
       const dateValue = task.dueDate ? task.dueDate.toISOString().split('T')[0] : '';
       setDueDate(dateValue || '');
       setLabels(task.labels || []);
+      setAttachments(task.attachments || []);
     }
   }, [isOpen, task]);
 
@@ -45,6 +48,7 @@ const TaskEditDialog: React.FC<TaskEditDialogProps> = ({
         description: description.trim() || undefined,
         dueDate: dueDateObj,
         labels,
+        attachments,
         updatedAt: new Date()
       };
       onSave(updatedTask);
@@ -124,7 +128,7 @@ const TaskEditDialog: React.FC<TaskEditDialogProps> = ({
             </Button>
           </Box>
 
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
               <Text sx={{ fontSize: 1, color: 'fg.muted' }}>
                 タイトル
@@ -176,6 +180,16 @@ const TaskEditDialog: React.FC<TaskEditDialogProps> = ({
               <LabelSelector
                 selectedLabels={labels}
                 onLabelsChange={setLabels}
+              />
+            </Box>
+
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+              <Text sx={{ fontSize: 1, color: 'fg.muted' }}>
+                ファイル添付（任意）
+              </Text>
+              <FileUploader
+                attachments={attachments}
+                onAttachmentsChange={setAttachments}
               />
             </Box>
           </Box>

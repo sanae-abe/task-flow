@@ -4,6 +4,7 @@ import { CalendarIcon } from '@primer/octicons-react';
 import type { Task } from '../types';
 import { getDateStatus, formatDueDate } from '../utils/dateHelpers';
 import { getLabelColors } from '../utils/labelHelpers';
+import FileList from './FileList';
 
 interface TaskDisplayContentProps {
   task: Task;
@@ -154,6 +155,13 @@ const TaskDisplayContent: React.FC<TaskDisplayContentProps> = ({ task, columnNam
               </Text>
             )}
           </Box>
+        </Box>
+      )}
+
+      {task.attachments && task.attachments.length > 0 && (
+        <Box sx={{ mb: 4 }}>
+          <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: 'bold' }}>ファイル添付</Heading>
+          <FileList attachments={task.attachments} />
         </Box>
       )}
     </>

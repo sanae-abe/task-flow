@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Text, Button, TextInput, Textarea } from '@primer/react';
 import { XIcon } from '@primer/octicons-react';
-import type { Label } from '../types';
+import type { Label, FileAttachment } from '../types';
 import LabelSelector from './LabelSelector';
+import FileUploader from './FileUploader';
 
 interface TaskCreateDialogProps {
   isOpen: boolean;
-  onSave: (title: string, description: string, dueDate?: Date, labels?: Label[]) => void;
+  onSave: (title: string, description: string, dueDate?: Date, labels?: Label[], attachments?: FileAttachment[]) => void;
   onCancel: () => void;
 }
 
@@ -19,6 +20,7 @@ const TaskCreateDialog: React.FC<TaskCreateDialogProps> = ({
   const [description, setDescription] = useState('');
   const [dueDate, setDueDate] = useState('');
   const [labels, setLabels] = useState<Label[]>([]);
+  const [attachments, setAttachments] = useState<FileAttachment[]>([]);
 
   useEffect(() => {
     if (isOpen) {
@@ -26,13 +28,14 @@ const TaskCreateDialog: React.FC<TaskCreateDialogProps> = ({
       setDescription('');
       setDueDate('');
       setLabels([]);
+      setAttachments([]);
     }
   }, [isOpen]);
 
   const handleSave = () => {
     if (title.trim()) {
       const dueDateObj = dueDate ? new Date(dueDate) : undefined;
-      onSave(title.trim(), description.trim(), dueDateObj, labels);
+      onSave(title.trim(), description.trim(), dueDateObj, labels, attachments);
     }
   };
 
@@ -97,7 +100,7 @@ const TaskCreateDialog: React.FC<TaskCreateDialogProps> = ({
           </Button>
         </Box>
 
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
             <Text sx={{ fontSize: 1, color: 'fg.muted' }}>
               タイトル
@@ -149,6 +152,16 @@ const TaskCreateDialog: React.FC<TaskCreateDialogProps> = ({
             <LabelSelector
               selectedLabels={labels}
               onLabelsChange={setLabels}
+            />
+          </Box>
+
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+            <Text sx={{ fontSize: 1, color: 'fg.muted' }}>
+              ファイル添付（任意）
+            </Text>
+            <FileUploader
+              attachments={attachments}
+              onAttachmentsChange={setAttachments}
             />
           </Box>
         </Box>
