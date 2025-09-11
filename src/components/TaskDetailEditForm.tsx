@@ -27,28 +27,28 @@ const TaskDetailEditForm: React.FC<TaskDetailEditFormProps> = ({
   return (
     <>
       <Box sx={{ mb: 4 }}>
-        <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: 'bold' }}>Title</Heading>
+        <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: 'bold' }}>タイトル</Heading>
         <TextInput
           value={editTitle}
           onChange={(e) => onTitleChange(e.target.value)}
-          placeholder="Task title"
+          placeholder="タスクタイトルを入力"
           sx={{ width: '100%' }}
         />
       </Box>
 
       <Box sx={{ mb: 4 }}>
-        <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: 'bold' }}>Description</Heading>
+        <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: 'bold' }}>説明</Heading>
         <Textarea
           value={editDescription}
           onChange={(e) => onDescriptionChange(e.target.value)}
-          placeholder="Task description"
+          placeholder="タスクの説明を入力"
           rows={4}
           sx={{ width: '100%', resize: 'vertical' }}
         />
       </Box>
 
       <Box sx={{ mb: 4 }}>
-        <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: 'bold' }}>Due Date</Heading>
+        <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: 'bold' }}>期限</Heading>
         <TextInput
           type="date"
           value={editDueDate}
@@ -58,7 +58,7 @@ const TaskDetailEditForm: React.FC<TaskDetailEditFormProps> = ({
       </Box>
 
       <Box sx={{ mb: 4 }}>
-        <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: 'bold' }}>Labels</Heading>
+        <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: 'bold' }}>ラベル</Heading>
         <LabelSelector
           selectedLabels={editLabels}
           onLabelsChange={onLabelsChange}

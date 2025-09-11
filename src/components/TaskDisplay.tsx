@@ -76,7 +76,7 @@ const TaskDisplay: React.FC<TaskDisplayProps> = ({
             }}
             >
             <CalendarIcon size={12} />
-            Due: {formatDueDate(task.dueDate)}
+            期限: {formatDueDate(task.dueDate)}
             {isOverdue() && ' (Overdue)'}
             {isDueToday() && !isOverdue() && ' (Due Today)'}
             {isDueTomorrow() && !isOverdue() && !isDueToday() && ' (Due Tomorrow)'}

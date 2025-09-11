@@ -52,7 +52,7 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({ onAdd, onCancel }) => {
         <TextInput
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          placeholder="Task Title"
+          placeholder="タスクタイトルを入力"
           autoFocus
           sx={{ 
             fontSize: 2, 
@@ -65,7 +65,7 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({ onAdd, onCancel }) => {
         <Textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          placeholder="Task Description (optional)"
+          placeholder="タスクの説明（任意）"
           sx={{ 
             resize: 'none', 
             height: '80px',
@@ -76,7 +76,7 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({ onAdd, onCancel }) => {
       </Box>
       <Box>
         <Text sx={{ fontSize: 1, fontWeight: "600", display: "block", mb: 2, color: "fg.default" }}>
-          Due Date (optional)
+          期限（任意）
         </Text>
         <TextInput
           type="date"
@@ -87,7 +87,7 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({ onAdd, onCancel }) => {
       </Box>
       <Box>
         <Text sx={{ fontSize: 1, fontWeight: "600", display: "block", mb: 2, color: "fg.default" }}>
-          Labels (optional)
+          ラベル（任意）
         </Text>
         <LabelSelector
           selectedLabels={labels}
@@ -96,10 +96,10 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({ onAdd, onCancel }) => {
       </Box>
       <Box sx={{ display: "flex", gap: 2 }}>
         <Button onClick={handleSubmit} variant="primary" sx={{ fontWeight: '500' }}>
-          Add
+          追加
         </Button>
         <Button onClick={handleCancel}>
-          Cancel
+          キャンセル
         </Button>
       </Box>
     </Box>

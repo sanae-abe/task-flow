@@ -47,14 +47,14 @@ const TaskEditForm: React.FC<TaskEditFormProps> = ({
       <TextInput
         value={editTitle}
         onChange={(e) => onTitleChange(e.target.value)}
-        placeholder="Task Title"
+        placeholder="タスクタイトルを入力"
         autoFocus
         sx={{ mb: 3, fontSize: 2, fontWeight: '500' }}
       />
       <Textarea
         value={editDescription}
         onChange={(e) => onDescriptionChange(e.target.value)}
-        placeholder="Task Description"
+        placeholder="タスクの説明を入力"
         sx={{ 
           mb: 4, 
           resize: 'none', 
@@ -64,7 +64,7 @@ const TaskEditForm: React.FC<TaskEditFormProps> = ({
       />
       <Box sx={{ mb: 4 }}>
         <Text sx={{ fontSize: 1, fontWeight: "600", display: "block", mb: 2, color: "fg.default" }}>
-          Due Date (optional)
+          期限日（任意）
         </Text>
         <TextInput
           type="date"
@@ -75,10 +75,10 @@ const TaskEditForm: React.FC<TaskEditFormProps> = ({
       </Box>
       <Box sx={{ display: 'flex', gap: 2 }}>
         <Button onClick={onSave} variant="primary" sx={{ fontWeight: '500', flex: 1 }}>
-          Save
+          保存
         </Button>
         <Button onClick={onCancel}>
-          Cancel
+          キャンセル
         </Button>
       </Box>
     </Box>

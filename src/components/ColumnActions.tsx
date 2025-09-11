@@ -28,23 +28,23 @@ const ColumnActions: React.FC<ColumnActionsProps> = ({
         variant="invisible"
         size="small"
         leadingVisual={PlusIcon}
-        aria-label="Add task"
+        aria-label="タスクを追加"
       />
       <Button
         onClick={handleEditClick}
         variant="invisible"
         size="small"
         leadingVisual={PencilIcon}
-        aria-label="Edit column name"
-        title="Edit column name"
+        aria-label="カラム名を編集"
+        title="カラム名を編集"
       />
       <Button
         onClick={handleDeleteClick}
         variant="invisible"
         size="small"
         leadingVisual={TrashIcon}
-        aria-label="Delete column"
-        title="Delete column"
+        aria-label="カラムを削除"
+        title="カラムを削除"
         sx={{
           color: 'danger.fg',
           '&:hover': {

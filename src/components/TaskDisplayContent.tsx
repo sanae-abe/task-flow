@@ -15,21 +15,19 @@ const TaskDisplayContent: React.FC<TaskDisplayContentProps> = ({ task }) => {
   return (
     <>
       <Box sx={{ mb: 4 }}>
-        <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: 'bold' }}>Description</Heading>
+        <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: 'bold' }}>説明</Heading>
         <Box
           sx={{
             p: 3,
             bg: "canvas.subtle",
-            border: "1px solid",
             borderRadius: 2,
-            borderColor: "border.default"
           }}
         >
           {task.description ? (
             <Text sx={{ fontSize: 1 }}>{task.description}</Text>
           ) : (
             <Text sx={{ fontSize: 1, color: "fg.muted", fontStyle: "italic" }}>
-              No description set
+              説明が設定されていません
             </Text>
           )}
         </Box>
@@ -37,7 +35,7 @@ const TaskDisplayContent: React.FC<TaskDisplayContentProps> = ({ task }) => {
 
       {task.dueDate && (
         <Box sx={{ mb: 4 }}>
-          <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: 'bold' }}>Due Date</Heading>
+          <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: 'bold' }}>期限</Heading>
           <Box
             sx={{
               p: 3,
@@ -52,14 +50,6 @@ const TaskDisplayContent: React.FC<TaskDisplayContentProps> = ({ task }) => {
                 ? 'accent.subtle' 
                 : 'canvas.subtle',
               borderRadius: 2,
-              border: '1px solid',
-              borderColor: isOverdue 
-                ? 'danger.emphasis' 
-                : isDueToday 
-                ? 'attention.emphasis'
-                : isDueTomorrow 
-                ? 'accent.emphasis' 
-                : 'border.default'
             }}
           >
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flex: 1 }}>
@@ -80,7 +70,7 @@ const TaskDisplayContent: React.FC<TaskDisplayContentProps> = ({ task }) => {
                   letterSpacing: '0.025em'
                 }}
               >
-                Overdue
+                期限切れ
               </Text>
             )}
             {isDueToday && !isOverdue && (
@@ -97,7 +87,7 @@ const TaskDisplayContent: React.FC<TaskDisplayContentProps> = ({ task }) => {
                   letterSpacing: '0.025em'
                 }}
               >
-                Due Today
+                今日期限
               </Text>
             )}
             {isDueTomorrow && !isOverdue && !isDueToday && (
@@ -114,7 +104,7 @@ const TaskDisplayContent: React.FC<TaskDisplayContentProps> = ({ task }) => {
                   letterSpacing: '0.025em'
                 }}
               >
-                Due Tomorrow
+                明日期限
               </Text>
             )}
           </Box>
@@ -123,7 +113,7 @@ const TaskDisplayContent: React.FC<TaskDisplayContentProps> = ({ task }) => {
 
       {task.labels && task.labels.length > 0 && (
         <Box sx={{ mb: 4 }}>
-          <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: 'bold' }}>Labels</Heading>
+          <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: 'bold' }}>ラベル</Heading>
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
             {task.labels.map((label) => {
               const colors = getLabelColors(label.color);

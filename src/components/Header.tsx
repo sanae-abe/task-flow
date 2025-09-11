@@ -42,7 +42,7 @@ const Header: React.FC = () => {
           <Button 
             onClick={handleStartCreate}
             variant="primary"
-            aria-label="Add Board"
+            aria-label="ボードを追加"
             leadingVisual={PlusIcon}
             sx={{
               backgroundColor: 'accent.emphasis',
