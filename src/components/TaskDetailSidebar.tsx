@@ -117,18 +117,27 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
     return dueDate < today;
   };
 
-  const isDueSoon = () => {
+  const isDueToday = () => {
     if (!task?.dueDate) {
       return false;
     }
     const today = new Date();
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
     const dueDate = new Date(task.dueDate);
     today.setHours(0, 0, 0, 0);
+    dueDate.setHours(0, 0, 0, 0);
+    return dueDate.getTime() === today.getTime();
+  };
+
+  const isDueTomorrow = () => {
+    if (!task?.dueDate) {
+      return false;
+    }
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const dueDate = new Date(task.dueDate);
     tomorrow.setHours(0, 0, 0, 0);
     dueDate.setHours(0, 0, 0, 0);
-    return dueDate >= today && dueDate <= tomorrow;
+    return dueDate.getTime() === tomorrow.getTime();
   };
 
   const formatDueDate = (date: Date) => {
@@ -275,14 +284,18 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
                       gap: 2,
                       bg: isOverdue() 
                         ? 'danger.subtle' 
-                        : isDueSoon() 
+                        : isDueToday() 
+                        ? 'success.subtle'
+                        : isDueTomorrow() 
                         ? 'attention.subtle' 
                         : 'canvas.subtle',
                       borderRadius: 2,
                       border: '1px solid',
                       borderColor: isOverdue() 
                         ? 'danger.emphasis' 
-                        : isDueSoon() 
+                        : isDueToday() 
+                        ? 'success.emphasis'
+                        : isDueTomorrow() 
                         ? 'attention.emphasis' 
                         : 'border.default'
                     }}
@@ -308,7 +321,24 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
                         Overdue
                       </Text>
                     )}
-                    {isDueSoon() && !isOverdue() && (
+                    {isDueToday() && !isOverdue() && (
+                      <Text
+                        sx={{
+                          fontSize: 0,
+                          fontWeight: "bold",
+                          color: "#ffffff",
+                          bg: "success.emphasis",
+                          px: 2,
+                          py: 1,
+                          borderRadius: 2,
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.025em'
+                        }}
+                      >
+                        Due Today
+                      </Text>
+                    )}
+                    {isDueTomorrow() && !isOverdue() && !isDueToday() && (
                       <Text
                         sx={{
                           fontSize: 0,

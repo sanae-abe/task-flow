@@ -7,7 +7,8 @@ import { getColorInfo } from '../utils/labels';
 interface TaskDisplayProps {
   task: Task;
   isOverdue: () => boolean;
-  isDueSoon: () => boolean;
+  isDueToday: () => boolean;
+  isDueTomorrow: () => boolean;
   formatDueDate: (date: Date) => string;
   onEdit: (e: React.MouseEvent) => void;
   onDelete: (e: React.MouseEvent) => void;
@@ -16,7 +17,8 @@ interface TaskDisplayProps {
 const TaskDisplay: React.FC<TaskDisplayProps> = ({
   task,
   isOverdue,
-  isDueSoon,
+  isDueToday,
+  isDueTomorrow,
   formatDueDate
 }) => {
   return (
@@ -53,12 +55,16 @@ const TaskDisplay: React.FC<TaskDisplayProps> = ({
               gap: 1,
               bg: isOverdue() 
                 ? 'danger.subtle' 
-                : isDueSoon() 
+                : isDueToday() 
+                ? 'success.subtle'
+                : isDueTomorrow() 
                 ? 'attention.subtle' 
                 : 'neutral.subtle',
               color: isOverdue() 
                 ? 'danger.fg' 
-                : isDueSoon() 
+                : isDueToday() 
+                ? 'success.fg'
+                : isDueTomorrow() 
                 ? 'attention.fg' 
                 : 'fg.muted',
               px: 2,
@@ -73,7 +79,8 @@ const TaskDisplay: React.FC<TaskDisplayProps> = ({
             <CalendarIcon size={12} />
             Due: {formatDueDate(task.dueDate)}
             {isOverdue() && ' (Overdue)'}
-            {isDueSoon() && !isOverdue() && ' (Due Tomorrow)'}
+            {isDueToday() && !isOverdue() && ' (Due Today)'}
+            {isDueTomorrow() && !isOverdue() && !isDueToday() && ' (Due Tomorrow)'}
             </Box>
         )}
         

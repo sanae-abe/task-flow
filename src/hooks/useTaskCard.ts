@@ -15,7 +15,8 @@ interface UseTaskCardReturn {
   handleCancel: () => void;
   handleDelete: () => void;
   isOverdue: () => boolean;
-  isDueSoon: () => boolean;
+  isDueToday: () => boolean;
+  isDueTomorrow: () => boolean;
   formatDueDate: (date: Date) => string;
 }
 
@@ -71,18 +72,27 @@ export const useTaskCard = (task: Task, columnId: string): UseTaskCardReturn => 
     return dueDate < today;
   }, [task.dueDate]);
 
-  const isDueSoon = useCallback(() => {
+  const isDueToday = useCallback(() => {
     if (!task.dueDate) {
       return false;
     }
     const today = new Date();
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
     const dueDate = new Date(task.dueDate);
     today.setHours(0, 0, 0, 0);
+    dueDate.setHours(0, 0, 0, 0);
+    return dueDate.getTime() === today.getTime();
+  }, [task.dueDate]);
+
+  const isDueTomorrow = useCallback(() => {
+    if (!task.dueDate) {
+      return false;
+    }
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const dueDate = new Date(task.dueDate);
     tomorrow.setHours(0, 0, 0, 0);
     dueDate.setHours(0, 0, 0, 0);
-    return dueDate >= today && dueDate <= tomorrow;
+    return dueDate.getTime() === tomorrow.getTime();
   }, [task.dueDate]);
 
   const formatDueDate = useCallback((date: Date) => {
@@ -105,7 +115,8 @@ export const useTaskCard = (task: Task, columnId: string): UseTaskCardReturn => 
     handleCancel,
     handleDelete,
     isOverdue,
-    isDueSoon,
+    isDueToday,
+    isDueTomorrow,
     formatDueDate
   };
 };

@@ -27,7 +27,8 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, columnId, onTaskClick }) => {
     handleCancel,
     handleDelete,
     isOverdue,
-    isDueSoon,
+    isDueToday,
+    isDueTomorrow,
     formatDueDate
   } = useTaskCard(task, columnId);
   
@@ -78,7 +79,9 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, columnId, onTaskClick }) => {
         borderRadius: 2,
         borderColor: isOverdue() 
           ? 'danger.emphasis' 
-          : isDueSoon() 
+          : isDueToday() 
+          ? 'success.emphasis'
+          : isDueTomorrow() 
           ? 'attention.emphasis' 
           : 'border.default',
         cursor: 'grab',
@@ -100,7 +103,8 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, columnId, onTaskClick }) => {
       <TaskDisplay
         task={task}
         isOverdue={isOverdue}
-        isDueSoon={isDueSoon}
+        isDueToday={isDueToday}
+        isDueTomorrow={isDueTomorrow}
         formatDueDate={formatDueDate}
         onEdit={(e: React.MouseEvent) => {
           e.stopPropagation();
