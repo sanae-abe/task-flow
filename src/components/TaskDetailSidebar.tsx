@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Button, Box, Text, Heading, TextInput, Textarea } from '@primer/react';
 import { CalendarIcon, TrashIcon, XIcon, PencilIcon } from '@primer/octicons-react';
 import type { Task, Label } from '../types';
@@ -30,6 +30,16 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
     }
   }, [task]);
 
+  const handleCancelEdit = useCallback(() => {
+    if (task) {
+      setEditTitle(task.title);
+      setEditDescription(task.description || '');
+      setEditDueDate(task.dueDate?.toISOString().split('T')[0] || '');
+      setEditLabels(task.labels || []);
+    }
+    setIsEditing(false);
+  }, [task]);
+
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
@@ -48,7 +58,7 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
     return () => {
       document.removeEventListener('keydown', handleEscape);
     };
-  }, [isOpen, onClose, isEditing]);
+  }, [isOpen, onClose, isEditing, handleCancelEdit]);
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -78,15 +88,6 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
     }
   };
 
-  const handleCancelEdit = () => {
-    if (task) {
-      setEditTitle(task.title);
-      setEditDescription(task.description || '');
-      setEditDueDate(task.dueDate?.toISOString().split('T')[0] || '');
-      setEditLabels(task.labels || []);
-    }
-    setIsEditing(false);
-  };
 
   const handleDelete = () => {
     if (!task || !state.currentBoard) {

@@ -27,7 +27,6 @@ export const useColumnState = (column: Column): UseColumnStateReturn => {
   }, [column.title]);
 
   const handleTitleEdit = useCallback(() => {
-    console.log('useColumnState: handleTitleEdit called for column:', column.title);
     setIsEditingTitle(true);
     setEditingTitle(column.title);
   }, [column.title]);

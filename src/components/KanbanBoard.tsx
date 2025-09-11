@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Text, Box } from '@primer/react';
 import {
   DndContext,
@@ -17,9 +17,24 @@ import type { Task } from '../types';
 const KanbanBoard: React.FC = () => {
   const { state, moveTask } = useKanban();
   const [activeTask, setActiveTask] = useState<Task | null>(null);
-  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const [isTaskDetailOpen, setIsTaskDetailOpen] = useState(false);
   
+  // 最新のタスク情報を動的に取得
+  const selectedTask = useMemo(() => {
+    if (!selectedTaskId || !state.currentBoard) {
+      return null;
+    }
+    
+    for (const column of state.currentBoard.columns) {
+      const task = column.tasks.find(task => task.id === selectedTaskId);
+      if (task) {
+        return task;
+      }
+    }
+    return null;
+  }, [selectedTaskId, state.currentBoard]);
+
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -27,6 +42,13 @@ const KanbanBoard: React.FC = () => {
       },
     })
   );
+
+  // 選択されたタスクが削除された場合の処理
+  useEffect(() => {
+    if (selectedTaskId && !selectedTask && isTaskDetailOpen) {
+      handleCloseTaskDetail();
+    }
+  }, [selectedTaskId, selectedTask, isTaskDetailOpen]);
   
   if (!state.currentBoard) {
     return (
@@ -106,13 +128,13 @@ const KanbanBoard: React.FC = () => {
 
 
   const handleTaskClick = (task: Task) => {
-    setSelectedTask(task);
+    setSelectedTaskId(task.id);
     setIsTaskDetailOpen(true);
   };
 
   const handleCloseTaskDetail = () => {
     setIsTaskDetailOpen(false);
-    setSelectedTask(null);
+    setSelectedTaskId(null);
   };
   
   return (

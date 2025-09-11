@@ -11,7 +11,7 @@ export const LABEL_COLORS = [
   { name: 'Cyan', value: '#0598bc', bg: '#cff4fc' }
 ] as const;
 
-export const getColorInfo = (color: string) => {
+export const getColorInfo = (color: string): { name: string; value: string; bg: string } => {
   return LABEL_COLORS.find(c => c.value === color) || LABEL_COLORS[0];
 };
 
