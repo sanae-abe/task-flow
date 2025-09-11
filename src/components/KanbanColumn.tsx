@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDroppable } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { Button, TextInput, Textarea, Box, Text, Heading, ActionMenu, ActionList } from '@primer/react';
-import { PlusIcon, KebabHorizontalIcon } from '@primer/octicons-react';
+import { PlusIcon, KebabHorizontalIcon, PencilIcon } from '@primer/octicons-react';
 import type { Column, Task } from '../types';
 import { useKanban } from '../contexts/KanbanContext';
 import TaskCard from './TaskCard';
@@ -87,26 +87,18 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({ column, onTaskClick }) => {
   
   return (
     <Box 
-      bg="canvas.default" 
-      borderRadius={2} 
-      p={4} 
       sx={{ 
         minWidth: '320px', 
         flexShrink: 0, 
         minHeight: '600px',
-        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
-        transition: 'all 0.2s ease',
-        '&:hover': {
-          boxShadow: '0 4px 16px rgba(0, 0, 0, 0.12)',
-          transform: 'translateY(-2px)'
-        }
+        backgroundColor: 'transparent',
+        p: 0
       }}
     >
       <Box
         display="flex"
         alignItems="center"
         justifyContent="space-between"
-        mb={4}
         pb={3}
       >
         <Box display="flex" alignItems="center" flex="1">
@@ -147,62 +139,105 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({ column, onTaskClick }) => {
               >
                 {column.title}
               </Heading>
-              <Box display="flex" alignItems="center" gap={1}>
-                <Button
-                  onClick={() => setIsAddingTask(true)}
-                  variant="invisible"
-                  size="small"
-                  leadingVisual={PlusIcon}
-                  aria-label="タスクを追加"
-                  sx={{
-                    color: 'fg.muted',
-                    '&:hover': { 
-                      color: 'accent.fg',
-                      backgroundColor: 'canvas.subtle'
-                    }
-                  }}
-                />
-                <ActionMenu>
-                  <ActionMenu.Anchor>
-                    <Button
-                      variant="invisible"
-                      size="small"
-                      leadingVisual={KebabHorizontalIcon}
-                      aria-label="カラムオプション"
-                      sx={{
-                        color: 'fg.muted',
-                        '&:hover': { 
-                          color: 'accent.fg',
-                          backgroundColor: 'canvas.subtle'
-                        }
-                      }}
-                    />
-                  </ActionMenu.Anchor>
-                  <ActionMenu.Overlay>
-                    <ActionList>
-                      <ActionList.Item onSelect={handleRenameColumn}>
-                        カラム名を変更
-                      </ActionList.Item>
-                      <ActionList.Item variant="danger" onSelect={handleDeleteColumn}>
-                        カラムを削除
-                      </ActionList.Item>
-                    </ActionList>
-                  </ActionMenu.Overlay>
-                </ActionMenu>
+              <Box
+                sx={{
+                  px: 3,
+                  py: 1,
+                  borderRadius: 2,
+                  fontSize: 1,
+                  fontWeight: '600'
+                }}
+              >
+                {column.tasks.length}
               </Box>
             </Box>
           )}
         </Box>
-        <Box
-          sx={{
-            px: 3,
-            py: 1,
-            borderRadius: 2,
-            fontSize: 1,
-            fontWeight: '600'
-          }}
-        >
-          {column.tasks.length}
+        <Box display="flex" alignItems="center" gap={1}>
+          <Button
+            onClick={() => setIsAddingTask(true)}
+            variant="invisible"
+            size="small"
+            leadingVisual={PlusIcon}
+            aria-label="タスクを追加"
+            sx={{
+              color: 'fg.muted',
+              '&:hover': { 
+                color: 'accent.fg',
+                backgroundColor: 'canvas.subtle'
+              }
+            }}
+          />
+          <ActionMenu>
+            <ActionMenu.Anchor>
+              <Button
+                variant="invisible"
+                size="small"
+                leadingVisual={KebabHorizontalIcon}
+                aria-label="カラムオプション"
+                sx={{
+                  color: 'fg.muted',
+                  '&:hover': { 
+                    color: 'accent.fg',
+                    backgroundColor: 'canvas.subtle'
+                  }
+                }}
+              />
+            </ActionMenu.Anchor>
+            <ActionMenu.Overlay 
+              width="medium" 
+              sx={{ 
+                minWidth: '180px',
+                backgroundColor: 'canvas.overlay',
+                border: '1px solid',
+                borderColor: 'border.default',
+                borderRadius: 2,
+                boxShadow: '0 8px 24px rgba(0, 0, 0, 0.12)'
+              }}
+            >
+              <ActionList
+                sx={{
+                  backgroundColor: 'canvas.overlay'
+                }}
+              >
+                <ActionList.Item 
+                  onSelect={(event) => {
+                    event.preventDefault();
+                    handleRenameColumn();
+                  }}
+                  sx={{
+                    backgroundColor: 'canvas.overlay',
+                    '&:hover': {
+                      backgroundColor: 'actionListItem.default.hoverBg'
+                    }
+                  }}
+                >
+                  <ActionList.LeadingVisual>
+                    <PencilIcon size={16} />
+                  </ActionList.LeadingVisual>
+                  カラム名を変更
+                </ActionList.Item>
+                <ActionList.Divider />
+                <ActionList.Item 
+                  variant="danger" 
+                  onSelect={(event) => {
+                    event.preventDefault();
+                    handleDeleteColumn();
+                  }}
+                  sx={{
+                    backgroundColor: 'canvas.overlay',
+                    color: 'danger.fg',
+                    '&:hover': {
+                      backgroundColor: 'danger.subtle',
+                      color: 'danger.fg'
+                    }
+                  }}
+                >
+                  カラムを削除
+                </ActionList.Item>
+              </ActionList>
+            </ActionMenu.Overlay>
+          </ActionMenu>
         </Box>
       </Box>
       
@@ -264,7 +299,7 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({ column, onTaskClick }) => {
           minHeight: '320px',
           display: 'flex',
           flexDirection: 'column',
-          gap: 2
+          gap: 3
         }}
       >
         <SortableContext items={column.tasks.map(task => task.id)} strategy={verticalListSortingStrategy}>

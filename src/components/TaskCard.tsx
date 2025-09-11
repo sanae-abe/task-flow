@@ -250,7 +250,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, columnId, onTaskClick }) => {
       
       <Box 
         display="flex" 
-        gap={2} 
+        gap={3} 
         mt={4}
         pt={3}
         borderTop="1px solid"
