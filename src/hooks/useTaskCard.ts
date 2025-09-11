@@ -79,16 +79,31 @@ export const useTaskCard = (task: Task, columnId: string): UseTaskCardReturn => 
       return;
     }
     
-    // 一番右のカラム（最後のカラム）を取得
-    const rightmostColumn = state.currentBoard.columns[state.currentBoard.columns.length - 1];
+    // 現在のカラムのインデックスを取得
+    const currentColumnIndex = state.currentBoard.columns.findIndex(col => col.id === columnId);
     
-    if (!rightmostColumn || rightmostColumn.id === columnId) {
-      // 既に一番右のカラムにある場合は何もしない
+    if (currentColumnIndex === -1) {
       return;
     }
     
-    // 一番右のカラムに移動
-    moveTask(task.id, columnId, rightmostColumn.id, rightmostColumn.tasks.length);
+    // 右端のカラムかどうかを判定
+    const isAtRightmostColumn = currentColumnIndex === state.currentBoard.columns.length - 1;
+    
+    if (isAtRightmostColumn) {
+      // 右端のカラムにある場合は、1つ左のカラムに移動
+      if (currentColumnIndex > 0) {
+        const previousColumn = state.currentBoard.columns[currentColumnIndex - 1];
+        if (previousColumn) {
+          moveTask(task.id, columnId, previousColumn.id, previousColumn.tasks.length);
+        }
+      }
+    } else {
+      // 右端以外のカラムにある場合は、右端のカラムに移動
+      const rightmostColumn = state.currentBoard.columns[state.currentBoard.columns.length - 1];
+      if (rightmostColumn) {
+        moveTask(task.id, columnId, rightmostColumn.id, rightmostColumn.tasks.length);
+      }
+    }
   }, [task.id, columnId, moveTask, state.currentBoard]);
 
   const isOverdue = useCallback(() => {

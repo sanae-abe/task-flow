@@ -29,7 +29,7 @@ const TaskDisplay: React.FC<TaskDisplayProps> = ({
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
         {onComplete && (
           <IconButton
-            aria-label="タスクを完了"
+            aria-label={isRightmostColumn ? "タスクを未完了にする" : "タスクを完了"}
             icon={isRightmostColumn ? CheckCircleFillIcon : CheckCircleIcon}
             size="small"
             onClick={onComplete}
@@ -54,6 +54,58 @@ const TaskDisplay: React.FC<TaskDisplayProps> = ({
           {task.title}
         </Heading>
       </Box>
+        
+        {task.labels && task.labels.length > 0 && (
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 ,mb: 3 }}>
+            {task.labels.map((label) => {
+              const getVariantColors = (variant: string) => {
+                switch (variant) {
+                  case 'primary':
+                    return { bg: 'accent.emphasis', color: 'fg.onEmphasis' };
+                  case 'secondary':
+                    return { bg: 'neutral.emphasis', color: 'fg.onEmphasis' };
+                  case 'accent':
+                    return { bg: 'accent.emphasis', color: 'fg.onEmphasis' };
+                  case 'success':
+                    return { bg: 'success.emphasis', color: 'fg.onEmphasis' };
+                  case 'attention':
+                    return { bg: 'attention.emphasis', color: 'fg.onEmphasis' };
+                  case 'severe':
+                    return { bg: 'severe.emphasis', color: 'fg.onEmphasis' };
+                  case 'danger':
+                    return { bg: 'danger.emphasis', color: 'fg.onEmphasis' };
+                  case 'done':
+                    return { bg: 'done.emphasis', color: 'fg.onEmphasis' };
+                  case 'sponsors':
+                    return { bg: 'sponsors.emphasis', color: 'fg.onEmphasis' };
+                  default:
+                    return { bg: 'neutral.emphasis', color: 'fg.onEmphasis' };
+                }
+              };
+              
+              const colors = getVariantColors(label.color);
+              
+              return (
+                <Box
+                  key={label.id}
+                  sx={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    bg: colors.bg,
+                    color: colors.color,
+                    px: 2,
+                    py: 1,
+                    borderRadius: 2,
+                    fontSize: 0,
+                    fontWeight: '500'
+                  }}
+                >
+                  {label.name}
+                </Box>
+              );
+            })}
+          </Box>
+        )}
       
       {task.description && (
         <Text sx={{ fontSize: 1, color: "fg.muted", 
@@ -103,58 +155,6 @@ const TaskDisplay: React.FC<TaskDisplayProps> = ({
             {isDueToday() && !isOverdue() && ' (Due Today)'}
             {isDueTomorrow() && !isOverdue() && !isDueToday() && ' (Due Tomorrow)'}
             </Box>
-        )}
-        
-        {task.labels && task.labels.length > 0 && (
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-            {task.labels.map((label) => {
-              const getVariantColors = (variant: string) => {
-                switch (variant) {
-                  case 'primary':
-                    return { bg: 'accent.emphasis', color: 'fg.onEmphasis' };
-                  case 'secondary':
-                    return { bg: 'neutral.emphasis', color: 'fg.onEmphasis' };
-                  case 'accent':
-                    return { bg: 'accent.emphasis', color: 'fg.onEmphasis' };
-                  case 'success':
-                    return { bg: 'success.emphasis', color: 'fg.onEmphasis' };
-                  case 'attention':
-                    return { bg: 'attention.emphasis', color: 'fg.onEmphasis' };
-                  case 'severe':
-                    return { bg: 'severe.emphasis', color: 'fg.onEmphasis' };
-                  case 'danger':
-                    return { bg: 'danger.emphasis', color: 'fg.onEmphasis' };
-                  case 'done':
-                    return { bg: 'done.emphasis', color: 'fg.onEmphasis' };
-                  case 'sponsors':
-                    return { bg: 'sponsors.emphasis', color: 'fg.onEmphasis' };
-                  default:
-                    return { bg: 'neutral.emphasis', color: 'fg.onEmphasis' };
-                }
-              };
-              
-              const colors = getVariantColors(label.color);
-              
-              return (
-                <Box
-                  key={label.id}
-                  sx={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    bg: colors.bg,
-                    color: colors.color,
-                    px: 2,
-                    py: 1,
-                    borderRadius: 2,
-                    fontSize: 0,
-                    fontWeight: '500'
-                  }}
-                >
-                  {label.name}
-                </Box>
-              );
-            })}
-          </Box>
         )}
       </Box>
     </Box>
