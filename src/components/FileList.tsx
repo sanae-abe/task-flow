@@ -2,16 +2,19 @@ import React from 'react';
 import { Box, Text, Button } from '@primer/react';
 import { FileIcon, ImageIcon, DownloadIcon } from '@primer/octicons-react';
 import type { FileAttachment } from '../types';
+import FilePreview from './FilePreview';
 
 interface FileListProps {
   attachments: FileAttachment[];
   showDownload?: boolean;
+  showPreview?: boolean;
   maxFiles?: number;
 }
 
 const FileList: React.FC<FileListProps> = ({ 
   attachments, 
   showDownload = true,
+  showPreview = true,
   maxFiles 
 }) => {
   if (!attachments || attachments.length === 0) {
@@ -80,17 +83,22 @@ const FileList: React.FC<FileListProps> = ({
               </Text>
             </Box>
           </Box>
-          {showDownload && (
-            <Button
-              variant="invisible"
-              size="small"
-              onClick={() => downloadFile(attachment)}
-              sx={{ p: 1 }}
-              aria-label={`${attachment.name}をダウンロード`}
-            >
-              <DownloadIcon size={14} />
-            </Button>
-          )}
+          <Box sx={{ display: 'flex', gap: 1 }}>
+            {showPreview && (
+              <FilePreview attachment={attachment} />
+            )}
+            {showDownload && (
+              <Button
+                variant="invisible"
+                size="small"
+                onClick={() => downloadFile(attachment)}
+                sx={{ p: 1 }}
+                aria-label={`${attachment.name}をダウンロード`}
+              >
+                <DownloadIcon size={14} />
+              </Button>
+            )}
+          </Box>
         </Box>
       ))}
       

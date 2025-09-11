@@ -96,6 +96,13 @@ const TaskDisplayContent: React.FC<TaskDisplayContentProps> = ({ task, columnNam
                 : isDueTomorrow 
                 ? 'accent.subtle' 
                 : 'canvas.subtle',
+              color: isOverdue 
+                ? "danger.emphasis" 
+                : isDueToday 
+                ? 'attention.emphasis'
+                : isDueTomorrow 
+                ? 'accent.emphasis' 
+                : 'inherit',
               borderRadius: 2,
             }}
           >

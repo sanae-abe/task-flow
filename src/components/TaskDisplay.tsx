@@ -171,7 +171,8 @@ const TaskDisplay: React.FC<TaskDisplayProps> = ({
                 borderRadius: 2,
                 fontSize: 0,
                 fontWeight: '500',
-                alignSelf: 'flex-start'
+                alignSelf: 'flex-start',
+                color: 'fg.muted'
               }}
             >
               <CheckIcon size={12} />
@@ -189,7 +190,6 @@ const TaskDisplay: React.FC<TaskDisplayProps> = ({
             </Box>
           )}
 
-          {/* ファイル添付インジケーター */}
           {task.attachments && task.attachments.length > 0 && (
             <Box
               sx={{
@@ -202,7 +202,8 @@ const TaskDisplay: React.FC<TaskDisplayProps> = ({
                 borderRadius: 2,
                 fontSize: 0,
                 fontWeight: '500',
-                alignSelf: 'flex-start'
+                alignSelf: 'flex-start',
+                color: 'fg.muted'
               }}
             >
               <PaperclipIcon size={12} />
