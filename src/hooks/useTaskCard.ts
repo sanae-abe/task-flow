@@ -1,21 +1,16 @@
-import { useState, useCallback, useEffect, useMemo } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import type { Task } from '../types';
 import { useKanban } from '../contexts/KanbanContext';
 
 interface UseTaskCardReturn {
-  isEditing: boolean;
-  editTitle: string;
-  editDescription: string;
-  editDueDate: string;
+  showEditDialog: boolean;
   showDeleteConfirm: boolean;
-  setEditTitle: (title: string) => void;
-  setEditDescription: (description: string) => void;
-  setEditDueDate: (date: string) => void;
   handleEdit: () => void;
-  handleSave: () => void;
+  handleSave: (updatedTask: Task) => void;
   handleCancel: () => void;
   handleDelete: () => void;
   handleConfirmDelete: () => void;
+  handleDeleteFromDialog: (taskId: string) => void;
   handleCancelDelete: () => void;
   handleComplete: () => void;
   isOverdue: () => boolean;
@@ -26,40 +21,22 @@ interface UseTaskCardReturn {
 }
 
 export const useTaskCard = (task: Task, columnId: string): UseTaskCardReturn => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [editTitle, setEditTitle] = useState(task.title);
-  const [editDescription, setEditDescription] = useState(task.description || '');
-  const [editDueDate, setEditDueDate] = useState<string>('');
+  const [showEditDialog, setShowEditDialog] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const { updateTask, deleteTask, moveTask, state } = useKanban();
 
-  useEffect(() => {
-    const initialDueDate = (task.dueDate ? task.dueDate.toISOString().split('T')[0] : '') as string;
-    setEditDueDate(initialDueDate);
-  }, [task.dueDate]);
-
   const handleEdit = useCallback(() => {
-    setIsEditing(true);
+    setShowEditDialog(true);
   }, []);
 
-  const handleSave = useCallback(() => {
-    const dueDate = editDueDate ? new Date(editDueDate) : undefined;
-    updateTask(task.id, {
-      title: editTitle,
-      description: editDescription,
-      dueDate,
-      updatedAt: new Date(),
-    });
-    setIsEditing(false);
-  }, [editTitle, editDescription, editDueDate, task.id, updateTask]);
+  const handleSave = useCallback((updatedTask: Task) => {
+    updateTask(task.id, updatedTask);
+    setShowEditDialog(false);
+  }, [task.id, updateTask]);
 
   const handleCancel = useCallback(() => {
-    setEditTitle(task.title);
-    setEditDescription(task.description || '');
-    const dueDateValue = (task.dueDate ? task.dueDate.toISOString().split('T')[0] : '') as string;
-    setEditDueDate(dueDateValue);
-    setIsEditing(false);
-  }, [task.title, task.description, task.dueDate]);
+    setShowEditDialog(false);
+  }, []);
 
   const handleDelete = useCallback(() => {
     setShowDeleteConfirm(true);
@@ -68,7 +45,13 @@ export const useTaskCard = (task: Task, columnId: string): UseTaskCardReturn => 
   const handleConfirmDelete = useCallback(() => {
     deleteTask(task.id, columnId);
     setShowDeleteConfirm(false);
+    setShowEditDialog(false);
   }, [task.id, columnId, deleteTask]);
+
+  const handleDeleteFromDialog = useCallback((taskId: string) => {
+    deleteTask(taskId, columnId);
+    setShowEditDialog(false);
+  }, [columnId, deleteTask]);
 
   const handleCancelDelete = useCallback(() => {
     setShowDeleteConfirm(false);
@@ -156,19 +139,14 @@ export const useTaskCard = (task: Task, columnId: string): UseTaskCardReturn => 
   }, [columnId, state.currentBoard]);
 
   return {
-    isEditing,
-    editTitle,
-    editDescription,
-    editDueDate,
+    showEditDialog,
     showDeleteConfirm,
-    setEditTitle,
-    setEditDescription,
-    setEditDueDate,
     handleEdit,
     handleSave,
     handleCancel,
     handleDelete,
     handleConfirmDelete,
+    handleDeleteFromDialog,
     handleCancelDelete,
     handleComplete,
     isOverdue,

@@ -4,7 +4,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { Box } from '@primer/react';
 import type { Task } from '../types';
 import { useTaskCard } from '../hooks/useTaskCard';
-import TaskEditForm from './TaskEditForm';
+import TaskEditDialog from './TaskEditDialog';
 import TaskDisplay from './TaskDisplay';
 import ConfirmDialog from './ConfirmDialog';
 
@@ -16,19 +16,14 @@ interface TaskCardProps {
 
 const TaskCard: React.FC<TaskCardProps> = ({ task, columnId, onTaskClick }) => {
   const {
-    isEditing,
-    editTitle,
-    editDescription,
-    editDueDate,
+    showEditDialog,
     showDeleteConfirm,
-    setEditTitle,
-    setEditDescription,
-    setEditDueDate,
     handleEdit,
     handleSave,
     handleCancel,
     handleDelete,
     handleConfirmDelete,
+    handleDeleteFromDialog,
     handleCancelDelete,
     handleComplete,
     isOverdue,
@@ -54,25 +49,10 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, columnId, onTaskClick }) => {
   };
 
   const handleTaskClick = () => {
-    if (!isEditing && onTaskClick) {
+    if (onTaskClick) {
       onTaskClick(task);
     }
   };
-  
-  if (isEditing) {
-    return (
-      <TaskEditForm
-        editTitle={editTitle}
-        editDescription={editDescription}
-        editDueDate={editDueDate}
-        onTitleChange={setEditTitle}
-        onDescriptionChange={setEditDescription}
-        onDueDateChange={setEditDueDate}
-        onSave={handleSave}
-        onCancel={handleCancel}
-      />
-    );
-  }
   
   return (
     <>
@@ -84,13 +64,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, columnId, onTaskClick }) => {
         sx={{
           ...style,
           borderRadius: 2,
-          borderColor: isOverdue() 
-            ? 'danger.emphasis' 
-            : isDueToday() 
-            ? 'success.emphasis'
-            : isDueTomorrow() 
-            ? 'attention.emphasis' 
-            : 'border.default',
+          borderColor: 'border.default',
           cursor: 'grab',
           boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
           transition: 'all 0.2s ease',
@@ -129,6 +103,14 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, columnId, onTaskClick }) => {
           isRightmostColumn={isRightmostColumn}
         />
       </Box>
+
+      <TaskEditDialog
+        task={task}
+        isOpen={showEditDialog}
+        onSave={handleSave}
+        onDelete={handleDeleteFromDialog}
+        onCancel={handleCancel}
+      />
 
       <ConfirmDialog
         isOpen={showDeleteConfirm}

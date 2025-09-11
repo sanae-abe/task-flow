@@ -3,8 +3,8 @@ import type { Column, Label } from '../types';
 import { useKanban } from '../contexts/KanbanContext';
 
 interface UseColumnStateReturn {
-  isAddingTask: boolean;
-  setIsAddingTask: (value: boolean) => void;
+  showCreateDialog: boolean;
+  setShowCreateDialog: (value: boolean) => void;
   showEditDialog: boolean;
   showDeleteConfirm: boolean;
   handleTitleEdit: () => void;
@@ -14,11 +14,11 @@ interface UseColumnStateReturn {
   handleConfirmDeleteColumn: () => void;
   handleCancelDeleteColumn: () => void;
   handleAddTask: (title: string, description: string, dueDate?: Date, labels?: Label[]) => void;
-  handleCancelTask: () => void;
+  handleCancelCreateTask: () => void;
 }
 
 export const useColumnState = (column: Column): UseColumnStateReturn => {
-  const [isAddingTask, setIsAddingTask] = useState(false);
+  const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const { createTask, updateColumn, deleteColumn } = useKanban();
@@ -55,17 +55,17 @@ export const useColumnState = (column: Column): UseColumnStateReturn => {
   const handleAddTask = useCallback((title: string, description: string, dueDate?: Date, labels?: Label[]) => {
     if (title.trim()) {
       createTask(column.id, title.trim(), description.trim(), dueDate, labels);
-      setIsAddingTask(false);
+      setShowCreateDialog(false);
     }
   }, [column.id, createTask]);
 
-  const handleCancelTask = useCallback(() => {
-    setIsAddingTask(false);
+  const handleCancelCreateTask = useCallback(() => {
+    setShowCreateDialog(false);
   }, []);
 
   return {
-    isAddingTask,
-    setIsAddingTask,
+    showCreateDialog,
+    setShowCreateDialog,
     showEditDialog,
     showDeleteConfirm,
     handleTitleEdit,
@@ -75,6 +75,6 @@ export const useColumnState = (column: Column): UseColumnStateReturn => {
     handleConfirmDeleteColumn,
     handleCancelDeleteColumn,
     handleAddTask,
-    handleCancelTask
+    handleCancelCreateTask
   };
 };

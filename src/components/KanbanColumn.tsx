@@ -5,7 +5,7 @@ import { Box } from '@primer/react';
 import type { Column, Task } from '../types';
 import TaskCard from './TaskCard';
 import ColumnHeader from './ColumnHeader';
-import AddTaskForm from './AddTaskForm';
+import TaskCreateDialog from './TaskCreateDialog';
 import ConfirmDialog from './ConfirmDialog';
 import ColumnEditDialog from './ColumnEditDialog';
 import { useColumnState } from '../hooks/useColumnState';
@@ -17,8 +17,8 @@ interface KanbanColumnProps {
 
 const KanbanColumn: React.FC<KanbanColumnProps> = ({ column, onTaskClick }) => {
   const {
-    isAddingTask,
-    setIsAddingTask,
+    showCreateDialog,
+    setShowCreateDialog,
     showEditDialog,
     showDeleteConfirm,
     handleTitleEdit,
@@ -28,7 +28,7 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({ column, onTaskClick }) => {
     handleConfirmDeleteColumn,
     handleCancelDeleteColumn,
     handleAddTask,
-    handleCancelTask
+    handleCancelCreateTask
   } = useColumnState(column);
   
   const { setNodeRef } = useDroppable({
@@ -49,15 +49,8 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({ column, onTaskClick }) => {
         column={column}
         onTitleEdit={handleTitleEdit}
         onDeleteColumn={handleDeleteColumn}
-        onAddTask={() => setIsAddingTask(true)}
+        onAddTask={() => setShowCreateDialog(true)}
       />
-      
-      {isAddingTask && (
-        <AddTaskForm
-          onAdd={handleAddTask}
-          onCancel={handleCancelTask}
-        />
-      )}
       
       <Box 
         ref={setNodeRef} 
@@ -79,6 +72,12 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({ column, onTaskClick }) => {
           ))}
         </SortableContext>
       </Box>
+
+      <TaskCreateDialog
+        isOpen={showCreateDialog}
+        onSave={handleAddTask}
+        onCancel={handleCancelCreateTask}
+      />
 
       <ColumnEditDialog
         isOpen={showEditDialog}

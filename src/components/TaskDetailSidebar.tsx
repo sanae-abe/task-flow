@@ -1,13 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Box, Heading } from '@primer/react';
 import { TrashIcon, XIcon, PencilIcon } from '@primer/octicons-react';
 import type { Task } from '../types';
 import { useKanban } from '../contexts/KanbanContext';
-import { useTaskDetailEdit } from '../hooks/useTaskDetailEdit';
-import TaskDetailEditForm from './TaskDetailEditForm';
 import TaskDisplayContent from './TaskDisplayContent';
 import TaskMetadata from './TaskMetadata';
 import ConfirmDialog from './ConfirmDialog';
+import TaskEditDialog from './TaskEditDialog';
 
 interface TaskDetailSidebarProps {
   task: Task | null;
@@ -17,36 +16,19 @@ interface TaskDetailSidebarProps {
 
 const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onClose }) => {
   const { deleteTask, updateTask, state } = useKanban();
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showEditDialog, setShowEditDialog] = useState(false);
   
   // タスクが属するカラム名を取得
   const columnName = task && state.currentBoard ? 
     state.currentBoard.columns.find(column => 
       column.tasks.some(t => t.id === task.id)
     )?.title : undefined;
-  const {
-    isEditing,
-    editTitle,
-    editDescription,
-    editDueDate,
-    editLabels,
-    setEditTitle,
-    setEditDescription,
-    setEditDueDate,
-    setEditLabels,
-    handleEdit,
-    handleCancelEdit,
-    canSave
-  } = useTaskDetailEdit(task);
-  const [showDeleteConfirm, setShowDeleteConfirm] = React.useState(false);
 
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        if (isEditing) {
-          handleCancelEdit();
-        } else {
-          onClose();
-        }
+        onClose();
       }
     };
 
@@ -57,30 +39,10 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
     return () => {
       document.removeEventListener('keydown', handleEscape);
     };
-  }, [isOpen, onClose, isEditing, handleCancelEdit]);
+  }, [isOpen, onClose]);
 
-  const handleSaveEdit = () => {
-    if (!task || !state.currentBoard || !canSave) {
-      return;
-    }
-
-    const column = state.currentBoard.columns.find(col => 
-      col.tasks.some(t => t.id === task.id)
-    );
-
-    if (column) {
-      const updatedTask = {
-        ...task,
-        title: editTitle.trim(),
-        description: editDescription.trim() || undefined,
-        dueDate: editDueDate ? new Date(editDueDate) : undefined,
-        labels: editLabels,
-        updatedAt: new Date()
-      };
-
-      updateTask(task.id, updatedTask);
-      handleCancelEdit();
-    }
+  const handleEdit = () => {
+    setShowEditDialog(true);
   };
 
   const handleDelete = () => {
@@ -101,6 +63,27 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
       onClose();
     }
     setShowDeleteConfirm(false);
+  };
+
+  const handleSaveEdit = (updatedTask: Task) => {
+    updateTask(updatedTask.id, updatedTask);
+    setShowEditDialog(false);
+  };
+
+  const handleDeleteFromDialog = (taskId: string) => {
+    if (!task || !state.currentBoard) {
+      return;
+    }
+    
+    const column = state.currentBoard.columns.find(col => 
+      col.tasks.some(t => t.id === task.id)
+    );
+    
+    if (column) {
+      deleteTask(taskId, column.id);
+      onClose();
+    }
+    setShowEditDialog(false);
   };
 
   if (!isOpen || !task) {
@@ -151,23 +134,8 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
 
         {/* Content */}
         <Box sx={{ flex: "1", p: 4, overflowY: 'auto' }}>
-          {isEditing ? (
-            <TaskDetailEditForm
-              editTitle={editTitle}
-              editDescription={editDescription}
-              editDueDate={editDueDate}
-              editLabels={editLabels}
-              onTitleChange={setEditTitle}
-              onDescriptionChange={setEditDescription}
-              onDueDateChange={setEditDueDate}
-              onLabelsChange={setEditLabels}
-            />
-          ) : (
-            <>
-              <TaskDisplayContent task={task} columnName={columnName} />
-              <TaskMetadata task={task} />
-            </>
-          )}
+          <TaskDisplayContent task={task} columnName={columnName} />
+          <TaskMetadata task={task} />
         </Box>
 
         {/* Actions */}
@@ -179,48 +147,36 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
             flexShrink: 0
           }}
         >
-          {isEditing ? (
-            <Box sx={{ display: 'flex', gap: 2 }}>
-              <Button
-                onClick={handleSaveEdit}
-                variant="primary"
-                size="medium"
-                sx={{ flex: 1 }}
-                disabled={!canSave}
-              >
-                保存
-              </Button>
-              <Button
-                onClick={handleCancelEdit}
-                size="medium"
-                sx={{ flex: 1 }}
-              >
-                キャンセル
-              </Button>
-            </Box>
-          ) : (
-            <Box sx={{ display: 'flex', gap: 2 }}>
-              <Button
-                onClick={handleEdit}
-                size="medium"
-                leadingVisual={PencilIcon}
-                sx={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2 }}
-              >
-                編集
-              </Button>
-              <Button
-                onClick={handleDelete}
-                variant="danger"
-                size="medium"
-                leadingVisual={TrashIcon}
-                sx={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2 }}
-              >
-                削除
-              </Button>
-            </Box>
-          )}
+          <Box sx={{ display: 'flex', gap: 2 }}>
+            <Button
+              onClick={handleEdit}
+              variant="primary"
+              size="medium"
+              leadingVisual={PencilIcon}
+              sx={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2 }}
+            >
+              編集
+            </Button>
+            <Button
+              onClick={handleDelete}
+              variant="danger"
+              size="medium"
+              leadingVisual={TrashIcon}
+              sx={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2 }}
+            >
+              削除
+            </Button>
+          </Box>
         </Box>
       </Box>
+
+      <TaskEditDialog
+        task={task}
+        isOpen={showEditDialog}
+        onSave={handleSaveEdit}
+        onDelete={handleDeleteFromDialog}
+        onCancel={() => setShowEditDialog(false)}
+      />
 
       <ConfirmDialog
         isOpen={showDeleteConfirm}
