@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Box, Button, TextInput, Text } from '@primer/react';
 import { XIcon, PlusIcon } from '@primer/octicons-react';
 import type { Label } from '../types';
-import { LABEL_COLORS, createLabel, getColorInfo } from '../utils/labels';
+import { LABEL_COLORS, createLabel } from '../utils/labels';
 
 interface LabelSelectorProps {
   selectedLabels: Label[];
@@ -12,7 +12,7 @@ interface LabelSelectorProps {
 const LabelSelector: React.FC<LabelSelectorProps> = ({ selectedLabels, onLabelsChange }) => {
   const [isCreating, setIsCreating] = useState(false);
   const [newLabelName, setNewLabelName] = useState('');
-  const [selectedColor, setSelectedColor] = useState<string>(LABEL_COLORS[0].value);
+  const [selectedColor, setSelectedColor] = useState<string>(LABEL_COLORS[0].variant);
 
   const handleCreateLabel = () => {
     if (!newLabelName.trim()) {
@@ -30,26 +30,50 @@ const LabelSelector: React.FC<LabelSelectorProps> = ({ selectedLabels, onLabelsC
   };
 
   const renderLabelChip = (label: Label, showRemove = true) => {
-    const colorInfo = getColorInfo(label.color);
+    const getVariantColors = (variant: string) => {
+      switch (variant) {
+        case 'primary':
+          return { bg: 'accent.emphasis', color: 'fg.onEmphasis' };
+        case 'secondary':
+          return { bg: 'neutral.emphasis', color: 'fg.onEmphasis' };
+        case 'accent':
+          return { bg: 'accent.emphasis', color: 'fg.onEmphasis' };
+        case 'success':
+          return { bg: 'success.emphasis', color: 'fg.onEmphasis' };
+        case 'attention':
+          return { bg: 'attention.emphasis', color: 'fg.onEmphasis' };
+        case 'severe':
+          return { bg: 'severe.emphasis', color: 'fg.onEmphasis' };
+        case 'danger':
+          return { bg: 'danger.emphasis', color: 'fg.onEmphasis' };
+        case 'done':
+          return { bg: 'done.emphasis', color: 'fg.onEmphasis' };
+        case 'sponsors':
+          return { bg: 'sponsors.emphasis', color: 'fg.onEmphasis' };
+        default:
+          return { bg: 'neutral.emphasis', color: 'fg.onEmphasis' };
+      }
+    };
+
+    const colors = getVariantColors(label.color);
+    
     return (
       <Box
         key={label.id}
         sx={{
           display: 'inline-flex',
           alignItems: 'center',
-          bg: colorInfo.bg,
-          color: label.color,
+          bg: colors.bg,
+          color: colors.color,
           px: 2,
           py: 1,
           borderRadius: 2,
           fontSize: 0,
           fontWeight: '500',
-          border: '1px solid',
-          borderColor: label.color,
           gap: 1
         }}
       >
-        <Text sx={{ fontSize: 0, color: label.color }}>{label.name}</Text>
+        <Text sx={{ fontSize: 0, color: colors.color }}>{label.name}</Text>
         {showRemove && (
           <Button
             onClick={() => handleRemoveLabel(label.id)}
@@ -58,10 +82,10 @@ const LabelSelector: React.FC<LabelSelectorProps> = ({ selectedLabels, onLabelsC
             sx={{
               minHeight: 'auto',
               p: 0,
-              color: label.color,
+              color: colors.color,
               '&:hover': {
-                bg: 'transparent',
-                color: label.color
+                bg: 'rgba(255, 255, 255, 0.2)',
+                color: colors.color
               }
             }}
           >
@@ -89,9 +113,10 @@ const LabelSelector: React.FC<LabelSelectorProps> = ({ selectedLabels, onLabelsC
           size="small"
           leadingVisual={PlusIcon}
           sx={{
-            color: 'fg.muted',
+            color: 'fg.muted !important',
             '&:hover': {
-              color: 'fg.default'
+              color: 'fg.default !important',
+              bg: 'neutral.subtle'
             }
           }}
         >
@@ -107,9 +132,7 @@ const LabelSelector: React.FC<LabelSelectorProps> = ({ selectedLabels, onLabelsC
               placeholder="Enter label name"
               sx={{ width: '100%' }}
               onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  handleCreateLabel();
-                } else if (e.key === 'Escape') {
+                if (e.key === 'Escape') {
                   setIsCreating(false);
                   setNewLabelName('');
                 }
@@ -120,48 +143,64 @@ const LabelSelector: React.FC<LabelSelectorProps> = ({ selectedLabels, onLabelsC
           {/* Color Selection */}
           <Box sx={{ mb: 3 }}>
             <Text sx={{ fontSize: 1, fontWeight: '500', mb: 2, display: 'block' }}>Color</Text>
-            <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 1 }}>
-              {LABEL_COLORS.map((color) => (
-                <Button
-                  key={color.value}
-                  onClick={() => setSelectedColor(color.value)}
-                  sx={{
-                    width: '32px',
-                    height: '32px',
-                    minHeight: '32px',
-                    p: 0,
-                    bg: color.bg,
-                    border: '2px solid',
-                    borderColor: selectedColor === color.value ? color.value : 'transparent',
-                    borderRadius: 2,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    '&:hover': {
-                      borderColor: color.value
-                    }
-                  }}
-                >
-                  <Box
+            <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(5, min-content)', gap: 1, justifyContent: 'start' }}>
+              {LABEL_COLORS.map((color) => {
+                const getVariantBg = (variant: string) => {
+                  switch (variant) {
+                    case 'primary':
+                      return 'accent.emphasis';
+                    case 'secondary':
+                      return 'neutral.emphasis';
+                    case 'accent':
+                      return 'accent.emphasis';
+                    case 'success':
+                      return 'success.emphasis';
+                    case 'attention':
+                      return 'attention.emphasis';
+                    case 'severe':
+                      return 'severe.emphasis';
+                    case 'danger':
+                      return 'danger.emphasis';
+                    case 'done':
+                      return 'done.emphasis';
+                    case 'sponsors':
+                      return 'sponsors.emphasis';
+                    default:
+                      return 'neutral.emphasis';
+                  }
+                };
+
+                return (
+                  <Button
+                    key={color.variant}
+                    onClick={() => setSelectedColor(color.variant)}
                     sx={{
-                      width: '16px',
-                      height: '16px',
-                      bg: color.value,
-                      borderRadius: '50%'
+                      width: '32px',
+                      height: '32px',
+                      minHeight: '32px',
+                      p: 0,
+                      bg: getVariantBg(color.variant),
+                      border: '2px solid',
+                      borderColor: selectedColor === color.variant ? 'accent.emphasis' : 'transparent',
+                      borderRadius: 2,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      position: 'relative',
+                      '&:hover': {
+                        borderColor: 'rgba(255, 255, 255, 0.7)'
+                      }
                     }}
-                  />
-                </Button>
-              ))}
+                  >
+                    <Text sx={{ fontSize: 0, color: 'fg.onEmphasis', textAlign: 'center', fontWeight: 'semibold' }}>
+                      {color.name.charAt(0)}
+                    </Text>
+                  </Button>
+                );
+              })}
             </Box>
           </Box>
 
-          {/* Preview */}
-          {newLabelName.trim() && (
-            <Box sx={{ mb: 3 }}>
-              <Text sx={{ fontSize: 1, fontWeight: '500', mb: 1, display: 'block' }}>Preview</Text>
-              {renderLabelChip(createLabel(newLabelName, selectedColor), false)}
-            </Box>
-          )}
 
           {/* Actions */}
           <Box sx={{ display: 'flex', gap: 2 }}>

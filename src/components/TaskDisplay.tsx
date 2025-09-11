@@ -2,7 +2,6 @@ import React from 'react';
 import { Box, Text, Heading } from '@primer/react';
 import { CalendarIcon } from '@primer/octicons-react';
 import type { Task } from '../types';
-import { getColorInfo } from '../utils/labels';
 
 interface TaskDisplayProps {
   task: Task;
@@ -87,22 +86,46 @@ const TaskDisplay: React.FC<TaskDisplayProps> = ({
         {task.labels && task.labels.length > 0 && (
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
             {task.labels.map((label) => {
-              const colorInfo = getColorInfo(label.color);
+              const getVariantColors = (variant: string) => {
+                switch (variant) {
+                  case 'primary':
+                    return { bg: 'accent.emphasis', color: 'fg.onEmphasis' };
+                  case 'secondary':
+                    return { bg: 'neutral.emphasis', color: 'fg.onEmphasis' };
+                  case 'accent':
+                    return { bg: 'accent.emphasis', color: 'fg.onEmphasis' };
+                  case 'success':
+                    return { bg: 'success.emphasis', color: 'fg.onEmphasis' };
+                  case 'attention':
+                    return { bg: 'attention.emphasis', color: 'fg.onEmphasis' };
+                  case 'severe':
+                    return { bg: 'severe.emphasis', color: 'fg.onEmphasis' };
+                  case 'danger':
+                    return { bg: 'danger.emphasis', color: 'fg.onEmphasis' };
+                  case 'done':
+                    return { bg: 'done.emphasis', color: 'fg.onEmphasis' };
+                  case 'sponsors':
+                    return { bg: 'sponsors.emphasis', color: 'fg.onEmphasis' };
+                  default:
+                    return { bg: 'neutral.emphasis', color: 'fg.onEmphasis' };
+                }
+              };
+              
+              const colors = getVariantColors(label.color);
+              
               return (
                 <Box
                   key={label.id}
                   sx={{
                     display: 'inline-flex',
                     alignItems: 'center',
-                    bg: colorInfo.bg,
-                    color: label.color,
+                    bg: colors.bg,
+                    color: colors.color,
                     px: 2,
                     py: 1,
                     borderRadius: 2,
                     fontSize: 0,
-                    fontWeight: '500',
-                    border: '1px solid',
-                    borderColor: label.color
+                    fontWeight: '500'
                   }}
                 >
                   {label.name}

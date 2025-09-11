@@ -4,7 +4,6 @@ import { CalendarIcon, TrashIcon, XIcon, PencilIcon } from '@primer/octicons-rea
 import type { Task, Label } from '../types';
 import { useKanban } from '../contexts/KanbanContext';
 import LabelSelector from './LabelSelector';
-import { getColorInfo } from '../utils/labels';
 
 interface TaskDetailSidebarProps {
   task: Task | null;
@@ -364,22 +363,46 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
                   <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: 'bold' }}>Labels</Heading>
                   <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
                     {task.labels.map((label) => {
-                      const colorInfo = getColorInfo(label.color);
+                      const getVariantColors = (variant: string) => {
+                        switch (variant) {
+                          case 'primary':
+                            return { bg: 'accent.emphasis', color: 'fg.onEmphasis' };
+                          case 'secondary':
+                            return { bg: 'neutral.emphasis', color: 'fg.onEmphasis' };
+                          case 'accent':
+                            return { bg: 'accent.emphasis', color: 'fg.onEmphasis' };
+                          case 'success':
+                            return { bg: 'success.emphasis', color: 'fg.onEmphasis' };
+                          case 'attention':
+                            return { bg: 'attention.emphasis', color: 'fg.onEmphasis' };
+                          case 'severe':
+                            return { bg: 'severe.emphasis', color: 'fg.onEmphasis' };
+                          case 'danger':
+                            return { bg: 'danger.emphasis', color: 'fg.onEmphasis' };
+                          case 'done':
+                            return { bg: 'done.emphasis', color: 'fg.onEmphasis' };
+                          case 'sponsors':
+                            return { bg: 'sponsors.emphasis', color: 'fg.onEmphasis' };
+                          default:
+                            return { bg: 'neutral.emphasis', color: 'fg.onEmphasis' };
+                        }
+                      };
+                      
+                      const colors = getVariantColors(label.color);
+                      
                       return (
                         <Box
                           key={label.id}
                           sx={{
                             display: 'inline-flex',
                             alignItems: 'center',
-                            bg: colorInfo.bg,
-                            color: label.color,
-                            px: 3,
-                            py: 2,
+                            bg: colors.bg,
+                            color: colors.color,
+                            px: 2,
+                            py: 1,
                             borderRadius: 2,
-                            fontSize: 1,
-                            fontWeight: '500',
-                            border: '1px solid',
-                            borderColor: label.color
+                            fontSize: 0,
+                            fontWeight: '500'
                           }}
                         >
                           {label.name}
