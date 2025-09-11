@@ -1,6 +1,6 @@
 import React from 'react';
-import { Button, Box } from '@primer/react';
-import { PlusIcon, PencilIcon, TrashIcon } from '@primer/octicons-react';
+import { Button, Box, ActionMenu, ActionList } from '@primer/react';
+import { PlusIcon, PencilIcon, TrashIcon, KebabHorizontalIcon } from '@primer/octicons-react';
 
 interface ColumnActionsProps {
   onAddTask: () => void;
@@ -13,14 +13,6 @@ const ColumnActions: React.FC<ColumnActionsProps> = ({
   onTitleEdit,
   onDeleteColumn
 }) => {
-  const handleEditClick = () => {
-    onTitleEdit();
-  };
-
-  const handleDeleteClick = () => {
-    onDeleteColumn();
-  };
-
   return (
     <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
       <Button
@@ -30,29 +22,37 @@ const ColumnActions: React.FC<ColumnActionsProps> = ({
         leadingVisual={PlusIcon}
         aria-label="タスクを追加"
       />
-      <Button
-        onClick={handleEditClick}
-        variant="invisible"
-        size="small"
-        leadingVisual={PencilIcon}
-        aria-label="カラム名を編集"
-        title="カラム名を編集"
-      />
-      <Button
-        onClick={handleDeleteClick}
-        variant="invisible"
-        size="small"
-        leadingVisual={TrashIcon}
-        aria-label="カラムを削除"
-        title="カラムを削除"
-        sx={{
-          color: 'danger.fg',
-          '&:hover': {
-            backgroundColor: 'danger.subtle',
-            color: 'danger.fg'
-          }
-        }}
-      />
+      <ActionMenu>
+        <ActionMenu.Anchor>
+          <Button
+            variant="invisible"
+            size="small"
+            leadingVisual={KebabHorizontalIcon}
+            aria-label="カラム設定"
+          />
+        </ActionMenu.Anchor>
+        <ActionMenu.Overlay sx={{ zIndex: 150 }}>
+          <ActionList>
+            <ActionList.Item 
+              onSelect={onTitleEdit}
+            >
+              <ActionList.LeadingVisual>
+                <PencilIcon size={16} />
+              </ActionList.LeadingVisual>
+              カラム名を編集
+            </ActionList.Item>
+            <ActionList.Item 
+              variant="danger"
+              onSelect={onDeleteColumn}
+            >
+              <ActionList.LeadingVisual>
+                <TrashIcon size={16} />
+              </ActionList.LeadingVisual>
+              カラムを削除
+            </ActionList.Item>
+          </ActionList>
+        </ActionMenu.Overlay>
+      </ActionMenu>
     </Box>
   );
 };

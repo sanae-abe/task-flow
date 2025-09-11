@@ -7,6 +7,7 @@ import TaskCard from './TaskCard';
 import ColumnHeader from './ColumnHeader';
 import AddTaskForm from './AddTaskForm';
 import ConfirmDialog from './ConfirmDialog';
+import ColumnEditDialog from './ColumnEditDialog';
 import { useColumnState } from '../hooks/useColumnState';
 
 interface KanbanColumnProps {
@@ -18,10 +19,8 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({ column, onTaskClick }) => {
   const {
     isAddingTask,
     setIsAddingTask,
-    isEditingTitle,
-    editingTitle,
+    showEditDialog,
     showDeleteConfirm,
-    setEditingTitle,
     handleTitleEdit,
     handleTitleSave,
     handleTitleCancel,
@@ -48,11 +47,6 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({ column, onTaskClick }) => {
     >
       <ColumnHeader
         column={column}
-        isEditingTitle={isEditingTitle}
-        editingTitle={editingTitle}
-        setEditingTitle={setEditingTitle}
-        onTitleSave={handleTitleSave}
-        onTitleCancel={handleTitleCancel}
         onTitleEdit={handleTitleEdit}
         onDeleteColumn={handleDeleteColumn}
         onAddTask={() => setIsAddingTask(true)}
@@ -85,6 +79,13 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({ column, onTaskClick }) => {
           ))}
         </SortableContext>
       </Box>
+
+      <ColumnEditDialog
+        isOpen={showEditDialog}
+        currentTitle={column.title}
+        onSave={handleTitleSave}
+        onCancel={handleTitleCancel}
+      />
 
       <ConfirmDialog
         isOpen={showDeleteConfirm}

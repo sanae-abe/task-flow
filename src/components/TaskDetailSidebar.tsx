@@ -182,14 +182,14 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
                 sx={{ flex: 1 }}
                 disabled={!canSave}
               >
-                Save
+                保存
               </Button>
               <Button
                 onClick={handleCancelEdit}
                 size="medium"
                 sx={{ flex: 1 }}
               >
-                Cancel
+                キャンセル
               </Button>
             </Box>
           ) : (
@@ -200,7 +200,7 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
                 leadingVisual={PencilIcon}
                 sx={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2 }}
               >
-                Edit Task
+                編集
               </Button>
               <Button
                 onClick={handleDelete}
@@ -209,7 +209,7 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
                 leadingVisual={TrashIcon}
                 sx={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2 }}
               >
-                Delete Task
+                削除
               </Button>
             </Box>
           )}

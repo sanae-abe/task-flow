@@ -6,11 +6,6 @@ import ColumnActions from './ColumnActions';
 
 interface ColumnHeaderProps {
   column: Column;
-  isEditingTitle: boolean;
-  editingTitle: string;
-  setEditingTitle: (title: string) => void;
-  onTitleSave: () => void;
-  onTitleCancel: () => void;
   onTitleEdit: () => void;
   onDeleteColumn: () => void;
   onAddTask: () => void;
@@ -18,11 +13,6 @@ interface ColumnHeaderProps {
 
 const ColumnHeader: React.FC<ColumnHeaderProps> = ({
   column,
-  isEditingTitle,
-  editingTitle,
-  setEditingTitle,
-  onTitleSave,
-  onTitleCancel,
   onTitleEdit,
   onDeleteColumn,
   onAddTask
@@ -40,11 +30,6 @@ const ColumnHeader: React.FC<ColumnHeaderProps> = ({
       <Box sx={{ display: "flex", flex: "1", alignItems: "center" }}>
         <ColumnTitle
           column={column}
-          isEditingTitle={isEditingTitle}
-          editingTitle={editingTitle}
-          setEditingTitle={setEditingTitle}
-          onTitleSave={onTitleSave}
-          onTitleCancel={onTitleCancel}
           onTitleEdit={onTitleEdit}
         />
       </Box>

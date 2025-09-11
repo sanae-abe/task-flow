@@ -34,14 +34,14 @@ const TaskStatsDisplay: React.FC<TaskStatsDisplayProps> = ({ stats }) => {
               今日期限: {dueTodayTasks}
             </Label>
           )}
-        </Box>
-      )}
 
-      {dueTomorrowTasks > 0 && (
-        <Label variant="accent" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <ClockIcon size={12} />
-          明日期限: {dueTomorrowTasks}
-        </Label>
+          {dueTomorrowTasks > 0 && (
+            <Label variant="accent" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <ClockIcon size={12} />
+              明日期限: {dueTomorrowTasks}
+            </Label>
+          )}
+        </Box>
       )}
 
       {!hasUrgentTasks && totalTasks > 0 && (

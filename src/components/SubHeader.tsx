@@ -87,7 +87,7 @@ const SubHeader: React.FC = () => {
             gap: '4px',
           }}>
             <PlusIcon size={16} />
-            カラムを追加
+            新しいカラム
           </span>
         </Button> 
         <ActionMenu>

@@ -1,16 +1,14 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import type { Column, Label } from '../types';
 import { useKanban } from '../contexts/KanbanContext';
 
 interface UseColumnStateReturn {
   isAddingTask: boolean;
   setIsAddingTask: (value: boolean) => void;
-  isEditingTitle: boolean;
-  editingTitle: string;
+  showEditDialog: boolean;
   showDeleteConfirm: boolean;
-  setEditingTitle: (title: string) => void;
   handleTitleEdit: () => void;
-  handleTitleSave: () => void;
+  handleTitleSave: (newTitle: string) => void;
   handleTitleCancel: () => void;
   handleDeleteColumn: () => void;
   handleConfirmDeleteColumn: () => void;
@@ -21,34 +19,25 @@ interface UseColumnStateReturn {
 
 export const useColumnState = (column: Column): UseColumnStateReturn => {
   const [isAddingTask, setIsAddingTask] = useState(false);
-  const [isEditingTitle, setIsEditingTitle] = useState(false);
-  const [editingTitle, setEditingTitle] = useState(column.title);
+  const [showEditDialog, setShowEditDialog] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const { createTask, updateColumn, deleteColumn } = useKanban();
 
-  useEffect(() => {
-    setEditingTitle(column.title);
-  }, [column.title]);
-
   const handleTitleEdit = useCallback(() => {
-    setIsEditingTitle(true);
-    setEditingTitle(column.title);
-  }, [column.title]);
+    setShowEditDialog(true);
+  }, []);
 
-  const handleTitleSave = useCallback(() => {
-    const trimmedTitle = editingTitle.trim();
+  const handleTitleSave = useCallback((newTitle: string) => {
+    const trimmedTitle = newTitle.trim();
     if (trimmedTitle && trimmedTitle !== column.title) {
       updateColumn(column.id, { title: trimmedTitle });
-    } else if (!trimmedTitle) {
-      setEditingTitle(column.title);
     }
-    setIsEditingTitle(false);
-  }, [editingTitle, column.title, column.id, updateColumn]);
+    setShowEditDialog(false);
+  }, [column.title, column.id, updateColumn]);
 
   const handleTitleCancel = useCallback(() => {
-    setEditingTitle(column.title);
-    setIsEditingTitle(false);
-  }, [column.title]);
+    setShowEditDialog(false);
+  }, []);
 
   const handleDeleteColumn = useCallback(() => {
     setShowDeleteConfirm(true);
@@ -77,10 +66,8 @@ export const useColumnState = (column: Column): UseColumnStateReturn => {
   return {
     isAddingTask,
     setIsAddingTask,
-    isEditingTitle,
-    editingTitle,
+    showEditDialog,
     showDeleteConfirm,
-    setEditingTitle,
     handleTitleEdit,
     handleTitleSave,
     handleTitleCancel,
