@@ -8,26 +8,17 @@ interface ColumnTitleProps {
 }
 
 const ColumnTitle: React.FC<ColumnTitleProps> = ({
-  column,
-  onTitleEdit
+  column
 }) => {
-  const handleTitleEdit = () => {
-    onTitleEdit();
-  };
-
   return (
     <Box sx={{ display: "flex", flex: "1", alignItems: "center", gap: 1 }}>
       <Heading 
         sx={{ 
           fontSize: 2, 
           margin: 0, 
-          cursor: 'pointer',
           fontWeight: '600',
           color: 'fg.default',
-          '&:hover': { color: 'accent.fg' }
         }}
-        onDoubleClick={handleTitleEdit}
-        title="ダブルクリックで編集"
       >
         {column.title}
       </Heading>
