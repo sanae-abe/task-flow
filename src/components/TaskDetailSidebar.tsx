@@ -34,14 +34,14 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
       return;
     }
     
-    if (window.confirm('このタスクを削除しますか？')) {
+    if (window.confirm('Are you sure you want to delete this task?')) {
       const column = state.currentBoard.columns.find(col => 
-        col.tasks.some(t => t.id === task.id)
+      col.tasks.some(t => t.id === task.id)
       );
       
       if (column) {
-        deleteTask(task.id, column.id);
-        onClose();
+      deleteTask(task.id, column.id);
+      onClose();
       }
     }
   };
@@ -72,7 +72,7 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
   };
 
   const formatDueDate = (date: Date) => {
-    return date.toLocaleDateString('ja-JP', {
+    return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
@@ -81,7 +81,7 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
   };
 
   const formatDateTime = (date: Date) => {
-    return date.toLocaleDateString('ja-JP', {
+    return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
@@ -129,7 +129,7 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
             variant="invisible"
             size="small"
             leadingVisual={XIcon}
-            aria-label="詳細を閉じる"
+            aria-label="Close details"
             sx={{ flexShrink: 0 }}
           />
         </Box>
@@ -137,7 +137,7 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
         {/* Content */}
         <Box flex="1" p={4} sx={{ overflowY: 'auto' }}>
           <Box mb={4}>
-            <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: 'bold' }}>説明</Heading>
+            <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: 'bold' }}>Description</Heading>
             <Box
               p={3}
               bg="canvas.subtle"
@@ -149,7 +149,7 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
                 <Text fontSize={1}>{task.description}</Text>
               ) : (
                 <Text fontSize={1} color="fg.muted" fontStyle="italic">
-                  説明が設定されていません
+                  No description set
                 </Text>
               )}
             </Box>
@@ -157,7 +157,7 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
 
           {task.dueDate && (
             <Box mb={4}>
-              <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: 'bold' }}>期限</Heading>
+              <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: 'bold' }}>Due Date</Heading>
               <Box
                 display="flex"
                 alignItems="center"
@@ -195,7 +195,7 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
                     borderRadius={2}
                     sx={{ textTransform: 'uppercase', letterSpacing: '0.025em' }}
                   >
-                    期限切れ
+                    Overdue
                   </Text>
                 )}
                 {isDueSoon() && !isOverdue() && (
@@ -209,7 +209,7 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
                     borderRadius={2}
                     sx={{ textTransform: 'uppercase', letterSpacing: '0.025em' }}
                   >
-                    明日まで
+                    Due Tomorrow
                   </Text>
                 )}
               </Box>
@@ -217,7 +217,7 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
           )}
 
           <Box mb={4}>
-            <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: 'bold' }}>作成・更新情報</Heading>
+            <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: 'bold' }}>Created/Updated Info</Heading>
             <Box
               display="flex"
               flexDirection="column"
@@ -229,11 +229,11 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
               borderColor="border.default"
             >
               <Box display="flex" justifyContent="space-between" alignItems="center">
-                <Text fontSize={0} color="fg.muted">作成日時:</Text>
+                <Text fontSize={0} color="fg.muted">Created At:</Text>
                 <Text fontSize={1}>{formatDateTime(task.createdAt)}</Text>
               </Box>
               <Box display="flex" justifyContent="space-between" alignItems="center">
-                <Text fontSize={0} color="fg.muted">更新日時:</Text>
+                <Text fontSize={0} color="fg.muted">Updated At:</Text>
                 <Text fontSize={1}>{formatDateTime(task.updatedAt)}</Text>
               </Box>
             </Box>
@@ -254,7 +254,7 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
             leadingVisual={TrashIcon}
             sx={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2 }}
           >
-            タスクを削除
+            Delete Task
           </Button>
         </Box>
       </Box>

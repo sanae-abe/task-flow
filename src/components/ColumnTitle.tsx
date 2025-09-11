@@ -68,7 +68,7 @@ const ColumnTitle: React.FC<ColumnTitleProps> = ({
           '&:hover': { color: 'accent.fg' }
         }}
         onDoubleClick={onTitleEdit}
-        title="ダブルクリックで編集"
+        title="Double-click to edit"
       >
         {column.title}
       </Heading>

@@ -97,7 +97,7 @@ const TaskDisplay: React.FC<TaskDisplayProps> = ({
             flex: 1
           }}
         >
-          編集
+          Edit
         </Button>
         <Button
           onClick={onDelete}
@@ -107,7 +107,7 @@ const TaskDisplay: React.FC<TaskDisplayProps> = ({
             fontWeight: '500'
           }}
         >
-          削除
+          Delete
         </Button>
       </Box>
     </Box>

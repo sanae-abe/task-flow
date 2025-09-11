@@ -55,7 +55,7 @@ export const useTaskCard = (task: Task, columnId: string): UseTaskCardReturn => 
   }, [task.title, task.description, task.dueDate]);
 
   const handleDelete = useCallback(() => {
-    if (window.confirm('このタスクを削除しますか？')) {
+    if (window.confirm('Are you sure you want to delete this task?')) {
       deleteTask(task.id, columnId);
     }
   }, [task.id, columnId, deleteTask]);

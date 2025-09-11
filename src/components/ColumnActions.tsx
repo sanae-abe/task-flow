@@ -20,7 +20,7 @@ const ColumnActions: React.FC<ColumnActionsProps> = ({
         variant="invisible"
         size="small"
         leadingVisual={PlusIcon}
-        aria-label="タスクを追加"
+        aria-label="Add task"
       />
       <ActionMenu>
         <ActionMenu.Anchor>
@@ -28,7 +28,7 @@ const ColumnActions: React.FC<ColumnActionsProps> = ({
             variant="invisible"
             size="small"
             leadingVisual={KebabHorizontalIcon}
-            aria-label="カラムオプション"
+            aria-label="Column options"
           />
         </ActionMenu.Anchor>
         <ActionMenu.Overlay 
@@ -44,7 +44,7 @@ const ColumnActions: React.FC<ColumnActionsProps> = ({
               <ActionList.LeadingVisual>
                 <PencilIcon size={16} />
               </ActionList.LeadingVisual>
-              カラム名を変更
+              Edit column name
             </ActionList.Item>
             <ActionList.Divider />
             <ActionList.Item 
@@ -54,7 +54,7 @@ const ColumnActions: React.FC<ColumnActionsProps> = ({
                 onDeleteColumn();
               }}
             >
-              カラムを削除
+              Delete column
             </ActionList.Item>
           </ActionList>
         </ActionMenu.Overlay>
