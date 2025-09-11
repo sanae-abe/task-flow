@@ -250,28 +250,39 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({ column, onTaskClick }) => {
           borderColor="border.default"
           mb={4}
           sx={{
-            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.12)'
+            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.12)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 3
           }}
         >
-          <TextInput
-            value={newTaskTitle}
-            onChange={(e) => setNewTaskTitle(e.target.value)}
-            placeholder="タスクタイトル"
-            autoFocus
-            sx={{ mb: 3, fontSize: 2, fontWeight: '500' }}
-          />
-          <Textarea
-            value={newTaskDescription}
-            onChange={(e) => setNewTaskDescription(e.target.value)}
-            placeholder="タスクの説明（任意）"
-            sx={{ 
-              mb: 3, 
-              resize: 'none', 
-              height: '80px',
-              fontSize: 1
-            }}
-          />
-          <Box mb={4}>
+          <Box>
+            <TextInput
+              value={newTaskTitle}
+              onChange={(e) => setNewTaskTitle(e.target.value)}
+              placeholder="タスクタイトル"
+              autoFocus
+              sx={{ 
+                fontSize: 2, 
+                fontWeight: '500',
+                width: '100%'
+              }}
+            />
+          </Box>
+          <Box>
+            <Textarea
+              value={newTaskDescription}
+              onChange={(e) => setNewTaskDescription(e.target.value)}
+              placeholder="タスクの説明（任意）"
+              sx={{ 
+                resize: 'none', 
+                height: '80px',
+                fontSize: 1,
+                width: '100%'
+              }}
+            />
+          </Box>
+          <Box>
             <Text fontSize={1} fontWeight="600" display="block" mb={2} color="fg.default">
               期限（任意）
             </Text>
@@ -280,6 +291,7 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({ column, onTaskClick }) => {
               value={newTaskDueDate}
               onChange={(e) => setNewTaskDueDate(e.target.value)}
               id="due-date"
+              sx={{ width: '100%' }}
             />
           </Box>
           <Box display="flex" gap={2}>

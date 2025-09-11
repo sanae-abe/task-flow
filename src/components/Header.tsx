@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
-import { Button, TextInput, Select, Box, Heading, Label } from '@primer/react';
-import { ProjectIcon, PencilIcon } from '@primer/octicons-react';
+import { Button, TextInput, Box, Heading, Label, ActionMenu, ActionList } from '@primer/react';
+import { ProjectIcon, ChevronDownIcon } from '@primer/octicons-react';
 import { useKanban } from '../contexts/KanbanContext';
 
 const Header: React.FC = () => {
-  const { state, createBoard, setCurrentBoard, updateBoard } = useKanban();
+  const { state, createBoard, setCurrentBoard } = useKanban();
   const [isCreatingBoard, setIsCreatingBoard] = useState(false);
   const [newBoardTitle, setNewBoardTitle] = useState('');
-  const [isEditingBoardName, setIsEditingBoardName] = useState(false);
-  const [editingBoardName, setEditingBoardName] = useState('');
   
   const handleCreateBoard = () => {
     if (newBoardTitle.trim()) {
@@ -21,28 +19,6 @@ const Header: React.FC = () => {
   const handleCancelCreate = () => {
     setNewBoardTitle('');
     setIsCreatingBoard(false);
-  };
-
-  const handleEditBoardName = () => {
-    if (!state.currentBoard) {
-      return;
-    }
-    setEditingBoardName(state.currentBoard.title);
-    setIsEditingBoardName(true);
-  };
-
-  const handleSaveBoardName = () => {
-    if (!state.currentBoard || !editingBoardName.trim()) {
-      return;
-    }
-    updateBoard(state.currentBoard.id, { title: editingBoardName.trim() });
-    setIsEditingBoardName(false);
-    setEditingBoardName('');
-  };
-
-  const handleCancelEditBoardName = () => {
-    setIsEditingBoardName(false);
-    setEditingBoardName('');
   };
   
   return (
@@ -83,80 +59,77 @@ const Header: React.FC = () => {
           <Box sx={{ height: '24px', width: '1px', backgroundColor: 'border.muted' }} />
           
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            {isEditingBoardName ? (
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <TextInput
-                  value={editingBoardName}
-                  onChange={(e) => setEditingBoardName(e.target.value)}
-                  autoFocus
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      handleSaveBoardName();
-                    }
-                    if (e.key === 'Escape') {
-                      handleCancelEditBoardName();
-                    }
-                  }}
-                  sx={{ 
-                    minWidth: '200px',
-                    border: 'none',
-                    boxShadow: 'none',
-                    backgroundColor: 'transparent',
-                    fontSize: 2,
-                    fontWeight: '500',
-                    '&:focus': {
-                      backgroundColor: 'canvas.subtle',
-                      border: '1px solid',
-                      borderColor: 'accent.emphasis'
-                    }
-                  }}
-                />
-                <Button onClick={handleSaveBoardName} size="small" variant="primary">
-                  保存
-                </Button>
-                <Button onClick={handleCancelEditBoardName} size="small">
-                  キャンセル
-                </Button>
-              </Box>
-            ) : (
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <Select 
-                  value={state.currentBoard?.id || ''} 
-                  onChange={(e) => setCurrentBoard(e.target.value)}
+            <ActionMenu>
+              <ActionMenu.Anchor>
+                <Button
+                  variant="invisible"
+                  size="medium"
+                  trailingVisual={ChevronDownIcon}
                   sx={{
-                    border: 'none',
-                    backgroundColor: 'transparent',
                     fontSize: 2,
                     fontWeight: '500',
-                    '&:focus': {
-                      backgroundColor: 'canvas.subtle',
-                      border: '1px solid',
-                      borderColor: 'accent.emphasis'
+                    color: 'fg.default',
+                    '&:hover': {
+                      backgroundColor: 'canvas.subtle'
                     }
                   }}
                 >
-                  <Select.Option value="">ボードを選択</Select.Option>
-                  {state.boards.map((board) => (
-                    <Select.Option key={board.id} value={board.id}>
-                      {board.title}
-                    </Select.Option>
-                  ))}
-                </Select>
-                {state.currentBoard && (
-                  <Button
-                    onClick={handleEditBoardName}
-                    variant="invisible"
-                    size="small"
-                    leadingVisual={PencilIcon}
-                    aria-label="ボード名を編集"
-                    sx={{ 
-                      color: 'fg.muted',
-                      '&:hover': { color: 'accent.fg' }
-                    }}
-                  />
-                )}
-              </Box>
-            )}
+                  {state.currentBoard ? state.currentBoard.title : 'ボードを選択'}
+                </Button>
+              </ActionMenu.Anchor>
+              <ActionMenu.Overlay 
+                width="medium" 
+                sx={{ 
+                  minWidth: '200px',
+                  backgroundColor: 'canvas.overlay',
+                  border: '1px solid',
+                  borderColor: 'border.default',
+                  borderRadius: 2,
+                  boxShadow: '0 8px 24px rgba(0, 0, 0, 0.12)'
+                }}
+              >
+                <ActionList
+                  sx={{
+                    backgroundColor: 'canvas.overlay'
+                  }}
+                >
+                  {state.boards.length === 0 ? (
+                    <ActionList.Item 
+                      disabled
+                      sx={{
+                        backgroundColor: 'canvas.overlay',
+                        color: 'fg.muted'
+                      }}
+                    >
+                      ボードがありません
+                    </ActionList.Item>
+                  ) : (
+                    state.boards.map((board) => (
+                      <ActionList.Item
+                        key={board.id}
+                        onSelect={(event) => {
+                          event.preventDefault();
+                          setCurrentBoard(board.id);
+                        }}
+                        selected={state.currentBoard?.id === board.id}
+                        sx={{
+                          backgroundColor: 'canvas.overlay',
+                          '&:hover': {
+                            backgroundColor: 'actionListItem.default.hoverBg'
+                          },
+                          '&[data-selected="true"]': {
+                            backgroundColor: 'actionListItem.default.selectedBg',
+                            fontWeight: '600'
+                          }
+                        }}
+                      >
+                        {board.title}
+                      </ActionList.Item>
+                    ))
+                  )}
+                </ActionList>
+              </ActionMenu.Overlay>
+            </ActionMenu>
           </Box>
         </Box>
         
