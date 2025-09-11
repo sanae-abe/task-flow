@@ -1,44 +1,40 @@
-import React, { useState } from 'react';
-import { Box, Text, Button, TextInput, ActionMenu, ActionList } from '@primer/react';
+import React, { useState, useMemo } from 'react';
+import { Box, Button, TextInput, ActionMenu, ActionList } from '@primer/react';
 import { PencilIcon, PlusIcon, CheckIcon, XIcon, TrashIcon, KebabHorizontalIcon } from '@primer/octicons-react';
 import { useKanban } from '../contexts/KanbanContext';
+import { useTaskStats } from '../hooks/useTaskStats';
 import ConfirmDialog from './ConfirmDialog';
+import TaskStatsDisplay from './TaskStatsDisplay';
+import BoardEditDialog from './BoardEditDialog';
 
 const SubHeader: React.FC = () => {
   const { state, updateBoard, createColumn, deleteBoard } = useKanban();
-  const [isEditingTitle, setIsEditingTitle] = useState(false);
-  const [editTitle, setEditTitle] = useState('');
   const [isCreatingColumn, setIsCreatingColumn] = useState(false);
   const [newColumnTitle, setNewColumnTitle] = useState('');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showEditDialog, setShowEditDialog] = useState(false);
+
+  const allTasks = useMemo(() => {
+    if (!state.currentBoard) return [];
+    return state.currentBoard.columns.flatMap(column => column.tasks);
+  }, [state.currentBoard]);
+
+  const taskStats = useTaskStats(allTasks);
 
   if (!state.currentBoard) {
     return null;
   }
 
-  const handleStartEditTitle = () => {
-    if (state.currentBoard) {
-      setEditTitle(state.currentBoard.title);
-      setIsEditingTitle(true);
-    }
-  };
-
-  const handleSaveTitle = () => {
-    if (editTitle.trim() && state.currentBoard) {
-      updateBoard(state.currentBoard.id, { title: editTitle.trim() });
-      setIsEditingTitle(false);
-      setEditTitle('');
-    }
-  };
-
-  const handleCancelEdit = () => {
-    setIsEditingTitle(false);
-    setEditTitle('');
-  };
-
   const handleStartCreateColumn = () => {
     setIsCreatingColumn(true);
     setNewColumnTitle('');
+  };
+
+  const handleEditBoardTitle = (newTitle: string) => {
+    if (state.currentBoard) {
+      updateBoard(state.currentBoard.id, { title: newTitle });
+      setShowEditDialog(false);
+    }
   };
 
   const handleCreateColumn = () => {
@@ -61,19 +57,11 @@ const SubHeader: React.FC = () => {
     }
   };
 
-  const handleKeyPress = (event: React.KeyboardEvent, action: 'title' | 'column') => {
+  const handleKeyPress = (event: React.KeyboardEvent) => {
     if (event.key === 'Enter') {
-      if (action === 'title') {
-        handleSaveTitle();
-      } else {
-        handleCreateColumn();
-      }
+      handleCreateColumn();
     } else if (event.key === 'Escape') {
-      if (action === 'title') {
-        handleCancelEdit();
-      } else {
-        handleCancelCreateColumn();
-      }
+      handleCancelCreateColumn();
     }
   };
 
@@ -95,80 +83,15 @@ const SubHeader: React.FC = () => {
         justifyContent: 'space-between'
       }}
     >
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-        {isEditingTitle ? (
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <TextInput
-              value={editTitle}
-              onChange={(e) => setEditTitle(e.target.value)}
-              onKeyDown={(e) => handleKeyPress(e, 'title')}
-              placeholder="ボード名を入力"
-              autoFocus
-              sx={{ fontSize: 3, fontWeight: 'bold' }}
-            />
-            <Button
-              size="small"
-              onClick={handleSaveTitle}
-              disabled={!editTitle.trim()}
-              sx={{ color: 'fg.onEmphasis !important', bg: 'btn.primary.bg !important' }}
-            >
-              <CheckIcon size={16} />
-            </Button>
-            <Button
-              size="small"
-              onClick={handleCancelEdit}
-            >
-              <XIcon size={16} />
-            </Button>
-          </Box>
-        ) : (
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <Text sx={{ fontSize: 3, fontWeight: 'bold', color: 'fg.default' }}>
-              {state.currentBoard.title}
-            </Text>
-            <ActionMenu>
-              <ActionMenu.Anchor>
-                <Button
-                  size="small"
-                  variant="invisible"
-                  sx={{ p: 1 }}
-                >
-                  <KebabHorizontalIcon size={16} />
-                </Button>
-              </ActionMenu.Anchor>
-              <ActionMenu.Overlay>
-                <ActionList>
-                  <ActionList.Item onSelect={handleStartEditTitle}>
-                    <ActionList.LeadingVisual>
-                      <PencilIcon size={16} />
-                    </ActionList.LeadingVisual>
-                    ボード名を編集
-                  </ActionList.Item>
-                  {state.boards.length > 1 && (
-                    <ActionList.Item
-                      variant="danger"
-                      onSelect={() => setShowDeleteConfirm(true)}
-                    >
-                      <ActionList.LeadingVisual>
-                        <TrashIcon size={16} />
-                      </ActionList.LeadingVisual>
-                      ボードを削除
-                    </ActionList.Item>
-                  )}
-                </ActionList>
-              </ActionMenu.Overlay>
-            </ActionMenu>
-          </Box>
-        )}
-      </Box>
+      <TaskStatsDisplay stats={taskStats} />
 
-      <Box>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
         {isCreatingColumn ? (
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <TextInput
               value={newColumnTitle}
               onChange={(e) => setNewColumnTitle(e.target.value)}
-              onKeyDown={(e) => handleKeyPress(e, 'column')}
+              onKeyDown={handleKeyPress}
               placeholder="カラム名を入力"
               autoFocus
               size="small"
@@ -204,6 +127,39 @@ const SubHeader: React.FC = () => {
             カラムを追加
           </Button>
         )}
+        
+        <ActionMenu>
+          <ActionMenu.Anchor>
+            <Button
+              size="small"
+              variant="invisible"
+              sx={{ p: 1 }}
+            >
+              <KebabHorizontalIcon size={16} />
+            </Button>
+          </ActionMenu.Anchor>
+          <ActionMenu.Overlay>
+            <ActionList>
+              <ActionList.Item onSelect={() => setShowEditDialog(true)}>
+                <ActionList.LeadingVisual>
+                  <PencilIcon size={16} />
+                </ActionList.LeadingVisual>
+                ボード名を編集
+              </ActionList.Item>
+              {state.boards.length > 1 && (
+                <ActionList.Item
+                  variant="danger"
+                  onSelect={() => setShowDeleteConfirm(true)}
+                >
+                  <ActionList.LeadingVisual>
+                    <TrashIcon size={16} />
+                  </ActionList.LeadingVisual>
+                  ボードを削除
+                </ActionList.Item>
+              )}
+            </ActionList>
+          </ActionMenu.Overlay>
+        </ActionMenu>
       </Box>
 
       <ConfirmDialog
@@ -212,6 +168,13 @@ const SubHeader: React.FC = () => {
         message={`「${state.currentBoard?.title}」を削除しますか？この操作は元に戻せません。`}
         onConfirm={handleDeleteBoard}
         onCancel={() => setShowDeleteConfirm(false)}
+      />
+
+      <BoardEditDialog
+        isOpen={showEditDialog}
+        currentTitle={state.currentBoard?.title || ''}
+        onSave={handleEditBoardTitle}
+        onCancel={() => setShowEditDialog(false)}
       />
     </Box>
   );
