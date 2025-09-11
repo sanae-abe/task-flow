@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "WebFetch(domain:primer.style)"
+      "WebFetch(domain:primer.style)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nrefactor: ラベルUIをPrimerデザインシステムに統一して改善\n\n- ラベルカラーパレットを10種類のPrimerバリアントに変更（default、primary、secondary、accent、success、attention、severe、danger、done、sponsors）\n- 全ラベル表示で濃い背景色（*.emphasis）と白文字（fg.onEmphasis）の組み合わせに統一\n- LabelSelectorでプレビュー機能を削除してシンプルな作成フローに変更\n- カラー選択グリッドを5列左寄せレイアウトに変更して見た目を改善\n- Add Labelボタンのスタイル属性を修正（!important追加でPrimerデフォルトを上書き）\n- EnterキーでのAccidental作成を防止（Escapeキーによるキャンセルのみ維持）\n- タスク詳細画面のラベルサイズをタスクカードと統一（px: 2, py: 1, fontSize: 0）\n- 未使用のgetColorInfoインポートを削除してコードを整理\n- ESLintエラーを修正（self-closing-comp、no-unused-vars）\n\n🤖 Generated with [Claude Code](https://claude.ai/code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")"
     ],
     "deny": [],
     "ask": []

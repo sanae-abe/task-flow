@@ -14,6 +14,7 @@ type KanbanAction =
   | { type: 'CREATE_BOARD'; payload: { title: string } }
   | { type: 'SET_CURRENT_BOARD'; payload: string }
   | { type: 'UPDATE_BOARD'; payload: { boardId: string; updates: Partial<KanbanBoard> } }
+  | { type: 'DELETE_BOARD'; payload: { boardId: string } }
   | { type: 'CREATE_COLUMN'; payload: { boardId: string; title: string } }
   | { type: 'CREATE_TASK'; payload: { columnId: string; title: string; description: string; dueDate?: Date; labels?: Label[] } }
   | { type: 'MOVE_TASK'; payload: { taskId: string; sourceColumnId: string; targetColumnId: string; targetIndex: number } }
@@ -28,6 +29,7 @@ interface KanbanContextType {
   createBoard: (title: string) => void;
   setCurrentBoard: (boardId: string) => void;
   updateBoard: (boardId: string, updates: Partial<KanbanBoard>) => void;
+  deleteBoard: (boardId: string) => void;
   createColumn: (title: string) => void;
   createTask: (columnId: string, title: string, description: string, dueDate?: Date, labels?: Label[]) => void;
   moveTask: (taskId: string, sourceColumnId: string, targetColumnId: string, targetIndex: number) => void;
@@ -125,6 +127,26 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
           board.id === action.payload.boardId ? newBoard : board
         ),
         currentBoard: state.currentBoard?.id === action.payload.boardId ? newBoard : state.currentBoard,
+      };
+    }
+    
+    case 'DELETE_BOARD': {
+      const newBoards = state.boards.filter(board => board.id !== action.payload.boardId);
+      let newCurrentBoard = state.currentBoard;
+      
+      if (state.currentBoard?.id === action.payload.boardId) {
+        newCurrentBoard = newBoards.length > 0 ? newBoards[0] : null;
+        if (newCurrentBoard) {
+          localStorage.setItem('current-board-id', newCurrentBoard.id);
+        } else {
+          localStorage.removeItem('current-board-id');
+        }
+      }
+      
+      return {
+        ...state,
+        boards: newBoards,
+        currentBoard: newCurrentBoard,
       };
     }
     
@@ -426,6 +448,10 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   const updateBoard = (boardId: string, updates: Partial<KanbanBoard>) => {
     dispatch({ type: 'UPDATE_BOARD', payload: { boardId, updates } });
   };
+
+  const deleteBoard = (boardId: string) => {
+    dispatch({ type: 'DELETE_BOARD', payload: { boardId } });
+  };
   
   const createColumn = (title: string) => {
     if (!state.currentBoard) {
@@ -466,6 +492,7 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         createBoard,
         setCurrentBoard,
         updateBoard,
+        deleteBoard,
         createColumn,
         createTask,
         moveTask,

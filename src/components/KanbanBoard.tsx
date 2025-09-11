@@ -12,6 +12,7 @@ import { useKanban } from '../contexts/KanbanContext';
 import KanbanColumn from './KanbanColumn';
 import TaskCard from './TaskCard';
 import TaskDetailSidebar from './TaskDetailSidebar';
+import SubHeader from './SubHeader';
 import type { Task } from '../types';
 
 const KanbanBoard: React.FC = () => {
@@ -144,6 +145,7 @@ const KanbanBoard: React.FC = () => {
       bg="canvas.subtle"
       sx={{ overflow: 'hidden' }}
     >
+      <SubHeader />
       
       <DndContext
         sensors={sensors}
@@ -157,7 +159,7 @@ const KanbanBoard: React.FC = () => {
             gap: 6, 
             px: 6,
             py: 5,
-            height: 'calc(100vh - 56px)',
+            height: 'calc(100vh - 123px)',
             '&::-webkit-scrollbar': {
               height: '8px'
             },
