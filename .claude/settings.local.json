@@ -20,7 +20,22 @@
       "Bash(lsof -ti:3000)",
       "Bash(xargs kill -9)",
       "Bash(git checkout -- src/contexts/KanbanContext.tsx src/utils/storage.ts)",
-      "Bash(git checkout HEAD -- src/App.tsx)"
+      "Bash(git checkout HEAD -- src/App.tsx)",
+      "Bash(npm install @heroicons/react)",
+      "Bash(npm install @heroicons/react --force)",
+      "Bash(npm install)",
+      "Bash(npm install @heroicons/react --legacy-peer-deps)",
+      "Bash(echo $PATH)",
+      "Read(//Users/sanae.abe/.claude/**)",
+      "Bash(cat /Users/sanae.abe/workspace/kanban-app/.claude/claude_desktop_config.json)",
+      "Read(//Users/sanae.abe/Library/**)",
+      "Bash(npm install @primer/react @primer/octicons-react @primer/css)",
+      "Bash(npm install @primer/react @primer/octicons-react @primer/css --legacy-peer-deps)",
+      "Bash(npm uninstall @heroicons/react)",
+      "Bash(npm uninstall @heroicons/react --legacy-peer-deps)",
+      "Bash(npm install styled-components --legacy-peer-deps)",
+      "Bash(pkill -f \"react-scripts start\")",
+      "Bash(git add .)"
     ],
     "deny": [],
     "ask": []

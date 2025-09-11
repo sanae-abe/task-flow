@@ -1,13 +1,29 @@
-import type { ReportHandler } from 'web-vitals';
+interface Metric {
+  name: string;
+  value: number;
+  id: string;
+}
 
-const reportWebVitals = (onPerfEntry?: ReportHandler): void => {
+type ReportCallback = (metric: Metric) => void;
+
+const reportWebVitals = (onPerfEntry?: ReportCallback): void => {
   if (onPerfEntry && onPerfEntry instanceof Function) {
-    import('web-vitals').then(({ getCLS, getFID, getFCP, getLCP, getTTFB }) => {
-      getCLS(onPerfEntry);
-      getFID(onPerfEntry);
-      getFCP(onPerfEntry);
-      getLCP(onPerfEntry);
-      getTTFB(onPerfEntry);
+    import('web-vitals').then((webVitals) => {
+      if (webVitals.onCLS) {
+        webVitals.onCLS(onPerfEntry);
+      }
+      if (webVitals.onFID) {
+        webVitals.onFID(onPerfEntry);
+      }
+      if (webVitals.onFCP) {
+        webVitals.onFCP(onPerfEntry);
+      }
+      if (webVitals.onLCP) {
+        webVitals.onLCP(onPerfEntry);
+      }
+      if (webVitals.onTTFB) {
+        webVitals.onTTFB(onPerfEntry);
+      }
     });
   }
 };

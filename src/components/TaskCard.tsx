@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { Button, TextInput, Textarea, Box, Text, Heading } from '@primer/react';
+import { CalendarIcon } from '@primer/octicons-react';
 import type { Task } from '../types';
 import { useKanban } from '../contexts/KanbanContext';
 
@@ -98,118 +100,147 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, columnId, onTaskClick }) => {
   
   if (isEditing) {
     return (
-      <div className="pulse-card">
-        <input
-          type="text"
+      <Box 
+        bg="canvas.default" 
+        borderRadius={2} 
+        p={3} 
+        border="1px solid" 
+        borderColor="border.default"
+      >
+        <TextInput
           value={editTitle}
           onChange={(e) => setEditTitle(e.target.value)}
-          className="pulse-input pulse-input-small"
           placeholder="タスクタイトル"
+          sx={{ mb: 2 }}
         />
-        <textarea
+        <Textarea
           value={editDescription}
           onChange={(e) => setEditDescription(e.target.value)}
-          className="pulse-input pulse-textarea-small"
           placeholder="タスクの説明"
+          sx={{ mb: 3, resize: 'none', height: '80px' }}
         />
-        <div className="pulse-form-group">
-          <label className="pulse-label pulse-form-label">
+        <Box mb={3}>
+          <Text fontSize={1} fontWeight="bold" display="block" mb={1}>
             期限（任意）
-          </label>
-          <input
+          </Text>
+          <TextInput
             type="date"
             value={editDueDate}
             onChange={(e) => setEditDueDate(e.target.value)}
-            className="pulse-input"
+            id="edit-due-date"
           />
-        </div>
-        <div className="flex pulse-form-actions">
-          <button
-            onClick={handleSave}
-            className="pulse-button pulse-button-primary pulse-button-small"
-          >
+        </Box>
+        <Box display="flex" gap={2}>
+          <Button onClick={handleSave} size="small">
             保存
-          </button>
-          <button
-            onClick={handleCancel}
-            className="pulse-button pulse-button-secondary pulse-button-small"
-          >
+          </Button>
+          <Button onClick={handleCancel} size="small">
             キャンセル
-          </button>
-        </div>
-      </div>
+          </Button>
+        </Box>
+      </Box>
     );
   }
   
   return (
-    <div
+    <Box
       ref={setNodeRef}
-      style={{
-        ...style,
-        borderBottomColor: isOverdue() 
-          ? 'var(--pulse-error)' 
+      bg="canvas.default"
+      borderRadius={2}
+      p={3}
+      border="1px solid"
+      borderColor={
+        isOverdue() 
+          ? 'danger.emphasis' 
           : isDueSoon() 
-          ? 'var(--pulse-warning)' 
-          : undefined
+          ? 'attention.emphasis' 
+          : 'border.default'
+      }
+      sx={{
+        ...style,
+        cursor: 'grab',
+        '&:hover': {
+          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+          transform: 'translateY(-2px)'
+        },
+        '&:active': {
+          cursor: 'grabbing'
+        }
       }}
       // eslint-disable-next-line react/jsx-props-no-spreading
       {...attributes}
       // eslint-disable-next-line react/jsx-props-no-spreading
       {...listeners}
       onClick={handleTaskClick}
-      className={`pulse-card pulse-task-card cursor-grab active:cursor-grabbing ${
-        isDragging ? 'dragging' : ''
-      } ${
-        isOverdue() ? 'overdue' : isDueSoon() ? 'due-soon' : ''
-      }`}
     >
-      <div>
-        <h3 className="pulse-h5 pulse-task-title">
+      <Box>
+        <Heading sx={{ fontSize: 2, margin: 0, mb: 2 }}>
           {task.title}
-        </h3>
+        </Heading>
         {task.description && (
-          <p className="pulse-body-sm pulse-task-description">
+          <Text fontSize={1} color="fg.muted" sx={{ mb: 3 }}>
             {task.description}
-          </p>
+          </Text>
         )}
         {task.dueDate && (
-          <div className={`pulse-caption pulse-due-date-badge ${
-            isOverdue() 
-              ? 'overdue' 
-              : isDueSoon() 
-              ? 'due-soon' 
-              : 'normal'
-          }`}>
-            📅 期限: {formatDueDate(task.dueDate)}
+          <Box 
+            display="flex" 
+            alignItems="center" 
+            gap={1}
+            mb={2}
+            bg={
+              isOverdue() 
+                ? 'danger.subtle' 
+                : isDueSoon() 
+                ? 'attention.subtle' 
+                : 'neutral.subtle'
+            }
+            color={
+              isOverdue() 
+                ? 'danger.fg' 
+                : isDueSoon() 
+                ? 'attention.fg' 
+                : 'fg.muted'
+            }
+            px={2}
+            py={1}
+            borderRadius={1}
+            fontSize={0}
+            fontWeight="bold"
+          >
+            <CalendarIcon size={12} />
+            期限: {formatDueDate(task.dueDate)}
             {isOverdue() && ' (期限切れ)'}
             {isDueSoon() && !isOverdue() && ' (明日まで)'}
-          </div>
+          </Box>
         )}
-        <div className="pulse-micro pulse-task-created">
+        <Text fontSize={0} color="fg.muted">
           作成: {task.createdAt.toLocaleDateString('ja-JP')}
-        </div>
-      </div>
-      <div className="flex pulse-task-actions">
-        <button
+        </Text>
+      </Box>
+      <Box display="flex" gap={2} mt={3}>
+        <Button
           onClick={(e) => {
             e.stopPropagation();
             setIsEditing(true);
           }}
-          className="pulse-button pulse-button-edit"
+          size="small"
+          variant="secondary"
         >
           編集
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={(e) => {
             e.stopPropagation();
             handleDelete();
           }}
-          className="pulse-button pulse-button-delete"
+          size="small"
+          variant="danger"
         >
           削除
-        </button>
-      </div>
-    </div>
+        </Button>
+      </Box>
+    </Box>
   );
 };
 

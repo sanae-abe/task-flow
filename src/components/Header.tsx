@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { Button, TextInput, Select, Header as PrimerHeader, Heading, Label } from '@primer/react';
+import { ProjectIcon, PencilIcon } from '@primer/octicons-react';
 import { useKanban } from '../contexts/KanbanContext';
 
 const Header: React.FC = () => {
@@ -44,21 +46,20 @@ const Header: React.FC = () => {
   };
   
   return (
-    <header className="pulse-card pulse-header">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center pulse-board-title-edit">
-          <h1 className="pulse-h3 pulse-board-title">
-            📋 Kanban App
-          </h1>
+    <PrimerHeader>
+      <PrimerHeader.Item full>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <ProjectIcon size={16} />
+            <Heading sx={{ fontSize: 3, margin: 0 }}>Kanban App</Heading>
+          </div>
           
-          <div className="flex items-center pulse-form-actions">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             {isEditingBoardName ? (
-              <div className="flex items-center pulse-form-actions">
-                <input
-                  type="text"
+              <>
+                <TextInput
                   value={editingBoardName}
                   onChange={(e) => setEditingBoardName(e.target.value)}
-                  className="pulse-input pulse-input-wide"
                   autoFocus
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
@@ -68,87 +69,70 @@ const Header: React.FC = () => {
                       handleCancelEditBoardName();
                     }
                   }}
+                  sx={{ width: '200px' }}
                 />
-                <button
-                  onClick={handleSaveBoardName}
-                  className="pulse-button pulse-button-primary pulse-button-small"
-                >
+                <Button onClick={handleSaveBoardName} size="small">
                   保存
-                </button>
-                <button
-                  onClick={handleCancelEditBoardName}
-                  className="pulse-button pulse-button-secondary pulse-button-small"
-                >
+                </Button>
+                <Button onClick={handleCancelEditBoardName} size="small">
                   キャンセル
-                </button>
-              </div>
+                </Button>
+              </>
             ) : (
-              <div className="flex items-center pulse-form-actions">
-                <select
-                  value={state.currentBoard?.id || ''}
-                  onChange={(e) => setCurrentBoard(e.target.value)}
-                  className="pulse-input pulse-select-wide"
-                >
-                  <option value="">ボードを選択</option>
+              <>
+                <Select value={state.currentBoard?.id || ''} onChange={(e) => setCurrentBoard(e.target.value)}>
+                  <Select.Option value="">ボードを選択</Select.Option>
                   {state.boards.map((board) => (
-                    <option key={board.id} value={board.id}>
+                    <Select.Option key={board.id} value={board.id}>
                       {board.title}
-                    </option>
+                    </Select.Option>
                   ))}
-                </select>
+                </Select>
                 {state.currentBoard && (
-                  <button
+                  <Button
                     onClick={handleEditBoardName}
-                    className="pulse-button pulse-button-secondary pulse-icon-button"
-                    title="ボード名を編集"
-                  >
-                    ✏️
-                  </button>
+                    variant="invisible"
+                    size="small"
+                    leadingVisual={PencilIcon}
+                    aria-label="ボード名を編集"
+                  />
                 )}
-              </div>
+              </>
             )}
           </div>
         </div>
-        
-        <div className="flex items-center pulse-form-actions">
+      </PrimerHeader.Item>
+      
+      <PrimerHeader.Item>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           {isCreatingBoard ? (
-            <div className="flex items-center pulse-form-actions">
-              <input
-                type="text"
+            <>
+              <TextInput
                 value={newBoardTitle}
                 onChange={(e) => setNewBoardTitle(e.target.value)}
                 placeholder="新しいボード名"
-                className="pulse-input pulse-input-wide"
                 autoFocus
+                sx={{ width: '200px' }}
               />
-              <button
-                onClick={handleCreateBoard}
-                className="pulse-button pulse-button-primary"
-              >
+              <Button onClick={handleCreateBoard}>
                 作成
-              </button>
-              <button
-                onClick={handleCancelCreate}
-                className="pulse-button pulse-button-secondary"
-              >
+              </Button>
+              <Button onClick={handleCancelCreate}>
                 キャンセル
-              </button>
-            </div>
+              </Button>
+            </>
           ) : (
-            <button
-              onClick={() => setIsCreatingBoard(true)}
-              className="pulse-button pulse-button-primary"
-            >
+            <Button onClick={() => setIsCreatingBoard(true)}>
               + 新しいボード
-            </button>
+            </Button>
           )}
           
-          <div className="pulse-micro">
+          <Label variant="secondary" size="small">
             オフライン対応
-          </div>
+          </Label>
         </div>
-      </div>
-    </header>
+      </PrimerHeader.Item>
+    </PrimerHeader>
   );
 };
 

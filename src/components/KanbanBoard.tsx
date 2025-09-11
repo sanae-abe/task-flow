@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { Button, TextInput, Heading, Text, Box } from '@primer/react';
+import { PencilIcon } from '@primer/octicons-react';
 import {
   DndContext,
   DragOverlay,
@@ -34,9 +36,9 @@ const KanbanBoard: React.FC = () => {
   
   if (!state.currentBoard) {
     return (
-      <div className="flex items-center justify-center pulse-empty-state">
-        <p className="pulse-body-lg pulse-task-created">ボードを選択してください</p>
-      </div>
+      <Box display="flex" alignItems="center" justifyContent="center" height="400px">
+        <Text fontSize={2} color="fg.muted">ボードを選択してください</Text>
+      </Box>
     );
   }
   
@@ -155,15 +157,13 @@ const KanbanBoard: React.FC = () => {
   };
   
   return (
-    <div className="w-full h-full">
-      <div className="pulse-board-header">
+    <Box width="100%" height="100%">
+      <Box mb={4}>
         {isEditingBoardTitle ? (
-          <div className="flex items-center pulse-board-title-edit">
-            <input
-              type="text"
+          <Box display="flex" alignItems="center" gap={3} mb={2}>
+            <TextInput
               value={editingBoardTitle}
               onChange={(e) => setEditingBoardTitle(e.target.value)}
-              className="pulse-h2 pulse-input pulse-board-title-input"
               autoFocus
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {
@@ -173,50 +173,45 @@ const KanbanBoard: React.FC = () => {
                   handleCancelBoardTitleEdit();
                 }
               }}
+              sx={{ fontSize: 3, fontWeight: 'bold', padding: 2 }}
             />
-            <button
-              onClick={handleSaveBoardTitle}
-              className="pulse-button pulse-button-primary pulse-button-small"
-            >
+            <Button onClick={handleSaveBoardTitle} size="small">
               保存
-            </button>
-            <button
-              onClick={handleCancelBoardTitleEdit}
-              className="pulse-button pulse-button-secondary pulse-button-small"
-            >
+            </Button>
+            <Button onClick={handleCancelBoardTitleEdit} size="small">
               キャンセル
-            </button>
-          </div>
+            </Button>
+          </Box>
         ) : (
-          <div className="flex items-center pulse-board-title-edit">
-            <h1 
-              className="pulse-h2 pulse-board-title"
+          <Box display="flex" alignItems="center" gap={3} mb={2}>
+            <Heading 
+              sx={{ fontSize: 3, margin: 0, cursor: 'pointer', '&:hover': { color: 'accent.fg' } }}
               onClick={handleEditBoardTitle}
               title="クリックして編集"
             >
               {state.currentBoard.title}
-            </h1>
-            <button
+            </Heading>
+            <Button
               onClick={handleEditBoardTitle}
-              className="pulse-button pulse-button-secondary pulse-icon-button"
-              title="ボード名を編集"
-            >
-              ✏️
-            </button>
-          </div>
+              variant="invisible"
+              size="small"
+              leadingVisual={PencilIcon}
+              aria-label="ボード名を編集"
+            />
+          </Box>
         )}
-        <p className="pulse-body-sm pulse-board-stats">
+        <Text fontSize={1} color="fg.muted" mt={2}>
           {state.currentBoard.columns.length} カラム • 
           {state.currentBoard.columns.reduce((total, col) => total + col.tasks.length, 0)} タスク
-        </p>
-      </div>
+        </Text>
+      </Box>
       
       <DndContext
         sensors={sensors}
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
       >
-        <div className="flex overflow-x-auto pulse-columns-container">
+        <Box display="flex" sx={{ overflowX: 'auto', gap: 4, pb: 4 }}>
           {state.currentBoard.columns.map((column) => (
             <KanbanColumn 
               key={column.id} 
@@ -226,54 +221,74 @@ const KanbanBoard: React.FC = () => {
           ))}
           
           {isAddingColumn ? (
-            <div className="pulse-card pulse-add-column">
-              <input
-                type="text"
+            <Box 
+              bg="canvas.default" 
+              borderRadius={2} 
+              p={3} 
+              border="1px solid" 
+              borderColor="border.default"
+              sx={{ minWidth: '320px', flexShrink: 0 }}
+            >
+              <TextInput
                 value={newColumnTitle}
                 onChange={(e) => setNewColumnTitle(e.target.value)}
                 placeholder="カラム名"
-                className="pulse-input pulse-input-small"
                 autoFocus
+                sx={{ mb: 3 }}
               />
-              <div className="pulse-form-group">
-                <label className="pulse-label pulse-form-label">
+              <Box mb={3}>
+                <Text fontSize={1} fontWeight="bold" display="block" mb={1}>
                   カラーを選択
-                </label>
-                <div className="flex pulse-color-picker">
+                </Text>
+                <Box display="flex" gap={2}>
                   {['#E96C7F', '#EDC369', '#10B981', '#7FAFD6', '#03B6C3', '#E4DBE4', '#EACF96', '#B9E1DD'].map((color) => (
-                    <button
+                    <Button
                       key={color}
                       onClick={() => setNewColumnColor(color)}
-                      className={`pulse-color-option ${newColumnColor === color ? 'selected' : ''}`}
-                      style={{ backgroundColor: color }}
+                      variant="invisible"
+                      sx={{
+                        width: '24px',
+                        height: '24px',
+                        borderRadius: '50%',
+                        backgroundColor: color,
+                        border: newColumnColor === color ? '2px solid' : '2px solid transparent',
+                        borderColor: newColumnColor === color ? 'fg.default' : 'transparent',
+                        cursor: 'pointer',
+                        '&:hover': {
+                          opacity: 0.8
+                        }
+                      }}
                     />
                   ))}
-                </div>
-              </div>
-              <div className="flex pulse-form-actions">
-                <button
-                  onClick={handleAddColumn}
-                  className="pulse-button pulse-button-primary pulse-button-small"
-                >
+                </Box>
+              </Box>
+              <Box display="flex" gap={2}>
+                <Button onClick={handleAddColumn} size="small">
                   追加
-                </button>
-                <button
-                  onClick={handleCancelAddColumn}
-                  className="pulse-button pulse-button-secondary pulse-button-small"
-                >
+                </Button>
+                <Button onClick={handleCancelAddColumn} size="small">
                   キャンセル
-                </button>
-              </div>
-            </div>
+                </Button>
+              </Box>
+            </Box>
           ) : (
-            <button
+            <Button
               onClick={() => setIsAddingColumn(true)}
-              className="pulse-button pulse-button-secondary flex items-center justify-center pulse-add-column-button"
+              variant="secondary"
+              sx={{
+                minWidth: '320px',
+                height: '100px',
+                flexShrink: 0,
+                borderStyle: 'dashed',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
             >
               + カラムを追加
-            </button>
+            </Button>
           )}
-        </div>
+        </Box>
         
         <DragOverlay>
           {activeTask ? (
@@ -287,7 +302,7 @@ const KanbanBoard: React.FC = () => {
         isOpen={isTaskDetailOpen}
         onClose={handleCloseTaskDetail}
       />
-    </div>
+    </Box>
   );
 };
 
