@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Text, Label } from '@primer/react';
-import { ClockIcon, AlertIcon, CheckIcon } from '@primer/octicons-react';
+import { ClockIcon, AlertIcon, CheckIcon, InfoIcon } from '@primer/octicons-react';
 import type { TaskStats } from '../hooks/useTaskStats';
 
 interface TaskStatsDisplayProps {
@@ -38,14 +38,15 @@ const TaskStatsDisplay: React.FC<TaskStatsDisplayProps> = ({ stats }) => {
       )}
 
       {dueTomorrowTasks > 0 && (
-        <Label variant="secondary" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Label variant="accent" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <ClockIcon size={12} />
           明日期限: {dueTomorrowTasks}
         </Label>
       )}
 
       {!hasUrgentTasks && totalTasks > 0 && (
-        <Text sx={{ fontSize: 1, color: 'fg.muted' }}>
+        <Text sx={{ display: 'flex', alignItems: 'center', gap: 1, fontSize: 1, color: 'fg.muted' }}>
+          <InfoIcon size={16} />
           緊急なタスクはありません
         </Text>
       )}

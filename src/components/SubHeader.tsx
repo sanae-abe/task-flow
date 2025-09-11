@@ -78,7 +78,7 @@ const SubHeader: React.FC = () => {
         borderBottom: '1px solid',
         borderColor: 'border.default',
         px: 6,
-        py: 3,
+        py: 2,
         zIndex: 100,
         display: 'flex',
         alignItems: 'center',
@@ -116,28 +116,33 @@ const SubHeader: React.FC = () => {
         ) : (
           <Button
             size="small"
-            variant="primary"
+            variant="invisible"
             onClick={handleStartCreateColumn}
-            sx={{ 
+          >
+            <span style={{ 
               display: 'flex', 
               alignItems: 'center', 
-              gap: 1,
-              color: 'fg.onEmphasis !important'
-            }}
-          >
-            <PlusIcon size={16} />
-            カラムを追加
+              gap: '4px',
+            }}>
+              <PlusIcon size={16} />
+              カラムを追加
+            </span>
           </Button>
-        )}
-        
+        )} 
         <ActionMenu>
           <ActionMenu.Anchor>
             <Button
               size="small"
               variant="invisible"
-              sx={{ p: 1 }}
             >
-              <KebabHorizontalIcon size={16} />
+              <span style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: '4px',
+              }}>
+                <KebabHorizontalIcon size={16} />
+                ボード設定
+              </span>
             </Button>
           </ActionMenu.Anchor>
           <ActionMenu.Overlay>
@@ -162,6 +167,7 @@ const SubHeader: React.FC = () => {
             </ActionList>
           </ActionMenu.Overlay>
         </ActionMenu>
+
       </Box>
 
       <ConfirmDialog

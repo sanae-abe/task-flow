@@ -47,18 +47,18 @@ const TaskDisplayContent: React.FC<TaskDisplayContentProps> = ({ task }) => {
               bg: isOverdue 
                 ? 'danger.subtle' 
                 : isDueToday 
-                ? 'success.subtle'
+                ? 'attention.subtle'
                 : isDueTomorrow 
-                ? 'attention.subtle' 
+                ? 'accent.subtle' 
                 : 'canvas.subtle',
               borderRadius: 2,
               border: '1px solid',
               borderColor: isOverdue 
                 ? 'danger.emphasis' 
                 : isDueToday 
-                ? 'success.emphasis'
+                ? 'attention.emphasis'
                 : isDueTomorrow 
-                ? 'attention.emphasis' 
+                ? 'accent.emphasis' 
                 : 'border.default'
             }}
           >
@@ -89,7 +89,7 @@ const TaskDisplayContent: React.FC<TaskDisplayContentProps> = ({ task }) => {
                   fontSize: 0,
                   fontWeight: "bold",
                   color: "#ffffff",
-                  bg: "success.emphasis",
+                  bg: "attention.emphasis",
                   px: 2,
                   py: 1,
                   borderRadius: 2,
@@ -106,7 +106,7 @@ const TaskDisplayContent: React.FC<TaskDisplayContentProps> = ({ task }) => {
                   fontSize: 0,
                   fontWeight: "bold",
                   color: "#ffffff",
-                  bg: "attention.emphasis",
+                  bg: "accent.emphasis",
                   px: 2,
                   py: 1,
                   borderRadius: 2,

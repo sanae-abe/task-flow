@@ -55,16 +55,16 @@ const TaskDisplay: React.FC<TaskDisplayProps> = ({
               bg: isOverdue() 
                 ? 'danger.subtle' 
                 : isDueToday() 
-                ? 'success.subtle'
+                ? 'attention.subtle'
                 : isDueTomorrow() 
-                ? 'attention.subtle' 
+                ? 'accent.subtle' 
                 : 'neutral.subtle',
               color: isOverdue() 
                 ? 'danger.fg' 
                 : isDueToday() 
-                ? 'success.fg'
+                ? 'attention.fg'
                 : isDueTomorrow() 
-                ? 'attention.fg' 
+                ? 'accent.fg' 
                 : 'fg.muted',
               px: 2,
               py: 1,

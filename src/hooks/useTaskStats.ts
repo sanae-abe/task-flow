@@ -39,7 +39,7 @@ export const useTaskStats = (tasks: Task[]): TaskStats => {
       }
     );
 
-    stats.hasUrgentTasks = stats.overdueTasks > 0 || stats.dueTodayTasks > 0;
+    stats.hasUrgentTasks = stats.overdueTasks > 0 || stats.dueTodayTasks > 0 || stats.dueTomorrowTasks > 0;
 
     return stats;
   }, [tasks]);
