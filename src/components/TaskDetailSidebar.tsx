@@ -17,6 +17,12 @@ interface TaskDetailSidebarProps {
 
 const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onClose }) => {
   const { deleteTask, updateTask, state } = useKanban();
+  
+  // タスクが属するカラム名を取得
+  const columnName = task && state.currentBoard ? 
+    state.currentBoard.columns.find(column => 
+      column.tasks.some(t => t.id === task.id)
+    )?.title : undefined;
   const {
     isEditing,
     editTitle,
@@ -158,7 +164,7 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
             />
           ) : (
             <>
-              <TaskDisplayContent task={task} />
+              <TaskDisplayContent task={task} columnName={columnName} />
               <TaskMetadata task={task} />
             </>
           )}

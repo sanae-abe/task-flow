@@ -7,13 +7,29 @@ import { getLabelColors } from '../utils/labelHelpers';
 
 interface TaskDisplayContentProps {
   task: Task;
+  columnName?: string;
 }
 
-const TaskDisplayContent: React.FC<TaskDisplayContentProps> = ({ task }) => {
+const TaskDisplayContent: React.FC<TaskDisplayContentProps> = ({ task, columnName }) => {
   const { isOverdue, isDueToday, isDueTomorrow } = getDateStatus(task.dueDate);
 
   return (
     <>
+      {columnName && (
+        <Box sx={{ mb: 4 }}>
+          <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: 'bold' }}>ステータス</Heading>
+          <Box
+            sx={{
+              p: 3,
+              bg: "canvas.subtle",
+              borderRadius: 2,
+            }}
+          >
+            <Text sx={{ fontSize: 1 }}>{columnName}</Text>
+          </Box>
+        </Box>
+      )}
+      
       <Box sx={{ mb: 4 }}>
         <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: 'bold' }}>説明</Heading>
         <Box
