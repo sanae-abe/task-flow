@@ -14,7 +14,7 @@ const ColumnActions: React.FC<ColumnActionsProps> = ({
   onDeleteColumn
 }) => {
   return (
-    <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+    <Box sx={{ display: "flex", alignItems: "center" }}>
       <Button
         onClick={onAddTask}
         variant="invisible"
