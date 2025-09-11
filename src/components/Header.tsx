@@ -1,15 +1,14 @@
 import React from 'react';
-import { Box } from '@primer/react';
+import { Box, Button } from '@primer/react';
+import { PlusIcon } from '@primer/octicons-react';
 import Logo from './Logo';
 import BoardSelector from './BoardSelector';
-import BoardCreateForm from './BoardCreateForm';
+import BoardCreateDialog from './BoardCreateDialog';
 import { useHeaderState } from '../hooks/useHeaderState';
 
 const Header: React.FC = () => {
   const {
     isCreatingBoard,
-    newBoardTitle,
-    setNewBoardTitle,
     handleCreateBoard,
     handleStartCreate,
     handleCancelCreate
@@ -40,13 +39,25 @@ const Header: React.FC = () => {
         </Box>
         
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
-          <BoardCreateForm
-            isCreating={isCreatingBoard}
-            newBoardTitle={newBoardTitle}
-            onTitleChange={setNewBoardTitle}
-            onCreate={handleCreateBoard}
+          <Button 
+            onClick={handleStartCreate}
+            variant="primary"
+            aria-label="Add Board"
+            leadingVisual={PlusIcon}
+            sx={{
+              backgroundColor: 'accent.emphasis',
+              color: '#ffffff',
+              border: 'none',
+              borderRadius: 2,
+            }}
+          >
+            新しいボード
+          </Button>
+          
+          <BoardCreateDialog
+            isOpen={isCreatingBoard}
+            onSave={handleCreateBoard}
             onCancel={handleCancelCreate}
-            onStartCreate={handleStartCreate}
           />
         </Box>
       </Box>

@@ -1,16 +1,16 @@
 import React, { useState, useMemo } from 'react';
-import { Box, Button, TextInput, ActionMenu, ActionList } from '@primer/react';
-import { PencilIcon, PlusIcon, CheckIcon, XIcon, TrashIcon, KebabHorizontalIcon } from '@primer/octicons-react';
+import { Box, Button, ActionMenu, ActionList } from '@primer/react';
+import { PencilIcon, PlusIcon, TrashIcon, KebabHorizontalIcon } from '@primer/octicons-react';
 import { useKanban } from '../contexts/KanbanContext';
 import { useTaskStats } from '../hooks/useTaskStats';
 import ConfirmDialog from './ConfirmDialog';
 import TaskStatsDisplay from './TaskStatsDisplay';
 import BoardEditDialog from './BoardEditDialog';
+import ColumnCreateDialog from './ColumnCreateDialog';
 
 const SubHeader: React.FC = () => {
   const { state, updateBoard, createColumn, deleteBoard } = useKanban();
   const [isCreatingColumn, setIsCreatingColumn] = useState(false);
-  const [newColumnTitle, setNewColumnTitle] = useState('');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
 
@@ -29,7 +29,6 @@ const SubHeader: React.FC = () => {
 
   const handleStartCreateColumn = () => {
     setIsCreatingColumn(true);
-    setNewColumnTitle('');
   };
 
   const handleEditBoardTitle = (newTitle: string) => {
@@ -39,17 +38,13 @@ const SubHeader: React.FC = () => {
     }
   };
 
-  const handleCreateColumn = () => {
-    if (newColumnTitle.trim()) {
-      createColumn(newColumnTitle.trim());
-      setIsCreatingColumn(false);
-      setNewColumnTitle('');
-    }
+  const handleCreateColumn = (title: string) => {
+    createColumn(title);
+    setIsCreatingColumn(false);
   };
 
   const handleCancelCreateColumn = () => {
     setIsCreatingColumn(false);
-    setNewColumnTitle('');
   };
 
   const handleDeleteBoard = () => {
@@ -59,13 +54,6 @@ const SubHeader: React.FC = () => {
     }
   };
 
-  const handleKeyPress = (event: React.KeyboardEvent) => {
-    if (event.key === 'Enter') {
-      handleCreateColumn();
-    } else if (event.key === 'Escape') {
-      handleCancelCreateColumn();
-    }
-  };
 
   return (
     <Box
@@ -88,47 +76,20 @@ const SubHeader: React.FC = () => {
       <TaskStatsDisplay stats={taskStats} />
 
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-        {isCreatingColumn ? (
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <TextInput
-              value={newColumnTitle}
-              onChange={(e) => setNewColumnTitle(e.target.value)}
-              onKeyDown={handleKeyPress}
-              placeholder="カラム名を入力"
-              autoFocus
-              size="small"
-            />
-            <Button
-              size="small"
-              onClick={handleCreateColumn}
-              disabled={!newColumnTitle.trim()}
-              sx={{ color: 'fg.onEmphasis !important', bg: 'btn.primary.bg !important' }}
-            >
-              <CheckIcon size={16} />
-            </Button>
-            <Button
-              size="small"
-              onClick={handleCancelCreateColumn}
-            >
-              <XIcon size={16} />
-            </Button>
-          </Box>
-        ) : (
-          <Button
-            size="small"
-            variant="invisible"
-            onClick={handleStartCreateColumn}
-          >
-            <span style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              gap: '4px',
-            }}>
-              <PlusIcon size={16} />
-              カラムを追加
-            </span>
-          </Button>
-        )} 
+        <Button
+          size="small"
+          variant="invisible"
+          onClick={handleStartCreateColumn}
+        >
+          <span style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: '4px',
+          }}>
+            <PlusIcon size={16} />
+            カラムを追加
+          </span>
+        </Button> 
         <ActionMenu>
           <ActionMenu.Anchor>
             <Button
@@ -183,6 +144,12 @@ const SubHeader: React.FC = () => {
         currentTitle={state.currentBoard?.title || ''}
         onSave={handleEditBoardTitle}
         onCancel={() => setShowEditDialog(false)}
+      />
+
+      <ColumnCreateDialog
+        isOpen={isCreatingColumn}
+        onSave={handleCreateColumn}
+        onCancel={handleCancelCreateColumn}
       />
     </Box>
   );
