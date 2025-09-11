@@ -62,7 +62,7 @@ const ColumnTitle: React.FC<ColumnTitleProps> = ({
   }
 
   return (
-    <Box sx={{ display: "flex", flex: "1", alignItems: "center", gap: 2 }}>
+    <Box sx={{ display: "flex", flex: "1", alignItems: "center", gap: 1 }}>
       <Heading 
         sx={{ 
           fontSize: 2, 
@@ -79,7 +79,7 @@ const ColumnTitle: React.FC<ColumnTitleProps> = ({
       </Heading>
       <Box
         sx={{
-          px: 3,
+          px: 2,
           py: 1,
           borderRadius: 2,
           fontSize: 1,

@@ -96,11 +96,16 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
       };
     }
     
-    case 'SET_CURRENT_BOARD':
+    case 'SET_CURRENT_BOARD': {
+      const newCurrentBoard = state.boards.find(board => board.id === action.payload) || null;
+      if (newCurrentBoard) {
+        localStorage.setItem('current-board-id', newCurrentBoard.id);
+      }
       return {
         ...state,
-        currentBoard: state.boards.find(board => board.id === action.payload) || null,
+        currentBoard: newCurrentBoard,
       };
+    }
     
     case 'UPDATE_BOARD': {
       const updatedBoard = state.boards.find(board => board.id === action.payload.boardId);
@@ -331,15 +336,82 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     boards: [],
     currentBoard: null,
   });
+  const [isInitialized, setIsInitialized] = React.useState(false);
   
   useEffect(() => {
+    if (isInitialized) {
+      return;
+    }
+    
     const boards = loadBoards();
-    dispatch({ type: 'LOAD_BOARDS', payload: boards });
-  }, []);
+    
+    if (boards.length === 0) {
+      const defaultBoard: KanbanBoard = {
+        id: uuidv4(),
+        title: 'マイプロジェクト',
+        columns: [
+          {
+            id: uuidv4(),
+            title: 'To Do',
+            tasks: [
+              {
+                id: uuidv4(),
+                title: 'プロジェクトの企画',
+                description: 'プロジェクトの目標と要件を明確にする',
+                createdAt: new Date(),
+                updatedAt: new Date(),
+              },
+            ],
+            color: '#f6f8fa'
+          },
+          {
+            id: uuidv4(),
+            title: 'In Progress',
+            tasks: [
+              {
+                id: uuidv4(),
+                title: 'UIデザインの作成',
+                description: 'ユーザーインターフェースのデザインを作成中',
+                createdAt: new Date(),
+                updatedAt: new Date(),
+              },
+            ],
+            color: '#fef3c7'
+          },
+          {
+            id: uuidv4(),
+            title: 'Done',
+            tasks: [
+              {
+                id: uuidv4(),
+                title: '技術調査',
+                description: '使用するフレームワークや技術の調査完了',
+                createdAt: new Date(),
+                updatedAt: new Date(),
+              },
+            ],
+            color: '#d1fae5'
+          },
+        ],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+      const initialBoards = [defaultBoard];
+      localStorage.setItem('current-board-id', defaultBoard.id);
+      saveBoards(initialBoards, defaultBoard.id);
+      dispatch({ type: 'LOAD_BOARDS', payload: initialBoards });
+    } else {
+      dispatch({ type: 'LOAD_BOARDS', payload: boards });
+    }
+    
+    setIsInitialized(true);
+  }, [isInitialized]);
   
   useEffect(() => {
-    saveBoards(state.boards);
-  }, [state.boards]);
+    if (isInitialized && state.boards.length > 0) {
+      saveBoards(state.boards, state.currentBoard?.id);
+    }
+  }, [state.boards, state.currentBoard, isInitialized]);
   
   const createBoard = (title: string) => {
     dispatch({ type: 'CREATE_BOARD', payload: { title } });

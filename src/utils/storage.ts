@@ -25,9 +25,14 @@ interface StoredBoard {
   columns: StoredColumn[];
 }
 
-export const saveBoards = (boards: KanbanBoard[]): void => {
+export const saveBoards = (boards: KanbanBoard[], currentBoardId?: string): void => {
   try {
+    console.log('💾 Saving boards to localStorage:', boards.length, 'boards');
     localStorage.setItem(STORAGE_KEY, JSON.stringify(boards));
+    if (currentBoardId) {
+      console.log('💾 Saving current board ID:', currentBoardId);
+      localStorage.setItem('current-board-id', currentBoardId);
+    }
   } catch (error) {
     console.warn('Failed to save boards to localStorage:', error);
   }
@@ -36,6 +41,7 @@ export const saveBoards = (boards: KanbanBoard[]): void => {
 export const loadBoards = (): KanbanBoard[] => {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
+    console.log('📖 Loading boards from localStorage:', stored ? 'found data' : 'no data');
     if (!stored) {
       return [];
     }
@@ -45,6 +51,7 @@ export const loadBoards = (): KanbanBoard[] => {
       console.warn('Invalid boards data in localStorage');
       return [];
     }
+    console.log('📖 Loaded', boards.length, 'boards from localStorage');
     
     return boards.map((board: StoredBoard) => ({
       ...board,
