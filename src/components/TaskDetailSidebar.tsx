@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
-import { Button, Box, Text, Heading } from '@primer/react';
-import { CalendarIcon, TrashIcon, XIcon } from '@primer/octicons-react';
+import React, { useEffect, useState } from 'react';
+import { Button, Box, Text, Heading, TextInput, Textarea } from '@primer/react';
+import { CalendarIcon, TrashIcon, XIcon, PencilIcon } from '@primer/octicons-react';
 import type { Task } from '../types';
 import { useKanban } from '../contexts/KanbanContext';
 
@@ -11,12 +11,29 @@ interface TaskDetailSidebarProps {
 }
 
 const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onClose }) => {
-  const { deleteTask, state } = useKanban();
+  const { deleteTask, updateTask, state } = useKanban();
+  const [isEditing, setIsEditing] = useState(false);
+  const [editTitle, setEditTitle] = useState('');
+  const [editDescription, setEditDescription] = useState('');
+  const [editDueDate, setEditDueDate] = useState('');
+
+  useEffect(() => {
+    if (task) {
+      setEditTitle(task.title);
+      setEditDescription(task.description || '');
+      setEditDueDate(task.dueDate?.toISOString().split('T')[0] || '');
+      setIsEditing(false);
+    }
+  }, [task]);
 
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        onClose();
+        if (isEditing) {
+          handleCancelEdit();
+        } else {
+          onClose();
+        }
       }
     };
 
@@ -27,7 +44,43 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
     return () => {
       document.removeEventListener('keydown', handleEscape);
     };
-  }, [isOpen, onClose]);
+  }, [isOpen, onClose, isEditing]);
+
+  const handleEdit = () => {
+    setIsEditing(true);
+  };
+
+  const handleSaveEdit = () => {
+    if (!task || !state.currentBoard || !editTitle.trim()) {
+      return;
+    }
+
+    const column = state.currentBoard.columns.find(col => 
+      col.tasks.some(t => t.id === task.id)
+    );
+
+    if (column) {
+      const updatedTask = {
+        ...task,
+        title: editTitle.trim(),
+        description: editDescription.trim() || undefined,
+        dueDate: editDueDate ? new Date(editDueDate) : undefined,
+        updatedAt: new Date()
+      };
+
+      updateTask(task.id, updatedTask);
+      setIsEditing(false);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    if (task) {
+      setEditTitle(task.title);
+      setEditDescription(task.description || '');
+      setEditDueDate(task.dueDate?.toISOString().split('T')[0] || '');
+    }
+    setIsEditing(false);
+  };
 
   const handleDelete = () => {
     if (!task || !state.currentBoard) {
@@ -138,116 +191,155 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
 
         {/* Content */}
         <Box sx={{ flex: "1", p: 4, overflowY: 'auto' }}>
-          <Box sx={{ mb: 4 }}>
-            <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: 'bold' }}>Description</Heading>
-            <Box
-              sx={{
-                p: 3,
-                bg: "canvas.subtle",
-                border: "1px solid",
-                borderRadius: 2,
-                borderColor: "border.default"
-              }}
-            >
-              {task.description ? (
-                <Text sx={{ fontSize: 1 }}>{task.description}</Text>
-              ) : (
-                <Text sx={{ fontSize: 1, color: "fg.muted", fontStyle: "italic" }}>
-                  No description set
-                </Text>
-              )}
-            </Box>
-          </Box>
+          {isEditing ? (
+            <>
+              {/* Edit Form */}
+              <Box sx={{ mb: 4 }}>
+                <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: 'bold' }}>Title</Heading>
+                <TextInput
+                  value={editTitle}
+                  onChange={(e) => setEditTitle(e.target.value)}
+                  placeholder="Task title"
+                  sx={{ width: '100%' }}
+                />
+              </Box>
 
-          {task.dueDate && (
-            <Box sx={{ mb: 4 }}>
-              <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: 'bold' }}>Due Date</Heading>
-              <Box
-                sx={{
-                  p: 3,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 2,
-                  bg: isOverdue() 
-                    ? 'danger.subtle' 
-                    : isDueSoon() 
-                    ? 'attention.subtle' 
-                    : 'canvas.subtle',
-                  borderRadius: 2,
-                  border: '1px solid',
-                  borderColor: isOverdue() 
-                    ? 'danger.emphasis' 
-                    : isDueSoon() 
-                    ? 'attention.emphasis' 
-                    : 'border.default'
-                }}
-              >
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flex: 1 }}>
-                  <CalendarIcon size={16} />
-                  <Text sx={{ fontSize: 1 }}>{formatDueDate(task.dueDate)}</Text>
+              <Box sx={{ mb: 4 }}>
+                <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: 'bold' }}>Description</Heading>
+                <Textarea
+                  value={editDescription}
+                  onChange={(e) => setEditDescription(e.target.value)}
+                  placeholder="Task description"
+                  rows={4}
+                  sx={{ width: '100%', resize: 'vertical' }}
+                />
+              </Box>
+
+              <Box sx={{ mb: 4 }}>
+                <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: 'bold' }}>Due Date</Heading>
+                <TextInput
+                  type="date"
+                  value={editDueDate}
+                  onChange={(e) => setEditDueDate(e.target.value)}
+                  sx={{ width: '100%' }}
+                />
+              </Box>
+            </>
+          ) : (
+            <>
+              {/* Display Mode */}
+              <Box sx={{ mb: 4 }}>
+                <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: 'bold' }}>Description</Heading>
+                <Box
+                  sx={{
+                    p: 3,
+                    bg: "canvas.subtle",
+                    border: "1px solid",
+                    borderRadius: 2,
+                    borderColor: "border.default"
+                  }}
+                >
+                  {task.description ? (
+                    <Text sx={{ fontSize: 1 }}>{task.description}</Text>
+                  ) : (
+                    <Text sx={{ fontSize: 1, color: "fg.muted", fontStyle: "italic" }}>
+                      No description set
+                    </Text>
+                  )}
                 </Box>
-                {isOverdue() && (
-                  <Text
-                    sx={{
-                      fontSize: 0,
-                      fontWeight: "bold",
-                      color: "danger.fg",
-                      bg: "danger.emphasis",
-                      px: 2,
-                      py: 1,
-                      borderRadius: 2,
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.025em'
-                    }}
-                  >
-                    Overdue
-                  </Text>
-                )}
-                {isDueSoon() && !isOverdue() && (
-                  <Text
-                    sx={{
-                      fontSize: 0,
-                      fontWeight: "bold",
-                      color: "attention.fg",
-                      bg: "attention.emphasis",
-                      px: 2,
-                      py: 1,
-                      borderRadius: 2,
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.025em'
-                    }}
-                  >
-                    Due Tomorrow
-                  </Text>
-                )}
               </Box>
-            </Box>
-          )}
 
-          <Box sx={{ mb: 4 }}>
-            <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: 'bold' }}>Created/Updated Info</Heading>
-            <Box
-              sx={{
-                p: 3,
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 2,
-                bg: 'canvas.subtle',
-                borderRadius: 2,
-                border: '1px solid',
-                borderColor: 'border.default'
-              }}
-            >
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Text sx={{ fontSize: 0, color: "fg.muted" }}>Created At:</Text>
-                <Text sx={{ fontSize: 1 }}>{formatDateTime(task.createdAt)}</Text>
+              {task.dueDate && (
+                <Box sx={{ mb: 4 }}>
+                  <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: 'bold' }}>Due Date</Heading>
+                  <Box
+                    sx={{
+                      p: 3,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 2,
+                      bg: isOverdue() 
+                        ? 'danger.subtle' 
+                        : isDueSoon() 
+                        ? 'attention.subtle' 
+                        : 'canvas.subtle',
+                      borderRadius: 2,
+                      border: '1px solid',
+                      borderColor: isOverdue() 
+                        ? 'danger.emphasis' 
+                        : isDueSoon() 
+                        ? 'attention.emphasis' 
+                        : 'border.default'
+                    }}
+                  >
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flex: 1 }}>
+                      <CalendarIcon size={16} />
+                      <Text sx={{ fontSize: 1 }}>{formatDueDate(task.dueDate)}</Text>
+                    </Box>
+                    {isOverdue() && (
+                      <Text
+                        sx={{
+                          fontSize: 0,
+                          fontWeight: "bold",
+                          color: "danger.fg",
+                          bg: "danger.emphasis",
+                          px: 2,
+                          py: 1,
+                          borderRadius: 2,
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.025em'
+                        }}
+                      >
+                        Overdue
+                      </Text>
+                    )}
+                    {isDueSoon() && !isOverdue() && (
+                      <Text
+                        sx={{
+                          fontSize: 0,
+                          fontWeight: "bold",
+                          color: "attention.fg",
+                          bg: "attention.emphasis",
+                          px: 2,
+                          py: 1,
+                          borderRadius: 2,
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.025em'
+                        }}
+                      >
+                        Due Tomorrow
+                      </Text>
+                    )}
+                  </Box>
+                </Box>
+              )}
+
+              <Box sx={{ mb: 4 }}>
+                <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: 'bold' }}>Created/Updated Info</Heading>
+                <Box
+                  sx={{
+                    p: 3,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 2,
+                    bg: 'canvas.subtle',
+                    borderRadius: 2,
+                    border: '1px solid',
+                    borderColor: 'border.default'
+                  }}
+                >
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Text sx={{ fontSize: 0, color: "fg.muted" }}>Created At:</Text>
+                    <Text sx={{ fontSize: 1 }}>{formatDateTime(task.createdAt)}</Text>
+                  </Box>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Text sx={{ fontSize: 0, color: "fg.muted" }}>Updated At:</Text>
+                    <Text sx={{ fontSize: 1 }}>{formatDateTime(task.updatedAt)}</Text>
+                  </Box>
+                </Box>
               </Box>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Text sx={{ fontSize: 0, color: "fg.muted" }}>Updated At:</Text>
-                <Text sx={{ fontSize: 1 }}>{formatDateTime(task.updatedAt)}</Text>
-              </Box>
-            </Box>
-          </Box>
+            </>
+          )}
         </Box>
 
         {/* Actions */}
@@ -259,15 +351,46 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
             flexShrink: 0
           }}
         >
-          <Button
-            onClick={handleDelete}
-            variant="danger"
-            size="medium"
-            leadingVisual={TrashIcon}
-            sx={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2 }}
-          >
-            Delete Task
-          </Button>
+          {isEditing ? (
+            <Box sx={{ display: 'flex', gap: 2 }}>
+              <Button
+                onClick={handleSaveEdit}
+                variant="primary"
+                size="medium"
+                sx={{ flex: 1 }}
+                disabled={!editTitle.trim()}
+              >
+                Save
+              </Button>
+              <Button
+                onClick={handleCancelEdit}
+                size="medium"
+                sx={{ flex: 1 }}
+              >
+                Cancel
+              </Button>
+            </Box>
+          ) : (
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <Button
+                onClick={handleEdit}
+                size="medium"
+                leadingVisual={PencilIcon}
+                sx={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2 }}
+              >
+                Edit Task
+              </Button>
+              <Button
+                onClick={handleDelete}
+                variant="danger"
+                size="medium"
+                leadingVisual={TrashIcon}
+                sx={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2 }}
+              >
+                Delete Task
+              </Button>
+            </Box>
+          )}
         </Box>
       </Box>
     </Box>
