@@ -88,8 +88,8 @@ const ColumnCreateDialog: React.FC<ColumnCreateDialogProps> = ({
           </Button>
         </Box>
 
-        <Box sx={{ mb: 4 }}>
-          <Text sx={{ fontSize: 1, color: 'fg.muted', mb: 2 }}>
+        <Box sx={{ mb: 4, display: 'flex', flexDirection: 'column', gap: 1 }}>
+          <Text sx={{ fontSize: 1, color: 'fg.muted' }}>
             カラム名
           </Text>
           <TextInput
