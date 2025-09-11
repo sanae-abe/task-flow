@@ -32,7 +32,6 @@ const ColumnTitle: React.FC<ColumnTitleProps> = ({
   };
 
   const handleTitleEdit = () => {
-    console.log('ColumnTitle: handleTitleEdit called');
     onTitleEdit();
   };
 

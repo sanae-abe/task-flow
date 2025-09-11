@@ -1,86 +1,60 @@
 import React from 'react';
-import { Button, Box, ActionMenu, ActionList } from '@primer/react';
-import { ChevronDownIcon } from '@primer/octicons-react';
+import { Button, Box, Text } from '@primer/react';
 import { useKanban } from '../contexts/KanbanContext';
 
 const BoardSelector: React.FC = () => {
   const { state, setCurrentBoard } = useKanban();
 
+  if (state.boards.length === 0) {
+    return (
+      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <Text sx={{ color: 'fg.muted', fontSize: 1 }}>
+          No boards available
+        </Text>
+      </Box>
+    );
+  }
+
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, position: 'relative' }}>
-      <ActionMenu>
-        <ActionMenu.Anchor>
-          <Button
-            variant="invisible"
-            size="medium"
-            trailingVisual={ChevronDownIcon}
+    <Box sx={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+      {state.boards.map((board) => {
+        const isSelected = state.currentBoard?.id === board.id;
+        
+        return (
+          <Box
+            key={board.id}
             sx={{
-              fontSize: 2,
-              fontWeight: '500',
-              color: 'fg.default',
-              '&:hover': {
-                backgroundColor: 'canvas.subtle'
-              }
+              px: 0,
+              py: 3,
+              borderBottom: isSelected ? '2px solid' : 'none',
+              borderBottomColor: isSelected ? 'accent.emphasis' : 'transparent',
+              height: '100%',
+              display: 'flex',
+              alignItems: 'center'
             }}
           >
-            {state.currentBoard ? state.currentBoard.title : 'Select a board'}
-          </Button>
-        </ActionMenu.Anchor>
-        <ActionMenu.Overlay 
-          width="medium" 
-          sx={{ 
-            minWidth: '200px',
-            backgroundColor: 'canvas.overlay',
-            border: '1px solid',
-            borderColor: 'border.default',
-            borderRadius: 2,
-            boxShadow: '0 8px 24px rgba(0, 0, 0, 0.12)',
-            zIndex: 1002,
-            position: 'absolute'
-          }}
-        >
-          <ActionList
-            sx={{
-              backgroundColor: 'canvas.overlay'
-            }}
-          >
-            {state.boards.length === 0 ? (
-                <ActionList.Item 
-                disabled
-                sx={{
-                  backgroundColor: 'canvas.overlay',
-                  color: 'fg.muted'
-                }}
-                >
-                No boards available
-                </ActionList.Item>
-            ) : (
-              state.boards.map((board) => (
-                <ActionList.Item
-                  key={board.id}
-                  onSelect={(event) => {
-                    event.preventDefault();
-                    setCurrentBoard(board.id);
-                  }}
-                  selected={state.currentBoard?.id === board.id}
-                  sx={{
-                    backgroundColor: 'canvas.overlay',
-                    '&:hover': {
-                      backgroundColor: 'actionListItem.default.hoverBg'
-                    },
-                    '&[data-selected="true"]': {
-                      backgroundColor: 'actionListItem.default.selectedBg',
-                      fontWeight: '600'
-                    }
-                  }}
-                >
-                  {board.title}
-                </ActionList.Item>
-              ))
-            )}
-          </ActionList>
-        </ActionMenu.Overlay>
-      </ActionMenu>
+            <Button
+              variant="invisible"
+              size="medium"
+              onClick={() => setCurrentBoard(board.id)}
+              sx={{
+                fontSize: 2,
+                fontWeight: isSelected ? '600' : '500',
+                color: isSelected ? 'fg.default' : 'fg.muted',
+                borderRadius: '6px',
+                px: 1,
+                py: 0,
+                '&:hover': {
+                  backgroundColor: 'canvas.subtle',
+                  color: 'fg.default'
+                }
+              }}
+            >
+              {board.title}
+            </Button>
+          </Box>
+        );
+      })}
     </Box>
   );
 };

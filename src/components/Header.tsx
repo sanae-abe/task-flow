@@ -19,7 +19,7 @@ const Header: React.FC = () => {
     <Box
       sx={{
         px: 4,
-        py: 3,
+        py: 0,
         bg: 'canvas.default',
         position: 'fixed',
         top: 0,
