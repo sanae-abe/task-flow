@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Task } from '../types';
+import type { Task } from '../types';
 import { getDateStatus } from '../utils/dateHelpers';
 
 export interface TaskStats {

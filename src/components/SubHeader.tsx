@@ -15,7 +15,9 @@ const SubHeader: React.FC = () => {
   const [showEditDialog, setShowEditDialog] = useState(false);
 
   const allTasks = useMemo(() => {
-    if (!state.currentBoard) return [];
+    if (!state.currentBoard) {
+      return [];
+    }
     return state.currentBoard.columns.flatMap(column => column.tasks);
   }, [state.currentBoard]);
 

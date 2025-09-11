@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Text, Button, TextInput, Dialog } from '@primer/react';
+import { Box, Text, Button, TextInput } from '@primer/react';
 import { XIcon } from '@primer/octicons-react';
 
 interface BoardEditDialogProps {
@@ -42,7 +42,7 @@ const BoardEditDialog: React.FC<BoardEditDialogProps> = ({
   }
 
   return (
-    <Dialog
+    <Box
       sx={{
         position: 'fixed',
         top: 0,
@@ -55,7 +55,7 @@ const BoardEditDialog: React.FC<BoardEditDialogProps> = ({
         alignItems: 'center',
         justifyContent: 'center'
       }}
-      onDismiss={onCancel}
+      onClick={onCancel}
     >
       <Box
         sx={{
@@ -68,6 +68,7 @@ const BoardEditDialog: React.FC<BoardEditDialogProps> = ({
           minWidth: '400px',
           maxWidth: '500px'
         }}
+        onClick={(e: React.MouseEvent) => e.stopPropagation()}
       >
         <Box
           sx={{
@@ -127,7 +128,7 @@ const BoardEditDialog: React.FC<BoardEditDialogProps> = ({
           </Button>
         </Box>
       </Box>
-    </Dialog>
+    </Box>
   );
 };
 

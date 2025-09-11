@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Text, Label } from '@primer/react';
 import { ClockIcon, AlertIcon, CheckIcon } from '@primer/octicons-react';
-import { TaskStats } from '../hooks/useTaskStats';
+import type { TaskStats } from '../hooks/useTaskStats';
 
 interface TaskStatsDisplayProps {
   stats: TaskStats;
