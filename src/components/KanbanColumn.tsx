@@ -78,31 +78,36 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({ column, onTaskClick }) => {
     if (window.confirm(`「${column.title}」カラムを削除しますか？このカラム内のすべてのタスクも削除されます。`)) {
       deleteColumn(column.id);
     }
-    setIsMenuOpen(false);
   };
 
   const handleRenameColumn = () => {
     setIsEditingTitle(true);
     setEditingTitle(column.title);
-    setIsMenuOpen(false);
   };
   
   return (
     <Box 
       bg="canvas.default" 
       borderRadius={2} 
-      p={3} 
-      border="1px solid" 
-      borderColor="border.default"
-      sx={{ minWidth: '320px', flexShrink: 0, minHeight: '600px' }}
+      p={4} 
+      sx={{ 
+        minWidth: '320px', 
+        flexShrink: 0, 
+        minHeight: '600px',
+        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
+        transition: 'all 0.2s ease',
+        '&:hover': {
+          boxShadow: '0 4px 16px rgba(0, 0, 0, 0.12)',
+          transform: 'translateY(-2px)'
+        }
+      }}
     >
       <Box
         display="flex"
         alignItems="center"
         justifyContent="space-between"
-        mb={3}
-        pb={2}
-        sx={{ borderBottom: `2px solid ${column.color}` }}
+        mb={4}
+        pb={3}
       >
         <Box display="flex" alignItems="center" flex="1">
           {isEditingTitle ? (
@@ -112,15 +117,29 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({ column, onTaskClick }) => {
               onBlur={handleTitleSave}
               onKeyDown={handleTitleKeyDown}
               autoFocus
-              sx={{ minWidth: '120px', maxWidth: '200px', fontSize: 2, fontWeight: 'bold' }}
+              sx={{ 
+                minWidth: '120px', 
+                maxWidth: '200px', 
+                fontSize: 2, 
+                fontWeight: '600',
+                border: 'none',
+                backgroundColor: 'transparent',
+                '&:focus': {
+                  backgroundColor: 'canvas.subtle',
+                  border: '1px solid',
+                  borderColor: 'accent.emphasis'
+                }
+              }}
             />
           ) : (
-            <>
+            <Box display="flex" alignItems="center" gap={2} flex="1">
               <Heading 
                 sx={{ 
                   fontSize: 2, 
                   margin: 0, 
                   cursor: 'pointer',
+                  fontWeight: '600',
+                  color: 'fg.default',
                   '&:hover': { color: 'accent.fg' }
                 }}
                 onDoubleClick={handleTitleDoubleClick}
@@ -128,13 +147,20 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({ column, onTaskClick }) => {
               >
                 {column.title}
               </Heading>
-              <Box display="flex" alignItems="center" ml={2}>
+              <Box display="flex" alignItems="center" gap={1}>
                 <Button
                   onClick={() => setIsAddingTask(true)}
                   variant="invisible"
                   size="small"
                   leadingVisual={PlusIcon}
                   aria-label="タスクを追加"
+                  sx={{
+                    color: 'fg.muted',
+                    '&:hover': { 
+                      color: 'accent.fg',
+                      backgroundColor: 'canvas.subtle'
+                    }
+                  }}
                 />
                 <ActionMenu>
                   <ActionMenu.Anchor>
@@ -143,6 +169,13 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({ column, onTaskClick }) => {
                       size="small"
                       leadingVisual={KebabHorizontalIcon}
                       aria-label="カラムオプション"
+                      sx={{
+                        color: 'fg.muted',
+                        '&:hover': { 
+                          color: 'accent.fg',
+                          backgroundColor: 'canvas.subtle'
+                        }
+                      }}
                     />
                   </ActionMenu.Anchor>
                   <ActionMenu.Overlay>
@@ -157,56 +190,54 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({ column, onTaskClick }) => {
                   </ActionMenu.Overlay>
                 </ActionMenu>
               </Box>
-            </>
+            </Box>
           )}
         </Box>
-        <Box display="flex" alignItems="center" gap={2}>
-          <Box
-            sx={{
-              width: '12px',
-              height: '12px',
-              borderRadius: '50%',
-              backgroundColor: column.color
-            }}
-          />
-          <Text
-            fontSize={0}
-            fontWeight="bold"
-            color="fg.muted"
-            bg="canvas.subtle"
-            px={2}
-            py={1}
-            borderRadius={2}
-          >
-            {column.tasks.length}
-          </Text>
+        <Box
+          sx={{
+            px: 3,
+            py: 1,
+            borderRadius: 2,
+            fontSize: 1,
+            fontWeight: '600'
+          }}
+        >
+          {column.tasks.length}
         </Box>
       </Box>
       
       {isAddingTask && (
         <Box 
-          bg="canvas.subtle" 
+          bg="canvas.default" 
           borderRadius={2} 
-          p={3} 
+          p={4} 
           border="1px solid" 
           borderColor="border.default"
-          mb={3}
+          mb={4}
+          sx={{
+            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.12)'
+          }}
         >
           <TextInput
             value={newTaskTitle}
             onChange={(e) => setNewTaskTitle(e.target.value)}
             placeholder="タスクタイトル"
             autoFocus
-            sx={{ mb: 2 }}
+            sx={{ mb: 3, fontSize: 2, fontWeight: '500' }}
           />
           <Textarea
             value={newTaskDescription}
             onChange={(e) => setNewTaskDescription(e.target.value)}
             placeholder="タスクの説明（任意）"
-            sx={{ mb: 3, resize: 'none', height: '80px' }}
+            sx={{ 
+              mb: 3, 
+              resize: 'none', 
+              height: '80px',
+              fontSize: 1
+            }}
           />
-          <Box mb={3}>
-            <Text fontSize={1} fontWeight="bold" display="block" mb={1}>
+          <Box mb={4}>
+            <Text fontSize={1} fontWeight="600" display="block" mb={2} color="fg.default">
               期限（任意）
             </Text>
             <TextInput
@@ -217,10 +248,10 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({ column, onTaskClick }) => {
             />
           </Box>
           <Box display="flex" gap={2}>
-            <Button onClick={handleAddTask} size="small">
+            <Button onClick={handleAddTask} variant="primary" sx={{ fontWeight: '500' }}>
               追加
             </Button>
-            <Button onClick={handleCancel} size="small">
+            <Button onClick={handleCancel}>
               キャンセル
             </Button>
           </Box>

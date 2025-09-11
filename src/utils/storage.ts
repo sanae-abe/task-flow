@@ -14,7 +14,6 @@ interface StoredTask {
 interface StoredColumn {
   id: string;
   title: string;
-  color: string;
   tasks: StoredTask[];
 }
 

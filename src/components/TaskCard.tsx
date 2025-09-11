@@ -103,24 +103,32 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, columnId, onTaskClick }) => {
       <Box 
         bg="canvas.default" 
         borderRadius={2} 
-        p={3} 
+        p={4} 
         border="1px solid" 
         borderColor="border.default"
+        sx={{
+          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.12)'
+        }}
       >
         <TextInput
           value={editTitle}
           onChange={(e) => setEditTitle(e.target.value)}
           placeholder="タスクタイトル"
-          sx={{ mb: 2 }}
+          sx={{ mb: 3, fontSize: 2, fontWeight: '500' }}
         />
         <Textarea
           value={editDescription}
           onChange={(e) => setEditDescription(e.target.value)}
           placeholder="タスクの説明"
-          sx={{ mb: 3, resize: 'none', height: '80px' }}
+          sx={{ 
+            mb: 4, 
+            resize: 'none', 
+            height: '80px',
+            fontSize: 1
+          }}
         />
-        <Box mb={3}>
-          <Text fontSize={1} fontWeight="bold" display="block" mb={1}>
+        <Box mb={4}>
+          <Text fontSize={1} fontWeight="600" display="block" mb={2} color="fg.default">
             期限（任意）
           </Text>
           <TextInput
@@ -131,10 +139,10 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, columnId, onTaskClick }) => {
           />
         </Box>
         <Box display="flex" gap={2}>
-          <Button onClick={handleSave} size="small">
+          <Button onClick={handleSave} variant="primary" sx={{ fontWeight: '500', flex: 1 }}>
             保存
           </Button>
-          <Button onClick={handleCancel} size="small">
+          <Button onClick={handleCancel}>
             キャンセル
           </Button>
         </Box>
@@ -147,7 +155,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, columnId, onTaskClick }) => {
       ref={setNodeRef}
       bg="canvas.default"
       borderRadius={2}
-      p={3}
+      p={4}
       border="1px solid"
       borderColor={
         isOverdue() 
@@ -159,9 +167,12 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, columnId, onTaskClick }) => {
       sx={{
         ...style,
         cursor: 'grab',
+        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+        transition: 'all 0.2s ease',
         '&:hover': {
-          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-          transform: 'translateY(-2px)'
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+          transform: 'translateY(-2px)',
+          borderColor: 'accent.muted'
         },
         '&:active': {
           cursor: 'grabbing'
@@ -174,58 +185,87 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, columnId, onTaskClick }) => {
       onClick={handleTaskClick}
     >
       <Box>
-        <Heading sx={{ fontSize: 2, margin: 0, mb: 2 }}>
+        <Heading sx={{ 
+          fontSize: 2, 
+          margin: 0, 
+          mb: 2, 
+          fontWeight: '600',
+          color: 'fg.default',
+          lineHeight: '1.4'
+        }}>
           {task.title}
         </Heading>
         {task.description && (
-          <Text fontSize={1} color="fg.muted" sx={{ mb: 3 }}>
+          <Text fontSize={1} color="fg.muted" sx={{ 
+            mb: 3, 
+            lineHeight: '1.5',
+            display: '-webkit-box',
+            WebkitLineClamp: 3,
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden'
+          }}>
             {task.description}
           </Text>
         )}
-        {task.dueDate && (
-          <Box 
-            display="flex" 
-            alignItems="center" 
-            gap={1}
-            mb={2}
-            bg={
-              isOverdue() 
-                ? 'danger.subtle' 
-                : isDueSoon() 
-                ? 'attention.subtle' 
-                : 'neutral.subtle'
-            }
-            color={
-              isOverdue() 
-                ? 'danger.fg' 
-                : isDueSoon() 
-                ? 'attention.fg' 
-                : 'fg.muted'
-            }
-            px={2}
-            py={1}
-            borderRadius={1}
-            fontSize={0}
-            fontWeight="bold"
-          >
-            <CalendarIcon size={12} />
-            期限: {formatDueDate(task.dueDate)}
-            {isOverdue() && ' (期限切れ)'}
-            {isDueSoon() && !isOverdue() && ' (明日まで)'}
-          </Box>
-        )}
-        <Text fontSize={0} color="fg.muted">
-          作成: {task.createdAt.toLocaleDateString('ja-JP')}
-        </Text>
+        
+        <Box display="flex" flexDirection="column" gap={2}>
+          {task.dueDate && (
+            <Box 
+              display="inline-flex" 
+              alignItems="center" 
+              gap={1}
+              bg={
+                isOverdue() 
+                  ? 'danger.subtle' 
+                  : isDueSoon() 
+                  ? 'attention.subtle' 
+                  : 'neutral.subtle'
+              }
+              color={
+                isOverdue() 
+                  ? 'danger.fg' 
+                  : isDueSoon() 
+                  ? 'attention.fg' 
+                  : 'fg.muted'
+              }
+              px={2}
+              py={1}
+              borderRadius={2}
+              fontSize={0}
+              fontWeight="600"
+              sx={{ alignSelf: 'flex-start' }}
+            >
+              <CalendarIcon size={12} />
+              期限: {formatDueDate(task.dueDate)}
+              {isOverdue() && ' (期限切れ)'}
+              {isDueSoon() && !isOverdue() && ' (明日まで)'}
+            </Box>
+          )}
+          
+          <Text fontSize={0} color="fg.muted" fontWeight="500">
+            作成: {task.createdAt.toLocaleDateString('ja-JP')}
+          </Text>
+        </Box>
       </Box>
-      <Box display="flex" gap={2} mt={3}>
+      
+      <Box 
+        display="flex" 
+        gap={2} 
+        mt={4}
+        pt={3}
+        borderTop="1px solid"
+        borderColor="border.muted"
+      >
         <Button
-          onClick={(e) => {
+          onClick={(e: React.MouseEvent) => {
             e.stopPropagation();
             setIsEditing(true);
           }}
           size="small"
-          variant="secondary"
+          sx={{
+            fontWeight: '500',
+            flex: 1
+          }}
         >
           編集
         </Button>
@@ -236,6 +276,9 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, columnId, onTaskClick }) => {
           }}
           size="small"
           variant="danger"
+          sx={{
+            fontWeight: '500'
+          }}
         >
           削除
         </Button>

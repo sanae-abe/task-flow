@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Button, Box, Text, Heading, Overlay } from '@primer/react';
+import { Button, Box, Text, Heading } from '@primer/react';
 import { CalendarIcon, TrashIcon, XIcon } from '@primer/octicons-react';
 import type { Task } from '../types';
 import { useKanban } from '../contexts/KanbanContext';
@@ -95,7 +95,7 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
   }
 
   return (
-    <Overlay
+    <Box
       position="fixed"
       top={0}
       right={0}
@@ -192,7 +192,7 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
                     bg="danger.emphasis"
                     px={2}
                     py={1}
-                    borderRadius={1}
+                    borderRadius={2}
                     sx={{ textTransform: 'uppercase', letterSpacing: '0.025em' }}
                   >
                     期限切れ
@@ -206,7 +206,7 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
                     bg="attention.emphasis"
                     px={2}
                     py={1}
-                    borderRadius={1}
+                    borderRadius={2}
                     sx={{ textTransform: 'uppercase', letterSpacing: '0.025em' }}
                   >
                     明日まで
@@ -258,7 +258,7 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
           </Button>
         </Box>
       </Box>
-    </Overlay>
+    </Box>
   );
 };
 

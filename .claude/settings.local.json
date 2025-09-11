@@ -35,7 +35,10 @@
       "Bash(npm uninstall @heroicons/react --legacy-peer-deps)",
       "Bash(npm install styled-components --legacy-peer-deps)",
       "Bash(pkill -f \"react-scripts start\")",
-      "Bash(git add .)"
+      "Bash(git add .)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nfeat: PulseデザインシステムからPrimer Design Systemに移行\n\n- 依存関係を更新: @primer/react, @primer/octicons-react, @primer/css, styled-components を追加\n- @heroicons/react を削除してPrimer Octiconsに移行\n- 全コンポーネントをPrimerコンポーネントに置き換え\n- CSS変数とクラスをPrimerのセマンティックトークンに置き換え\n- ThemeProviderとBaseStylesでアプリケーションをラップ\n\n🤖 Generated with [Claude Code](https://claude.ai/code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(cat /Users/sanae.abe/workspace/kanban-app/src/components/Header.tsx)",
+      "Bash(npm install @emotion/is-prop-valid --legacy-peer-deps)"
     ],
     "deny": [],
     "ask": []

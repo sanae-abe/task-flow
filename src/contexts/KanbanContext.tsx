@@ -14,7 +14,7 @@ type KanbanAction =
   | { type: 'CREATE_BOARD'; payload: { title: string } }
   | { type: 'SET_CURRENT_BOARD'; payload: string }
   | { type: 'UPDATE_BOARD'; payload: { boardId: string; updates: Partial<KanbanBoard> } }
-  | { type: 'CREATE_COLUMN'; payload: { boardId: string; title: string; color?: string } }
+  | { type: 'CREATE_COLUMN'; payload: { boardId: string; title: string} }
   | { type: 'CREATE_TASK'; payload: { columnId: string; title: string; description: string; dueDate?: Date } }
   | { type: 'MOVE_TASK'; payload: { taskId: string; sourceColumnId: string; targetColumnId: string; targetIndex: number } }
   | { type: 'UPDATE_TASK'; payload: { taskId: string; updates: Partial<Task> } }
@@ -28,7 +28,7 @@ interface KanbanContextType {
   createBoard: (title: string) => void;
   setCurrentBoard: (boardId: string) => void;
   updateBoard: (boardId: string, updates: Partial<KanbanBoard>) => void;
-  createColumn: (title: string, color?: string) => void;
+  createColumn: (title: string) => void;
   createTask: (columnId: string, title: string, description: string, dueDate?: Date) => void;
   moveTask: (taskId: string, sourceColumnId: string, targetColumnId: string, targetIndex: number) => void;
   updateTask: (taskId: string, updates: Partial<Task>) => void;
@@ -69,20 +69,17 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
           {
             id: uuidv4(),
             title: 'To Do',
-            tasks: [],
-            color: '#E96C7F',
+            tasks: []
           },
           {
             id: uuidv4(),
             title: 'In Progress',
-            tasks: [],
-            color: '#EDC369',
+            tasks: []
           },
           {
             id: uuidv4(),
             title: 'Done',
-            tasks: [],
-            color: '#10B981',
+            tasks: []
           },
         ],
         createdAt: new Date(),
@@ -132,7 +129,6 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
         id: uuidv4(),
         title: action.payload.title,
         tasks: [],
-        color: action.payload.color || '#6b7280',
       };
       
       const updatedBoard = {
@@ -354,11 +350,11 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     dispatch({ type: 'UPDATE_BOARD', payload: { boardId, updates } });
   };
   
-  const createColumn = (title: string, color?: string) => {
+  const createColumn = (title: string) => {
     if (!state.currentBoard) {
       return;
     }
-    dispatch({ type: 'CREATE_COLUMN', payload: { boardId: state.currentBoard.id, title, color } });
+    dispatch({ type: 'CREATE_COLUMN', payload: { boardId: state.currentBoard.id, title } });
   };
   
   const createTask = (columnId: string, title: string, description: string, dueDate?: Date) => {
