@@ -72,7 +72,7 @@ const TaskDisplay: React.FC<TaskDisplayProps> = ({
       )}
 
       {task.labels && task.labels.length > 0 && (
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 1 }}>
           {task.labels.map((label) => {
             const colors = getLabelColors(label.color);
 
