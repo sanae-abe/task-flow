@@ -4,6 +4,13 @@ export interface Label {
   color: string;
 }
 
+export interface SubTask {
+  id: string;
+  title: string;
+  completed: boolean;
+  createdAt: Date;
+}
+
 export interface Task {
   id: string;
   title: string;
@@ -12,6 +19,7 @@ export interface Task {
   updatedAt: Date;
   dueDate?: Date;
   labels?: Label[];
+  subTasks?: SubTask[];
 }
 
 export interface Column {

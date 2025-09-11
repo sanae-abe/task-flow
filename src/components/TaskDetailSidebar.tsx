@@ -7,6 +7,7 @@ import TaskDisplayContent from './TaskDisplayContent';
 import TaskMetadata from './TaskMetadata';
 import ConfirmDialog from './ConfirmDialog';
 import TaskEditDialog from './TaskEditDialog';
+import SubTaskList from './SubTaskList';
 
 interface TaskDetailSidebarProps {
   task: Task | null;
@@ -15,7 +16,7 @@ interface TaskDetailSidebarProps {
 }
 
 const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onClose }) => {
-  const { deleteTask, updateTask, state } = useKanban();
+  const { deleteTask, updateTask, state, addSubTask, toggleSubTask, deleteSubTask } = useKanban();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
   
@@ -86,6 +87,24 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
     setShowEditDialog(false);
   };
 
+  const handleAddSubTask = (title: string) => {
+    if (task) {
+      addSubTask(task.id, title);
+    }
+  };
+
+  const handleToggleSubTask = (subTaskId: string) => {
+    if (task) {
+      toggleSubTask(task.id, subTaskId);
+    }
+  };
+
+  const handleDeleteSubTask = (subTaskId: string) => {
+    if (task) {
+      deleteSubTask(task.id, subTaskId);
+    }
+  };
+
   if (!isOpen || !task) {
     return null;
   }
@@ -135,6 +154,12 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
         {/* Content */}
         <Box sx={{ flex: "1", p: 4, overflowY: 'auto' }}>
           <TaskDisplayContent task={task} columnName={columnName} />
+          <SubTaskList
+            subTasks={task.subTasks || []}
+            onAddSubTask={handleAddSubTask}
+            onToggleSubTask={handleToggleSubTask}
+            onDeleteSubTask={handleDeleteSubTask}
+          />
           <TaskMetadata task={task} />
         </Box>
 

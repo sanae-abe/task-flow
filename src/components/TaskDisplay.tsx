@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Text, Heading, IconButton } from '@primer/react';
-import { CalendarIcon, CheckCircleIcon, CheckCircleFillIcon } from '@primer/octicons-react';
+import { CalendarIcon, CheckCircleIcon, CheckCircleFillIcon, TasklistIcon } from '@primer/octicons-react';
 import type { Task } from '../types';
 
 interface TaskDisplayProps {
@@ -29,7 +29,7 @@ const TaskDisplay: React.FC<TaskDisplayProps> = ({
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
         {onComplete && (
           <IconButton
-            aria-label={isRightmostColumn ? "タスクを未完了にする" : "タスクを完了"}
+            aria-label={isRightmostColumn ? "タスクを未完了にする" : "タスクを完了にする"}
             icon={isRightmostColumn ? CheckCircleFillIcon : CheckCircleIcon}
             size="small"
             onClick={onComplete}
@@ -121,8 +121,8 @@ const TaskDisplay: React.FC<TaskDisplayProps> = ({
           {task.description}
         </Text>
       )}
-      
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 2, marginTop: 'auto' }}>
+
+      <Box sx={{ display: "flex", justifyContent: "space-between", marginTop: 'auto' }}>
         {task.dueDate && (
             <Box 
             sx={{ 
@@ -153,10 +153,38 @@ const TaskDisplay: React.FC<TaskDisplayProps> = ({
             >
             <CalendarIcon size={12} />
             期限: {formatDueDate(task.dueDate)}
-            {isOverdue() && ' (Overdue)'}
-            {isDueToday() && !isOverdue() && ' (Due Today)'}
-            {isDueTomorrow() && !isOverdue() && !isDueToday() && ' (Due Tomorrow)'}
             </Box>
+        )}
+
+        {/* サブタスク進捗表示 */}
+        {task.subTasks && task.subTasks.length > 0 && (
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+              bg: 'neutral.subtle',
+              px: 2,
+              py: 1,
+              borderRadius: 2,
+              fontSize: 0,
+              fontWeight: '500',
+              alignSelf: 'flex-start'
+            }}
+          >
+            <TasklistIcon size={12} />
+            {(() => {
+              const completed = task.subTasks.filter(sub => sub.completed).length;
+              const total = task.subTasks.length;
+              return (
+                <>
+                  <Text sx={{ color: 'fg.default', fontSize: 0 }}>
+                    サブタスク: {completed}/{total} 完了
+                  </Text>
+                </>
+              );
+            })()}
+          </Box>
         )}
       </Box>
     </Box>

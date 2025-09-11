@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import type { KanbanBoard, Column, Task, Label } from '../types';
+import type { KanbanBoard, Column, Task, Label, SubTask } from '../types';
 import { saveBoards, loadBoards } from '../utils/storage';
 
 interface KanbanState {
@@ -22,7 +22,10 @@ type KanbanAction =
   | { type: 'DELETE_TASK'; payload: { taskId: string; columnId: string } }
   | { type: 'DELETE_COLUMN'; payload: { columnId: string } }
   | { type: 'UPDATE_COLUMN'; payload: { columnId: string; updates: Partial<Column> } }
-  | { type: 'CLEAR_COMPLETED_TASKS' };
+  | { type: 'CLEAR_COMPLETED_TASKS' }
+  | { type: 'ADD_SUBTASK'; payload: { taskId: string; title: string } }
+  | { type: 'TOGGLE_SUBTASK'; payload: { taskId: string; subTaskId: string } }
+  | { type: 'DELETE_SUBTASK'; payload: { taskId: string; subTaskId: string } };
 
 interface KanbanContextType {
   state: KanbanState;
@@ -39,6 +42,9 @@ interface KanbanContextType {
   deleteColumn: (columnId: string) => void;
   updateColumn: (columnId: string, updates: Partial<Column>) => void;
   clearCompletedTasks: () => void;
+  addSubTask: (taskId: string, title: string) => void;
+  toggleSubTask: (taskId: string, subTaskId: string) => void;
+  deleteSubTask: (taskId: string, subTaskId: string) => void;
 }
 
 const KanbanContext = createContext<KanbanContextType | undefined>(undefined);
@@ -388,6 +394,115 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
         currentBoard: updatedBoard,
       };
     }
+
+    case 'ADD_SUBTASK': {
+      if (!state.currentBoard) {
+        return state;
+      }
+
+      const { taskId, title } = action.payload;
+      const newSubTask: SubTask = {
+        id: uuidv4(),
+        title,
+        completed: false,
+        createdAt: new Date()
+      };
+
+      const updatedBoard = {
+        ...state.currentBoard,
+        columns: state.currentBoard.columns.map(column => ({
+          ...column,
+          tasks: column.tasks.map(task =>
+            task.id === taskId
+              ? {
+                  ...task,
+                  subTasks: [...(task.subTasks || []), newSubTask],
+                  updatedAt: new Date()
+                }
+              : task
+          )
+        })),
+        updatedAt: new Date()
+      };
+
+      return {
+        ...state,
+        boards: state.boards.map(board =>
+          board.id === updatedBoard.id ? updatedBoard : board
+        ),
+        currentBoard: updatedBoard
+      };
+    }
+
+    case 'TOGGLE_SUBTASK': {
+      if (!state.currentBoard) {
+        return state;
+      }
+
+      const { taskId, subTaskId } = action.payload;
+
+      const updatedBoard = {
+        ...state.currentBoard,
+        columns: state.currentBoard.columns.map(column => ({
+          ...column,
+          tasks: column.tasks.map(task =>
+            task.id === taskId
+              ? {
+                  ...task,
+                  subTasks: task.subTasks?.map(subTask =>
+                    subTask.id === subTaskId
+                      ? { ...subTask, completed: !subTask.completed }
+                      : subTask
+                  ),
+                  updatedAt: new Date()
+                }
+              : task
+          )
+        })),
+        updatedAt: new Date()
+      };
+
+      return {
+        ...state,
+        boards: state.boards.map(board =>
+          board.id === updatedBoard.id ? updatedBoard : board
+        ),
+        currentBoard: updatedBoard
+      };
+    }
+
+    case 'DELETE_SUBTASK': {
+      if (!state.currentBoard) {
+        return state;
+      }
+
+      const { taskId, subTaskId } = action.payload;
+
+      const updatedBoard = {
+        ...state.currentBoard,
+        columns: state.currentBoard.columns.map(column => ({
+          ...column,
+          tasks: column.tasks.map(task =>
+            task.id === taskId
+              ? {
+                  ...task,
+                  subTasks: task.subTasks?.filter(subTask => subTask.id !== subTaskId),
+                  updatedAt: new Date()
+                }
+              : task
+          )
+        })),
+        updatedAt: new Date()
+      };
+
+      return {
+        ...state,
+        boards: state.boards.map(board =>
+          board.id === updatedBoard.id ? updatedBoard : board
+        ),
+        currentBoard: updatedBoard
+      };
+    }
     
     default:
       return state;
@@ -527,6 +642,18 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   const clearCompletedTasks = () => {
     dispatch({ type: 'CLEAR_COMPLETED_TASKS' });
   };
+
+  const addSubTask = (taskId: string, title: string) => {
+    dispatch({ type: 'ADD_SUBTASK', payload: { taskId, title } });
+  };
+
+  const toggleSubTask = (taskId: string, subTaskId: string) => {
+    dispatch({ type: 'TOGGLE_SUBTASK', payload: { taskId, subTaskId } });
+  };
+
+  const deleteSubTask = (taskId: string, subTaskId: string) => {
+    dispatch({ type: 'DELETE_SUBTASK', payload: { taskId, subTaskId } });
+  };
   
   return (
     <KanbanContext.Provider
@@ -545,6 +672,9 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         deleteColumn,
         updateColumn,
         clearCompletedTasks,
+        addSubTask,
+        toggleSubTask,
+        deleteSubTask,
       }}
     >
       {children}

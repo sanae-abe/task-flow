@@ -29,6 +29,36 @@ const TaskDisplayContent: React.FC<TaskDisplayContentProps> = ({ task, columnNam
           </Box>
         </Box>
       )}
+
+      {task.labels && task.labels.length > 0 && (
+        <Box sx={{ mb: 4 }}>
+          <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: 'bold' }}>ラベル</Heading>
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+            {task.labels.map((label) => {
+              const colors = getLabelColors(label.color);
+              
+              return (
+                <Box
+                  key={label.id}
+                  sx={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    bg: colors.bg,
+                    color: colors.color,
+                    px: 2,
+                    py: 1,
+                    borderRadius: 2,
+                    fontSize: 0,
+                    fontWeight: '500'
+                  }}
+                >
+                  {label.name}
+                </Box>
+              );
+            })}
+          </Box>
+        </Box>
+      )}
       
       <Box sx={{ mb: 4 }}>
         <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: 'bold' }}>説明</Heading>
@@ -123,36 +153,6 @@ const TaskDisplayContent: React.FC<TaskDisplayContentProps> = ({ task, columnNam
                 明日期限
               </Text>
             )}
-          </Box>
-        </Box>
-      )}
-
-      {task.labels && task.labels.length > 0 && (
-        <Box sx={{ mb: 4 }}>
-          <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: 'bold' }}>ラベル</Heading>
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-            {task.labels.map((label) => {
-              const colors = getLabelColors(label.color);
-              
-              return (
-                <Box
-                  key={label.id}
-                  sx={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    bg: colors.bg,
-                    color: colors.color,
-                    px: 2,
-                    py: 1,
-                    borderRadius: 2,
-                    fontSize: 0,
-                    fontWeight: '500'
-                  }}
-                >
-                  {label.name}
-                </Box>
-              );
-            })}
           </Box>
         </Box>
       )}
