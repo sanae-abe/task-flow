@@ -1,6 +1,6 @@
 import React from 'react';
-import { Button, Box, ActionMenu, ActionList } from '@primer/react';
-import { PlusIcon, KebabHorizontalIcon, PencilIcon } from '@primer/octicons-react';
+import { Button, Box } from '@primer/react';
+import { PlusIcon, PencilIcon, TrashIcon } from '@primer/octicons-react';
 
 interface ColumnActionsProps {
   onAddTask: () => void;
@@ -13,8 +13,18 @@ const ColumnActions: React.FC<ColumnActionsProps> = ({
   onTitleEdit,
   onDeleteColumn
 }) => {
+  const handleEditClick = () => {
+    console.log('ColumnActions: Edit column name clicked');
+    onTitleEdit();
+  };
+
+  const handleDeleteClick = () => {
+    console.log('ColumnActions: Delete column clicked');
+    onDeleteColumn();
+  };
+
   return (
-    <Box display="flex" alignItems="center" gap={1}>
+    <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
       <Button
         onClick={onAddTask}
         variant="invisible"
@@ -22,43 +32,29 @@ const ColumnActions: React.FC<ColumnActionsProps> = ({
         leadingVisual={PlusIcon}
         aria-label="Add task"
       />
-      <ActionMenu>
-        <ActionMenu.Anchor>
-          <Button
-            variant="invisible"
-            size="small"
-            leadingVisual={KebabHorizontalIcon}
-            aria-label="Column options"
-          />
-        </ActionMenu.Anchor>
-        <ActionMenu.Overlay 
-          width="medium" 
-        >
-          <ActionList>
-            <ActionList.Item 
-              onSelect={(event) => {
-                event.preventDefault();
-                onTitleEdit();
-              }}
-            >
-              <ActionList.LeadingVisual>
-                <PencilIcon size={16} />
-              </ActionList.LeadingVisual>
-              Edit column name
-            </ActionList.Item>
-            <ActionList.Divider />
-            <ActionList.Item 
-              variant="danger" 
-              onSelect={(event) => {
-                event.preventDefault();
-                onDeleteColumn();
-              }}
-            >
-              Delete column
-            </ActionList.Item>
-          </ActionList>
-        </ActionMenu.Overlay>
-      </ActionMenu>
+      <Button
+        onClick={handleEditClick}
+        variant="invisible"
+        size="small"
+        leadingVisual={PencilIcon}
+        aria-label="Edit column name"
+        title="Edit column name"
+      />
+      <Button
+        onClick={handleDeleteClick}
+        variant="invisible"
+        size="small"
+        leadingVisual={TrashIcon}
+        aria-label="Delete column"
+        title="Delete column"
+        sx={{
+          color: 'danger.fg',
+          '&:hover': {
+            backgroundColor: 'danger.subtle',
+            color: 'danger.fg'
+          }
+        }}
+      />
     </Box>
   );
 };

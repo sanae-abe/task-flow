@@ -31,6 +31,11 @@ const ColumnTitle: React.FC<ColumnTitleProps> = ({
     }
   };
 
+  const handleTitleEdit = () => {
+    console.log('ColumnTitle: handleTitleEdit called');
+    onTitleEdit();
+  };
+
   if (isEditingTitle) {
     return (
       <TextInput
@@ -57,7 +62,7 @@ const ColumnTitle: React.FC<ColumnTitleProps> = ({
   }
 
   return (
-    <Box display="flex" alignItems="center" sx={{ gap: 2 }} flex="1">
+    <Box sx={{ display: "flex", flex: "1", alignItems: "center", gap: 2 }}>
       <Heading 
         sx={{ 
           fontSize: 2, 
@@ -67,7 +72,7 @@ const ColumnTitle: React.FC<ColumnTitleProps> = ({
           color: 'fg.default',
           '&:hover': { color: 'accent.fg' }
         }}
-        onDoubleClick={onTitleEdit}
+        onDoubleClick={handleTitleEdit}
         title="Double-click to edit"
       >
         {column.title}

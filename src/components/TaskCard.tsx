@@ -71,18 +71,16 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, columnId, onTaskClick }) => {
     <Box
       ref={setNodeRef}
       bg="canvas.default"
-      borderRadius={2}
       p={4}
       border="1px solid"
-      borderColor={
-        isOverdue() 
+      sx={{
+        ...style,
+        borderRadius: 2,
+        borderColor: isOverdue() 
           ? 'danger.emphasis' 
           : isDueSoon() 
           ? 'attention.emphasis' 
-          : 'border.default'
-      }
-      sx={{
-        ...style,
+          : 'border.default',
         cursor: 'grab',
         boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
         transition: 'all 0.2s ease',

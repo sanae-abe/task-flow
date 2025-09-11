@@ -27,13 +27,17 @@ export const useColumnState = (column: Column): UseColumnStateReturn => {
   }, [column.title]);
 
   const handleTitleEdit = useCallback(() => {
+    console.log('useColumnState: handleTitleEdit called for column:', column.title);
     setIsEditingTitle(true);
     setEditingTitle(column.title);
   }, [column.title]);
 
   const handleTitleSave = useCallback(() => {
-    if (editingTitle.trim() && editingTitle.trim() !== column.title) {
-      updateColumn(column.id, { title: editingTitle.trim() });
+    const trimmedTitle = editingTitle.trim();
+    if (trimmedTitle && trimmedTitle !== column.title) {
+      updateColumn(column.id, { title: trimmedTitle });
+    } else if (!trimmedTitle) {
+      setEditingTitle(column.title);
     }
     setIsEditingTitle(false);
   }, [editingTitle, column.title, column.id, updateColumn]);

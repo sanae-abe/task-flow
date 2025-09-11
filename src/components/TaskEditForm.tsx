@@ -31,12 +31,15 @@ const TaskEditForm: React.FC<TaskEditFormProps> = ({
 
   return (
     <Box 
-      bg="canvas.default" 
-      borderRadius={2} 
-      p={4} 
-      border="1px solid" 
-      borderColor="border.default"
       sx={{
+        p: 4,
+        display: 'flex', 
+        flexDirection: 'column',
+        gap: 1,
+        bg: 'canvas.default',
+        borderRadius: 2,
+        border: '1px solid',
+        borderColor: 'border.default',
         boxShadow: '0 2px 8px rgba(0, 0, 0, 0.12)'
       }}
       onKeyDown={handleKeyDown}
@@ -59,8 +62,8 @@ const TaskEditForm: React.FC<TaskEditFormProps> = ({
           fontSize: 1
         }}
       />
-      <Box mb={4}>
-        <Text fontSize={1} fontWeight="600" display="block" mb={2} color="fg.default">
+      <Box sx={{ mb: 4 }}>
+        <Text sx={{ fontSize: 1, fontWeight: "600", display: "block", mb: 2, color: "fg.default" }}>
           Due Date (optional)
         </Text>
         <TextInput
@@ -70,7 +73,7 @@ const TaskEditForm: React.FC<TaskEditFormProps> = ({
           sx={{ width: '100%' }}
         />
       </Box>
-      <Box display="flex" sx={{ gap: 2 }}>
+      <Box sx={{ display: 'flex', gap: 2 }}>
         <Button onClick={onSave} variant="primary" sx={{ fontWeight: '500', flex: 1 }}>
           Save
         </Button>

@@ -34,7 +34,7 @@ const TaskDisplay: React.FC<TaskDisplayProps> = ({
       </Heading>
       
       {task.description && (
-        <Text fontSize={1} color="fg.muted" sx={{ 
+        <Text sx={{ fontSize: 1, color: "fg.muted", 
           mb: 3, 
           lineHeight: '1.5',
           display: '-webkit-box',
@@ -46,48 +46,48 @@ const TaskDisplay: React.FC<TaskDisplayProps> = ({
         </Text>
       )}
       
-      <Box display="flex" flexDirection="column" sx={{ gap: 2 }}>
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
         {task.dueDate && (
-          <Box 
-            display="inline-flex" 
-            alignItems="center" 
-            gap={1}
-            bg={
-              isOverdue() 
+            <Box 
+            sx={{ 
+              display: "inline-flex",
+              gap: 1,
+              bg: isOverdue() 
                 ? 'danger.subtle' 
                 : isDueSoon() 
                 ? 'attention.subtle' 
-                : 'neutral.subtle'
-            }
-            color={
-              isOverdue() 
+                : 'neutral.subtle',
+              color: isOverdue() 
                 ? 'danger.fg' 
                 : isDueSoon() 
                 ? 'attention.fg' 
-                : 'fg.muted'
-            }
-            px={2}
-            py={1}
-            borderRadius={2}
-            fontSize={0}
-            fontWeight="600"
-            sx={{ alignSelf: 'flex-start' }}
-          >
+                : 'fg.muted',
+              px: 2,
+              py: 1,
+              alignItems: "center",
+              borderRadius: 2,
+              fontSize: 0,
+              fontWeight: "600",
+              alignSelf: 'flex-start' 
+            }}
+            >
             <CalendarIcon size={12} />
-            期限: {formatDueDate(task.dueDate)}
-            {isOverdue() && ' (期限切れ)'}
-            {isDueSoon() && !isOverdue() && ' (明日まで)'}
-          </Box>
+            Due: {formatDueDate(task.dueDate)}
+            {isOverdue() && ' (Overdue)'}
+            {isDueSoon() && !isOverdue() && ' (Due Tomorrow)'}
+            </Box>
         )}
       </Box>
       
       <Box 
-        display="flex" 
-        gap={3} 
-        mt={4}
-        pt={3}
-        borderTop="1px solid"
-        borderColor="border.muted"
+        sx={{
+          display: "flex",
+          gap: 3,
+          mt: 4,
+          pt: 3,
+          borderTop: "1px solid",
+          borderColor: "border.muted"
+        }}
       >
         <Button
           onClick={onEdit}

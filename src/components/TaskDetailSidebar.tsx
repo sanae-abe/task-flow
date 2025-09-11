@@ -72,7 +72,7 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
   };
 
   const formatDueDate = (date: Date) => {
-    return date.toLocaleDateString('en-US', {
+    return date.toLocaleDateString('ja-JP', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
@@ -81,7 +81,7 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
   };
 
   const formatDateTime = (date: Date) => {
-    return date.toLocaleDateString('en-US', {
+    return date.toLocaleDateString('ja-JP', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
@@ -96,13 +96,13 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
 
   return (
     <Box
-      position="fixed"
-      top={0}
-      right={0}
-      width="450px"
-      height="100vh"
-      bg="canvas.default"
       sx={{ 
+        position: "fixed",
+        top: 0,
+        right: 0,
+        width: "450px",
+        height: "100vh",
+        bg: "canvas.default",
         boxShadow: '0 16px 32px rgba(0, 0, 0, 0.24)',
         borderLeft: '1px solid',
         borderColor: 'border.default',
@@ -110,16 +110,18 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
         overflowY: 'auto'
       }}
     >
-      <Box display="flex" flexDirection="column" height="100%">
+      <Box sx={{ display: "flex", height: "100%", flexDirection: "column" }}>
         {/* Header */}
         <Box
-          display="flex"
-          alignItems="center"
-          justifyContent="space-between"
-          p={4}
-          borderBottom="1px solid"
-          borderColor="border.default"
-          sx={{ flexShrink: 0 }}
+          sx={{ 
+            display: "flex",
+            p: 4,
+            alignItems: "center",
+            justifyContent: "space-between",
+            borderBottom: "1px solid",
+            borderColor: "border.default",
+            flexShrink: 0 
+          }}
         >
           <Heading sx={{ fontSize: 3, margin: 0, pr: 3, wordBreak: 'break-word' }}>
             {task.title}
@@ -135,20 +137,22 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
         </Box>
 
         {/* Content */}
-        <Box flex="1" p={4} sx={{ overflowY: 'auto' }}>
-          <Box mb={4}>
+        <Box sx={{ flex: "1", p: 4, overflowY: 'auto' }}>
+          <Box sx={{ mb: 4 }}>
             <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: 'bold' }}>Description</Heading>
             <Box
-              p={3}
-              bg="canvas.subtle"
-              borderRadius={2}
-              border="1px solid"
-              borderColor="border.default"
+              sx={{
+                p: 3,
+                bg: "canvas.subtle",
+                border: "1px solid",
+                borderRadius: 2,
+                borderColor: "border.default"
+              }}
             >
               {task.description ? (
-                <Text fontSize={1}>{task.description}</Text>
+                <Text sx={{ fontSize: 1 }}>{task.description}</Text>
               ) : (
-                <Text fontSize={1} color="fg.muted" fontStyle="italic">
+                <Text sx={{ fontSize: 1, color: "fg.muted", fontStyle: "italic" }}>
                   No description set
                 </Text>
               )}
@@ -156,58 +160,62 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
           </Box>
 
           {task.dueDate && (
-            <Box mb={4}>
+            <Box sx={{ mb: 4 }}>
               <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: 'bold' }}>Due Date</Heading>
               <Box
-                display="flex"
-                alignItems="center"
-                sx={{ gap: 2 }}
-                p={3}
-                bg={
-                  isOverdue() 
+                sx={{
+                  p: 3,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 2,
+                  bg: isOverdue() 
                     ? 'danger.subtle' 
                     : isDueSoon() 
                     ? 'attention.subtle' 
-                    : 'canvas.subtle'
-                }
-                borderRadius={2}
-                border="1px solid"
-                borderColor={
-                  isOverdue() 
+                    : 'canvas.subtle',
+                  borderRadius: 2,
+                  border: '1px solid',
+                  borderColor: isOverdue() 
                     ? 'danger.emphasis' 
                     : isDueSoon() 
                     ? 'attention.emphasis' 
                     : 'border.default'
-                }
+                }}
               >
-                <Box display="flex" alignItems="center" sx={{ gap: 2, flex: 1 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flex: 1 }}>
                   <CalendarIcon size={16} />
-                  <Text fontSize={1}>{formatDueDate(task.dueDate)}</Text>
+                  <Text sx={{ fontSize: 1 }}>{formatDueDate(task.dueDate)}</Text>
                 </Box>
                 {isOverdue() && (
                   <Text
-                    fontSize={0}
-                    fontWeight="bold"
-                    color="danger.fg"
-                    bg="danger.emphasis"
-                    px={2}
-                    py={1}
-                    borderRadius={2}
-                    sx={{ textTransform: 'uppercase', letterSpacing: '0.025em' }}
+                    sx={{
+                      fontSize: 0,
+                      fontWeight: "bold",
+                      color: "danger.fg",
+                      bg: "danger.emphasis",
+                      px: 2,
+                      py: 1,
+                      borderRadius: 2,
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.025em'
+                    }}
                   >
                     Overdue
                   </Text>
                 )}
                 {isDueSoon() && !isOverdue() && (
                   <Text
-                    fontSize={0}
-                    fontWeight="bold"
-                    color="attention.fg"
-                    bg="attention.emphasis"
-                    px={2}
-                    py={1}
-                    borderRadius={2}
-                    sx={{ textTransform: 'uppercase', letterSpacing: '0.025em' }}
+                    sx={{
+                      fontSize: 0,
+                      fontWeight: "bold",
+                      color: "attention.fg",
+                      bg: "attention.emphasis",
+                      px: 2,
+                      py: 1,
+                      borderRadius: 2,
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.025em'
+                    }}
                   >
                     Due Tomorrow
                   </Text>
@@ -216,25 +224,27 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
             </Box>
           )}
 
-          <Box mb={4}>
+          <Box sx={{ mb: 4 }}>
             <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: 'bold' }}>Created/Updated Info</Heading>
             <Box
-              display="flex"
-              flexDirection="column"
-              sx={{ gap: 2 }}
-              p={3}
-              bg="canvas.subtle"
-              borderRadius={2}
-              border="1px solid"
-              borderColor="border.default"
+              sx={{
+                p: 3,
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 2,
+                bg: 'canvas.subtle',
+                borderRadius: 2,
+                border: '1px solid',
+                borderColor: 'border.default'
+              }}
             >
-              <Box display="flex" justifyContent="space-between" alignItems="center">
-                <Text fontSize={0} color="fg.muted">Created At:</Text>
-                <Text fontSize={1}>{formatDateTime(task.createdAt)}</Text>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Text sx={{ fontSize: 0, color: "fg.muted" }}>Created At:</Text>
+                <Text sx={{ fontSize: 1 }}>{formatDateTime(task.createdAt)}</Text>
               </Box>
-              <Box display="flex" justifyContent="space-between" alignItems="center">
-                <Text fontSize={0} color="fg.muted">Updated At:</Text>
-                <Text fontSize={1}>{formatDateTime(task.updatedAt)}</Text>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Text sx={{ fontSize: 0, color: "fg.muted" }}>Updated At:</Text>
+                <Text sx={{ fontSize: 1 }}>{formatDateTime(task.updatedAt)}</Text>
               </Box>
             </Box>
           </Box>
@@ -242,10 +252,12 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
 
         {/* Actions */}
         <Box
-          p={4}
-          borderTop="1px solid"
-          borderColor="border.default"
-          sx={{ flexShrink: 0 }}
+          sx={{
+            p: 4,
+            borderTop: '1px solid',
+            borderColor: 'border.default',
+            flexShrink: 0
+          }}
         >
           <Button
             onClick={handleDelete}

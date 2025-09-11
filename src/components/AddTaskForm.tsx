@@ -30,13 +30,13 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({ onAdd, onCancel }) => {
 
   return (
     <Box 
-      bg="canvas.default" 
-      borderRadius={2} 
-      p={4} 
-      border="1px solid" 
-      borderColor="border.default"
-      mb={4}
       sx={{
+        bg: "canvas.default",
+        p: 4,
+        border: "1px solid",
+        mb: 4,
+        borderRadius: 2,
+        borderColor: 'border.default',
         boxShadow: '0 0 4px rgba(0, 0, 0, 0.12)',
         display: 'flex',
         flexDirection: 'column',
@@ -70,7 +70,7 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({ onAdd, onCancel }) => {
         />
       </Box>
       <Box>
-        <Text fontSize={1} fontWeight="600" display="block" mb={2} color="fg.default">
+        <Text sx={{ fontSize: 1, fontWeight: "600", display: "block", mb: 2, color: "fg.default" }}>
           Due Date (optional)
         </Text>
         <TextInput
@@ -80,7 +80,7 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({ onAdd, onCancel }) => {
           sx={{ width: '100%' }}
         />
       </Box>
-      <Box display="flex" sx={{ gap: 2 }}>
+      <Box sx={{ display: "flex", gap: 2 }}>
         <Button onClick={handleSubmit} variant="primary" sx={{ fontWeight: '500' }}>
           Add
         </Button>

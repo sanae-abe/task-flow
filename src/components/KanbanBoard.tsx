@@ -31,7 +31,7 @@ const KanbanBoard: React.FC = () => {
   if (!state.currentBoard) {
     return (
       <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", height: "400px" }}>
-        <Text fontSize={2} color="fg.muted">Please select a board</Text>
+        <Text sx={{ fontSize: 2, color: "fg.muted" }}>Please select a board</Text>
       </Box>
     );
   }

@@ -30,12 +30,14 @@ const ColumnHeader: React.FC<ColumnHeaderProps> = ({
 
   return (
     <Box
-      display="flex"
-      alignItems="center"
-      justifyContent="space-between"
-      pb={3}
+      sx={{
+        display: "flex",
+        pb: 3,
+        justifyContent: "space-between",
+        alignItems: "center"
+      }}
     >
-      <Box display="flex" alignItems="center" flex="1">
+      <Box sx={{ display: "flex", flex: "1", alignItems: "center" }}>
         <ColumnTitle
           column={column}
           isEditingTitle={isEditingTitle}
