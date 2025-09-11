@@ -66,9 +66,7 @@ const FileList: React.FC<FileListProps> = ({
             justifyContent: 'space-between',
             p: 2,
             bg: 'canvas.subtle',
-            border: '1px solid',
-            borderColor: 'border.default',
-            borderRadius: 1,
+            borderRadius: 2,
             fontSize: 0
           }}
         >

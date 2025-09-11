@@ -550,7 +550,7 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
               {
                 id: uuidv4(),
                 title: 'UIデザインの作成',
-                description: 'ユーザーインターフェースのデザインを作成中',
+                description: 'ユーザーインターフェースのデザインを作成',
                 createdAt: new Date(),
                 updatedAt: new Date(),
               },
@@ -564,7 +564,7 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
               {
                 id: uuidv4(),
                 title: '技術調査',
-                description: '使用するフレームワークや技術の調査完了',
+                description: '使用するフレームワークや技術の調査',
                 createdAt: new Date(),
                 updatedAt: new Date(),
               },

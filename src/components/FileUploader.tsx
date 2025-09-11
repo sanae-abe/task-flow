@@ -142,6 +142,11 @@ const FileUploader: React.FC<FileUploaderProps> = ({
       {/* ドラッグ＆ドロップエリア */}
       <Box
         sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 1,
           border: '2px dashed',
           borderColor: isDragOver ? 'accent.emphasis' : 'border.default',
           borderRadius: 2,
@@ -159,10 +164,10 @@ const FileUploader: React.FC<FileUploaderProps> = ({
         <Box sx={{ color: isDragOver ? 'accent.emphasis' : 'fg.muted' }}>
           <UploadIcon size={24} />
         </Box>
-        <Text sx={{ display: 'block', mt: 2, color: isDragOver ? 'accent.emphasis' : 'fg.default' }}>
+        <Text sx={{ display: 'block', color: isDragOver ? 'accent.emphasis' : 'fg.default' }}>
           ファイルをここにドラッグ＆ドロップするか、クリックして選択
         </Text>
-        <Text sx={{ fontSize: 0, color: 'fg.muted', mt: 1 }}>
+        <Text sx={{ fontSize: 0, color: 'fg.muted' }}>
           最大{Math.round(maxFileSize / 1024 / 1024)}MB
         </Text>
 
@@ -191,9 +196,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({
                 justifyContent: 'space-between',
                 p: 2,
                 bg: 'canvas.subtle',
-                border: '1px solid',
-                borderColor: 'border.default',
-                borderRadius: 1
+                borderRadius: 2
               }}
             >
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flex: 1, minWidth: 0 }}>

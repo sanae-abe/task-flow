@@ -181,7 +181,7 @@ const TaskDisplay: React.FC<TaskDisplayProps> = ({
                 const total = task.subTasks.length;
                 return (
                   <>
-                    <Text sx={{ color: 'fg.default', fontSize: 0 }}>
+                    <Text sx={{ fontSize: 0 }}>
                       {completed}/{total}
                     </Text>
                   </>
@@ -207,7 +207,7 @@ const TaskDisplay: React.FC<TaskDisplayProps> = ({
               }}
             >
               <PaperclipIcon size={12} />
-              <Text sx={{ color: 'fg.default', fontSize: 0 }}>
+              <Text sx={{ fontSize: 0 }}>
                 {task.attachments.length}
               </Text>
             </Box>
