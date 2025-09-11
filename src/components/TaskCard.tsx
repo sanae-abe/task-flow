@@ -59,7 +59,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, columnId, onTaskClick }) => {
       <Box
         ref={setNodeRef}
         bg="canvas.default"
-        p={4}
+        p={3}
         border="1px solid"
         sx={{
           ...style,
@@ -72,8 +72,12 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, columnId, onTaskClick }) => {
           width: '100%',
           maxWidth: '100%',
           minWidth: 0,
+          minHeight: 'auto',
+          height: 'auto',
           wordWrap: 'break-word',
           overflowWrap: 'break-word',
+          display: 'flex',
+          flexDirection: 'column',
           '&:hover': {
             boxShadow: '0 2px 12px rgba(0, 0, 0, 0.2)',
           },

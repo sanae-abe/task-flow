@@ -25,7 +25,7 @@ const TaskDisplay: React.FC<TaskDisplayProps> = ({
   isRightmostColumn = false
 }) => {
   return (
-    <Box>
+    <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
         {onComplete && (
           <IconButton
@@ -116,13 +116,13 @@ const TaskDisplay: React.FC<TaskDisplayProps> = ({
           WebkitBoxOrient: 'vertical',
           overflow: 'hidden',
           wordBreak: 'break-word',
-          whiteSpace: 'normal'
+          whiteSpace: 'pre-wrap'
         }}>
           {task.description}
         </Text>
       )}
       
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 2, marginTop: 'auto' }}>
         {task.dueDate && (
             <Box 
             sx={{ 

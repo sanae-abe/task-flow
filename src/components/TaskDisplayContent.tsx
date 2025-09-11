@@ -40,7 +40,7 @@ const TaskDisplayContent: React.FC<TaskDisplayContentProps> = ({ task, columnNam
           }}
         >
           {task.description ? (
-            <Text sx={{ fontSize: 1 }}>{task.description}</Text>
+            <Text sx={{ fontSize: 1, whiteSpace: 'pre-wrap' }}>{task.description}</Text>
           ) : (
             <Text sx={{ fontSize: 1, color: "fg.muted", fontStyle: "italic" }}>
               説明が設定されていません
