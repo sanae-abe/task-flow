@@ -21,12 +21,12 @@ const TaskMetadata: React.FC<TaskMetadataProps> = ({ task }) => {
           borderRadius: 2,
         }}
       >
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Text sx={{ fontSize: 0, color: "fg.muted" }}>作成日:</Text>
+        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+          <Text sx={{ fontSize: 1, }}>作成日:</Text>
           <Text sx={{ fontSize: 1 }}>{formatDateTime(task.createdAt)}</Text>
         </Box>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Text sx={{ fontSize: 0, color: "fg.muted" }}>更新日:</Text>
+        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+          <Text sx={{ fontSize: 1 }}>更新日:</Text>
           <Text sx={{ fontSize: 1 }}>{formatDateTime(task.updatedAt)}</Text>
         </Box>
       </Box>

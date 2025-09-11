@@ -79,7 +79,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, columnId, onTaskClick }) => {
           display: 'flex',
           flexDirection: 'column',
           '&:hover': {
-            boxShadow: '0 2px 12px rgba(0, 0, 0, 0.2)',
+            boxShadow: '0 2px 12px rgba(0, 0, 0, 0.15)',
           },
           '&:active': {
             cursor: 'grabbing'

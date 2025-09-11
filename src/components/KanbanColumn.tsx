@@ -44,7 +44,8 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({ column, onTaskClick }) => {
         flexShrink: 0, 
         minHeight: '600px',
         backgroundColor: 'transparent',
-        p: 0,
+        py: 0,
+        px: 2,
         overflow: 'hidden'
       }}
     >

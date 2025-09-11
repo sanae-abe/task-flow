@@ -42,7 +42,7 @@ const SubTaskList: React.FC<SubTaskListProps> = ({
   return (
     <Box sx={{ mb: 4 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-        <Text sx={{ fontSize: 2, fontWeight: 'bold' }}>
+        <Text sx={{ fontSize: 1, fontWeight: 'bold' }}>
           サブタスク {totalCount > 0 && `(${completedCount}/${totalCount})`}
         </Text>
         {!isAdding && (
