@@ -1,6 +1,6 @@
 import React from 'react';
-import { Box, Text, Heading } from '@primer/react';
-import { CalendarIcon } from '@primer/octicons-react';
+import { Box, Text, Heading, IconButton } from '@primer/react';
+import { CalendarIcon, CheckCircleIcon, CheckCircleFillIcon } from '@primer/octicons-react';
 import type { Task } from '../types';
 
 interface TaskDisplayProps {
@@ -11,6 +11,8 @@ interface TaskDisplayProps {
   formatDueDate: (date: Date) => string;
   onEdit: (e: React.MouseEvent) => void;
   onDelete: (e: React.MouseEvent) => void;
+  onComplete?: (e: React.MouseEvent) => void;
+  isRightmostColumn?: boolean;
 }
 
 const TaskDisplay: React.FC<TaskDisplayProps> = ({
@@ -18,20 +20,40 @@ const TaskDisplay: React.FC<TaskDisplayProps> = ({
   isOverdue,
   isDueToday,
   isDueTomorrow,
-  formatDueDate
+  formatDueDate,
+  onComplete,
+  isRightmostColumn = false
 }) => {
   return (
     <Box>
-      <Heading sx={{ 
-        fontSize: 2, 
-        margin: 0, 
-        mb: 2, 
-        fontWeight: '600',
-        color: 'fg.default',
-        lineHeight: '1.4'
-      }}>
-        {task.title}
-      </Heading>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+        {onComplete && (
+          <IconButton
+            aria-label="タスクを完了"
+            icon={isRightmostColumn ? CheckCircleFillIcon : CheckCircleIcon}
+            size="small"
+            onClick={onComplete}
+            variant="invisible"
+            sx={{
+              color: 'success.fg',
+              '&:hover': {
+                bg: 'transparent',
+                color: 'success.fg'
+              }
+            }}
+          />
+        )}
+        <Heading sx={{ 
+          fontSize: 2, 
+          margin: 0, 
+          fontWeight: '600',
+          color: 'fg.default',
+          lineHeight: '1.4',
+          flex: 1
+        }}>
+          {task.title}
+        </Heading>
+      </Box>
       
       {task.description && (
         <Text sx={{ fontSize: 1, color: "fg.muted", 

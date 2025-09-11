@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useMemo } from 'react';
 import type { Task } from '../types';
 import { useKanban } from '../contexts/KanbanContext';
 
@@ -17,10 +17,12 @@ interface UseTaskCardReturn {
   handleDelete: () => void;
   handleConfirmDelete: () => void;
   handleCancelDelete: () => void;
+  handleComplete: () => void;
   isOverdue: () => boolean;
   isDueToday: () => boolean;
   isDueTomorrow: () => boolean;
   formatDueDate: (date: Date) => string;
+  isRightmostColumn: boolean;
 }
 
 export const useTaskCard = (task: Task, columnId: string): UseTaskCardReturn => {
@@ -29,7 +31,7 @@ export const useTaskCard = (task: Task, columnId: string): UseTaskCardReturn => 
   const [editDescription, setEditDescription] = useState(task.description || '');
   const [editDueDate, setEditDueDate] = useState<string>('');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const { updateTask, deleteTask } = useKanban();
+  const { updateTask, deleteTask, moveTask, state } = useKanban();
 
   useEffect(() => {
     const initialDueDate = (task.dueDate ? task.dueDate.toISOString().split('T')[0] : '') as string;
@@ -72,6 +74,23 @@ export const useTaskCard = (task: Task, columnId: string): UseTaskCardReturn => 
     setShowDeleteConfirm(false);
   }, []);
 
+  const handleComplete = useCallback(() => {
+    if (!state.currentBoard) {
+      return;
+    }
+    
+    // 一番右のカラム（最後のカラム）を取得
+    const rightmostColumn = state.currentBoard.columns[state.currentBoard.columns.length - 1];
+    
+    if (!rightmostColumn || rightmostColumn.id === columnId) {
+      // 既に一番右のカラムにある場合は何もしない
+      return;
+    }
+    
+    // 一番右のカラムに移動
+    moveTask(task.id, columnId, rightmostColumn.id, rightmostColumn.tasks.length);
+  }, [task.id, columnId, moveTask, state.currentBoard]);
+
   const isOverdue = useCallback(() => {
     if (!task.dueDate) {
       return false;
@@ -113,6 +132,14 @@ export const useTaskCard = (task: Task, columnId: string): UseTaskCardReturn => 
     });
   }, []);
 
+  const isRightmostColumn = useMemo(() => {
+    if (!state.currentBoard) {
+      return false;
+    }
+    const rightmostColumnId = state.currentBoard.columns[state.currentBoard.columns.length - 1]?.id;
+    return columnId === rightmostColumnId;
+  }, [columnId, state.currentBoard]);
+
   return {
     isEditing,
     editTitle,
@@ -128,9 +155,11 @@ export const useTaskCard = (task: Task, columnId: string): UseTaskCardReturn => 
     handleDelete,
     handleConfirmDelete,
     handleCancelDelete,
+    handleComplete,
     isOverdue,
     isDueToday,
     isDueTomorrow,
-    formatDueDate
+    formatDueDate,
+    isRightmostColumn
   };
 };

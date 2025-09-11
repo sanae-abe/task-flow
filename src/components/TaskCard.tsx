@@ -30,10 +30,12 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, columnId, onTaskClick }) => {
     handleDelete,
     handleConfirmDelete,
     handleCancelDelete,
+    handleComplete,
     isOverdue,
     isDueToday,
     isDueTomorrow,
-    formatDueDate
+    formatDueDate,
+    isRightmostColumn
   } = useTaskCard(task, columnId);
   
   const {
@@ -92,6 +94,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, columnId, onTaskClick }) => {
           cursor: 'grab',
           boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
           transition: 'all 0.2s ease',
+          opacity: isRightmostColumn ? 0.6 : 1,
           '&:hover': {
             boxShadow: '0 2px 12px rgba(0, 0, 0, 0.2)',
           },
@@ -119,6 +122,11 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, columnId, onTaskClick }) => {
             e.stopPropagation();
             handleDelete();
           }}
+          onComplete={(e: React.MouseEvent) => {
+            e.stopPropagation();
+            handleComplete();
+          }}
+          isRightmostColumn={isRightmostColumn}
         />
       </Box>
 
