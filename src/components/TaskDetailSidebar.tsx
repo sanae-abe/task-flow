@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Box, Text, Heading, TextInput, Textarea } from '@primer/react';
 import { CalendarIcon, TrashIcon, XIcon, PencilIcon } from '@primer/octicons-react';
-import type { Task } from '../types';
+import type { Task, Label } from '../types';
 import { useKanban } from '../contexts/KanbanContext';
+import LabelSelector from './LabelSelector';
+import { getColorInfo } from '../utils/labels';
 
 interface TaskDetailSidebarProps {
   task: Task | null;
@@ -16,12 +18,14 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
   const [editTitle, setEditTitle] = useState('');
   const [editDescription, setEditDescription] = useState('');
   const [editDueDate, setEditDueDate] = useState('');
+  const [editLabels, setEditLabels] = useState<Label[]>([]);
 
   useEffect(() => {
     if (task) {
       setEditTitle(task.title);
       setEditDescription(task.description || '');
       setEditDueDate(task.dueDate?.toISOString().split('T')[0] || '');
+      setEditLabels(task.labels || []);
       setIsEditing(false);
     }
   }, [task]);
@@ -65,6 +69,7 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
         title: editTitle.trim(),
         description: editDescription.trim() || undefined,
         dueDate: editDueDate ? new Date(editDueDate) : undefined,
+        labels: editLabels,
         updatedAt: new Date()
       };
 
@@ -78,6 +83,7 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
       setEditTitle(task.title);
       setEditDescription(task.description || '');
       setEditDueDate(task.dueDate?.toISOString().split('T')[0] || '');
+      setEditLabels(task.labels || []);
     }
     setIsEditing(false);
   };
@@ -224,6 +230,14 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
                   sx={{ width: '100%' }}
                 />
               </Box>
+
+              <Box sx={{ mb: 4 }}>
+                <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: 'bold' }}>Labels</Heading>
+                <LabelSelector
+                  selectedLabels={editLabels}
+                  onLabelsChange={setEditLabels}
+                />
+              </Box>
             </>
           ) : (
             <>
@@ -281,7 +295,7 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
                         sx={{
                           fontSize: 0,
                           fontWeight: "bold",
-                          color: "danger.fg",
+                          color: "#ffffff",
                           bg: "danger.emphasis",
                           px: 2,
                           py: 1,
@@ -298,7 +312,7 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
                         sx={{
                           fontSize: 0,
                           fontWeight: "bold",
-                          color: "attention.fg",
+                          color: "#ffffff",
                           bg: "attention.emphasis",
                           px: 2,
                           py: 1,
@@ -310,6 +324,37 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
                         Due Tomorrow
                       </Text>
                     )}
+                  </Box>
+                </Box>
+              )}
+
+              {task.labels && task.labels.length > 0 && (
+                <Box sx={{ mb: 4 }}>
+                  <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: 'bold' }}>Labels</Heading>
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+                    {task.labels.map((label) => {
+                      const colorInfo = getColorInfo(label.color);
+                      return (
+                        <Box
+                          key={label.id}
+                          sx={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            bg: colorInfo.bg,
+                            color: label.color,
+                            px: 3,
+                            py: 2,
+                            borderRadius: 2,
+                            fontSize: 1,
+                            fontWeight: '500',
+                            border: '1px solid',
+                            borderColor: label.color
+                          }}
+                        >
+                          {label.name}
+                        </Box>
+                      );
+                    })}
                   </Box>
                 </Box>
               )}

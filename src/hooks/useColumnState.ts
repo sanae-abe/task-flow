@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import type { Column } from '../types';
+import type { Column, Label } from '../types';
 import { useKanban } from '../contexts/KanbanContext';
 
 interface UseColumnStateReturn {
@@ -12,7 +12,7 @@ interface UseColumnStateReturn {
   handleTitleSave: () => void;
   handleTitleCancel: () => void;
   handleDeleteColumn: () => void;
-  handleAddTask: (title: string, description: string, dueDate?: Date) => void;
+  handleAddTask: (title: string, description: string, dueDate?: Date, labels?: Label[]) => void;
   handleCancelTask: () => void;
 }
 
@@ -53,9 +53,9 @@ export const useColumnState = (column: Column): UseColumnStateReturn => {
     }
   }, [column.title, column.id, deleteColumn]);
 
-  const handleAddTask = useCallback((title: string, description: string, dueDate?: Date) => {
+  const handleAddTask = useCallback((title: string, description: string, dueDate?: Date, labels?: Label[]) => {
     if (title.trim()) {
-      createTask(column.id, title.trim(), description.trim(), dueDate);
+      createTask(column.id, title.trim(), description.trim(), dueDate, labels);
       setIsAddingTask(false);
     }
   }, [column.id, createTask]);

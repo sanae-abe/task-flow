@@ -1,7 +1,8 @@
 import React from 'react';
-import { Button, Box, Text, Heading } from '@primer/react';
+import { Box, Text, Heading } from '@primer/react';
 import { CalendarIcon } from '@primer/octicons-react';
 import type { Task } from '../types';
+import { getColorInfo } from '../utils/labels';
 
 interface TaskDisplayProps {
   task: Task;
@@ -16,9 +17,7 @@ const TaskDisplay: React.FC<TaskDisplayProps> = ({
   task,
   isOverdue,
   isDueSoon,
-  formatDueDate,
-  onEdit,
-  onDelete
+  formatDueDate
 }) => {
   return (
     <Box>
@@ -77,38 +76,34 @@ const TaskDisplay: React.FC<TaskDisplayProps> = ({
             {isDueSoon() && !isOverdue() && ' (Due Tomorrow)'}
             </Box>
         )}
-      </Box>
-      
-      <Box 
-        sx={{
-          display: "flex",
-          gap: 3,
-          mt: 4,
-          pt: 3,
-          borderTop: "1px solid",
-          borderColor: "border.muted"
-        }}
-      >
-        <Button
-          onClick={onEdit}
-          size="small"
-          sx={{
-            fontWeight: '500',
-            flex: 1
-          }}
-        >
-          Edit
-        </Button>
-        <Button
-          onClick={onDelete}
-          size="small"
-          variant="danger"
-          sx={{
-            fontWeight: '500'
-          }}
-        >
-          Delete
-        </Button>
+        
+        {task.labels && task.labels.length > 0 && (
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+            {task.labels.map((label) => {
+              const colorInfo = getColorInfo(label.color);
+              return (
+                <Box
+                  key={label.id}
+                  sx={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    bg: colorInfo.bg,
+                    color: label.color,
+                    px: 2,
+                    py: 1,
+                    borderRadius: 2,
+                    fontSize: 0,
+                    fontWeight: '500',
+                    border: '1px solid',
+                    borderColor: label.color
+                  }}
+                >
+                  {label.name}
+                </Box>
+              );
+            })}
+          </Box>
+        )}
       </Box>
     </Box>
   );

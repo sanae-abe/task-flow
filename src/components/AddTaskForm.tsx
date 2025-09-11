@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Button, TextInput, Textarea, Box, Text } from '@primer/react';
+import type { Label } from '../types';
+import LabelSelector from './LabelSelector';
 
 interface AddTaskFormProps {
-  onAdd: (title: string, description: string, dueDate?: Date) => void;
+  onAdd: (title: string, description: string, dueDate?: Date, labels?: Label[]) => void;
   onCancel: () => void;
 }
 
@@ -10,14 +12,16 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({ onAdd, onCancel }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [dueDate, setDueDate] = useState('');
+  const [labels, setLabels] = useState<Label[]>([]);
 
   const handleSubmit = () => {
     if (title.trim()) {
       const dueDateObj = dueDate ? new Date(dueDate) : undefined;
-      onAdd(title, description, dueDateObj);
+      onAdd(title, description, dueDateObj, labels);
       setTitle('');
       setDescription('');
       setDueDate('');
+      setLabels([]);
     }
   };
 
@@ -25,6 +29,7 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({ onAdd, onCancel }) => {
     setTitle('');
     setDescription('');
     setDueDate('');
+    setLabels([]);
     onCancel();
   };
 
@@ -78,6 +83,15 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({ onAdd, onCancel }) => {
           value={dueDate}
           onChange={(e) => setDueDate(e.target.value)}
           sx={{ width: '100%' }}
+        />
+      </Box>
+      <Box>
+        <Text sx={{ fontSize: 1, fontWeight: "600", display: "block", mb: 2, color: "fg.default" }}>
+          Labels (optional)
+        </Text>
+        <LabelSelector
+          selectedLabels={labels}
+          onLabelsChange={setLabels}
         />
       </Box>
       <Box sx={{ display: "flex", gap: 2 }}>

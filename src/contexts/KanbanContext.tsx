@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import type { KanbanBoard, Column, Task } from '../types';
+import type { KanbanBoard, Column, Task, Label } from '../types';
 import { saveBoards, loadBoards } from '../utils/storage';
 
 interface KanbanState {
@@ -15,7 +15,7 @@ type KanbanAction =
   | { type: 'SET_CURRENT_BOARD'; payload: string }
   | { type: 'UPDATE_BOARD'; payload: { boardId: string; updates: Partial<KanbanBoard> } }
   | { type: 'CREATE_COLUMN'; payload: { boardId: string; title: string } }
-  | { type: 'CREATE_TASK'; payload: { columnId: string; title: string; description: string; dueDate?: Date } }
+  | { type: 'CREATE_TASK'; payload: { columnId: string; title: string; description: string; dueDate?: Date; labels?: Label[] } }
   | { type: 'MOVE_TASK'; payload: { taskId: string; sourceColumnId: string; targetColumnId: string; targetIndex: number } }
   | { type: 'UPDATE_TASK'; payload: { taskId: string; updates: Partial<Task> } }
   | { type: 'DELETE_TASK'; payload: { taskId: string; columnId: string } }
@@ -29,7 +29,7 @@ interface KanbanContextType {
   setCurrentBoard: (boardId: string) => void;
   updateBoard: (boardId: string, updates: Partial<KanbanBoard>) => void;
   createColumn: (title: string) => void;
-  createTask: (columnId: string, title: string, description: string, dueDate?: Date) => void;
+  createTask: (columnId: string, title: string, description: string, dueDate?: Date, labels?: Label[]) => void;
   moveTask: (taskId: string, sourceColumnId: string, targetColumnId: string, targetIndex: number) => void;
   updateTask: (taskId: string, updates: Partial<Task>) => void;
   deleteTask: (taskId: string, columnId: string) => void;
@@ -165,6 +165,7 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
         title: action.payload.title,
         description: action.payload.description,
         dueDate: action.payload.dueDate,
+        labels: action.payload.labels,
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -433,8 +434,8 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     dispatch({ type: 'CREATE_COLUMN', payload: { boardId: state.currentBoard.id, title } });
   };
   
-  const createTask = (columnId: string, title: string, description: string, dueDate?: Date) => {
-    dispatch({ type: 'CREATE_TASK', payload: { columnId, title, description, dueDate } });
+  const createTask = (columnId: string, title: string, description: string, dueDate?: Date, labels?: Label[]) => {
+    dispatch({ type: 'CREATE_TASK', payload: { columnId, title, description, dueDate, labels } });
   };
   
   const moveTask = (taskId: string, sourceColumnId: string, targetColumnId: string, targetIndex: number) => {
