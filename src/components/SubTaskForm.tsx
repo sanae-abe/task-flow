@@ -1,4 +1,3 @@
-import { Box } from '@primer/react';
 import React, { useMemo } from 'react';
 
 import { UnifiedForm, createSubTaskFormFields } from './shared/Form';
@@ -32,13 +31,13 @@ const SubTaskForm: React.FC<SubTaskFormProps> = ({
   ), [title, onTitleChange, onKeyDown]);
 
   return (
-    <Box
-      sx={{
+    <div
+      style={{
         display: 'flex',
         alignItems: 'center',
-        gap: 2,
-        borderRadius: 2,
-        bg: 'canvas.default'
+        gap: 'var(--primer-control-small-gap, 0.5rem)',
+        borderRadius: 'var(--primer-borderRadius-medium, 6px)',
+        backgroundColor: 'var(--primer-canvas-default)'
       }}
     >
       <UnifiedForm
@@ -47,16 +46,15 @@ const SubTaskForm: React.FC<SubTaskFormProps> = ({
         onCancel={onCancel}
         submitText="追加"
         cancelText="キャンセル"
-        disabled={!title.trim()}
         validateOnChange={false}
         validateOnBlur={false}
         sx={{ 
           flex: 1,
-          '& > div': { mb: 0 }, // フォームコンテナの下マージンを削除
+          '& > div > div': { mb: 0 }, // フォームコンテナの下マージン削除
           '& form': { display: 'flex', alignItems: 'center', gap: 2 }
         }}
       />
-    </Box>
+    </div>
   );
 };
 

@@ -17,15 +17,19 @@ export const useSubTaskForm = () => {
     }
   }, [title, resetForm]);
 
-  const handleKeyPress = useCallback((event: React.KeyboardEvent, _onAddSubTask: (title: string) => void): void => {
+  const handleKeyPress = useCallback((event: React.KeyboardEvent, onAddSubTask: (title: string) => void): void => {
     if (event.key === 'Enter') {
       event.preventDefault();
-      // Enterキーでの自動作成を無効化
+      const trimmedTitle = title.trim();
+      if (trimmedTitle && trimmedTitle.length > 0) {
+        onAddSubTask(trimmedTitle);
+        resetForm();
+      }
     } else if (event.key === 'Escape') {
       event.preventDefault();
       resetForm();
     }
-  }, [resetForm]);
+  }, [title, resetForm]);
 
   const startAdding = useCallback((): void => {
     setIsAdding(true);
