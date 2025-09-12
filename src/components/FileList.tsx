@@ -3,6 +3,7 @@ import { Box, Text, Button } from '@primer/react';
 import React, { useMemo, useCallback } from 'react';
 
 import type { FileAttachment } from '../types';
+import { useNotify } from '../contexts/NotificationContext';
 
 import FilePreview from './FilePreview';
 
@@ -31,7 +32,7 @@ const getFileIcon = (type: string) => {
   return type.startsWith('image/') ? <ImageIcon {...iconProps} /> : <FileIcon {...iconProps} />;
 };
 
-const downloadFile = (attachment: FileAttachment): void => {
+const downloadFile = (attachment: FileAttachment, notify: ReturnType<typeof useNotify>): void => {
   try {
     if (!attachment?.type || !attachment?.data || !attachment?.name) {
       throw new Error('ファイル情報が不完全です');
@@ -48,9 +49,12 @@ const downloadFile = (attachment: FileAttachment): void => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    
+    notify.success('ダウンロード完了', `「${name}」をダウンロードしました`);
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('ファイルのダウンロードに失敗しました:', error);
+    notify.error('ダウンロード失敗', 'ファイルのダウンロードに失敗しました');
   }
 };
 
@@ -114,6 +118,8 @@ const FileList: React.FC<FileListProps> = ({
   showPreview = true,
   maxFiles 
 }) => {
+  const notify = useNotify();
+  
   const { displayAttachments, remainingCount } = useMemo(() => {
     if (!attachments?.length) {
       return { displayAttachments: [], remainingCount: 0 };
@@ -128,8 +134,8 @@ const FileList: React.FC<FileListProps> = ({
   }, [attachments, maxFiles]);
 
   const handleDownload = useCallback((attachment: FileAttachment) => {
-    downloadFile(attachment);
-  }, []);
+    downloadFile(attachment, notify);
+  }, [notify]);
 
   if (!attachments?.length) {
     return null;

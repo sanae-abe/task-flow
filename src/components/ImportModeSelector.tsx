@@ -1,6 +1,6 @@
-import { Box, Button, Text } from '@primer/react';
+import { Box, Text } from '@primer/react';
 import { UploadIcon, FileIcon, PackageIcon } from '@primer/octicons-react';
-import React from 'react';
+import React, { useMemo, useCallback } from 'react';
 
 import type { ImportMode, ImportModeConfig } from '../types';
 
@@ -28,7 +28,7 @@ const IMPORT_MODES: ImportModeConfig[] = [
   }
 ];
 
-const getModeIcon = (mode: ImportMode) => {
+const getModeIcon = (mode: ImportMode): React.ReactElement => {
   switch (mode) {
     case 'drag-drop':
       return <UploadIcon size={16} />;
@@ -37,6 +37,8 @@ const getModeIcon = (mode: ImportMode) => {
     case 'both':
       return <PackageIcon size={16} />;
     default:
+      // TypeScript exhaustiveness check - should never reach here
+      mode satisfies never;
       return <PackageIcon size={16} />;
   }
 };
@@ -45,7 +47,20 @@ const ImportModeSelector: React.FC<ImportModeSelectorProps> = ({
   selectedMode,
   onModeChange,
   showModeIndicator = true
-}) => (
+}) => {
+  const selectedConfig = useMemo(
+    () => IMPORT_MODES.find(m => m.mode === selectedMode),
+    [selectedMode]
+  );
+
+  const handleModeChange = useCallback(
+    (mode: ImportMode) => {
+      onModeChange(mode);
+    },
+    [onModeChange]
+  );
+
+  return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
       {showModeIndicator && (
         <Box 
@@ -66,7 +81,7 @@ const ImportModeSelector: React.FC<ImportModeSelectorProps> = ({
               現在のインポートモード
             </Text>
             <Text sx={{ fontSize: 0, color: 'fg.muted' }}>
-              {IMPORT_MODES.find(m => m.mode === selectedMode)?.label}
+              {selectedConfig?.label}
             </Text>
           </Box>
         </Box>
@@ -76,34 +91,44 @@ const ImportModeSelector: React.FC<ImportModeSelectorProps> = ({
         <Text sx={{ fontWeight: 'bold', fontSize: 1 }}>
           インポートモードを選択
         </Text>
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+        <div style={{ 
+          display: 'flex', 
+          flexDirection: 'column',
+          gap: '8px',
+          flexWrap: 'wrap'
+        }}>
           {IMPORT_MODES.map((modeConfig) => (
-            <Button
+            <button
               key={modeConfig.mode}
-              variant={selectedMode === modeConfig.mode ? 'primary' : 'default'}
-              sx={{
-                justifyContent: 'flex-start',
-                padding: 2,
-                height: 'auto'
+              style={{
+                padding: '16px',
+                border: selectedMode === modeConfig.mode ? '2px solid #0969da' : '1px solid #d1d9e0',
+                borderRadius: '6px',
+                background: selectedMode === modeConfig.mode ? '#f6f8fa' : 'white',
+                cursor: 'pointer',
+                width: '100%',
+                textAlign: 'left'
               }}
-              onClick={() => onModeChange(modeConfig.mode)}
+              onClick={() => handleModeChange(modeConfig.mode)}
+              aria-label={`インポートモードを${modeConfig.label}に変更`}
             >
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 {getModeIcon(modeConfig.mode)}
-                <Box sx={{ textAlign: 'left' }}>
-                  <Text sx={{ fontWeight: 'bold' }}>
+                <div>
+                  <div style={{ fontWeight: 'bold' }}>
                     {modeConfig.label}
-                  </Text>
-                  <Text sx={{ fontSize: 0, opacity: 0.8 }}>
+                  </div>
+                  <div style={{ fontSize: '12px', color: '#656d76' }}>
                     {modeConfig.description}
-                  </Text>
-                </Box>
-              </Box>
-            </Button>
+                  </div>
+                </div>
+              </div>
+            </button>
           ))}
-        </Box>
+        </div>
       </Box>
     </Box>
   );
+};
 
 export default ImportModeSelector;

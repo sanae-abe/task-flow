@@ -92,10 +92,10 @@ export const DataImportDialog = memo<DataImportDialogProps>(({ isOpen, onClose }
       onClose={handleDialogClose}
       ariaLabelledBy="import-dialog-title"
     >
-      <Box display="flex" flexDirection="column" gap={4}>
+      <Box display="flex" sx={{ flexDirection: 'column', gap: 3 }}>
         {/* インポートモード選択 */}
         <Box>
-          <Text fontWeight="bold" fontSize={1} mb={2}>
+          <Text fontWeight="bold" fontSize={1} mb={2} sx={{ color: 'fg.muted' }}>
             インポートモード
           </Text>
           <ActionList>
@@ -166,14 +166,14 @@ export const DataImportDialog = memo<DataImportDialogProps>(({ isOpen, onClose }
 
         {/* ローディング */}
         {isLoading && (
-          <Box display="flex" alignItems="center" justifyContent="center" gap={2}>
+          <Box display="flex" sx={{ gap: 2, justifyContent: 'center', alignItems: 'center' }}>
             <Spinner size="small" />
             <Text>インポート中...</Text>
           </Box>
         )}
       </Box>
 
-      <Box display="flex" justifyContent="flex-end" gap={2} mt={4}>
+      <Box display="flex" mt={4} sx={{ gap: 2, justifyContent: 'flex-end', alignItems: 'center' }}>
         <Button onClick={handleDialogClose} disabled={isLoading}>
           {isLoading ? 'インポート中...' : 'キャンセル'}
         </Button>

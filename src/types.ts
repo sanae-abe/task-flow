@@ -19,7 +19,17 @@ export interface ImportModeConfig {
   mode: ImportMode;
   label: string;
   description: string;
-  icon?: string;
+}
+
+export type NotificationType = 'success' | 'info' | 'warning' | 'error';
+
+export interface Notification {
+  id: string;
+  type: NotificationType;
+  title: string;
+  message?: string;
+  duration?: number; // milliseconds
+  createdAt: Date;
 }
 
 export interface SubTask {

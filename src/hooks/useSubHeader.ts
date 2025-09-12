@@ -1,6 +1,7 @@
 import { useState, useMemo, useCallback } from 'react';
 
 import { useKanban } from '../contexts/KanbanContext';
+import { useNotify } from '../contexts/NotificationContext';
 import { exportData, exportBoard } from '../utils/dataExport';
 
 import { useTaskStats } from './useTaskStats';
@@ -43,6 +44,7 @@ type UseSubHeaderReturn = {
 
 export const useSubHeader = (): UseSubHeaderReturn => {
   const { state, updateBoard, createColumn, deleteBoard, clearCompletedTasks } = useKanban();
+  const notify = useNotify();
   
   const [dialogState, setDialogState] = useState<SubHeaderDialogState>({
     isCreatingColumn: false,
@@ -117,11 +119,15 @@ export const useSubHeader = (): UseSubHeaderReturn => {
       openClearCompletedConfirm: () => updateDialogState({ showClearCompletedConfirm: true }),
       closeClearCompletedConfirm: () => updateDialogState({ showClearCompletedConfirm: false }),
       
-      exportAllData: () => exportData(state.boards),
+      exportAllData: () => {
+        exportData(state.boards);
+        notify.success('エクスポート完了', '全データをエクスポートしました');
+      },
       
       exportCurrentBoard: () => {
         if (state.currentBoard) {
           exportBoard(state.currentBoard);
+          notify.success('エクスポート完了', `「${state.currentBoard.title}」をエクスポートしました`);
         }
       },
       
@@ -137,6 +143,7 @@ export const useSubHeader = (): UseSubHeaderReturn => {
     createColumn,
     deleteBoard,
     clearCompletedTasks,
+    notify,
   ]);
 
   return {
