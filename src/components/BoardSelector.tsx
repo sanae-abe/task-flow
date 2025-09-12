@@ -36,7 +36,7 @@ const styles = {
     borderBottom: 'none'
   },
   tabButton: {
-    fontSize: 2,
+    fontSize: 1,
     borderRadius: '6px',
     px: 1,
     py: 0,

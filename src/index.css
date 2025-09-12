@@ -4,7 +4,7 @@
   min-height: 100vh;
   background-color: #f6f8fa;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
-  padding-top: 112px;
+  padding-top: 112px; /* ヘッダー(50px) + サブヘッダー(45px) の高さ分 */
 }
 
 #__primerPortalRoot__ {

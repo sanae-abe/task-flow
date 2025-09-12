@@ -45,7 +45,7 @@ const headerStyles = {
   rightSection: {
     display: 'flex',
     alignItems: 'center',
-    gap: 3
+    gap: 2
   },
   createButton: {
     backgroundColor: 'accent.emphasis',
