@@ -72,11 +72,10 @@ const FilterSelector = memo<FilterSelectorProps>(({
 
   const handleFilterSelect = (filterType: string) => {
     if (filterType === 'label') {
-      // ラベルフィルターの場合は追加のUIが必要
+      // すべてのラベル = ラベルフィルターをクリア（すべてのタスクに戻す）
       onFilterChange({
-        type: 'label',
-        label: 'ラベルで絞り込み',
-        selectedLabels: []
+        type: 'all',
+        label: 'すべてのタスク'
       });
     } else {
       const config = filterConfigs.find(f => f.type === filterType);
@@ -90,11 +89,8 @@ const FilterSelector = memo<FilterSelectorProps>(({
   };
 
   const handleLabelToggle = (labelId: string) => {
-    if (currentFilter.type !== 'label') {
-      return;
-    }
-    
-    const currentLabels = currentFilter.selectedLabels ?? [];
+    // ラベルを選択した時は自動的にラベルフィルターに切り替える
+    const currentLabels = currentFilter.type === 'label' ? (currentFilter.selectedLabels ?? []) : [];
     const isSelected = currentLabels.includes(labelId);
     
     const newLabels = isSelected
@@ -102,7 +98,8 @@ const FilterSelector = memo<FilterSelectorProps>(({
       : [...currentLabels, labelId];
     
     onFilterChange({
-      ...currentFilter,
+      type: 'label',
+      label: 'ラベルで絞り込み',
       selectedLabels: newLabels
     });
   };
@@ -164,7 +161,7 @@ const FilterSelector = memo<FilterSelectorProps>(({
                   <ActionList>
                     <ActionList.Item
                       onSelect={() => handleFilterSelect('label')}
-                      selected={currentFilter.type === 'label' && (!currentFilter.selectedLabels || currentFilter.selectedLabels.length === 0)}
+                      selected={currentFilter.type === 'all'}
                     >
                       すべてのラベル
                     </ActionList.Item>
