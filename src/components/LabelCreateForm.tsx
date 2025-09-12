@@ -1,7 +1,7 @@
-import { Box, Button, TextInput, Text } from '@primer/react';
-import React, { memo } from 'react';
+import { Box } from '@primer/react';
+import React, { memo, useMemo } from 'react';
 
-import ColorSelector from './ColorSelector';
+import { UnifiedForm, createLabelFormFields } from './shared/Form';
 
 interface LabelCreateFormProps {
   labelName: string;
@@ -10,7 +10,7 @@ interface LabelCreateFormProps {
   onColorSelect: (color: string) => void;
   onSave: () => void;
   onCancel: () => void;
-  onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  onKeyDown: (e: React.KeyboardEvent) => void;
   isValid: boolean;
 }
 
@@ -23,7 +23,23 @@ const LabelCreateForm = memo<LabelCreateFormProps>(({
   onCancel,
   onKeyDown,
   isValid
-}) => (
+}) => {
+  // フォームフィールド設定を生成
+  const formFields = useMemo(() => createLabelFormFields(
+    {
+      name: labelName,
+      color: selectedColor
+    },
+    {
+      setName: onLabelNameChange,
+      setColor: onColorSelect
+    },
+    {
+      onKeyDown
+    }
+  ), [labelName, selectedColor, onLabelNameChange, onColorSelect, onKeyDown]);
+
+  return (
     <Box sx={{ 
       p: 3, 
       bg: 'canvas.subtle', 
@@ -31,44 +47,18 @@ const LabelCreateForm = memo<LabelCreateFormProps>(({
       border: '1px solid', 
       borderColor: 'border.default' 
     }}>
-      <Box sx={{ mb: 2 }}>
-        <Text sx={{ fontSize: 1, fontWeight: '400', mb: 1, display: 'block' }}>
-          ラベル名
-        </Text>
-        <TextInput
-          value={labelName}
-          onChange={(e) => onLabelNameChange(e.target.value)}
-          placeholder="ラベル名を入力"
-          sx={{ width: '100%' }}
-          onKeyDown={onKeyDown}
-          autoFocus
-        />
-      </Box>
-
-      <Box sx={{ mb: 3 }}>
-        <ColorSelector
-          selectedColor={selectedColor}
-          onColorSelect={onColorSelect}
-        />
-      </Box>
-
-      <Box sx={{ display: 'flex', gap: 2 }}>
-        <Button
-          onClick={onSave}
-          variant="primary"
-          size="small"
-          disabled={!isValid}
-        >
-          作成
-        </Button>
-        <Button
-          onClick={onCancel}
-          size="small"
-        >
-          キャンセル
-        </Button>
-      </Box>
+      <UnifiedForm
+        fields={formFields}
+        onSubmit={onSave}
+        onCancel={onCancel}
+        submitText="作成"
+        cancelText="キャンセル"
+        disabled={!isValid}
+        validateOnChange={true}
+        validateOnBlur={true}
+      />
     </Box>
-  ));
+  );
+});
 
 export default LabelCreateForm;

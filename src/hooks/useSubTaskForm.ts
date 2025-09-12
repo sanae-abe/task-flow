@@ -17,7 +17,7 @@ export const useSubTaskForm = () => {
     }
   }, [title, resetForm]);
 
-  const handleKeyPress = useCallback((event: React.KeyboardEvent<HTMLInputElement>, _onAddSubTask: (title: string) => void): void => {
+  const handleKeyPress = useCallback((event: React.KeyboardEvent, _onAddSubTask: (title: string) => void): void => {
     if (event.key === 'Enter') {
       event.preventDefault();
       // Enterキーでの自動作成を無効化

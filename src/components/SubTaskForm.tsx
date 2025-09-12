@@ -1,12 +1,14 @@
-import { Box, TextInput, Button } from '@primer/react';
-import React from 'react';
+import { Box } from '@primer/react';
+import React, { useMemo } from 'react';
+
+import { UnifiedForm, createSubTaskFormFields } from './shared/Form';
 
 interface SubTaskFormProps {
   title: string;
   onTitleChange: (title: string) => void;
   onSubmit: () => void;
   onCancel: () => void;
-  onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => void;
+  onKeyDown: (event: React.KeyboardEvent) => void;
 }
 
 const SubTaskForm: React.FC<SubTaskFormProps> = ({
@@ -15,39 +17,47 @@ const SubTaskForm: React.FC<SubTaskFormProps> = ({
   onSubmit,
   onCancel,
   onKeyDown
-}) => (
-  <Box
-    sx={{
-      display: 'flex',
-      alignItems: 'center',
-      gap: 2,
-      borderRadius: 2,
-      bg: 'canvas.default'
-    }}
-  >
-    <TextInput
-      value={title}
-      onChange={(e) => onTitleChange(e.target.value)}
-      onKeyDown={onKeyDown}
-      placeholder="サブタスク名を入力..."
-      autoFocus
-      sx={{ flex: 1 }}
-    />
-    <Button
-      onClick={onSubmit}
-      variant="primary"
-      size="small"
-      disabled={!title.trim()}
+}) => {
+  // フォームフィールド設定を生成
+  const formFields = useMemo(() => createSubTaskFormFields(
+    {
+      title
+    },
+    {
+      setTitle: onTitleChange
+    },
+    {
+      onKeyDown
+    }
+  ), [title, onTitleChange, onKeyDown]);
+
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 2,
+        borderRadius: 2,
+        bg: 'canvas.default'
+      }}
     >
-      追加
-    </Button>
-    <Button
-      onClick={onCancel}
-      size="small"
-    >
-      キャンセル
-    </Button>
-  </Box>
-);
+      <UnifiedForm
+        fields={formFields}
+        onSubmit={onSubmit}
+        onCancel={onCancel}
+        submitText="追加"
+        cancelText="キャンセル"
+        disabled={!title.trim()}
+        validateOnChange={false}
+        validateOnBlur={false}
+        sx={{ 
+          flex: 1,
+          '& > div': { mb: 0 }, // フォームコンテナの下マージンを削除
+          '& form': { display: 'flex', alignItems: 'center', gap: 2 }
+        }}
+      />
+    </Box>
+  );
+};
 
 export default SubTaskForm;

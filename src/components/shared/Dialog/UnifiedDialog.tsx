@@ -44,7 +44,7 @@ const getDialogStyles = (variant: DialogVariant, size: DialogSize) => {
         right: 0,
         bottom: 0,
         bg: 'primer.canvas.backdrop',
-        zIndex: 1050,
+        zIndex: 1100,
         display: 'flex',
         alignItems: 'flex-start',
         justifyContent: 'center',

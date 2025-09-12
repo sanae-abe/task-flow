@@ -39,7 +39,7 @@ const SubTaskList: React.FC<SubTaskListProps> = ({
 
   const handleFormSubmit = () => handleSubmit(onAddSubTask);
   
-  const handleFormKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => 
+  const handleFormKeyDown = (event: React.KeyboardEvent) => 
     handleKeyPress(event, onAddSubTask);
 
   return (

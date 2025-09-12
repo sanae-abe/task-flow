@@ -18,7 +18,7 @@ interface UseLabelSelectorReturn {
   cancelCreating: () => void;
   createNewLabel: () => void;
   removeLabel: (labelId: string) => void;
-  handleKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  handleKeyDown: (e: React.KeyboardEvent) => void;
   isValid: boolean;
 }
 
@@ -61,7 +61,7 @@ export const useLabelSelector = ({ selectedLabels, onLabelsChange }: UseLabelSel
     onLabelsChange(selectedLabels.filter(label => label.id !== labelId));
   }, [selectedLabels, onLabelsChange]);
 
-  const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       e.preventDefault();
       // Enterキーでの自動作成を無効化

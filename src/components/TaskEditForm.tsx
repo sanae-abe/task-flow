@@ -1,13 +1,8 @@
-import { Text } from '@primer/react';
-import React, { memo } from 'react';
+import React, { memo, useMemo } from 'react';
 
 import type { Label, FileAttachment } from '../types';
 
-import FileUploader from './FileUploader';
-import FormField, { TextareaField, DateField, DateTimeField } from './FormField';
-import LabelSelector from './LabelSelector';
-import { VBox } from './shared/FlexBox';
-
+import { UnifiedForm, createTaskFormFields } from './shared/Form';
 
 interface TaskEditFormProps {
   title: string;
@@ -41,68 +36,51 @@ const TaskEditForm = memo<TaskEditFormProps>(({
   attachments,
   setAttachments,
   onKeyPress
-}) => (
-    <VBox>
-      <FormField
-        id="task-title"
-        label="タイトル"
-        value={title}
-        placeholder="タスクタイトルを入力"
-        onChange={setTitle}
-        onKeyDown={onKeyPress}
-        autoFocus
-        required
-      />
+}) => {
+  // フォームフィールド設定を生成
+  const formFields = useMemo(() => createTaskFormFields(
+    {
+      title,
+      description,
+      dueDate,
+      completedAt,
+      labels,
+      attachments
+    },
+    {
+      setTitle,
+      setDescription,
+      setDueDate,
+      setCompletedAt,
+      setLabels,
+      setAttachments
+    },
+    {
+      isCompleted,
+      showLabels: true,
+      showAttachments: true,
+      onKeyPress
+    }
+  ), [
+    title, description, dueDate, completedAt, labels, attachments,
+    setTitle, setDescription, setDueDate, setCompletedAt, setLabels, setAttachments,
+    isCompleted, onKeyPress
+  ]);
 
-      <TextareaField
-        id="task-description"
-        label="説明（任意）"
-        value={description}
-        placeholder="タスクの説明を入力"
-        onChange={setDescription}
-        onKeyDown={onKeyPress}
-        rows={4}
-      />
+  // 統合フォームではonSubmitは不要（親コンポーネントで管理）
+  const handleSubmit = () => {
+    // 空実装：親コンポーネントで送信処理を管理
+  };
 
-      <DateField
-        id="task-due-date"
-        label="期限（任意）"
-        value={dueDate}
-        onChange={setDueDate}
-        onKeyDown={onKeyPress}
-      />
-
-      {isCompleted && (
-        <DateTimeField
-          id="task-completed-at"
-          label="完了日時"
-          value={completedAt}
-          onChange={setCompletedAt}
-          onKeyDown={onKeyPress}
-        />
-      )}
-
-      <VBox gap={1} sx={{ mb: 4 }}>
-        <Text sx={{ fontSize: 1, color: 'fg.muted', fontWeight: '700' }}>
-          ラベル（任意）
-        </Text>
-        <LabelSelector
-          selectedLabels={labels}
-          onLabelsChange={setLabels}
-        />
-      </VBox>
-
-      <VBox gap={1} sx={{ mb: 4 }}>
-        <Text sx={{ fontSize: 1, color: 'fg.muted', fontWeight: '700' }}>
-          ファイル添付（任意）
-        </Text>
-        <FileUploader
-          attachments={attachments}
-          onAttachmentsChange={setAttachments}
-          showModeSelector={false}
-        />
-      </VBox>
-    </VBox>
-  ));
+  return (
+    <UnifiedForm
+      fields={formFields}
+      onSubmit={handleSubmit}
+      showCancelButton={false}
+      validateOnChange={true}
+      validateOnBlur={true}
+    />
+  );
+});
 
 export default TaskEditForm;
