@@ -827,7 +827,7 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   
   const createBoard = useCallback((title: string) => {
     dispatch({ type: 'CREATE_BOARD', payload: { title } });
-    notify.success('ボード作成完了', `「${title}」を作成しました`);
+    notify.success(`「${title}」を作成しました`);
   }, [notify]);
   
   const setCurrentBoard = useCallback((boardId: string) => {
@@ -838,7 +838,7 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   const updateBoard = useCallback((boardId: string, updates: Partial<KanbanBoard>) => {
     dispatch({ type: 'UPDATE_BOARD', payload: { boardId, updates } });
     if (updates.title) {
-      notify.success('ボード更新完了', `「${updates.title}」に更新しました`);
+      notify.success(`「${updates.title}」に更新しました`);
     }
   }, [notify]);
 
@@ -846,7 +846,7 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     const boardToDelete = state.boards.find(board => board.id === boardId);
     dispatch({ type: 'DELETE_BOARD', payload: { boardId } });
     if (boardToDelete) {
-      notify.success('ボード削除完了', `「${boardToDelete.title}」を削除しました`);
+      notify.success(`「${boardToDelete.title}」を削除しました`);
     }
   }, [notify, state.boards]);
   
@@ -855,12 +855,12 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       return;
     }
     dispatch({ type: 'CREATE_COLUMN', payload: { boardId: state.currentBoard.id, title } });
-    notify.success('カラム作成完了', `「${title}」を作成しました`);
+    notify.success(`「${title}」を作成しました`);
   }, [state.currentBoard, notify]);
   
   const createTask = useCallback((columnId: string, title: string, description: string, dueDate?: Date, labels?: Label[], attachments?: FileAttachment[]) => {
     dispatch({ type: 'CREATE_TASK', payload: { columnId, title, description, dueDate, labels, attachments } });
-    notify.success('タスク作成完了', `「${title}」を作成しました`);
+    notify.success(`「${title}」を作成しました`);
   }, [notify]);
   
   const moveTask = useCallback((taskId: string, sourceColumnId: string, targetColumnId: string, targetIndex: number) => {
@@ -870,7 +870,7 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   const updateTask = useCallback((taskId: string, updates: Partial<Task>) => {
     dispatch({ type: 'UPDATE_TASK', payload: { taskId, updates } });
     if (updates.title) {
-      notify.success('タスク更新完了', `「${updates.title}」に更新しました`);
+      notify.success(`「${updates.title}」に更新しました`);
     }
   }, [notify]);
   
@@ -881,7 +881,7 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       .find(t => t.id === taskId);
     dispatch({ type: 'DELETE_TASK', payload: { taskId, columnId } });
     if (task) {
-      notify.success('タスク削除完了', `「${task.title}」を削除しました`);
+      notify.success(`「${task.title}」を削除しました`);
     }
   }, [notify, state.currentBoard]);
   
@@ -890,25 +890,25 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     const column = state.currentBoard?.columns.find(col => col.id === columnId);
     dispatch({ type: 'DELETE_COLUMN', payload: { columnId } });
     if (column) {
-      notify.success('カラム削除完了', `「${column.title}」を削除しました`);
+      notify.success(`「${column.title}」を削除しました`);
     }
   }, [notify, state.currentBoard]);
   
   const updateColumn = useCallback((columnId: string, updates: Partial<Column>) => {
     dispatch({ type: 'UPDATE_COLUMN', payload: { columnId, updates } });
     if (updates.title) {
-      notify.success('カラム更新完了', `「${updates.title}」に更新しました`);
+      notify.success(`「${updates.title}」に更新しました`);
     }
   }, [notify]);
 
   const clearCompletedTasks = useCallback(() => {
     dispatch({ type: 'CLEAR_COMPLETED_TASKS' });
-    notify.success('完了タスククリア', '完了したタスクをすべて削除しました');
+    notify.success('完了したタスクをすべて削除しました');
   }, [notify]);
 
   const addSubTask = useCallback((taskId: string, title: string) => {
     dispatch({ type: 'ADD_SUBTASK', payload: { taskId, title } });
-    notify.success('サブタスク追加', `「${title}」を追加しました`);
+    notify.success(`「${title}」を追加しました`);
   }, [notify]);
 
   const toggleSubTask = useCallback((taskId: string, subTaskId: string) => {
@@ -917,13 +917,13 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
 
   const deleteSubTask = useCallback((taskId: string, subTaskId: string) => {
     dispatch({ type: 'DELETE_SUBTASK', payload: { taskId, subTaskId } });
-    notify.success('サブタスク削除', 'サブタスクを削除しました');
+    notify.success('サブタスクを削除しました');
   }, [notify]);
 
   const importBoards = useCallback((boards: KanbanBoard[], replaceAll: boolean = false) => {
     dispatch({ type: 'IMPORT_BOARDS', payload: { boards, replaceAll } });
     const action = replaceAll ? '置換' : '追加';
-    notify.success('データインポート完了', `${boards.length}個のボードを${action}しました`);
+    notify.success(`${boards.length}個のボードを${action}しました`);
   }, [notify]);
 
   const setSortOption = useCallback((option: SortOption) => {

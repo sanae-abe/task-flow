@@ -121,13 +121,13 @@ export const useSubHeader = (): UseSubHeaderReturn => {
       
       exportAllData: () => {
         exportData(state.boards);
-        notify.success('エクスポート完了', '全データをエクスポートしました');
+        notify.success('全データをエクスポートしました');
       },
       
       exportCurrentBoard: () => {
         if (state.currentBoard) {
           exportBoard(state.currentBoard);
-          notify.success('エクスポート完了', `「${state.currentBoard.title}」をエクスポートしました`);
+          notify.success(`「${state.currentBoard.title}」をエクスポートしました`);
         }
       },
       

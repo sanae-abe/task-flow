@@ -50,11 +50,11 @@ const downloadFile = (attachment: FileAttachment, notify: ReturnType<typeof useN
     link.click();
     document.body.removeChild(link);
     
-    notify.success('ダウンロード完了', `「${name}」をダウンロードしました`);
+    notify.success(`「${name}」をダウンロードしました`);
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('ファイルのダウンロードに失敗しました:', error);
-    notify.error('ダウンロード失敗', 'ファイルのダウンロードに失敗しました');
+    notify.error('ファイルのダウンロードに失敗しました');
   }
 };
 

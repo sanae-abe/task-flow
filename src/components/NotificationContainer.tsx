@@ -1,4 +1,4 @@
-import { CheckIcon, InfoIcon, AlertIcon, XIcon, StopIcon } from '@primer/octicons-react';
+import { CheckCircleIcon, InfoIcon, AlertIcon, XIcon, StopIcon } from '@primer/octicons-react';
 import { Text, IconButton, Flash } from '@primer/react';
 import React, { useMemo, useCallback, useEffect } from 'react';
 
@@ -11,7 +11,7 @@ const containerStyles: React.CSSProperties = {
   top: '20px',
   left: '50%',
   transform: 'translateX(-50%)',
-  zIndex: 1000,
+  zIndex: 1010,
   pointerEvents: 'none',
   display: 'flex',
   flexDirection: 'column',
@@ -47,7 +47,7 @@ const useMediaQuery = (query: string): boolean => {
 const getNotificationIcon = (type: NotificationType): React.ReactElement => {
   switch (type) {
     case 'success':
-      return <CheckIcon size={16} aria-hidden="true" />;
+      return <CheckCircleIcon size={16} aria-hidden="true" />;
     case 'info':
       return <InfoIcon size={16} aria-hidden="true" />;
     case 'warning':
@@ -101,9 +101,9 @@ const NotificationItem: React.FC<NotificationItemProps> = React.memo(({ notifica
       tabIndex={0}
       style={{
         display: 'flex',
-        alignItems: 'flex-start',
+        alignItems: 'center',
         gap: '8px',
-        padding: '12px',
+        padding: '10px 16px',
         position: 'relative',
         width: '100%',
         boxSizing: 'border-box'
@@ -115,27 +115,13 @@ const NotificationItem: React.FC<NotificationItemProps> = React.memo(({ notifica
 
       <div style={{ flex: 1, minWidth: 0 }}>
         <Text
-          weight="bold"
           style={{
             display: 'block',
-            wordBreak: 'break-word',
-            marginBottom: notification.message ? '4px' : 0
+            wordBreak: 'break-word'
           }}
         >
-          {notification.title}
+          {notification.message}
         </Text>
-        {notification.message && (
-          <Text
-            size="small"
-            style={{
-              display: 'block',
-              wordBreak: 'break-word',
-              opacity: 0.8
-            }}
-          >
-            {notification.message}
-          </Text>
-        )}
       </div>
 
       <IconButton

@@ -60,7 +60,7 @@ describe('NotificationContext', () => {
         expect(result.current.notifications).toHaveLength(1);
         expect(result.current.notifications[0]).toMatchObject({
           type: 'success',
-          title: 'Test notification',
+          message: 'Test notification',
           id: expect.any(String),
           createdAt: expect.any(Date)
         });
@@ -93,7 +93,7 @@ describe('NotificationContext', () => {
       });
 
       act(() => {
-        result.current.addNotification('warning', 'Persistent test', undefined, { persistent: true });
+        result.current.addNotification('warning', 'Persistent test', { persistent: true });
       });
 
       expect(result.current.notifications).toHaveLength(1);
@@ -117,8 +117,8 @@ describe('NotificationContext', () => {
       });
 
       expect(result.current.notifications).toHaveLength(2);
-      expect(result.current.notifications[0].title).toBe('Second');
-      expect(result.current.notifications[1].title).toBe('Third');
+      expect(result.current.notifications[0].message).toBe('Second');
+      expect(result.current.notifications[1].message).toBe('Third');
     });
 
     it('should throw error for empty title', () => {
@@ -130,7 +130,7 @@ describe('NotificationContext', () => {
         act(() => {
           result.current.addNotification('error', '   ');
         });
-      }).toThrow('Notification title cannot be empty');
+      }).toThrow('Notification message cannot be empty');
     });
   });
 
@@ -222,8 +222,8 @@ describe('NotificationContext', () => {
       });
 
       expect(result.current.notifications.notifications).toHaveLength(2);
-      expect(result.current.notifications.notifications[0].title).toBe('Toast success');
-      expect(result.current.notifications.notifications[1].title).toBe('Loading...');
+      expect(result.current.notifications.notifications[0].message).toBe('Toast success');
+      expect(result.current.notifications.notifications[1].message).toBe('Loading...');
     });
 
     it('should provide persistent notification methods', () => {
@@ -275,7 +275,7 @@ describe('NotificationContext', () => {
       await waitFor(() => {
         expect(result.current.notifications.notifications).toHaveLength(1);
         expect(result.current.notifications.notifications[0].type).toBe('success');
-        expect(result.current.notifications.notifications[0].title).toBe('Success!');
+        expect(result.current.notifications.notifications[0].message).toBe('Success!');
       });
     });
 
@@ -306,7 +306,7 @@ describe('NotificationContext', () => {
       await waitFor(() => {
         expect(result.current.notifications.notifications).toHaveLength(1);
         expect(result.current.notifications.notifications[0].type).toBe('error');
-        expect(result.current.notifications.notifications[0].title).toBe('Error occurred');
+        expect(result.current.notifications.notifications[0].message).toBe('Error occurred');
       });
     });
 
@@ -331,7 +331,7 @@ describe('NotificationContext', () => {
 
       await waitFor(() => {
         expect(result.current.notifications.notifications).toHaveLength(1);
-        expect(result.current.notifications.notifications[0].title).toBe('User Test User created successfully!');
+        expect(result.current.notifications.notifications[0].message).toBe('User Test User created successfully!');
       });
     });
   });

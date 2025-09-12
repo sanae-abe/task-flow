@@ -32,8 +32,7 @@ interface NotificationContextType {
   config: NotificationConfig;
   addNotification: (
     type: NotificationType, 
-    title: string, 
-    message?: string, 
+    message: string, 
     options?: AddNotificationOptions
   ) => string; // IDを返すように変更
   removeNotification: (id: string) => void;
@@ -89,14 +88,13 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
 
   const addNotification = useCallback((
     type: NotificationType,
-    title: string,
-    message?: string,
+    message: string,
     options: AddNotificationOptions = {}
   ): string => {
     try {
       // バリデーション
-      if (!title.trim()) {
-        throw new Error('Notification title cannot be empty');
+      if (!message.trim()) {
+        throw new Error('Notification message cannot be empty');
       }
 
       const {
@@ -108,8 +106,7 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
       const notification: Notification = {
         id,
         type,
-        title: title.trim(),
-        message: message?.trim(),
+        message: message.trim(),
         duration: persistent ? undefined : duration,
         createdAt: new Date()
       };
@@ -195,41 +192,41 @@ export const useNotify = () => {
   const { addNotification } = useNotifications();
 
   return useMemo(() => ({
-    success: (title: string, message?: string, options?: AddNotificationOptions) => 
-      addNotification('success', title, message, options),
+    success: (message: string, options?: AddNotificationOptions) => 
+      addNotification('success', message, options),
     
-    info: (title: string, message?: string, options?: AddNotificationOptions) => 
-      addNotification('info', title, message, options),
+    info: (message: string, options?: AddNotificationOptions) => 
+      addNotification('info', message, options),
     
-    warning: (title: string, message?: string, options?: AddNotificationOptions) => 
-      addNotification('warning', title, message, options),
+    warning: (message: string, options?: AddNotificationOptions) => 
+      addNotification('warning', message, options),
     
-    error: (title: string, message?: string, options?: AddNotificationOptions) => 
-      addNotification('error', title, message, { 
+    error: (message: string, options?: AddNotificationOptions) => 
+      addNotification('error', message, { 
         duration: 5000, // エラーは少し長めに表示
         ...options 
       }),
       
     // 便利なメソッド追加
     toast: {
-      success: (title: string, options?: AddNotificationOptions) =>
-        addNotification('success', title, undefined, options),
-      error: (title: string, options?: AddNotificationOptions) =>
-        addNotification('error', title, undefined, { duration: 5000, ...options }),
-      loading: (title: string, options?: AddNotificationOptions) =>
-        addNotification('info', title, undefined, { persistent: true, ...options }),
+      success: (message: string, options?: AddNotificationOptions) =>
+        addNotification('success', message, options),
+      error: (message: string, options?: AddNotificationOptions) =>
+        addNotification('error', message, { duration: 5000, ...options }),
+      loading: (message: string, options?: AddNotificationOptions) =>
+        addNotification('info', message, { persistent: true, ...options }),
     },
     
     // 永続的な通知
     persistent: {
-      success: (title: string, message?: string, options?: Omit<AddNotificationOptions, 'persistent'>) =>
-        addNotification('success', title, message, { ...options, persistent: true }),
-      info: (title: string, message?: string, options?: Omit<AddNotificationOptions, 'persistent'>) =>
-        addNotification('info', title, message, { ...options, persistent: true }),
-      warning: (title: string, message?: string, options?: Omit<AddNotificationOptions, 'persistent'>) =>
-        addNotification('warning', title, message, { ...options, persistent: true }),
-      error: (title: string, message?: string, options?: Omit<AddNotificationOptions, 'persistent'>) =>
-        addNotification('error', title, message, { ...options, persistent: true }),
+      success: (message: string, options?: Omit<AddNotificationOptions, 'persistent'>) =>
+        addNotification('success', message, { ...options, persistent: true }),
+      info: (message: string, options?: Omit<AddNotificationOptions, 'persistent'>) =>
+        addNotification('info', message, { ...options, persistent: true }),
+      warning: (message: string, options?: Omit<AddNotificationOptions, 'persistent'>) =>
+        addNotification('warning', message, { ...options, persistent: true }),
+      error: (message: string, options?: Omit<AddNotificationOptions, 'persistent'>) =>
+        addNotification('error', message, { ...options, persistent: true }),
     }
   }), [addNotification]);
 };

@@ -66,15 +66,17 @@ const TaskDisplay: React.FC<TaskDisplayProps> = ({
 
       {(task.dueDate || (task.subTasks && task.subTasks.length > 0) || (task.attachments && task.attachments.length > 0)) && (
         <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
-          {task.dueDate && (
-            <DueDateBadge
-              dueDate={task.dueDate}
-              isOverdue={isOverdue}
-              isDueToday={isDueToday}
-              isDueTomorrow={isDueTomorrow}
-              formatDueDate={formatDueDate}
-            />
-          )}
+          <div>
+            {task.dueDate && (
+              <DueDateBadge
+                dueDate={task.dueDate}
+                isOverdue={isOverdue}
+                isDueToday={isDueToday}
+                isDueTomorrow={isDueTomorrow}
+                formatDueDate={formatDueDate}
+              />
+            )}
+          </div>
           <TaskIndicators 
             subTasks={task.subTasks}
             attachments={task.attachments}

@@ -26,8 +26,7 @@ export type NotificationType = 'success' | 'info' | 'warning' | 'error';
 export interface Notification {
   id: string;
   type: NotificationType;
-  title: string;
-  message?: string;
+  message: string;
   duration?: number; // milliseconds
   createdAt: Date;
 }

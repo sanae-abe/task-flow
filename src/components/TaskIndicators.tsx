@@ -9,7 +9,7 @@ const INDICATOR_STYLES = {
     display: 'flex',
     alignItems: 'center',
     gap: 1,
-    px: 2,
+    px: 1,
     py: 1,
     borderRadius: 2,
     fontSize: 0,
