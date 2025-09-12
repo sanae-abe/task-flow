@@ -88,7 +88,7 @@ const RightSection: React.FC<RightSectionProps> = ({ onCreateClick, onHelpClick 
     </Button>
     <Button
       onClick={onHelpClick}
-      variant="default"
+      variant="invisible"
       aria-label="ヘルプを表示"
       leadingVisual={QuestionIcon}
     >

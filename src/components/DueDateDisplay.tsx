@@ -21,7 +21,7 @@ const BADGE_CONFIGS = {
   },
   today: {
     bg: 'attention.emphasis', 
-    text: '今日期限'
+    text: '本日期限'
   },
   tomorrow: {
     bg: 'accent.emphasis',

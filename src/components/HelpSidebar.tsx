@@ -1,6 +1,11 @@
-import { XIcon, CheckCircleIcon, PencilIcon, ArrowRightIcon, FilterIcon, UploadIcon } from '@primer/octicons-react';
+import { XIcon, CheckCircleIcon, PencilIcon, ArrowRightIcon, FilterIcon, UploadIcon, InfoIcon, CloudOfflineIcon } from '@primer/octicons-react';
 import { Button, Box, Heading, Text } from '@primer/react';
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
+
+// 定数定義
+const SIDEBAR_WIDTH = '450px';
+const SIDEBAR_Z_INDEX = 1000;
+const TITLE_MIN_WIDTH = '120px';
 
 interface HelpSidebarProps {
   isOpen: boolean;
@@ -11,42 +16,94 @@ interface HelpSectionProps {
   title: string;
   icon: React.ComponentType<{ size?: number }>;
   children: React.ReactNode;
+  color?: string;
 }
 
-const HelpSection: React.FC<HelpSectionProps> = ({ title, icon: Icon, children }) => (
-  <Box sx={{ mb: 4 }}>
-    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-      <Icon size={16} />
-      <Text sx={{ fontWeight: 'bold', fontSize: 1 }}>{title}</Text>
+const HelpSection: React.FC<HelpSectionProps> = ({ title, icon: Icon, children, color = 'accent.emphasis' }) => (
+  <>
+    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
+      <Box sx={{
+        p: 2,
+        bg: color,
+        borderRadius: '50%',
+        color: 'fg.onEmphasis',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}>
+        <Icon size={14} />
+      </Box>
+      <Heading sx={{ fontSize: 2, fontWeight: 'bold', color: 'fg.default', margin: 0 }}>
+        {title}
+      </Heading>
     </Box>
-    <Box sx={{ pl: 3 }}>
-      {children}
+    <Box sx={{
+      mb: 5,
+      p: 3,
+      bg: 'canvas.subtle',
+      borderRadius: '6px'
+    }}>
+      <Box sx={{ pl: 0 }}>
+        {children}
+      </Box>
     </Box>
+  </>
+);
+
+interface HelpItemProps {
+  title: string;
+  description: string;
+  highlight?: boolean;
+}
+
+const HelpItem: React.FC<HelpItemProps> = ({ title, description, highlight = false }) => (
+  <Box sx={{
+    p: 2,
+    bg: highlight ? 'attention.subtle' : 'transparent',
+    borderRadius: '6px',
+    borderLeft: highlight ? '3px solid' : 'none',
+    borderColor: highlight ? 'attention.emphasis' : 'transparent',
+    display: 'flex',
+    gap: 3,
+    alignItems: 'flex-start'
+  }}>
+    <Text sx={{
+      fontSize: 1,
+      fontWeight: 'bold',
+      color: 'accent.emphasis',
+      minWidth: TITLE_MIN_WIDTH,
+      flexShrink: 0,
+      overflowWrap: 'break-word'
+    }}>
+      {title}
+    </Text>
+    <Text sx={{
+      fontSize: 1,
+      lineHeight: 1.5,
+      color: 'fg.default',
+      flex: 1
+    }}>
+      {description}
+    </Text>
   </Box>
 );
 
-const HelpItem: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <Text sx={{ fontSize: 1, lineHeight: 1.5, mb: 2, display: 'block' }}>
-    {children}
-  </Text>
-);
-
 const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
-  useEffect(() => {
-    const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        onClose();
-      }
-    };
+  const handleEscape = useCallback((event: KeyboardEvent) => {
+    if (event.key === 'Escape') {
+      onClose();
+    }
+  }, [onClose]);
 
+  useEffect(() => {
     if (isOpen) {
       document.addEventListener('keydown', handleEscape);
+      return () => {
+        document.removeEventListener('keydown', handleEscape);
+      };
     }
-
-    return () => {
-      document.removeEventListener('keydown', handleEscape);
-    };
-  }, [isOpen, onClose]);
+    return undefined;
+  }, [isOpen, handleEscape]);
 
   if (!isOpen) {
     return null;
@@ -54,34 +111,37 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
 
   return (
     <Box
-      sx={{ 
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="help-title"
+      sx={{
         position: "fixed",
         top: 0,
         right: 0,
-        width: "450px",
+        width: SIDEBAR_WIDTH,
         height: "100vh",
         bg: "canvas.default",
         boxShadow: '0 16px 32px rgba(0, 0, 0, 0.24)',
         borderLeft: '1px solid',
         borderColor: 'border.default',
-        zIndex: 1000,
+        zIndex: SIDEBAR_Z_INDEX,
         overflowY: 'auto'
       }}
     >
       <Box sx={{ display: "flex", height: "100%", flexDirection: "column" }}>
         {/* Header */}
         <Box
-          sx={{ 
+          sx={{
             display: "flex",
             p: 4,
             alignItems: "flex-start",
             justifyContent: "space-between",
             borderBottom: "1px solid",
             borderColor: "border.default",
-            flexShrink: 0 
+            flexShrink: 0
           }}
         >
-          <Heading sx={{ fontSize: 2, margin: 0, pr: 3 }}>
+          <Heading id="help-title" sx={{ fontSize: 2, margin: 0, pr: 3 }}>
             使い方ヘルプ
           </Heading>
           <Button
@@ -95,97 +155,124 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
         </Box>
 
         {/* Content */}
-        <Box sx={{ flex: "1", p: 4, overflowY: 'auto' }}>
-          <Text sx={{ fontSize: 1, mb: 4, color: 'fg.muted' }}>
-            Offline Kanbanの基本的な使い方を説明します。
-          </Text>
-
-          <HelpSection title="基本操作" icon={CheckCircleIcon}>
-            <HelpItem>
-              • <strong>ボード作成</strong>: 「新しいボード」ボタンでプロジェクトボードを作成
-            </HelpItem>
-            <HelpItem>
-              • <strong>カラム追加</strong>: サブヘッダーの「カラムを追加」ボタンで作業段階を追加
-            </HelpItem>
-            <HelpItem>
-              • <strong>タスク作成</strong>: 各カラムの「+」ボタンでタスクを作成
-            </HelpItem>
-            <HelpItem>
-              • <strong>ドラッグ&ドロップ</strong>: タスクをドラッグしてカラム間を移動
-            </HelpItem>
-          </HelpSection>
-
-          <HelpSection title="タスク管理" icon={PencilIcon}>
-            <HelpItem>
-              • <strong>タスク編集</strong>: タスクカードをクリックして詳細表示・編集
-            </HelpItem>
-            <HelpItem>
-              • <strong>完了機能</strong>: タスク名左のチェックアイコンで即座に完了状態に移動
-            </HelpItem>
-            <HelpItem>
-              • <strong>サブタスク</strong>: タスク詳細画面でチェックリスト形式のサブタスクを管理
-            </HelpItem>
-            <HelpItem>
-              • <strong>ラベル</strong>: 色付きラベルでタスクを分類・整理
-            </HelpItem>
-            <HelpItem>
-              • <strong>期限設定</strong>: 日時指定で期限管理、期限切れタスクは自動警告
-            </HelpItem>
-          </HelpSection>
-
-          <HelpSection title="ファイル添付" icon={UploadIcon}>
-            <HelpItem>
-              • <strong>ファイル添付</strong>: タスク作成・編集時にドラッグ&ドロップでファイル添付
-            </HelpItem>
-            <HelpItem>
-              • <strong>プレビュー</strong>: 画像・テキストファイルはサイドバーでプレビュー表示
-            </HelpItem>
-            <HelpItem>
-              • <strong>ダウンロード</strong>: 添付ファイルをクリックしてダウンロード
-            </HelpItem>
-          </HelpSection>
-
-          <HelpSection title="フィルタリング・ソート" icon={FilterIcon}>
-            <HelpItem>
-              • <strong>タスクフィルタ</strong>: 期限・ラベル・完了状態でタスクを絞り込み
-            </HelpItem>
-            <HelpItem>
-              • <strong>ソート機能</strong>: 作成日・更新日・期限・名前順でタスクを並び替え
-            </HelpItem>
-            <HelpItem>
-              • <strong>統計表示</strong>: サブヘッダーで未完了タスク数・期限警告を確認
-            </HelpItem>
-          </HelpSection>
-
-          <HelpSection title="データ管理" icon={ArrowRightIcon}>
-            <HelpItem>
-              • <strong>ローカル保存</strong>: すべてのデータはブラウザに自動保存
-            </HelpItem>
-            <HelpItem>
-              • <strong>データインポート</strong>: JSONファイルでデータの一括インポート
-            </HelpItem>
-            <HelpItem>
-              • <strong>完了タスククリア</strong>: ボード設定から完了タスクを一括削除
-            </HelpItem>
-          </HelpSection>
-
-          <Box sx={{ 
-            mt: 5, 
-            p: 3, 
-            bg: 'neutral.subtle', 
-            borderRadius: 2,
-            border: '1px solid',
-            borderColor: 'border.default'
+        <Box sx={{ flex: "1", p: 3, overflowY: 'auto' }}>
+          <Box sx={{
+            mb: 4,
+            textAlign: 'center',
+            '& svg': {
+              color: 'accent.emphasis',
+              fill: 'currentColor'
+            }
           }}>
-            <Text sx={{ fontSize: 1, fontWeight: 'bold', mb: 2 }}>
-              💡 ヒント
+            <Text sx={{ fontSize: 2, fontWeight: 'bold', color: 'accent.emphasis', mt: 2, mb: 1, display: 'block' }}>
+              <CloudOfflineIcon size={16} /> Kanban 使い方ガイド
             </Text>
-            <Text sx={{ fontSize: 0, lineHeight: 1.4, color: 'fg.muted' }}>
-              • Escapeキーでダイアログやサイドバーを閉じることができます<br />
-              • 右端のカラムが「完了」状態として扱われます<br />
-              • データはブラウザのローカルストレージに保存されるため、オフラインでも使用可能です
+            <Text sx={{ fontSize: 1, color: 'fg.muted' }}>
+              基本的な使い方を分かりやすく説明します
             </Text>
           </Box>
+
+          <HelpSection title="基本操作" icon={CheckCircleIcon} color="success.emphasis">
+            <HelpItem
+              title="ボード作成"
+              description="ヘッダーの「新しいボード」ボタンでプロジェクトボードを作成"
+            />
+            <HelpItem
+              title="カラム追加"
+              description="サブヘッダーの「カラムを追加」ボタンで作業段階を追加"
+            />
+            <HelpItem
+              title="タスク作成"
+              description="各カラムの「+」ボタンでタスクを作成"
+            />
+            <HelpItem
+              title="ドラッグ&ドロップ"
+              description="タスクをドラッグしてカラム間を移動（直感的操作）"
+            />
+          </HelpSection>
+
+          <HelpSection title="タスク管理" icon={PencilIcon} color="accent.emphasis">
+            <HelpItem
+              title="タスク編集"
+              description="タスクカードをクリックして詳細表示・編集"
+            />
+            <HelpItem
+              title="完了機能"
+              description="タスク名左のチェックアイコンで即座に完了状態に移動"
+            />
+            <HelpItem
+              title="サブタスク"
+              description="タスク詳細画面でチェックリスト形式のサブタスクを管理"
+            />
+            <HelpItem
+              title="ラベル"
+              description="色付きラベルでタスクを分類・整理"
+            />
+            <HelpItem
+              title="期限設定"
+              description="日時指定で期限管理、期限切れタスクは自動警告"
+            />
+          </HelpSection>
+
+          <HelpSection title="ファイル添付" icon={UploadIcon} color="attention.emphasis">
+            <HelpItem
+              title="ファイル添付"
+              description="タスク作成・編集時にドラッグ&ドロップでファイル添付"
+            />
+            <HelpItem
+              title="プレビュー"
+              description="画像・テキストファイルはサイドバーでプレビュー表示"
+            />
+            <HelpItem
+              title="ダウンロード"
+              description="添付ファイルをクリックしてダウンロード"
+            />
+          </HelpSection>
+
+          <HelpSection title="フィルタリング・ソート" icon={FilterIcon} color="done.emphasis">
+            <HelpItem
+              title="タスクフィルタ"
+              description="期限・ラベル・完了状態でタスクを絞り込み"
+            />
+            <HelpItem
+              title="ソート機能"
+              description="作成日・更新日・期限・名前順でタスクを並び替え"
+            />
+            <HelpItem
+              title="統計表示"
+              description="サブヘッダーで未完了タスク数・期限警告を確認"
+            />
+          </HelpSection>
+
+          <HelpSection title="データ管理" icon={ArrowRightIcon} color="severe.emphasis">
+            <HelpItem
+              title="ローカル保存"
+              description="すべてのデータはブラウザに自動保存"
+            />
+            <HelpItem
+              title="データインポート"
+              description="JSONファイルでデータの一括インポート"
+            />
+            <HelpItem
+              title="完了タスククリア"
+              description="ボード設定から完了タスクを一括削除"
+            />
+          </HelpSection>
+
+          <HelpSection title="便利なヒント" icon={InfoIcon} color="sponsors.emphasis">
+            <HelpItem
+              title="キーボード操作"
+              description="Escapeキーでダイアログやサイドバーを閉じる"
+            />
+            <HelpItem
+              title="完了管理"
+              description="右端のカラムが「完了」状態として自動処理"
+            />
+            <HelpItem
+              title="オフライン対応"
+              description="データはブラウザに保存されオフラインでも使用可能"
+            />
+          </HelpSection>
         </Box>
       </Box>
     </Box>

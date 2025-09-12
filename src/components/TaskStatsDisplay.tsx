@@ -27,13 +27,13 @@ const TaskStatsDisplay: React.FC<TaskStatsDisplayProps> = ({ stats }) => {
 
   const urgentLabels = [
     { condition: overdueTasks > 0, variant: 'danger' as const, icon: AlertIcon, count: overdueTasks, label: '期限切れ' },
-    { condition: dueTodayTasks > 0, variant: 'attention' as const, icon: ClockIcon, count: dueTodayTasks, label: '今日期限' },
+    { condition: dueTodayTasks > 0, variant: 'attention' as const, icon: ClockIcon, count: dueTodayTasks, label: '本日期限' },
     { condition: dueTomorrowTasks > 0, variant: 'accent' as const, icon: ClockIcon, count: dueTomorrowTasks, label: '明日期限' }
   ].filter(item => item.condition);
 
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-      <Text sx={{ display: 'flex', alignItems: 'center', gap: 1, fontSize: 1, color: 'fg.muted' }}>
+      <Text sx={{ display: 'flex', alignItems: 'center', gap: 1, fontSize: 0, color: 'fg.muted' }}>
         <CheckCircleIcon size={16} />
         総未完了タスク数: {totalTasks}
       </Text>
@@ -53,7 +53,7 @@ const TaskStatsDisplay: React.FC<TaskStatsDisplayProps> = ({ stats }) => {
       )}
 
       {!hasUrgentTasks && totalTasks > 0 && (
-        <Text sx={{ display: 'flex', alignItems: 'center', gap: 1, fontSize: 1, color: 'fg.muted' }}>
+        <Text sx={{ display: 'flex', alignItems: 'center', gap: 1, fontSize: 0, color: 'fg.muted' }}>
           <InfoIcon size={16} />
           緊急なタスクはありません
         </Text>
