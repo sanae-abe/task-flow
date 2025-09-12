@@ -82,6 +82,8 @@ export interface FilterConfig {
   description?: string;
 }
 
+export type ViewMode = 'kanban' | 'calendar';
+
 export interface KanbanBoard {
   id: string;
   title: string;

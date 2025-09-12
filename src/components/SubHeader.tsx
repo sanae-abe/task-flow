@@ -1,5 +1,5 @@
-import { PlusIcon } from '@primer/octicons-react';
-import { Box } from '@primer/react';
+import { PlusIcon, CalendarIcon, ProjectIcon } from '@primer/octicons-react';
+import { Box, Button, ButtonGroup } from '@primer/react';
 import React from 'react';
 
 import { useKanban } from '../contexts/KanbanContext';
@@ -16,7 +16,7 @@ import TaskSortSelector from './TaskSortSelector';
 import TaskStatsDisplay from './TaskStatsDisplay';
 
 const SubHeader: React.FC = () => {
-  const { setSortOption, setTaskFilter } = useKanban();
+  const { setSortOption, setTaskFilter, setViewMode } = useKanban();
   const {
     state,
     dialogState,
@@ -67,6 +67,33 @@ const SubHeader: React.FC = () => {
       <TaskStatsDisplay stats={taskStats} />
 
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <ButtonGroup>
+          <Button
+            variant={state.viewMode === 'kanban' ? 'primary' : 'default'}
+            size="small"
+            leadingVisual={ProjectIcon}
+            onClick={() => setViewMode('kanban')}
+          >
+            カンバン
+          </Button>
+          <Button
+            variant={state.viewMode === 'calendar' ? 'primary' : 'default'}
+            size="small"
+            leadingVisual={CalendarIcon}
+            onClick={() => setViewMode('calendar')}
+          >
+            カレンダー
+          </Button>
+        </ButtonGroup>
+        
+        <Box
+          sx={{
+            width: '1px',
+            height: '24px',
+            bg: 'border.default',
+          }}
+        />
+        
         <FilterSelector
           currentFilter={state.taskFilter}
           onFilterChange={setTaskFilter}
@@ -83,12 +110,14 @@ const SubHeader: React.FC = () => {
             bg: 'border.default',
           }}
         />
-        <SubHeaderButton
-          icon={PlusIcon}
-          onClick={handlers.startCreateColumn}
-        >
-          新しいカラム
-        </SubHeaderButton>
+        {state.viewMode === 'kanban' && (
+          <SubHeaderButton
+            icon={PlusIcon}
+            onClick={handlers.startCreateColumn}
+          >
+            新しいカラム
+          </SubHeaderButton>
+        )}
         
         <BoardActionMenu
           hasCompletedTasks={hasCompletedTasks}

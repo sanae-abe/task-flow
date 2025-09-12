@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useReducer, useEffect, useMemo, useCallback, type ReactNode } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
-import type { KanbanBoard, Column, Task, Label, SubTask, FileAttachment, SortOption, TaskFilter } from '../types';
+import type { KanbanBoard, Column, Task, Label, SubTask, FileAttachment, SortOption, TaskFilter, ViewMode } from '../types';
 import { saveBoards, loadBoards } from '../utils/storage';
 import { useNotify } from './NotificationContext';
 
@@ -10,6 +10,7 @@ interface KanbanState {
   currentBoard: KanbanBoard | null;
   sortOption: SortOption;
   taskFilter: TaskFilter;
+  viewMode: ViewMode;
 }
 
 type KanbanAction =
@@ -31,7 +32,8 @@ type KanbanAction =
   | { type: 'TOGGLE_SUBTASK'; payload: { taskId: string; subTaskId: string } }
   | { type: 'DELETE_SUBTASK'; payload: { taskId: string; subTaskId: string } }
   | { type: 'SET_SORT_OPTION'; payload: SortOption }
-  | { type: 'SET_TASK_FILTER'; payload: TaskFilter };
+  | { type: 'SET_TASK_FILTER'; payload: TaskFilter }
+  | { type: 'SET_VIEW_MODE'; payload: ViewMode };
 
 interface KanbanContextType {
   state: KanbanState;
@@ -54,6 +56,7 @@ interface KanbanContextType {
   importBoards: (boards: KanbanBoard[], replaceAll?: boolean) => void;
   setSortOption: (option: SortOption) => void;
   setTaskFilter: (filter: TaskFilter) => void;
+  setViewMode: (mode: ViewMode) => void;
   getAllLabels: () => Label[];
 }
 
@@ -605,6 +608,13 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
         taskFilter: action.payload,
       };
     }
+
+    case 'SET_VIEW_MODE': {
+      return {
+        ...state,
+        viewMode: action.payload,
+      };
+    }
     
     default:
       return state;
@@ -617,6 +627,7 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     currentBoard: null,
     sortOption: loadSortOption(),
     taskFilter: { type: 'all', label: 'すべてのタスク' },
+    viewMode: 'kanban',
   });
   const [isInitialized, setIsInitialized] = React.useState(false);
   const notify = useNotify();
@@ -949,6 +960,10 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     dispatch({ type: 'SET_TASK_FILTER', payload: filter });
   }, []);
 
+  const setViewMode = useCallback((mode: ViewMode) => {
+    dispatch({ type: 'SET_VIEW_MODE', payload: mode });
+  }, []);
+
   // 全ボードから全ラベルを取得（名前でユニーク化）
   const getAllLabels = useCallback((): Label[] => {
     const labelMap = new Map<string, Label>();
@@ -991,6 +1006,7 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       importBoards,
       setSortOption,
       setTaskFilter,
+      setViewMode,
       getAllLabels,
     }),
     [
@@ -1013,6 +1029,7 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       importBoards,
       setSortOption,
       setTaskFilter,
+      setViewMode,
       getAllLabels,
     ]
   );

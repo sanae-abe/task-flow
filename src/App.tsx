@@ -3,9 +3,10 @@ import { BaseStyles, ThemeProvider } from '@primer/react';
 import Header from './components/Header';
 import SubHeader from './components/SubHeader';
 import KanbanBoard from './components/KanbanBoard';
+import CalendarView from './components/CalendarView';
 import NotificationContainer from './components/NotificationContainer';
 import HelpSidebar from './components/HelpSidebar';
-import { KanbanProvider } from './contexts/KanbanContext';
+import { KanbanProvider, useKanban } from './contexts/KanbanContext';
 import { NotificationProvider } from './contexts/NotificationContext';
 import { useHelp } from './hooks/useHelp';
 
@@ -24,25 +25,32 @@ const styles = {
   },
 } as const;
 
-function App() {
+const AppContent: React.FC = () => {
+  const { state } = useKanban();
   const { isHelpOpen, openHelp, closeHelp } = useHelp();
 
+  return (
+    <div className="app" role="application" aria-label="ToDoアプリケーション">
+      <div style={styles.fixedHeader}>
+        <Header onHelpClick={openHelp} />
+        <SubHeader />
+      </div>
+      <main aria-label={state.viewMode === 'kanban' ? 'カンバンボード' : 'カレンダービュー'}>
+        {state.viewMode === 'kanban' ? <KanbanBoard /> : <CalendarView />}
+      </main>
+      <NotificationContainer />
+      <HelpSidebar isOpen={isHelpOpen} onClose={closeHelp} />
+    </div>
+  );
+};
+
+function App() {
   return (
     <ThemeProvider>
       <BaseStyles>
         <NotificationProvider>
           <KanbanProvider>
-            <div className="app" role="application" aria-label="カンバンボードアプリケーション">
-              <div style={styles.fixedHeader}>
-                <Header onHelpClick={openHelp} />
-                <SubHeader />
-              </div>
-              <main aria-label="カンバンボード">
-                <KanbanBoard />
-              </main>
-            </div>
-            <NotificationContainer />
-            <HelpSidebar isOpen={isHelpOpen} onClose={closeHelp} />
+            <AppContent />
           </KanbanProvider>
         </NotificationProvider>
       </BaseStyles>
