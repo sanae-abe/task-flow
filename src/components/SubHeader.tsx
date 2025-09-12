@@ -61,7 +61,7 @@ const SubHeader: React.FC = () => {
     >
       <TaskStatsDisplay stats={taskStats} />
 
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
         <FilterSelector
           currentFilter={state.taskFilter}
           onFilterChange={setTaskFilter}

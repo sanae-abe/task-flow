@@ -24,31 +24,26 @@ const FilterSelector = memo<FilterSelectorProps>(({
       type: 'all',
       label: 'すべてのタスク',
       icon: 'filter',
-      description: 'フィルターなし'
     },
     {
       type: 'due-within-3-days',
       label: '期限まで3日以内',
       icon: 'clock',
-      description: '今日から3日以内が期限のタスク'
     },
     {
       type: 'due-today',
       label: '本日期限',
       icon: 'alert',
-      description: '今日が期限のタスク'
     },
     {
       type: 'overdue',
       label: '期限切れ',
       icon: 'x-circle',
-      description: '期限を過ぎたタスク'
     },
     {
       type: 'label',
       label: 'ラベルで絞り込み',
       icon: 'tag',
-      description: '特定のラベルが付いたタスク'
     }
   ], []);
 
@@ -121,6 +116,7 @@ const FilterSelector = memo<FilterSelectorProps>(({
       <ActionMenu.Anchor>
         <Button
           variant="invisible"
+          size="small"
           leadingVisual={FilterIconComponent}
           aria-label="タスクフィルターを選択"
           style={{
@@ -146,11 +142,6 @@ const FilterSelector = memo<FilterSelectorProps>(({
                     <IconComponent />
                   </ActionList.LeadingVisual>
                   {config.label}
-                  {config.description && (
-                    <ActionList.Description>
-                      {config.description}
-                    </ActionList.Description>
-                  )}
                 </ActionList.Item>
               );
             })}

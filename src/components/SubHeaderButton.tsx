@@ -15,15 +15,16 @@ const SubHeaderButton: React.FC<SubHeaderButtonProps> = ({
     <Button
       size="small"
       variant="invisible"
-      sx={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: 1,
-      }}
       {...props}
     >
-      <IconComponent size={16} />
-      {children}
+      <span style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '4px'
+      }}>
+        <IconComponent size={16} />
+        {children}
+      </span>
     </Button>
   );
 
