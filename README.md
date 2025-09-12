@@ -1,6 +1,6 @@
-# 🏷️ Offline Kanban
+# 🏷️ Offline ToDo
 
-React + TypeScript で構築されたモダンなKanbanボードアプリケーション
+React + TypeScript で構築されたモダンなタスク管理アプリケーション
 
 ![GitHub](https://img.shields.io/badge/license-MIT-blue.svg)
 ![React](https://img.shields.io/badge/React-19.1.1-blue.svg)
@@ -46,8 +46,8 @@ React + TypeScript で構築されたモダンなKanbanボードアプリケー�
 ### インストール
 ```bash
 # リポジトリのクローン
-git clone https://github.com/your-username/kanban-app.git
-cd kanban-app
+git clone https://github.com/your-username/todo-app.git
+cd todo-app
 
 # 依存関係のインストール
 npm install

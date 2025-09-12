@@ -19,7 +19,7 @@ const Logo: React.FC<LogoProps> = ({ size = 'medium' }) => {
     <Box
       as="div"
       role="banner"
-      aria-label="Kanbanアプリケーションロゴ"
+      aria-label="ToDoアプリケーションロゴ"
       sx={{
         display: 'flex',
         alignItems: 'center',
@@ -52,7 +52,7 @@ const Logo: React.FC<LogoProps> = ({ size = 'medium' }) => {
           lineHeight: 'condensed'
         }}
       >
-        Kanban
+        ToDo
       </Heading>
     </Box>
   );

@@ -147,7 +147,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
                 color: 'accent.emphasis', marginRight: '2px'
               } }}
             >
-            <CloudOfflineIcon size={20} /> Kanban 使い方ガイド
+            <CloudOfflineIcon size={20} /> ToDo 使い方ガイド
           </Heading>
           <Button
             onClick={onClose}

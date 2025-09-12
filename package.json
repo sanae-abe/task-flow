@@ -1,10 +1,10 @@
 {
-  "name": "kanban-app",
+  "name": "todo-app",
   "version": "0.1.0",
-  "description": "A modern Kanban board application built with React and TypeScript",
+  "description": "A modern ToDo application built with React and TypeScript",
   "private": true,
   "keywords": [
-    "kanban",
+    "todo",
     "react",
     "typescript",
     "task-management",
