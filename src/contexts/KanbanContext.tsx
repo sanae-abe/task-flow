@@ -120,30 +120,6 @@ const loadSortOption = (): SortOption => {
   }
 };
 
-// ヘルパー関数: LocalStorageにフィルター設定を安全に保存
-const saveTaskFilter = (filter: TaskFilter) => {
-  try {
-    localStorage.setItem('task-filter', JSON.stringify(filter));
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.warn('LocalStorage access failed:', error);
-  }
-};
-
-// ヘルパー関数: LocalStorageからフィルター設定を安全に取得
-const loadTaskFilter = (): TaskFilter => {
-  try {
-    const saved = localStorage.getItem('task-filter');
-    if (saved) {
-      return JSON.parse(saved) as TaskFilter;
-    }
-    return { type: 'all', label: 'すべてのタスク' };
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.warn('LocalStorage access failed:', error);
-    return { type: 'all', label: 'すべてのタスク' };
-  }
-};
 
 const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState => {
   switch (action.type) {
@@ -609,7 +585,6 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
     }
 
     case 'SET_TASK_FILTER': {
-      saveTaskFilter(action.payload);
       return {
         ...state,
         taskFilter: action.payload,
@@ -626,7 +601,7 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     boards: [],
     currentBoard: null,
     sortOption: loadSortOption(),
-    taskFilter: loadTaskFilter(),
+    taskFilter: { type: 'all', label: 'すべてのタスク' },
   });
   const [isInitialized, setIsInitialized] = React.useState(false);
   const notify = useNotify();
@@ -634,6 +609,14 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   useEffect(() => {
     if (isInitialized) {
       return;
+    }
+    
+    // 既存のフィルター設定をlocal storageから削除
+    try {
+      localStorage.removeItem('task-filter');
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.warn('Failed to remove task-filter from localStorage:', error);
     }
     
     const boards = loadBoards();
