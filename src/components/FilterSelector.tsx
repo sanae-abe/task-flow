@@ -64,7 +64,7 @@ const FilterSelector = memo<FilterSelectorProps>(({
 
   const getCurrentFilterLabel = () => {
     if (currentFilter.type === 'label') {
-      const selectedCount = currentFilter.selectedLabelNames?.length || currentFilter.selectedLabels?.length || 0;
+      const selectedCount = currentFilter.selectedLabelNames?.length ?? currentFilter.selectedLabels?.length ?? 0;
       if (selectedCount > 0) {
         return `ラベル: ${selectedCount}個選択`;
       }

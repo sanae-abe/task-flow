@@ -6,7 +6,7 @@ import type { Label, FileAttachment } from '../../../types';
 
 import ColorSelector from '../../ColorSelector';
 import FileUploader from '../../FileUploader';
-import LabelSelector from '../../LabelSelector';
+import MultiLabelSelector from '../../MultiLabelSelector';
 
 // フォームフィールドスタイル定数
 const UNIFIED_FORM_STYLES = {
@@ -211,8 +211,8 @@ const UnifiedFormField = memo<UnifiedFormFieldProps>(({
 
       case 'label-selector':
         return (
-          <LabelSelector
-            selectedLabels={value as Label[] || []}
+          <MultiLabelSelector
+            selectedLabels={value as Label[] ?? []}
             onLabelsChange={(labels: Label[]) => handleChange(labels)}
           />
         );
@@ -235,7 +235,7 @@ const UnifiedFormField = memo<UnifiedFormFieldProps>(({
         );
 
       case 'custom':
-        return customComponent || null;
+        return customComponent ?? null;
 
       default:
         return null;

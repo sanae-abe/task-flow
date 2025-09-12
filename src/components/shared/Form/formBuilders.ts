@@ -60,7 +60,7 @@ export const createTaskFormFields = (
       label: 'タイトル',
       value: values.title,
       placeholder: 'タスクタイトルを入力',
-      onChange: handlers.setTitle,
+      onChange: handlers.setTitle as (value: unknown) => void,
       onKeyDown: options.onKeyPress,
       autoFocus: true,
       validation: { required: true, minLength: 1, maxLength: 100 }
@@ -73,7 +73,7 @@ export const createTaskFormFields = (
       label: '説明（任意）',
       value: values.description,
       placeholder: 'タスクの説明を入力',
-      onChange: handlers.setDescription,
+      onChange: handlers.setDescription as (value: unknown) => void,
       onKeyDown: options.onKeyPress,
       rows: 4
     }),
@@ -84,7 +84,7 @@ export const createTaskFormFields = (
       type: 'date',
       label: '期限（任意）',
       value: values.dueDate,
-      onChange: handlers.setDueDate,
+      onChange: handlers.setDueDate as (value: unknown) => void,
       onKeyDown: options.onKeyPress
     })
   ];
@@ -98,7 +98,7 @@ export const createTaskFormFields = (
         type: 'datetime-local',
         label: '完了日時',
         value: values.completedAt ?? '',
-        onChange: handlers.setCompletedAt,
+        onChange: handlers.setCompletedAt as (value: unknown) => void,
         onKeyDown: options.onKeyPress
       })
     );
@@ -113,7 +113,7 @@ export const createTaskFormFields = (
         type: 'label-selector',
         label: 'ラベル（任意）',
         value: values.labels,
-        onChange: handlers.setLabels
+        onChange: handlers.setLabels as (value: unknown) => void
       })
     );
   }
@@ -127,7 +127,7 @@ export const createTaskFormFields = (
         type: 'file',
         label: 'ファイル添付（任意）',
         value: values.attachments,
-        onChange: handlers.setAttachments
+        onChange: handlers.setAttachments as (value: unknown) => void
       })
     );
   }
@@ -158,7 +158,7 @@ export const createLabelFormFields = (
     label: 'ラベル名',
     value: values.name,
     placeholder: 'ラベル名を入力',
-    onChange: handlers.setName,
+    onChange: handlers.setName as (value: unknown) => void,
     onKeyDown: options.onKeyDown,
     autoFocus: true,
     validation: { required: true, minLength: 1, maxLength: 50 }
@@ -170,7 +170,7 @@ export const createLabelFormFields = (
     type: 'color-selector',
     label: '色',
     value: values.color,
-    onChange: handlers.setColor
+    onChange: handlers.setColor as (value: unknown) => void
   })
 ];
 
@@ -196,7 +196,7 @@ export const createSimpleTextFormFields = (
     label: config.label,
     value: config.value,
     placeholder: config.placeholder ?? `${config.label}を入力`,
-    onChange: config.onChange,
+    onChange: config.onChange as (value: unknown) => void,
     onKeyDown: config.onKeyDown,
     autoFocus: true,
     validation: config.validation ?? { required: true, minLength: 1, maxLength: 100 }
@@ -224,7 +224,7 @@ export const createSubTaskFormFields = (
     label: 'サブタスク名',
     value: values.title,
     placeholder: 'サブタスク名を入力...',
-    onChange: handlers.setTitle,
+    onChange: handlers.setTitle as (value: unknown) => void,
     onKeyDown: options.onKeyDown,
     autoFocus: true,
     hideLabel: true,

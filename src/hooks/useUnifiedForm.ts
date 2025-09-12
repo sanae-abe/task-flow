@@ -233,8 +233,7 @@ export const useUnifiedForm = (
       } finally {
         dispatch({ type: 'SET_SUBMITTING', isSubmitting: false });
       }
-    };
-  }, [state.values, validateForm]);
+    }, [state.values, validateForm]);
   
   // フィールドの有効性チェック
   const isFieldValid = useCallback((fieldId: string): boolean => 
