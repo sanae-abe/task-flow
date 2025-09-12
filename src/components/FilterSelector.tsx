@@ -66,16 +66,19 @@ const FilterSelector = memo<FilterSelectorProps>(({
     if (currentFilter.type === 'label' && currentFilter.selectedLabels?.length) {
       return `ラベル: ${currentFilter.selectedLabels.length}個選択`;
     }
+    if (currentFilter.type === 'has-labels') {
+      return 'ラベル付きタスク';
+    }
     const config = filterConfigs.find(f => f.type === currentFilter.type);
     return config?.label ?? 'フィルター';
   };
 
   const handleFilterSelect = (filterType: string) => {
     if (filterType === 'label') {
-      // すべてのラベル = ラベルフィルターをクリア（すべてのタスクに戻す）
+      // すべてのラベル = ラベル付きタスクのみに絞り込み
       onFilterChange({
-        type: 'all',
-        label: 'すべてのタスク'
+        type: 'has-labels',
+        label: 'ラベル付きタスク'
       });
     } else {
       const config = filterConfigs.find(f => f.type === filterType);
@@ -161,7 +164,7 @@ const FilterSelector = memo<FilterSelectorProps>(({
                   <ActionList>
                     <ActionList.Item
                       onSelect={() => handleFilterSelect('label')}
-                      selected={currentFilter.type === 'all'}
+                      selected={currentFilter.type === 'has-labels'}
                     >
                       すべてのラベル
                     </ActionList.Item>

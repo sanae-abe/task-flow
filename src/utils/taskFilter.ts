@@ -52,6 +52,12 @@ export const filterTasks = (tasks: Task[], filter: TaskFilter): Task[] => {
       );
     }
 
+    case 'has-labels': {
+      return tasks.filter(task => 
+        task.labels && task.labels.length > 0
+      );
+    }
+
     default:
       return tasks;
   }

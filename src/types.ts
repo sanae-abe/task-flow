@@ -67,7 +67,7 @@ export interface SortConfig {
   icon?: string;
 }
 
-export type FilterType = 'all' | 'due-within-3-days' | 'due-today' | 'overdue' | 'label';
+export type FilterType = 'all' | 'due-within-3-days' | 'due-today' | 'overdue' | 'label' | 'has-labels';
 
 export interface TaskFilter {
   type: FilterType;
