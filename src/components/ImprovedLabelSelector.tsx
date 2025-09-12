@@ -1,4 +1,4 @@
-import { PlusIcon, TagIcon, ChevronDownIcon } from '@primer/octicons-react';
+import { PlusIcon, TagIcon } from '@primer/octicons-react';
 import { 
   Button, 
   Box,
@@ -88,7 +88,6 @@ const ImprovedLabelSelector: React.FC<ImprovedLabelSelectorProps> = ({
             variant="invisible"
             size="small"
             leadingVisual={TagIcon}
-            trailingVisual={ChevronDownIcon}
             sx={{
               color: 'fg.muted',
               '&:hover': {
