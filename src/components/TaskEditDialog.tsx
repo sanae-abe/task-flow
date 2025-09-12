@@ -37,6 +37,9 @@ const TaskEditDialog = memo<TaskEditDialogProps>(({
     setLabels,
     attachments,
     setAttachments,
+    columnId,
+    setColumnId,
+    statusOptions,
     showDeleteConfirm,
     setShowDeleteConfirm,
     handleSave,
@@ -79,6 +82,9 @@ const TaskEditDialog = memo<TaskEditDialogProps>(({
           setLabels={setLabels}
           attachments={attachments}
           setAttachments={setAttachments}
+          columnId={columnId}
+          setColumnId={setColumnId}
+          statusOptions={statusOptions}
           onKeyPress={handleKeyPress}
         />
         

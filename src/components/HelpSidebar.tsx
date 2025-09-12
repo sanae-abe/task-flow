@@ -1,4 +1,4 @@
-import { XIcon, CheckCircleIcon, PencilIcon, ArrowRightIcon, FilterIcon, UploadIcon, InfoIcon, CloudOfflineIcon } from '@primer/octicons-react';
+import { XIcon, CheckCircleIcon, PencilIcon, ArrowRightIcon, FilterIcon, UploadIcon, InfoIcon, CloudOfflineIcon, CalendarIcon } from '@primer/octicons-react';
 import { Button, Box, Heading, Text } from '@primer/react';
 import React, { useEffect, useCallback } from 'react';
 
@@ -162,22 +162,37 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
         {/* Content */}
         <Box sx={{ flex: "1", p: 3, overflowY: 'auto' }}>
 
+          <HelpSection title="ビュー切り替え" icon={CalendarIcon} color="accent.emphasis">
+            <HelpItem
+              title="カンバンビュー"
+              description="カラム単位でタスクを管理するプロジェクト管理方式"
+            />
+            <HelpItem
+              title="カレンダービュー"
+              description="期限日ベースでタスクを月次カレンダー表示"
+            />
+            <HelpItem
+              title="切り替え方法"
+              description="サブヘッダー右端のメニューからビューを選択"
+            />
+          </HelpSection>
+
           <HelpSection title="基本操作" icon={CheckCircleIcon} color="success.emphasis">
             <HelpItem
               title="ボード作成"
-              description="ヘッダーの「新しいボード」ボタンでプロジェクトボードを作成"
+              description="サブヘッダーの「ボード作成」ボタンでプロジェクトボードを作成"
             />
             <HelpItem
               title="カラム追加"
-              description="サブヘッダーの「カラムを追加」ボタンで作業段階を追加"
+              description="サブヘッダーの「カラムを追加」ボタンで作業段階を追加（カンバンビュー時）"
             />
             <HelpItem
               title="タスク作成"
-              description="各カラムの「+」ボタンでタスクを作成"
+              description="ヘッダーの「タスク追加」ボタンまたは各カラムの「+」ボタンでタスクを作成"
             />
             <HelpItem
               title="ドラッグ&ドロップ"
-              description="タスクをドラッグしてカラム間を移動（直感的操作）"
+              description="タスクをドラッグしてカラム間を移動（カンバンビューで直感的操作）"
             />
           </HelpSection>
 
@@ -219,10 +234,29 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
             />
           </HelpSection>
 
-          <HelpSection title="フィルタリング・ソート" icon={FilterIcon} color="done.emphasis">
+          <HelpSection title="カレンダー機能" icon={CalendarIcon} color="done.emphasis">
+            <HelpItem
+              title="月次表示"
+              description="期限日のあるタスクを月単位のカレンダーで表示"
+            />
+            <HelpItem
+              title="ナビゲーション"
+              description="前月・次月・今日ボタンで日付移動"
+            />
+            <HelpItem
+              title="タスク表示"
+              description="各日に最大3タスク表示、4つ目以降は「+N」で表示"
+            />
+            <HelpItem
+              title="タスククリック"
+              description="カレンダー上のタスクをクリックして詳細サイドバー表示"
+            />
+          </HelpSection>
+
+          <HelpSection title="フィルタリング・ソート" icon={FilterIcon} color="severe.emphasis">
             <HelpItem
               title="タスクフィルタ"
-              description="期限・ラベル・完了状態でタスクを絞り込み"
+              description="期限・ラベル・完了状態でタスクを絞り込み（カンバンビュー）"
             />
             <HelpItem
               title="ソート機能"
@@ -234,7 +268,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
             />
           </HelpSection>
 
-          <HelpSection title="データ管理" icon={ArrowRightIcon} color="severe.emphasis">
+          <HelpSection title="データ管理" icon={ArrowRightIcon} color="sponsors.emphasis">
             <HelpItem
               title="ローカル保存"
               description="すべてのデータはブラウザに自動保存"
@@ -249,7 +283,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
             />
           </HelpSection>
 
-          <HelpSection title="便利なヒント" icon={InfoIcon} color="sponsors.emphasis">
+          <HelpSection title="便利なヒント" icon={InfoIcon} color="danger.emphasis">
             <HelpItem
               title="キーボード操作"
               description="Escapeキーでダイアログやサイドバーを閉じる"

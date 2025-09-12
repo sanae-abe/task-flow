@@ -36,6 +36,7 @@ export const createTaskFormFields = (
     completedAt?: string;
     labels: Label[];
     attachments: FileAttachment[];
+    columnId?: string;
   },
   handlers: {
     setTitle: (value: string) => void;
@@ -44,11 +45,14 @@ export const createTaskFormFields = (
     setCompletedAt?: (value: string) => void;
     setLabels: (labels: Label[]) => void;
     setAttachments: (attachments: FileAttachment[]) => void;
+    setColumnId?: (value: string) => void;
   },
   options: {
     isCompleted?: boolean;
     showLabels?: boolean;
     showAttachments?: boolean;
+    showStatus?: boolean;
+    statusOptions?: Array<{ value: string; label: string }>;
     onKeyPress?: (event: React.KeyboardEvent) => void;
   } = {}
 ): FormFieldConfig[] => {
@@ -88,6 +92,21 @@ export const createTaskFormFields = (
       onKeyDown: options.onKeyPress
     })
   ];
+
+  // ステータス選択フィールド
+  if (options.showStatus && options.statusOptions && handlers.setColumnId) {
+    fields.push(
+      createFormField({
+        id: 'task-status',
+        name: 'columnId',
+        type: 'select',
+        label: 'ステータス',
+        value: values.columnId ?? '',
+        onChange: handlers.setColumnId as (value: unknown) => void,
+        options: options.statusOptions
+      })
+    );
+  }
 
   // 完了日時フィールド（完了タスクのみ）
   if (options.isCompleted && handlers.setCompletedAt) {

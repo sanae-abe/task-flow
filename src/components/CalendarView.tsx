@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import { Box, Text, Button, IconButton } from '@primer/react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@primer/octicons-react';
 
@@ -24,10 +24,8 @@ const CalendarDay: React.FC<CalendarDayProps> = React.memo(({
 }) => {
   const dayStyles = {
     minHeight: '120px',
-    border: '1px solid',
-    borderColor: isToday ? 'accent.emphasis' : 'border.default',
     backgroundColor: isCurrentMonth ? 'canvas.default' : 'canvas.subtle',
-    borderRadius: '6px',
+    borderRadius: 0,
     padding: '8px',
     position: 'relative' as const,
     overflow: 'hidden',
@@ -37,13 +35,23 @@ const CalendarDay: React.FC<CalendarDayProps> = React.memo(({
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    mb: 1,
+    minHeight: '24px',
+    mb: 2,
   };
 
   const dayNumberStyles = {
-    fontSize: isToday ? '14px' : '12px',
-    fontWeight: isToday ? 'bold' : 'normal',
-    color: isCurrentMonth ? 'fg.default' : 'fg.muted',
+    fontSize: '12px',
+    fontWeight: '400',
+    color: isToday ? 'white' : (isCurrentMonth ? 'fg.default' : 'fg.muted'),
+    ...(isToday && {
+      backgroundColor: 'accent.emphasis',
+      borderRadius: '50%',
+      width: '24px',
+      height: '24px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    }),
   };
 
   const tasksContainerStyles = {
@@ -55,8 +63,9 @@ const CalendarDay: React.FC<CalendarDayProps> = React.memo(({
   };
 
   const taskItemStyles = {
-    fontSize: '10px',
-    padding: '2px 4px',
+    fontSize: '13px',
+    paddingInline: '8px',
+    padding: '2px 8px',
     borderRadius: '2px',
     backgroundColor: 'accent.subtle',
     color: 'accent.fg',
@@ -105,6 +114,30 @@ const CalendarView: React.FC = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [isTaskDetailOpen, setIsTaskDetailOpen] = useState(false);
+
+  // selectedTaskを最新の状態に同期
+  useEffect(() => {
+    if (selectedTask && state.currentBoard) {
+      // 全カラムからselectedTaskのIDで最新のタスクを検索
+      let updatedTask: Task | null = null;
+      
+      for (const column of state.currentBoard.columns) {
+        const foundTask = column.tasks.find(task => task.id === selectedTask.id);
+        if (foundTask) {
+          updatedTask = foundTask;
+          break;
+        }
+      }
+      
+      if (updatedTask) {
+        setSelectedTask(updatedTask);
+      } else {
+        // タスクが見つからない場合（削除された場合）はサイドバーを閉じる
+        setSelectedTask(null);
+        setIsTaskDetailOpen(false);
+      }
+    }
+  }, [state.currentBoard, selectedTask?.id]);
 
   const { year, month } = useMemo(() => ({
     year: currentDate.getFullYear(),
@@ -207,6 +240,7 @@ const CalendarView: React.FC = () => {
   const titleStyles = {
     fontSize: '24px',
     fontWeight: 'bold',
+    color: 'fg.muted',
   };
 
   const navigationStyles = {
@@ -220,9 +254,8 @@ const CalendarView: React.FC = () => {
     gridTemplateColumns: 'repeat(7, 1fr)',
     gap: '1px',
     backgroundColor: 'border.default',
-    border: '1px solid',
-    borderColor: 'border.default',
     borderRadius: '6px',
+    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
     overflow: 'hidden',
     flex: 1,
   };
@@ -232,15 +265,14 @@ const CalendarView: React.FC = () => {
     gridTemplateColumns: 'repeat(7, 1fr)',
     gap: '1px',
     backgroundColor: 'border.default',
-    border: '1px solid',
-    borderColor: 'border.default',
     borderRadius: '6px 6px 0 0',
+    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
     mb: 0,
   };
 
   const weekDayStyles = {
     padding: '8px',
-    backgroundColor: 'canvas.subtle',
+    backgroundColor: 'canvas.default',
     textAlign: 'center' as const,
     fontWeight: 'bold',
     fontSize: '12px',

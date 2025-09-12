@@ -8,9 +8,9 @@ interface LogoProps {
 
 const Logo: React.FC<LogoProps> = ({ size = 'medium' }) => {
   const sizeConfig = {
-    small: { iconSize: 16, fontSize: 1 },
-    medium: { iconSize: 20, fontSize: 2 },
-    large: { iconSize: 24, fontSize: 3 }
+    small: { iconSize: 16, fontSize: 2 },
+    medium: { iconSize: 24, fontSize: 3 },
+    large: { iconSize: 28, fontSize: 4 }
   };
 
   const { iconSize, fontSize } = sizeConfig[size];

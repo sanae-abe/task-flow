@@ -5,7 +5,7 @@ import { getLabelColors } from '../utils/labelHelpers';
 import { LABEL_COLORS } from '../utils/labels';
 
 // 定数
-const COLOR_BUTTON_SIZE = 36;
+const COLOR_BUTTON_SIZE = 32;
 const TRANSITION_DURATION = '0.15s';
 const HOVER_SCALE = 1.05;
 const FOCUS_OUTLINE_WIDTH = '2px';
@@ -43,7 +43,7 @@ const ColorSelector = memo<ColorSelectorProps>(({
       <Box 
         sx={{ 
           display: 'flex', 
-          gap: 2, 
+          gap: 1, 
           justifyContent: 'flex-start',
           flexWrap: 'wrap'
         }}

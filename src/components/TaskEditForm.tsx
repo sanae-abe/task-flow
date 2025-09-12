@@ -18,6 +18,9 @@ interface TaskEditFormProps {
   setLabels: (labels: Label[]) => void;
   attachments: FileAttachment[];
   setAttachments: (attachments: FileAttachment[]) => void;
+  columnId: string;
+  setColumnId: (value: string) => void;
+  statusOptions: Array<{ value: string; label: string }>;
   onKeyPress: (event: React.KeyboardEvent) => void;
 }
 
@@ -35,6 +38,9 @@ const TaskEditForm = memo<TaskEditFormProps>(({
   setLabels,
   attachments,
   setAttachments,
+  columnId,
+  setColumnId,
+  statusOptions,
   onKeyPress
 }) => {
   // フォームフィールド設定を生成
@@ -45,7 +51,8 @@ const TaskEditForm = memo<TaskEditFormProps>(({
       dueDate,
       completedAt,
       labels,
-      attachments
+      attachments,
+      columnId
     },
     {
       setTitle,
@@ -53,18 +60,21 @@ const TaskEditForm = memo<TaskEditFormProps>(({
       setDueDate,
       setCompletedAt,
       setLabels,
-      setAttachments
+      setAttachments,
+      setColumnId
     },
     {
       isCompleted,
       showLabels: true,
       showAttachments: true,
+      showStatus: true,
+      statusOptions,
       onKeyPress
     }
   ), [
-    title, description, dueDate, completedAt, labels, attachments,
-    setTitle, setDescription, setDueDate, setCompletedAt, setLabels, setAttachments,
-    isCompleted, onKeyPress
+    title, description, dueDate, completedAt, labels, attachments, columnId,
+    setTitle, setDescription, setDueDate, setCompletedAt, setLabels, setAttachments, setColumnId,
+    isCompleted, statusOptions, onKeyPress
   ]);
 
   // 統合フォームではonSubmitは不要（親コンポーネントで管理）
@@ -79,8 +89,9 @@ const TaskEditForm = memo<TaskEditFormProps>(({
     dueDate,
     completedAt,
     labels,
-    attachments
-  }), [title, description, dueDate, completedAt, labels, attachments]);
+    attachments,
+    columnId
+  }), [title, description, dueDate, completedAt, labels, attachments, columnId]);
 
   return (
     <UnifiedForm

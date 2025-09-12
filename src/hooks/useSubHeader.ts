@@ -153,6 +153,7 @@ export const useSubHeader = (): UseSubHeaderReturn => {
     updateDialogState,
     updateBoard,
     createColumn,
+    createBoard,
     deleteBoard,
     clearCompletedTasks,
     notify,
