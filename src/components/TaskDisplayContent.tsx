@@ -3,7 +3,7 @@ import React from 'react';
 
 import type { Task } from '../types';
 
-import { formatCompletedDate } from '../utils/dateHelpers';
+import { formatDateTime } from '../utils/dateHelpers';
 import ContentBox from './ContentBox';
 import DueDateDisplay from './DueDateDisplay';
 import FileList from './FileList';
@@ -42,7 +42,7 @@ const TaskDisplayContent = React.memo<TaskDisplayContentProps>(({ task, columnNa
         <TaskDisplaySection title="完了日時">
           <ContentBox>
             <Text sx={{ fontSize: 1 }}>
-              {formatCompletedDate(task.completedAt)}
+              {formatDateTime(task.completedAt)}
             </Text>
           </ContentBox>
         </TaskDisplaySection>

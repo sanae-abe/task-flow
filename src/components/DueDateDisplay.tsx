@@ -1,5 +1,5 @@
 import { CalendarIcon } from '@primer/octicons-react';
-import { Box, Text } from '@primer/react';
+import { Text } from '@primer/react';
 import { memo } from 'react';
 
 import { getDateStatus, formatDueDate, formatDueDateWithYear } from '../utils/dateHelpers';
@@ -74,22 +74,20 @@ const DueDateDisplay = memo<DueDateDisplayProps>(({ dueDate, showYear = false })
   const formattedDate = showYear ? formatDueDateWithYear(dueDate) : formatDueDate(dueDate);
 
   return (
-    <Box
-      sx={{
-        p: 3,
+    <div
+      style={{
         display: 'flex',
         alignItems: 'center',
-        gap: 2,
-        borderRadius: 2,
+        gap: '8px',
         ...containerStyles
       }}
     >
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flex: 1 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1 }}>
         <CalendarIcon size={16} />
         <Text sx={{ fontSize: 1 }}>{formattedDate}</Text>
-      </Box>
+      </div>
       {badgeConfig && <StatusBadge config={badgeConfig} />}
-    </Box>
+    </div>
   );
 });
 
