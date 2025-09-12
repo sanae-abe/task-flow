@@ -71,7 +71,8 @@ export type FilterType = 'all' | 'due-within-3-days' | 'due-today' | 'overdue' |
 export interface TaskFilter {
   type: FilterType;
   label: string;
-  selectedLabels?: string[]; // ラベルフィルターの場合に使用
+  selectedLabels?: string[]; // ラベルIDフィルターの場合に使用（後方互換性のため保持）
+  selectedLabelNames?: string[]; // ラベル名フィルターの場合に使用
 }
 
 export interface FilterConfig {

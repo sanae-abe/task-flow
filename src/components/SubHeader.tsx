@@ -26,14 +26,17 @@ const SubHeader: React.FC = () => {
     handlers,
   } = useSubHeader();
 
-  // 利用可能なラベル一覧を取得
+  // 利用可能なラベル一覧を取得（名前で重複除去）
   const availableLabels = React.useMemo(() => {
     if (!state.currentBoard) {return [];}
     const labelMap = new Map();
     state.currentBoard.columns.forEach(column => {
       column.tasks.forEach(task => {
         task.labels?.forEach(label => {
-          labelMap.set(label.id, label);
+          // ラベル名で重複を除去し、同じ名前のラベルは1つだけ表示
+          if (!labelMap.has(label.name)) {
+            labelMap.set(label.name, label);
+          }
         });
       });
     });

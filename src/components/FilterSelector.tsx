@@ -63,8 +63,11 @@ const FilterSelector = memo<FilterSelectorProps>(({
   };
 
   const getCurrentFilterLabel = () => {
-    if (currentFilter.type === 'label' && currentFilter.selectedLabels?.length) {
-      return `ラベル: ${currentFilter.selectedLabels.length}個選択`;
+    if (currentFilter.type === 'label') {
+      const selectedCount = currentFilter.selectedLabelNames?.length || currentFilter.selectedLabels?.length || 0;
+      if (selectedCount > 0) {
+        return `ラベル: ${selectedCount}個選択`;
+      }
     }
     if (currentFilter.type === 'has-labels') {
       return 'ラベル付きタスク';
@@ -91,19 +94,19 @@ const FilterSelector = memo<FilterSelectorProps>(({
     }
   };
 
-  const handleLabelToggle = (labelId: string) => {
-    // ラベルを選択した時は自動的にラベルフィルターに切り替える
-    const currentLabels = currentFilter.type === 'label' ? (currentFilter.selectedLabels ?? []) : [];
-    const isSelected = currentLabels.includes(labelId);
+  const handleLabelToggle = (labelName: string) => {
+    // ラベル名ベースの選択処理に変更
+    const currentLabelNames = currentFilter.type === 'label' ? (currentFilter.selectedLabelNames ?? []) : [];
+    const isSelected = currentLabelNames.includes(labelName);
     
-    const newLabels = isSelected
-      ? currentLabels.filter(id => id !== labelId)
-      : [...currentLabels, labelId];
+    const newLabelNames = isSelected
+      ? currentLabelNames.filter(name => name !== labelName)
+      : [...currentLabelNames, labelName];
     
     onFilterChange({
       type: 'label',
       label: 'ラベルで絞り込み',
-      selectedLabels: newLabels
+      selectedLabelNames: newLabelNames
     });
   };
 
@@ -172,8 +175,8 @@ const FilterSelector = memo<FilterSelectorProps>(({
                     {availableLabels.map((label) => (
                       <ActionList.Item
                         key={label.id}
-                        onSelect={() => handleLabelToggle(label.id)}
-                        selected={currentFilter.selectedLabels?.includes(label.id)}
+                        onSelect={() => handleLabelToggle(label.name)}
+                        selected={currentFilter.selectedLabelNames?.includes(label.name)}
                       >
                         <ActionList.LeadingVisual>
                           <div

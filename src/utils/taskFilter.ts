@@ -44,12 +44,18 @@ export const filterTasks = (tasks: Task[], filter: TaskFilter): Task[] => {
     }
 
     case 'label': {
-      if (!filter.selectedLabels || filter.selectedLabels.length === 0) {
-        return tasks;
+      // ラベル名ベースのフィルタリングを優先し、IDベースもサポート
+      if (filter.selectedLabelNames && filter.selectedLabelNames.length > 0) {
+        return tasks.filter(task => 
+          task.labels?.some(label => filter.selectedLabelNames?.includes(label.name))
+        );
       }
-      return tasks.filter(task => 
-        task.labels?.some(label => filter.selectedLabels?.includes(label.id))
-      );
+      if (filter.selectedLabels && filter.selectedLabels.length > 0) {
+        return tasks.filter(task => 
+          task.labels?.some(label => filter.selectedLabels?.includes(label.id))
+        );
+      }
+      return tasks;
     }
 
     case 'has-labels': {
@@ -74,7 +80,7 @@ export const getFilteredTaskCount = (tasks: Task[], filter: TaskFilter): number 
 export const isFilterActive = (filter: TaskFilter): boolean => {
   if (filter.type === 'all') {return false;}
   if (filter.type === 'label') {
-    return (filter.selectedLabels?.length ?? 0) > 0;
+    return (filter.selectedLabelNames?.length ?? 0) > 0 || (filter.selectedLabels?.length ?? 0) > 0;
   }
   return true;
 };
