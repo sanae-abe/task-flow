@@ -5,6 +5,7 @@ import React from 'react';
 import type { SortOption, SortConfig } from '../types';
 
 const SORT_OPTIONS: SortConfig[] = [
+  { option: 'manual', label: '手動' },
   { option: 'createdAt', label: '作成日順' },
   { option: 'updatedAt', label: '更新日順' },
   { option: 'dueDate', label: '期限順' },
@@ -31,9 +32,9 @@ const TaskSortSelector: React.FC<TaskSortSelectorProps> = ({
           variant="invisible"
           size="small"
           leadingVisual={SortAscIcon}
-          aria-label={`現在のソート: ${currentSortConfig?.label ?? '作成日順'}`}
+          aria-label={`現在のソート: ${currentSortConfig?.label ?? '手動'}`}
         >
-          {currentSortConfig?.label ?? '作成日順'}
+          {currentSortConfig?.label ?? '手動'}
         </Button>
       </ActionMenu.Anchor>
       

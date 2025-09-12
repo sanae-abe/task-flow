@@ -1,6 +1,12 @@
 import type { Task, SortOption } from '../types';
 
-export const sortTasks = (tasks: Task[], sortOption: SortOption): Task[] => [...tasks].sort((a, b) => {
+export const sortTasks = (tasks: Task[], sortOption: SortOption): Task[] => {
+  // manualの場合は元の順序を保持
+  if (sortOption === 'manual') {
+    return [...tasks];
+  }
+  
+  return [...tasks].sort((a, b) => {
     switch (sortOption) {
       case 'title':
         return a.title.localeCompare(b.title, 'ja');
@@ -25,3 +31,4 @@ export const sortTasks = (tasks: Task[], sortOption: SortOption): Task[] => [...
         return 0;
     }
   });
+};

@@ -8,6 +8,7 @@ import type { Task } from '../types';
 import { formatDueDate } from '../utils/dateHelpers';
 
 import ConfirmDialog from './ConfirmDialog';
+import DropIndicator from './DropIndicator';
 import TaskDisplay from './TaskDisplay';
 import TaskEditDialog from './TaskEditDialog';
 
@@ -55,6 +56,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, columnId, onTaskClick }) => {
     transform,
     transition,
     isDragging,
+    isOver,
   } = useSortable({ id: task.id });
 
   const handleTaskClick = () => {
@@ -65,6 +67,9 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, columnId, onTaskClick }) => {
   
   return (
     <>
+      {/* タスクの上にドロップインジケーターを表示 */}
+      <DropIndicator isVisible={isOver && !isDragging} />
+      
       <Box
         ref={setNodeRef}
         bg="canvas.default"

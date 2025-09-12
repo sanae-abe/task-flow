@@ -11,6 +11,7 @@ import { sortTasks } from '../utils/taskSort';
 import ColumnEditDialog from './ColumnEditDialog';
 import ColumnHeader from './ColumnHeader';
 import ConfirmDialog from './ConfirmDialog';
+import DropIndicator from './DropIndicator';
 import TaskCard from './TaskCard';
 import TaskCreateDialog from './TaskCreateDialog';
 
@@ -113,7 +114,7 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({ column, onTaskClick }) => {
     handleCancelCreateTask
   } = useColumnState(column);
   
-  const { setNodeRef } = useDroppable({
+  const { setNodeRef, isOver } = useDroppable({
     id: column.id,
   });
 
@@ -131,13 +132,23 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({ column, onTaskClick }) => {
       
       <Box ref={setNodeRef} sx={COLUMN_STYLES.taskList}>
         <SortableContext items={taskIds} strategy={verticalListSortingStrategy}>
-          {sortedTasks.map((task) => (
-            <TaskCard 
-              key={task.id} 
-              task={task} 
-              columnId={column.id}
-              onTaskClick={onTaskClick}
-            />
+          {/* カラムが空の場合のドロップインジケーター */}
+          {sortedTasks.length === 0 && (
+            <DropIndicator isVisible={isOver} />
+          )}
+          
+          {sortedTasks.map((task, index) => (
+            <React.Fragment key={task.id}>
+              <TaskCard 
+                task={task} 
+                columnId={column.id}
+                onTaskClick={onTaskClick}
+              />
+              {/* 最後のタスクの後にもドロップインジケーターを表示 */}
+              {index === sortedTasks.length - 1 && (
+                <DropIndicator isVisible={isOver} />
+              )}
+            </React.Fragment>
           ))}
         </SortableContext>
       </Box>

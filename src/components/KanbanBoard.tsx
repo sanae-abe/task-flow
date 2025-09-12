@@ -1,4 +1,4 @@
-import { DndContext, DragOverlay } from '@dnd-kit/core';
+import { DndContext, DragOverlay, closestCenter, pointerWithin, rectIntersection, type CollisionDetection } from '@dnd-kit/core';
 import { Text, Box } from '@primer/react';
 import React, { useState, useEffect } from 'react';
 
@@ -14,16 +14,17 @@ import TaskCard from './TaskCard';
 import TaskDetailSidebar from './TaskDetailSidebar';
 
 const KanbanBoard: React.FC = () => {
-  const { state, moveTask } = useKanban();
+  const { state, moveTask, setSortOption } = useKanban();
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const [isTaskDetailOpen, setIsTaskDetailOpen] = useState(false);
   
   const { findTaskById } = useTaskFinder(state.currentBoard);
   const selectedTask = selectedTaskId ? findTaskById(selectedTaskId) : null;
   
-  const { activeTask, sensors, handleDragStart, handleDragEnd } = useDragAndDrop({
+  const { activeTask, sensors, handleDragStart, handleDragOver, handleDragEnd } = useDragAndDrop({
     board: state.currentBoard,
     onMoveTask: moveTask,
+    onSortToManual: () => setSortOption('manual'),
   });
 
   // 選択されたタスクが削除された場合の処理
@@ -50,6 +51,38 @@ const KanbanBoard: React.FC = () => {
     setIsTaskDetailOpen(false);
     setSelectedTaskId(null);
   };
+
+  // カスタム衝突検出アルゴリズム
+  const collisionDetectionStrategy: CollisionDetection = (args) => {
+    // まずpointerWithinで正確な位置を検出
+    const pointerIntersections = pointerWithin(args);
+    
+    if (pointerIntersections.length > 0) {
+      return pointerIntersections;
+    }
+
+    // フォールバックとしてrectIntersectionを使用
+    const rectIntersections = rectIntersection(args);
+    
+    if (rectIntersections.length > 0) {
+      // タスクとカラムが重なっている場合、タスクを優先
+      const taskIntersections = rectIntersections.filter(intersection => 
+        state.currentBoard?.columns.some(column => 
+          column.tasks.some(task => task.id === intersection.id)
+        )
+      );
+      
+      if (taskIntersections.length > 0) {
+        return taskIntersections.slice(0, 1); // 最初のタスクを返す
+      }
+      
+      return rectIntersections.slice(0, 1); // カラムを返す
+    }
+
+    // 最後の手段としてclosestCenterを使用
+    const closestIntersections = closestCenter(args);
+    return closestIntersections || [];
+  };
   
   return (
     <Box sx={KANBAN_BOARD_STYLES.container}>
@@ -57,7 +90,9 @@ const KanbanBoard: React.FC = () => {
       
       <DndContext
         sensors={sensors}
+        collisionDetection={collisionDetectionStrategy}
         onDragStart={handleDragStart}
+        onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
       >
         <Box sx={KANBAN_BOARD_STYLES.columnsContainer}>

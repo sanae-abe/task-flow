@@ -95,6 +95,28 @@ const getCurrentBoardId = (): string | null => {
   }
 };
 
+// ヘルパー関数: LocalStorageにソート設定を安全に保存
+const saveSortOption = (sortOption: SortOption) => {
+  try {
+    localStorage.setItem('sort-option', sortOption);
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.warn('LocalStorage access failed:', error);
+  }
+};
+
+// ヘルパー関数: LocalStorageからソート設定を安全に取得
+const loadSortOption = (): SortOption => {
+  try {
+    const saved = localStorage.getItem('sort-option');
+    return (saved as SortOption) ?? 'manual';
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.warn('LocalStorage access failed:', error);
+    return 'manual';
+  }
+};
+
 const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState => {
   switch (action.type) {
     case 'LOAD_BOARDS': {
@@ -277,45 +299,78 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
     
     case 'MOVE_TASK': {
       if (!state.currentBoard) {
+        console.log('❌ MOVE_TASK: No current board');
         return state;
       }
       
       const { taskId, sourceColumnId, targetColumnId, targetIndex } = action.payload;
+      console.log('🚀 MOVE_TASK Action:', { taskId, sourceColumnId, targetColumnId, targetIndex });
       
       // 移動するタスクを取得
       let taskToMove: Task | undefined;
       for (const column of state.currentBoard.columns) {
         if (column.id === sourceColumnId) {
           taskToMove = column.tasks.find(task => task.id === taskId);
+          console.log('📋 Task to move found:', taskToMove?.title);
           break;
         }
       }
       
       if (!taskToMove) {
+        console.log('❌ MOVE_TASK: Task to move not found');
         return state;
       }
       
       const updatedBoard = updateBoardTimestamp({
         ...state.currentBoard,
         columns: state.currentBoard.columns.map(column => {
-          if (column.id === sourceColumnId) {
-            return {
-              ...column,
-              tasks: column.tasks.filter(task => task.id !== taskId),
-            };
-          }
-          if (column.id === targetColumnId) {
+          console.log(`🔍 Processing column '${column.title}' (ID: ${column.id})`);
+          
+          // 同じカラム内での移動の場合
+          if (sourceColumnId === targetColumnId && column.id === sourceColumnId) {
+            console.log(`🔄 Same column reorder in '${column.title}'`);
             const newTasks = [...column.tasks];
-            newTasks.splice(targetIndex, 0, { ...taskToMove, updatedAt: new Date() });
+            // まず、移動するタスクを削除
+            const taskIndex = newTasks.findIndex(task => task.id === taskId);
+            if (taskIndex !== -1) {
+              newTasks.splice(taskIndex, 1);
+              console.log(`📤 Removed task from index ${taskIndex}`);
+            }
+            // 次に、新しい位置に挿入
+            const safeTargetIndex = Math.max(0, Math.min(targetIndex, newTasks.length));
+            newTasks.splice(safeTargetIndex, 0, { ...taskToMove, updatedAt: new Date() });
+            console.log(`📥 Added task at index ${safeTargetIndex}: ${column.tasks.length} → ${newTasks.length}`);
             return {
               ...column,
               tasks: newTasks,
             };
           }
+          
+          // 異なるカラム間での移動の場合
+          if (column.id === sourceColumnId) {
+            const filteredTasks = column.tasks.filter(task => task.id !== taskId);
+            console.log(`📤 Removing from source column '${column.title}': ${column.tasks.length} → ${filteredTasks.length}`);
+            return {
+              ...column,
+              tasks: filteredTasks,
+            };
+          }
+          if (column.id === targetColumnId) {
+            const newTasks = [...column.tasks];
+            const safeTargetIndex = Math.max(0, Math.min(targetIndex, newTasks.length));
+            console.log(`📥 Adding to target column '${column.title}' at index ${safeTargetIndex}: ${newTasks.length} → ${newTasks.length + 1}`);
+            newTasks.splice(safeTargetIndex, 0, { ...taskToMove, updatedAt: new Date() });
+            return {
+              ...column,
+              tasks: newTasks,
+            };
+          }
+          console.log(`⏭️ Skipping column '${column.title}' (not source or target)`);
           return column;
         }),
       });
       
+      console.log('✅ MOVE_TASK: Board updated successfully');
       return updateBoardInState(state, updatedBoard);
     }
 
@@ -499,6 +554,7 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
     }
 
     case 'SET_SORT_OPTION': {
+      saveSortOption(action.payload);
       return {
         ...state,
         sortOption: action.payload,
@@ -514,7 +570,7 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   const [state, dispatch] = useReducer(kanbanReducer, {
     boards: [],
     currentBoard: null,
-    sortOption: 'createdAt' as SortOption,
+    sortOption: loadSortOption(),
   });
   const [isInitialized, setIsInitialized] = React.useState(false);
   const notify = useNotify();
