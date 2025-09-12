@@ -4,6 +4,8 @@ import { ChevronLeftIcon, ChevronRightIcon } from '@primer/octicons-react';
 
 import { useKanban } from '../contexts/KanbanContext';
 import type { Task } from '../types';
+import { sortTasks } from '../utils/taskSort';
+import { filterTasks } from '../utils/taskFilter';
 
 import TaskDetailSidebar from './TaskDetailSidebar';
 
@@ -200,18 +202,26 @@ const CalendarView: React.FC = () => {
 
     const taskMap = new Map<string, Task[]>();
 
+    // 全カラムからタスクを収集してフィルタ・ソートを適用
+    const allTasks: Task[] = [];
     state.currentBoard.columns.forEach(column => {
-      column.tasks.forEach(task => {
-        if (task.dueDate) {
-          const dateKey = new Date(task.dueDate).toDateString();
-          const existingTasks = taskMap.get(dateKey) || [];
-          taskMap.set(dateKey, [...existingTasks, task]);
-        }
-      });
+      allTasks.push(...column.tasks);
+    });
+
+    const filteredTasks = filterTasks(allTasks, state.taskFilter);
+    const sortedTasks = sortTasks(filteredTasks, state.sortOption);
+    
+    // ソート済みタスクを日付ごとにグループ化（ソート順を維持）
+    sortedTasks.forEach(task => {
+      if (task.dueDate) {
+        const dateKey = new Date(task.dueDate).toDateString();
+        const existingTasks = taskMap.get(dateKey) || [];
+        taskMap.set(dateKey, [...existingTasks, task]);
+      }
     });
 
     return taskMap;
-  }, [state.currentBoard]);
+  }, [state.currentBoard, state.taskFilter, state.sortOption]);
 
   const navigateMonth = useCallback((direction: 'prev' | 'next') => {
     setCurrentDate(prev => {
