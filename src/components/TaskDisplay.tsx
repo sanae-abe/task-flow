@@ -1,20 +1,12 @@
-import React from 'react';
+import { CheckCircleIcon, CheckCircleFillIcon } from '@primer/octicons-react';
 import { Box, Text, Heading, IconButton } from '@primer/react';
-import { CalendarIcon, CheckCircleIcon, CheckCircleFillIcon, CheckIcon, PaperclipIcon } from '@primer/octicons-react';
-import type { Task } from '../types';
-import { getLabelColors } from '../utils/labelHelpers';
+import React from 'react';
 
-interface TaskDisplayProps {
-  task: Task;
-  isOverdue: () => boolean;
-  isDueToday: () => boolean;
-  isDueTomorrow: () => boolean;
-  formatDueDate: (date: Date) => string;
-  onEdit: (e: React.MouseEvent) => void;
-  onDelete: (e: React.MouseEvent) => void;
-  onComplete?: (e: React.MouseEvent) => void;
-  isRightmostColumn?: boolean;
-}
+import type { TaskDisplayProps } from '../types/task';
+
+import DueDateBadge from './DueDateBadge';
+import TaskIndicators from './TaskIndicators';
+import TaskLabels from './TaskLabels';
 
 const TaskDisplay: React.FC<TaskDisplayProps> = ({
   task,
@@ -24,8 +16,7 @@ const TaskDisplay: React.FC<TaskDisplayProps> = ({
   formatDueDate,
   onComplete,
   isRightmostColumn = false
-}) => {
-  return (
+}) => (
     <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0, gap: 2 }}>
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
         {onComplete && (
@@ -71,126 +62,26 @@ const TaskDisplay: React.FC<TaskDisplayProps> = ({
         </Text>
       )}
 
-      {task.labels && task.labels.length > 0 && (
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 1 }}>
-          {task.labels.map((label) => {
-            const colors = getLabelColors(label.color);
-
-            return (
-              <Box
-                key={label.id}
-                sx={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  bg: colors.bg,
-                  color: colors.color,
-                  px: 2,
-                  py: 1,
-                  borderRadius: 2,
-                  fontSize: 0,
-                  fontWeight: '500'
-                }}
-              >
-                {label.name}
-              </Box>
-            );
-          })}
-        </Box>
-      )}
+      <TaskLabels labels={task.labels} />
 
       {(task.dueDate || (task.subTasks && task.subTasks.length > 0) || (task.attachments && task.attachments.length > 0)) && (
         <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
           {task.dueDate && (
-            <Box
-              sx={{
-                display: "inline-flex",
-                gap: 1, 
-                bg: isOverdue()
-                  ? 'danger.subtle'
-                  : isDueToday()
-                    ? 'attention.subtle'
-                    : isDueTomorrow()
-                      ? 'accent.subtle'
-                      : 'neutral.subtle',
-                color: isOverdue()
-                  ? 'danger.fg'
-                  : isDueToday()
-                    ? 'attention.fg'
-                    : isDueTomorrow()
-                      ? 'accent.fg'
-                      : 'fg.muted',
-                px: 2,
-                py: 1,
-                alignItems: "center",
-                borderRadius: 2,
-                fontSize: 0,
-                fontWeight: "600",
-                alignSelf: 'flex-start'
-              }}
-            >
-              <CalendarIcon size={12} />
-              期限: {formatDueDate(task.dueDate)}
-            </Box>
+            <DueDateBadge
+              dueDate={task.dueDate}
+              isOverdue={isOverdue}
+              isDueToday={isDueToday}
+              isDueTomorrow={isDueTomorrow}
+              formatDueDate={formatDueDate}
+            />
           )}
-
-          <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
-            {/* サブタスク進捗表示 */}
-            {task.subTasks && task.subTasks.length > 0 && (
-              <Box
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 1,
-                  px: 2,
-                  py: 1,
-                  borderRadius: 2,
-                  fontSize: 0,
-                  fontWeight: '500',
-                  alignSelf: 'flex-start',
-                  color: 'fg.muted'
-                }}
-              >
-                <CheckIcon size={12} />
-                {(() => {
-                  const completed = task.subTasks.filter(sub => sub.completed).length;
-                  const total = task.subTasks.length;
-                  return (
-                    <>
-                      <Text sx={{ fontSize: 0 }}>
-                        {completed}/{total}
-                      </Text>
-                    </>
-                  );
-                })()}
-              </Box>
-            )}
-
-            {task.attachments && task.attachments.length > 0 && (
-              <Box
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 1,
-                  px: 2,
-                  py: 1,
-                  borderRadius: 2,
-                  fontSize: 0,
-                  fontWeight: '500',
-                  alignSelf: 'flex-start',
-                  color: 'fg.muted'
-                }}
-              >
-                <PaperclipIcon size={12} />
-                <Text sx={{ fontSize: 0 }}>
-                  {task.attachments.length}
-                </Text>
-              </Box>
-            )}
-          </Box>
+          <TaskIndicators 
+            subTasks={task.subTasks}
+            attachments={task.attachments}
+          />
         </Box>
       )}
     </Box>
   );
-};
 
 export default TaskDisplay;

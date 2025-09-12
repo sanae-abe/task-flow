@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+
 import type { Task } from '../types';
 import { getDateStatus } from '../utils/dateHelpers';
 
@@ -10,37 +11,38 @@ export interface TaskStats {
   hasUrgentTasks: boolean;
 }
 
-export const useTaskStats = (tasks: Task[]): TaskStats => {
-  return useMemo(() => {
-    const stats = tasks.reduce(
-      (acc, task) => {
-        acc.totalTasks++;
+export const useTaskStats = (tasks: Task[]): TaskStats => useMemo(() => {
+    const initialStats = {
+      totalTasks: 0,
+      overdueTasks: 0,
+      dueTodayTasks: 0,
+      dueTomorrowTasks: 0,
+      hasUrgentTasks: false,
+    };
+
+    return tasks.reduce((acc, task) => {
+      acc.totalTasks++;
+      
+      if (!task.dueDate) {return acc;}
+      
+      try {
+        const dueDate = new Date(task.dueDate);
+        const { isOverdue, isDueToday, isDueTomorrow } = getDateStatus(dueDate);
         
-        if (task.dueDate) {
-          const { isOverdue, isDueToday, isDueTomorrow } = getDateStatus(new Date(task.dueDate));
-          
-          if (isOverdue) {
-            acc.overdueTasks++;
-          } else if (isDueToday) {
-            acc.dueTodayTasks++;
-          } else if (isDueTomorrow) {
-            acc.dueTomorrowTasks++;
-          }
+        if (isOverdue) {
+          acc.overdueTasks++;
+          acc.hasUrgentTasks = true;
+        } else if (isDueToday) {
+          acc.dueTodayTasks++;
+          acc.hasUrgentTasks = true;
+        } else if (isDueTomorrow) {
+          acc.dueTomorrowTasks++;
+          acc.hasUrgentTasks = true;
         }
-        
-        return acc;
-      },
-      {
-        totalTasks: 0,
-        overdueTasks: 0,
-        dueTodayTasks: 0,
-        dueTomorrowTasks: 0,
-        hasUrgentTasks: false,
+      } catch {
+        // 無効な日付の場合は無視
       }
-    );
-
-    stats.hasUrgentTasks = stats.overdueTasks > 0 || stats.dueTodayTasks > 0 || stats.dueTomorrowTasks > 0;
-
-    return stats;
+      
+      return acc;
+    }, initialStats);
   }, [tasks]);
-};

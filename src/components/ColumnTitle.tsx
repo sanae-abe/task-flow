@@ -1,40 +1,41 @@
+import { Box, Heading, CounterLabel } from '@primer/react';
 import React from 'react';
-import { Box, Heading } from '@primer/react';
+
 import type { Column } from '../types';
 
 interface ColumnTitleProps {
   column: Column;
-  onTitleEdit: () => void;
 }
 
-const ColumnTitle: React.FC<ColumnTitleProps> = ({
-  column
-}) => {
-  return (
-    <Box sx={{ display: "flex", flex: "1", alignItems: "center", gap: 1 }}>
+const ColumnTitle: React.FC<ColumnTitleProps> = ({ column }) => (
+    <Box 
+      sx={{ 
+        display: 'flex', 
+        flex: 1, 
+        alignItems: 'center', 
+        justifyContent: 'space-between',
+        gap: 2
+      }}
+    >
       <Heading 
         sx={{ 
           fontSize: 2, 
           margin: 0, 
-          fontWeight: '600',
+          fontWeight: 600,
           color: 'fg.default',
+          flex: 1,
+          minWidth: 0,
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap'
         }}
       >
         {column.title}
       </Heading>
-      <Box
-        sx={{
-          px: 2,
-          py: 1,
-          borderRadius: 2,
-          fontSize: 1,
-          fontWeight: '600'
-        }}
-      >
+      <CounterLabel sx={{ flexShrink: 0 }}>
         {column.tasks.length}
-      </Box>
+      </CounterLabel>
     </Box>
   );
-};
 
 export default ColumnTitle;

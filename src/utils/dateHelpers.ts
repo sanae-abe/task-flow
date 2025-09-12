@@ -35,20 +35,32 @@ export const getDateStatus = (dueDate: Date | undefined): DateStatus => {
 };
 
 export const formatDueDate = (date: Date): string => {
-  return date.toLocaleDateString('ja-JP', {
-    year: 'numeric',
+  const dateStr = date.toLocaleDateString('ja-JP', {
     month: 'long',
-    day: 'numeric',
-    weekday: 'long'
+    day: 'numeric'
   });
+  const weekdayStr = date.toLocaleDateString('ja-JP', {
+    weekday: 'short'
+  });
+  return `${dateStr}（${weekdayStr}）`;
 };
 
-export const formatDateTime = (date: Date): string => {
-  return date.toLocaleDateString('ja-JP', {
+export const formatDueDateWithYear = (date: Date): string => {
+  const dateStr = date.toLocaleDateString('ja-JP', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+  const weekdayStr = date.toLocaleDateString('ja-JP', {
+    weekday: 'short'
+  });
+  return `${dateStr}（${weekdayStr}）`;
+};
+
+export const formatDateTime = (date: Date): string => date.toLocaleDateString('ja-JP', {
     year: 'numeric',
     month: 'short',
     day: 'numeric',
     hour: '2-digit',
     minute: '2-digit'
   });
-};

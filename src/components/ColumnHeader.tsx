@@ -1,8 +1,10 @@
-import React from 'react';
 import { Box } from '@primer/react';
+import React from 'react';
+
 import type { Column } from '../types';
-import ColumnTitle from './ColumnTitle';
+
 import ColumnActions from './ColumnActions';
+import ColumnTitle from './ColumnTitle';
 
 interface ColumnHeaderProps {
   column: Column;
@@ -11,27 +13,28 @@ interface ColumnHeaderProps {
   onAddTask: () => void;
 }
 
+const headerStyles = {
+  display: 'flex',
+  pb: 3,
+  justifyContent: 'space-between',
+  alignItems: 'center'
+} as const;
+
+const titleContainerStyles = {
+  display: 'flex',
+  flex: 1,
+  alignItems: 'center'
+} as const;
+
 const ColumnHeader: React.FC<ColumnHeaderProps> = ({
   column,
   onTitleEdit,
   onDeleteColumn,
   onAddTask
-}) => {
-
-  return (
-    <Box
-      sx={{
-        display: "flex",
-        pb: 3,
-        justifyContent: "space-between",
-        alignItems: "center"
-      }}
-    >
-      <Box sx={{ display: "flex", flex: "1", alignItems: "center" }}>
-        <ColumnTitle
-          column={column}
-          onTitleEdit={onTitleEdit}
-        />
+}) => (
+    <Box sx={headerStyles}>
+      <Box sx={titleContainerStyles}>
+        <ColumnTitle column={column} />
       </Box>
       <ColumnActions
         onAddTask={onAddTask}
@@ -40,6 +43,5 @@ const ColumnHeader: React.FC<ColumnHeaderProps> = ({
       />
     </Box>
   );
-};
 
 export default ColumnHeader;

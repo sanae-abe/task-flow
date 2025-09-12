@@ -1,48 +1,30 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import { DndContext, DragOverlay } from '@dnd-kit/core';
 import { Text, Box } from '@primer/react';
-import {
-  DndContext,
-  DragOverlay,
-  PointerSensor,
-  useSensor,
-  useSensors,
-} from '@dnd-kit/core';
-import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core';
+import React, { useState, useEffect } from 'react';
+
 import { useKanban } from '../contexts/KanbanContext';
+import { useDragAndDrop } from '../hooks/useDragAndDrop';
+import { useTaskFinder } from '../hooks/useTaskFinder';
+import { KANBAN_BOARD_STYLES } from '../styles/kanbanBoardStyles';
+import type { Task } from '../types';
+
 import KanbanColumn from './KanbanColumn';
+import SubHeader from './SubHeader';
 import TaskCard from './TaskCard';
 import TaskDetailSidebar from './TaskDetailSidebar';
-import SubHeader from './SubHeader';
-import type { Task } from '../types';
 
 const KanbanBoard: React.FC = () => {
   const { state, moveTask } = useKanban();
-  const [activeTask, setActiveTask] = useState<Task | null>(null);
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const [isTaskDetailOpen, setIsTaskDetailOpen] = useState(false);
   
-  // 最新のタスク情報を動的に取得
-  const selectedTask = useMemo(() => {
-    if (!selectedTaskId || !state.currentBoard) {
-      return null;
-    }
-    
-    for (const column of state.currentBoard.columns) {
-      const task = column.tasks.find(task => task.id === selectedTaskId);
-      if (task) {
-        return task;
-      }
-    }
-    return null;
-  }, [selectedTaskId, state.currentBoard]);
-
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 8,
-      },
-    })
-  );
+  const { findTaskById } = useTaskFinder(state.currentBoard);
+  const selectedTask = selectedTaskId ? findTaskById(selectedTaskId) : null;
+  
+  const { activeTask, sensors, handleDragStart, handleDragEnd } = useDragAndDrop({
+    board: state.currentBoard,
+    onMoveTask: moveTask,
+  });
 
   // 選択されたタスクが削除された場合の処理
   useEffect(() => {
@@ -53,80 +35,11 @@ const KanbanBoard: React.FC = () => {
   
   if (!state.currentBoard) {
     return (
-      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", height: "400px" }}>
-        <Text sx={{ fontSize: 2, color: "fg.muted" }}>Please select a board</Text>
+      <Box sx={KANBAN_BOARD_STYLES.emptyState}>
+        <Text sx={KANBAN_BOARD_STYLES.emptyStateText}>Please select a board</Text>
       </Box>
     );
   }
-  
-  const handleDragStart = (event: DragStartEvent) => {
-    const { active } = event;
-    
-    if (!state.currentBoard) {
-      return;
-    }
-    for (const column of state.currentBoard.columns) {
-      const task = column.tasks.find(task => task.id === active.id);
-      if (task) {
-        setActiveTask(task);
-        break;
-      }
-    }
-  };
-  
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
-    setActiveTask(null);
-    
-    if (!over || !state.currentBoard) {
-      return;
-    }
-    
-    const activeTaskId = active.id as string;
-    const overColumnId = over.id as string;
-    
-    let sourceColumnId = '';
-    
-    for (const column of state.currentBoard.columns) {
-      const taskIndex = column.tasks.findIndex(task => task.id === activeTaskId);
-      if (taskIndex !== -1) {
-        sourceColumnId = column.id;
-        break;
-      }
-    }
-    
-    if (!sourceColumnId) {
-      return;
-    }
-    
-    const targetColumn = state.currentBoard.columns.find(col => col.id === overColumnId);
-    if (!targetColumn) {
-      return;
-    }
-    
-    let targetIndex = targetColumn.tasks.length;
-    
-    if (sourceColumnId === overColumnId) {
-      const sourceColumn = state.currentBoard.columns.find(col => col.id === sourceColumnId);
-      if (!sourceColumn) {
-        return;
-      }
-      const oldIndex = sourceColumn.tasks.findIndex(task => task.id === activeTaskId);
-      const newIndex = targetColumn.tasks.findIndex(task => task.id === over.id);
-      
-      if (newIndex !== -1) {
-        targetIndex = newIndex;
-      }
-      
-      if (oldIndex !== newIndex) {
-        moveTask(activeTaskId, sourceColumnId, overColumnId, targetIndex);
-      }
-    } else {
-      moveTask(activeTaskId, sourceColumnId, overColumnId, targetIndex);
-    }
-  };
-  
-
 
   const handleTaskClick = (task: Task) => {
     setSelectedTaskId(task.id);
@@ -139,11 +52,7 @@ const KanbanBoard: React.FC = () => {
   };
   
   return (
-    <Box 
-      width="100%" 
-      bg="canvas.subtle"
-      sx={{ overflow: 'hidden' }}
-    >
+    <Box sx={KANBAN_BOARD_STYLES.container}>
       <SubHeader />
       
       <DndContext
@@ -151,29 +60,7 @@ const KanbanBoard: React.FC = () => {
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
       >
-        <Box 
-          display="flex" 
-          sx={{ 
-            overflow: 'auto', 
-            gap: 4, 
-            px: 6,
-            py: 5,
-            height: '100%',
-            '&::-webkit-scrollbar': {
-              height: '8px'
-            },
-            '&::-webkit-scrollbar-track': {
-              background: 'canvas.subtle'
-            },
-            '&::-webkit-scrollbar-thumb': {
-              background: 'border.muted',
-              borderRadius: '4px'
-            },
-            '&::-webkit-scrollbar-thumb:hover': {
-              background: 'border.default'
-            }
-          }}
-        >
+        <Box sx={KANBAN_BOARD_STYLES.columnsContainer}>
           {state.currentBoard.columns.map((column) => (
             <KanbanColumn 
               key={column.id} 
@@ -181,7 +68,6 @@ const KanbanBoard: React.FC = () => {
               onTaskClick={handleTaskClick}
             />
           ))}
-          
         </Box>
         
         <DragOverlay>

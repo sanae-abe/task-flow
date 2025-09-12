@@ -1,6 +1,14 @@
 import { useState, useCallback, useMemo } from 'react';
-import type { Task } from '../types';
+
 import { useKanban } from '../contexts/KanbanContext';
+import type { Task } from '../types';
+
+// 日付を正規化するヘルパー関数
+const normalizeDate = (date: Date): Date => {
+  const normalized = new Date(date);
+  normalized.setHours(0, 0, 0, 0);
+  return normalized;
+};
 
 interface UseTaskCardReturn {
   showEditDialog: boolean;
@@ -16,7 +24,6 @@ interface UseTaskCardReturn {
   isOverdue: () => boolean;
   isDueToday: () => boolean;
   isDueTomorrow: () => boolean;
-  formatDueDate: (date: Date) => string;
   isRightmostColumn: boolean;
 }
 
@@ -58,84 +65,55 @@ export const useTaskCard = (task: Task, columnId: string): UseTaskCardReturn => 
   }, []);
 
   const handleComplete = useCallback(() => {
-    if (!state.currentBoard) {
-      return;
-    }
+    if (!state.currentBoard?.columns.length) {return;}
     
-    // 現在のカラムのインデックスを取得
-    const currentColumnIndex = state.currentBoard.columns.findIndex(col => col.id === columnId);
+    const { columns } = state.currentBoard;
+    const currentIndex = columns.findIndex(col => col.id === columnId);
     
-    if (currentColumnIndex === -1) {
-      return;
-    }
+    if (currentIndex === -1) {return;}
     
-    // 右端のカラムかどうかを判定
-    const isAtRightmostColumn = currentColumnIndex === state.currentBoard.columns.length - 1;
+    const isLastColumn = currentIndex === columns.length - 1;
+    const targetColumn = isLastColumn 
+      ? columns[currentIndex - 1] // 左に戻る
+      : columns[columns.length - 1]; // 最後のカラムに移動
     
-    if (isAtRightmostColumn) {
-      // 右端のカラムにある場合は、1つ左のカラムに移動
-      if (currentColumnIndex > 0) {
-        const previousColumn = state.currentBoard.columns[currentColumnIndex - 1];
-        if (previousColumn) {
-          moveTask(task.id, columnId, previousColumn.id, previousColumn.tasks.length);
-        }
-      }
-    } else {
-      // 右端以外のカラムにある場合は、右端のカラムに移動
-      const rightmostColumn = state.currentBoard.columns[state.currentBoard.columns.length - 1];
-      if (rightmostColumn) {
-        moveTask(task.id, columnId, rightmostColumn.id, rightmostColumn.tasks.length);
-      }
+    if (targetColumn) {
+      moveTask(task.id, columnId, targetColumn.id, targetColumn.tasks.length);
     }
   }, [task.id, columnId, moveTask, state.currentBoard]);
 
-  const isOverdue = useCallback(() => {
+  // 日付関連の計算をメモ化
+  const dateComparisons = useMemo(() => {
     if (!task.dueDate) {
-      return false;
+      return {
+        isOverdue: false,
+        isDueToday: false,
+        isDueTomorrow: false
+      };
     }
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const dueDate = new Date(task.dueDate);
-    dueDate.setHours(0, 0, 0, 0);
-    return dueDate < today;
-  }, [task.dueDate]);
 
-  const isDueToday = useCallback(() => {
-    if (!task.dueDate) {
-      return false;
-    }
-    const today = new Date();
-    const dueDate = new Date(task.dueDate);
-    today.setHours(0, 0, 0, 0);
-    dueDate.setHours(0, 0, 0, 0);
-    return dueDate.getTime() === today.getTime();
-  }, [task.dueDate]);
-
-  const isDueTomorrow = useCallback(() => {
-    if (!task.dueDate) {
-      return false;
-    }
-    const tomorrow = new Date();
+    const today = normalizeDate(new Date());
+    const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
-    const dueDate = new Date(task.dueDate);
-    tomorrow.setHours(0, 0, 0, 0);
-    dueDate.setHours(0, 0, 0, 0);
-    return dueDate.getTime() === tomorrow.getTime();
+    const dueDate = normalizeDate(new Date(task.dueDate));
+
+    return {
+      isOverdue: dueDate < today,
+      isDueToday: dueDate.getTime() === today.getTime(),
+      isDueTomorrow: dueDate.getTime() === tomorrow.getTime()
+    };
   }, [task.dueDate]);
 
-  const formatDueDate = useCallback((date: Date) => {
-    return date.toLocaleDateString('ja-JP', {
-      month: 'short',
-      day: 'numeric'
-    });
-  }, []);
+  const isOverdue = () => dateComparisons.isOverdue;
+  const isDueToday = () => dateComparisons.isDueToday;
+  const isDueTomorrow = () => dateComparisons.isDueTomorrow;
 
   const isRightmostColumn = useMemo(() => {
-    if (!state.currentBoard) {
+    if (!state.currentBoard?.columns.length) {
       return false;
     }
-    const rightmostColumnId = state.currentBoard.columns[state.currentBoard.columns.length - 1]?.id;
-    return columnId === rightmostColumnId;
+    const rightmostColumn = state.currentBoard.columns[state.currentBoard.columns.length - 1];
+    return rightmostColumn ? columnId === rightmostColumn.id : false;
   }, [columnId, state.currentBoard]);
 
   return {
@@ -152,7 +130,6 @@ export const useTaskCard = (task: Task, columnId: string): UseTaskCardReturn => 
     isOverdue,
     isDueToday,
     isDueTomorrow,
-    formatDueDate,
     isRightmostColumn
   };
 };

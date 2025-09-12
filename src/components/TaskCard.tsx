@@ -1,12 +1,15 @@
-import React from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Box } from '@primer/react';
-import type { Task } from '../types';
+import React from 'react';
+
 import { useTaskCard } from '../hooks/useTaskCard';
-import TaskEditDialog from './TaskEditDialog';
-import TaskDisplay from './TaskDisplay';
+import type { Task } from '../types';
+import { formatDueDate } from '../utils/dateHelpers';
+
 import ConfirmDialog from './ConfirmDialog';
+import TaskDisplay from './TaskDisplay';
+import TaskEditDialog from './TaskEditDialog';
 
 interface TaskCardProps {
   task: Task;
@@ -14,24 +17,36 @@ interface TaskCardProps {
   onTaskClick?: (task: Task) => void;
 }
 
+const getCardStyles = (isRightmostColumn: boolean, isDragging: boolean, transform: { x: number; y: number; scaleX: number; scaleY: number } | null, transition: string | undefined) => ({
+  ...{
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : (isRightmostColumn ? 0.6 : 1),
+  },
+  borderRadius: 2,
+  borderColor: 'border.default',
+  cursor: 'grab',
+  boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+  transition: 'all 0.2s ease',
+  width: '100%',
+  maxWidth: '100%',
+  minWidth: 0,
+  minHeight: 'auto',
+  height: 'auto',
+  wordWrap: 'break-word' as const,
+  overflowWrap: 'break-word' as const,
+  display: 'flex',
+  flexDirection: 'column' as const,
+  '&:hover': {
+    boxShadow: '0 2px 12px rgba(0, 0, 0, 0.15)',
+  },
+  '&:active': {
+    cursor: 'grabbing'
+  }
+});
+
 const TaskCard: React.FC<TaskCardProps> = ({ task, columnId, onTaskClick }) => {
-  const {
-    showEditDialog,
-    showDeleteConfirm,
-    handleEdit,
-    handleSave,
-    handleCancel,
-    handleDelete,
-    handleConfirmDelete,
-    handleDeleteFromDialog,
-    handleCancelDelete,
-    handleComplete,
-    isOverdue,
-    isDueToday,
-    isDueTomorrow,
-    formatDueDate,
-    isRightmostColumn
-  } = useTaskCard(task, columnId);
+  const taskCardData = useTaskCard(task, columnId);
   
   const {
     attributes,
@@ -41,12 +56,6 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, columnId, onTaskClick }) => {
     transition,
     isDragging,
   } = useSortable({ id: task.id });
-  
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-  };
 
   const handleTaskClick = () => {
     if (onTaskClick) {
@@ -61,72 +70,47 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, columnId, onTaskClick }) => {
         bg="canvas.default"
         p={3}
         border="1px solid"
-        sx={{
-          ...style,
-          borderRadius: 2,
-          borderColor: 'border.default',
-          cursor: 'grab',
-          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-          transition: 'all 0.2s ease',
-          opacity: isRightmostColumn ? 0.6 : 1,
-          width: '100%',
-          maxWidth: '100%',
-          minWidth: 0,
-          minHeight: 'auto',
-          height: 'auto',
-          wordWrap: 'break-word',
-          overflowWrap: 'break-word',
-          display: 'flex',
-          flexDirection: 'column',
-          '&:hover': {
-            boxShadow: '0 2px 12px rgba(0, 0, 0, 0.15)',
-          },
-          '&:active': {
-            cursor: 'grabbing'
-          }
-        }}
-        // eslint-disable-next-line react/jsx-props-no-spreading
+        sx={getCardStyles(taskCardData.isRightmostColumn, isDragging, transform, transition)}
         {...attributes}
-        // eslint-disable-next-line react/jsx-props-no-spreading
         {...listeners}
         onClick={handleTaskClick}
       >
         <TaskDisplay
           task={task}
-          isOverdue={isOverdue}
-          isDueToday={isDueToday}
-          isDueTomorrow={isDueTomorrow}
+          isOverdue={taskCardData.isOverdue}
+          isDueToday={taskCardData.isDueToday}
+          isDueTomorrow={taskCardData.isDueTomorrow}
           formatDueDate={formatDueDate}
           onEdit={(e: React.MouseEvent) => {
             e.stopPropagation();
-            handleEdit();
+            taskCardData.handleEdit();
           }}
           onDelete={(e: React.MouseEvent) => {
             e.stopPropagation();
-            handleDelete();
+            taskCardData.handleDelete();
           }}
           onComplete={(e: React.MouseEvent) => {
             e.stopPropagation();
-            handleComplete();
+            taskCardData.handleComplete();
           }}
-          isRightmostColumn={isRightmostColumn}
+          isRightmostColumn={taskCardData.isRightmostColumn}
         />
       </Box>
 
       <TaskEditDialog
         task={task}
-        isOpen={showEditDialog}
-        onSave={handleSave}
-        onDelete={handleDeleteFromDialog}
-        onCancel={handleCancel}
+        isOpen={taskCardData.showEditDialog}
+        onSave={taskCardData.handleSave}
+        onDelete={taskCardData.handleDeleteFromDialog}
+        onCancel={taskCardData.handleCancel}
       />
 
       <ConfirmDialog
-        isOpen={showDeleteConfirm}
+        isOpen={taskCardData.showDeleteConfirm}
         title="タスクを削除"
         message={`「${task.title}」を削除しますか？この操作は元に戻せません。`}
-        onConfirm={handleConfirmDelete}
-        onCancel={handleCancelDelete}
+        onConfirm={taskCardData.handleConfirmDelete}
+        onCancel={taskCardData.handleCancelDelete}
       />
     </>
   );

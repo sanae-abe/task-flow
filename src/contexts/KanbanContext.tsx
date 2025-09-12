@@ -1,6 +1,7 @@
-import React, { createContext, useContext, useReducer, useEffect } from 'react';
+import React, { createContext, useContext, useReducer, useEffect, useMemo, useCallback } from 'react';
 import type { ReactNode } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+
 import type { KanbanBoard, Column, Task, Label, SubTask, FileAttachment } from '../types';
 import { saveBoards, loadBoards } from '../utils/storage';
 
@@ -49,6 +50,44 @@ interface KanbanContextType {
 
 const KanbanContext = createContext<KanbanContextType | undefined>(undefined);
 
+// ヘルパー関数: ボードを更新してstateに反映
+const updateBoardInState = (state: KanbanState, updatedBoard: KanbanBoard): KanbanState => ({
+    ...state,
+    boards: state.boards.map(board => 
+      board.id === updatedBoard.id ? updatedBoard : board
+    ),
+    currentBoard: state.currentBoard?.id === updatedBoard.id ? updatedBoard : state.currentBoard,
+  });
+
+// ヘルパー関数: ボードのupdatedAtを更新
+const updateBoardTimestamp = (board: KanbanBoard): KanbanBoard => ({
+    ...board,
+    updatedAt: new Date(),
+  });
+
+// ヘルパー関数: LocalStorageのcurrent-board-idを安全に管理
+const updateCurrentBoardId = (boardId: string | null) => {
+  try {
+    if (boardId) {
+      localStorage.setItem('current-board-id', boardId);
+    } else {
+      localStorage.removeItem('current-board-id');
+    }
+  } catch (error) {
+    console.warn('LocalStorage access failed:', error);
+  }
+};
+
+// ヘルパー関数: LocalStorageからcurrent-board-idを安全に取得
+const getCurrentBoardId = (): string | null => {
+  try {
+    return localStorage.getItem('current-board-id');
+  } catch (error) {
+    console.warn('LocalStorage access failed:', error);
+    return null;
+  }
+};
+
 const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState => {
   switch (action.type) {
     case 'LOAD_BOARDS': {
@@ -56,7 +95,7 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
       let currentBoard: KanbanBoard | null = null;
       
       if (boards.length > 0) {
-        const savedCurrentBoardId = localStorage.getItem('current-board-id');
+        const savedCurrentBoardId = getCurrentBoardId();
         if (savedCurrentBoardId) {
           currentBoard = boards.find(board => board.id === savedCurrentBoardId) || boards[0] || null;
         } else {
@@ -98,7 +137,7 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
         createdAt: new Date(),
         updatedAt: new Date(),
       };
-      localStorage.setItem('current-board-id', newBoard.id);
+      updateCurrentBoardId(newBoard.id);
       return {
         ...state,
         boards: [...state.boards, newBoard],
@@ -109,7 +148,7 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
     case 'SET_CURRENT_BOARD': {
       const newCurrentBoard = state.boards.find(board => board.id === action.payload) || null;
       if (newCurrentBoard) {
-        localStorage.setItem('current-board-id', newCurrentBoard.id);
+        updateCurrentBoardId(newCurrentBoard.id);
       }
       return {
         ...state,
@@ -118,24 +157,17 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
     }
     
     case 'UPDATE_BOARD': {
-      const updatedBoard = state.boards.find(board => board.id === action.payload.boardId);
-      if (!updatedBoard) {
+      const boardToUpdate = state.boards.find(board => board.id === action.payload.boardId);
+      if (!boardToUpdate) {
         return state;
       }
       
-      const newBoard = {
-        ...updatedBoard,
+      const updatedBoard = updateBoardTimestamp({
+        ...boardToUpdate,
         ...action.payload.updates,
-        updatedAt: new Date(),
-      };
+      });
       
-      return {
-        ...state,
-        boards: state.boards.map(board => 
-          board.id === action.payload.boardId ? newBoard : board
-        ),
-        currentBoard: state.currentBoard?.id === action.payload.boardId ? newBoard : state.currentBoard,
-      };
+      return updateBoardInState(state, updatedBoard);
     }
     
     case 'DELETE_BOARD': {
@@ -143,19 +175,8 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
       let newCurrentBoard = state.currentBoard;
       
       if (state.currentBoard?.id === action.payload.boardId) {
-        if (newBoards.length > 0) {
-          const firstBoard = newBoards[0];
-          if (firstBoard) {
-            newCurrentBoard = firstBoard;
-            localStorage.setItem('current-board-id', firstBoard.id);
-          } else {
-            newCurrentBoard = null;
-            localStorage.removeItem('current-board-id');
-          }
-        } else {
-          newCurrentBoard = null;
-          localStorage.removeItem('current-board-id');
-        }
+        newCurrentBoard = newBoards.length > 0 ? newBoards[0] || null : null;
+        updateCurrentBoardId(newCurrentBoard?.id || null);
       }
       
       return {
@@ -177,19 +198,12 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
         color: '#f6f8fa',
       };
       
-      const updatedBoard = {
+      const updatedBoard = updateBoardTimestamp({
         ...state.currentBoard,
         columns: [...state.currentBoard.columns, newColumn],
-        updatedAt: new Date(),
-      };
+      });
       
-      return {
-        ...state,
-        boards: state.boards.map(board => 
-          board.id === state.currentBoard?.id ? updatedBoard : board
-        ),
-        currentBoard: updatedBoard,
-      };
+      return updateBoardInState(state, updatedBoard);
     }
     
     case 'CREATE_TASK': {
@@ -208,23 +222,16 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
         updatedAt: new Date(),
       };
       
-      const updatedBoard = {
+      const updatedBoard = updateBoardTimestamp({
         ...state.currentBoard,
         columns: state.currentBoard.columns.map(column =>
           column.id === action.payload.columnId
             ? { ...column, tasks: [...column.tasks, newTask] }
             : column
         ),
-        updatedAt: new Date(),
-      };
+      });
       
-      return {
-        ...state,
-        boards: state.boards.map(board => 
-          board.id === state.currentBoard?.id ? updatedBoard : board
-        ),
-        currentBoard: updatedBoard,
-      };
+      return updateBoardInState(state, updatedBoard);
     }
     
     case 'MOVE_TASK': {
@@ -234,21 +241,29 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
       
       const { taskId, sourceColumnId, targetColumnId, targetIndex } = action.payload;
       
+      // 移動するタスクを取得
       let taskToMove: Task | undefined;
+      for (const column of state.currentBoard.columns) {
+        if (column.id === sourceColumnId) {
+          taskToMove = column.tasks.find(task => task.id === taskId);
+          break;
+        }
+      }
       
-      const updatedBoard = {
+      if (!taskToMove) {
+        return state;
+      }
+      
+      const updatedBoard = updateBoardTimestamp({
         ...state.currentBoard,
         columns: state.currentBoard.columns.map(column => {
           if (column.id === sourceColumnId) {
-            taskToMove = column.tasks.find(task => task.id === taskId);
             return {
               ...column,
               tasks: column.tasks.filter(task => task.id !== taskId),
             };
           }
-          return column;
-        }).map(column => {
-          if (column.id === targetColumnId && taskToMove) {
+          if (column.id === targetColumnId) {
             const newTasks = [...column.tasks];
             newTasks.splice(targetIndex, 0, { ...taskToMove, updatedAt: new Date() });
             return {
@@ -258,16 +273,9 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
           }
           return column;
         }),
-        updatedAt: new Date(),
-      };
+      });
       
-      return {
-        ...state,
-        boards: state.boards.map(board => 
-          board.id === state.currentBoard?.id ? updatedBoard : board
-        ),
-        currentBoard: updatedBoard,
-      };
+      return updateBoardInState(state, updatedBoard);
     }
 
     case 'UPDATE_TASK': {
@@ -275,7 +283,7 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
         return state;
       }
 
-      const updatedBoard = {
+      const updatedBoard = updateBoardTimestamp({
         ...state.currentBoard,
         columns: state.currentBoard.columns.map(column => ({
           ...column,
@@ -285,16 +293,9 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
               : task
           ),
         })),
-        updatedAt: new Date(),
-      };
+      });
 
-      return {
-        ...state,
-        boards: state.boards.map(board => 
-          board.id === state.currentBoard?.id ? updatedBoard : board
-        ),
-        currentBoard: updatedBoard,
-      };
+      return updateBoardInState(state, updatedBoard);
     }
 
     case 'DELETE_TASK': {
@@ -302,23 +303,16 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
         return state;
       }
 
-      const updatedBoard = {
+      const updatedBoard = updateBoardTimestamp({
         ...state.currentBoard,
         columns: state.currentBoard.columns.map(column =>
           column.id === action.payload.columnId
             ? { ...column, tasks: column.tasks.filter(task => task.id !== action.payload.taskId) }
             : column
         ),
-        updatedAt: new Date(),
-      };
+      });
 
-      return {
-        ...state,
-        boards: state.boards.map(board => 
-          board.id === state.currentBoard?.id ? updatedBoard : board
-        ),
-        currentBoard: updatedBoard,
-      };
+      return updateBoardInState(state, updatedBoard);
     }
 
     case 'DELETE_COLUMN': {
@@ -326,19 +320,12 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
         return state;
       }
 
-      const updatedBoard = {
+      const updatedBoard = updateBoardTimestamp({
         ...state.currentBoard,
         columns: state.currentBoard.columns.filter(column => column.id !== action.payload.columnId),
-        updatedAt: new Date(),
-      };
+      });
 
-      return {
-        ...state,
-        boards: state.boards.map(board => 
-          board.id === state.currentBoard?.id ? updatedBoard : board
-        ),
-        currentBoard: updatedBoard,
-      };
+      return updateBoardInState(state, updatedBoard);
     }
 
     case 'UPDATE_COLUMN': {
@@ -346,23 +333,16 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
         return state;
       }
 
-      const updatedBoard = {
+      const updatedBoard = updateBoardTimestamp({
         ...state.currentBoard,
         columns: state.currentBoard.columns.map(column =>
           column.id === action.payload.columnId
             ? { ...column, ...action.payload.updates }
             : column
         ),
-        updatedAt: new Date(),
-      };
+      });
 
-      return {
-        ...state,
-        boards: state.boards.map(board => 
-          board.id === state.currentBoard?.id ? updatedBoard : board
-        ),
-        currentBoard: updatedBoard,
-      };
+      return updateBoardInState(state, updatedBoard);
     }
     
     case 'CLEAR_COMPLETED_TASKS': {
@@ -377,23 +357,16 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
         return state;
       }
 
-      const updatedBoard = {
+      const updatedBoard = updateBoardTimestamp({
         ...state.currentBoard,
         columns: state.currentBoard.columns.map(column =>
           column.id === rightmostColumnId
             ? { ...column, tasks: [] }
             : column
         ),
-        updatedAt: new Date(),
-      };
+      });
 
-      return {
-        ...state,
-        boards: state.boards.map(board => 
-          board.id === state.currentBoard?.id ? updatedBoard : board
-        ),
-        currentBoard: updatedBoard,
-      };
+      return updateBoardInState(state, updatedBoard);
     }
 
     case 'ADD_SUBTASK': {
@@ -409,7 +382,7 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
         createdAt: new Date()
       };
 
-      const updatedBoard = {
+      const updatedBoard = updateBoardTimestamp({
         ...state.currentBoard,
         columns: state.currentBoard.columns.map(column => ({
           ...column,
@@ -423,16 +396,9 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
               : task
           )
         })),
-        updatedAt: new Date()
-      };
+      });
 
-      return {
-        ...state,
-        boards: state.boards.map(board =>
-          board.id === updatedBoard.id ? updatedBoard : board
-        ),
-        currentBoard: updatedBoard
-      };
+      return updateBoardInState(state, updatedBoard);
     }
 
     case 'TOGGLE_SUBTASK': {
@@ -442,7 +408,7 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
 
       const { taskId, subTaskId } = action.payload;
 
-      const updatedBoard = {
+      const updatedBoard = updateBoardTimestamp({
         ...state.currentBoard,
         columns: state.currentBoard.columns.map(column => ({
           ...column,
@@ -460,16 +426,9 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
               : task
           )
         })),
-        updatedAt: new Date()
-      };
+      });
 
-      return {
-        ...state,
-        boards: state.boards.map(board =>
-          board.id === updatedBoard.id ? updatedBoard : board
-        ),
-        currentBoard: updatedBoard
-      };
+      return updateBoardInState(state, updatedBoard);
     }
 
     case 'DELETE_SUBTASK': {
@@ -479,7 +438,7 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
 
       const { taskId, subTaskId } = action.payload;
 
-      const updatedBoard = {
+      const updatedBoard = updateBoardTimestamp({
         ...state.currentBoard,
         columns: state.currentBoard.columns.map(column => ({
           ...column,
@@ -493,16 +452,9 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
               : task
           )
         })),
-        updatedAt: new Date()
-      };
+      });
 
-      return {
-        ...state,
-        boards: state.boards.map(board =>
-          board.id === updatedBoard.id ? updatedBoard : board
-        ),
-        currentBoard: updatedBoard
-      };
+      return updateBoardInState(state, updatedBoard);
     }
     
     default:
@@ -576,7 +528,7 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         updatedAt: new Date(),
       };
       const initialBoards = [defaultBoard];
-      localStorage.setItem('current-board-id', defaultBoard.id);
+      updateCurrentBoardId(defaultBoard.id);
       saveBoards(initialBoards, defaultBoard.id);
       dispatch({ type: 'LOAD_BOARDS', payload: initialBoards });
     } else {
@@ -592,92 +544,112 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     }
   }, [state.boards, state.currentBoard, isInitialized]);
   
-  const createBoard = (title: string) => {
+  const createBoard = useCallback((title: string) => {
     dispatch({ type: 'CREATE_BOARD', payload: { title } });
-  };
+  }, []);
   
-  const setCurrentBoard = (boardId: string) => {
-    localStorage.setItem('current-board-id', boardId);
+  const setCurrentBoard = useCallback((boardId: string) => {
+    updateCurrentBoardId(boardId);
     dispatch({ type: 'SET_CURRENT_BOARD', payload: boardId });
-  };
+  }, []);
 
-  const updateBoard = (boardId: string, updates: Partial<KanbanBoard>) => {
+  const updateBoard = useCallback((boardId: string, updates: Partial<KanbanBoard>) => {
     dispatch({ type: 'UPDATE_BOARD', payload: { boardId, updates } });
-  };
+  }, []);
 
-  const deleteBoard = (boardId: string) => {
+  const deleteBoard = useCallback((boardId: string) => {
     dispatch({ type: 'DELETE_BOARD', payload: { boardId } });
-  };
+  }, []);
   
-  const createColumn = (title: string) => {
+  const createColumn = useCallback((title: string) => {
     if (!state.currentBoard) {
       return;
     }
     dispatch({ type: 'CREATE_COLUMN', payload: { boardId: state.currentBoard.id, title } });
-  };
+  }, [state.currentBoard]);
   
-  const createTask = (columnId: string, title: string, description: string, dueDate?: Date, labels?: Label[], attachments?: FileAttachment[]) => {
+  const createTask = useCallback((columnId: string, title: string, description: string, dueDate?: Date, labels?: Label[], attachments?: FileAttachment[]) => {
     dispatch({ type: 'CREATE_TASK', payload: { columnId, title, description, dueDate, labels, attachments } });
-  };
+  }, []);
   
-  const moveTask = (taskId: string, sourceColumnId: string, targetColumnId: string, targetIndex: number) => {
+  const moveTask = useCallback((taskId: string, sourceColumnId: string, targetColumnId: string, targetIndex: number) => {
     dispatch({ type: 'MOVE_TASK', payload: { taskId, sourceColumnId, targetColumnId, targetIndex } });
-  };
+  }, []);
   
-  const updateTask = (taskId: string, updates: Partial<Task>) => {
+  const updateTask = useCallback((taskId: string, updates: Partial<Task>) => {
     dispatch({ type: 'UPDATE_TASK', payload: { taskId, updates } });
-  };
+  }, []);
   
-  const deleteTask = (taskId: string, columnId: string) => {
+  const deleteTask = useCallback((taskId: string, columnId: string) => {
     dispatch({ type: 'DELETE_TASK', payload: { taskId, columnId } });
-  };
+  }, []);
   
-  const deleteColumn = (columnId: string) => {
+  const deleteColumn = useCallback((columnId: string) => {
     dispatch({ type: 'DELETE_COLUMN', payload: { columnId } });
-  };
+  }, []);
   
-  const updateColumn = (columnId: string, updates: Partial<Column>) => {
+  const updateColumn = useCallback((columnId: string, updates: Partial<Column>) => {
     dispatch({ type: 'UPDATE_COLUMN', payload: { columnId, updates } });
-  };
+  }, []);
 
-  const clearCompletedTasks = () => {
+  const clearCompletedTasks = useCallback(() => {
     dispatch({ type: 'CLEAR_COMPLETED_TASKS' });
-  };
+  }, []);
 
-  const addSubTask = (taskId: string, title: string) => {
+  const addSubTask = useCallback((taskId: string, title: string) => {
     dispatch({ type: 'ADD_SUBTASK', payload: { taskId, title } });
-  };
+  }, []);
 
-  const toggleSubTask = (taskId: string, subTaskId: string) => {
+  const toggleSubTask = useCallback((taskId: string, subTaskId: string) => {
     dispatch({ type: 'TOGGLE_SUBTASK', payload: { taskId, subTaskId } });
-  };
+  }, []);
 
-  const deleteSubTask = (taskId: string, subTaskId: string) => {
+  const deleteSubTask = useCallback((taskId: string, subTaskId: string) => {
     dispatch({ type: 'DELETE_SUBTASK', payload: { taskId, subTaskId } });
-  };
+  }, []);
   
+  const contextValue = useMemo(
+    () => ({
+      state,
+      dispatch,
+      createBoard,
+      setCurrentBoard,
+      updateBoard,
+      deleteBoard,
+      createColumn,
+      createTask,
+      moveTask,
+      updateTask,
+      deleteTask,
+      deleteColumn,
+      updateColumn,
+      clearCompletedTasks,
+      addSubTask,
+      toggleSubTask,
+      deleteSubTask,
+    }),
+    [
+      state,
+      createBoard,
+      setCurrentBoard,
+      updateBoard,
+      deleteBoard,
+      createColumn,
+      createTask,
+      moveTask,
+      updateTask,
+      deleteTask,
+      deleteColumn,
+      updateColumn,
+      clearCompletedTasks,
+      addSubTask,
+      toggleSubTask,
+      deleteSubTask,
+    ]
+  );
+
   return (
-    <KanbanContext.Provider
-      value={{
-        state,
-        dispatch,
-        createBoard,
-        setCurrentBoard,
-        updateBoard,
-        deleteBoard,
-        createColumn,
-        createTask,
-        moveTask,
-        updateTask,
-        deleteTask,
-        deleteColumn,
-        updateColumn,
-        clearCompletedTasks,
-        addSubTask,
-        toggleSubTask,
-        deleteSubTask,
-      }}
-    >
+    <KanbanContext.Provider value={contextValue}>
       {children}
     </KanbanContext.Provider>
   );

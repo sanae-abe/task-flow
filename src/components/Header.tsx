@@ -1,10 +1,98 @@
-import React from 'react';
-import { Box, Button } from '@primer/react';
 import { PlusIcon } from '@primer/octicons-react';
-import Logo from './Logo';
-import BoardSelector from './BoardSelector';
-import BoardCreateDialog from './BoardCreateDialog';
+import { Box, Button } from '@primer/react';
+import React from 'react';
+
 import { useHeaderState } from '../hooks/useHeaderState';
+
+import BoardCreateDialog from './BoardCreateDialog';
+import BoardSelector from './BoardSelector';
+import Logo from './Logo';
+
+
+// 定数定義
+const HEADER_HEIGHT = '67px';
+const MAX_CONTENT_WIDTH = '1440px';
+const DIVIDER_HEIGHT = '24px';
+const Z_INDEX = 1000;
+
+// スタイル定義オブジェクト
+const headerStyles = {
+  container: {
+    px: 4,
+    py: 0,
+    bg: 'canvas.default',
+    position: 'fixed' as const,
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: Z_INDEX,
+    borderBottom: '1px solid',
+    borderColor: 'border.default',
+    height: HEADER_HEIGHT
+  },
+  content: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    maxWidth: MAX_CONTENT_WIDTH,
+    mx: 'auto',
+    height: '100%'
+  },
+  leftSection: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 4
+  },
+  divider: {
+    height: DIVIDER_HEIGHT,
+    width: '1px',
+    backgroundColor: 'border.muted'
+  },
+  rightSection: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 3
+  },
+  createButton: {
+    backgroundColor: 'accent.emphasis',
+    color: '#ffffff',
+    border: 'none',
+    borderRadius: 2
+  }
+};
+
+// 区切り線コンポーネント
+const VerticalDivider: React.FC = () => (
+  <Box sx={headerStyles.divider} role="separator" aria-orientation="vertical" />
+);
+
+// 左側セクションコンポーネント
+const LeftSection: React.FC = () => (
+  <Box sx={headerStyles.leftSection}>
+    <Logo />
+    <VerticalDivider />
+    <BoardSelector />
+  </Box>
+);
+
+// 右側セクションコンポーネント
+interface RightSectionProps {
+  onCreateClick: () => void;
+}
+
+const RightSection: React.FC<RightSectionProps> = ({ onCreateClick }) => (
+  <Box sx={headerStyles.rightSection}>
+    <Button
+      onClick={onCreateClick}
+      variant="primary"
+      aria-label="新しいボードを作成"
+      leadingVisual={PlusIcon}
+      sx={headerStyles.createButton}
+    >
+      新しいボード
+    </Button>
+  </Box>
+);
 
 const Header: React.FC = () => {
   const {
@@ -13,54 +101,19 @@ const Header: React.FC = () => {
     handleStartCreate,
     handleCancelCreate
   } = useHeaderState();
-  
+
   return (
-    <Box
-      sx={{
-        px: 4,
-        py: 0,
-        bg: 'canvas.default',
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        zIndex: 1000,
-        borderBottom: '1px solid',
-        borderColor: 'border.default'
-      }}
-    >
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', maxWidth: '1440px', mx: 'auto' }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-          <Logo />
-          
-          <Box sx={{ height: '24px', width: '1px', backgroundColor: 'border.muted' }} />
-          
-          <BoardSelector />
-        </Box>
-        
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
-          <Button 
-            onClick={handleStartCreate}
-            variant="primary"
-            aria-label="ボードを追加"
-            leadingVisual={PlusIcon}
-            sx={{
-              backgroundColor: 'accent.emphasis',
-              color: '#ffffff',
-              border: 'none',
-              borderRadius: 2,
-            }}
-          >
-            新しいボード
-          </Button>
-          
-          <BoardCreateDialog
-            isOpen={isCreatingBoard}
-            onSave={handleCreateBoard}
-            onCancel={handleCancelCreate}
-          />
-        </Box>
+    <Box as="header" sx={headerStyles.container} role="banner">
+      <Box sx={headerStyles.content}>
+        <LeftSection />
+        <RightSection onCreateClick={handleStartCreate} />
       </Box>
+      
+      <BoardCreateDialog
+        isOpen={isCreatingBoard}
+        onSave={handleCreateBoard}
+        onCancel={handleCancelCreate}
+      />
     </Box>
   );
 };

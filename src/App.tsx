@@ -1,7 +1,8 @@
 import { BaseStyles, ThemeProvider } from '@primer/react';
-import { KanbanProvider } from './contexts/KanbanContext';
+
 import Header from './components/Header';
 import KanbanBoard from './components/KanbanBoard';
+import { KanbanProvider } from './contexts/KanbanContext';
 
 function App() {
   return (

@@ -1,7 +1,11 @@
 {
   "name": "kanban-app",
   "version": "0.1.0",
+  "description": "A modern Kanban board application built with React and TypeScript",
   "private": true,
+  "keywords": ["kanban", "react", "typescript", "task-management", "productivity"],
+  "author": "Your Name",
+  "license": "MIT",
   "engines": {
     "node": ">=18.0.0",
     "npm": ">=8.0.0"
@@ -30,8 +34,17 @@
     "@types/react": "^19.1.12",
     "@types/react-dom": "^19.1.9",
     "@types/uuid": "^10.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.17.0",
+    "@typescript-eslint/parser": "^8.17.0",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "eslint-plugin-react": "^7.37.2",
+    "eslint-plugin-react-hooks": "^5.0.0",
+    "prettier": "^3.4.2",
     "react-scripts": "5.0.1",
-    "typescript": "^5.7.3"
+    "typescript": "^5.7.3",
+    "eslint-plugin-security": "^3.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -41,21 +54,50 @@
     "test:ci": "CI=true react-scripts test --coverage --watchAll=false",
     "lint": "eslint src --ext .ts,.tsx --fix",
     "lint:check": "eslint src --ext .ts,.tsx",
+    "format": "prettier --write src/**/*.{ts,tsx,js,jsx,css,scss,md}",
+    "format:check": "prettier --check src/**/*.{ts,tsx,js,jsx,css,scss,md}",
     "typecheck": "tsc --noEmit",
+    "typecheck:watch": "tsc --noEmit --watch",
+    "quality": "npm run lint:check && npm run format:check && npm run typecheck",
+    "quality:fix": "npm run lint && npm run format && npm run typecheck",
     "analyze": "npm run build && npx webpack-bundle-analyzer build/static/js/*.js",
-    "audit": "npm audit --audit-level=high"
+    "audit": "npm audit --audit-level=moderate",
+    "audit:fix": "npm audit fix",
+    "audit:security": "npm audit --audit-level=high && npm run lint:security",
+    "lint:security": "eslint src --ext .ts,.tsx --config .eslintrc.security.js",
+    "check-deps": "npm outdated",
+    "pre-commit": "npm run quality:fix && npm run test:ci"
   },
   "browserslist": {
     "production": [
-      ">0.5%",
+      ">0.2%",
       "not dead",
       "not ie 11",
-      "not op_mini all"
+      "not op_mini all",
+      "not ios_saf < 12",
+      "not and_uc < 12.12"
     ],
     "development": [
       "last 2 chrome version",
       "last 2 firefox version",
-      "last 2 safari version"
+      "last 2 safari version",
+      "last 2 edge version"
     ]
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.{ts,tsx}",
+      "!src/**/*.d.ts",
+      "!src/index.tsx",
+      "!src/reportWebVitals.ts"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 80,
+        "functions": 80,
+        "lines": 80,
+        "statements": 80
+      }
+    }
   }
 }

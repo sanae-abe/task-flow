@@ -1,0 +1,79 @@
+// ベースダイアログ関連の型
+export interface BaseDialogProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+export interface DialogActionsProps {
+  onCancel: () => void;
+  onConfirm: () => void;
+  confirmText: string;
+  cancelText?: string;
+  isConfirmDisabled?: boolean;
+  confirmVariant?: 'primary' | 'danger';
+}
+
+// フォーム関連の型
+export interface FormFieldProps {
+  id: string;
+  label: string;
+  value: string;
+  placeholder: string;
+  onChange: (value: string) => void;
+  onKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
+  autoFocus?: boolean;
+  required?: boolean;
+}
+
+export interface TextareaFieldProps {
+  id: string;
+  label: string;
+  value: string;
+  placeholder: string;
+  onChange: (value: string) => void;
+  onKeyDown?: (event: React.KeyboardEvent<HTMLTextAreaElement>) => void;
+  rows?: number;
+  required?: boolean;
+}
+
+export interface DateFieldProps {
+  id: string;
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  onKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
+  required?: boolean;
+}
+
+// 共通フォームダイアログの型
+export interface DialogWithFormProps {
+  isOpen: boolean;
+  onSave: (value: string) => void;
+  onCancel: () => void;
+}
+
+export interface SimpleFormDialogProps {
+  isOpen: boolean;
+  title: string;
+  fieldLabel: string;
+  placeholder: string;
+  confirmText: string;
+  initialValue?: string;
+  onSave: (value: string) => void;
+  onCancel: () => void;
+  ariaLabelledBy: string;
+  inputId: string;
+}
+
+// 個別ダイアログの型（統一された型を継承）
+export interface BoardCreateDialogProps extends DialogWithFormProps {}
+
+export interface BoardEditDialogProps extends DialogWithFormProps {
+  currentTitle: string;
+}
+
+export interface ColumnCreateDialogProps extends DialogWithFormProps {}
+
+export interface ColumnEditDialogProps extends DialogWithFormProps {
+  currentTitle: string;
+}

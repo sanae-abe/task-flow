@@ -1,6 +1,9 @@
+import { Box, Text } from '@primer/react';
 import React from 'react';
-import { Box, Heading, TextInput, Textarea } from '@primer/react';
+
 import type { Label } from '../types';
+
+import FormField, { TextareaField, DateField , FORM_STYLES } from './FormField';
 import LabelSelector from './LabelSelector';
 
 interface TaskDetailEditFormProps {
@@ -23,42 +26,39 @@ const TaskDetailEditForm: React.FC<TaskDetailEditFormProps> = ({
   onDescriptionChange,
   onDueDateChange,
   onLabelsChange,
-}) => {
-  return (
+}) => (
     <>
-      <Box sx={{ mb: 4 }}>
-        <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: 'bold' }}>タイトル</Heading>
-        <TextInput
-          value={editTitle}
-          onChange={(e) => onTitleChange(e.target.value)}
-          placeholder="タスクタイトルを入力"
-          sx={{ width: '100%' }}
-        />
-      </Box>
+      <FormField
+        id="task-title"
+        label="タイトル"
+        value={editTitle}
+        placeholder="タスクタイトルを入力"
+        onChange={onTitleChange}
+      />
 
-      <Box sx={{ mb: 4 }}>
-        <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: 'bold' }}>説明</Heading>
-        <Textarea
-          value={editDescription}
-          onChange={(e) => onDescriptionChange(e.target.value)}
-          placeholder="タスクの説明を入力"
-          rows={4}
-          sx={{ width: '100%', resize: 'vertical' }}
-        />
-      </Box>
+      <TextareaField
+        id="task-description"
+        label="説明"
+        value={editDescription}
+        placeholder="タスクの説明を入力"
+        onChange={onDescriptionChange}
+        rows={4}
+      />
 
-      <Box sx={{ mb: 4 }}>
-        <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: 'bold' }}>期限</Heading>
-        <TextInput
-          type="date"
-          value={editDueDate}
-          onChange={(e) => onDueDateChange(e.target.value)}
-          sx={{ width: '100%' }}
-        />
-      </Box>
+      <DateField
+        id="task-due-date"
+        label="期限"
+        value={editDueDate}
+        onChange={onDueDateChange}
+      />
 
-      <Box sx={{ mb: 4 }}>
-        <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: 'bold' }}>ラベル</Heading>
+      <Box sx={FORM_STYLES.container}>
+        <Text 
+          as="label" 
+          sx={FORM_STYLES.label}
+        >
+          ラベル
+        </Text>
         <LabelSelector
           selectedLabels={editLabels}
           onLabelsChange={onLabelsChange}
@@ -66,6 +66,5 @@ const TaskDetailEditForm: React.FC<TaskDetailEditFormProps> = ({
       </Box>
     </>
   );
-};
 
 export default TaskDetailEditForm;

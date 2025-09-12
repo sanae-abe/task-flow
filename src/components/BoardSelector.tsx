@@ -1,60 +1,124 @@
-import React from 'react';
 import { Button, Box, Text } from '@primer/react';
-import { useKanban } from '../contexts/KanbanContext';
+import React, { memo } from 'react';
 
+import { useKanban } from '../contexts/KanbanContext';
+import type { KanbanBoard } from '../types';
+
+// スタイル定義
+const styles = {
+  container: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 4
+  },
+  emptyState: {
+    display: 'flex',
+    alignItems: 'center'
+  },
+  emptyText: {
+    color: 'fg.muted',
+    fontSize: 1
+  },
+  tabContainer: {
+    height: '100%',
+    display: 'flex',
+    alignItems: 'center'
+  },
+  selectedTab: {
+    px: 0,
+    py: 3,
+    borderBottom: '2px solid',
+    borderBottomColor: 'accent.emphasis'
+  },
+  unselectedTab: {
+    px: 0,
+    py: 3,
+    borderBottom: 'none'
+  },
+  tabButton: {
+    fontSize: 2,
+    borderRadius: '6px',
+    px: 1,
+    py: 0,
+    '&:hover': {
+      backgroundColor: 'canvas.subtle',
+      color: 'fg.default'
+    }
+  },
+  selectedButton: {
+    fontWeight: '600',
+    color: 'fg.default'
+  },
+  unselectedButton: {
+    fontWeight: '500',
+    color: 'fg.muted'
+  }
+} as const;
+
+// 空状態表示コンポーネント
+const EmptyBoardsMessage: React.FC = memo(() => (
+  <Box sx={styles.emptyState}>
+    <Text sx={styles.emptyText}>
+      利用可能なボードがありません
+    </Text>
+  </Box>
+));
+
+// ボードタブコンポーネント
+interface BoardTabProps {
+  board: KanbanBoard;
+  isSelected: boolean;
+  onSelect: (boardId: string) => void;
+}
+
+const BoardTab: React.FC<BoardTabProps> = memo(({ board, isSelected, onSelect }) => {
+  const tabStyles = isSelected ? styles.selectedTab : styles.unselectedTab;
+  const buttonStyles = {
+    ...styles.tabButton,
+    ...(isSelected ? styles.selectedButton : styles.unselectedButton)
+  };
+
+  return (
+    <Box
+      key={board.id}
+      sx={{
+        ...styles.tabContainer,
+        ...tabStyles
+      }}
+      role="tab"
+      aria-selected={isSelected}
+    >
+      <Button
+        variant="invisible"
+        size="medium"
+        onClick={() => onSelect(board.id)}
+        sx={buttonStyles}
+        aria-label={`${board.title}ボードを選択`}
+      >
+        {board.title}
+      </Button>
+    </Box>
+  );
+});
+
+// メインコンポーネント
 const BoardSelector: React.FC = () => {
   const { state, setCurrentBoard } = useKanban();
 
   if (state.boards.length === 0) {
-    return (
-      <Box sx={{ display: 'flex', alignItems: 'center' }}>
-        <Text sx={{ color: 'fg.muted', fontSize: 1 }}>
-          No boards available
-        </Text>
-      </Box>
-    );
+    return <EmptyBoardsMessage />;
   }
 
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-      {state.boards.map((board) => {
-        const isSelected = state.currentBoard?.id === board.id;
-        
-        return (
-          <Box
-            key={board.id}
-            sx={{
-              px: 0,
-              py: 3,
-              borderBottom: isSelected ? '2px solid' : 'none',
-              borderBottomColor: isSelected ? 'accent.emphasis' : 'transparent',
-              height: '100%',
-              display: 'flex',
-              alignItems: 'center'
-            }}
-          >
-            <Button
-              variant="invisible"
-              size="medium"
-              onClick={() => setCurrentBoard(board.id)}
-              sx={{
-                fontSize: 2,
-                fontWeight: isSelected ? '600' : '500',
-                color: isSelected ? 'fg.default' : 'fg.muted',
-                borderRadius: '6px',
-                px: 1,
-                py: 0,
-                '&:hover': {
-                  backgroundColor: 'canvas.subtle',
-                  color: 'fg.default'
-                }
-              }}
-            >
-              {board.title}
-            </Button>
-          </Box>
-        );
-      })}
+    <Box sx={styles.container} role="tablist" aria-label="ボード選択">
+      {state.boards.map((board) => (
+        <BoardTab
+          key={board.id}
+          board={board}
+          isSelected={state.currentBoard?.id === board.id}
+          onSelect={setCurrentBoard}
+        />
+      ))}
     </Box>
   );
 };

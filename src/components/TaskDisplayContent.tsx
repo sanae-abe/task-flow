@@ -1,178 +1,60 @@
+import { Text } from '@primer/react';
 import React from 'react';
-import { Box, Text, Heading } from '@primer/react';
-import { CalendarIcon } from '@primer/octicons-react';
+
 import type { Task } from '../types';
-import { getDateStatus, formatDueDate } from '../utils/dateHelpers';
-import { getLabelColors } from '../utils/labelHelpers';
+
+import ContentBox from './ContentBox';
+import DueDateDisplay from './DueDateDisplay';
 import FileList from './FileList';
+import TaskDisplaySection from './TaskDisplaySection';
+import TaskLabels from './TaskLabels';
 
 interface TaskDisplayContentProps {
   task: Task;
   columnName?: string;
 }
 
-const TaskDisplayContent: React.FC<TaskDisplayContentProps> = ({ task, columnName }) => {
-  const { isOverdue, isDueToday, isDueTomorrow } = getDateStatus(task.dueDate);
-
-  return (
+const TaskDisplayContent: React.FC<TaskDisplayContentProps> = ({ task, columnName }) => (
     <>
       {columnName && (
-        <Box sx={{ mb: 4 }}>
-          <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: 'bold' }}>ステータス</Heading>
-          <Box
-            sx={{
-              p: 3,
-              bg: "canvas.subtle",
-              borderRadius: 2,
-            }}
-          >
+        <TaskDisplaySection title="ステータス">
+          <ContentBox>
             <Text sx={{ fontSize: 1 }}>{columnName}</Text>
-          </Box>
-        </Box>
+          </ContentBox>
+        </TaskDisplaySection>
       )}
 
       {task.labels && task.labels.length > 0 && (
-        <Box sx={{ mb: 4 }}>
-          <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: 'bold' }}>ラベル</Heading>
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-            {task.labels.map((label) => {
-              const colors = getLabelColors(label.color);
-              
-              return (
-                <Box
-                  key={label.id}
-                  sx={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    bg: colors.bg,
-                    color: colors.color,
-                    px: 2,
-                    py: 1,
-                    borderRadius: 2,
-                    fontSize: 0,
-                    fontWeight: '500'
-                  }}
-                >
-                  {label.name}
-                </Box>
-              );
-            })}
-          </Box>
-        </Box>
+        <TaskDisplaySection title="ラベル">
+          <TaskLabels labels={task.labels} />
+        </TaskDisplaySection>
       )}
       
-      <Box sx={{ mb: 4 }}>
-        <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: 'bold' }}>説明</Heading>
-        <Box
-          sx={{
-            p: 3,
-            bg: "canvas.subtle",
-            borderRadius: 2,
-          }}
+      <TaskDisplaySection title="説明">
+        <ContentBox 
+          isEmpty={!task.description}
+          emptyText="説明が設定されていません"
         >
-          {task.description ? (
-            <Text sx={{ fontSize: 1, whiteSpace: 'pre-wrap' }}>{task.description}</Text>
-          ) : (
-            <Text sx={{ fontSize: 1, color: "fg.muted", fontStyle: "italic" }}>
-              説明が設定されていません
+          {task.description && (
+            <Text sx={{ fontSize: 1, whiteSpace: 'pre-wrap' }}>
+              {task.description}
             </Text>
           )}
-        </Box>
-      </Box>
+        </ContentBox>
+      </TaskDisplaySection>
 
       {task.dueDate && (
-        <Box sx={{ mb: 4 }}>
-          <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: 'bold' }}>期限</Heading>
-          <Box
-            sx={{
-              p: 3,
-              display: 'flex',
-              alignItems: 'center',
-              gap: 2,
-              bg: isOverdue 
-                ? 'danger.subtle' 
-                : isDueToday 
-                ? 'attention.subtle'
-                : isDueTomorrow 
-                ? 'accent.subtle' 
-                : 'canvas.subtle',
-              color: isOverdue 
-                ? "danger.emphasis" 
-                : isDueToday 
-                ? 'attention.emphasis'
-                : isDueTomorrow 
-                ? 'accent.emphasis' 
-                : 'inherit',
-              borderRadius: 2,
-            }}
-          >
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flex: 1 }}>
-              <CalendarIcon size={16} />
-              <Text sx={{ fontSize: 1 }}>{formatDueDate(task.dueDate)}</Text>
-            </Box>
-            {isOverdue && (
-              <Text
-                sx={{
-                  fontSize: 0,
-                  fontWeight: "bold",
-                  color: "#ffffff",
-                  bg: "danger.emphasis",
-                  px: 2,
-                  py: 1,
-                  borderRadius: 2,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.025em'
-                }}
-              >
-                期限切れ
-              </Text>
-            )}
-            {isDueToday && !isOverdue && (
-              <Text
-                sx={{
-                  fontSize: 0,
-                  fontWeight: "bold",
-                  color: "#ffffff",
-                  bg: "attention.emphasis",
-                  px: 2,
-                  py: 1,
-                  borderRadius: 2,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.025em'
-                }}
-              >
-                今日期限
-              </Text>
-            )}
-            {isDueTomorrow && !isOverdue && !isDueToday && (
-              <Text
-                sx={{
-                  fontSize: 0,
-                  fontWeight: "bold",
-                  color: "#ffffff",
-                  bg: "accent.emphasis",
-                  px: 2,
-                  py: 1,
-                  borderRadius: 2,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.025em'
-                }}
-              >
-                明日期限
-              </Text>
-            )}
-          </Box>
-        </Box>
+        <TaskDisplaySection title="期限">
+          <DueDateDisplay dueDate={task.dueDate} showYear />
+        </TaskDisplaySection>
       )}
 
       {task.attachments && task.attachments.length > 0 && (
-        <Box sx={{ mb: 4 }}>
-          <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: 'bold' }}>ファイル添付</Heading>
+        <TaskDisplaySection title="ファイル添付">
           <FileList attachments={task.attachments} />
-        </Box>
+        </TaskDisplaySection>
       )}
     </>
   );
-};
 
 export default TaskDisplayContent;

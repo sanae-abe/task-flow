@@ -1,6 +1,6 @@
-import React from 'react';
-import { Button, Box, ActionMenu, ActionList } from '@primer/react';
 import { PlusIcon, PencilIcon, TrashIcon, KebabHorizontalIcon } from '@primer/octicons-react';
+import { Button, Box, ActionMenu, ActionList } from '@primer/react';
+import React from 'react';
 
 interface ColumnActionsProps {
   onAddTask: () => void;
@@ -12,8 +12,7 @@ const ColumnActions: React.FC<ColumnActionsProps> = ({
   onAddTask,
   onTitleEdit,
   onDeleteColumn
-}) => {
-  return (
+}) => (
     <Box sx={{ display: "flex", alignItems: "center" }}>
       <Button
         onClick={onAddTask}
@@ -55,6 +54,5 @@ const ColumnActions: React.FC<ColumnActionsProps> = ({
       </ActionMenu>
     </Box>
   );
-};
 
 export default ColumnActions;

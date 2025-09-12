@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
+
 import type { Task, Label } from '../types';
 
 interface UseTaskDetailEditResult {
@@ -23,31 +24,35 @@ export const useTaskDetailEdit = (task: Task | null): UseTaskDetailEditResult =>
   const [editDueDate, setEditDueDate] = useState('');
   const [editLabels, setEditLabels] = useState<Label[]>([]);
 
+  // フォームをタスクデータでリセットするヘルパー関数
+  const resetFormToTask = useCallback(() => {
+    if (!task) {return;}
+    
+    setEditTitle(task.title);
+    setEditDescription(task.description || '');
+    setEditDueDate(task.dueDate?.toISOString().split('T')[0] || '');
+    setEditLabels(task.labels || []);
+  }, [task]);
+
+  // タスクが変更された時にフォームをリセット
   useEffect(() => {
     if (task) {
-      setEditTitle(task.title);
-      setEditDescription(task.description || '');
-      setEditDueDate(task.dueDate?.toISOString().split('T')[0] || '');
-      setEditLabels(task.labels || []);
+      resetFormToTask();
       setIsEditing(false);
     }
-  }, [task]);
+  }, [task, resetFormToTask]);
+
+  const handleEdit = useCallback(() => {
+    setIsEditing(true);
+  }, []);
 
   const handleCancelEdit = useCallback(() => {
-    if (task) {
-      setEditTitle(task.title);
-      setEditDescription(task.description || '');
-      setEditDueDate(task.dueDate?.toISOString().split('T')[0] || '');
-      setEditLabels(task.labels || []);
-    }
+    resetFormToTask();
     setIsEditing(false);
-  }, [task]);
+  }, [resetFormToTask]);
 
-  const handleEdit = () => {
-    setIsEditing(true);
-  };
-
-  const canSave = Boolean(editTitle.trim());
+  // 保存可能かどうかの判定をメモ化
+  const canSave = useMemo(() => Boolean(editTitle.trim()), [editTitle]);
 
   return {
     isEditing,

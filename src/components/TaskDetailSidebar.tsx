@@ -1,13 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import { Button, Box, Heading } from '@primer/react';
 import { TrashIcon, XIcon, PencilIcon } from '@primer/octicons-react';
+import { Button, Box, Heading } from '@primer/react';
+import React, { useEffect } from 'react';
+
+import { useTaskActions } from '../hooks/useTaskActions';
+import { useTaskColumn } from '../hooks/useTaskColumn';
 import type { Task } from '../types';
-import { useKanban } from '../contexts/KanbanContext';
-import TaskDisplayContent from './TaskDisplayContent';
-import TaskMetadata from './TaskMetadata';
+
 import ConfirmDialog from './ConfirmDialog';
-import TaskEditDialog from './TaskEditDialog';
 import SubTaskList from './SubTaskList';
+import TaskDisplayContent from './TaskDisplayContent';
+import TaskEditDialog from './TaskEditDialog';
+import TaskMetadata from './TaskMetadata';
 
 interface TaskDetailSidebarProps {
   task: Task | null;
@@ -16,15 +19,21 @@ interface TaskDetailSidebarProps {
 }
 
 const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onClose }) => {
-  const { deleteTask, updateTask, state, addSubTask, toggleSubTask, deleteSubTask } = useKanban();
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [showEditDialog, setShowEditDialog] = useState(false);
-  
-  // タスクが属するカラム名を取得
-  const columnName = task && state.currentBoard ? 
-    state.currentBoard.columns.find(column => 
-      column.tasks.some(t => t.id === task.id)
-    )?.title : undefined;
+  const { columnName } = useTaskColumn(task);
+  const {
+    showDeleteConfirm,
+    showEditDialog,
+    setShowDeleteConfirm,
+    setShowEditDialog,
+    handleEdit,
+    handleDelete,
+    handleConfirmDelete,
+    handleSaveEdit,
+    handleDeleteFromDialog,
+    handleAddSubTask,
+    handleToggleSubTask,
+    handleDeleteSubTask
+  } = useTaskActions(task, onClose);
 
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
@@ -41,69 +50,6 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
       document.removeEventListener('keydown', handleEscape);
     };
   }, [isOpen, onClose]);
-
-  const handleEdit = () => {
-    setShowEditDialog(true);
-  };
-
-  const handleDelete = () => {
-    setShowDeleteConfirm(true);
-  };
-
-  const handleConfirmDelete = () => {
-    if (!task || !state.currentBoard) {
-      return;
-    }
-    
-    const column = state.currentBoard.columns.find(col => 
-      col.tasks.some(t => t.id === task.id)
-    );
-    
-    if (column) {
-      deleteTask(task.id, column.id);
-      onClose();
-    }
-    setShowDeleteConfirm(false);
-  };
-
-  const handleSaveEdit = (updatedTask: Task) => {
-    updateTask(updatedTask.id, updatedTask);
-    setShowEditDialog(false);
-  };
-
-  const handleDeleteFromDialog = (taskId: string) => {
-    if (!task || !state.currentBoard) {
-      return;
-    }
-    
-    const column = state.currentBoard.columns.find(col => 
-      col.tasks.some(t => t.id === task.id)
-    );
-    
-    if (column) {
-      deleteTask(taskId, column.id);
-      onClose();
-    }
-    setShowEditDialog(false);
-  };
-
-  const handleAddSubTask = (title: string) => {
-    if (task) {
-      addSubTask(task.id, title);
-    }
-  };
-
-  const handleToggleSubTask = (subTaskId: string) => {
-    if (task) {
-      toggleSubTask(task.id, subTaskId);
-    }
-  };
-
-  const handleDeleteSubTask = (subTaskId: string) => {
-    if (task) {
-      deleteSubTask(task.id, subTaskId);
-    }
-  };
 
   if (!isOpen || !task) {
     return null;

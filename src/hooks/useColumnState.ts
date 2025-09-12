@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
-import type { Column, Label, FileAttachment } from '../types';
+
 import { useKanban } from '../contexts/KanbanContext';
+import type { Column, Label, FileAttachment } from '../types';
 
 interface UseColumnStateReturn {
   showCreateDialog: boolean;
