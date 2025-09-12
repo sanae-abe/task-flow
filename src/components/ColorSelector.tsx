@@ -1,8 +1,15 @@
 import { Box, Button, Text } from '@primer/react';
-import { memo } from 'react';
+import { memo, useCallback, KeyboardEvent } from 'react';
 
 import { getLabelColors } from '../utils/labelHelpers';
 import { LABEL_COLORS } from '../utils/labels';
+
+// 定数
+const COLOR_BUTTON_SIZE = 36;
+const TRANSITION_DURATION = '0.15s';
+const HOVER_SCALE = 1.05;
+const FOCUS_OUTLINE_WIDTH = '2px';
+const FOCUS_OUTLINE_OFFSET = '1px';
 
 interface ColorSelectorProps {
   readonly selectedColor: string;
@@ -12,25 +19,36 @@ interface ColorSelectorProps {
 const ColorSelector = memo<ColorSelectorProps>(({ 
   selectedColor, 
   onColorSelect 
-}) => (
-    <Box className="color-selector">
-      <Text 
-        as="label"
-        sx={{ fontSize: 1, fontWeight: '400', mb: 2, display: 'block' }}
-        className="color-selector__label"
-      >
-        色
-      </Text>
+}) => {
+  // 色選択ハンドラー（エラーハンドリング付き）
+  const handleColorSelect = useCallback((color: string) => {
+    try {
+      onColorSelect(color);
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('色選択エラー:', error);
+    }
+  }, [onColorSelect]);
+
+  // キーボードナビゲーション
+  const handleKeyDown = useCallback((event: KeyboardEvent<HTMLElement>, color: string) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      handleColorSelect(color);
+    }
+  }, [handleColorSelect]);
+
+  return (
+    <Box>
       <Box 
         sx={{ 
           display: 'flex', 
           gap: 2, 
-          justifyContent: 'start',
-          flexWrap: 'nowrap'
+          justifyContent: 'flex-start',
+          flexWrap: 'wrap'
         }}
-        className="color-selector__grid"
         role="radiogroup"
-        aria-labelledby="color-selector-label"
+        aria-label="ラベルの色を選択"
       >
         {LABEL_COLORS.map((color) => {
           const colors = getLabelColors(color.variant);
@@ -39,15 +57,16 @@ const ColorSelector = memo<ColorSelectorProps>(({
           return (
             <Button
               key={color.variant}
-              onClick={() => onColorSelect(color.variant)}
+              onClick={() => handleColorSelect(color.variant)}
+              onKeyDown={(e) => handleKeyDown(e, color.variant)}
               aria-label={`${color.name}色を選択`}
               aria-checked={isSelected}
               role="radio"
-              className={`color-selector__button ${isSelected ? 'color-selector__button--selected' : ''}`}
+              tabIndex={isSelected ? 0 : -1}
               sx={{
-                width: '36px',
-                height: '36px',
-                minHeight: '36px',
+                width: `${COLOR_BUTTON_SIZE}px`,
+                height: `${COLOR_BUTTON_SIZE}px`,
+                minHeight: `${COLOR_BUTTON_SIZE}px`,
                 p: 0,
                 bg: colors.bg,
                 border: '2px solid',
@@ -58,18 +77,17 @@ const ColorSelector = memo<ColorSelectorProps>(({
                 justifyContent: 'center',
                 position: 'relative',
                 cursor: 'pointer',
-                transition: 'all 0.15s ease',
-                boxShadow: isSelected ? '0 0 0 2px var(--color-accent-emphasis)' : 'none',
+                transition: `all ${TRANSITION_DURATION} ease`,
                 '&:hover': {
                   borderColor: isSelected ? 'accent.emphasis' : 'neutral.emphasis',
-                  transform: 'scale(1.05)',
-                  boxShadow: isSelected ? '0 0 0 2px var(--color-accent-emphasis)' : '0 2px 4px rgba(0,0,0,0.1)'
+                  transform: `scale(${HOVER_SCALE})`,
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
                 },
                 '&:focus': {
                   borderColor: 'accent.emphasis',
-                  outline: '2px solid',
+                  outline: `${FOCUS_OUTLINE_WIDTH  } solid`,
                   outlineColor: 'accent.fg',
-                  outlineOffset: '1px'
+                  outlineOffset: FOCUS_OUTLINE_OFFSET
                 }
               }}
             >
@@ -88,7 +106,8 @@ const ColorSelector = memo<ColorSelectorProps>(({
         })}
       </Box>
     </Box>
-  ));
+  );
+});
 
 ColorSelector.displayName = 'ColorSelector';
 

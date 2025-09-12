@@ -55,7 +55,7 @@ const DIALOG_STYLES = {
   }
 } as const;
 
-interface BaseDialogProps {
+interface CommonDialogProps {
   isOpen: boolean;
   title: string;
   onClose: () => void;
@@ -117,7 +117,7 @@ export const DialogActions = memo<DialogActionsProps>(({
   </Box>
 ));
 
-const BaseDialog = memo<BaseDialogProps>(({ 
+const CommonDialog = memo<CommonDialogProps>(({ 
   isOpen, 
   title, 
   onClose, 
@@ -164,5 +164,5 @@ const BaseDialog = memo<BaseDialogProps>(({
   );
 });
 
-export default BaseDialog;
+export default CommonDialog;
 export { DIALOG_STYLES };

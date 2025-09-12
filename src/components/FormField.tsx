@@ -1,18 +1,11 @@
-import { Box, Text, TextInput, Textarea } from '@primer/react';
+import { FormControl, TextInput, Textarea } from '@primer/react';
 import React, { memo } from 'react';
 
 import type { FormFieldProps, TextareaFieldProps, DateFieldProps, DateTimeFieldProps } from '../types/dialog';
 
 const FORM_STYLES = {
   container: {
-    mb: 4,
-    display: 'flex',
-    flexDirection: 'column' as const,
-    gap: 1
-  },
-  label: {
-    fontSize: 1,
-    color: 'fg.muted'
+    mb: 4
   },
   input: {
     width: '100%'
@@ -35,18 +28,12 @@ const FormField = memo<FormFieldProps>(({
     onChange(e.target.value);
   };
 
-  const containerStyles = sx ? { ...FORM_STYLES.container, ...sx } : FORM_STYLES.container;
-
   return (
-    <Box sx={containerStyles}>
+    <FormControl sx={sx ? { ...FORM_STYLES.container, ...sx } : FORM_STYLES.container}>
       {!hideLabel && (
-        <Text 
-          as="label" 
-          htmlFor={id}
-          sx={FORM_STYLES.label}
-        >
+        <FormControl.Label htmlFor={id}>
           {label}
-        </Text>
+        </FormControl.Label>
       )}
       <TextInput
         id={id}
@@ -59,7 +46,7 @@ const FormField = memo<FormFieldProps>(({
         aria-required={required}
         aria-label={hideLabel ? label : undefined}
       />
-    </Box>
+    </FormControl>
   );
 });
 
@@ -78,14 +65,10 @@ export const TextareaField = memo<TextareaFieldProps>(({
   };
 
   return (
-    <Box sx={FORM_STYLES.container}>
-      <Text 
-        as="label" 
-        htmlFor={id}
-        sx={FORM_STYLES.label}
-      >
+    <FormControl sx={FORM_STYLES.container}>
+      <FormControl.Label htmlFor={id}>
         {label}
-      </Text>
+      </FormControl.Label>
       <Textarea
         id={id}
         value={value}
@@ -99,7 +82,7 @@ export const TextareaField = memo<TextareaFieldProps>(({
         }}
         aria-required={required}
       />
-    </Box>
+    </FormControl>
   );
 });
 
@@ -116,14 +99,10 @@ export const DateField = memo<DateFieldProps>(({
   };
 
   return (
-    <Box sx={FORM_STYLES.container}>
-      <Text 
-        as="label" 
-        htmlFor={id}
-        sx={FORM_STYLES.label}
-      >
+    <FormControl sx={FORM_STYLES.container}>
+      <FormControl.Label htmlFor={id}>
         {label}
-      </Text>
+      </FormControl.Label>
       <TextInput
         id={id}
         type="date"
@@ -133,7 +112,7 @@ export const DateField = memo<DateFieldProps>(({
         sx={FORM_STYLES.input}
         aria-required={required}
       />
-    </Box>
+    </FormControl>
   );
 });
 
@@ -150,14 +129,10 @@ export const DateTimeField = memo<DateTimeFieldProps>(({
   };
 
   return (
-    <Box sx={FORM_STYLES.container}>
-      <Text 
-        as="label" 
-        htmlFor={id}
-        sx={FORM_STYLES.label}
-      >
+    <FormControl sx={FORM_STYLES.container}>
+      <FormControl.Label htmlFor={id}>
         {label}
-      </Text>
+      </FormControl.Label>
       <TextInput
         id={id}
         type="datetime-local"
@@ -167,7 +142,7 @@ export const DateTimeField = memo<DateTimeFieldProps>(({
         sx={FORM_STYLES.input}
         aria-required={required}
       />
-    </Box>
+    </FormControl>
   );
 });
 

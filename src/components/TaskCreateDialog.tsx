@@ -3,10 +3,10 @@ import React, { useState, useEffect, useCallback, memo } from 'react';
 
 import type { Label, FileAttachment } from '../types';
 
-import BaseDialog, { DialogActions } from './BaseDialog';
+import CommonDialog, { DialogActions } from './CommonDialog';
 import FileUploader from './FileUploader';
 import FormField, { TextareaField, DateField } from './FormField';
-import ImprovedLabelSelector from './ImprovedLabelSelector';
+import LabelSelector from './LabelSelector';
 
 interface TaskCreateDialogProps {
   isOpen: boolean;
@@ -51,7 +51,7 @@ const TaskCreateDialog = memo<TaskCreateDialogProps>(({
   const isFormValid = title.trim().length > 0;
 
   return (
-    <BaseDialog
+    <CommonDialog
       isOpen={isOpen}
       title="新しいタスクを追加"
       onClose={onCancel}
@@ -100,7 +100,7 @@ const TaskCreateDialog = memo<TaskCreateDialogProps>(({
           <Text sx={{ fontSize: 1, color: 'fg.muted', mb: 1, display: 'block', fontWeight: '700' }}>
             ラベル（任意）
           </Text>
-          <ImprovedLabelSelector
+          <LabelSelector
             selectedLabels={labels}
             onLabelsChange={setLabels}
           />
@@ -117,7 +117,7 @@ const TaskCreateDialog = memo<TaskCreateDialogProps>(({
           />
         </Box>
       </Box>
-    </BaseDialog>
+    </CommonDialog>
   );
 });
 

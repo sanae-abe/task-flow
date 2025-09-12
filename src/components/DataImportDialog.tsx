@@ -6,7 +6,7 @@ import { useKanban } from '../contexts/KanbanContext';
 import { validateImportData, readFileAsText } from '../utils/dataExport';
 import { useDataImportDropZone } from '../hooks/useDataImportDropZone';
 
-import BaseDialog from './BaseDialog';
+import CommonDialog from './CommonDialog';
 
 /**
  * データインポート用のダイアログコンポーネント
@@ -84,7 +84,7 @@ export const DataImportDialog = memo<DataImportDialogProps>(({ isOpen, onClose }
   }, []);
 
   return (
-    <BaseDialog
+    <CommonDialog
       isOpen={isOpen}
       title="データインポート"
       onClose={handleDialogClose}
@@ -146,7 +146,7 @@ export const DataImportDialog = memo<DataImportDialogProps>(({ isOpen, onClose }
         style={{ display: 'none' }}
         disabled={isLoading}
       />
-    </BaseDialog>
+    </CommonDialog>
   );
 });
 

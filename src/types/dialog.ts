@@ -1,5 +1,5 @@
-// ベースダイアログ関連の型
-export interface BaseDialogProps {
+// 共通ダイアログ関連の型
+export interface CommonDialogProps {
   isOpen: boolean;
   onClose: () => void;
 }

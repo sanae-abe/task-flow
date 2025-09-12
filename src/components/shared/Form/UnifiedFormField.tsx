@@ -1,4 +1,4 @@
-import { Box, Text, TextInput, Textarea, Select } from '@primer/react';
+import { Text, TextInput, Textarea, Select, FormControl } from '@primer/react';
 import React, { memo } from 'react';
 
 import type { FormFieldConfig } from '../../../types/unified-form';
@@ -6,7 +6,7 @@ import type { Label, FileAttachment } from '../../../types';
 
 import ColorSelector from '../../ColorSelector';
 import FileUploader from '../../FileUploader';
-import ImprovedLabelSelector from '../../ImprovedLabelSelector';
+import LabelSelector from '../../LabelSelector';
 
 // ヘルパー関数: unknown型を安全にstringに変換
 const toStringValue = (value: unknown): string => {
@@ -19,23 +19,10 @@ const toStringValue = (value: unknown): string => {
 // フォームフィールドスタイル定数
 const UNIFIED_FORM_STYLES = {
   container: {
-    mb: 4,
-    display: 'flex',
-    flexDirection: 'column' as const,
-    gap: 1
-  },
-  label: {
-    fontSize: 1,
-    color: 'fg.muted',
-    fontWeight: '700'
+    mb: 4
   },
   input: {
     width: '100%'
-  },
-  errorText: {
-    fontSize: 0,
-    color: 'danger.fg',
-    mt: 1
   }
 } as const;
 
@@ -100,12 +87,12 @@ const UnifiedFormField = memo<UnifiedFormFieldProps>(({
     }
   };
 
-  // コンテナスタイル
-  const containerStyles = sx ? { ...UNIFIED_FORM_STYLES.container, ...sx } : UNIFIED_FORM_STYLES.container;
-  
   // エラー表示判定
   const showError = touched && error;
   const hasError = Boolean(error);
+  
+  // validationStatus
+  const validationStatus = hasError ? 'error' : undefined;
 
   // フィールドタイプ別のレンダリング
   const renderField = (): React.ReactNode => {
@@ -127,10 +114,8 @@ const UnifiedFormField = memo<UnifiedFormFieldProps>(({
             placeholder={placeholder}
             autoFocus={autoFocus}
             disabled={disabled}
-            sx={{
-              ...UNIFIED_FORM_STYLES.input,
-              borderColor: hasError ? 'danger.emphasis' : undefined
-            }}
+            sx={UNIFIED_FORM_STYLES.input}
+            validationStatus={validationStatus}
             aria-required={validation?.required}
             aria-invalid={hasError}
             aria-describedby={hasError ? `${id}-error` : undefined}
@@ -152,10 +137,8 @@ const UnifiedFormField = memo<UnifiedFormFieldProps>(({
             onFocus={handleFocus}
             autoFocus={autoFocus}
             disabled={disabled}
-            sx={{
-              ...UNIFIED_FORM_STYLES.input,
-              borderColor: hasError ? 'danger.emphasis' : undefined
-            }}
+            sx={UNIFIED_FORM_STYLES.input}
+            validationStatus={validationStatus}
             aria-required={validation?.required}
             aria-invalid={hasError}
             aria-describedby={hasError ? `${id}-error` : undefined}
@@ -178,9 +161,9 @@ const UnifiedFormField = memo<UnifiedFormFieldProps>(({
             sx={{
               ...UNIFIED_FORM_STYLES.input,
               resize: 'none',
-              height: `${rows * 20 + 16}px`,
-              borderColor: hasError ? 'danger.emphasis' : undefined
+              height: `${rows * 20 + 16}px`
             }}
+            validationStatus={validationStatus}
             aria-required={validation?.required}
             aria-invalid={hasError}
             aria-describedby={hasError ? `${id}-error` : undefined}
@@ -198,10 +181,8 @@ const UnifiedFormField = memo<UnifiedFormFieldProps>(({
             onFocus={handleFocus}
             autoFocus={autoFocus}
             disabled={disabled}
-            sx={{
-              ...UNIFIED_FORM_STYLES.input,
-              borderColor: hasError ? 'danger.emphasis' : undefined
-            }}
+            sx={UNIFIED_FORM_STYLES.input}
+            validationStatus={validationStatus}
             aria-required={validation?.required}
             aria-invalid={hasError}
             aria-describedby={hasError ? `${id}-error` : undefined}
@@ -219,7 +200,7 @@ const UnifiedFormField = memo<UnifiedFormFieldProps>(({
 
       case 'label-selector':
         return (
-          <ImprovedLabelSelector
+          <LabelSelector
             selectedLabels={value as Label[] ?? []}
             onLabelsChange={(labels: Label[]) => handleChange(labels)}
           />
@@ -251,32 +232,24 @@ const UnifiedFormField = memo<UnifiedFormFieldProps>(({
   };
 
   return (
-    <Box sx={containerStyles}>
+    <FormControl sx={sx ? { ...UNIFIED_FORM_STYLES.container, ...sx } : UNIFIED_FORM_STYLES.container}>
       {!hideLabel && (
-        <Text 
-          as="label" 
-          htmlFor={id}
-          sx={UNIFIED_FORM_STYLES.label}
-        >
+        <FormControl.Label htmlFor={id}>
           {label}
           {validation?.required && (
             <Text as="span" sx={{ color: 'danger.fg', ml: 1 }}>*</Text>
           )}
-        </Text>
+        </FormControl.Label>
       )}
       
       {renderField()}
       
       {showError && (
-        <Text 
-          id={`${id}-error`}
-          sx={UNIFIED_FORM_STYLES.errorText}
-          role="alert"
-        >
+        <FormControl.Validation variant="error">
           {error}
-        </Text>
+        </FormControl.Validation>
       )}
-    </Box>
+    </FormControl>
   );
 });
 

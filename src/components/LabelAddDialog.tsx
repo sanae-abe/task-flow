@@ -1,13 +1,24 @@
-import { TextInput, Box, Text, FormControl } from '@primer/react';
-import { useState, useCallback } from 'react';
+import { TextInput, Box, FormControl } from '@primer/react';
+import { useState, useCallback, useMemo } from 'react';
 
 import { useKanban } from '../contexts/KanbanContext';
 import type { Label } from '../types';
 import { createLabel } from '../utils/labels';
 import { getLabelColors } from '../utils/labelHelpers';
 
-import BaseDialog, { DialogActions } from './BaseDialog';
+import CommonDialog, { DialogActions } from './CommonDialog';
 import ColorSelector from './ColorSelector';
+
+// 定数
+const MIN_LABEL_LENGTH = 2;
+const DEFAULT_COLOR = 'default';
+
+// エラーメッセージの型定義
+type ErrorMessage = 
+  | 'ラベル名は2文字以上で入力してください'
+  | '同じ名前のラベルが既に存在します'
+  | 'ラベルの作成に失敗しました'
+  | '';
 
 interface LabelAddDialogProps {
   isOpen: boolean;
@@ -22,14 +33,14 @@ const LabelAddDialog: React.FC<LabelAddDialogProps> = ({
 }) => {
   const { getAllLabels } = useKanban();
   const [labelText, setLabelText] = useState('');
-  const [selectedColor, setSelectedColor] = useState('default');
+  const [selectedColor, setSelectedColor] = useState(DEFAULT_COLOR);
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState<ErrorMessage>('');
 
   // フォームリセット
   const resetForm = useCallback(() => {
     setLabelText('');
-    setSelectedColor('default');
+    setSelectedColor(DEFAULT_COLOR);
     setIsLoading(false);
     setErrorMessage('');
   }, []);
@@ -43,7 +54,7 @@ const LabelAddDialog: React.FC<LabelAddDialogProps> = ({
   // ラベル作成
   const handleCreate = useCallback(async () => {
     const trimmedText = labelText.trim();
-    if (!trimmedText || trimmedText.length < 2) {
+    if (!trimmedText || trimmedText.length < MIN_LABEL_LENGTH) {
       setErrorMessage('ラベル名は2文字以上で入力してください');
       return;
     }
@@ -67,25 +78,37 @@ const LabelAddDialog: React.FC<LabelAddDialogProps> = ({
       onLabelCreated(newLabel);
       resetForm();
     } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('ラベル作成エラー:', error);
       setErrorMessage('ラベルの作成に失敗しました');
       setIsLoading(false);
     }
   }, [labelText, selectedColor, getAllLabels, onLabelCreated, resetForm]);
 
-  // Enterキーでの作成
+  // バリデーション
+  const isValid = useMemo(() => 
+    labelText.trim().length >= MIN_LABEL_LENGTH, 
+    [labelText]
+  );
+
+  // プレビュー用の色情報
+  const colors = useMemo(() => 
+    getLabelColors(selectedColor), 
+    [selectedColor]
+  );
+
+  // Enterキーでの送信処理
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      handleCreate();
+      if (isValid && !isLoading) {
+        handleCreate();
+      }
     }
-  }, [handleCreate]);
-
-  // バリデーション
-  const isValid = labelText.trim().length >= 2;
-  const colors = getLabelColors(selectedColor);
+  }, [isValid, isLoading, handleCreate]);
 
   return (
-    <BaseDialog
+    <CommonDialog
       isOpen={isOpen}
       title="新しいラベルを追加"
       onClose={handleClose}
@@ -127,19 +150,22 @@ const LabelAddDialog: React.FC<LabelAddDialogProps> = ({
         </FormControl>
 
         {/* 色選択 */}
-        <Box>
+        <FormControl>
+          <FormControl.Label>
+            色
+          </FormControl.Label>
           <ColorSelector
             selectedColor={selectedColor}
             onColorSelect={setSelectedColor}
           />
-        </Box>
+        </FormControl>
 
         {/* プレビュー */}
         {labelText.trim() && (
-          <Box>
-            <Text sx={{ fontSize: 1, fontWeight: '500', mb: 2, display: 'block' }}>
+          <FormControl>
+            <FormControl.Label>
               プレビュー
-            </Text>
+            </FormControl.Label>
             <Box
               sx={{
                 display: 'inline-flex',
@@ -150,15 +176,20 @@ const LabelAddDialog: React.FC<LabelAddDialogProps> = ({
                 py: 1,
                 borderRadius: 1,
                 fontSize: 0,
-                fontWeight: '500'
+                fontWeight: '500',
+                border: '1px solid',
+                borderColor: 'border.default',
+                maxWidth: 'fit-content'
               }}
+              role="img"
+              aria-label={`ラベルプレビュー: ${labelText.trim()}, 色: ${selectedColor}`}
             >
               {labelText.trim()}
             </Box>
-          </Box>
+          </FormControl>
         )}
       </Box>
-    </BaseDialog>
+    </CommonDialog>
   );
 };
 

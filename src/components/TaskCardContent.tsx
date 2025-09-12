@@ -9,7 +9,7 @@ import DueDateBadge from './DueDateBadge';
 import TaskIndicators from './TaskIndicators';
 import TaskLabels from './TaskLabels';
 
-const TaskDisplay: React.FC<TaskDisplayProps> = ({
+const TaskCardContent: React.FC<TaskDisplayProps> = ({
   task,
   isOverdue,
   isDueToday,
@@ -86,4 +86,4 @@ const TaskDisplay: React.FC<TaskDisplayProps> = ({
     </Box>
   );
 
-export default TaskDisplay;
+export default TaskCardContent;

@@ -9,7 +9,7 @@ import { formatDueDate } from '../utils/dateHelpers';
 
 import ConfirmDialog from './ConfirmDialog';
 import DropIndicator from './DropIndicator';
-import TaskDisplay from './TaskDisplay';
+import TaskCardContent from './TaskCardContent';
 import TaskEditDialog from './TaskEditDialog';
 
 interface TaskCardProps {
@@ -80,7 +80,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, columnId, onTaskClick }) => {
         {...listeners}
         onClick={handleTaskClick}
       >
-        <TaskDisplay
+        <TaskCardContent
           task={task}
           isOverdue={taskCardData.isOverdue}
           isDueToday={taskCardData.isDueToday}
