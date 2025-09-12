@@ -1,6 +1,6 @@
 import { TrashIcon, XIcon, PencilIcon } from '@primer/octicons-react';
 import { Button, Box, Heading } from '@primer/react';
-import React, { useEffect } from 'react';
+import { useEffect, useCallback, useMemo, memo } from 'react';
 
 import { useTaskActions } from '../hooks/useTaskActions';
 import { useTaskColumn } from '../hooks/useTaskColumn';
@@ -18,7 +18,7 @@ interface TaskDetailSidebarProps {
   onClose: () => void;
 }
 
-const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onClose }) => {
+const TaskDetailSidebar = memo<TaskDetailSidebarProps>(({ task, isOpen, onClose }) => {
   const { columnName } = useTaskColumn(task);
   const {
     showDeleteConfirm,
@@ -35,21 +35,81 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
     handleDeleteSubTask
   } = useTaskActions(task, onClose);
 
-  useEffect(() => {
-    const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        onClose();
-      }
-    };
+  // イベントハンドラーをメモ化
+  const handleEscapeKey = useCallback((event: KeyboardEvent) => {
+    if (event.key === 'Escape') {
+      onClose();
+    }
+  }, [onClose]);
 
+  const handleEditDialogCancel = useCallback(() => {
+    setShowEditDialog(false);
+  }, [setShowEditDialog]);
+
+  const handleDeleteConfirmCancel = useCallback(() => {
+    setShowDeleteConfirm(false);
+  }, [setShowDeleteConfirm]);
+
+  // スタイルオブジェクトをメモ化
+  const sidebarStyles = useMemo(() => ({
+    position: "fixed" as const,
+    top: 0,
+    right: 0,
+    width: { base: "100vw", md: "450px" },
+    height: "100vh",
+    bg: "canvas.default",
+    boxShadow: '0 16px 32px rgba(0, 0, 0, 0.24)',
+    borderLeft: { md: '1px solid' },
+    borderColor: 'border.default',
+    zIndex: 1000,
+    overflowY: 'auto' as const
+  }), []);
+
+  const headerStyles = useMemo(() => ({
+    display: "flex",
+    p: '19px',
+    alignItems: "flex-start",
+    justifyContent: "space-between",
+    borderBottom: "1px solid",
+    borderColor: "border.default",
+    flexShrink: 0
+  }), []);
+
+  const contentStyles = useMemo(() => ({
+    flex: "1",
+    p: 4,
+    overflowY: 'auto' as const
+  }), []);
+
+  const actionsStyles = useMemo(() => ({
+    p: 4,
+    borderTop: '1px solid',
+    borderColor: 'border.default',
+    flexShrink: 0
+  }), []);
+
+  const buttonContainerStyles = useMemo(() => ({
+    display: 'flex',
+    gap: 2
+  }), []);
+
+  const buttonStyles = useMemo(() => ({
+    flex: 1,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 2
+  }), []);
+
+  useEffect(() => {
     if (isOpen) {
-      document.addEventListener('keydown', handleEscape);
+      document.addEventListener('keydown', handleEscapeKey);
     }
 
     return () => {
-      document.removeEventListener('keydown', handleEscape);
+      document.removeEventListener('keydown', handleEscapeKey);
     };
-  }, [isOpen, onClose]);
+  }, [isOpen, handleEscapeKey]);
 
   if (!isOpen || !task) {
     return null;
@@ -57,33 +117,14 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
 
   return (
     <Box
-      sx={{ 
-        position: "fixed",
-        top: 0,
-        right: 0,
-        width: "450px",
-        height: "100vh",
-        bg: "canvas.default",
-        boxShadow: '0 16px 32px rgba(0, 0, 0, 0.24)',
-        borderLeft: '1px solid',
-        borderColor: 'border.default',
-        zIndex: 1000,
-        overflowY: 'auto'
-      }}
+      sx={sidebarStyles}
+      role="dialog"
+      aria-label="タスク詳細"
+      aria-modal="true"
     >
       <Box sx={{ display: "flex", height: "100%", flexDirection: "column" }}>
         {/* Header */}
-        <Box
-          sx={{ 
-            display: "flex",
-            p: '19px',
-            alignItems: "flex-start",
-            justifyContent: "space-between",
-            borderBottom: "1px solid",
-            borderColor: "border.default",
-            flexShrink: 0 
-          }}
-        >
+        <Box sx={headerStyles}>
           <Heading sx={{ fontSize: 2, margin: 0, pr: 3, wordBreak: 'break-word' }}>
             {task.title}
           </Heading>
@@ -92,13 +133,13 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
             variant="invisible"
             size="small"
             leadingVisual={XIcon}
-            aria-label="Close details"
+            aria-label="タスク詳細を閉じる"
             sx={{ flexShrink: 0 }}
           />
         </Box>
 
         {/* Content */}
-        <Box sx={{ flex: "1", p: 4, overflowY: 'auto' }}>
+        <Box sx={contentStyles}>
           <TaskDisplayContent task={task} columnName={columnName} />
           <SubTaskList
             subTasks={task.subTasks ?? []}
@@ -110,21 +151,14 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
         </Box>
 
         {/* Actions */}
-        <Box
-          sx={{
-            p: 4,
-            borderTop: '1px solid',
-            borderColor: 'border.default',
-            flexShrink: 0
-          }}
-        >
-          <Box sx={{ display: 'flex', gap: 2 }}>
+        <Box sx={actionsStyles}>
+          <Box sx={buttonContainerStyles}>
             <Button
               onClick={handleEdit}
               variant="primary"
               size="medium"
               leadingVisual={PencilIcon}
-              sx={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2 }}
+              sx={buttonStyles}
             >
               編集
             </Button>
@@ -133,7 +167,7 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
               variant="danger"
               size="medium"
               leadingVisual={TrashIcon}
-              sx={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2 }}
+              sx={buttonStyles}
             >
               削除
             </Button>
@@ -146,18 +180,18 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
         isOpen={showEditDialog}
         onSave={handleSaveEdit}
         onDelete={handleDeleteFromDialog}
-        onCancel={() => setShowEditDialog(false)}
+        onCancel={handleEditDialogCancel}
       />
 
       <ConfirmDialog
         isOpen={showDeleteConfirm}
         title="タスクを削除"
-        message={`「${task?.title}」を削除しますか？この操作は元に戻せません。`}
+        message={`「${task.title}」を削除しますか？この操作は元に戻せません。`}
         onConfirm={handleConfirmDelete}
-        onCancel={() => setShowDeleteConfirm(false)}
+        onCancel={handleDeleteConfirmCancel}
       />
     </Box>
   );
-};
+});
 
 export default TaskDetailSidebar;

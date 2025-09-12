@@ -5,7 +5,7 @@ import {
   ActionMenu,
   ActionList
 } from '@primer/react';
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, memo } from 'react';
 
 import { useKanban } from '../contexts/KanbanContext';
 import type { Label } from '../types';
@@ -14,7 +14,9 @@ import { getLabelColors } from '../utils/labelHelpers';
 import LabelAddDialog from './LabelAddDialog';
 import LabelChip from './LabelChip';
 
-// 定数
+/**
+ * LabelSelector コンポーネントの定数
+ */
 const LABEL_CIRCLE_SIZE = 12;
 const EMPTY_LABELS_MESSAGE = 'ラベルがありません';
 const SELECT_LABEL_TEXT = 'ラベルを選択';
@@ -25,7 +27,7 @@ interface LabelSelectorProps {
   onLabelsChange: (labels: Label[]) => void;
 }
 
-const LabelSelector: React.FC<LabelSelectorProps> = ({
+const LabelSelector = memo<LabelSelectorProps>(({
   selectedLabels,
   onLabelsChange
 }) => {
@@ -38,59 +40,71 @@ const LabelSelector: React.FC<LabelSelectorProps> = ({
     [selectedLabels]
   );
 
+  // ダイアログ操作
+  const handleAddDialogClose = useCallback(() => {
+    setIsAddDialogOpen(false);
+  }, []);
+
+  const handleAddDialogOpen = useCallback(() => {
+    setIsAddDialogOpen(true);
+  }, []);
+
   // ラベルを追加/削除
   const toggleLabel = useCallback((label: Label) => {
-    try {
-      if (selectedLabelIds.has(label.id)) {
-        // 削除
-        onLabelsChange(selectedLabels.filter(l => l.id !== label.id));
-      } else {
-        // 追加
-        onLabelsChange([...selectedLabels, label]);
-      }
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('ラベル切り替えエラー:', error);
+    if (selectedLabelIds.has(label.id)) {
+      // 削除
+      onLabelsChange(selectedLabels.filter(l => l.id !== label.id));
+    } else {
+      // 追加
+      onLabelsChange([...selectedLabels, label]);
     }
   }, [selectedLabels, selectedLabelIds, onLabelsChange]);
 
   // ラベル削除
   const removeLabel = useCallback((labelId: string) => {
-    try {
-      onLabelsChange(selectedLabels.filter(label => label.id !== labelId));
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('ラベル削除エラー:', error);
-    }
+    onLabelsChange(selectedLabels.filter(label => label.id !== labelId));
   }, [selectedLabels, onLabelsChange]);
 
   // 新しいラベル作成後の処理
   const handleLabelCreated = useCallback((newLabel: Label) => {
-    try {
-      onLabelsChange([...selectedLabels, newLabel]);
-      setIsAddDialogOpen(false);
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('ラベル作成後処理エラー:', error);
-    }
+    onLabelsChange([...selectedLabels, newLabel]);
+    setIsAddDialogOpen(false);
   }, [selectedLabels, onLabelsChange]);
+
+  // スタイルオブジェクトをメモ化
+  const selectedLabelsContainerStyles = useMemo(() => ({
+    mb: 2,
+    display: 'flex',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    gap: 1,
+    '& button': {
+      height: 'auto',
+      padding: 0,
+      fontSize: 0
+    }
+  }), []);
+
+  const menuContainerStyles = useMemo(() => ({
+    display: 'flex',
+    gap: 2,
+    alignItems: 'center'
+  }), []);
+
+  const buttonStyles = useMemo(() => ({
+    color: 'fg.muted',
+    '&:hover': {
+      color: 'fg.default',
+      bg: 'neutral.subtle'
+    }
+  }), []);
 
   return (
     <Box sx={{ mt: 1 }}>
       {/* 選択されたラベルを表示 */}
-      {/* & button のセレクタはのスタイル消さないで */}
+      {/* & button のセレクタのスタイルは保持 */}
       {selectedLabels.length > 0 && (
-        <Box sx={{
-          mb: 2,
-          display: 'flex',
-          flexWrap: 'wrap',
-          alignItems: 'center',
-          gap: 1,
-          '& button': {
-            height: 'auto',
-            padding: 0,
-            fontSize: 0
-        } }}>
+        <Box sx={selectedLabelsContainerStyles}>
           {selectedLabels.map(label => (
             <LabelChip
               key={label.id}
@@ -103,20 +117,14 @@ const LabelSelector: React.FC<LabelSelectorProps> = ({
       )}
 
       {/* ラベル選択・追加のアクションメニュー */}
-      <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+      <Box sx={menuContainerStyles}>
         {/* ラベル選択 */}
         <ActionMenu>
           <ActionMenu.Button
             variant="invisible"
             size="small"
             leadingVisual={TagIcon}
-            sx={{
-              color: 'fg.muted',
-              '&:hover': {
-                color: 'fg.default',
-                bg: 'neutral.subtle'
-              }
-            }}
+            sx={buttonStyles}
             aria-label="ラベル選択メニューを開く"
           >
             {SELECT_LABEL_TEXT}
@@ -167,14 +175,8 @@ const LabelSelector: React.FC<LabelSelectorProps> = ({
           variant="invisible"
           size="small"
           leadingVisual={PlusIcon}
-          onClick={() => setIsAddDialogOpen(true)}
-          sx={{
-            color: 'fg.muted',
-            '&:hover': {
-              color: 'fg.default',
-              bg: 'neutral.subtle'
-            }
-          }}
+          onClick={handleAddDialogOpen}
+          sx={buttonStyles}
           aria-label="新しいラベルを作成"
         >
           {ADD_LABEL_TEXT}
@@ -184,11 +186,11 @@ const LabelSelector: React.FC<LabelSelectorProps> = ({
       {/* ラベル追加ダイアログ */}
       <LabelAddDialog
         isOpen={isAddDialogOpen}
-        onClose={() => setIsAddDialogOpen(false)}
+        onClose={handleAddDialogClose}
         onLabelCreated={handleLabelCreated}
       />
     </Box>
   );
-};
+});
 
 export default LabelSelector;
