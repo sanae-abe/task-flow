@@ -1,46 +1,175 @@
-# Getting Started with Create React App
+# 🏷️ Offline Kanban
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+React + TypeScript で構築されたモダンなKanbanボードアプリケーション
 
-## Available Scripts
+![GitHub](https://img.shields.io/badge/license-MIT-blue.svg)
+![React](https://img.shields.io/badge/React-19.1.1-blue.svg)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.7.3-blue.svg)
+![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)
 
-In the project directory, you can run:
+## ✨ 主要機能
 
-### `npm start`
+### 📋 タスク管理
+- **ドラッグ&ドロップ**: 直感的なタスク移動とカラム並び替え
+- **カスタムラベル**: 10種類のPrimerカラーバリアント対応
+- **期限管理**: 期限切れ・当日・明日期限の自動警告表示
+- **完了機能**: ワンクリックでタスク完了状態を切り替え
+- **サブタスク**: チェックリスト形式のサブタスク管理と進捗表示
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### 📎 ファイル機能
+- **ファイル添付**: ドラッグ&ドロップによるファイルアップロード（5MBまで）
+- **プレビュー**: 画像・テキストファイルのフルスクリーンプレビュー
+- **ダウンロード**: Base64エンコード形式でブラウザ内保存・ダウンロード
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### 🔍 フィルタリング・ソート
+- **スマートフィルタ**: 期限別・ラベル別の高度なフィルタリング
+- **多軸ソート**: 作成日・更新日・期限・名前順の4種類ソート
+- **統計表示**: 未完了タスク数・期限警告の集計表示
 
-### `npm test`
+### 💾 データ管理
+- **ローカル保存**: ブラウザのlocalStorageでオフライン対応
+- **データインポート**: JSONファイルによるデータ一括インポート
+- **複数ボード**: プロジェクト別のボード管理
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 🎨 UI/UX
+- **Primerデザイン**: GitHubのPrimerデザインシステム採用
+- **レスポンシブ**: モバイル・デスクトップ対応
+- **アクセシビリティ**: WCAG準拠のアクセシブルUI
+- **ダークモード**: ユーザー設定に応じたテーマ対応
 
-### `npm run build`
+## 🚀 クイックスタート
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 環境要件
+- Node.js 18.0.0以上
+- npm 8.0.0以上
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### インストール
+```bash
+# リポジトリのクローン
+git clone https://github.com/your-username/kanban-app.git
+cd kanban-app
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+# 依存関係のインストール
+npm install
 
-### `npm run eject`
+# 開発サーバーの起動
+npm start
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+アプリケーションは [http://localhost:3000](http://localhost:3000) で起動します。
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## 🛠️ 利用可能なスクリプト
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+### 開発
+```bash
+npm start          # 開発サーバー起動
+npm run typecheck  # TypeScript型チェック
+npm run lint       # ESLintによるコード品質チェック
+npm run format     # Prettierによるコード整形
+```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+### テスト
+```bash
+npm test               # インタラクティブテスト実行
+npm run test:coverage  # カバレッジレポート生成
+npm run test:ci        # CI用テスト実行
+```
 
-## Learn More
+### ビルド・デプロイ
+```bash
+npm run build      # プロダクションビルド
+npm run analyze    # バンドルサイズ解析
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### コード品質
+```bash
+npm run quality        # 全品質チェック実行
+npm run quality:fix    # 自動修正付き品質チェック
+npm run audit          # セキュリティ監査
+npm run audit:security # 高レベルセキュリティチェック
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 🏗️ 技術スタック
+
+### フロントエンド
+- **React 19.1.1**: UIライブラリ
+- **TypeScript 5.7.3**: 型安全性とDX向上
+- **Primer React**: GitHubのデザインシステム
+- **Styled Components**: CSS-in-JS
+- **@dnd-kit**: ドラッグ&ドロップ機能
+
+### 開発ツール
+- **ESLint**: コード品質・セキュリティチェック
+- **Prettier**: コード整形
+- **Jest**: テストフレームワーク
+- **React Testing Library**: UIテスト
+
+### アーキテクチャ
+- **Context API**: グローバル状態管理
+- **Custom Hooks**: ロジック再利用
+- **Component-based**: 再利用可能なコンポーネント設計
+- **TypeScript Strict**: 厳密な型チェック
+
+## 📁 プロジェクト構造
+
+```
+src/
+├── components/          # 再利用可能なUIコンポーネント
+│   ├── dialogs/        # ダイアログコンポーネント
+│   ├── forms/          # フォームコンポーネント
+│   └── ui/             # 基本UIコンポーネント
+├── contexts/           # React Context (状態管理)
+├── hooks/              # カスタムフック
+├── types/              # TypeScript型定義
+├── utils/              # ユーティリティ関数
+└── App.tsx             # メインアプリケーション
+```
+
+## 🔧 設定
+
+### ESLintカスタマイズ
+```bash
+# セキュリティ重視の設定
+npm run lint:security
+
+# 自動修正
+npm run lint -- --fix
+```
+
+### TypeScript設定
+- `strict: true` - 厳密な型チェック
+- `noEmit: true` - 型チェックのみ実行
+
+### テストカバレッジ目標
+- Branches: 80%
+- Functions: 80%
+- Lines: 80%
+- Statements: 80%
+
+## 🤝 コントリビューション
+
+1. フォークを作成
+2. フィーチャーブランチを作成 (`git checkout -b feature/amazing-feature`)
+3. 変更をコミット (`git commit -m 'Add amazing feature'`)
+4. ブランチにプッシュ (`git push origin feature/amazing-feature`)
+5. プルリクエストを作成
+
+### 開発ガイドライン
+- TypeScript strictモード必須
+- ESLint + Prettier準拠
+- テストカバレッジ80%以上
+- セキュリティファーストの設計
+
+## 📝 ライセンス
+
+MIT License - 詳細は [LICENSE](LICENSE) ファイルを参照
+
+## 🙏 謝辞
+
+- [GitHub Primer](https://primer.style/) - デザインシステム
+- [dnd kit](https://dndkit.com/) - ドラッグ&ドロップライブラリ
+- [Create React App](https://create-react-app.dev/) - 初期プロジェクト構成
+
+---
+
+💡 **Pro Tip**: `npm run quality:fix` でコード品質を一括改善できます！
