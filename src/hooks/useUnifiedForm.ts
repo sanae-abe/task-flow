@@ -11,7 +11,7 @@ import type {
 // フォーム初期状態
 const createInitialState = (
   fields: FormFieldConfig[], 
-  initialValues?: Record<string, any>
+  initialValues?: Record<string, unknown>
 ): FormState => ({
   values: fields.reduce((acc, field) => ({
     ...acc,
@@ -98,8 +98,10 @@ const formReducer = (state: FormState, action: FormAction): FormState => {
 };
 
 // バリデーション関数
-const validateField = (value: any, validation?: ValidationRule): string | null => {
-  if (!validation) return null;
+const validateField = (value: unknown, validation?: ValidationRule): string | null => {
+  if (!validation) {
+    return null;
+  }
   
   // 必須チェック
   if (validation.required && (!value || value.toString().trim() === '')) {
@@ -124,7 +126,9 @@ const validateField = (value: any, validation?: ValidationRule): string | null =
   // カスタムバリデーション
   if (validation.custom && value) {
     const customError = validation.custom(value);
-    if (customError) return customError;
+    if (customError) {
+      return customError;
+    }
   }
   
   return null;
@@ -139,7 +143,7 @@ const validateField = (value: any, validation?: ValidationRule): string | null =
  */
 export const useUnifiedForm = (
   fields: FormFieldConfig[], 
-  initialValues?: Record<string, any>
+  initialValues?: Record<string, unknown>
 ): UseFormReturn => {
   const [state, dispatch] = useReducer(
     formReducer, 
@@ -147,7 +151,7 @@ export const useUnifiedForm = (
   );
   
   // フィールド値設定
-  const setValue = useCallback((fieldId: string, value: any) => {
+  const setValue = useCallback((fieldId: string, value: unknown) => {
     dispatch({ type: 'SET_FIELD_VALUE', fieldId, value });
     
     // リアルタイムバリデーション（フィールドがtouchedの場合のみ）
@@ -173,7 +177,9 @@ export const useUnifiedForm = (
   // 個別フィールドバリデーション
   const validateFieldCallback = useCallback((fieldId: string): boolean => {
     const field = fields.find(f => f.name === fieldId);
-    if (!field?.validation) return true;
+    if (!field?.validation) {
+      return true;
+    }
     
     const value = state.values[fieldId];
     const error = validateField(value, field.validation);
@@ -201,15 +207,14 @@ export const useUnifiedForm = (
   }, [fields, state.values]);
   
   // フォームリセット
-  const resetForm = useCallback((newInitialValues?: Record<string, any>) => {
+  const resetForm = useCallback((newInitialValues?: Record<string, unknown>) => {
     dispatch({ type: 'RESET_FORM', initialValues: newInitialValues });
   }, []);
   
   // フォーム送信ハンドラー
   const handleSubmit = useCallback((
-    onSubmit: (values: Record<string, any>) => void | Promise<void>
-  ) => {
-    return async (e?: React.FormEvent) => {
+    onSubmit: (values: Record<string, unknown>) => void | Promise<void>
+  ) => async (e?: React.FormEvent) => {
       if (e) {
         e.preventDefault();
       }
@@ -232,9 +237,8 @@ export const useUnifiedForm = (
   }, [state.values, validateForm]);
   
   // フィールドの有効性チェック
-  const isFieldValid = useCallback((fieldId: string): boolean => {
-    return !state.errors.some(error => error.fieldId === fieldId);
-  }, [state.errors]);
+  const isFieldValid = useCallback((fieldId: string): boolean => 
+    !state.errors.some(error => error.fieldId === fieldId), [state.errors]);
   
   // フィールドエラー取得
   const getFieldError = useCallback((fieldId: string): string | null => {

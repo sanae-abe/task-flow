@@ -40,36 +40,31 @@ const UnifiedForm = memo<UnifiedFormProps>(({
   } = useUnifiedForm(fields, initialValues);
 
   // フィールド変更ハンドラー
-  const handleFieldChange = useCallback((fieldConfig: FormFieldConfig) => {
-    return (value: any) => {
+  const handleFieldChange = useCallback((fieldConfig: FormFieldConfig) => 
+    (value: unknown) => {
       setValue(fieldConfig.name, value);
       
       // 設定されたonChangeも呼び出す
       if (fieldConfig.onChange) {
         fieldConfig.onChange(value);
       }
-    };
-  }, [setValue]);
+    }, [setValue]);
 
   // フィールドブラーハンドラー
-  const handleFieldBlur = useCallback((fieldConfig: FormFieldConfig) => {
-    return () => {
-      setTouched(fieldConfig.name, true);
-      
-      if (validateOnBlur) {
-        validateField(fieldConfig.name);
-      }
-    };
+  const handleFieldBlur = useCallback((fieldConfig: FormFieldConfig) => () => {
+    setTouched(fieldConfig.name, true);
+    
+    if (validateOnBlur) {
+      validateField(fieldConfig.name);
+    }
   }, [setTouched, validateField, validateOnBlur]);
 
   // フィールドキーダウンハンドラー
-  const handleFieldKeyDown = useCallback((fieldConfig: FormFieldConfig) => {
-    return (event: React.KeyboardEvent) => {
-      // 設定されたonKeyDownを呼び出す
-      if (fieldConfig.onKeyDown) {
-        fieldConfig.onKeyDown(event);
-      }
-    };
+  const handleFieldKeyDown = useCallback((fieldConfig: FormFieldConfig) => (event: React.KeyboardEvent) => {
+    // 設定されたonKeyDownを呼び出す
+    if (fieldConfig.onKeyDown) {
+      fieldConfig.onKeyDown(event);
+    }
   }, []);
 
   // フォーム送信ハンドラー

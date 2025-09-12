@@ -54,8 +54,8 @@ const LabelCreateForm = memo<LabelCreateFormProps>(({
         submitText="作成"
         cancelText="キャンセル"
         disabled={!isValid}
-        validateOnChange={true}
-        validateOnBlur={true}
+        validateOnChange
+        validateOnBlur
       />
     </Box>
   );

@@ -66,7 +66,7 @@ const UnifiedFormField = memo<UnifiedFormFieldProps>(({
   touched
 }) => {
   // 共通のイベントハンドラー
-  const handleChange = (newValue: any) => {
+  const handleChange = (newValue: unknown) => {
     onChange(newValue);
   };
 
@@ -75,15 +75,21 @@ const UnifiedFormField = memo<UnifiedFormFieldProps>(({
   };
 
   const handleBlur = () => {
-    if (onBlur) onBlur();
+    if (onBlur) {
+      onBlur();
+    }
   };
 
   const handleFocus = () => {
-    if (onFocus) onFocus();
+    if (onFocus) {
+      onFocus();
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (onKeyDown) onKeyDown(e);
+    if (onKeyDown) {
+      onKeyDown(e);
+    }
   };
 
   // コンテナスタイル
@@ -222,7 +228,7 @@ const UnifiedFormField = memo<UnifiedFormFieldProps>(({
       case 'file':
         return (
           <FileUploader
-            attachments={value as FileAttachment[] || []}
+            attachments={value as FileAttachment[] ?? []}
             onAttachmentsChange={(attachments: FileAttachment[]) => handleChange(attachments)}
             showModeSelector={false}
           />

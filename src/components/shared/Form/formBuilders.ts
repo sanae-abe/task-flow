@@ -14,7 +14,7 @@ export const createFormField = (
     name: string;
     type: FieldType;
     label: string;
-    onChange: (value: any) => void;
+    onChange: (value: unknown) => void;
   }
 ): FormFieldConfig => ({
   value: '',
@@ -97,7 +97,7 @@ export const createTaskFormFields = (
         name: 'completedAt',
         type: 'datetime-local',
         label: '完了日時',
-        value: values.completedAt || '',
+        value: values.completedAt ?? '',
         onChange: handlers.setCompletedAt,
         onKeyDown: options.onKeyPress
       })
@@ -195,11 +195,11 @@ export const createSimpleTextFormFields = (
     type: 'text',
     label: config.label,
     value: config.value,
-    placeholder: config.placeholder || `${config.label}を入力`,
+    placeholder: config.placeholder ?? `${config.label}を入力`,
     onChange: config.onChange,
     onKeyDown: config.onKeyDown,
     autoFocus: true,
-    validation: config.validation || { required: true, minLength: 1, maxLength: 100 }
+    validation: config.validation ?? { required: true, minLength: 1, maxLength: 100 }
   })
 ];
 

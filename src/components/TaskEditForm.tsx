@@ -77,8 +77,8 @@ const TaskEditForm = memo<TaskEditFormProps>(({
       fields={formFields}
       onSubmit={handleSubmit}
       showCancelButton={false}
-      validateOnChange={true}
-      validateOnBlur={true}
+      validateOnChange
+      validateOnBlur
     />
   );
 });
