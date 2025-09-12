@@ -1,4 +1,4 @@
-import { ClockIcon, AlertIcon, CheckCircleIcon, InfoIcon } from '@primer/octicons-react';
+import { ClockIcon, AlertIcon, CheckCircleIcon, InfoIcon, XCircleIcon } from '@primer/octicons-react';
 import { Text } from '@primer/react';
 import React from 'react';
 
@@ -27,8 +27,8 @@ const TaskStatsDisplay: React.FC<TaskStatsDisplayProps> = ({ stats }) => {
   const { totalTasks, overdueTasks, dueTodayTasks, dueTomorrowTasks, hasUrgentTasks } = stats;
 
   const urgentLabels = [
-    { condition: overdueTasks > 0, variant: 'danger' as const, icon: AlertIcon, count: overdueTasks, label: '期限切れ' },
-    { condition: dueTodayTasks > 0, variant: 'warning' as const, icon: ClockIcon, count: dueTodayTasks, label: '本日期限' },
+    { condition: overdueTasks > 0, variant: 'danger' as const, icon: XCircleIcon, count: overdueTasks, label: '期限切れ' },
+    { condition: dueTodayTasks > 0, variant: 'warning' as const, icon: AlertIcon, count: dueTodayTasks, label: '本日期限' },
     { condition: dueTomorrowTasks > 0, variant: 'info' as const, icon: ClockIcon, count: dueTomorrowTasks, label: '明日期限' }
   ].filter(item => item.condition);
 

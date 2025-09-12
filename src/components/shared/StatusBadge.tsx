@@ -1,5 +1,5 @@
 import type { Icon } from '@primer/octicons-react';
-import { Box, Text } from '@primer/react';
+import { Text } from '@primer/react';
 import { memo } from 'react';
 
 import type { StatusBadgeVariant, StatusBadgeSize } from '../../types/shared';
@@ -35,45 +35,38 @@ const StatusBadge = memo<StatusBadgeProps>(({
     switch (variant) {
       case 'danger':
         return {
-          bg: 'danger.subtle',
           color: 'danger.fg',
-          borderColor: 'danger.muted'
+          cssColor: '#d1242f'
         };
       case 'warning':
         return {
-          bg: 'attention.subtle',
           color: 'attention.fg',
-          borderColor: 'attention.muted'
+          cssColor: '#9a6700'
         };
       case 'success':
         return {
-          bg: 'success.subtle',
           color: 'success.fg',
-          borderColor: 'success.muted'
+          cssColor: '#1a7f37'
         };
       case 'info':
         return {
-          bg: 'accent.subtle',
           color: 'accent.fg',
-          borderColor: 'accent.muted'
+          cssColor: '#0969da'
         };
       case 'neutral':
         return {
-          bg: 'neutral.subtle',
           color: 'fg.muted',
-          borderColor: 'border.default'
+          cssColor: '#656d76'
         };
       case 'emphasis':
         return {
-          bg: 'neutral.emphasis',
           color: 'fg.onEmphasis',
-          borderColor: 'neutral.emphasis'
+          cssColor: '#ffffff'
         };
       default:
         return {
-          bg: 'canvas.subtle',
           color: 'fg.default',
-          borderColor: 'border.default'
+          cssColor: '#1f2328'
         };
     }
   };
@@ -109,17 +102,15 @@ const StatusBadge = memo<StatusBadgeProps>(({
   const sizeStyles = getSizeStyles();
 
   return (
-    <Box
-      sx={{
+    <div
+      style={{
         display: 'inline-flex',
         alignItems: 'center',
-        gap: IconComponent ? 1 : 0,
-        ...colors,
-        borderRadius: 2,
+        gap: IconComponent ? '4px' : 0,
+        color: colors.cssColor,
         fontWeight: '700',
         alignSelf: 'flex-start',
-        border: '1px solid',
-        ...sizeStyles,
+        padding: `${sizeStyles.py * 4}px ${sizeStyles.px * 4}px`,
         ...sx
       }}
     >
@@ -135,7 +126,7 @@ const StatusBadge = memo<StatusBadgeProps>(({
       >
         {children}
       </Text>
-    </Box>
+    </div>
   );
 });
 

@@ -1,8 +1,9 @@
-import { CalendarIcon } from '@primer/octicons-react';
+import { CalendarIcon, AlertIcon, ClockIcon, XCircleIcon } from '@primer/octicons-react';
 import { Text } from '@primer/react';
 import { memo } from 'react';
 
 import { getDateStatus, formatDueDate, formatDueDateWithYear } from '../utils/dateHelpers';
+import StatusBadge from './shared/StatusBadge';
 
 interface DueDateDisplayProps {
   dueDate: Date;
@@ -10,22 +11,26 @@ interface DueDateDisplayProps {
 }
 
 interface BadgeConfig {
-  bg: string;
+  variant: 'danger' | 'warning' | 'info';
   text: string;
+  icon: React.ComponentType<{ size: number }>;
 }
 
 const BADGE_CONFIGS = {
   overdue: {
-    bg: 'danger.emphasis',
-    text: '期限切れ'
+    variant: 'danger' as const,
+    text: '期限切れ',
+    icon: XCircleIcon
   },
   today: {
-    bg: 'attention.emphasis', 
-    text: '本日期限'
+    variant: 'warning' as const, 
+    text: '本日期限',
+    icon: AlertIcon
   },
   tomorrow: {
-    bg: 'accent.emphasis',
-    text: '明日期限'
+    variant: 'info' as const,
+    text: '明日期限',
+    icon: ClockIcon
   }
 } as const;
 
@@ -47,25 +52,6 @@ const getContainerStyles = (isOverdue: boolean, isDueToday: boolean, isDueTomorr
     : 'inherit'
 });
 
-const StatusBadge = memo<{ config: BadgeConfig }>(({ config }) => (
-  <Text
-    sx={{
-      fontSize: 0,
-      fontWeight: '700',
-      color: config.bg, // 背景色を文字色として使用
-      bg: 'transparent',
-      px: 2,
-      py: 1,
-      borderRadius: 2,
-      textTransform: 'uppercase',
-      letterSpacing: '0.025em'
-    }}
-  >
-    {config.text}
-  </Text>
-));
-
-StatusBadge.displayName = 'StatusBadge';
 
 const DueDateDisplay = memo<DueDateDisplayProps>(({ dueDate, showYear = false }) => {
   const { isOverdue, isDueToday, isDueTomorrow } = getDateStatus(dueDate);
@@ -86,7 +72,11 @@ const DueDateDisplay = memo<DueDateDisplayProps>(({ dueDate, showYear = false })
         <CalendarIcon size={16} />
         <Text sx={{ fontSize: 1 }}>{formattedDate}</Text>
       </div>
-      {badgeConfig && <StatusBadge config={badgeConfig} />}
+      {badgeConfig && (
+        <StatusBadge variant={badgeConfig.variant} icon={badgeConfig.icon} size="small">
+          {badgeConfig.text}
+        </StatusBadge>
+      )}
     </div>
   );
 });
