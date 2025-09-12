@@ -1,4 +1,3 @@
-import { Box } from '@primer/react';
 import React from 'react';
 
 import type { Column } from '../types';
@@ -13,18 +12,14 @@ interface ColumnHeaderProps {
   onAddTask: () => void;
 }
 
-const headerStyles = {
+const headerStyles: React.CSSProperties = {
   display: 'flex',
-  pb: 3,
+  paddingBottom: '12px',
   justifyContent: 'space-between',
-  alignItems: 'center'
-} as const;
-
-const titleContainerStyles = {
-  display: 'flex',
-  flex: 1,
-  alignItems: 'center'
-} as const;
+  alignItems: 'center',
+  width: '100%',
+  overflow: 'hidden'
+};
 
 const ColumnHeader: React.FC<ColumnHeaderProps> = ({
   column,
@@ -32,16 +27,14 @@ const ColumnHeader: React.FC<ColumnHeaderProps> = ({
   onDeleteColumn,
   onAddTask
 }) => (
-    <Box sx={headerStyles}>
-      <Box sx={titleContainerStyles}>
-        <ColumnTitle column={column} />
-      </Box>
+    <div style={headerStyles}>
+      <ColumnTitle column={column} />
       <ColumnActions
         onAddTask={onAddTask}
         onTitleEdit={onTitleEdit}
         onDeleteColumn={onDeleteColumn}
       />
-    </Box>
+    </div>
   );
 
 export default ColumnHeader;

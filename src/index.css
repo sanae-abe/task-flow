@@ -1,5 +1,12 @@
 @import '@primer/css/dist/primer.css';
 
+html, body, #root {
+  overflow-x: hidden;
+  max-width: 100vw;
+  min-height: 100vh;
+  box-sizing: border-box;
+  background-color: #f6f8fa;
+}
 .app {
   min-height: 100vh;
   background-color: #f6f8fa;

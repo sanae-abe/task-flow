@@ -35,7 +35,10 @@ const headerStyles = {
   leftSection: {
     display: 'flex',
     alignItems: 'center',
-    gap: 4
+    gap: 4,
+    flex: 1,
+    minWidth: 0,
+    paddingRight: 4
   },
   divider: {
     height: DIVIDER_HEIGHT,
@@ -45,7 +48,8 @@ const headerStyles = {
   rightSection: {
     display: 'flex',
     alignItems: 'center',
-    gap: 2
+    gap: 2,
+    flexShrink: 0
   },
   createButton: {
     backgroundColor: 'accent.emphasis',

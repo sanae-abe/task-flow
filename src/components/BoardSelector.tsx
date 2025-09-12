@@ -9,7 +9,16 @@ const styles = {
   container: {
     display: 'flex',
     alignItems: 'center',
-    gap: 4
+    gap: 4,
+    flex: 1,
+    minWidth: 0,
+    overflowX: 'auto',
+    scrollbarWidth: 'none',
+    '&::-webkit-scrollbar': {
+      display: 'none'
+    },
+    maskImage: 'linear-gradient(to right, black 0%, black calc(100% - 12px), transparent 100%)',
+    paddingRight: '4px'
   },
   emptyState: {
     display: 'flex',
@@ -40,6 +49,8 @@ const styles = {
     borderRadius: '6px',
     px: 1,
     py: 0,
+    whiteSpace: 'nowrap',
+    flexShrink: 0,
     '&:hover': {
       backgroundColor: 'canvas.subtle',
       color: 'fg.default'

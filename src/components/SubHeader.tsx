@@ -56,7 +56,9 @@ const SubHeader: React.FC = () => {
         zIndex: 999,
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        width: '100%',
+        overflow: 'hidden'
       }}
     >
       <TaskStatsDisplay stats={taskStats} />

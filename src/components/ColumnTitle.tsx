@@ -14,7 +14,10 @@ const ColumnTitle: React.FC<ColumnTitleProps> = ({ column }) => (
         flex: 1, 
         alignItems: 'center', 
         justifyContent: 'space-between',
-        gap: 2
+        gap: 2,
+        flexShrink: 0,
+        width: '100%',
+        overflow: 'hidden'
       }}
     >
       <Heading 

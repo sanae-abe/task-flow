@@ -1,8 +1,7 @@
 export const KANBAN_BOARD_STYLES = {
   container: {
-    width: "100%",
+    width: "100vw",
     bg: "canvas.subtle",
-    overflow: 'hidden' as const,
   },
   
   columnsContainer: {
@@ -10,7 +9,6 @@ export const KANBAN_BOARD_STYLES = {
     overflow: 'auto' as const,
     gap: 4,
     p: 4,
-    height: '100%',
     '&::-webkit-scrollbar': {
       height: '8px'
     },
