@@ -27,7 +27,7 @@ const HEADER_OVERLAY_STYLES = {
     borderColor: 'border.default',
     boxShadow: 'shadow.large',
     width: '100%',
-    minHeight: '123px', // ヘッダー(67px) + サブヘッダー(56px) をカバー
+    minHeight: '112px', // ヘッダー(67px) + サブヘッダー(56px) をカバー
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',

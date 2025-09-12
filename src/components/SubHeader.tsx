@@ -51,7 +51,7 @@ const SubHeader: React.FC = () => {
         bg: 'canvas.default',
         borderBottom: '1px solid',
         borderColor: 'border.default',
-        px: 6,
+        px: 5,
         py: 2,
         zIndex: 999,
         display: 'flex',

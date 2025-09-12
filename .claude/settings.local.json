@@ -100,7 +100,8 @@
       "Bash(find node_modules/@primer/react -name \"*.d.ts\" -exec grep -l \"submenu\\|SubMenu\" {} ;)",
       "Bash(npx tsc --noEmit src/components/FilterSelector.tsx)",
       "Bash(npm run lint src/components/FilterSelector.tsx)",
-      "Bash(npx eslint src/components/FilterSelector.tsx)"
+      "Bash(npx eslint src/components/FilterSelector.tsx)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nfeat: ActionMenuのsubmenus機能でラベルフィルタリング機能を向上\n\n- FilterSelectorをネストしたActionMenu構造に変更：\n  - 「ラベルで絞り込み」項目にサブメニューを実装\n  - ActionMenu.AnchorとActionMenu.Overlayで階層構造を構築\n  - 「すべてのラベル」オプションを追加してクリアな選択状態を提供\n\n- ラベル選択UIの改善：\n  - サブメニューで個別ラベル選択を分離\n  - カラーボックスによる視覚的識別を維持\n  - z-index: 200でレイヤー管理を改善\n\n- ユーザビリティ向上：\n  - 階層構造でフィルター選択の流れを明確化\n  - Primerが自動追加する右矢印アイコンでサブメニューを示唆\n  - メインアイテムとサブアイテムの選択状態を適切に管理\n\n- UI統一性の向上：\n  - HeaderにboxShadowを追加して視覚的境界を改善\n  - 既存の選択状態表示とアイコン体系を維持\n\n🤖 Generated with [Claude Code](https://claude.ai/code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")"
     ],
     "deny": [],
     "ask": []
