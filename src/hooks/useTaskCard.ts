@@ -14,7 +14,7 @@ interface UseTaskCardReturn {
   showEditDialog: boolean;
   showDeleteConfirm: boolean;
   handleEdit: () => void;
-  handleSave: (updatedTask: Task) => void;
+  handleSave: (updatedTask: Task, targetColumnId?: string) => void;
   handleCancel: () => void;
   handleDelete: () => void;
   handleConfirmDelete: () => void;
@@ -36,10 +36,19 @@ export const useTaskCard = (task: Task, columnId: string): UseTaskCardReturn => 
     setShowEditDialog(true);
   }, []);
 
-  const handleSave = useCallback((updatedTask: Task) => {
+  const handleSave = useCallback((updatedTask: Task, targetColumnId?: string) => {
     updateTask(task.id, updatedTask);
+    
+    // カラム移動が必要な場合
+    if (targetColumnId && targetColumnId !== columnId) {
+      const targetColumn = state.currentBoard?.columns.find(col => col.id === targetColumnId);
+      if (targetColumn) {
+        moveTask(task.id, columnId, targetColumnId, targetColumn.tasks.length);
+      }
+    }
+    
     setShowEditDialog(false);
-  }, [task.id, updateTask]);
+  }, [task.id, columnId, updateTask, moveTask, state.currentBoard]);
 
   const handleCancel = useCallback(() => {
     setShowEditDialog(false);

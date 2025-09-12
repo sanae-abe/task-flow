@@ -16,13 +16,6 @@ interface TaskDisplayContentProps {
 
 const TaskDisplayContent: React.FC<TaskDisplayContentProps> = ({ task, columnName }) => (
     <>
-      {columnName && (
-        <TaskDisplaySection title="ステータス">
-          <ContentBox>
-            <Text sx={{ fontSize: 1 }}>{columnName}</Text>
-          </ContentBox>
-        </TaskDisplaySection>
-      )}
 
       {task.labels && task.labels.length > 0 && (
         <TaskDisplaySection title="ラベル">
@@ -46,6 +39,14 @@ const TaskDisplayContent: React.FC<TaskDisplayContentProps> = ({ task, columnNam
       {task.dueDate && (
         <TaskDisplaySection title="期限">
           <DueDateDisplay dueDate={task.dueDate} showYear />
+        </TaskDisplaySection>
+      )}
+
+      {columnName && (
+        <TaskDisplaySection title="ステータス">
+          <ContentBox>
+            <Text sx={{ fontSize: 1 }}>{columnName}</Text>
+          </ContentBox>
         </TaskDisplaySection>
       )}
 

@@ -55,7 +55,7 @@ const SubTaskItem: React.FC<SubTaskItemProps> = ({
       <Text
         sx={{
           flex: 1,
-          textDecoration: subTask.completed ? 'line-through' : 'none',
+          textDecoration: 'none',
           opacity: subTask.completed ? 0.6 : 1,
           fontSize: 1
         }}

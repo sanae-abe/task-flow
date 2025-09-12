@@ -1,11 +1,12 @@
 import { Box, Text } from '@primer/react';
 import React, { memo } from 'react';
 
-import type { Label, FileAttachment } from '../types';
+import type { Label, FileAttachment, Column } from '../types';
 
 import FileUploader from './FileUploader';
 import FormField, { TextareaField, DateField } from './FormField';
 import LabelSelector from './LabelSelector';
+import StatusSelector from './StatusSelector';
 
 
 interface TaskEditFormProps {
@@ -19,6 +20,9 @@ interface TaskEditFormProps {
   setLabels: (labels: Label[]) => void;
   attachments: FileAttachment[];
   setAttachments: (attachments: FileAttachment[]) => void;
+  columns: Column[];
+  selectedColumnId: string;
+  onColumnChange: (columnId: string) => void;
   onKeyPress: (event: React.KeyboardEvent) => void;
 }
 
@@ -33,6 +37,9 @@ const TaskEditForm = memo<TaskEditFormProps>(({
   setLabels,
   attachments,
   setAttachments,
+  columns,
+  selectedColumnId,
+  onColumnChange,
   onKeyPress
 }) => (
     <Box sx={{ display: 'flex', flexDirection: 'column' }}>
@@ -63,6 +70,12 @@ const TaskEditForm = memo<TaskEditFormProps>(({
         value={dueDate}
         onChange={setDueDate}
         onKeyDown={onKeyPress}
+      />
+
+      <StatusSelector
+        columns={columns}
+        selectedColumnId={selectedColumnId}
+        onColumnChange={onColumnChange}
       />
 
       <Box sx={{ mb: 4, display: 'flex', flexDirection: 'column', gap: 1 }}>

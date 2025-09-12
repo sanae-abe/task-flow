@@ -13,7 +13,7 @@ interface UseTaskActionsReturn {
   readonly handleEdit: () => void;
   readonly handleDelete: () => void;
   readonly handleConfirmDelete: () => void;
-  readonly handleSaveEdit: (updatedTask: Task) => void;
+  readonly handleSaveEdit: (updatedTask: Task, targetColumnId?: string) => void;
   readonly handleDeleteFromDialog: (taskId: string) => void;
   readonly handleAddSubTask: (title: string) => void;
   readonly handleToggleSubTask: (subTaskId: string) => void;
@@ -24,7 +24,7 @@ interface UseTaskActionsReturn {
  * タスクアクション（編集・削除）を管理するカスタムフック
  */
 export const useTaskActions = (task: Task | null, onClose?: () => void): UseTaskActionsReturn => {
-  const { deleteTask, updateTask, addSubTask, toggleSubTask, deleteSubTask } = useKanban();
+  const { deleteTask, updateTask, moveTask, addSubTask, toggleSubTask, deleteSubTask, state } = useKanban();
   const { column } = useTaskColumn(task);
   
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -48,10 +48,19 @@ export const useTaskActions = (task: Task | null, onClose?: () => void): UseTask
     setShowDeleteConfirm(false);
   }, [task, column, deleteTask, onClose]);
 
-  const handleSaveEdit = useCallback((updatedTask: Task) => {
+  const handleSaveEdit = useCallback((updatedTask: Task, targetColumnId?: string) => {
     updateTask(updatedTask.id, updatedTask);
+    
+    // カラム移動が必要な場合
+    if (targetColumnId && column && targetColumnId !== column.id) {
+      const targetColumn = state.currentBoard?.columns.find(col => col.id === targetColumnId);
+      if (targetColumn) {
+        moveTask(updatedTask.id, column.id, targetColumnId, targetColumn.tasks.length);
+      }
+    }
+    
     setShowEditDialog(false);
-  }, [updateTask]);
+  }, [updateTask, moveTask, column, state.currentBoard]);
 
   const handleDeleteEdit = useCallback((taskId: string) => {
     if (!task || !column) {

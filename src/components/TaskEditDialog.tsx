@@ -1,7 +1,7 @@
 import { memo } from 'react';
 
 import { useTaskEdit } from '../hooks/useTaskEdit';
-import type { Task } from '../types';
+import type { Task, Column } from '../types';
 
 import BaseDialog from './BaseDialog';
 import ConfirmDialog from './ConfirmDialog';
@@ -11,14 +11,16 @@ import TaskEditForm from './TaskEditForm';
 interface TaskEditDialogProps {
   task: Task | null;
   isOpen: boolean;
-  onSave: (updatedTask: Task) => void;
+  columns: Column[];
+  onSave: (updatedTask: Task, targetColumnId?: string) => void;
   onDelete: (taskId: string) => void;
   onCancel: () => void;
 }
 
 const TaskEditDialog = memo<TaskEditDialogProps>(({ 
   task,
-  isOpen, 
+  isOpen,
+  columns,
   onSave, 
   onDelete,
   onCancel 
@@ -34,6 +36,8 @@ const TaskEditDialog = memo<TaskEditDialogProps>(({
     setLabels,
     attachments,
     setAttachments,
+    selectedColumnId,
+    setSelectedColumnId,
     showDeleteConfirm,
     setShowDeleteConfirm,
     handleSave,
@@ -44,6 +48,7 @@ const TaskEditDialog = memo<TaskEditDialogProps>(({
   } = useTaskEdit({
     task,
     isOpen,
+    columns,
     onSave,
     onDelete,
     onCancel
@@ -73,6 +78,9 @@ const TaskEditDialog = memo<TaskEditDialogProps>(({
           setLabels={setLabels}
           attachments={attachments}
           setAttachments={setAttachments}
+          columns={columns}
+          selectedColumnId={selectedColumnId}
+          onColumnChange={setSelectedColumnId}
           onKeyPress={handleKeyPress}
         />
         

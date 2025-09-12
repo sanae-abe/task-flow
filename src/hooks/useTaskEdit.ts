@@ -1,11 +1,12 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 
-import type { Task, Label, FileAttachment } from '../types';
+import type { Task, Label, FileAttachment, Column } from '../types';
 
 interface UseTaskEditProps {
   task: Task | null;
   isOpen: boolean;
-  onSave: (updatedTask: Task) => void;
+  columns: Column[];
+  onSave: (updatedTask: Task, targetColumnId?: string) => void;
   onDelete: (taskId: string) => void;
   onCancel: () => void;
 }
@@ -21,6 +22,8 @@ interface UseTaskEditReturn {
   setLabels: (labels: Label[]) => void;
   attachments: FileAttachment[];
   setAttachments: (attachments: FileAttachment[]) => void;
+  selectedColumnId: string;
+  setSelectedColumnId: (columnId: string) => void;
   showDeleteConfirm: boolean;
   setShowDeleteConfirm: (show: boolean) => void;
   handleSave: () => void;
@@ -33,6 +36,7 @@ interface UseTaskEditReturn {
 export const useTaskEdit = ({
   task,
   isOpen,
+  columns,
   onSave,
   onDelete,
   onCancel
@@ -42,6 +46,11 @@ export const useTaskEdit = ({
   const [dueDate, setDueDate] = useState('');
   const [labels, setLabels] = useState<Label[]>([]);
   const [attachments, setAttachments] = useState<FileAttachment[]>([]);
+  const [selectedColumnId, setSelectedColumnId] = useState('');
+  
+  const handleColumnChange = useCallback((columnId: string) => {
+    setSelectedColumnId(columnId);
+  }, []);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   useEffect(() => {
@@ -52,8 +61,14 @@ export const useTaskEdit = ({
       setDueDate(dateValue ?? '');
       setLabels(task.labels ?? []);
       setAttachments(task.attachments ?? []);
+      
+      // タスクが現在属しているカラムを見つける
+      const currentColumn = columns.find(column => 
+        column.tasks.some(t => t.id === task.id)
+      );
+      setSelectedColumnId(currentColumn?.id ?? '');
     }
-  }, [isOpen, task]);
+  }, [isOpen, task, columns]);
 
   const handleSave = useCallback(() => {
     if (task && title.trim()) {
@@ -67,9 +82,16 @@ export const useTaskEdit = ({
         attachments,
         updatedAt: new Date()
       };
-      onSave(updatedTask);
+      
+      // 現在のカラムと異なるカラムが選択されている場合は移動先カラムIDを渡す
+      const currentColumn = columns.find(column => 
+        column.tasks.some(t => t.id === task.id)
+      );
+      const targetColumnId = selectedColumnId !== currentColumn?.id ? selectedColumnId : undefined;
+      
+      onSave(updatedTask, targetColumnId);
     }
-  }, [task, title, description, dueDate, labels, attachments, onSave]);
+  }, [task, title, description, dueDate, labels, attachments, selectedColumnId, columns, onSave]);
 
   const handleDelete = useCallback(() => {
     setShowDeleteConfirm(true);
@@ -101,6 +123,8 @@ export const useTaskEdit = ({
     setLabels,
     attachments,
     setAttachments,
+    selectedColumnId,
+    setSelectedColumnId: handleColumnChange,
     showDeleteConfirm,
     setShowDeleteConfirm,
     handleSave,
