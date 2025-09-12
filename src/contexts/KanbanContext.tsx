@@ -624,7 +624,7 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     if (boards.length === 0) {
       const defaultBoard: KanbanBoard = {
         id: uuidv4(),
-        title: 'デモプロジェクト - 機能サンプル',
+        title: 'デモプロジェクト',
         columns: [
           {
             id: uuidv4(),
@@ -673,7 +673,7 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
               {
                 id: uuidv4(),
                 title: '🎨 UIコンポーネント開発',
-                description: 'React コンポーネントライブラリの構築\n\nPrimerデザインシステムを使用してコンポーネントを実装',
+                description: 'React コンポーネントライブラリの構築\nPrimerデザインシステムを使用してコンポーネントを実装',
                 dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 1週間後
                 labels: [
                   { id: uuidv4(), name: 'フロントエンド', color: 'success' },
@@ -701,7 +701,7 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
               {
                 id: uuidv4(),
                 title: '🔧 API開発',
-                description: 'REST API エンドポイントの実装\n\n認証、CRUD操作、エラーハンドリングを含む',
+                description: 'REST API エンドポイントの実装\n認証、CRUD操作、エラーハンドリングを含む',
                 dueDate: new Date(), // 今日期限
                 labels: [
                   { id: uuidv4(), name: 'バックエンド', color: 'severe' },

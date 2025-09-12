@@ -168,7 +168,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
               <CloudOfflineIcon size={20} /> Kanban 使い方ガイド
             </Text>
             <Text sx={{ fontSize: 1, color: 'fg.muted' }}>
-              基本的な使い方を説明します
+              Offline Kanban の基本的な使い方を説明します
             </Text>
           </Box>
 
