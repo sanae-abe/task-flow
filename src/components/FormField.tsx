@@ -1,7 +1,7 @@
 import { Box, Text, TextInput, Textarea } from '@primer/react';
 import React, { memo } from 'react';
 
-import type { FormFieldProps, TextareaFieldProps, DateFieldProps } from '../types/dialog';
+import type { FormFieldProps, TextareaFieldProps, DateFieldProps, DateTimeFieldProps } from '../types/dialog';
 
 const FORM_STYLES = {
   container: {
@@ -127,6 +127,40 @@ export const DateField = memo<DateFieldProps>(({
       <TextInput
         id={id}
         type="date"
+        value={value}
+        onChange={handleChange}
+        onKeyDown={onKeyDown}
+        sx={FORM_STYLES.input}
+        aria-required={required}
+      />
+    </Box>
+  );
+});
+
+export const DateTimeField = memo<DateTimeFieldProps>(({
+  id,
+  label,
+  value,
+  onChange,
+  onKeyDown,
+  required = false
+}) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onChange(e.target.value);
+  };
+
+  return (
+    <Box sx={FORM_STYLES.container}>
+      <Text 
+        as="label" 
+        htmlFor={id}
+        sx={FORM_STYLES.label}
+      >
+        {label}
+      </Text>
+      <TextInput
+        id={id}
+        type="datetime-local"
         value={value}
         onChange={handleChange}
         onKeyDown={onKeyDown}

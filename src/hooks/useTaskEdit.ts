@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 
+import { useKanban } from '../contexts/KanbanContext';
 import type { Task, Label, FileAttachment } from '../types';
 
 interface UseTaskEditProps {
@@ -17,6 +18,9 @@ interface UseTaskEditReturn {
   setDescription: (value: string) => void;
   dueDate: string;
   setDueDate: (value: string) => void;
+  completedAt: string;
+  setCompletedAt: (value: string) => void;
+  isCompleted: boolean;
   labels: Label[];
   setLabels: (labels: Label[]) => void;
   attachments: FileAttachment[];
@@ -37,9 +41,11 @@ export const useTaskEdit = ({
   onDelete,
   onCancel
 }: UseTaskEditProps): UseTaskEditReturn => {
+  const { state } = useKanban();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [dueDate, setDueDate] = useState('');
+  const [completedAt, setCompletedAt] = useState('');
   const [labels, setLabels] = useState<Label[]>([]);
   const [attachments, setAttachments] = useState<FileAttachment[]>([]);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -50,6 +56,13 @@ export const useTaskEdit = ({
       setDescription(task.description ?? '');
       const dateValue = task.dueDate ? task.dueDate.toISOString().split('T')[0] : '';
       setDueDate(dateValue ?? '');
+      
+      // completedAtをdatetime-local形式（YYYY-MM-DDTHH:mm）にフォーマット
+      const completedAtValue = task.completedAt 
+        ? new Date(task.completedAt).toISOString().slice(0, 16)
+        : '';
+      setCompletedAt(completedAtValue);
+      
       setLabels(task.labels ?? []);
       setAttachments(task.attachments ?? []);
     }
@@ -58,11 +71,14 @@ export const useTaskEdit = ({
   const handleSave = useCallback(() => {
     if (task && title.trim()) {
       const dueDateObj = dueDate ? new Date(dueDate) : undefined;
+      const completedAtObj = completedAt ? new Date(completedAt) : undefined;
+      
       const updatedTask: Task = {
         ...task,
         title: title.trim(),
         description: description.trim() || undefined,
         dueDate: dueDateObj,
+        completedAt: completedAtObj,
         labels,
         attachments,
         updatedAt: new Date()
@@ -70,7 +86,7 @@ export const useTaskEdit = ({
       
       onSave(updatedTask);
     }
-  }, [task, title, description, dueDate, labels, attachments, onSave]);
+  }, [task, title, description, dueDate, completedAt, labels, attachments, onSave]);
 
   const handleDelete = useCallback(() => {
     setShowDeleteConfirm(true);
@@ -91,6 +107,20 @@ export const useTaskEdit = ({
 
   const isValid = useMemo(() => title.trim().length > 0, [title]);
 
+  // タスクが完了状態（一番右のカラム）にあるかどうかを判定
+  const isCompleted = useMemo(() => {
+    if (!task || !state.currentBoard?.columns.length) {
+      return false;
+    }
+    
+    const rightmostColumn = state.currentBoard.columns[state.currentBoard.columns.length - 1];
+    if (!rightmostColumn) {
+      return false;
+    }
+    
+    return rightmostColumn.tasks.some(t => t.id === task.id);
+  }, [task, state.currentBoard]);
+
   return {
     title,
     setTitle,
@@ -98,6 +128,9 @@ export const useTaskEdit = ({
     setDescription,
     dueDate,
     setDueDate,
+    completedAt,
+    setCompletedAt,
+    isCompleted,
     labels,
     setLabels,
     attachments,

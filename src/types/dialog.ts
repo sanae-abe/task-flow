@@ -47,6 +47,15 @@ export interface DateFieldProps {
   required?: boolean;
 }
 
+export interface DateTimeFieldProps {
+  id: string;
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  onKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
+  required?: boolean;
+}
+
 // 共通フォームダイアログの型
 export interface DialogWithFormProps {
   isOpen: boolean;

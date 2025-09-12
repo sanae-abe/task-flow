@@ -4,7 +4,7 @@ import React, { memo } from 'react';
 import type { Label, FileAttachment } from '../types';
 
 import FileUploader from './FileUploader';
-import FormField, { TextareaField, DateField } from './FormField';
+import FormField, { TextareaField, DateField, DateTimeField } from './FormField';
 import LabelSelector from './LabelSelector';
 
 
@@ -15,6 +15,9 @@ interface TaskEditFormProps {
   setDescription: (value: string) => void;
   dueDate: string;
   setDueDate: (value: string) => void;
+  completedAt: string;
+  setCompletedAt: (value: string) => void;
+  isCompleted: boolean;
   labels: Label[];
   setLabels: (labels: Label[]) => void;
   attachments: FileAttachment[];
@@ -29,6 +32,9 @@ const TaskEditForm = memo<TaskEditFormProps>(({
   setDescription,
   dueDate,
   setDueDate,
+  completedAt,
+  setCompletedAt,
+  isCompleted,
   labels,
   setLabels,
   attachments,
@@ -64,6 +70,16 @@ const TaskEditForm = memo<TaskEditFormProps>(({
         onChange={setDueDate}
         onKeyDown={onKeyPress}
       />
+
+      {isCompleted && (
+        <DateTimeField
+          id="task-completed-at"
+          label="完了日時"
+          value={completedAt}
+          onChange={setCompletedAt}
+          onKeyDown={onKeyPress}
+        />
+      )}
 
       <Box sx={{ mb: 4, display: 'flex', flexDirection: 'column', gap: 1 }}>
         <Text sx={{ fontSize: 1, color: 'fg.muted', fontWeight: '700' }}>

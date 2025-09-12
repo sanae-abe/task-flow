@@ -42,6 +42,22 @@ const TaskDisplayContent: React.FC<TaskDisplayContentProps> = ({ task, columnNam
         </TaskDisplaySection>
       )}
 
+      {task.completedAt && (
+        <TaskDisplaySection title="完了日時">
+          <ContentBox>
+            <Text sx={{ fontSize: 1 }}>
+              {new Date(task.completedAt).toLocaleString('ja-JP', { 
+                year: 'numeric', 
+                month: '2-digit', 
+                day: '2-digit', 
+                hour: '2-digit', 
+                minute: '2-digit' 
+              })}
+            </Text>
+          </ContentBox>
+        </TaskDisplaySection>
+      )}
+
       {columnName && (
         <TaskDisplaySection title="ステータス">
           <ContentBox>

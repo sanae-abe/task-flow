@@ -46,6 +46,7 @@ export interface Task {
   createdAt: Date;
   updatedAt: Date;
   dueDate?: Date;
+  completedAt?: Date;
   labels?: Label[];
   subTasks?: SubTask[];
   attachments?: FileAttachment[];

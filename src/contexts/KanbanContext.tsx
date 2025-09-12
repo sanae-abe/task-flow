@@ -349,6 +349,25 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
         return state;
       }
       
+      // 完了状態の判定（一番右のカラムかどうか）
+      const rightmostColumnIndex = state.currentBoard.columns.length - 1;
+      const targetColumnIndex = state.currentBoard.columns.findIndex(col => col.id === targetColumnId);
+      const sourceColumnIndex = state.currentBoard.columns.findIndex(col => col.id === sourceColumnId);
+      const isMovingToCompleted = targetColumnIndex === rightmostColumnIndex;
+      const isMovingFromCompleted = sourceColumnIndex === rightmostColumnIndex;
+      
+      // タスクのcompletedAtを適切に設定
+      const updatedTask = { ...taskToMove, updatedAt: new Date() };
+      if (isMovingToCompleted && !isMovingFromCompleted) {
+        // 完了状態に移動：completedAtを設定
+        updatedTask.completedAt = new Date();
+        console.log('✅ Setting completedAt for task completion');
+      } else if (isMovingFromCompleted && !isMovingToCompleted) {
+        // 完了状態から移動：completedAtをクリア
+        updatedTask.completedAt = undefined;
+        console.log('🔄 Clearing completedAt for task reopening');
+      }
+      
       const updatedBoard = updateBoardTimestamp({
         ...state.currentBoard,
         columns: state.currentBoard.columns.map(column => {
@@ -366,7 +385,7 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
             }
             // 次に、新しい位置に挿入
             const safeTargetIndex = Math.max(0, Math.min(targetIndex, newTasks.length));
-            newTasks.splice(safeTargetIndex, 0, { ...taskToMove, updatedAt: new Date() });
+            newTasks.splice(safeTargetIndex, 0, updatedTask);
             console.log(`📥 Added task at index ${safeTargetIndex}: ${column.tasks.length} → ${newTasks.length}`);
             return {
               ...column,
@@ -387,7 +406,7 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
             const newTasks = [...column.tasks];
             const safeTargetIndex = Math.max(0, Math.min(targetIndex, newTasks.length));
             console.log(`📥 Adding to target column '${column.title}' at index ${safeTargetIndex}: ${newTasks.length} → ${newTasks.length + 1}`);
-            newTasks.splice(safeTargetIndex, 0, { ...taskToMove, updatedAt: new Date() });
+            newTasks.splice(safeTargetIndex, 0, updatedTask);
             return {
               ...column,
               tasks: newTasks,
