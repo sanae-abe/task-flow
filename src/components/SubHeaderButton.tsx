@@ -1,6 +1,5 @@
 import type { Icon } from '@primer/octicons-react';
-import type { ButtonProps } from '@primer/react';
-import { Button } from '@primer/react';
+import { Button, type ButtonProps } from '@primer/react';
 import React from 'react';
 
 interface SubHeaderButtonProps extends Omit<ButtonProps, 'size' | 'variant'> {

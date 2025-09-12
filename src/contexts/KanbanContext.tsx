@@ -1,5 +1,4 @@
-import React, { createContext, useContext, useReducer, useEffect, useMemo, useCallback } from 'react';
-import type { ReactNode } from 'react';
+import React, { createContext, useContext, useReducer, useEffect, useMemo, useCallback, type ReactNode } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 import type { KanbanBoard, Column, Task, Label, SubTask, FileAttachment } from '../types';
@@ -74,6 +73,7 @@ const updateCurrentBoardId = (boardId: string | null) => {
       localStorage.removeItem('current-board-id');
     }
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.warn('LocalStorage access failed:', error);
   }
 };
@@ -83,6 +83,7 @@ const getCurrentBoardId = (): string | null => {
   try {
     return localStorage.getItem('current-board-id');
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.warn('LocalStorage access failed:', error);
     return null;
   }
@@ -97,9 +98,9 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
       if (boards.length > 0) {
         const savedCurrentBoardId = getCurrentBoardId();
         if (savedCurrentBoardId) {
-          currentBoard = boards.find(board => board.id === savedCurrentBoardId) || boards[0] || null;
+          currentBoard = boards.find(board => board.id === savedCurrentBoardId) ?? boards[0] ?? null;
         } else {
-          currentBoard = boards[0] || null;
+          currentBoard = boards[0] ?? null;
         }
       }
       
@@ -146,7 +147,7 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
     }
     
     case 'SET_CURRENT_BOARD': {
-      const newCurrentBoard = state.boards.find(board => board.id === action.payload) || null;
+      const newCurrentBoard = state.boards.find(board => board.id === action.payload) ?? null;
       if (newCurrentBoard) {
         updateCurrentBoardId(newCurrentBoard.id);
       }
@@ -175,8 +176,8 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
       let newCurrentBoard = state.currentBoard;
       
       if (state.currentBoard?.id === action.payload.boardId) {
-        newCurrentBoard = newBoards.length > 0 ? newBoards[0] || null : null;
-        updateCurrentBoardId(newCurrentBoard?.id || null);
+        newCurrentBoard = newBoards.length > 0 ? newBoards[0] ?? null : null;
+        updateCurrentBoardId(newCurrentBoard?.id ?? null);
       }
       
       return {
@@ -390,7 +391,7 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
             task.id === taskId
               ? {
                   ...task,
-                  subTasks: [...(task.subTasks || []), newSubTask],
+                  subTasks: [...(task.subTasks ?? []), newSubTask],
                   updatedAt: new Date()
                 }
               : task

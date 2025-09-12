@@ -80,7 +80,7 @@ export const useFileUpload = (
       const reader = new FileReader();
       reader.onload = () => {
         const result = reader.result as string;
-        const base64Data = result.split(',')[1] || '';
+        const base64Data = result.split(',')[1] ?? '';
 
         resolve({
           id: generateFileId(),
@@ -124,7 +124,7 @@ export const useFileUpload = (
     setIsDragOver(false);
 
     if (e.dataTransfer.files) {
-      handleFiles(e.dataTransfer.files);
+      void handleFiles(e.dataTransfer.files);
     }
   }, [handleFiles]);
 
@@ -134,7 +134,7 @@ export const useFileUpload = (
 
   const handleFileInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      handleFiles(e.target.files);
+      void handleFiles(e.target.files);
     }
   }, [handleFiles]);
 

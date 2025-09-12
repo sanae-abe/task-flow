@@ -13,7 +13,7 @@ export const LABEL_COLORS = [
   { name: 'Sponsors', variant: 'sponsors' }
 ] as const;
 
-export const getColorInfo = (variant: string): { name: string; variant: string } => LABEL_COLORS.find(c => c.variant === variant) || LABEL_COLORS[0];
+export const getColorInfo = (variant: string): { name: string; variant: string } => LABEL_COLORS.find(c => c.variant === variant) ?? LABEL_COLORS[0];
 
 export const createLabel = (name: string, variant: string): Label => ({
     id: `label-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,

@@ -27,13 +27,16 @@ interface StoredBoard {
 
 export const saveBoards = (boards: KanbanBoard[], currentBoardId?: string): void => {
   try {
+    // eslint-disable-next-line no-console
     console.log('💾 Saving boards to localStorage:', boards.length, 'boards');
     localStorage.setItem(STORAGE_KEY, JSON.stringify(boards));
     if (currentBoardId) {
+      // eslint-disable-next-line no-console
       console.log('💾 Saving current board ID:', currentBoardId);
       localStorage.setItem('current-board-id', currentBoardId);
     }
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.warn('Failed to save boards to localStorage:', error);
   }
 };
@@ -41,6 +44,7 @@ export const saveBoards = (boards: KanbanBoard[], currentBoardId?: string): void
 export const loadBoards = (): KanbanBoard[] => {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
+    // eslint-disable-next-line no-console
     console.log('📖 Loading boards from localStorage:', stored ? 'found data' : 'no data');
     if (!stored) {
       return [];
@@ -48,9 +52,11 @@ export const loadBoards = (): KanbanBoard[] => {
     
     const boards = JSON.parse(stored);
     if (!Array.isArray(boards)) {
+      // eslint-disable-next-line no-console
       console.warn('Invalid boards data in localStorage');
       return [];
     }
+    // eslint-disable-next-line no-console
     console.log('📖 Loaded', boards.length, 'boards from localStorage');
     
     return boards.map((board: StoredBoard) => ({
@@ -68,6 +74,7 @@ export const loadBoards = (): KanbanBoard[] => {
       })),
     }));
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.warn('Failed to load boards from localStorage:', error);
     return [];
   }
@@ -78,6 +85,7 @@ export const clearStorage = (): void => {
     localStorage.removeItem(STORAGE_KEY);
     localStorage.removeItem('current-board-id');
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.warn('Failed to clear localStorage:', error);
   }
 };

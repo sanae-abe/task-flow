@@ -29,9 +29,9 @@ export const useTaskDetailEdit = (task: Task | null): UseTaskDetailEditResult =>
     if (!task) {return;}
     
     setEditTitle(task.title);
-    setEditDescription(task.description || '');
-    setEditDueDate(task.dueDate?.toISOString().split('T')[0] || '');
-    setEditLabels(task.labels || []);
+    setEditDescription(task.description ?? '');
+    setEditDueDate(task.dueDate?.toISOString().split('T')[0] ?? '');
+    setEditLabels(task.labels ?? []);
   }, [task]);
 
   // タスクが変更された時にフォームをリセット

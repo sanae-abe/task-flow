@@ -33,7 +33,7 @@ const Logo: React.FC<LogoProps> = ({ size = 'medium' }) => {
           fontSize,
           margin: 0,
           color: 'fg.default',
-          fontWeight: 'semibold',
+          fontWeight: '700',
           lineHeight: 'condensed'
         }}
       >

@@ -8,7 +8,7 @@ type ReportCallback = (metric: Metric) => void;
 
 const reportWebVitals = (onPerfEntry?: ReportCallback): void => {
   if (onPerfEntry && onPerfEntry instanceof Function) {
-    import('web-vitals').then((webVitals) => {
+    void import('web-vitals').then((webVitals) => {
       if (webVitals.onCLS) {
         webVitals.onCLS(onPerfEntry);
       }

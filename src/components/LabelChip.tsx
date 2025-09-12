@@ -35,7 +35,7 @@ const LabelChip = memo<LabelChipProps>(({
         py: 1,
         borderRadius: 2,
         fontSize: 0,
-        fontWeight: '500',
+        fontWeight: '400',
         gap: 1
       }}
     >

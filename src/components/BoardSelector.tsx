@@ -46,11 +46,11 @@ const styles = {
     }
   },
   selectedButton: {
-    fontWeight: '600',
+    fontWeight: '700',
     color: 'fg.default'
   },
   unselectedButton: {
-    fontWeight: '500',
+    fontWeight: '400',
     color: 'fg.muted'
   }
 } as const;

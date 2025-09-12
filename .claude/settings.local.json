@@ -59,7 +59,10 @@
       "Bash(npm run lint src/hooks/useTaskFinder.ts)",
       "Bash(npx tsc --noEmit src/hooks/useTaskFinder.ts)",
       "Bash(npx tsc --noEmit src/hooks/useTaskStats.ts)",
-      "Bash(npm run lint src/hooks/useTaskStats.ts)"
+      "Bash(npm run lint src/hooks/useTaskStats.ts)",
+      "Bash(npx eslint src/hooks/useFileUpload.ts src/hooks/useTaskDetailEdit.ts src/hooks/useTaskEdit.ts src/reportWebVitals.ts src/utils/labels.ts --format=compact)",
+      "Bash(npx eslint src --ext .ts,.tsx)",
+      "Bash(npm run lint -- --no-fix src/hooks/useFormDialog.ts src/utils/storage.ts)"
     ],
     "deny": [],
     "ask": []

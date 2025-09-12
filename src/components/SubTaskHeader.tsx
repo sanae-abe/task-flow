@@ -16,7 +16,7 @@ const SubTaskHeader: React.FC<SubTaskHeaderProps> = ({
   onStartAdding
 }) => (
   <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-    <Text sx={{ fontSize: 1, fontWeight: 'bold' }}>
+    <Text sx={{ fontSize: 1, fontWeight: '700' }}>
       サブタスク {totalCount > 0 && `(${completedCount}/${totalCount})`}
     </Text>
     {!isAdding && (

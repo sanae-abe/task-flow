@@ -194,7 +194,7 @@ const PreviewContent = memo<PreviewContentProps>(({ attachment, isImage, isText 
             >
               <Text 
                 id="file-preview-title"
-                sx={{ fontSize: 2, fontWeight: 'bold' }}
+                sx={{ fontSize: 2, fontWeight: '700' }}
               >
                 {attachment.name}
               </Text>

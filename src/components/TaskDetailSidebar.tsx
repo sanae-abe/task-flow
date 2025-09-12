@@ -101,7 +101,7 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
         <Box sx={{ flex: "1", p: 4, overflowY: 'auto' }}>
           <TaskDisplayContent task={task} columnName={columnName} />
           <SubTaskList
-            subTasks={task.subTasks || []}
+            subTasks={task.subTasks ?? []}
             onAddSubTask={handleAddSubTask}
             onToggleSubTask={handleToggleSubTask}
             onDeleteSubTask={handleDeleteSubTask}

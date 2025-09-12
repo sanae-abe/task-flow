@@ -38,7 +38,7 @@ const TaskDisplay: React.FC<TaskDisplayProps> = ({
         <Heading sx={{
           fontSize: 1,
           margin: 0,
-          fontWeight: '600',
+          fontWeight: '700',
           color: 'fg.default',
           lineHeight: '1.4',
           flex: 1

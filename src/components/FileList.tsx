@@ -49,6 +49,7 @@ const downloadFile = (attachment: FileAttachment): void => {
     link.click();
     document.body.removeChild(link);
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('ファイルのダウンロードに失敗しました:', error);
   }
 };
@@ -85,7 +86,7 @@ const styles = {
   },
   fileName: {
     fontSize: 0,
-    fontWeight: 'bold',
+    fontWeight: '700',
     wordBreak: 'break-word'
   },
   fileSize: {

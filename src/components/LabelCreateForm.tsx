@@ -32,7 +32,7 @@ const LabelCreateForm = memo<LabelCreateFormProps>(({
       borderColor: 'border.default' 
     }}>
       <Box sx={{ mb: 2 }}>
-        <Text sx={{ fontSize: 1, fontWeight: '500', mb: 1, display: 'block' }}>
+        <Text sx={{ fontSize: 1, fontWeight: '400', mb: 1, display: 'block' }}>
           ラベル名
         </Text>
         <TextInput

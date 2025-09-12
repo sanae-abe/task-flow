@@ -66,7 +66,7 @@ const TaskEditForm = memo<TaskEditFormProps>(({
       />
 
       <Box sx={{ mb: 4, display: 'flex', flexDirection: 'column', gap: 1 }}>
-        <Text sx={{ fontSize: 1, color: 'fg.muted', fontWeight: '600' }}>
+        <Text sx={{ fontSize: 1, color: 'fg.muted', fontWeight: '700' }}>
           ラベル（任意）
         </Text>
         <LabelSelector
@@ -76,7 +76,7 @@ const TaskEditForm = memo<TaskEditFormProps>(({
       </Box>
 
       <Box sx={{ mb: 4, display: 'flex', flexDirection: 'column', gap: 1 }}>
-        <Text sx={{ fontSize: 1, color: 'fg.muted', fontWeight: '600' }}>
+        <Text sx={{ fontSize: 1, color: 'fg.muted', fontWeight: '700' }}>
           ファイル添付（任意）
         </Text>
         <FileUploader

@@ -44,6 +44,7 @@ export const useFormDialog = ({
       try {
         onSave(trimmedValue);
       } catch (error) {
+        // eslint-disable-next-line no-console
         console.error('Error saving form data:', error);
       }
     }

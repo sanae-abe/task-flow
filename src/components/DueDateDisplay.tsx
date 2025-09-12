@@ -57,7 +57,7 @@ const StatusBadge = memo<{ config: BadgeConfig }>(({ config }) => (
   <Text
     sx={{
       fontSize: 0,
-      fontWeight: 'bold',
+      fontWeight: '700',
       color: '#ffffff',
       bg: config.bg,
       px: 2,

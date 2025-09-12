@@ -79,7 +79,7 @@ export const DialogHeader = memo<DialogHeaderProps>(({
   <Box sx={DIALOG_STYLES.header}>
     <Text 
       id={titleId}
-      sx={{ fontSize: 2, fontWeight: 'bold' }}
+      sx={{ fontSize: 2, fontWeight: '700' }}
     >
       {title}
     </Text>

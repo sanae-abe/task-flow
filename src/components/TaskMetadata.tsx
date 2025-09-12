@@ -10,7 +10,7 @@ interface TaskMetadataProps {
 
 const TaskMetadata: React.FC<TaskMetadataProps> = ({ task }) => (
     <Box sx={{ mb: 4 }}>
-      <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: 'bold' }}>作成/更新日</Heading>
+      <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: '700' }}>作成/更新日</Heading>
       <Box
         sx={{
           p: 3,

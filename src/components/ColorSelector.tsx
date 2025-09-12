@@ -16,7 +16,7 @@ const ColorSelector = memo<ColorSelectorProps>(({
     <Box className="color-selector">
       <Text 
         as="label"
-        sx={{ fontSize: 1, fontWeight: '500', mb: 2, display: 'block' }}
+        sx={{ fontSize: 1, fontWeight: '400', mb: 2, display: 'block' }}
         className="color-selector__label"
       >
         色

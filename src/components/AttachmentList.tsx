@@ -20,7 +20,7 @@ const AttachmentList: React.FC<AttachmentListProps> = ({
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-      <Text sx={{ fontSize: 1, fontWeight: 'bold', color: 'fg.default' }}>
+      <Text sx={{ fontSize: 1, fontWeight: '700', color: 'fg.muted' }}>
         添付ファイル ({attachments.length})
       </Text>
       {attachments.map((attachment) => (
@@ -48,7 +48,7 @@ const AttachmentList: React.FC<AttachmentListProps> = ({
             }}>
               <Text sx={{ 
                 fontSize: 1, 
-                fontWeight: 'bold', 
+                fontWeight: '700', 
                 wordBreak: 'break-word',
                 lineHeight: 1.2
               }}>

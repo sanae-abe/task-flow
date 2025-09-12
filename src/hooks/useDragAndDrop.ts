@@ -1,5 +1,4 @@
-import { PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
-import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core';
+import { PointerSensor, useSensor, useSensors, type DragEndEvent, type DragStartEvent } from '@dnd-kit/core';
 import { useState } from 'react';
 
 import type { Task, KanbanBoard } from '../types';

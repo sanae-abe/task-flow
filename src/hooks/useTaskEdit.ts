@@ -47,11 +47,11 @@ export const useTaskEdit = ({
   useEffect(() => {
     if (isOpen && task) {
       setTitle(task.title);
-      setDescription(task.description || '');
+      setDescription(task.description ?? '');
       const dateValue = task.dueDate ? task.dueDate.toISOString().split('T')[0] : '';
-      setDueDate(dateValue || '');
-      setLabels(task.labels || []);
-      setAttachments(task.attachments || []);
+      setDueDate(dateValue ?? '');
+      setLabels(task.labels ?? []);
+      setAttachments(task.attachments ?? []);
     }
   }, [isOpen, task]);
 

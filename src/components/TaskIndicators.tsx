@@ -13,7 +13,7 @@ const INDICATOR_STYLES = {
     py: 1,
     borderRadius: 2,
     fontSize: 0,
-    fontWeight: '500',
+    fontWeight: '400',
     alignSelf: 'flex-start' as const,
     color: 'fg.muted'
   }

@@ -13,7 +13,7 @@ const TaskDisplaySection = memo<TaskDisplaySectionProps>(({
   mb = 4 
 }) => (
     <Box sx={{ mb }}>
-      <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: 'bold' }}>
+      <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: '700' }}>
         {title}
       </Heading>
       {children}
