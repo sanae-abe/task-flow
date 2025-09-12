@@ -4,8 +4,10 @@ import Header from './components/Header';
 import SubHeader from './components/SubHeader';
 import KanbanBoard from './components/KanbanBoard';
 import NotificationContainer from './components/NotificationContainer';
+import HelpSidebar from './components/HelpSidebar';
 import { KanbanProvider } from './contexts/KanbanContext';
 import { NotificationProvider } from './contexts/NotificationContext';
+import { useHelp } from './hooks/useHelp';
 
 // 定数定義
 const Z_INDEX = 1000;
@@ -23,6 +25,8 @@ const styles = {
 } as const;
 
 function App() {
+  const { isHelpOpen, openHelp, closeHelp } = useHelp();
+
   return (
     <ThemeProvider>
       <BaseStyles>
@@ -30,7 +34,7 @@ function App() {
           <KanbanProvider>
             <div className="app" role="application" aria-label="カンバンボードアプリケーション">
               <div style={styles.fixedHeader}>
-                <Header />
+                <Header onHelpClick={openHelp} />
                 <SubHeader />
               </div>
               <main aria-label="カンバンボード">
@@ -38,6 +42,7 @@ function App() {
               </main>
             </div>
             <NotificationContainer />
+            <HelpSidebar isOpen={isHelpOpen} onClose={closeHelp} />
           </KanbanProvider>
         </NotificationProvider>
       </BaseStyles>

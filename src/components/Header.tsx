@@ -1,4 +1,4 @@
-import { PlusIcon } from '@primer/octicons-react';
+import { PlusIcon, QuestionIcon } from '@primer/octicons-react';
 import { Box, Button } from '@primer/react';
 import React from 'react';
 
@@ -72,9 +72,10 @@ const LeftSection: React.FC = () => (
 // 右側セクションコンポーネント
 interface RightSectionProps {
   onCreateClick: () => void;
+  onHelpClick: () => void;
 }
 
-const RightSection: React.FC<RightSectionProps> = ({ onCreateClick }) => (
+const RightSection: React.FC<RightSectionProps> = ({ onCreateClick, onHelpClick }) => (
   <Box sx={headerStyles.rightSection}>
     <Button
       onClick={onCreateClick}
@@ -85,10 +86,22 @@ const RightSection: React.FC<RightSectionProps> = ({ onCreateClick }) => (
     >
       新しいボード
     </Button>
+    <Button
+      onClick={onHelpClick}
+      variant="default"
+      aria-label="ヘルプを表示"
+      leadingVisual={QuestionIcon}
+    >
+      ヘルプ
+    </Button>
   </Box>
 );
 
-const Header: React.FC = () => {
+interface HeaderProps {
+  onHelpClick: () => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ onHelpClick }) => {
   const {
     isCreatingBoard,
     handleCreateBoard,
@@ -100,7 +113,7 @@ const Header: React.FC = () => {
     <Box as="header" sx={headerStyles.container} role="banner">
       <Box sx={headerStyles.content}>
         <LeftSection />
-        <RightSection onCreateClick={handleStartCreate} />
+        <RightSection onCreateClick={handleStartCreate} onHelpClick={onHelpClick} />
       </Box>
       
       <BoardCreateDialog
