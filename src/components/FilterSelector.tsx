@@ -149,40 +149,48 @@ const FilterSelector = memo<FilterSelectorProps>(({
           
           {availableLabels.length > 0 && (
             <ActionList.Group title="ラベルでフィルター">
-              <ActionList.Item
-                onSelect={() => handleFilterSelect('label')}
-                selected={currentFilter.type === 'label'}
-              >
-                <ActionList.LeadingVisual>
-                  <TagIcon />
-                </ActionList.LeadingVisual>
-                ラベルで絞り込み
-              </ActionList.Item>
-              
-              {currentFilter.type === 'label' && (
-                <>
-                  <ActionList.Divider />
-                  {availableLabels.map((label) => (
+              <ActionMenu>
+                <ActionMenu.Anchor>
+                  <ActionList.Item
+                    selected={currentFilter.type === 'label'}
+                  >
+                    <ActionList.LeadingVisual>
+                      <TagIcon />
+                    </ActionList.LeadingVisual>
+                    ラベルで絞り込み
+                  </ActionList.Item>
+                </ActionMenu.Anchor>
+                <ActionMenu.Overlay style={{ zIndex: 200 }}>
+                  <ActionList>
                     <ActionList.Item
-                      key={label.id}
-                      onSelect={() => handleLabelToggle(label.id)}
-                      selected={currentFilter.selectedLabels?.includes(label.id)}
+                      onSelect={() => handleFilterSelect('label')}
+                      selected={currentFilter.type === 'label' && (!currentFilter.selectedLabels || currentFilter.selectedLabels.length === 0)}
                     >
-                      <ActionList.LeadingVisual>
-                        <div
-                          style={{
-                            width: '12px',
-                            height: '12px',
-                            borderRadius: '2px',
-                            backgroundColor: label.color
-                          }}
-                        />
-                      </ActionList.LeadingVisual>
-                      {label.name}
+                      すべてのラベル
                     </ActionList.Item>
-                  ))}
-                </>
-              )}
+                    <ActionList.Divider />
+                    {availableLabels.map((label) => (
+                      <ActionList.Item
+                        key={label.id}
+                        onSelect={() => handleLabelToggle(label.id)}
+                        selected={currentFilter.selectedLabels?.includes(label.id)}
+                      >
+                        <ActionList.LeadingVisual>
+                          <div
+                            style={{
+                              width: '12px',
+                              height: '12px',
+                              borderRadius: '2px',
+                              backgroundColor: label.color
+                            }}
+                          />
+                        </ActionList.LeadingVisual>
+                        {label.name}
+                      </ActionList.Item>
+                    ))}
+                  </ActionList>
+                </ActionMenu.Overlay>
+              </ActionMenu>
             </ActionList.Group>
           )}
         </ActionList>

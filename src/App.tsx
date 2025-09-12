@@ -18,6 +18,7 @@ const styles = {
     left: 0,
     right: 0,
     zIndex: Z_INDEX,
+    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
   },
 } as const;
 
