@@ -8,6 +8,7 @@ import { useTaskStats } from './useTaskStats';
 
 type SubHeaderDialogState = {
   readonly isCreatingColumn: boolean;
+  readonly isCreatingBoard: boolean;
   readonly showDeleteConfirm: boolean;
   readonly showEditDialog: boolean;
   readonly showClearCompletedConfirm: boolean;
@@ -16,9 +17,12 @@ type SubHeaderDialogState = {
 
 type SubHeaderHandlers = {
   readonly startCreateColumn: () => void;
+  readonly startCreateBoard: () => void;
   readonly editBoardTitle: (newTitle: string) => void;
   readonly createColumn: (title: string) => void;
+  readonly createBoard: (title: string) => void;
   readonly cancelCreateColumn: () => void;
+  readonly cancelCreateBoard: () => void;
   readonly deleteBoard: () => void;
   readonly clearCompletedTasks: () => void;
   readonly openEditDialog: () => void;
@@ -43,11 +47,12 @@ type UseSubHeaderReturn = {
 };
 
 export const useSubHeader = (): UseSubHeaderReturn => {
-  const { state, updateBoard, createColumn, deleteBoard, clearCompletedTasks } = useKanban();
+  const { state, updateBoard, createColumn, createBoard, deleteBoard, clearCompletedTasks } = useKanban();
   const notify = useNotify();
   
   const [dialogState, setDialogState] = useState<SubHeaderDialogState>({
     isCreatingColumn: false,
+    isCreatingBoard: false,
     showDeleteConfirm: false,
     showEditDialog: false,
     showClearCompletedConfirm: false,
@@ -85,6 +90,7 @@ export const useSubHeader = (): UseSubHeaderReturn => {
     
     return {
       startCreateColumn: () => updateDialogState({ isCreatingColumn: true }),
+      startCreateBoard: () => updateDialogState({ isCreatingBoard: true }),
       
       editBoardTitle: (newTitle: string) => {
         if (currentBoardId) {
@@ -98,7 +104,13 @@ export const useSubHeader = (): UseSubHeaderReturn => {
         updateDialogState({ isCreatingColumn: false });
       },
       
+      createBoard: (title: string) => {
+        createBoard(title);
+        updateDialogState({ isCreatingBoard: false });
+      },
+      
       cancelCreateColumn: () => updateDialogState({ isCreatingColumn: false }),
+      cancelCreateBoard: () => updateDialogState({ isCreatingBoard: false }),
       
       deleteBoard: () => {
         if (currentBoardId && canDeleteBoard) {

@@ -1,11 +1,12 @@
-import { PlusIcon, CalendarIcon, ProjectIcon } from '@primer/octicons-react';
-import { Box, Button, ButtonGroup } from '@primer/react';
+import { PlusIcon, CalendarIcon, ProjectIcon, TriangleDownIcon } from '@primer/octicons-react';
+import { Box, Button, ActionMenu, ActionList } from '@primer/react';
 import React from 'react';
 
 import { useKanban } from '../contexts/KanbanContext';
 import { useSubHeader } from '../hooks/useSubHeader';
 
 import BoardActionMenu from './BoardActionMenu';
+import BoardCreateDialog from './BoardCreateDialog';
 import BoardEditDialog from './BoardEditDialog';
 import ColumnCreateDialog from './ColumnCreateDialog';
 import ConfirmDialog from './ConfirmDialog';
@@ -67,33 +68,6 @@ const SubHeader: React.FC = () => {
       <TaskStatsDisplay stats={taskStats} />
 
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-        <ButtonGroup>
-          <Button
-            variant={state.viewMode === 'kanban' ? 'primary' : 'default'}
-            size="small"
-            leadingVisual={ProjectIcon}
-            onClick={() => setViewMode('kanban')}
-          >
-            カンバン
-          </Button>
-          <Button
-            variant={state.viewMode === 'calendar' ? 'primary' : 'default'}
-            size="small"
-            leadingVisual={CalendarIcon}
-            onClick={() => setViewMode('calendar')}
-          >
-            カレンダー
-          </Button>
-        </ButtonGroup>
-        
-        <Box
-          sx={{
-            width: '1px',
-            height: '24px',
-            bg: 'border.default',
-          }}
-        />
-        
         <FilterSelector
           currentFilter={state.taskFilter}
           onFilterChange={setTaskFilter}
@@ -115,9 +89,15 @@ const SubHeader: React.FC = () => {
             icon={PlusIcon}
             onClick={handlers.startCreateColumn}
           >
-            新しいカラム
+            カラム追加
           </SubHeaderButton>
         )}
+        <SubHeaderButton
+          icon={PlusIcon}
+          onClick={handlers.startCreateBoard}
+        >
+          ボード作成
+        </SubHeaderButton>
         
         <BoardActionMenu
           hasCompletedTasks={hasCompletedTasks}
@@ -129,6 +109,51 @@ const SubHeader: React.FC = () => {
           onExportBoard={handlers.exportCurrentBoard}
           onImportData={handlers.openImportDialog}
         />
+        
+        <Box
+          sx={{
+            width: '1px',
+            height: '24px',
+            bg: 'border.default',
+          }}
+        />
+        
+        {/* View Mode ActionMenu */}
+        <ActionMenu>
+          <ActionMenu.Anchor>
+            <Button
+              variant="invisible"
+              size="small"
+              leadingVisual={state.viewMode === 'kanban' ? ProjectIcon : CalendarIcon}
+              trailingVisual={TriangleDownIcon}
+              aria-label="ビューモードを選択"
+            >
+              {state.viewMode === 'kanban' ? 'カンバン' : 'カレンダー'}
+            </Button>
+          </ActionMenu.Anchor>
+          <ActionMenu.Overlay>
+            <ActionList>
+              <ActionList.Item
+                selected={state.viewMode === 'kanban'}
+                onSelect={() => setViewMode('kanban')}
+              >
+                <ActionList.LeadingVisual>
+                  <ProjectIcon />
+                </ActionList.LeadingVisual>
+                カンバン
+              </ActionList.Item>
+              <ActionList.Item
+                selected={state.viewMode === 'calendar'}
+                onSelect={() => setViewMode('calendar')}
+              >
+                <ActionList.LeadingVisual>
+                  <CalendarIcon />
+                </ActionList.LeadingVisual>
+                カレンダー
+              </ActionList.Item>
+            </ActionList>
+          </ActionMenu.Overlay>
+        </ActionMenu>
       </Box>
 
       <ConfirmDialog
@@ -164,6 +189,13 @@ const SubHeader: React.FC = () => {
         isOpen={dialogState.showImportDialog}
         onClose={handlers.closeImportDialog}
       />
+
+      <BoardCreateDialog
+        isOpen={dialogState.isCreatingBoard}
+        onSave={handlers.createBoard}
+        onCancel={handlers.cancelCreateBoard}
+      />
+
     </Box>
   );
 };
