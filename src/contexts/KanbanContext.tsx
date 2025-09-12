@@ -624,52 +624,188 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     if (boards.length === 0) {
       const defaultBoard: KanbanBoard = {
         id: uuidv4(),
-        title: 'マイプロジェクト',
+        title: 'デモプロジェクト - 機能サンプル',
         columns: [
           {
             id: uuidv4(),
-            title: 'To Do',
+            title: 'バックログ',
             tasks: [
               {
                 id: uuidv4(),
-                title: 'プロジェクトの企画',
-                description: 'プロジェクトの目標と要件を明確にする',
-                createdAt: new Date(),
-                updatedAt: new Date(),
+                title: '🎯 重要タスク - プロジェクト企画',
+                description: 'プロジェクトの目標設定、要件定義、スコープの明確化\n\n詳細:\n• ステークホルダーとの要件整理\n• プロジェクトスコープの決定\n• 成功指標の設定',
+                dueDate: new Date(Date.now() - 24 * 60 * 60 * 1000), // 昨日期限（期限切れ）
+                labels: [
+                  { id: uuidv4(), name: '緊急', color: 'danger' },
+                  { id: uuidv4(), name: '企画', color: 'primary' }
+                ],
+                subTasks: [
+                  { id: uuidv4(), title: 'ステークホルダー分析', completed: true, createdAt: new Date() },
+                  { id: uuidv4(), title: '要件定義書作成', completed: false, createdAt: new Date() },
+                  { id: uuidv4(), title: 'スコープ確定', completed: false, createdAt: new Date() }
+                ],
+                createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+                updatedAt: new Date(Date.now() - 2 * 60 * 60 * 1000),
+              },
+              {
+                id: uuidv4(),
+                title: '📊 データベース設計',
+                description: 'データベーススキーマの設計と最適化',
+                dueDate: new Date(Date.now() + 24 * 60 * 60 * 1000), // 明日期限
+                labels: [
+                  { id: uuidv4(), name: '設計', color: 'accent' },
+                  { id: uuidv4(), name: 'データベース', color: 'secondary' }
+                ],
+                subTasks: [
+                  { id: uuidv4(), title: 'ER図作成', completed: false, createdAt: new Date() },
+                  { id: uuidv4(), title: 'インデックス設計', completed: false, createdAt: new Date() }
+                ],
+                createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
+                updatedAt: new Date(Date.now() - 30 * 60 * 1000),
               },
             ],
             color: '#f6f8fa'
           },
           {
             id: uuidv4(),
-            title: 'In Progress',
+            title: '進行中',
             tasks: [
               {
                 id: uuidv4(),
-                title: 'UIデザインの作成',
-                description: 'ユーザーインターフェースのデザインを作成',
-                createdAt: new Date(),
-                updatedAt: new Date(),
+                title: '🎨 UIコンポーネント開発',
+                description: 'React コンポーネントライブラリの構築\n\nPrimerデザインシステムを使用してコンポーネントを実装',
+                dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 1週間後
+                labels: [
+                  { id: uuidv4(), name: 'フロントエンド', color: 'success' },
+                  { id: uuidv4(), name: 'React', color: 'attention' }
+                ],
+                subTasks: [
+                  { id: uuidv4(), title: 'ボタンコンポーネント', completed: true, createdAt: new Date() },
+                  { id: uuidv4(), title: 'フォームコンポーネント', completed: true, createdAt: new Date() },
+                  { id: uuidv4(), title: 'モーダルコンポーネント', completed: false, createdAt: new Date() },
+                  { id: uuidv4(), title: 'ドロップダウンコンポーネント', completed: false, createdAt: new Date() }
+                ],
+                attachments: [
+                  {
+                    id: uuidv4(),
+                    name: 'design-spec.md',
+                    type: 'text/markdown',
+                    size: 2048,
+                    data: 'data:text/markdown;base64,IyDjg4fjgrbjgqTjg7Pjgrnjg5rjg4Pjgq/KU2ljqrjgobnjgovjgqjjgreHRmLjg7HjGV0aqW1tbLm5lbnAL',
+                    uploadedAt: new Date()
+                  }
+                ],
+                createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
+                updatedAt: new Date(Date.now() - 10 * 60 * 1000),
+              },
+              {
+                id: uuidv4(),
+                title: '🔧 API開発',
+                description: 'REST API エンドポイントの実装\n\n認証、CRUD操作、エラーハンドリングを含む',
+                dueDate: new Date(), // 今日期限
+                labels: [
+                  { id: uuidv4(), name: 'バックエンド', color: 'severe' },
+                  { id: uuidv4(), name: 'API', color: 'done' }
+                ],
+                subTasks: [
+                  { id: uuidv4(), title: 'ユーザー認証API', completed: true, createdAt: new Date() },
+                  { id: uuidv4(), title: 'タスク管理API', completed: false, createdAt: new Date() },
+                  { id: uuidv4(), title: 'ファイルアップロードAPI', completed: false, createdAt: new Date() }
+                ],
+                createdAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000),
+                updatedAt: new Date(Date.now() - 5 * 60 * 1000),
               },
             ],
             color: '#fef3c7'
           },
           {
             id: uuidv4(),
-            title: 'Complete',
+            title: 'レビュー待ち',
             tasks: [
               {
                 id: uuidv4(),
-                title: '技術調査',
-                description: '使用するフレームワークや技術の調査',
-                createdAt: new Date(),
-                updatedAt: new Date(),
+                title: '📋 テストケース作成',
+                description: 'ユニットテストとE2Eテストの実装',
+                labels: [
+                  { id: uuidv4(), name: 'テスト', color: 'sponsors' },
+                  { id: uuidv4(), name: '品質保証', color: 'default' }
+                ],
+                subTasks: [
+                  { id: uuidv4(), title: 'ユニットテスト', completed: true, createdAt: new Date() },
+                  { id: uuidv4(), title: 'インテグレーションテスト', completed: true, createdAt: new Date() },
+                  { id: uuidv4(), title: 'E2Eテスト', completed: true, createdAt: new Date() }
+                ],
+                attachments: [
+                  {
+                    id: uuidv4(),
+                    name: 'test-results.json',
+                    type: 'application/json',
+                    size: 1024,
+                    data: 'data:application/json;base64,eyJ0ZXN0UmVzdWx0cyI6ICJwYXNzZWQifQ==',
+                    uploadedAt: new Date()
+                  }
+                ],
+                createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+                updatedAt: new Date(Date.now() - 15 * 60 * 1000),
+              },
+            ],
+            color: '#e0e7ff'
+          },
+          {
+            id: uuidv4(),
+            title: '完了',
+            tasks: [
+              {
+                id: uuidv4(),
+                title: '✅ 技術調査と検証',
+                description: '使用するフレームワークとライブラリの技術検証\n\n調査結果をドキュメント化済み',
+                labels: [
+                  { id: uuidv4(), name: '調査', color: 'primary' },
+                  { id: uuidv4(), name: '完了', color: 'success' }
+                ],
+                subTasks: [
+                  { id: uuidv4(), title: 'React 19調査', completed: true, createdAt: new Date() },
+                  { id: uuidv4(), title: 'TypeScript 5.7調査', completed: true, createdAt: new Date() },
+                  { id: uuidv4(), title: 'Primer React調査', completed: true, createdAt: new Date() },
+                  { id: uuidv4(), title: '調査結果まとめ', completed: true, createdAt: new Date() }
+                ],
+                attachments: [
+                  {
+                    id: uuidv4(),
+                    name: 'tech-research.pdf',
+                    type: 'application/pdf',
+                    size: 5120,
+                    data: 'data:application/pdf;base64,JVBERi0xLjQKJeLjz9MKMSAwIG9iagoKZW5kb2JqCg==',
+                    uploadedAt: new Date()
+                  }
+                ],
+                completedAt: new Date(Date.now() - 24 * 60 * 60 * 1000),
+                createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000),
+                updatedAt: new Date(Date.now() - 24 * 60 * 60 * 1000),
+              },
+              {
+                id: uuidv4(),
+                title: '🔒 セキュリティ監査',
+                description: 'アプリケーションのセキュリティ脆弱性チェック',
+                labels: [
+                  { id: uuidv4(), name: 'セキュリティ', color: 'danger' },
+                  { id: uuidv4(), name: '監査', color: 'attention' },
+                  { id: uuidv4(), name: '完了', color: 'success' }
+                ],
+                subTasks: [
+                  { id: uuidv4(), title: '脆弱性スキャン', completed: true, createdAt: new Date() },
+                  { id: uuidv4(), title: 'ペネトレーションテスト', completed: true, createdAt: new Date() },
+                  { id: uuidv4(), title: 'セキュリティレポート作成', completed: true, createdAt: new Date() }
+                ],
+                completedAt: new Date(Date.now() - 48 * 60 * 60 * 1000),
+                createdAt: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000),
+                updatedAt: new Date(Date.now() - 48 * 60 * 60 * 1000),
               },
             ],
             color: '#d1fae5'
           },
         ],
-        createdAt: new Date(),
+        createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000),
         updatedAt: new Date(),
       };
       const initialBoards = [defaultBoard];
