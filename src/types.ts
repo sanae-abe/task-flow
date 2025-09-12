@@ -66,6 +66,21 @@ export interface SortConfig {
   icon?: string;
 }
 
+export type FilterType = 'all' | 'due-within-3-days' | 'due-today' | 'overdue' | 'label';
+
+export interface TaskFilter {
+  type: FilterType;
+  label: string;
+  selectedLabels?: string[]; // ラベルフィルターの場合に使用
+}
+
+export interface FilterConfig {
+  type: FilterType;
+  label: string;
+  icon?: string;
+  description?: string;
+}
+
 export interface KanbanBoard {
   id: string;
   title: string;

@@ -87,7 +87,14 @@
       "Bash(git commit -m \"$(cat <<''EOF''\nrefactor: ダイアログデザインを統一してUX向上\n\n- 全てのフォームダイアログをSimpleFormDialogに統一：\n  - ColumnCreateDialog: HeaderOverlayFormDialog → SimpleFormDialog\n  - BoardCreateDialog: HeaderOverlayFormDialog → SimpleFormDialog  \n  - BoardEditDialog: HeaderOverlayFormDialog → SimpleFormDialog\n- DataImportDialogをBaseDialogベースに変更：\n  - HeaderOverlayDialogからBaseDialogに移行\n  - レイアウトを他のダイアログと統一\n  - メッセージ表示とアクションボタンの配置を改善\n- TypeScript型安全性の向上：\n  - FormFieldPropsのsx型をany → unknownに変更\n  - ESLintの@typescript-eslint/no-explicit-anyエラーを解決\n- 統一されたダイアログデザインでユーザー体験を向上\n- BaseDialogベースの一貫したスタイルとレイアウト\n\n🤖 Generated with [Claude Code](https://claude.ai/code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
       "Bash(npm run lint -- --no-fix src/components/StatusSelector.tsx src/components/TaskEditForm.tsx src/components/TaskEditDialog.tsx src/hooks/useTaskEdit.ts src/hooks/useTaskCard.ts src/hooks/useTaskActions.ts src/components/TaskCard.tsx src/components/TaskDetailSidebar.tsx)",
       "Bash(npx eslint src/components/StatusSelector.tsx src/components/TaskEditForm.tsx src/components/TaskEditDialog.tsx src/hooks/useTaskEdit.ts src/hooks/useTaskCard.ts src/hooks/useTaskActions.ts src/components/TaskCard.tsx src/components/TaskDetailSidebar.tsx)",
-      "Bash(npx tsc --noEmit src/components/StatusSelector.tsx src/components/TaskEditForm.tsx src/components/TaskEditDialog.tsx src/hooks/useTaskEdit.ts src/hooks/useTaskCard.ts src/hooks/useTaskActions.ts src/components/TaskCard.tsx src/components/TaskDetailSidebar.tsx)"
+      "Bash(npx tsc --noEmit src/components/StatusSelector.tsx src/components/TaskEditForm.tsx src/components/TaskEditDialog.tsx src/hooks/useTaskEdit.ts src/hooks/useTaskCard.ts src/hooks/useTaskActions.ts src/components/TaskCard.tsx src/components/TaskDetailSidebar.tsx)",
+      "Bash(npx eslint src/components/TaskEditForm.tsx --fix)",
+      "Bash(npx eslint src/components/TaskEditDialog.tsx --fix)",
+      "Bash(npx eslint src/hooks/useTaskEdit.ts --fix)",
+      "Bash(npx eslint src/components/TaskCard.tsx --fix)",
+      "Bash(npx eslint src/components/TaskDetailSidebar.tsx --fix)",
+      "Bash(npx eslint src/hooks/useTaskActions.ts --fix)",
+      "Bash(cat /Users/sanae.abe/workspace/kanban-app/src/App.tsx)"
     ],
     "deny": [],
     "ask": []

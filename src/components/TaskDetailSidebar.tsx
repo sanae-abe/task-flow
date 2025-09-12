@@ -4,7 +4,6 @@ import React, { useEffect } from 'react';
 
 import { useTaskActions } from '../hooks/useTaskActions';
 import { useTaskColumn } from '../hooks/useTaskColumn';
-import { useKanban } from '../contexts/KanbanContext';
 import type { Task } from '../types';
 
 import ConfirmDialog from './ConfirmDialog';
@@ -21,7 +20,6 @@ interface TaskDetailSidebarProps {
 
 const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onClose }) => {
   const { columnName } = useTaskColumn(task);
-  const { state } = useKanban();
   const {
     showDeleteConfirm,
     showEditDialog,
@@ -146,7 +144,6 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
       <TaskEditDialog
         task={task}
         isOpen={showEditDialog}
-        columns={state.currentBoard?.columns ?? []}
         onSave={handleSaveEdit}
         onDelete={handleDeleteFromDialog}
         onCancel={() => setShowEditDialog(false)}

@@ -7,6 +7,7 @@ import { useKanban } from '../contexts/KanbanContext';
 import { useColumnState } from '../hooks/useColumnState';
 import type { Column, Task } from '../types';
 import { sortTasks } from '../utils/taskSort';
+import { filterTasks } from '../utils/taskFilter';
 
 import ColumnEditDialog from './ColumnEditDialog';
 import ColumnHeader from './ColumnHeader';
@@ -118,7 +119,9 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({ column, onTaskClick }) => {
     id: column.id,
   });
 
-  const sortedTasks = sortTasks(column.tasks, state.sortOption);
+  // フィルターを適用してからソート
+  const filteredTasks = filterTasks(column.tasks, state.taskFilter);
+  const sortedTasks = sortTasks(filteredTasks, state.sortOption);
   const taskIds = sortedTasks.map(task => task.id);
   
   return (

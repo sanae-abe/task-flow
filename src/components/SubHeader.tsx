@@ -10,12 +10,13 @@ import BoardEditDialog from './BoardEditDialog';
 import ColumnCreateDialog from './ColumnCreateDialog';
 import ConfirmDialog from './ConfirmDialog';
 import { DataImportDialog } from './DataImportDialog';
+import FilterSelector from './FilterSelector';
 import SubHeaderButton from './SubHeaderButton';
 import TaskSortSelector from './TaskSortSelector';
 import TaskStatsDisplay from './TaskStatsDisplay';
 
 const SubHeader: React.FC = () => {
-  const { setSortOption } = useKanban();
+  const { setSortOption, setTaskFilter } = useKanban();
   const {
     state,
     dialogState,
@@ -24,6 +25,20 @@ const SubHeader: React.FC = () => {
     canDeleteBoard,
     handlers,
   } = useSubHeader();
+
+  // 利用可能なラベル一覧を取得
+  const availableLabels = React.useMemo(() => {
+    if (!state.currentBoard) {return [];}
+    const labelMap = new Map();
+    state.currentBoard.columns.forEach(column => {
+      column.tasks.forEach(task => {
+        task.labels?.forEach(label => {
+          labelMap.set(label.id, label);
+        });
+      });
+    });
+    return Array.from(labelMap.values());
+  }, [state.currentBoard]);
 
   if (!state.currentBoard) {
     return null;
@@ -47,6 +62,11 @@ const SubHeader: React.FC = () => {
       <TaskStatsDisplay stats={taskStats} />
 
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+        <FilterSelector
+          currentFilter={state.taskFilter}
+          onFilterChange={setTaskFilter}
+          availableLabels={availableLabels}
+        />
         <TaskSortSelector
           currentSort={state.sortOption}
           onSortChange={setSortOption}

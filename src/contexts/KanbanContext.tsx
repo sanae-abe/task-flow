@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useReducer, useEffect, useMemo, useCallback, type ReactNode } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
-import type { KanbanBoard, Column, Task, Label, SubTask, FileAttachment, SortOption } from '../types';
+import type { KanbanBoard, Column, Task, Label, SubTask, FileAttachment, SortOption, TaskFilter } from '../types';
 import { saveBoards, loadBoards } from '../utils/storage';
 import { useNotify } from './NotificationContext';
 
@@ -9,6 +9,7 @@ interface KanbanState {
   boards: KanbanBoard[];
   currentBoard: KanbanBoard | null;
   sortOption: SortOption;
+  taskFilter: TaskFilter;
 }
 
 type KanbanAction =
@@ -29,7 +30,8 @@ type KanbanAction =
   | { type: 'ADD_SUBTASK'; payload: { taskId: string; title: string } }
   | { type: 'TOGGLE_SUBTASK'; payload: { taskId: string; subTaskId: string } }
   | { type: 'DELETE_SUBTASK'; payload: { taskId: string; subTaskId: string } }
-  | { type: 'SET_SORT_OPTION'; payload: SortOption };
+  | { type: 'SET_SORT_OPTION'; payload: SortOption }
+  | { type: 'SET_TASK_FILTER'; payload: TaskFilter };
 
 interface KanbanContextType {
   state: KanbanState;
@@ -51,6 +53,7 @@ interface KanbanContextType {
   deleteSubTask: (taskId: string, subTaskId: string) => void;
   importBoards: (boards: KanbanBoard[], replaceAll?: boolean) => void;
   setSortOption: (option: SortOption) => void;
+  setTaskFilter: (filter: TaskFilter) => void;
 }
 
 const KanbanContext = createContext<KanbanContextType | undefined>(undefined);
@@ -114,6 +117,31 @@ const loadSortOption = (): SortOption => {
     // eslint-disable-next-line no-console
     console.warn('LocalStorage access failed:', error);
     return 'manual';
+  }
+};
+
+// ヘルパー関数: LocalStorageにフィルター設定を安全に保存
+const saveTaskFilter = (filter: TaskFilter) => {
+  try {
+    localStorage.setItem('task-filter', JSON.stringify(filter));
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.warn('LocalStorage access failed:', error);
+  }
+};
+
+// ヘルパー関数: LocalStorageからフィルター設定を安全に取得
+const loadTaskFilter = (): TaskFilter => {
+  try {
+    const saved = localStorage.getItem('task-filter');
+    if (saved) {
+      return JSON.parse(saved) as TaskFilter;
+    }
+    return { type: 'all', label: 'すべてのタスク' };
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.warn('LocalStorage access failed:', error);
+    return { type: 'all', label: 'すべてのタスク' };
   }
 };
 
@@ -560,6 +588,14 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
         sortOption: action.payload,
       };
     }
+
+    case 'SET_TASK_FILTER': {
+      saveTaskFilter(action.payload);
+      return {
+        ...state,
+        taskFilter: action.payload,
+      };
+    }
     
     default:
       return state;
@@ -571,6 +607,7 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     boards: [],
     currentBoard: null,
     sortOption: loadSortOption(),
+    taskFilter: loadTaskFilter(),
   });
   const [isInitialized, setIsInitialized] = React.useState(false);
   const notify = useNotify();
@@ -754,6 +791,10 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   const setSortOption = useCallback((option: SortOption) => {
     dispatch({ type: 'SET_SORT_OPTION', payload: option });
   }, []);
+
+  const setTaskFilter = useCallback((filter: TaskFilter) => {
+    dispatch({ type: 'SET_TASK_FILTER', payload: filter });
+  }, []);
   
   const contextValue = useMemo(
     () => ({
@@ -776,6 +817,7 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       deleteSubTask,
       importBoards,
       setSortOption,
+      setTaskFilter,
     }),
     [
       state,
@@ -796,6 +838,7 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       deleteSubTask,
       importBoards,
       setSortOption,
+      setTaskFilter,
     ]
   );
 

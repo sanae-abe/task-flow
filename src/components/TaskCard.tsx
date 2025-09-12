@@ -4,7 +4,6 @@ import { Box } from '@primer/react';
 import React from 'react';
 
 import { useTaskCard } from '../hooks/useTaskCard';
-import { useKanban } from '../contexts/KanbanContext';
 import type { Task } from '../types';
 import { formatDueDate } from '../utils/dateHelpers';
 
@@ -49,7 +48,6 @@ const getCardStyles = (isRightmostColumn: boolean, isDragging: boolean, transfor
 
 const TaskCard: React.FC<TaskCardProps> = ({ task, columnId, onTaskClick }) => {
   const taskCardData = useTaskCard(task, columnId);
-  const { state } = useKanban();
   
   const {
     attributes,
@@ -107,7 +105,6 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, columnId, onTaskClick }) => {
       <TaskEditDialog
         task={task}
         isOpen={taskCardData.showEditDialog}
-        columns={state.currentBoard?.columns ?? []}
         onSave={taskCardData.handleSave}
         onDelete={taskCardData.handleDeleteFromDialog}
         onCancel={taskCardData.handleCancel}
