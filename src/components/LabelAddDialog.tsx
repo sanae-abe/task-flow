@@ -24,12 +24,14 @@ const LabelAddDialog: React.FC<LabelAddDialogProps> = ({
   const [labelText, setLabelText] = useState('');
   const [selectedColor, setSelectedColor] = useState('default');
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   // フォームリセット
   const resetForm = useCallback(() => {
     setLabelText('');
     setSelectedColor('default');
     setIsLoading(false);
+    setErrorMessage('');
   }, []);
 
   // ダイアログを閉じる
@@ -42,6 +44,7 @@ const LabelAddDialog: React.FC<LabelAddDialogProps> = ({
   const handleCreate = useCallback(async () => {
     const trimmedText = labelText.trim();
     if (!trimmedText || trimmedText.length < 2) {
+      setErrorMessage('ラベル名は2文字以上で入力してください');
       return;
     }
 
@@ -52,21 +55,19 @@ const LabelAddDialog: React.FC<LabelAddDialogProps> = ({
     );
     
     if (isDuplicate) {
-      // TODO: エラー表示の実装
-      // eslint-disable-next-line no-console
-      console.warn('同じ名前のラベルが既に存在します');
+      setErrorMessage('同じ名前のラベルが既に存在します');
       return;
     }
 
     setIsLoading(true);
+    setErrorMessage('');
     
     try {
       const newLabel = createLabel(trimmedText, selectedColor);
       onLabelCreated(newLabel);
       resetForm();
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('ラベル作成エラー:', error);
+      setErrorMessage('ラベルの作成に失敗しました');
       setIsLoading(false);
     }
   }, [labelText, selectedColor, getAllLabels, onLabelCreated, resetForm]);
@@ -112,12 +113,21 @@ const LabelAddDialog: React.FC<LabelAddDialogProps> = ({
           <TextInput
             id="label-text-input"
             value={labelText}
-            onChange={(e) => setLabelText(e.target.value)}
+            onChange={(e) => {
+              setLabelText(e.target.value);
+              setErrorMessage('');
+            }}
             onKeyDown={handleKeyDown}
             placeholder="ラベル名を入力してください"
             autoFocus
             sx={{ width: '100%' }}
           />
+          {/* エラーメッセージ */}
+          {errorMessage && (
+            <Text sx={{ color: 'danger.fg', fontSize: 1, mt: 1 }}>
+              {errorMessage}
+            </Text>
+          )}
         </Box>
 
         {/* 色選択 */}
