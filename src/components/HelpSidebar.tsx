@@ -3,7 +3,7 @@ import { Button, Box, Heading, Text } from '@primer/react';
 import React, { useEffect, useCallback } from 'react';
 
 // 定数定義
-const SIDEBAR_WIDTH = '450px';
+const SIDEBAR_WIDTH = '440px';
 const SIDEBAR_Z_INDEX = 1000;
 const TITLE_MIN_WIDTH = '120px';
 

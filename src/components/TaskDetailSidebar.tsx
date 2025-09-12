@@ -55,7 +55,7 @@ const TaskDetailSidebar = memo<TaskDetailSidebarProps>(({ task, isOpen, onClose 
     position: "fixed" as const,
     top: 0,
     right: 0,
-    width: { base: "100vw", md: "450px" },
+    width: '440px',
     height: "100vh",
     bg: "canvas.default",
     boxShadow: '0 16px 32px rgba(0, 0, 0, 0.24)',
