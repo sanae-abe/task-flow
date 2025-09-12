@@ -6,7 +6,7 @@ import type { Label, FileAttachment } from '../types';
 import BaseDialog, { DialogActions } from './BaseDialog';
 import FileUploader from './FileUploader';
 import FormField, { TextareaField, DateField } from './FormField';
-import MultiLabelSelector from './MultiLabelSelector';
+import ImprovedLabelSelector from './ImprovedLabelSelector';
 
 interface TaskCreateDialogProps {
   isOpen: boolean;
@@ -100,7 +100,7 @@ const TaskCreateDialog = memo<TaskCreateDialogProps>(({
           <Text sx={{ fontSize: 1, color: 'fg.muted', mb: 1, display: 'block', fontWeight: '700' }}>
             ラベル（任意）
           </Text>
-          <MultiLabelSelector
+          <ImprovedLabelSelector
             selectedLabels={labels}
             onLabelsChange={setLabels}
           />

@@ -4,7 +4,7 @@ import React from 'react';
 import type { Label } from '../types';
 
 import FormField, { TextareaField, DateField , FORM_STYLES } from './FormField';
-import MultiLabelSelector from './MultiLabelSelector';
+import ImprovedLabelSelector from './ImprovedLabelSelector';
 
 interface TaskDetailEditFormProps {
   editTitle: string;
@@ -59,7 +59,7 @@ const TaskDetailEditForm: React.FC<TaskDetailEditFormProps> = ({
         >
           ラベル
         </Text>
-        <MultiLabelSelector
+        <ImprovedLabelSelector
           selectedLabels={editLabels}
           onLabelsChange={onLabelsChange}
         />

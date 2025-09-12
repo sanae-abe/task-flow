@@ -6,7 +6,7 @@ import type { Label, FileAttachment } from '../../../types';
 
 import ColorSelector from '../../ColorSelector';
 import FileUploader from '../../FileUploader';
-import MultiLabelSelector from '../../MultiLabelSelector';
+import ImprovedLabelSelector from '../../ImprovedLabelSelector';
 
 // ヘルパー関数: unknown型を安全にstringに変換
 const toStringValue = (value: unknown): string => {
@@ -219,7 +219,7 @@ const UnifiedFormField = memo<UnifiedFormFieldProps>(({
 
       case 'label-selector':
         return (
-          <MultiLabelSelector
+          <ImprovedLabelSelector
             selectedLabels={value as Label[] ?? []}
             onLabelsChange={(labels: Label[]) => handleChange(labels)}
           />

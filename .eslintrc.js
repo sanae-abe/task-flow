@@ -15,6 +15,10 @@ module.exports = {
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/no-explicit-any': 'error',
     '@typescript-eslint/no-non-null-assertion': 'warn',
+    // Disable rules that require parserServices
+    '@typescript-eslint/no-unnecessary-type-assertion': 'off',
+    '@typescript-eslint/prefer-nullish-coalescing': 'off',
+    '@typescript-eslint/prefer-optional-chain': 'off',
     
     // React rules
     'react/jsx-uses-react': 'off',
