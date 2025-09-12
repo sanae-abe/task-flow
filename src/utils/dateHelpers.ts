@@ -57,7 +57,8 @@ export const formatDueDateWithYear = (date: Date): string => {
   return `${dateStr}（${weekdayStr}）`;
 };
 
-export const formatDateTime = (date: Date): string => date.toLocaleDateString('ja-JP', {
+export const formatDateTime = (date: string | Date): string => 
+  new Date(date).toLocaleDateString('ja-JP', {
     year: 'numeric',
     month: 'short',
     day: 'numeric',
