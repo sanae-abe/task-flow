@@ -58,6 +58,14 @@ export interface Column {
   color?: string;
 }
 
+export type SortOption = 'dueDate' | 'createdAt' | 'updatedAt' | 'title';
+
+export interface SortConfig {
+  option: SortOption;
+  label: string;
+  icon?: string;
+}
+
 export interface KanbanBoard {
   id: string;
   title: string;

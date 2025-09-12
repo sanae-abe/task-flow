@@ -3,8 +3,10 @@ import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { Box } from '@primer/react';
 import React from 'react';
 
+import { useKanban } from '../contexts/KanbanContext';
 import { useColumnState } from '../hooks/useColumnState';
 import type { Column, Task } from '../types';
+import { sortTasks } from '../utils/taskSort';
 
 import ColumnEditDialog from './ColumnEditDialog';
 import ColumnHeader from './ColumnHeader';
@@ -95,6 +97,7 @@ const ColumnDialogs: React.FC<ColumnDialogsProps> = ({
 );
 
 const KanbanColumn: React.FC<KanbanColumnProps> = ({ column, onTaskClick }) => {
+  const { state } = useKanban();
   const {
     showCreateDialog,
     setShowCreateDialog,
@@ -114,7 +117,8 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({ column, onTaskClick }) => {
     id: column.id,
   });
 
-  const taskIds = column.tasks.map(task => task.id);
+  const sortedTasks = sortTasks(column.tasks, state.sortOption);
+  const taskIds = sortedTasks.map(task => task.id);
   
   return (
     <Box sx={COLUMN_STYLES.container}>
@@ -127,7 +131,7 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({ column, onTaskClick }) => {
       
       <Box ref={setNodeRef} sx={COLUMN_STYLES.taskList}>
         <SortableContext items={taskIds} strategy={verticalListSortingStrategy}>
-          {column.tasks.map((task) => (
+          {sortedTasks.map((task) => (
             <TaskCard 
               key={task.id} 
               task={task} 

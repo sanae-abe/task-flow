@@ -1,13 +1,14 @@
 import React, { createContext, useContext, useReducer, useEffect, useMemo, useCallback, type ReactNode } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
-import type { KanbanBoard, Column, Task, Label, SubTask, FileAttachment } from '../types';
+import type { KanbanBoard, Column, Task, Label, SubTask, FileAttachment, SortOption } from '../types';
 import { saveBoards, loadBoards } from '../utils/storage';
 import { useNotify } from './NotificationContext';
 
 interface KanbanState {
   boards: KanbanBoard[];
   currentBoard: KanbanBoard | null;
+  sortOption: SortOption;
 }
 
 type KanbanAction =
@@ -27,7 +28,8 @@ type KanbanAction =
   | { type: 'CLEAR_COMPLETED_TASKS' }
   | { type: 'ADD_SUBTASK'; payload: { taskId: string; title: string } }
   | { type: 'TOGGLE_SUBTASK'; payload: { taskId: string; subTaskId: string } }
-  | { type: 'DELETE_SUBTASK'; payload: { taskId: string; subTaskId: string } };
+  | { type: 'DELETE_SUBTASK'; payload: { taskId: string; subTaskId: string } }
+  | { type: 'SET_SORT_OPTION'; payload: SortOption };
 
 interface KanbanContextType {
   state: KanbanState;
@@ -48,6 +50,7 @@ interface KanbanContextType {
   toggleSubTask: (taskId: string, subTaskId: string) => void;
   deleteSubTask: (taskId: string, subTaskId: string) => void;
   importBoards: (boards: KanbanBoard[], replaceAll?: boolean) => void;
+  setSortOption: (option: SortOption) => void;
 }
 
 const KanbanContext = createContext<KanbanContextType | undefined>(undefined);
@@ -494,6 +497,13 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
 
       return updateBoardInState(state, updatedBoard);
     }
+
+    case 'SET_SORT_OPTION': {
+      return {
+        ...state,
+        sortOption: action.payload,
+      };
+    }
     
     default:
       return state;
@@ -504,6 +514,7 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   const [state, dispatch] = useReducer(kanbanReducer, {
     boards: [],
     currentBoard: null,
+    sortOption: 'createdAt' as SortOption,
   });
   const [isInitialized, setIsInitialized] = React.useState(false);
   const notify = useNotify();
@@ -683,6 +694,10 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     const action = replaceAll ? '置換' : '追加';
     notify.success('データインポート完了', `${boards.length}個のボードを${action}しました`);
   }, [notify]);
+
+  const setSortOption = useCallback((option: SortOption) => {
+    dispatch({ type: 'SET_SORT_OPTION', payload: option });
+  }, []);
   
   const contextValue = useMemo(
     () => ({
@@ -704,6 +719,7 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       toggleSubTask,
       deleteSubTask,
       importBoards,
+      setSortOption,
     }),
     [
       state,
@@ -723,6 +739,7 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       toggleSubTask,
       deleteSubTask,
       importBoards,
+      setSortOption,
     ]
   );
 

@@ -71,7 +71,9 @@
       "Bash(npx eslint src/contexts/NotificationContext.tsx)",
       "Bash(npx eslint src/components/UniversalDropZone.tsx)",
       "Bash(npx tsc --noEmit src/components/UniversalDropZone.tsx)",
-      "Bash(npx eslint src --ext .ts,.tsx --ignore-pattern \"**/*.test.*\" --ignore-pattern \"**/*.spec.*\")"
+      "Bash(npx eslint src --ext .ts,.tsx --ignore-pattern \"**/*.test.*\" --ignore-pattern \"**/*.spec.*\")",
+      "Bash(git commit -m \"$(cat <<''EOF''\nfix: TypeScriptコンパイルエラーとButtonコンポーネント型問題を修正\n\n- ImportModeSelectorのTypeScript exhaustiveness checkを修正\n- Primer ButtonコンポーネントのJSX型エラーを解決：\n  - children propの型エラー（''never'' type）を回避\n  - 標準HTMLボタンに変更してスタイルを手動適用\n  - アイコン、ラベル、説明文の表示を維持\n- 未使用のButtonインポートを削除\n- 通知機能とデータインポート機能の実装：\n  - NotificationContainerとNotificationContextを追加\n  - useDataImportDropZoneフックの状態管理改善\n  - FileListコンポーネントの型安全性向上\n- ビルド・ESLint・TypeScript全てのチェックが正常に通過\n\n🤖 Generated with [Claude Code](https://claude.ai/code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(npm run lint -- --ignore-pattern \"**/*.test.*\" --ignore-pattern \"**/*.spec.*\")"
     ],
     "deny": [],
     "ask": []
