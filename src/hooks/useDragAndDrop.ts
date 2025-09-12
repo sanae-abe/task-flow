@@ -34,12 +34,14 @@ export const useDragAndDrop = ({ board, onMoveTask, onSortToManual }: UseDragAnd
   const handleDragStart = (event: DragStartEvent): void => {
     const { active } = event;
     const task = findTaskById(active.id as string);
+// eslint-disable-next-line no-console
     console.log('🎯 Drag Start:', { taskId: active.id, taskTitle: task?.title });
     setActiveTask(task);
   };
 
   const handleDragOver = (event: DragOverEvent): void => {
     const { active, over } = event;
+// eslint-disable-next-line no-console
     console.log('👀 Drag Over:', { 
       activeId: active.id, 
       overId: over?.id,
@@ -51,6 +53,7 @@ export const useDragAndDrop = ({ board, onMoveTask, onSortToManual }: UseDragAnd
     const { active, over } = event;
     setActiveTask(null);
 
+// eslint-disable-next-line no-console
     console.log('🔄 Drag End Event:', { 
       activeId: active.id, 
       overId: over?.id,
@@ -59,11 +62,13 @@ export const useDragAndDrop = ({ board, onMoveTask, onSortToManual }: UseDragAnd
     });
 
     if (!over) {
+// eslint-disable-next-line no-console
       console.log('❌ Early return: no over target detected');
       return;
     }
 
     if (!board) {
+// eslint-disable-next-line no-console
       console.log('❌ Early return: no board available');
       return;
     }
@@ -72,9 +77,11 @@ export const useDragAndDrop = ({ board, onMoveTask, onSortToManual }: UseDragAnd
     const overId = over.id as string;
 
     const sourceColumnId = findTaskColumnId(activeTaskId);
+// eslint-disable-next-line no-console
     console.log('📍 Source column found:', sourceColumnId);
     
     if (!sourceColumnId) {
+// eslint-disable-next-line no-console
       console.log('❌ Source column not found');
       return;
     }
@@ -86,59 +93,72 @@ export const useDragAndDrop = ({ board, onMoveTask, onSortToManual }: UseDragAnd
     // カラムにドロップした場合
     const targetColumn = board.columns.find((col) => col.id === overId);
     if (targetColumn) {
+// eslint-disable-next-line no-console
       console.log('📂 Dropped on column:', overId);
       targetColumnId = overId;
       targetIndex = targetColumn.tasks.length; // カラムの最後に追加
     } else {
       // タスクにドロップした場合、そのタスクの位置を特定
+// eslint-disable-next-line no-console
       console.log('📋 Dropped on task:', overId);
       targetColumnId = findTaskColumnId(overId) ?? '';
       const targetCol = board.columns.find((col) => col.id === targetColumnId);
       
+// eslint-disable-next-line no-console
       console.log('📍 Target column found:', targetColumnId);
       
       if (!targetCol) {
+// eslint-disable-next-line no-console
         console.log('❌ Target column not found');
         return;
       }
       
       const targetTaskIndex = targetCol.tasks.findIndex((task: Task) => task.id === overId);
+// eslint-disable-next-line no-console
       console.log('📋 Target task index:', targetTaskIndex);
       
       if (targetTaskIndex === -1) {
+// eslint-disable-next-line no-console
         console.log('❌ Target task not found');
         return;
       }
       
       // 同じカラム内でドラッグした場合の位置調整
       if (sourceColumnId === targetColumnId) {
+// eslint-disable-next-line no-console
         console.log('🔄 Same column reorder');
         const sourceCol = board.columns.find((col) => col.id === sourceColumnId);
         if (!sourceCol) {
+// eslint-disable-next-line no-console
           console.log('❌ Source column not found for reorder');
           return;
         }
         
         const oldIndex = sourceCol.tasks.findIndex((task: Task) => task.id === activeTaskId);
+// eslint-disable-next-line no-console
         console.log('📋 Old index:', oldIndex, 'Target index:', targetTaskIndex);
         
         if (oldIndex === targetTaskIndex) {
+// eslint-disable-next-line no-console
           console.log('↔️ Same position, no move needed');
           return;
         }
         
         targetIndex = targetTaskIndex;
       } else {
+// eslint-disable-next-line no-console
         console.log('🔄 Cross-column move');
         targetIndex = targetTaskIndex;
       }
     }
 
     if (!targetColumnId) {
+// eslint-disable-next-line no-console
       console.log('❌ No target column ID');
       return;
     }
 
+// eslint-disable-next-line no-console
     console.log('✅ Moving task:', {
       taskId: activeTaskId,
       from: sourceColumnId,

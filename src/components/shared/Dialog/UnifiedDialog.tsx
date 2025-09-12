@@ -126,7 +126,6 @@ const DialogHeader = memo<{
         ariaLabel="ダイアログを閉じる"
         variant="muted"
         size="medium"
-        style="custom"
       />
     )}
   </Box>

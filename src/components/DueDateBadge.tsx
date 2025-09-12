@@ -29,7 +29,7 @@ const DueDateBadge: React.FC<DueDateBadgeProps> = ({
       variant={getVariant()}
       icon={CalendarIcon}
       size="medium"
-      sx={{ border: 'none' }}
+      sx={{ border: 'none', bg: 'transparent' }}
     >
       期限: {formatDueDate(dueDate)}
     </StatusBadge>

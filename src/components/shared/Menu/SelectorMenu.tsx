@@ -17,8 +17,7 @@ const SelectorMenu = memo<SelectorMenuProps>(({
   trigger,
   showSelection = true
 }) => {
-  const menuItems = useMemo(() => {
-    return options.map(option => ({
+  const menuItems = useMemo(() => options.map(option => ({
       id: option.id,
       type: 'selectable' as const,
       label: option.label,
@@ -26,8 +25,7 @@ const SelectorMenu = memo<SelectorMenuProps>(({
       disabled: option.disabled,
       selected: selectedValue === option.value,
       onSelect: () => onSelectionChange(option.value)
-    }));
-  }, [options, selectedValue, onSelectionChange]);
+    })), [options, selectedValue, onSelectionChange]);
 
   // 現在選択中のオプションをトリガーに表示
   const enhancedTrigger = useMemo(() => {

@@ -24,7 +24,7 @@ export interface ValidationRule {
   minLength?: number;
   maxLength?: number;
   pattern?: RegExp;
-  custom?: (value: any) => string | null;
+  custom?: (value: unknown) => string | null;
 }
 
 // フォームフィールド設定
@@ -34,7 +34,7 @@ export interface FormFieldConfig {
   type: FieldType;
   label: string;
   placeholder?: string;
-  value: any;
+  value: unknown;
   validation?: ValidationRule;
   options?: Array<{ value: string; label: string }>;
   rows?: number; // textarea用
@@ -43,7 +43,7 @@ export interface FormFieldConfig {
   hideLabel?: boolean;
   customComponent?: ReactNode;
   sx?: Record<string, unknown>;
-  onChange: (value: any) => void;
+  onChange: (value: unknown) => void;
   onKeyDown?: (event: React.KeyboardEvent) => void;
 }
 
@@ -55,7 +55,7 @@ export interface FormError {
 
 // フォーム状態管理
 export interface FormState {
-  values: Record<string, any>;
+  values: Record<string, unknown>;
   errors: FormError[];
   touched: Record<string, boolean>;
   isSubmitting: boolean;
@@ -65,20 +65,20 @@ export interface FormState {
 
 // フォームアクション
 export type FormAction = 
-  | { type: 'SET_FIELD_VALUE'; fieldId: string; value: any }
+  | { type: 'SET_FIELD_VALUE'; fieldId: string; value: unknown }
   | { type: 'SET_FIELD_ERROR'; fieldId: string; error: string | null }
   | { type: 'SET_FIELD_TOUCHED'; fieldId: string; touched: boolean }
   | { type: 'SET_SUBMITTING'; isSubmitting: boolean }
   | { type: 'SET_ERRORS'; errors: FormError[] }
-  | { type: 'RESET_FORM'; initialValues?: Record<string, any> }
+  | { type: 'RESET_FORM'; initialValues?: Record<string, unknown> }
   | { type: 'VALIDATE_FORM' };
 
 // 統合フォームプロパティ
 export interface UnifiedFormProps {
   fields: FormFieldConfig[];
-  onSubmit: (values: Record<string, any>) => void | Promise<void>;
+  onSubmit: (values: Record<string, unknown>) => void | Promise<void>;
   onCancel?: () => void;
-  initialValues?: Record<string, any>;
+  initialValues?: Record<string, unknown>;
   submitText?: string;
   cancelText?: string;
   showCancelButton?: boolean;
@@ -149,20 +149,20 @@ export interface TaskFormConfig {
 // 汎用フォームフックの型
 export interface UseFormReturn {
   state: FormState;
-  setValue: (fieldId: string, value: any) => void;
+  setValue: (fieldId: string, value: unknown) => void;
   setError: (fieldId: string, error: string | null) => void;
   setTouched: (fieldId: string, touched: boolean) => void;
   validateField: (fieldId: string) => boolean;
   validateForm: () => boolean;
-  resetForm: (initialValues?: Record<string, any>) => void;
-  handleSubmit: (onSubmit: (values: Record<string, any>) => void | Promise<void>) => (e?: React.FormEvent) => void;
+  resetForm: (initialValues?: Record<string, unknown>) => void;
+  handleSubmit: (onSubmit: (values: Record<string, unknown>) => void | Promise<void>) => (e?: React.FormEvent) => void;
   isFieldValid: (fieldId: string) => boolean;
   getFieldError: (fieldId: string) => string | null;
 }
 
 // フォームイベントハンドラー型
 export interface FormEventHandlers {
-  onFieldChange: (fieldId: string, value: any) => void;
+  onFieldChange: (fieldId: string, value: unknown) => void;
   onFieldBlur: (fieldId: string) => void;
   onFieldFocus: (fieldId: string) => void;
   onKeyDown: (event: React.KeyboardEvent, fieldId: string) => void;

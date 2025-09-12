@@ -90,7 +90,6 @@ export const DialogHeader = memo<DialogHeaderProps>(({
       ariaLabel="ダイアログを閉じる"
       variant="muted"
       size="medium"
-      style="custom"
     />
   </Box>
 ));

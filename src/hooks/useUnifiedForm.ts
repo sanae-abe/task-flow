@@ -229,6 +229,7 @@ export const useUnifiedForm = (
         
         await onSubmit(state.values);
       } catch (error) {
+        // eslint-disable-next-line no-console
         console.error('Form submission error:', error);
       } finally {
         dispatch({ type: 'SET_SUBMITTING', isSubmitting: false });

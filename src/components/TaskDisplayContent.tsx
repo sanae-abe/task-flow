@@ -32,7 +32,9 @@ const TaskDisplayContent = React.memo<TaskDisplayContentProps>(({ task, columnNa
 
       {task.dueDate && (
         <TaskDisplaySection title="期限">
-          <DueDateDisplay dueDate={task.dueDate} showYear />
+          <ContentBox>
+            <DueDateDisplay dueDate={task.dueDate} showYear />
+          </ContentBox>
         </TaskDisplaySection>
       )}
 

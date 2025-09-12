@@ -46,7 +46,6 @@ const SubTaskItem: React.FC<SubTaskItemProps> = ({
         ariaLabel={`${subTask.title}を${subTask.completed ? '未完了' : '完了'}にする`}
         variant="success"
         size="small"
-        style="primer"
         stopPropagation
         sx={{
           '&:hover': {
@@ -70,7 +69,6 @@ const SubTaskItem: React.FC<SubTaskItemProps> = ({
         ariaLabel={`${subTask.title}を削除`}
         variant="danger"
         size="small"
-        style="primer"
         stopPropagation
         sx={{ 
           '&:hover': {

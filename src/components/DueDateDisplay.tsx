@@ -37,13 +37,7 @@ const getBadgeConfig = (isOverdue: boolean, isDueToday: boolean, isDueTomorrow: 
 };
 
 const getContainerStyles = (isOverdue: boolean, isDueToday: boolean, isDueTomorrow: boolean) => ({
-  bg: isOverdue 
-    ? 'danger.subtle' 
-    : isDueToday 
-    ? 'attention.subtle'
-    : isDueTomorrow 
-    ? 'accent.subtle' 
-    : 'canvas.subtle',
+  bg: 'transparent',
   color: isOverdue 
     ? 'danger.emphasis' 
     : isDueToday 
@@ -58,8 +52,8 @@ const StatusBadge = memo<{ config: BadgeConfig }>(({ config }) => (
     sx={{
       fontSize: 0,
       fontWeight: '700',
-      color: '#ffffff',
-      bg: config.bg,
+      color: config.bg, // 背景色を文字色として使用
+      bg: 'transparent',
       px: 2,
       py: 1,
       borderRadius: 2,

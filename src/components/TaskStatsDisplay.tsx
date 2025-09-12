@@ -18,7 +18,7 @@ interface UrgentLabelProps {
 }
 
 const UrgentLabel: React.FC<UrgentLabelProps> = ({ variant, icon: IconComponent, count, label }) => (
-  <StatusBadge variant={variant} icon={IconComponent} size="medium" sx={{ border: 'none' }}>
+  <StatusBadge variant={variant} icon={IconComponent} size="medium" sx={{ border: 'none', bg: 'transparent' }}>
     {label}: {count}
   </StatusBadge>
 );

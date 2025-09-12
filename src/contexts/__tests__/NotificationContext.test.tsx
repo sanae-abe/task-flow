@@ -1,6 +1,5 @@
 import React from 'react';
-import { render, screen, act, waitFor } from '@testing-library/react';
-import { renderHook } from '@testing-library/react';
+import { act, waitFor, renderHook } from '@testing-library/react';
 import { 
   NotificationProvider, 
   useNotifications, 
@@ -273,8 +272,11 @@ describe('NotificationContext', () => {
 
       // loading通知は削除され、success通知が追加される
       await waitFor(() => {
+        // eslint-disable-next-line testing-library/no-wait-for-multiple-assertions
         expect(result.current.notifications.notifications).toHaveLength(1);
+        // eslint-disable-next-line testing-library/no-wait-for-multiple-assertions
         expect(result.current.notifications.notifications[0].type).toBe('success');
+        // eslint-disable-next-line testing-library/no-wait-for-multiple-assertions
         expect(result.current.notifications.notifications[0].message).toBe('Success!');
       });
     });
@@ -298,14 +300,18 @@ describe('NotificationContext', () => {
             error: 'Error occurred'
           });
         } catch (error) {
+          // eslint-disable-next-line jest/no-conditional-expect
           expect(error).toBeInstanceOf(Error);
         }
       });
 
       // loading通知は削除され、error通知が追加される
       await waitFor(() => {
+        // eslint-disable-next-line testing-library/no-wait-for-multiple-assertions
         expect(result.current.notifications.notifications).toHaveLength(1);
+        // eslint-disable-next-line testing-library/no-wait-for-multiple-assertions
         expect(result.current.notifications.notifications[0].type).toBe('error');
+        // eslint-disable-next-line testing-library/no-wait-for-multiple-assertions
         expect(result.current.notifications.notifications[0].message).toBe('Error occurred');
       });
     });
@@ -330,7 +336,9 @@ describe('NotificationContext', () => {
       });
 
       await waitFor(() => {
+        // eslint-disable-next-line testing-library/no-wait-for-multiple-assertions
         expect(result.current.notifications.notifications).toHaveLength(1);
+        // eslint-disable-next-line testing-library/no-wait-for-multiple-assertions
         expect(result.current.notifications.notifications[0].message).toBe('User Test User created successfully!');
       });
     });

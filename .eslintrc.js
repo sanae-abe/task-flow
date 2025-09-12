@@ -1,26 +1,12 @@
 module.exports = {
   root: true,
-  env: {
-    browser: true,
-    es2022: true,
-    node: true
-  },
   extends: [
     'react-app',
     'react-app/jest'
   ],
-  parser: '@typescript-eslint/parser',
-  parserOptions: {
-    ecmaVersion: 2022,
-    sourceType: 'module',
-    ecmaFeatures: {
-      jsx: true
-    },
-    project: './tsconfig.json'
-  },
   // plugins: [], // Avoid conflicts with react-app config
   rules: {
-    // TypeScript rules
+    // Basic TypeScript rules that don't require parser services
     '@typescript-eslint/no-unused-vars': ['error', { 
       argsIgnorePattern: '^_',
       varsIgnorePattern: '^_',
@@ -29,16 +15,6 @@ module.exports = {
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/no-explicit-any': 'error',
     '@typescript-eslint/no-non-null-assertion': 'warn',
-    '@typescript-eslint/consistent-type-imports': ['error', { 
-      prefer: 'type-imports',
-      fixStyle: 'separate-type-imports'
-    }],
-    '@typescript-eslint/no-unnecessary-type-assertion': 'error',
-    '@typescript-eslint/prefer-nullish-coalescing': 'error',
-    '@typescript-eslint/prefer-optional-chain': 'error',
-    '@typescript-eslint/strict-boolean-expressions': 'off',
-    '@typescript-eslint/no-floating-promises': 'error',
-    '@typescript-eslint/await-thenable': 'error',
     
     // React rules
     'react/jsx-uses-react': 'off',

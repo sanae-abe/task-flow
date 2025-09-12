@@ -27,7 +27,6 @@ const TaskDisplay: React.FC<TaskDisplayProps> = ({
             ariaLabel={isRightmostColumn ? "タスクを未完了にする" : "タスクを完了にする"}
             variant="success"
             size="small"
-            style="primer"
             sx={{
               '&:hover': {
                 bg: 'transparent',

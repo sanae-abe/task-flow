@@ -62,7 +62,6 @@ const LabelChip = memo<LabelChipProps>(({
           ariaLabel={`${label.name}ラベルを削除`}
           variant="muted"
           size="small"
-          style="custom"
           sx={{
             color: colors.color,
             '&:hover': {

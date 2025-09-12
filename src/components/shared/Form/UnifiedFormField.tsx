@@ -8,6 +8,14 @@ import ColorSelector from '../../ColorSelector';
 import FileUploader from '../../FileUploader';
 import MultiLabelSelector from '../../MultiLabelSelector';
 
+// ヘルパー関数: unknown型を安全にstringに変換
+const toStringValue = (value: unknown): string => {
+  if (value === null || value === undefined) {
+    return '';
+  }
+  return String(value);
+};
+
 // フォームフィールドスタイル定数
 const UNIFIED_FORM_STYLES = {
   container: {
@@ -111,7 +119,7 @@ const UnifiedFormField = memo<UnifiedFormFieldProps>(({
             id={id}
             name={name}
             type={type}
-            value={value || ''}
+            value={toStringValue(value)}
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
             onBlur={handleBlur}
@@ -137,7 +145,7 @@ const UnifiedFormField = memo<UnifiedFormFieldProps>(({
             id={id}
             name={name}
             type={type}
-            value={value || ''}
+            value={toStringValue(value)}
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
             onBlur={handleBlur}
@@ -159,7 +167,7 @@ const UnifiedFormField = memo<UnifiedFormFieldProps>(({
           <Textarea
             id={id}
             name={name}
-            value={value || ''}
+            value={toStringValue(value)}
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
             onBlur={handleBlur}
@@ -184,7 +192,7 @@ const UnifiedFormField = memo<UnifiedFormFieldProps>(({
           <Select
             id={id}
             name={name}
-            value={value || ''}
+            value={toStringValue(value)}
             onChange={handleInputChange}
             onBlur={handleBlur}
             onFocus={handleFocus}
@@ -220,7 +228,7 @@ const UnifiedFormField = memo<UnifiedFormFieldProps>(({
       case 'color-selector':
         return (
           <ColorSelector
-            selectedColor={value || 'default'}
+            selectedColor={toStringValue(value) || 'default'}
             onColorSelect={(color: string) => handleChange(color)}
           />
         );

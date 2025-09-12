@@ -21,6 +21,7 @@ const MenuTriggerComponent = memo<{
   switch (type) {
     case 'icon-button':
       if (!icon) {
+        // eslint-disable-next-line no-console
         console.warn('IconButton requires an icon');
         return null;
       }
@@ -36,6 +37,7 @@ const MenuTriggerComponent = memo<{
     
     case 'button':
       if (!icon) {
+        // eslint-disable-next-line no-console
         console.warn('SubHeaderButton requires an icon');
         return null;
       }
