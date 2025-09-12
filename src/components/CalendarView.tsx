@@ -253,7 +253,7 @@ const CalendarView: React.FC = () => {
   }), []);
 
   const titleStyles = useMemo(() => ({
-    fontSize: '24px',
+    fontSize: '20px',
     fontWeight: 'bold',
   }), []);
 
