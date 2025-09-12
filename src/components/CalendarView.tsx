@@ -1,5 +1,5 @@
-import React, { useState, useMemo, useCallback, useEffect } from 'react';
-import { Box, Text, Button, IconButton } from '@primer/react';
+import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
+import { Text, Button, IconButton } from '@primer/react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@primer/octicons-react';
 
 import { useKanban } from '../contexts/KanbanContext';
@@ -22,29 +22,29 @@ const CalendarDay: React.FC<CalendarDayProps> = React.memo(({
   isCurrentMonth, 
   onTaskClick 
 }) => {
-  const dayStyles = {
+  const dayStyles = useMemo(() => ({
     minHeight: '120px',
-    backgroundColor: isCurrentMonth ? 'canvas.default' : 'canvas.subtle',
+    backgroundColor: isCurrentMonth ? 'var(--bgColor-default)' : 'var(--bgColor-muted)',
     borderRadius: 0,
     padding: '8px',
     position: 'relative' as const,
     overflow: 'hidden',
-  };
+  }), [isCurrentMonth]);
 
-  const headerStyles = {
+  const headerStyles = useMemo(() => ({
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
     minHeight: '24px',
-    mb: 2,
-  };
+    marginBottom: '8px',
+  }), []);
 
-  const dayNumberStyles = {
+  const dayNumberStyles = useMemo(() => ({
     fontSize: '12px',
     fontWeight: '400',
-    color: isToday ? 'white' : (isCurrentMonth ? 'fg.default' : 'fg.muted'),
+    color: isToday ? 'white' : (isCurrentMonth ? 'var(--fg-default)' : 'var(--fg-muted)'),
     ...(isToday && {
-      backgroundColor: 'accent.emphasis',
+      backgroundColor: 'var(--bgColor-accent-emphasis)',
       borderRadius: '50%',
       width: '24px',
       height: '24px',
@@ -52,58 +52,66 @@ const CalendarDay: React.FC<CalendarDayProps> = React.memo(({
       alignItems: 'center',
       justifyContent: 'center',
     }),
-  };
+  }), [isToday, isCurrentMonth]);
 
-  const tasksContainerStyles = {
+  const tasksContainerStyles = useMemo(() => ({
     display: 'flex',
     flexDirection: 'column' as const,
     gap: '2px',
     maxHeight: '80px',
     overflow: 'hidden',
-  };
+  }), []);
 
-  const taskItemStyles = {
+  const taskItemStyles = useMemo(() => ({
     fontSize: '13px',
-    paddingInline: '8px',
     padding: '2px 8px',
-    borderRadius: '2px',
-    backgroundColor: 'accent.subtle',
-    color: 'accent.fg',
+    borderRadius: '6px',
+    backgroundColor: 'var(--bgColor-accent-muted)',
+    color: 'var(--fgColor-accent)',
     cursor: 'pointer',
     whiteSpace: 'nowrap' as const,
     overflow: 'hidden',
     textOverflow: 'ellipsis',
-    '&:hover': {
-      backgroundColor: 'accent.muted',
-    },
-  };
+  }), []);
+
+  const handleTaskClick = useCallback((task: Task) => {
+    onTaskClick(task);
+  }, [onTaskClick]);
 
   return (
-    <Box sx={dayStyles}>
-      <Box sx={headerStyles}>
-        <Text sx={dayNumberStyles}>{date.getDate()}</Text>
+    <div style={dayStyles}>
+      <div style={headerStyles}>
+        <span style={dayNumberStyles}>{date.getDate()}</span>
         {tasks.length > 3 && (
           <Text fontSize="10px" color="fg.muted">
             +{tasks.length - 3}
           </Text>
         )}
-      </Box>
-      <Box sx={tasksContainerStyles}>
+      </div>
+      <div style={tasksContainerStyles}>
         {tasks.slice(0, 3).map((task) => (
-          <Box 
+          <div 
             key={task.id} 
-            sx={taskItemStyles}
+            style={taskItemStyles}
             onClick={(e: React.MouseEvent) => {
               e.stopPropagation();
-              onTaskClick(task);
+              handleTaskClick(task);
             }}
             title={task.title}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleTaskClick(task);
+              }
+            }}
           >
             {task.title}
-          </Box>
+          </div>
         ))}
-      </Box>
-    </Box>
+      </div>
+    </div>
   );
 });
 
@@ -114,10 +122,11 @@ const CalendarView: React.FC = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [isTaskDetailOpen, setIsTaskDetailOpen] = useState(false);
+  const selectedTaskIdRef = useRef<string | null>(null);
 
-  // selectedTaskを最新の状態に同期
+  // selectedTaskを最新の状態に同期 - 無限ループを防止
   useEffect(() => {
-    if (selectedTask && state.currentBoard) {
+    if (selectedTask?.id && state.currentBoard && selectedTaskIdRef.current === selectedTask.id) {
       // 全カラムからselectedTaskのIDで最新のタスクを検索
       let updatedTask: Task | null = null;
       
@@ -129,15 +138,21 @@ const CalendarView: React.FC = () => {
         }
       }
       
-      if (updatedTask) {
+      if (updatedTask && JSON.stringify(updatedTask) !== JSON.stringify(selectedTask)) {
         setSelectedTask(updatedTask);
-      } else {
+      } else if (!updatedTask) {
         // タスクが見つからない場合（削除された場合）はサイドバーを閉じる
         setSelectedTask(null);
         setIsTaskDetailOpen(false);
+        selectedTaskIdRef.current = null;
       }
     }
   }, [state.currentBoard, selectedTask?.id]);
+
+  // selectedTaskのIDを追跡
+  useEffect(() => {
+    selectedTaskIdRef.current = selectedTask?.id || null;
+  }, [selectedTask?.id]);
 
   const { year, month } = useMemo(() => ({
     year: currentDate.getFullYear(),
@@ -216,84 +231,87 @@ const CalendarView: React.FC = () => {
     setSelectedTask(null);
   }, []);
 
-  const monthNames = [
+  const monthNames = useMemo(() => [
     '1月', '2月', '3月', '4月', '5月', '6月',
     '7月', '8月', '9月', '10月', '11月', '12月'
-  ];
+  ], []);
 
-  const weekDays = ['日', '月', '火', '水', '木', '金', '土'];
+  const weekDays = useMemo(() => ['日', '月', '火', '水', '木', '金', '土'], []);
 
-  const containerStyles = {
-    padding: '16px',
+  const containerStyles = useMemo(() => ({
+    padding: '24px 32px 32px',
     height: '100%',
     display: 'flex',
     flexDirection: 'column' as const,
-  };
+  }), []);
 
-  const headerStyles = {
+  const headerStyles = useMemo(() => ({
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    mb: 3,
-  };
+    marginBottom: '16px',
+  }), []);
 
-  const titleStyles = {
+  const titleStyles = useMemo(() => ({
     fontSize: '24px',
     fontWeight: 'bold',
-    color: 'fg.muted',
-  };
+  }), []);
 
-  const navigationStyles = {
+  const navigationStyles = useMemo(() => ({
     display: 'flex',
     alignItems: 'center',
-    gap: 2,
-  };
+    gap: '8px',
+  }), []);
 
-  const calendarGridStyles = {
+  const calendarGridContainerStyles = useMemo(() => ({
+    overflow: 'hidden',
+    borderRadius: '6px',
+    boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+  }), []);
+
+  const calendarGridStyles = useMemo(() => ({
     display: 'grid',
     gridTemplateColumns: 'repeat(7, 1fr)',
     gap: '1px',
-    backgroundColor: 'border.default',
-    borderRadius: '6px',
-    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+    backgroundColor: 'var(--borderColor-default)',
     overflow: 'hidden',
     flex: 1,
-  };
+  }), []);
 
-  const weekHeaderStyles = {
+  const weekHeaderStyles = useMemo(() => ({
     display: 'grid',
     gridTemplateColumns: 'repeat(7, 1fr)',
     gap: '1px',
-    backgroundColor: 'border.default',
+    backgroundColor: 'var(--borderColor-default)',
+    borderBottom: '1px solid var(--borderColor-default)',
     borderRadius: '6px 6px 0 0',
-    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-    mb: 0,
-  };
+    marginBottom: 0,
+  }), []);
 
-  const weekDayStyles = {
+  const weekDayStyles = useMemo(() => ({
     padding: '8px',
-    backgroundColor: 'canvas.default',
+    backgroundColor: 'var(--bgColor-default)',
     textAlign: 'center' as const,
     fontWeight: 'bold',
     fontSize: '12px',
-    color: 'fg.muted',
-  };
+    color: 'var(--fg-muted)',
+  }), []);
 
   if (!state.currentBoard) {
     return (
-      <Box sx={containerStyles}>
+      <div style={containerStyles}>
         <Text>ボードが選択されていません</Text>
-      </Box>
+      </div>
     );
   }
 
   return (
-    <Box sx={containerStyles}>
-      <Box sx={headerStyles}>
-        <Text sx={titleStyles}>
+    <div style={containerStyles}>
+      <div style={headerStyles}>
+        <span style={titleStyles}>
           {year}年 {monthNames[month]}
-        </Text>
-        <Box sx={navigationStyles}>
+        </span>
+        <div style={navigationStyles}>
           <IconButton
             icon={ChevronLeftIcon}
             aria-label="前の月"
@@ -312,41 +330,43 @@ const CalendarView: React.FC = () => {
             onClick={() => navigateMonth('next')}
             size="small"
           />
-        </Box>
-      </Box>
+        </div>
+      </div>
 
-      <Box sx={weekHeaderStyles}>
-        {weekDays.map((day) => (
-          <Box key={day} sx={weekDayStyles}>
-            {day}
-          </Box>
-        ))}
-      </Box>
+      <div style={calendarGridContainerStyles}>
+        <div style={weekHeaderStyles}>
+          {weekDays.map((day) => (
+            <div key={day} style={weekDayStyles}>
+              {day}
+            </div>
+          ))}
+        </div>
 
-      <Box sx={calendarGridStyles}>
-        {calendarDays.map(({ date, isCurrentMonth, isToday }, index) => {
-          const dateKey = date.toDateString();
-          const tasksForDate = tasksGroupedByDate.get(dateKey) || [];
+        <div style={calendarGridStyles}>
+          {calendarDays.map(({ date, isCurrentMonth, isToday }, index) => {
+            const dateKey = date.toDateString();
+            const tasksForDate = tasksGroupedByDate.get(dateKey) || [];
 
-          return (
-            <CalendarDay
-              key={index}
-              date={date}
-              tasks={tasksForDate}
-              isToday={isToday}
-              isCurrentMonth={isCurrentMonth}
-              onTaskClick={handleTaskClick}
-            />
-          );
-        })}
-      </Box>
+            return (
+              <CalendarDay
+                key={index}
+                date={date}
+                tasks={tasksForDate}
+                isToday={isToday}
+                isCurrentMonth={isCurrentMonth}
+                onTaskClick={handleTaskClick}
+              />
+            );
+          })}
+        </div>
+      </div>
 
       <TaskDetailSidebar
         task={selectedTask}
         isOpen={isTaskDetailOpen}
         onClose={handleCloseTaskDetail}
       />
-    </Box>
+    </div>
   );
 };
 
