@@ -10,12 +10,16 @@ interface LabelChipProps {
   label: Label;
   showRemove?: boolean;
   onRemove?: (labelId: string) => void;
+  onClick?: () => void;
+  clickable?: boolean;
 }
 
 const LabelChip = memo<LabelChipProps>(({ 
   label, 
   showRemove = false, 
-  onRemove 
+  onRemove,
+  onClick,
+  clickable = false
 }) => {
   const colors = getLabelColors(label.color);
 
@@ -27,6 +31,8 @@ const LabelChip = memo<LabelChipProps>(({
 
   return (
     <Box
+      as={clickable ? 'button' : 'div'}
+      onClick={clickable ? onClick : undefined}
       sx={{
         display: 'inline-flex',
         alignItems: 'center',
@@ -37,7 +43,13 @@ const LabelChip = memo<LabelChipProps>(({
         borderRadius: 2,
         fontSize: 0,
         fontWeight: '400',
-        gap: 1
+        gap: 1,
+        border: 'none',
+        cursor: clickable ? 'pointer' : 'default',
+        '&:hover': clickable ? {
+          opacity: 0.8,
+          transform: 'scale(1.02)'
+        } : {}
       }}
     >
       <Text sx={{ fontSize: 0, color: colors.color }}>

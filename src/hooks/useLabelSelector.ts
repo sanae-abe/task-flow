@@ -1,5 +1,6 @@
 import { useState, useCallback, useMemo } from 'react';
 
+import { useKanban } from '../contexts/KanbanContext';
 import type { Label } from '../types';
 import { LABEL_COLORS, createLabel } from '../utils/labels';
 
@@ -20,9 +21,12 @@ interface UseLabelSelectorReturn {
   removeLabel: (labelId: string) => void;
   handleKeyDown: (e: React.KeyboardEvent) => void;
   isValid: boolean;
+  suggestions: Label[];
+  addSuggestedLabel: (label: Label) => void;
 }
 
 export const useLabelSelector = ({ selectedLabels, onLabelsChange }: UseLabelSelectorProps): UseLabelSelectorReturn => {
+  const { getAllLabels } = useKanban();
   const [isCreating, setIsCreating] = useState(false);
   const [newLabelName, setNewLabelName] = useState('');
   const [selectedColor, setSelectedColor] = useState<string>(LABEL_COLORS[0].variant);
@@ -44,8 +48,9 @@ export const useLabelSelector = ({ selectedLabels, onLabelsChange }: UseLabelSel
       return;
     }
 
-    // 重複ラベル名チェック
-    const isDuplicate = selectedLabels.some(label => 
+    // グローバル重複ラベル名チェック（全ボード横断）
+    const allLabels = getAllLabels();
+    const isDuplicate = allLabels.some(label => 
       label.name.toLowerCase() === trimmedName.toLowerCase()
     );
     if (isDuplicate) {
@@ -55,7 +60,7 @@ export const useLabelSelector = ({ selectedLabels, onLabelsChange }: UseLabelSel
     const newLabel = createLabel(trimmedName, selectedColor);
     onLabelsChange([...selectedLabels, newLabel]);
     cancelCreating();
-  }, [newLabelName, selectedColor, selectedLabels, onLabelsChange, cancelCreating]);
+  }, [newLabelName, selectedColor, selectedLabels, onLabelsChange, cancelCreating, getAllLabels]);
 
   const removeLabel = useCallback((labelId: string) => {
     onLabelsChange(selectedLabels.filter(label => label.id !== labelId));
@@ -77,12 +82,34 @@ export const useLabelSelector = ({ selectedLabels, onLabelsChange }: UseLabelSel
       return false;
     }
     
-    // 重複ラベル名チェック
-    const isDuplicate = selectedLabels.some(label => 
+    // グローバル重複ラベル名チェック
+    const allLabels = getAllLabels();
+    const isDuplicate = allLabels.some(label => 
       label.name.toLowerCase() === trimmedName.toLowerCase()
     );
     return !isDuplicate;
-  }, [newLabelName, selectedLabels]);
+  }, [newLabelName, getAllLabels]);
+
+  // 既存ラベルのサジェスト（未選択のラベルのみ）
+  const suggestions = useMemo(() => {
+    const allLabels = getAllLabels();
+    const selectedLabelNames = new Set(selectedLabels.map(label => label.name.toLowerCase()));
+    
+    return allLabels.filter(label => 
+      !selectedLabelNames.has(label.name.toLowerCase())
+    );
+  }, [getAllLabels, selectedLabels]);
+
+  const addSuggestedLabel = useCallback((label: Label) => {
+    // 既に選択されているかチェック
+    const isAlreadySelected = selectedLabels.some(selected => 
+      selected.name.toLowerCase() === label.name.toLowerCase()
+    );
+    
+    if (!isAlreadySelected) {
+      onLabelsChange([...selectedLabels, label]);
+    }
+  }, [selectedLabels, onLabelsChange]);
 
   return {
     isCreating,
@@ -95,6 +122,8 @@ export const useLabelSelector = ({ selectedLabels, onLabelsChange }: UseLabelSel
     createNewLabel,
     removeLabel,
     handleKeyDown,
-    isValid
+    isValid,
+    suggestions,
+    addSuggestedLabel
   };
 };

@@ -54,6 +54,7 @@ interface KanbanContextType {
   importBoards: (boards: KanbanBoard[], replaceAll?: boolean) => void;
   setSortOption: (option: SortOption) => void;
   setTaskFilter: (filter: TaskFilter) => void;
+  getAllLabels: () => Label[];
 }
 
 const KanbanContext = createContext<KanbanContextType | undefined>(undefined);
@@ -933,6 +934,26 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   const setTaskFilter = useCallback((filter: TaskFilter) => {
     dispatch({ type: 'SET_TASK_FILTER', payload: filter });
   }, []);
+
+  // 全ボードから全ラベルを取得（名前でユニーク化）
+  const getAllLabels = useCallback((): Label[] => {
+    const labelMap = new Map<string, Label>();
+    
+    state.boards.forEach(board => {
+      board.columns.forEach(column => {
+        column.tasks.forEach(task => {
+          task.labels?.forEach(label => {
+            // ラベル名でユニーク化（最初に見つかったものを保持）
+            if (!labelMap.has(label.name)) {
+              labelMap.set(label.name, label);
+            }
+          });
+        });
+      });
+    });
+    
+    return Array.from(labelMap.values());
+  }, [state.boards]);
   
   const contextValue = useMemo(
     () => ({
@@ -956,6 +977,7 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       importBoards,
       setSortOption,
       setTaskFilter,
+      getAllLabels,
     }),
     [
       state,
@@ -977,6 +999,7 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       importBoards,
       setSortOption,
       setTaskFilter,
+      getAllLabels,
     ]
   );
 

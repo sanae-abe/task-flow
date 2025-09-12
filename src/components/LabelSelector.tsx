@@ -7,6 +7,7 @@ import type { Label } from '../types';
 
 import LabelChip from './LabelChip';
 import LabelCreateForm from './LabelCreateForm';
+import LabelSuggestions from './LabelSuggestions';
 
 interface LabelSelectorProps {
   selectedLabels: Label[];
@@ -25,7 +26,9 @@ const LabelSelector = memo<LabelSelectorProps>(({ selectedLabels, onLabelsChange
     createNewLabel,
     removeLabel,
     handleKeyDown,
-    isValid
+    isValid,
+    suggestions,
+    addSuggestedLabel
   } = useLabelSelector({ selectedLabels, onLabelsChange });
 
   return (
@@ -73,6 +76,14 @@ const LabelSelector = memo<LabelSelectorProps>(({ selectedLabels, onLabelsChange
           onCancel={cancelCreating}
           onKeyDown={handleKeyDown}
           isValid={isValid}
+        />
+      )}
+
+      {/* Label Suggestions */}
+      {!isCreating && (
+        <LabelSuggestions
+          suggestions={suggestions}
+          onSuggestionSelect={addSuggestedLabel}
         />
       )}
     </Box>
