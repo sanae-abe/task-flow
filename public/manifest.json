@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Offline Kanban",
+  "name": "Offline Kanban - プロジェクト管理ツール",
   "icons": [
     {
       "src": "favicon.ico",
@@ -8,18 +8,33 @@
       "type": "image/x-icon"
     },
     {
+      "src": "favicon-16x16.png",
+      "type": "image/svg+xml",
+      "sizes": "16x16"
+    },
+    {
+      "src": "favicon-32x32.png",
+      "type": "image/svg+xml",
+      "sizes": "32x32"
+    },
+    {
+      "src": "apple-touch-icon.png",
+      "type": "image/svg+xml",
+      "sizes": "180x180"
+    },
+    {
       "src": "logo192.png",
-      "type": "image/png",
+      "type": "image/svg+xml",
       "sizes": "192x192"
     },
     {
       "src": "logo512.png",
-      "type": "image/png",
+      "type": "image/svg+xml",
       "sizes": "512x512"
     }
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "theme_color": "#0969da",
+  "background_color": "#f6f8fa"
 }

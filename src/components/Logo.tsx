@@ -27,7 +27,18 @@ const Logo: React.FC<LogoProps> = ({ size = 'medium' }) => {
         userSelect: 'none'
       }}
     >
-      <CloudOfflineIcon size={iconSize} aria-hidden="true" />
+      <Box
+        sx={{
+          color: '#0969da',
+          display: 'flex',
+          alignItems: 'center'
+        }}
+      >
+        <CloudOfflineIcon 
+          size={iconSize} 
+          aria-hidden="true"
+        />
+      </Box>
       <Heading
         sx={{
           fontSize,

@@ -3,6 +3,7 @@ import React from 'react';
 
 import type { Task } from '../types';
 
+import { formatCompletedDate } from '../utils/dateHelpers';
 import ContentBox from './ContentBox';
 import DueDateDisplay from './DueDateDisplay';
 import FileList from './FileList';
@@ -14,15 +15,8 @@ interface TaskDisplayContentProps {
   columnName?: string;
 }
 
-const TaskDisplayContent: React.FC<TaskDisplayContentProps> = ({ task, columnName }) => (
+const TaskDisplayContent = React.memo<TaskDisplayContentProps>(({ task, columnName }) => (
     <>
-
-      {task.labels && task.labels.length > 0 && (
-        <TaskDisplaySection title="ラベル">
-          <TaskLabels labels={task.labels} />
-        </TaskDisplaySection>
-      )}
-      
       <TaskDisplaySection title="説明">
         <ContentBox 
           isEmpty={!task.description}
@@ -46,13 +40,7 @@ const TaskDisplayContent: React.FC<TaskDisplayContentProps> = ({ task, columnNam
         <TaskDisplaySection title="完了日時">
           <ContentBox>
             <Text sx={{ fontSize: 1 }}>
-              {new Date(task.completedAt).toLocaleString('ja-JP', { 
-                year: 'numeric', 
-                month: '2-digit', 
-                day: '2-digit', 
-                hour: '2-digit', 
-                minute: '2-digit' 
-              })}
+              {formatCompletedDate(task.completedAt)}
             </Text>
           </ContentBox>
         </TaskDisplaySection>
@@ -66,12 +54,18 @@ const TaskDisplayContent: React.FC<TaskDisplayContentProps> = ({ task, columnNam
         </TaskDisplaySection>
       )}
 
+      {task.labels && task.labels.length > 0 && (
+        <TaskDisplaySection title="ラベル">
+          <TaskLabels labels={task.labels} />
+        </TaskDisplaySection>
+      )}
+
       {task.attachments && task.attachments.length > 0 && (
         <TaskDisplaySection title="ファイル添付">
           <FileList attachments={task.attachments} />
         </TaskDisplaySection>
       )}
     </>
-  );
+  ));
 
 export default TaskDisplayContent;
