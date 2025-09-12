@@ -141,8 +141,13 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
             flexShrink: 0
           }}
         >
-          <Heading id="help-title" sx={{ fontSize: 2, margin: 0, pr: '19px' }}>
-            使い方ヘルプ
+            <Heading id="help-title" sx={{
+                fontSize: '1.25rem !important',
+              '& svg': {
+                color: 'accent.emphasis', marginRight: '2px'
+              } }}
+            >
+            <CloudOfflineIcon size={20} /> Kanban 使い方ガイド
           </Heading>
           <Button
             onClick={onClose}
@@ -156,21 +161,6 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
 
         {/* Content */}
         <Box sx={{ flex: "1", p: 3, overflowY: 'auto' }}>
-          <Box sx={{
-            mb: 4,
-            textAlign: 'center',
-            '& svg': {
-              color: 'accent.emphasis',
-              fill: 'currentColor'
-            }
-          }}>
-            <Text sx={{ fontSize: 2, fontWeight: 'bold', color: 'accent.emphasis', mt: 2, mb: 1, display: 'block' }}>
-              <CloudOfflineIcon size={20} /> Kanban 使い方ガイド
-            </Text>
-            <Text sx={{ fontSize: 1, color: 'fg.muted' }}>
-              Offline Kanban の基本的な使い方を説明します
-            </Text>
-          </Box>
 
           <HelpSection title="基本操作" icon={CheckCircleIcon} color="success.emphasis">
             <HelpItem

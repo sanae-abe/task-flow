@@ -64,8 +64,8 @@ const SimpleFormDialog = memo<SimpleFormDialogProps>(({
       onClose={onCancel}
       actions={actions}
       size="medium"
-      closeOnEscape={true}
-      closeOnBackdropClick={true}
+      closeOnEscape
+      closeOnBackdropClick
     >
       <FormField
         id={inputId}

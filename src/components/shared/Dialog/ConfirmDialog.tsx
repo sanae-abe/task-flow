@@ -43,8 +43,8 @@ const ConfirmDialog = memo<ConfirmDialogProps>(({
       onClose={onCancel}
       actions={actions}
       size="medium"
-      closeOnEscape={true}
-      closeOnBackdropClick={true}
+      closeOnEscape
+      closeOnBackdropClick
     >
       <Text sx={{ 
         color: 'fg.muted', 

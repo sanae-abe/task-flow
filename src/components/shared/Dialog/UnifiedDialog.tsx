@@ -181,7 +181,9 @@ const UnifiedDialog = memo<UnifiedDialogProps>(({
 
   // Escapeキーでダイアログを閉じる
   useEffect(() => {
-    if (!isOpen || !closeOnEscape) return undefined;
+    if (!isOpen || !closeOnEscape) {
+      return undefined;
+    }
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
@@ -201,7 +203,7 @@ const UnifiedDialog = memo<UnifiedDialogProps>(({
   }
 
   const styles = getDialogStyles(variant, size);
-  const titleId = ariaLabelledBy || `dialog-title-${Math.random().toString(36).substr(2, 9)}`;
+  const titleId = ariaLabelledBy ?? `dialog-title-${Math.random().toString(36).substr(2, 9)}`;
 
   return (
     <Box

@@ -20,7 +20,7 @@ const DialogActions = memo<DialogActionsProps>(({ actions }) => (
       <Button
         key={index}
         onClick={action.onClick}
-        variant={action.variant || 'default'}
+        variant={action.variant ?? 'default'}
         disabled={action.disabled}
         sx={{
           color: action.variant === 'primary' ? 'fg.onEmphasis !important' : undefined

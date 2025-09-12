@@ -44,8 +44,8 @@ const FormDialog = memo<FormDialogProps>(({
       onClose={onCancel}
       actions={actions}
       size="large"
-      closeOnEscape={true}
-      closeOnBackdropClick={true}
+      closeOnEscape
+      closeOnBackdropClick
     >
       {children}
     </UnifiedDialog>
