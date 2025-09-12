@@ -55,10 +55,20 @@ const ImprovedLabelSelector: React.FC<ImprovedLabelSelectorProps> = ({
   }, [selectedLabels, onLabelsChange]);
 
   return (
-    <Box>
+    <Box sx={{ mt: 1 }}>
       {/* 選択されたラベルを表示 */}
       {selectedLabels.length > 0 && (
-        <Box sx={{ mb: 2, display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+        <Box sx={{
+          mb: 2,
+          display: 'flex',
+          flexWrap: 'wrap',
+          alignItems: 'center',
+          gap: 1,
+          '& button': {
+            height: 'auto',
+            padding: 0,
+            fontSize: 0
+        } }}>
           {selectedLabels.map(label => (
             <LabelChip
               key={label.id}

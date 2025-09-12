@@ -99,7 +99,7 @@ const LabelAddDialog: React.FC<LabelAddDialogProps> = ({
         />
       }
     >
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mb: 4 }}>
         {/* ラベル名入力 */}
         <Box>
           <Text 

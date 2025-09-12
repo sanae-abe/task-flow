@@ -13,7 +13,10 @@
       "Bash(npm run dev)",
       "Bash(npm run)",
       "Bash(npm start)",
-      "Bash(git add .)"
+      "Bash(git add .)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nfeat: 色選択対応の改良されたラベル機能を実装\n\n- ImprovedLabelSelectorコンポーネントを新規作成:\n  - PrimerのActionMenuとActionListを使用したモダンなUI\n  - 既存ラベルのマルチセレクト機能\n  - ラベル色の視覚的表示とチェックマーク\n\n- LabelAddDialogコンポーネントを新規作成:\n  - 色選択機能付きのラベル作成フォーム\n  - リアルタイムプレビュー機能\n  - 重複ラベル名のバリデーション\n  - BaseDialogを使用した統一されたUI\n\n- 既存コンポーネントの統合:\n  - TaskDetailEditFormでImprovedLabelSelectorに置き換え\n  - TaskCreateDialogでImprovedLabelSelectorに置き換え\n  - UnifiedFormFieldでImprovedLabelSelectorに置き換え\n\n- パフォーマンス最適化:\n  - useMemoを使用してselectedLabelIdsを最適化\n  - ESLint警告の解消（no-console、react-hooks/exhaustive-deps）\n\n変更により解決された問題:\n✅ ラベル追加時に色が変更できない問題\n✅ モダンなマルチセレクトUI\n✅ 色選択機能の完全実装\n✅ TypeScript型安全性の確保\n\n🤖 Generated with [Claude Code](https://claude.ai/code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(lsof -ti:3000)",
+      "Bash(kill -9 2726 76956)"
     ],
     "deny": [],
     "ask": []

@@ -72,9 +72,20 @@ const TaskEditForm = memo<TaskEditFormProps>(({
     // 空実装：親コンポーネントで送信処理を管理
   };
 
+  // 初期値を明示的に設定
+  const initialValues = useMemo(() => ({
+    title,
+    description,
+    dueDate,
+    completedAt,
+    labels,
+    attachments
+  }), [title, description, dueDate, completedAt, labels, attachments]);
+
   return (
     <UnifiedForm
       fields={formFields}
+      initialValues={initialValues}
       onSubmit={handleSubmit}
       showCancelButton={false}
       validateOnChange

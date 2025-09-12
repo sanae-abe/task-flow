@@ -65,6 +65,14 @@ export const useTaskEdit = ({
       
       setLabels(task.labels ?? []);
       setAttachments(task.attachments ?? []);
+    } else if (!isOpen) {
+      // ダイアログが閉じられた時にフォームをリセット
+      setTitle('');
+      setDescription('');
+      setDueDate('');
+      setCompletedAt('');
+      setLabels([]);
+      setAttachments([]);
     }
   }, [isOpen, task]);
 
