@@ -13,7 +13,6 @@ import Logo from './Logo';
 const HEADER_HEIGHT = '67px';
 const MAX_CONTENT_WIDTH = '1440px';
 const DIVIDER_HEIGHT = '24px';
-const Z_INDEX = 1000;
 
 // スタイル定義オブジェクト
 const headerStyles = {
@@ -21,11 +20,6 @@ const headerStyles = {
     px: 4,
     py: 0,
     bg: 'canvas.default',
-    position: 'fixed' as const,
-    top: 0,
-    left: 0,
-    right: 0,
-    zIndex: Z_INDEX,
     borderBottom: '1px solid',
     borderColor: 'border.default',
     height: HEADER_HEIGHT

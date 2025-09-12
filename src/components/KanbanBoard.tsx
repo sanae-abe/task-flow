@@ -9,7 +9,6 @@ import { KANBAN_BOARD_STYLES } from '../styles/kanbanBoardStyles';
 import type { Task } from '../types';
 
 import KanbanColumn from './KanbanColumn';
-import SubHeader from './SubHeader';
 import TaskCard from './TaskCard';
 import TaskDetailSidebar from './TaskDetailSidebar';
 
@@ -86,7 +85,6 @@ const KanbanBoard: React.FC = () => {
   
   return (
     <Box sx={KANBAN_BOARD_STYLES.container}>
-      <SubHeader />
       
       <DndContext
         sensors={sensors}

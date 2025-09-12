@@ -79,7 +79,11 @@
       "Bash(npm run lint src/hooks/useDragAndDrop.ts src/contexts/KanbanContext.tsx)",
       "Bash(lsof -i :3000)",
       "Bash(npx tsc --noEmit src/contexts/KanbanContext.tsx)",
-      "Bash(kill -9 40068)"
+      "Bash(kill -9 40068)",
+      "Bash(npm run lint src/components/DropIndicator.tsx)",
+      "Bash(npx tsc --noEmit src/components/DropIndicator.tsx)",
+      "Bash(git add src/components/DropIndicator.tsx)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nrefactor: DropIndicatorコンポーネントのコードレビューと品質改善\n\n- Importの順序修正：Reactインポートを最初に配置\n- 非推奨Boxコンポーネントを標準div要素に変更\n- Primerデザインシステム準拠：\n  - ハードコードされた色をvar(--color-accent-emphasis)とvar(--color-accent-subtle)に変更\n  - Primerカラートークンを使用\n- CSSアニメーション定義の改善：\n  - @keyframes drop-indicator-pulseアニメーションを適切に定義\n  - 未定義だったpulseアニメーションを修正\n- アクセシビリティ改善：\n  - role=\"separator\"追加\n  - aria-label=\"ドロップ位置インジケーター\"追加\n- TypeScriptドキュメント追加：\n  - インターフェースとコンポーネントにJSDoc形式のドキュメント追加\n- TypeScript strict準拠とWCAGアクセシビリティ要件対応\n\n🤖 Generated with [Claude Code](https://claude.ai/code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")"
     ],
     "deny": [],
     "ask": []

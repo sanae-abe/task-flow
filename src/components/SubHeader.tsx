@@ -33,16 +33,12 @@ const SubHeader: React.FC = () => {
   return (
     <Box
       sx={{
-        position: 'fixed',
-        top: '67px',
-        left: 0,
-        right: 0,
         bg: 'canvas.default',
         borderBottom: '1px solid',
         borderColor: 'border.default',
         px: 6,
         py: 2,
-        zIndex: 100,
+        zIndex: 999,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between'

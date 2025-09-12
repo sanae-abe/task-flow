@@ -23,6 +23,8 @@ export interface FormFieldProps {
   onKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
   autoFocus?: boolean;
   required?: boolean;
+  hideLabel?: boolean;
+  sx?: Record<string, unknown>;
 }
 
 export interface TextareaFieldProps {

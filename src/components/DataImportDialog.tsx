@@ -1,13 +1,12 @@
 import { useState, useCallback, memo } from 'react';
-import { Box, Button, Text, Spinner, ActionList, Flash } from '@primer/react';
-import { FileIcon, AlertIcon } from '@primer/octicons-react';
+import { Box, Button, Text, Spinner, Flash, Select } from '@primer/react';
+import { FileIcon } from '@primer/octicons-react';
 
 import { useKanban } from '../contexts/KanbanContext';
 import { validateImportData, readFileAsText } from '../utils/dataExport';
 import { useDataImportDropZone } from '../hooks/useDataImportDropZone';
 
 import BaseDialog from './BaseDialog';
-import UniversalDropZone from './UniversalDropZone';
 
 /**
  * データインポート用のダイアログコンポーネント
@@ -73,7 +72,6 @@ export const DataImportDialog = memo<DataImportDialogProps>(({ isOpen, onClose }
     disabled: isLoading
   });
 
-
   const handleDialogClose = useCallback(() => {
     if (!isLoading) {
       onClose();
@@ -91,93 +89,63 @@ export const DataImportDialog = memo<DataImportDialogProps>(({ isOpen, onClose }
       title="データインポート"
       onClose={handleDialogClose}
       ariaLabelledBy="import-dialog-title"
-    >
-      <Box display="flex" sx={{ flexDirection: 'column', gap: 3 }}>
-        {/* インポートモード選択 */}
-        <Box>
-          <Text fontWeight="bold" fontSize={1} mb={2} sx={{ color: 'fg.muted' }}>
-            インポートモード
-          </Text>
-          <ActionList>
-            <ActionList.Item
-              selected={importMode === 'merge'}
-              onSelect={() => handleModeChange('merge')}
+      actions={
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+          {/* メッセージ表示 */}
+          {message && (
+            <Flash variant={message.type === 'error' ? 'danger' : 'success'}>
+              {message.text}
+            </Flash>
+          )}
+          
+          {/* アクションボタン */}
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+            <Button onClick={handleDialogClose} disabled={isLoading}>
+              キャンセル
+            </Button>
+            <Button
+              variant="primary"
+              onClick={dropZoneProps.handleFileSelect}
               disabled={isLoading}
-              sx={{
-                backgroundColor: importMode === 'merge' ? '#f6f8fa' : 'transparent'
-              }}
+              leadingVisual={FileIcon}
+              sx={{ color: 'fg.onEmphasis !important' }}
             >
-              <FileIcon />
-              <Text sx={{ ml: 1 }}>
-                既存データに追加
-              </Text>
-              <ActionList.Description variant="block">
-                既存のボードを保持して、新しいボードを追加します
-              </ActionList.Description>
-            </ActionList.Item>
-            <ActionList.Item
-              selected={importMode === 'replace'}
-              onSelect={() => handleModeChange('replace')}
-              disabled={isLoading}
-              sx={{
-                backgroundColor: importMode === 'replace' ? '#f6f8fa' : 'transparent'
-              }}
-            >
-              <AlertIcon />
-              <Text sx={{ ml: 1 }}>
-                既存データを置換
-              </Text>
-              <ActionList.Description variant="block">
-                既存のボードをすべて削除して、インポートデータで置換します
-              </ActionList.Description>
-            </ActionList.Item>
-          </ActionList>
-        </Box>
-
-        {/* ファイル選択 */}
-        <UniversalDropZone
-          isDragOver={dropZoneProps.isDragOver}
-          isLoading={isLoading}
-          maxFileSize={MAX_FILE_SIZE}
-          allowedTypes={['.json', 'application/json']}
-          multiple={false}
-          onDragOver={dropZoneProps.handleDragOver}
-          onDragEnter={dropZoneProps.handleDragEnter}
-          onDragLeave={dropZoneProps.handleDragLeave}
-          onDrop={dropZoneProps.handleDrop}
-          onClick={dropZoneProps.handleFileSelect}
-          fileInputRef={dropZoneProps.fileInputRef}
-          onFileInputChange={dropZoneProps.handleFileInputChange}
-          importMode="both"
-          title="ファイルをここにドラッグ＆ドロップするか、クリックして選択"
-          dragTitle="ファイルをドロップしてください"
-          showButton
-          buttonText="ファイルを選択"
-          loadingText="インポート中..."
-          ariaLabel="JSONファイルを選択"
-        />
-
-        {/* メッセージ表示 */}
-        {message && (
-          <Flash variant={message.type === 'error' ? 'danger' : 'success'}>
-            {message.text}
-          </Flash>
-        )}
-
-        {/* ローディング */}
-        {isLoading && (
-          <Box display="flex" sx={{ gap: 2, justifyContent: 'center', alignItems: 'center' }}>
-            <Spinner size="small" />
-            <Text>インポート中...</Text>
+              {isLoading ? 'インポート中...' : 'JSONファイルを選択'}
+            </Button>
           </Box>
-        )}
+        </Box>
+      }
+    >
+      {/* インポートモード選択 */}
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mb: 3 }}>
+        <Text sx={{ fontSize: 1, fontWeight: '600' }}>インポートモード</Text>
+        <Select
+          value={importMode}
+          onChange={(e) => handleModeChange(e.target.value as ImportMode)}
+          disabled={isLoading}
+        >
+          <Select.Option value="merge">既存データに追加</Select.Option>
+          <Select.Option value="replace">既存データを置換</Select.Option>
+        </Select>
       </Box>
 
-      <Box display="flex" mt={4} sx={{ gap: 2, justifyContent: 'flex-end', alignItems: 'center' }}>
-        <Button onClick={handleDialogClose} disabled={isLoading}>
-          {isLoading ? 'インポート中...' : 'キャンセル'}
-        </Button>
-      </Box>
+      {/* ローディング表示 */}
+      {isLoading && (
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
+          <Spinner size="small" />
+          <Text sx={{ fontSize: 1 }}>処理中...</Text>
+        </Box>
+      )}
+      
+      {/* 隠しファイル入力 */}
+      <input
+        ref={dropZoneProps.fileInputRef}
+        type="file"
+        accept=".json,application/json"
+        onChange={dropZoneProps.handleFileInputChange}
+        style={{ display: 'none' }}
+        disabled={isLoading}
+      />
     </BaseDialog>
   );
 });

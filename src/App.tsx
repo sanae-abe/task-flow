@@ -1,10 +1,25 @@
 import { BaseStyles, ThemeProvider } from '@primer/react';
 
 import Header from './components/Header';
+import SubHeader from './components/SubHeader';
 import KanbanBoard from './components/KanbanBoard';
 import NotificationContainer from './components/NotificationContainer';
 import { KanbanProvider } from './contexts/KanbanContext';
 import { NotificationProvider } from './contexts/NotificationContext';
+
+// 定数定義
+const Z_INDEX = 1000;
+
+// スタイル定義
+const styles = {
+  fixedHeader: {
+    position: 'fixed' as const,
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: Z_INDEX,
+  },
+} as const;
 
 function App() {
   return (
@@ -12,9 +27,12 @@ function App() {
       <BaseStyles>
         <NotificationProvider>
           <KanbanProvider>
-            <div className="app">
-              <Header />
-              <main>
+            <div className="app" role="application" aria-label="カンバンボードアプリケーション">
+              <div style={styles.fixedHeader}>
+                <Header />
+                <SubHeader />
+              </div>
+              <main aria-label="カンバンボード">
                 <KanbanBoard />
               </main>
             </div>

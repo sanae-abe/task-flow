@@ -27,21 +27,27 @@ const FormField = memo<FormFieldProps>(({
   onChange,
   onKeyDown,
   autoFocus = false,
-  required = false
+  required = false,
+  hideLabel = false,
+  sx
 }) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange(e.target.value);
   };
 
+  const containerStyles = sx ? { ...FORM_STYLES.container, ...sx } : FORM_STYLES.container;
+
   return (
-    <Box sx={FORM_STYLES.container}>
-      <Text 
-        as="label" 
-        htmlFor={id}
-        sx={FORM_STYLES.label}
-      >
-        {label}
-      </Text>
+    <Box sx={containerStyles}>
+      {!hideLabel && (
+        <Text 
+          as="label" 
+          htmlFor={id}
+          sx={FORM_STYLES.label}
+        >
+          {label}
+        </Text>
+      )}
       <TextInput
         id={id}
         value={value}
@@ -51,6 +57,7 @@ const FormField = memo<FormFieldProps>(({
         autoFocus={autoFocus}
         sx={FORM_STYLES.input}
         aria-required={required}
+        aria-label={hideLabel ? label : undefined}
       />
     </Box>
   );
