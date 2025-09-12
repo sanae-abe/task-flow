@@ -29,9 +29,13 @@ const Logo: React.FC<LogoProps> = ({ size = 'medium' }) => {
     >
       <Box
         sx={{
-          color: '#0969da',
+          color: '#0969da !important',
           display: 'flex',
-          alignItems: 'center'
+          alignItems: 'center',
+          '& svg': {
+            fill: '#0969da !important',
+            color: '#0969da !important'
+          }
         }}
       >
         <CloudOfflineIcon 
