@@ -3,14 +3,11 @@ import type { Label } from '../types';
 export const LABEL_COLORS = [
   { name: 'Default', variant: 'default' },
   { name: 'Primary', variant: 'primary' },
-  { name: 'Secondary', variant: 'secondary' },
-  { name: 'Accent', variant: 'accent' },
   { name: 'Success', variant: 'success' },
   { name: 'Attention', variant: 'attention' },
   { name: 'Severe', variant: 'severe' },
   { name: 'Danger', variant: 'danger' },
-  { name: 'Done', variant: 'done' },
-  { name: 'Sponsors', variant: 'sponsors' }
+  { name: 'Done', variant: 'done' }
 ] as const;
 
 export const getColorInfo = (variant: string): { name: string; variant: string } => LABEL_COLORS.find(c => c.variant === variant) ?? LABEL_COLORS[0];

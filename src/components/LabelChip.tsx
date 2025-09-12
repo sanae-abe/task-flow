@@ -1,9 +1,10 @@
 import { XIcon } from '@primer/octicons-react';
-import { Box, Button, Text } from '@primer/react';
+import { Box, Text } from '@primer/react';
 import { memo } from 'react';
 
 import type { Label } from '../types';
 import { getLabelColors } from '../utils/labelHelpers';
+import IconButton from './shared/IconButton';
 
 interface LabelChipProps {
   label: Label;
@@ -43,23 +44,21 @@ const LabelChip = memo<LabelChipProps>(({
         {label.name}
       </Text>
       {showRemove && onRemove && (
-        <Button
+        <IconButton
+          icon={XIcon}
           onClick={handleRemove}
-          variant="invisible"
+          ariaLabel={`${label.name}ラベルを削除`}
+          variant="muted"
           size="small"
-          aria-label={`${label.name}ラベルを削除`}
+          style="custom"
           sx={{
-            minHeight: 'auto',
-            p: 0,
             color: colors.color,
             '&:hover': {
               bg: 'rgba(255, 255, 255, 0.2)',
               color: colors.color
             }
           }}
-        >
-          <XIcon size={12} />
-        </Button>
+        />
       )}
     </Box>
   );

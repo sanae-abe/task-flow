@@ -23,10 +23,10 @@ const ColorSelector = memo<ColorSelectorProps>(({
       </Text>
       <Box 
         sx={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(5, min-content)', 
-          gap: 1, 
-          justifyContent: 'start' 
+          display: 'flex', 
+          gap: 2, 
+          justifyContent: 'start',
+          flexWrap: 'nowrap'
         }}
         className="color-selector__grid"
         role="radiogroup"
@@ -45,9 +45,9 @@ const ColorSelector = memo<ColorSelectorProps>(({
               role="radio"
               className={`color-selector__button ${isSelected ? 'color-selector__button--selected' : ''}`}
               sx={{
-                width: '32px',
-                height: '32px',
-                minHeight: '32px',
+                width: '36px',
+                height: '36px',
+                minHeight: '36px',
                 p: 0,
                 bg: colors.bg,
                 border: '2px solid',
@@ -58,8 +58,12 @@ const ColorSelector = memo<ColorSelectorProps>(({
                 justifyContent: 'center',
                 position: 'relative',
                 cursor: 'pointer',
+                transition: 'all 0.15s ease',
+                boxShadow: isSelected ? '0 0 0 2px var(--color-accent-emphasis)' : 'none',
                 '&:hover': {
-                  borderColor: isSelected ? 'accent.emphasis' : 'neutral.emphasis'
+                  borderColor: isSelected ? 'accent.emphasis' : 'neutral.emphasis',
+                  transform: 'scale(1.05)',
+                  boxShadow: isSelected ? '0 0 0 2px var(--color-accent-emphasis)' : '0 2px 4px rgba(0,0,0,0.1)'
                 },
                 '&:focus': {
                   borderColor: 'accent.emphasis',
@@ -70,11 +74,12 @@ const ColorSelector = memo<ColorSelectorProps>(({
               }}
             >
               <Text sx={{ 
-                fontSize: 0, 
+                fontSize: 1, 
                 color: colors.color, 
                 textAlign: 'center', 
                 fontWeight: 'semibold',
-                pointerEvents: 'none'
+                pointerEvents: 'none',
+                lineHeight: 1
               }}>
                 {color.name.charAt(0)}
               </Text>

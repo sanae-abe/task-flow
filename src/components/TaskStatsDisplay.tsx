@@ -1,25 +1,26 @@
 import { ClockIcon, AlertIcon, CheckCircleIcon, InfoIcon } from '@primer/octicons-react';
-import { Box, Text, Label } from '@primer/react';
+import { Text } from '@primer/react';
 import React from 'react';
 
 import type { TaskStats } from '../hooks/useTaskStats';
+import { HBox } from './shared/FlexBox';
+import StatusBadge from './shared/StatusBadge';
 
 interface TaskStatsDisplayProps {
   stats: TaskStats;
 }
 
 interface UrgentLabelProps {
-  variant: 'danger' | 'attention' | 'accent';
+  variant: 'danger' | 'warning' | 'info';
   icon: React.ComponentType<{ size: number }>;
   count: number;
   label: string;
 }
 
-const UrgentLabel: React.FC<UrgentLabelProps> = ({ variant, icon: Icon, count, label }) => (
-  <Label variant={variant} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-    <Icon size={12} />
+const UrgentLabel: React.FC<UrgentLabelProps> = ({ variant, icon: IconComponent, count, label }) => (
+  <StatusBadge variant={variant} icon={IconComponent} size="medium" sx={{ border: 'none' }}>
     {label}: {count}
-  </Label>
+  </StatusBadge>
 );
 
 const TaskStatsDisplay: React.FC<TaskStatsDisplayProps> = ({ stats }) => {
@@ -27,19 +28,21 @@ const TaskStatsDisplay: React.FC<TaskStatsDisplayProps> = ({ stats }) => {
 
   const urgentLabels = [
     { condition: overdueTasks > 0, variant: 'danger' as const, icon: AlertIcon, count: overdueTasks, label: '期限切れ' },
-    { condition: dueTodayTasks > 0, variant: 'attention' as const, icon: ClockIcon, count: dueTodayTasks, label: '本日期限' },
-    { condition: dueTomorrowTasks > 0, variant: 'accent' as const, icon: ClockIcon, count: dueTomorrowTasks, label: '明日期限' }
+    { condition: dueTodayTasks > 0, variant: 'warning' as const, icon: ClockIcon, count: dueTodayTasks, label: '本日期限' },
+    { condition: dueTomorrowTasks > 0, variant: 'info' as const, icon: ClockIcon, count: dueTomorrowTasks, label: '明日期限' }
   ].filter(item => item.condition);
 
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0 }}>
-      <Text sx={{ display: 'flex', flexShrink: 0, alignItems: 'center', gap: 1, fontSize: 0, color: 'fg.muted' }}>
+    <HBox align="center" gap={4} shrink={0}>
+      <HBox align="center" gap={1} shrink={0} sx={{ fontSize: 0, color: 'fg.muted' }}>
         <CheckCircleIcon size={16} />
-        未完了タスク数: {totalTasks}
-      </Text>
+        <Text sx={{ fontSize: 0, color: 'fg.muted' }}>
+          未完了タスク数: {totalTasks}
+        </Text>
+      </HBox>
 
       {hasUrgentTasks && urgentLabels.length > 0 && (
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+        <HBox align="center" gap={2}>
           {urgentLabels.map((item, index) => (
             <UrgentLabel
               key={index}
@@ -49,16 +52,18 @@ const TaskStatsDisplay: React.FC<TaskStatsDisplayProps> = ({ stats }) => {
               label={item.label}
             />
           ))}
-        </Box>
+        </HBox>
       )}
 
       {!hasUrgentTasks && totalTasks > 0 && (
-        <Text sx={{ display: 'flex', alignItems: 'center', gap: 1, fontSize: 0, color: 'fg.muted' }}>
+        <HBox align="center" gap={1} sx={{ fontSize: 0, color: 'fg.muted' }}>
           <InfoIcon size={16} />
-          緊急なタスクはありません
-        </Text>
+          <Text sx={{ fontSize: 0, color: 'fg.muted' }}>
+            緊急なタスクはありません
+          </Text>
+        </HBox>
       )}
-    </Box>
+    </HBox>
   );
 };
 

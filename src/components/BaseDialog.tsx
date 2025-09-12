@@ -3,6 +3,7 @@ import { Box, Text, Button } from '@primer/react';
 import React, { useCallback, memo } from 'react';
 
 import type { DialogActionsProps } from '../types/dialog';
+import IconButton from './shared/IconButton';
 
 const DIALOG_STYLES = {
   backdrop: {
@@ -83,14 +84,14 @@ export const DialogHeader = memo<DialogHeaderProps>(({
     >
       {title}
     </Text>
-    <Button
-      variant="invisible"
+    <IconButton
+      icon={XIcon}
       onClick={onClose}
-      sx={{ p: 1 }}
-      aria-label="ダイアログを閉じる"
-    >
-      <XIcon size={16} />
-    </Button>
+      ariaLabel="ダイアログを閉じる"
+      variant="muted"
+      size="medium"
+      style="custom"
+    />
   </Box>
 ));
 

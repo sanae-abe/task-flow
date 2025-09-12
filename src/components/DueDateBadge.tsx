@@ -1,8 +1,8 @@
 import { CalendarIcon } from '@primer/octicons-react';
-import { Box } from '@primer/react';
 import React from 'react';
 
 import type { DueDateBadgeProps } from '../types/date';
+import StatusBadge from './shared/StatusBadge';
 
 const DueDateBadge: React.FC<DueDateBadgeProps> = ({
   dueDate,
@@ -11,39 +11,28 @@ const DueDateBadge: React.FC<DueDateBadgeProps> = ({
   isDueTomorrow,
   formatDueDate
 }) => {
-  const getBadgeStyle = () => {
+  const getVariant = () => {
     if (isOverdue()) {
-      return { bg: 'danger.subtle', color: 'danger.fg' };
+      return 'danger';
     }
     if (isDueToday()) {
-      return { bg: 'attention.subtle', color: 'attention.fg' };
+      return 'warning';
     }
     if (isDueTomorrow()) {
-      return { bg: 'accent.subtle', color: 'accent.fg' };
+      return 'info';
     }
-    return { bg: 'neutral.subtle', color: 'fg.muted' };
+    return 'neutral';
   };
 
-  const style = getBadgeStyle();
-
   return (
-    <Box
-      sx={{
-        display: "inline-flex",
-        gap: 1,
-        ...style,
-        px: 2,
-        py: 1,
-        alignItems: "center",
-        borderRadius: 2,
-        fontSize: 0,
-        fontWeight: "700",
-        alignSelf: 'flex-start'
-      }}
+    <StatusBadge
+      variant={getVariant()}
+      icon={CalendarIcon}
+      size="medium"
+      sx={{ border: 'none' }}
     >
-      <CalendarIcon size={12} />
       期限: {formatDueDate(dueDate)}
-    </Box>
+    </StatusBadge>
   );
 };
 

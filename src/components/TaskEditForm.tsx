@@ -1,4 +1,4 @@
-import { Box, Text } from '@primer/react';
+import { Text } from '@primer/react';
 import React, { memo } from 'react';
 
 import type { Label, FileAttachment } from '../types';
@@ -6,6 +6,7 @@ import type { Label, FileAttachment } from '../types';
 import FileUploader from './FileUploader';
 import FormField, { TextareaField, DateField, DateTimeField } from './FormField';
 import LabelSelector from './LabelSelector';
+import { VBox } from './shared/FlexBox';
 
 
 interface TaskEditFormProps {
@@ -41,7 +42,7 @@ const TaskEditForm = memo<TaskEditFormProps>(({
   setAttachments,
   onKeyPress
 }) => (
-    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+    <VBox>
       <FormField
         id="task-title"
         label="タイトル"
@@ -81,7 +82,7 @@ const TaskEditForm = memo<TaskEditFormProps>(({
         />
       )}
 
-      <Box sx={{ mb: 4, display: 'flex', flexDirection: 'column', gap: 1 }}>
+      <VBox gap={1} sx={{ mb: 4 }}>
         <Text sx={{ fontSize: 1, color: 'fg.muted', fontWeight: '700' }}>
           ラベル（任意）
         </Text>
@@ -89,9 +90,9 @@ const TaskEditForm = memo<TaskEditFormProps>(({
           selectedLabels={labels}
           onLabelsChange={setLabels}
         />
-      </Box>
+      </VBox>
 
-      <Box sx={{ mb: 4, display: 'flex', flexDirection: 'column', gap: 1 }}>
+      <VBox gap={1} sx={{ mb: 4 }}>
         <Text sx={{ fontSize: 1, color: 'fg.muted', fontWeight: '700' }}>
           ファイル添付（任意）
         </Text>
@@ -100,8 +101,8 @@ const TaskEditForm = memo<TaskEditFormProps>(({
           onAttachmentsChange={setAttachments}
           showModeSelector={false}
         />
-      </Box>
-    </Box>
+      </VBox>
+    </VBox>
   ));
 
 export default TaskEditForm;

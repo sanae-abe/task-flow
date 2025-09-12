@@ -653,8 +653,8 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
                 description: 'データベーススキーマの設計と最適化',
                 dueDate: new Date(Date.now() + 24 * 60 * 60 * 1000), // 明日期限
                 labels: [
-                  { id: uuidv4(), name: '設計', color: 'accent' },
-                  { id: uuidv4(), name: 'データベース', color: 'secondary' }
+                  { id: uuidv4(), name: '設計', color: 'primary' },
+                  { id: uuidv4(), name: 'データベース', color: 'success' }
                 ],
                 subTasks: [
                   { id: uuidv4(), title: 'ER図作成', completed: false, createdAt: new Date() },
@@ -677,7 +677,7 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
                 dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 1週間後
                 labels: [
                   { id: uuidv4(), name: 'フロントエンド', color: 'success' },
-                  { id: uuidv4(), name: 'React', color: 'attention' }
+                  { id: uuidv4(), name: 'React', color: 'primary' }
                 ],
                 subTasks: [
                   { id: uuidv4(), title: 'ボタンコンポーネント', completed: true, createdAt: new Date() },
@@ -705,7 +705,7 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
                 dueDate: new Date(), // 今日期限
                 labels: [
                   { id: uuidv4(), name: 'バックエンド', color: 'severe' },
-                  { id: uuidv4(), name: 'API', color: 'done' }
+                  { id: uuidv4(), name: 'API', color: 'attention' }
                 ],
                 subTasks: [
                   { id: uuidv4(), title: 'ユーザー認証API', completed: true, createdAt: new Date() },
@@ -727,8 +727,8 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
                 title: '📋 テストケース作成',
                 description: 'ユニットテストとE2Eテストの実装',
                 labels: [
-                  { id: uuidv4(), name: 'テスト', color: 'sponsors' },
-                  { id: uuidv4(), name: '品質保証', color: 'default' }
+                  { id: uuidv4(), name: 'テスト', color: 'done' },
+                  { id: uuidv4(), name: '品質保証', color: 'attention' }
                 ],
                 subTasks: [
                   { id: uuidv4(), title: 'ユニットテスト', completed: true, createdAt: new Date() },
@@ -760,7 +760,7 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
                 title: '✅ 技術調査と検証',
                 description: '使用するフレームワークとライブラリの技術検証\n\n調査結果をドキュメント化済み',
                 labels: [
-                  { id: uuidv4(), name: '調査', color: 'primary' },
+                  { id: uuidv4(), name: '調査', color: 'done' },
                   { id: uuidv4(), name: '完了', color: 'success' }
                 ],
                 subTasks: [
@@ -789,7 +789,7 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
                 description: 'アプリケーションのセキュリティ脆弱性チェック',
                 labels: [
                   { id: uuidv4(), name: 'セキュリティ', color: 'danger' },
-                  { id: uuidv4(), name: '監査', color: 'attention' },
+                  { id: uuidv4(), name: '監査', color: 'default' },
                   { id: uuidv4(), name: '完了', color: 'success' }
                 ],
                 subTasks: [

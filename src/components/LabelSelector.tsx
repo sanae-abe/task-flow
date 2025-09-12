@@ -32,7 +32,7 @@ const LabelSelector = memo<LabelSelectorProps>(({ selectedLabels, onLabelsChange
     <Box>
       {/* Selected Labels */}
       {selectedLabels.length > 0 && (
-        <Box sx={{ mb: 2, display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+        <Box sx={{ mb: 2, display: 'flex', flexWrap: 'wrap', gap: 1, alignItems: 'center', '& button': { fontSize: '0px', padding: '0 !important', height: 'auto' } }}>
           {selectedLabels.map(label => (
             <LabelChip
               key={label.id}
@@ -46,21 +46,23 @@ const LabelSelector = memo<LabelSelectorProps>(({ selectedLabels, onLabelsChange
 
       {/* Create New Label */}
       {!isCreating ? (
-        <Button
-          onClick={startCreating}
-          variant="invisible"
-          size="small"
-          leadingVisual={PlusIcon}
-          sx={{
-            color: 'fg.muted !important',
-            '&:hover': {
-              color: 'fg.default !important',
-              bg: 'neutral.subtle'
-            }
-          }}
-        >
-          ラベルを追加
-        </Button>
+        <div>
+          <Button
+            onClick={startCreating}
+            variant="invisible"
+            size="small"
+            leadingVisual={PlusIcon}
+            sx={{
+              color: 'fg.muted !important',
+              '&:hover': {
+                color: 'fg.default !important',
+                bg: 'neutral.subtle'
+              }
+            }}
+          >
+            ラベルを追加
+          </Button>
+        </div>
       ) : (
         <LabelCreateForm
           labelName={newLabelName}

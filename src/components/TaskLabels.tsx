@@ -15,7 +15,7 @@ const TaskLabels = memo<TaskLabelsProps>(({ labels }) => {
   }
 
   return (
-    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, alignItems: 'center' }}>
       {labels.map((label) => (
         <LabelChip
           key={label.id}

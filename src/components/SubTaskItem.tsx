@@ -1,8 +1,9 @@
 import { TrashIcon, CheckCircleIcon, CheckCircleFillIcon } from '@primer/octicons-react';
-import { Box, Text, IconButton } from '@primer/react';
+import { Box, Text } from '@primer/react';
 import React from 'react';
 
 import type { SubTask } from '../types';
+import IconButton from './shared/IconButton';
 
 interface SubTaskItemProps {
   subTask: SubTask;
@@ -27,7 +28,6 @@ const SubTaskItem: React.FC<SubTaskItemProps> = ({
 
   return (
     <Box
-      onClick={handleToggle}
       sx={{
         display: 'flex',
         alignItems: 'center',
@@ -41,12 +41,14 @@ const SubTaskItem: React.FC<SubTaskItemProps> = ({
       }}
     >
       <IconButton
-        aria-label={`${subTask.title}を${subTask.completed ? '未完了' : '完了'}にする`}
         icon={subTask.completed ? CheckCircleFillIcon : CheckCircleIcon}
+        onClick={handleToggle}
+        ariaLabel={`${subTask.title}を${subTask.completed ? '未完了' : '完了'}にする`}
+        variant="success"
         size="small"
-        variant="invisible"
+        style="primer"
+        stopPropagation
         sx={{
-          color: 'success.fg',
           '&:hover': {
             bg: 'transparent',
           }
@@ -63,13 +65,14 @@ const SubTaskItem: React.FC<SubTaskItemProps> = ({
         {subTask.title}
       </Text>
       <IconButton
-        onClick={handleDelete}
-        variant="invisible"
-        size="small"
         icon={TrashIcon}
-        aria-label={`${subTask.title}を削除`}
+        onClick={handleDelete}
+        ariaLabel={`${subTask.title}を削除`}
+        variant="danger"
+        size="small"
+        style="primer"
+        stopPropagation
         sx={{ 
-          color: 'danger.fg',
           '&:hover': {
             bg: 'transparent',
             color: 'danger.fg'

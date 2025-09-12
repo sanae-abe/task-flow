@@ -1,8 +1,9 @@
 import { CheckCircleIcon, CheckCircleFillIcon } from '@primer/octicons-react';
-import { Box, Text, Heading, IconButton } from '@primer/react';
+import { Box, Text, Heading } from '@primer/react';
 import React from 'react';
 
 import type { TaskDisplayProps } from '../types/task';
+import IconButton from './shared/IconButton';
 
 import DueDateBadge from './DueDateBadge';
 import TaskIndicators from './TaskIndicators';
@@ -21,13 +22,13 @@ const TaskDisplay: React.FC<TaskDisplayProps> = ({
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
         {onComplete && (
           <IconButton
-            aria-label={isRightmostColumn ? "タスクを未完了にする" : "タスクを完了にする"}
             icon={isRightmostColumn ? CheckCircleFillIcon : CheckCircleIcon}
-            size="small"
             onClick={onComplete}
-            variant="invisible"
+            ariaLabel={isRightmostColumn ? "タスクを未完了にする" : "タスクを完了にする"}
+            variant="success"
+            size="small"
+            style="primer"
             sx={{
-              color: 'success.fg',
               '&:hover': {
                 bg: 'transparent',
                 color: 'success.fg',
