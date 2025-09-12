@@ -1,4 +1,4 @@
-import { TextInput, Box, Text } from '@primer/react';
+import { TextInput, Box, Text, FormControl } from '@primer/react';
 import { useState, useCallback } from 'react';
 
 import { useKanban } from '../contexts/KanbanContext';
@@ -102,14 +102,10 @@ const LabelAddDialog: React.FC<LabelAddDialogProps> = ({
     >
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mb: 4 }}>
         {/* ラベル名入力 */}
-        <Box>
-          <Text 
-            as="label" 
-            sx={{ fontSize: 1, fontWeight: '500', mb: 2, display: 'block' }}
-            htmlFor="label-text-input"
-          >
+        <FormControl>
+          <FormControl.Label htmlFor="label-text-input">
             ラベル名
-          </Text>
+          </FormControl.Label>
           <TextInput
             id="label-text-input"
             value={labelText}
@@ -120,15 +116,15 @@ const LabelAddDialog: React.FC<LabelAddDialogProps> = ({
             onKeyDown={handleKeyDown}
             placeholder="ラベル名を入力してください"
             autoFocus
+            validationStatus={errorMessage ? 'error' : undefined}
             sx={{ width: '100%' }}
           />
-          {/* エラーメッセージ */}
           {errorMessage && (
-            <Text sx={{ color: 'danger.fg', fontSize: 1, mt: 1 }}>
+            <FormControl.Validation variant="error">
               {errorMessage}
-            </Text>
+            </FormControl.Validation>
           )}
-        </Box>
+        </FormControl>
 
         {/* 色選択 */}
         <Box>
