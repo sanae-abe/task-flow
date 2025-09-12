@@ -13,6 +13,15 @@ export interface FileAttachment {
   uploadedAt: Date;
 }
 
+export type ImportMode = 'drag-drop' | 'file-select' | 'both';
+
+export interface ImportModeConfig {
+  mode: ImportMode;
+  label: string;
+  description: string;
+  icon?: string;
+}
+
 export interface SubTask {
   id: string;
   title: string;

@@ -37,7 +37,7 @@ const DueDateBadge: React.FC<DueDateBadgeProps> = ({
         alignItems: "center",
         borderRadius: 2,
         fontSize: 0,
-        fontWeight: "600",
+        fontWeight: "700",
         alignSelf: 'flex-start'
       }}
     >

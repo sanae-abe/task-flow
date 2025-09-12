@@ -64,12 +64,12 @@ export const useLabelSelector = ({ selectedLabels, onLabelsChange }: UseLabelSel
   const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       e.preventDefault();
-      createNewLabel();
+      // Enterキーでの自動作成を無効化
     } else if (e.key === 'Escape') {
       e.preventDefault();
       cancelCreating();
     }
-  }, [createNewLabel, cancelCreating]);
+  }, [cancelCreating]);
 
   const isValid = useMemo(() => {
     const trimmedName = newLabelName.trim();

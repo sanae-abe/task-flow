@@ -1,26 +1,32 @@
 import { Box } from '@primer/react';
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { useFileUpload, DEFAULT_MAX_FILE_SIZE, DEFAULT_ALLOWED_TYPES } from '../hooks/useFileUpload';
-import type { FileAttachment } from '../types';
+import type { FileAttachment, ImportMode } from '../types';
 
 import AttachmentList from './AttachmentList';
 import ErrorMessage from './ErrorMessage';
-import FileDropZone from './FileDropZone';
+import UniversalDropZone from './UniversalDropZone';
+import ImportModeSelector from './ImportModeSelector';
 
 interface FileUploaderProps {
   attachments: FileAttachment[];
   onAttachmentsChange: (attachments: FileAttachment[]) => void;
   maxFileSize?: number;
   allowedTypes?: string[];
+  showModeSelector?: boolean;
+  defaultImportMode?: ImportMode;
 }
 
 const FileUploader: React.FC<FileUploaderProps> = ({
   attachments,
   onAttachmentsChange,
   maxFileSize = DEFAULT_MAX_FILE_SIZE,
-  allowedTypes = DEFAULT_ALLOWED_TYPES
+  allowedTypes = DEFAULT_ALLOWED_TYPES,
+  showModeSelector = true,
+  defaultImportMode = 'both'
 }) => {
+  const [importMode, setImportMode] = useState<ImportMode>(defaultImportMode);
   const {
     isDragOver,
     error,
@@ -38,16 +44,26 @@ const FileUploader: React.FC<FileUploaderProps> = ({
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-      <FileDropZone
+      {showModeSelector && (
+        <ImportModeSelector
+          selectedMode={importMode}
+          onModeChange={setImportMode}
+          showModeIndicator
+        />
+      )}
+
+      <UniversalDropZone
         isDragOver={isDragOver}
         maxFileSize={maxFileSize}
         allowedTypes={allowedTypes}
+        multiple
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         onClick={handleFileSelect}
         fileInputRef={fileInputRef}
         onFileInputChange={handleFileInputChange}
+        importMode={importMode}
       />
 
       <AttachmentList

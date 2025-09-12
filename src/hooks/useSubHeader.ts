@@ -1,6 +1,7 @@
 import { useState, useMemo, useCallback } from 'react';
 
 import { useKanban } from '../contexts/KanbanContext';
+import { exportData, exportBoard } from '../utils/dataExport';
 
 import { useTaskStats } from './useTaskStats';
 
@@ -9,6 +10,7 @@ type SubHeaderDialogState = {
   readonly showDeleteConfirm: boolean;
   readonly showEditDialog: boolean;
   readonly showClearCompletedConfirm: boolean;
+  readonly showImportDialog: boolean;
 };
 
 type SubHeaderHandlers = {
@@ -24,6 +26,10 @@ type SubHeaderHandlers = {
   readonly closeDeleteConfirm: () => void;
   readonly openClearCompletedConfirm: () => void;
   readonly closeClearCompletedConfirm: () => void;
+  readonly exportAllData: () => void;
+  readonly exportCurrentBoard: () => void;
+  readonly openImportDialog: () => void;
+  readonly closeImportDialog: () => void;
 };
 
 type UseSubHeaderReturn = {
@@ -43,6 +49,7 @@ export const useSubHeader = (): UseSubHeaderReturn => {
     showDeleteConfirm: false,
     showEditDialog: false,
     showClearCompletedConfirm: false,
+    showImportDialog: false,
   });
 
   const allTasks = useMemo(() => {
@@ -109,9 +116,21 @@ export const useSubHeader = (): UseSubHeaderReturn => {
       closeDeleteConfirm: () => updateDialogState({ showDeleteConfirm: false }),
       openClearCompletedConfirm: () => updateDialogState({ showClearCompletedConfirm: true }),
       closeClearCompletedConfirm: () => updateDialogState({ showClearCompletedConfirm: false }),
+      
+      exportAllData: () => exportData(state.boards),
+      
+      exportCurrentBoard: () => {
+        if (state.currentBoard) {
+          exportBoard(state.currentBoard);
+        }
+      },
+      
+      openImportDialog: () => updateDialogState({ showImportDialog: true }),
+      closeImportDialog: () => updateDialogState({ showImportDialog: false }),
     };
   }, [
-    state.currentBoard?.id,
+    state.boards,
+    state.currentBoard,
     canDeleteBoard,
     updateDialogState,
     updateBoard,

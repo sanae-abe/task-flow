@@ -8,6 +8,7 @@ import BoardActionMenu from './BoardActionMenu';
 import BoardEditDialog from './BoardEditDialog';
 import ColumnCreateDialog from './ColumnCreateDialog';
 import ConfirmDialog from './ConfirmDialog';
+import { DataImportDialog } from './DataImportDialog';
 import SubHeaderButton from './SubHeaderButton';
 import TaskStatsDisplay from './TaskStatsDisplay';
 
@@ -60,6 +61,9 @@ const SubHeader: React.FC = () => {
           onEditBoard={handlers.openEditDialog}
           onDeleteBoard={handlers.openDeleteConfirm}
           onClearCompletedTasks={handlers.openClearCompletedConfirm}
+          onExportData={handlers.exportAllData}
+          onExportBoard={handlers.exportCurrentBoard}
+          onImportData={handlers.openImportDialog}
         />
       </Box>
 
@@ -90,6 +94,11 @@ const SubHeader: React.FC = () => {
         isOpen={dialogState.isCreatingColumn}
         onSave={handlers.createColumn}
         onCancel={handlers.cancelCreateColumn}
+      />
+
+      <DataImportDialog
+        isOpen={dialogState.showImportDialog}
+        onClose={handlers.closeImportDialog}
       />
     </Box>
   );

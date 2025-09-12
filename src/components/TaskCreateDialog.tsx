@@ -113,6 +113,7 @@ const TaskCreateDialog = memo<TaskCreateDialogProps>(({
           <FileUploader
             attachments={attachments}
             onAttachmentsChange={setAttachments}
+            showModeSelector={false}
           />
         </Box>
       </Box>

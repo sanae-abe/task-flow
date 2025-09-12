@@ -11,6 +11,7 @@ interface KanbanState {
 
 type KanbanAction =
   | { type: 'LOAD_BOARDS'; payload: KanbanBoard[] }
+  | { type: 'IMPORT_BOARDS'; payload: { boards: KanbanBoard[]; replaceAll?: boolean } }
   | { type: 'CREATE_BOARD'; payload: { title: string } }
   | { type: 'SET_CURRENT_BOARD'; payload: string }
   | { type: 'UPDATE_BOARD'; payload: { boardId: string; updates: Partial<KanbanBoard> } }
@@ -45,6 +46,7 @@ interface KanbanContextType {
   addSubTask: (taskId: string, title: string) => void;
   toggleSubTask: (taskId: string, subTaskId: string) => void;
   deleteSubTask: (taskId: string, subTaskId: string) => void;
+  importBoards: (boards: KanbanBoard[], replaceAll?: boolean) => void;
 }
 
 const KanbanContext = createContext<KanbanContextType | undefined>(undefined);
@@ -108,6 +110,40 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
         ...state,
         boards,
         currentBoard,
+      };
+    }
+
+    case 'IMPORT_BOARDS': {
+      const { boards: importedBoards, replaceAll = false } = action.payload;
+      
+      // IDの重複を避けるため、既存のボードIDをチェック
+      const existingBoardIds = new Set(state.boards.map(board => board.id));
+      const boardsToImport = importedBoards.map(board => {
+        if (existingBoardIds.has(board.id) && !replaceAll) {
+          // IDが重複している場合は新しいIDを生成
+          return { ...board, id: uuidv4() };
+        }
+        return board;
+      });
+
+      let newBoards: KanbanBoard[];
+      if (replaceAll) {
+        newBoards = boardsToImport;
+      } else {
+        // 既存のボードと結合
+        newBoards = [...state.boards, ...boardsToImport];
+      }
+
+      // カレントボードの設定
+      let newCurrentBoard = state.currentBoard;
+      if (replaceAll || !newCurrentBoard) {
+        newCurrentBoard = newBoards.length > 0 ? newBoards[0] ?? null : null;
+      }
+
+      return {
+        ...state,
+        boards: newBoards,
+        currentBoard: newCurrentBoard,
       };
     }
     
@@ -608,6 +644,10 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   const deleteSubTask = useCallback((taskId: string, subTaskId: string) => {
     dispatch({ type: 'DELETE_SUBTASK', payload: { taskId, subTaskId } });
   }, []);
+
+  const importBoards = useCallback((boards: KanbanBoard[], replaceAll: boolean = false) => {
+    dispatch({ type: 'IMPORT_BOARDS', payload: { boards, replaceAll } });
+  }, []);
   
   const contextValue = useMemo(
     () => ({
@@ -628,6 +668,7 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       addSubTask,
       toggleSubTask,
       deleteSubTask,
+      importBoards,
     }),
     [
       state,
@@ -646,6 +687,7 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       addSubTask,
       toggleSubTask,
       deleteSubTask,
+      importBoards,
     ]
   );
 

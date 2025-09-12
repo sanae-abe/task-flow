@@ -21,7 +21,7 @@ const ColumnTitle: React.FC<ColumnTitleProps> = ({ column }) => (
         sx={{ 
           fontSize: 2, 
           margin: 0, 
-          fontWeight: 600,
+          fontWeight: 700,
           color: 'fg.default',
           flex: 1,
           minWidth: 0,

@@ -82,6 +82,7 @@ const TaskEditForm = memo<TaskEditFormProps>(({
         <FileUploader
           attachments={attachments}
           onAttachmentsChange={setAttachments}
+          showModeSelector={false}
         />
       </Box>
     </Box>

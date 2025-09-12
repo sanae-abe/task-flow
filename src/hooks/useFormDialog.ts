@@ -53,12 +53,12 @@ export const useFormDialog = ({
   const handleKeyPress = useCallback((event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
       event.preventDefault();
-      handleSave();
+      // Enterキーでの自動保存を無効化
     } else if (event.key === 'Escape') {
       event.preventDefault();
       onCancel();
     }
-  }, [handleSave, onCancel]);
+  }, [onCancel]);
 
   const isValid = useMemo(() => {
     if (!required) {
