@@ -141,7 +141,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
             flexShrink: 0
           }}
         >
-          <Heading id="help-title" sx={{ fontSize: 2, margin: 0, pr: 3 }}>
+          <Heading id="help-title" sx={{ fontSize: 2, margin: 0, pr: '19px' }}>
             使い方ヘルプ
           </Heading>
           <Button
@@ -165,10 +165,10 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
             }
           }}>
             <Text sx={{ fontSize: 2, fontWeight: 'bold', color: 'accent.emphasis', mt: 2, mb: 1, display: 'block' }}>
-              <CloudOfflineIcon size={16} /> Kanban 使い方ガイド
+              <CloudOfflineIcon size={20} /> Kanban 使い方ガイド
             </Text>
             <Text sx={{ fontSize: 1, color: 'fg.muted' }}>
-              基本的な使い方を分かりやすく説明します
+              基本的な使い方を説明します
             </Text>
           </Box>
 

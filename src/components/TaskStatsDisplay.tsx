@@ -35,7 +35,7 @@ const TaskStatsDisplay: React.FC<TaskStatsDisplayProps> = ({ stats }) => {
     <Box sx={{ display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0 }}>
       <Text sx={{ display: 'flex', flexShrink: 0, alignItems: 'center', gap: 1, fontSize: 0, color: 'fg.muted' }}>
         <CheckCircleIcon size={16} />
-        総未完了タスク数: {totalTasks}
+        未完了タスク数: {totalTasks}
       </Text>
 
       {hasUrgentTasks && urgentLabels.length > 0 && (

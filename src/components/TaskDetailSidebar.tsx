@@ -76,7 +76,7 @@ const TaskDetailSidebar: React.FC<TaskDetailSidebarProps> = ({ task, isOpen, onC
         <Box
           sx={{ 
             display: "flex",
-            p: 4,
+            p: '19px',
             alignItems: "flex-start",
             justifyContent: "space-between",
             borderBottom: "1px solid",
