@@ -4,6 +4,7 @@ import React from 'react';
 import type { Task } from '../types';
 
 import { formatDateTime } from '../utils/dateHelpers';
+import { getRecurrenceDescription } from '../utils/recurrence';
 import ContentBox from './ContentBox';
 import DueDateDisplay from './DueDateDisplay';
 import FileList from './FileList';
@@ -34,6 +35,16 @@ const TaskDisplayContent = React.memo<TaskDisplayContentProps>(({ task, columnNa
         <TaskDisplaySection title="期限">
           <ContentBox>
             <DueDateDisplay dueDate={new Date(task.dueDate)} showYear />
+          </ContentBox>
+        </TaskDisplaySection>
+      )}
+
+      {task.recurrence && (
+        <TaskDisplaySection title="繰り返し設定">
+          <ContentBox>
+            <Text sx={{ fontSize: 1 }}>
+              {getRecurrenceDescription(task.recurrence)}
+            </Text>
           </ContentBox>
         </TaskDisplaySection>
       )}
