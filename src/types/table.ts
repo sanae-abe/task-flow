@@ -53,7 +53,7 @@ export const DEFAULT_COLUMNS: TableColumn[] = [
   {
     id: 'dueDate',
     label: '期限',
-    width: '210px',
+    width: '160px',
     visible: true,
     sortable: true,
     type: 'date',
@@ -62,7 +62,7 @@ export const DEFAULT_COLUMNS: TableColumn[] = [
   {
     id: 'status',
     label: 'ステータス',
-    width: '150px',
+    width: '120px',
     visible: true,
     sortable: true,
     type: 'status'
@@ -70,15 +70,15 @@ export const DEFAULT_COLUMNS: TableColumn[] = [
   {
     id: 'progress',
     label: '進捗',
-    width: '120px',
+    width: '80px',
     visible: false,
     sortable: true,
     type: 'progress'
   },
   {
     id: 'completedAt',
-    label: '完了日時',
-    width: '150px',
+    label: '完了日',
+    width: '120px',
     visible: false,
     sortable: true,
     type: 'date',
@@ -87,7 +87,7 @@ export const DEFAULT_COLUMNS: TableColumn[] = [
   {
     id: 'labels',
     label: 'ラベル',
-    width: '180px',
+    width: '200px',
     visible: true,
     sortable: false,
     type: 'labels'
@@ -103,8 +103,8 @@ export const DEFAULT_COLUMNS: TableColumn[] = [
   },
   {
     id: 'updatedAt',
-    label: '更新日時',
-    width: '150px',
+    label: '更新日',
+    width: '120px',
     visible: true,
     sortable: true,
     type: 'date',
@@ -121,7 +121,7 @@ export const DEFAULT_COLUMNS: TableColumn[] = [
   {
     id: 'files',
     label: '添付',
-    width: '100px',
+    width: '80px',
     visible: false,
     sortable: false,
     type: 'text'
@@ -129,7 +129,7 @@ export const DEFAULT_COLUMNS: TableColumn[] = [
   {
     id: 'actions',
     label: '操作',
-    width: '40px',
+    width: '80px',
     visible: false,
     sortable: false,
     type: 'actions'

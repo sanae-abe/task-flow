@@ -105,6 +105,10 @@ const TableView: React.FC = () => {
           <Box>
             <Text
               sx={{
+                display: 'block',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
                 fontWeight: 'semibold',
                 color: task.completedAt ? 'fg.muted' : 'fg.default',
                 textDecoration: task.completedAt ? 'line-through' : 'none',
@@ -170,14 +174,14 @@ const TableView: React.FC = () => {
                 return (
                   <Text
                     sx={{
-                      fontSize: '12px',
+                      fontSize: 0,
                       color: isOverdue
                         ? 'danger.emphasis'
                         : isDueToday
                         ? 'attention.emphasis'
                         : isDueTomorrow
                         ? 'accent.emphasis'
-                        : 'fg.default'
+                        : 'fg.muted'
                     }}
                   >
                     {formattedDate}
@@ -185,8 +189,8 @@ const TableView: React.FC = () => {
                 );
               })()
             ) : (
-              <Text sx={{ color: 'fg.muted', fontSize: '12px' }}>
-                期限なし
+              <Text sx={{ color: 'fg.muted', fontSize: 0 }}>
+                -
               </Text>
             )}
           </Box>
@@ -280,7 +284,7 @@ const TableView: React.FC = () => {
         return (
           <Box>
             <Text sx={{ fontSize: 0, color: 'fg.muted' }}>
-              {formatDate(task.createdAt, 'MM/dd')}
+              {formatDate(task.createdAt, 'MM/dd HH:mm')}
             </Text>
           </Box>
         );
