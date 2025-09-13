@@ -6,9 +6,7 @@ import { useKanban } from '../contexts/KanbanContext';
 import type { Task } from '../types';
 import { sortTasks } from '../utils/taskSort';
 import { filterTasks } from '../utils/taskFilter';
-import { formatDate } from '../utils/dateHelpers';
-
-import DueDateDisplay from './DueDateDisplay';
+import { formatDate, getDateStatus, formatDueDate } from '../utils/dateHelpers';
 import LabelChip from './LabelChip';
 import StatusBadge from './shared/StatusBadge';
 import SubTaskProgressBar from './SubTaskProgressBar';
@@ -96,17 +94,17 @@ const TableView: React.FC = () => {
       sx={{
         height: 'calc(100vh - 120px)',
         overflow: 'auto',
-        bg: 'canvas.default',
+        bg: 'canvas.subtle',
         p: 4,
       }}
     >
       {/* テーブル */}
       <Box
         sx={{
-          border: '1px solid',
-          borderColor: 'border.default',
           borderRadius: 2,
           overflow: 'hidden',
+          bg: 'canvas.default',
+          boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
         }}
       >
         {/* ヘッダー行 */}
@@ -114,21 +112,21 @@ const TableView: React.FC = () => {
           sx={{
             display: 'grid',
             gridTemplateColumns: '1fr 150px 210px 180px 120px 120px 60px',
-            bg: 'canvas.subtle',
-            borderBottom: '1px solid',
+            bg: 'canvas.default',
+            borderBottom: '2px solid',
             borderColor: 'border.default',
             py: 2,
             px: 3,
             gap: 2,
           }}
         >
-          <Text sx={{ fontWeight: 'semibold', fontSize: 1 }}>タスク</Text>
-          <Text sx={{ fontWeight: 'semibold', fontSize: 1 }}>ステータス</Text>
-          <Text sx={{ fontWeight: 'semibold', fontSize: 1 }}>期限</Text>
-          <Text sx={{ fontWeight: 'semibold', fontSize: 1 }}>ラベル</Text>
-          <Text sx={{ fontWeight: 'semibold', fontSize: 1 }}>進捗</Text>
-          <Text sx={{ fontWeight: 'semibold', fontSize: 1 }}>作成日</Text>
-          <Text sx={{ fontWeight: 'semibold', fontSize: 1 }}>操作</Text>
+          <Text sx={{ fontWeight: 'bold', fontSize: 1 }}>タスク</Text>
+          <Text sx={{ fontWeight: 'bold', fontSize: 1 }}>ステータス</Text>
+          <Text sx={{ fontWeight: 'bold', fontSize: 1 }}>期限</Text>
+          <Text sx={{ fontWeight: 'bold', fontSize: 1 }}>ラベル</Text>
+          <Text sx={{ fontWeight: 'bold', fontSize: 1 }}>進捗</Text>
+          <Text sx={{ fontWeight: 'bold', fontSize: 1 }}>作成日</Text>
+          <Text sx={{ fontWeight: 'bold', fontSize: 1 }}>操作</Text>
         </Box>
 
         {/* データ行 */}
@@ -178,9 +176,47 @@ const TableView: React.FC = () => {
               {/* 期限 */}
               <Box>
                 {task.dueDate ? (
-                  <DueDateDisplay dueDate={new Date(task.dueDate)} />
+                  (() => {
+                    const dueDate = new Date(task.dueDate);
+                    const { isOverdue, isDueToday, isDueTomorrow } = getDateStatus(dueDate);
+                    const formattedDate = formatDueDate(dueDate);
+                    
+                    return (
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <Text 
+                          sx={{ 
+                            fontSize: '12px',
+                            color: isOverdue 
+                              ? 'danger.emphasis' 
+                              : isDueToday 
+                              ? 'attention.emphasis'
+                              : isDueTomorrow 
+                              ? 'accent.emphasis' 
+                              : 'fg.default'
+                          }}
+                        >
+                          {formattedDate}
+                        </Text>
+                        {isOverdue && (
+                          <StatusBadge variant="danger" size="small">
+                            期限切れ
+                          </StatusBadge>
+                        )}
+                        {isDueToday && (
+                          <StatusBadge variant="warning" size="small">
+                            本日期限
+                          </StatusBadge>
+                        )}
+                        {isDueTomorrow && (
+                          <StatusBadge variant="info" size="small">
+                            明日期限
+                          </StatusBadge>
+                        )}
+                      </Box>
+                    );
+                  })()
                 ) : (
-                  <Text sx={{ color: 'fg.muted', fontSize: 0 }}>
+                  <Text sx={{ color: 'fg.muted', fontSize: '12px' }}>
                     期限なし
                   </Text>
                 )}
