@@ -5,9 +5,9 @@ import { RecurrenceConfig, RecurrencePattern } from '../types';
  */
 export function calculateNextDueDate(
   currentDueDate: string,
-  recurrence: RecurrenceConfig
+  recurrence: RecurrenceConfig | undefined | null
 ): string | null {
-  if (!recurrence.enabled) {
+  if (!recurrence || !recurrence.enabled) {
     return null;
   }
 
@@ -101,10 +101,14 @@ function getNextWeekdayOccurrence(
  * 繰り返しタスクが終了条件に達しているかチェック
  */
 export function isRecurrenceComplete(
-  recurrence: RecurrenceConfig,
+  recurrence: RecurrenceConfig | undefined | null,
   occurrenceCount: number,
   currentDate?: string
 ): boolean {
+  if (!recurrence) {
+    return true;
+  }
+
   // 最大回数チェック
   if (recurrence.maxOccurrences && occurrenceCount >= recurrence.maxOccurrences) {
     return true;
@@ -125,10 +129,10 @@ export function isRecurrenceComplete(
 /**
  * 繰り返し設定のバリデーション
  */
-export function validateRecurrenceConfig(recurrence: RecurrenceConfig): string[] {
+export function validateRecurrenceConfig(recurrence: RecurrenceConfig | undefined | null): string[] {
   const errors: string[] = [];
 
-  if (!recurrence.enabled) {
+  if (!recurrence || !recurrence.enabled) {
     return errors;
   }
 
@@ -182,8 +186,8 @@ export function getRecurrencePatternLabel(pattern: RecurrencePattern): string {
 /**
  * 繰り返し設定の説明文を生成
  */
-export function getRecurrenceDescription(recurrence: RecurrenceConfig): string {
-  if (!recurrence.enabled) {
+export function getRecurrenceDescription(recurrence: RecurrenceConfig | undefined | null): string {
+  if (!recurrence || !recurrence.enabled) {
     return '繰り返しなし';
   }
 

@@ -40,29 +40,51 @@ const RecurrenceSelector: React.FC<RecurrenceSelectorProps> = ({
   recurrence,
   onRecurrenceChange,
 }) => {
-  const [config, setConfig] = useState<RecurrenceConfig>(() => ({
-    enabled: false,
-    pattern: 'daily',
-    interval: 1,
-    ...recurrence,
-  }));
+  const [config, setConfig] = useState<RecurrenceConfig>(() => {
+    const defaultConfig: RecurrenceConfig = {
+      enabled: false,
+      pattern: 'daily' as RecurrencePattern,
+      interval: 1,
+    };
+    if (recurrence && recurrence.enabled !== undefined) {
+      return { ...defaultConfig, ...recurrence };
+    }
+    return defaultConfig;
+  });
 
   const [errors, setErrors] = useState<string[]>([]);
 
   useEffect(() => {
     if (recurrence) {
-      setConfig(prev => ({ ...prev, ...recurrence }));
+      setConfig(prev => {
+        // 深い比較で変更があった場合のみ更新
+        const newConfig = { ...prev, ...recurrence };
+        if (JSON.stringify(prev) === JSON.stringify(newConfig)) {
+          return prev;
+        }
+        return newConfig;
+      });
     }
   }, [recurrence]);
 
   useEffect(() => {
+    if (!config) {
+      setErrors([]);
+      onRecurrenceChange(undefined);
+      return;
+    }
+
     const newErrors = validateRecurrenceConfig(config);
     setErrors(newErrors);
 
     if (newErrors.length === 0) {
-      onRecurrenceChange(config.enabled ? config : undefined);
+      const resultConfig = config.enabled ? config : undefined;
+      // 親から渡されたrecurrenceと同じ場合は呼び出さない
+      if (JSON.stringify(resultConfig) !== JSON.stringify(recurrence)) {
+        onRecurrenceChange(resultConfig);
+      }
     }
-  }, [config, onRecurrenceChange]);
+  }, [config, onRecurrenceChange, recurrence]);
 
   const handleEnabledChange = useCallback((checked: boolean) => {
     setConfig(prev => ({ ...prev, enabled: checked }));
@@ -231,7 +253,7 @@ const RecurrenceSelector: React.FC<RecurrenceSelectorProps> = ({
           {config.enabled && (
             <Box sx={{ p: 2, bg: 'canvas.subtle', borderRadius: 2 }}>
               <Text sx={{ fontSize: 0, color: 'fg.muted' }}>
-                設定内容: {getRecurrenceDescription(config)}
+                設定内容: {getRecurrenceDescription(config.enabled ? config : undefined)}
               </Text>
             </Box>
           )}
