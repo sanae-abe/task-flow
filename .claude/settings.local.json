@@ -9,7 +9,8 @@
       "Bash(npm audit --audit-level=moderate --json)",
       "Bash(npm run type-check)",
       "Bash(npm run typecheck)",
-      "Bash(git add .)"
+      "Bash(git add .)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nfeat: アプリ名をToDoからCheerに変更とロゴ刷新\n\nアプリ名変更:\n- Logo.tsx: アプリ名「ToDo」→「Cheer」に変更\n- manifest.json: PWAアプリ名を「Cheer - タスク管理ツール」に更新\n- index.html: ページタイトルとメタ説明をCheerに変更\n- package.json: プロジェクト名「todo-app」→「cheer-app」に変更\n\nロゴの刷新:\n- 新しいカラフルなSVGロゴに変更\n- ブルー・グリーン系のモダンなデザイン\n- viewBox「760×731」の新しいアスペクト比に対応\n\nLogo.tsxの改善:\n- フォントサイズが正しく反映されるよう修正\n- sizeConfigのfontSizeプロパティを実際に使用\n- h1要素として適切にレンダリング（BoxコンポーネントのasプロパティでHTML5セマンティクス対応）\n- aria-labelをCheerアプリケーションに更新\n- ESLintのobject-shorthand規則に準拠\n\n技術的改善:\n- TypeScript型チェック: エラーなし\n- ESLintコンパイルエラー: 解決済み\n- レスポンシブ対応（small/medium/large）のフォントサイズ設定\n\n🤖 Generated with [Claude Code](https://claude.ai/code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")"
     ],
     "deny": [],
     "ask": []

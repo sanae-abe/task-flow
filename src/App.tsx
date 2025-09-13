@@ -6,7 +6,6 @@ import KanbanBoard from './components/KanbanBoard';
 import CalendarView from './components/CalendarView';
 import NotificationContainer from './components/NotificationContainer';
 import HelpSidebar from './components/HelpSidebar';
-import OfflineIndicator from './components/OfflineIndicator';
 import { KanbanProvider, useKanban } from './contexts/KanbanContext';
 import { NotificationProvider } from './contexts/NotificationContext';
 import { useHelp } from './hooks/useHelp';
@@ -45,7 +44,6 @@ const AppContent: React.FC = () => {
       </main>
       <NotificationContainer />
       <HelpSidebar isOpen={isHelpOpen} onClose={closeHelp} />
-      <OfflineIndicator />
     </div>
   );
 };

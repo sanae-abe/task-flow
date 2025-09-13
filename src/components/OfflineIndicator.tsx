@@ -13,21 +13,18 @@ const OfflineIndicator: React.FC = () => {
   return (
     <div
       style={{
-        position: 'fixed',
-        top: '10px',
         right: '10px',
-        zIndex: 1000,
         borderRadius: '6px',
         border: '1px solid',
-        borderColor: isOffline ? 'var(--color-severe-emphasis)' : 'var(--color-success-emphasis)',
-        backgroundColor: isOffline ? 'var(--color-severe-subtle)' : 'var(--color-success-subtle)',
-        padding: '8px 12px',
+        borderColor: isOffline ? 'var(--bgColor-severe-emphasis)' : 'var(--fgColor-success)',
+        color: isOffline ? 'var(--bgColor-severe-emphasis)' : 'var(--fgColor-onEmphasis)',
+        padding: '4px 12px',
         display: 'flex',
         alignItems: 'center',
         gap: '8px',
-        boxShadow: '0 8px 24px rgba(140, 149, 159, 0.2)',
+        marginRight: '4px',
         transition: 'all 0.3s ease',
-        animation: wasOffline && isOnline ? 'slideIn 0.3s ease' : 'none',
+        animation: wasOffline && isOnline ? 'slideIn 0.3s ease' : 'none'
       }}
     >
       {isOffline ? (
@@ -37,8 +34,8 @@ const OfflineIndicator: React.FC = () => {
       )}
       <Text
         fontSize={1}
-        fontWeight="semibold"
-        color={isOffline ? 'severe.fg' : 'success.fg'}
+        fontWeight="bold"
+        color={isOffline ? 'severeEmphasis.fg' : 'onEmphasis.fg'}
       >
         {isOffline ? 'オフライン' : 'オンラインに復帰しました'}
       </Text>

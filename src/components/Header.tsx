@@ -5,6 +5,7 @@ import React from 'react';
 import { useKanban } from '../contexts/KanbanContext';
 import type { Label, FileAttachment } from '../types';
 
+import OfflineIndicator from './OfflineIndicator';
 import BoardSelector from './BoardSelector';
 import Logo from './Logo';
 import TaskCreateDialog from './TaskCreateDialog';
@@ -82,6 +83,7 @@ interface RightSectionProps {
 
 const RightSection: React.FC<RightSectionProps> = ({ onCreateClick, onHelpClick }) => (
   <Box sx={headerStyles.rightSection}>
+    <OfflineIndicator />
     <Button
       onClick={onCreateClick}
       variant="primary"
