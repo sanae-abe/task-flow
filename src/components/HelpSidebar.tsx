@@ -177,6 +177,10 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
               description="期限日ベースでタスクを月次カレンダー表示"
             />
             <HelpItem
+              title="テーブルビュー"
+              description="全タスクを一覧表形式で表示・管理"
+            />
+            <HelpItem
               title="切り替え方法"
               description="サブヘッダー右端のメニューからビューを選択"
             />
