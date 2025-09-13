@@ -89,10 +89,9 @@ const TableColumnManager: React.FC = () => {
           onClose={() => setIsSettingsOpen(false)}
           aria-labelledby="column-settings-title"
         >
-        <Box sx={{ p: 3 }}>
-          <Text sx={{ mb: 3, color: 'fg.muted' }}>
-            カラムの表示・非表示、幅の調整、削除を行えます。
-          </Text>
+          <div style={{ marginBottom: '20px', color: 'fg.muted' }}>
+            カラムの並び替え、幅の調整を行えます。幅はpx単位で入力してください。
+          </div>
 
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             {columns.map((column) => (
@@ -100,9 +99,8 @@ const TableColumnManager: React.FC = () => {
                 key={column.id}
                 sx={{
                   display: 'flex',
+                  py: 1,
                   alignItems: 'center',
-                  gap: 3,
-                  p: 3,
                   border: '1px solid',
                   borderColor: 'border.default',
                   borderRadius: 2,
@@ -117,20 +115,9 @@ const TableColumnManager: React.FC = () => {
                   sx={{ cursor: 'grab' }}
                 />
 
-                <IconButton
-                  aria-label={column.visible ? 'カラムを非表示' : 'カラムを表示'}
-                  icon={column.visible ? EyeIcon : EyeClosedIcon}
-                  variant="invisible"
-                  size="small"
-                  onClick={() => toggleColumnVisibility(column.id)}
-                />
-
                 <Box sx={{ flex: 1 }}>
                   <Text sx={{ fontWeight: 'semibold' }}>
                     {column.label}
-                  </Text>
-                  <Text sx={{ fontSize: 0, color: 'fg.muted' }}>
-                    {column.type} • {column.id}
                   </Text>
                 </Box>
 
@@ -145,12 +132,9 @@ const TableColumnManager: React.FC = () => {
                     }
                     placeholder="幅 (例: 150px)"
                     size="small"
-                    sx={{ width: '120px' }}
+                    sx={{ width: '120px', mr: 1 }}
                     aria-describedby={`width-help-${column.id}`}
                   />
-                  <FormControl.Caption id={`width-help-${column.id}`}>
-                    px単位で入力
-                  </FormControl.Caption>
                 </FormControl>
 
                 {isCustomColumn(column.id) && (
@@ -174,7 +158,6 @@ const TableColumnManager: React.FC = () => {
               閉じる
             </Button>
           </Box>
-        </Box>
         </Dialog>
       )}
     </>
