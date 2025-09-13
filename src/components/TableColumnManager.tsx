@@ -45,7 +45,7 @@ const TableColumnManager: React.FC = () => {
       <ActionMenu>
         <ActionMenu.Anchor>
           <IconButton
-            aria-label="カラム設定"
+            aria-label="カラム詳細設定"
             icon={GearIcon}
             variant="invisible"
             size="small"
@@ -85,7 +85,7 @@ const TableColumnManager: React.FC = () => {
       {/* 詳細設定ダイアログ */}
       {isSettingsOpen && (
         <Dialog
-          title="カラム設定"
+          title="カラム詳細設定"
           onClose={() => setIsSettingsOpen(false)}
           aria-labelledby="column-settings-title"
         >

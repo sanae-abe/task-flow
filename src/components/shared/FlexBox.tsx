@@ -3,7 +3,7 @@ import { memo } from 'react';
 
 import type { FlexDirection, FlexAlign, FlexJustify, FlexWrap } from '../../types/shared';
 
-interface FlexBoxProps {
+interface FlexBoxProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
   /** Flexの方向 */
   direction?: FlexDirection;
   /** align-items */
@@ -42,7 +42,8 @@ const FlexBox = memo<FlexBoxProps>(({
   shrink,
   grow,
   children,
-  sx
+  sx,
+  ...restProps
 }) => {
   // Flexboxスタイルを構築
   const flexStyles: Record<string, unknown> = {
@@ -69,8 +70,23 @@ const FlexBox = memo<FlexBoxProps>(({
     flexStyles['flexGrow'] = grow;
   }
 
+  // カスタムプロパティを除外してDOM要素用のpropsを取得
+  const {
+    direction: _direction,
+    align: _align,
+    justify: _justify,
+    gap: _gap,
+    wrap: _wrap,
+    flex: _flex,
+    shrink: _shrink,
+    grow: _grow,
+    sx: _sx,
+    ...domProps
+  } = { direction, align, justify, gap, wrap, flex, shrink, grow, sx, ...restProps };
+
   return (
     <Box
+      {...domProps}
       sx={{
         ...flexStyles,
         ...sx
