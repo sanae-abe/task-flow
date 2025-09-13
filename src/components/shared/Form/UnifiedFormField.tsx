@@ -2,11 +2,12 @@ import { Text, TextInput, Textarea, Select, FormControl } from '@primer/react';
 import React, { memo } from 'react';
 
 import type { FormFieldConfig } from '../../../types/unified-form';
-import type { Label, FileAttachment } from '../../../types';
+import type { Label, FileAttachment, RecurrenceConfig } from '../../../types';
 
 import ColorSelector from '../../ColorSelector';
 import FileUploader from '../../FileUploader';
 import LabelSelector from '../../LabelSelector';
+import RecurrenceSelector from '../../RecurrenceSelector';
 
 // ヘルパー関数: unknown型を安全にstringに変換
 const toStringValue = (value: unknown): string => {
@@ -58,7 +59,8 @@ const UnifiedFormField = memo<UnifiedFormFieldProps>(({
   onBlur,
   onFocus,
   error,
-  touched
+  touched,
+  helpText
 }) => {
   // 共通のイベントハンドラー
   const handleChange = (newValue: unknown) => {
@@ -219,6 +221,14 @@ const UnifiedFormField = memo<UnifiedFormFieldProps>(({
           />
         );
 
+      case 'recurrence-selector':
+        return (
+          <RecurrenceSelector
+            recurrence={value as RecurrenceConfig ?? { enabled: false, pattern: 'daily', interval: 1 }}
+            onRecurrenceChange={(recurrence: RecurrenceConfig | undefined) => handleChange(recurrence)}
+          />
+        );
+
       case 'custom':
         return customComponent ?? null;
 
@@ -239,7 +249,13 @@ const UnifiedFormField = memo<UnifiedFormFieldProps>(({
       )}
       
       {renderField()}
-      
+
+      {helpText && !showError && (
+        <FormControl.Caption>
+          {helpText}
+        </FormControl.Caption>
+      )}
+
       {showError && (
         <FormControl.Validation variant="error">
           {error}
