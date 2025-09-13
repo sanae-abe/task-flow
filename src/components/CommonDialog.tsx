@@ -1,6 +1,7 @@
 import { XIcon } from '@primer/octicons-react';
-import { Box, Text, Button } from '@primer/react';
+import { Box, Text, Button, ThemeProvider, BaseStyles, useTheme } from '@primer/react';
 import React, { useCallback, memo } from 'react';
+import { createPortal } from 'react-dom';
 
 import type { DialogActionsProps } from '../types/dialog';
 import IconButton from './shared/IconButton';
@@ -13,7 +14,7 @@ const DIALOG_STYLES = {
     right: 0,
     bottom: 0,
     bg: 'primer.canvas.backdrop',
-    zIndex: 1000,
+    zIndex: 9999,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center'
@@ -126,6 +127,7 @@ const CommonDialog = memo<CommonDialogProps>(({
   ariaLabelledBy,
   size = 'default'
 }) => {
+  const theme = useTheme();
   const handleBackdropClick = useCallback((event: React.MouseEvent) => {
     if (event.target === event.currentTarget) {
       onClose();
@@ -140,28 +142,34 @@ const CommonDialog = memo<CommonDialogProps>(({
     return null;
   }
 
-  return (
-    <Box
-      sx={DIALOG_STYLES.backdrop}
-      onClick={handleBackdropClick}
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby={ariaLabelledBy}
-    >
-      <Box
-        sx={size === 'large' ? DIALOG_STYLES.largeContent : DIALOG_STYLES.content}
-        onClick={handleContentClick}
-      >
-        <DialogHeader 
-          title={title} 
-          onClose={onClose} 
-          titleId={ariaLabelledBy}
-        />
-        {children}
-        {actions}
-      </Box>
-    </Box>
+  const dialogContent = (
+    <ThemeProvider theme={theme}>
+      <BaseStyles>
+        <Box
+          sx={DIALOG_STYLES.backdrop}
+          onClick={handleBackdropClick}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby={ariaLabelledBy}
+        >
+          <Box
+            sx={size === 'large' ? DIALOG_STYLES.largeContent : DIALOG_STYLES.content}
+            onClick={handleContentClick}
+          >
+            <DialogHeader 
+              title={title} 
+              onClose={onClose} 
+              titleId={ariaLabelledBy}
+            />
+            {children}
+            {actions}
+          </Box>
+        </Box>
+      </BaseStyles>
+    </ThemeProvider>
   );
+
+  return createPortal(dialogContent, document.body);
 });
 
 export default CommonDialog;

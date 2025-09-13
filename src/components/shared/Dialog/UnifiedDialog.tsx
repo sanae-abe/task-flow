@@ -1,6 +1,7 @@
 import { XIcon } from '@primer/octicons-react';
-import { Box, Text } from '@primer/react';
+import { Box, Text, ThemeProvider, BaseStyles, useTheme } from '@primer/react';
 import React, { useCallback, useEffect, memo } from 'react';
+import { createPortal } from 'react-dom';
 
 import type { UnifiedDialogProps, DialogVariant, DialogSize } from '../../../types/unified-dialog';
 import IconButton from '../IconButton';
@@ -20,7 +21,7 @@ const getDialogStyles = (variant: DialogVariant, size: DialogSize) => {
         right: 0,
         bottom: 0,
         bg: 'primer.canvas.backdrop',
-        zIndex: 1000,
+        zIndex: 9999,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center'
@@ -44,7 +45,7 @@ const getDialogStyles = (variant: DialogVariant, size: DialogSize) => {
         right: 0,
         bottom: 0,
         bg: 'primer.canvas.backdrop',
-        zIndex: 1100,
+        zIndex: 10000,
         display: 'flex',
         alignItems: 'flex-start',
         justifyContent: 'center',
@@ -168,6 +169,7 @@ const UnifiedDialog = memo<UnifiedDialogProps>(({
   closeOnBackdropClick = true,
   closeOnEscape = true
 }) => {
+  const theme = useTheme();
   const handleBackdropClick = useCallback((event: React.MouseEvent) => {
     if (closeOnBackdropClick && event.target === event.currentTarget) {
       onClose();
@@ -204,39 +206,51 @@ const UnifiedDialog = memo<UnifiedDialogProps>(({
   const styles = getDialogStyles(variant, size);
   const titleId = ariaLabelledBy ?? `dialog-title-${Math.random().toString(36).substr(2, 9)}`;
 
-  return (
-    <Box
-      sx={styles.backdrop}
-      onClick={handleBackdropClick}
-      role="dialog"
-      aria-modal={variant !== 'inline' ? 'true' : undefined}
-      aria-labelledby={titleId}
-    >
-      <Box
-        sx={styles.content}
-        onClick={handleContentClick}
-      >
-        {!hideHeader && (
-          <DialogHeader
-            title={title}
-            onClose={onClose}
-            titleId={titleId}
-            hideCloseButton={variant === 'overlay'}
-          />
-        )}
-        
-        <Box sx={{ flex: 1 }}>
-          {children}
-        </Box>
+  const dialogContent = (
+    <ThemeProvider theme={theme}>
+      <BaseStyles>
+        <Box
+          sx={styles.backdrop}
+          onClick={handleBackdropClick}
+          role="dialog"
+          aria-modal={variant !== 'inline' ? 'true' : undefined}
+          aria-labelledby={titleId}
+        >
+          <Box
+            sx={styles.content}
+            onClick={handleContentClick}
+          >
+            {!hideHeader && (
+              <DialogHeader
+                title={title}
+                onClose={onClose}
+                titleId={titleId}
+                hideCloseButton={variant === 'overlay'}
+              />
+            )}
+            
+            <Box sx={{ flex: 1 }}>
+              {children}
+            </Box>
 
-        {!hideFooter && actions && actions.length > 0 && (
-          <DialogFooter>
-            <DialogActions actions={actions} />
-          </DialogFooter>
-        )}
-      </Box>
-    </Box>
+            {!hideFooter && actions && actions.length > 0 && (
+              <DialogFooter>
+                <DialogActions actions={actions} />
+              </DialogFooter>
+            )}
+          </Box>
+        </Box>
+      </BaseStyles>
+    </ThemeProvider>
   );
+
+  // modal と overlay バリアントの場合はポータル化
+  if (variant === 'modal' || variant === 'overlay') {
+    return createPortal(dialogContent, document.body);
+  }
+
+  // inline バリアントの場合は通常通りレンダリング（ポータル化しない）
+  return dialogContent;
 });
 
 UnifiedDialog.displayName = 'UnifiedDialog';
