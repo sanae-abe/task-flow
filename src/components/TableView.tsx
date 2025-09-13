@@ -102,22 +102,24 @@ const TableView: React.FC = () => {
       <Box
         sx={{
           borderRadius: 2,
-          overflow: 'hidden',
+          overflow: 'auto',
           bg: 'canvas.default',
           boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+          minWidth: 'fit-content',
         }}
       >
         {/* ヘッダー行 */}
         <Box
           sx={{
             display: 'grid',
-            gridTemplateColumns: '40px 1fr 150px 210px 180px 100px 100px 120px 120px',
+            gridTemplateColumns: '40px 650px 150px 210px 180px 100px 100px 120px 120px',
             bg: 'canvas.default',
             borderBottom: '2px solid',
             borderColor: 'border.default',
             py: 2,
             px: 3,
             gap: 2,
+            minWidth: '1170px',
           }}
         >
           <Text sx={{ fontWeight: 'bold', fontSize: 1 }}>操作</Text>
@@ -141,7 +143,7 @@ const TableView: React.FC = () => {
               key={task.id}
               sx={{
                 display: 'grid',
-                gridTemplateColumns: '40px 1fr 150px 210px 180px 100px 100px 120px 120px',
+                gridTemplateColumns: '40px 650px 150px 210px 180px 100px 100px 120px 120px',
                 py: 2,
                 px: 3,
                 gap: 2,
@@ -149,6 +151,7 @@ const TableView: React.FC = () => {
                 borderBottom: index < filteredAndSortedTasks.length - 1 ? '1px solid' : 'none',
                 borderColor: 'border.default',
                 cursor: 'pointer',
+                minWidth: '1170px',
                 '&:hover': {
                   bg: 'canvas.subtle',
                 },
