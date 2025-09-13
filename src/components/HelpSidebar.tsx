@@ -35,7 +35,7 @@ const HelpSection: React.FC<HelpSectionProps> = ({ title, icon: Icon, children, 
       }}>
         <Icon size={14} />
       </Box>
-      <Heading sx={{ fontSize: 2, fontWeight: 'bold', color: 'fg.default', margin: 0 }}>
+      <Heading sx={{ fontSize: 2, fontWeight: '600', color: 'fg.default', margin: 0 }}>
         {title}
       </Heading>
     </Box>
@@ -71,7 +71,7 @@ const HelpItem: React.FC<HelpItemProps> = ({ title, description, highlight = fal
   }}>
     <Text sx={{
       fontSize: 1,
-      fontWeight: 'bold',
+      fontWeight: '600',
       color: 'accent.emphasis',
       minWidth: TITLE_MIN_WIDTH,
       flexShrink: 0,

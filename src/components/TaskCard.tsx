@@ -25,7 +25,6 @@ const getCardStyles = (isRightmostColumn: boolean, isDragging: boolean, transfor
     opacity: isDragging ? 0.5 : (isRightmostColumn ? 0.6 : 1),
   },
   borderRadius: 2,
-  borderColor: 'border.default',
   cursor: 'grab',
   boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
   transition: 'all 0.2s ease',
@@ -74,7 +73,6 @@ const TaskCard: React.FC<TaskCardProps> = React.memo(({ task, columnId, onTaskCl
         ref={setNodeRef}
         bg="canvas.default"
         p={3}
-        border="1px solid"
         sx={getCardStyles(taskCardData.isRightmostColumn, isDragging, transform, transition)}
         {...attributes}
         {...listeners}

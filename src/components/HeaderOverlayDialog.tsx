@@ -159,7 +159,7 @@ const HeaderOverlayDialog = memo<HeaderOverlayDialogProps>(({
               id={ariaLabelledBy}
               sx={{ 
                 fontSize: 3, 
-                fontWeight: '700', 
+                fontWeight: '600', 
                 whiteSpace: 'nowrap',
                 color: 'fg.emphasis',
                 flexShrink: 0 // タイトルの縮小を防ぐ

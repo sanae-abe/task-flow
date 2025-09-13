@@ -127,7 +127,7 @@ export const handleTaskActions = (state: KanbanState, action: KanbanAction): Kan
       const isSourceRightmost = sourceColumnId === state.currentBoard.columns[state.currentBoard.columns.length - 1]?.id;
 
       // completedAtを設定
-      let updatedTask = { ...taskToMove };
+      const updatedTask = { ...taskToMove };
       if (isTargetRightmost && !isSourceRightmost) {
         logger.debug('✅ Setting completedAt for task completion');
         updatedTask.completedAt = new Date().toISOString();

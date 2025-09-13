@@ -77,7 +77,7 @@ const ImportModeSelector: React.FC<ImportModeSelectorProps> = ({
         >
           {getModeIcon(selectedMode)}
           <Box>
-            <Text sx={{ fontWeight: 'bold', fontSize: 1 }}>
+            <Text sx={{ fontWeight: '600', fontSize: 1 }}>
               現在のインポートモード
             </Text>
             <Text sx={{ fontSize: 0, color: 'fg.muted' }}>
@@ -88,7 +88,7 @@ const ImportModeSelector: React.FC<ImportModeSelectorProps> = ({
       )}
       
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-        <Text sx={{ fontWeight: 'bold', fontSize: 1 }}>
+        <Text sx={{ fontWeight: '600', fontSize: 1 }}>
           インポートモードを選択
         </Text>
         <div style={{ 

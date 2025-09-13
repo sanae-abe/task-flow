@@ -1,15 +1,21 @@
 import { BaseStyles, ThemeProvider } from '@primer/react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 import Header from './components/Header';
 import SubHeader from './components/SubHeader';
 import KanbanBoard from './components/KanbanBoard';
 import CalendarView from './components/CalendarView';
+import TableView from './components/TableView';
 import NotificationContainer from './components/NotificationContainer';
 import HelpSidebar from './components/HelpSidebar';
+import TaskDetailSidebar from './components/TaskDetailSidebar';
 import { KanbanProvider, useKanban } from './contexts/KanbanContext';
 import { NotificationProvider } from './contexts/NotificationContext';
 import { useHelp } from './hooks/useHelp';
 import { useDataSync } from './hooks/useDataSync';
+import { useViewRoute } from './hooks/useViewRoute';
+import { useTaskFinder } from './hooks/useTaskFinder';
 
 // 定数定義
 const Z_INDEX = 1000;
@@ -27,23 +33,58 @@ const styles = {
 } as const;
 
 const AppContent: React.FC = () => {
-  const { state } = useKanban();
+  const { state, closeTaskDetail } = useKanban();
   const { isHelpOpen, openHelp, closeHelp } = useHelp();
+  const { findTaskById } = useTaskFinder(state.currentBoard);
   
   // データ同期の初期化
   useDataSync();
+  
+  // URL同期の初期化
+  useViewRoute();
+
+  // 選択されたタスクを取得
+  const selectedTask = state.selectedTaskId ? findTaskById(state.selectedTaskId) : null;
+
+  // 選択されたタスクが削除された場合の処理
+  useEffect(() => {
+    if (state.selectedTaskId && !selectedTask && state.isTaskDetailOpen) {
+      closeTaskDetail();
+    }
+  }, [state.selectedTaskId, selectedTask, state.isTaskDetailOpen, closeTaskDetail]);
 
   return (
-    <div className="app" role="application" aria-label="ToDoアプリケーション">
+    <div className="app" role="application" aria-label="Cheerアプリケーション">
       <div style={styles.fixedHeader}>
         <Header onHelpClick={openHelp} />
         <SubHeader />
       </div>
-      <main aria-label={state.viewMode === 'kanban' ? 'カンバンボード' : 'カレンダービュー'}>
-        {state.viewMode === 'kanban' ? <KanbanBoard /> : <CalendarView />}
+      <main 
+        aria-label={
+          state.viewMode === 'kanban' ? 'カンバンボード' : 
+          state.viewMode === 'calendar' ? 'カレンダービュー' : 
+          'テーブルビュー'
+        }
+        style={{
+          transition: 'opacity 0.15s ease-out',
+          willChange: 'opacity',
+        }}
+      >
+        <Routes>
+          <Route path="/" element={<Navigate to="/kanban" replace />} />
+          <Route path="/kanban" element={<KanbanBoard />} />
+          <Route path="/calendar" element={<CalendarView />} />
+          <Route path="/table" element={<TableView />} />
+          <Route path="*" element={<Navigate to="/kanban" replace />} />
+        </Routes>
       </main>
       <NotificationContainer />
       <HelpSidebar isOpen={isHelpOpen} onClose={closeHelp} />
+      <TaskDetailSidebar
+        task={selectedTask}
+        isOpen={state.isTaskDetailOpen}
+        onClose={closeTaskDetail}
+      />
     </div>
   );
 };

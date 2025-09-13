@@ -118,7 +118,7 @@ export const DataImportDialog = memo<DataImportDialogProps>(({ isOpen, onClose }
     >
       {/* インポートモード選択 */}
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mb: 3 }}>
-        <Text sx={{ fontSize: 1, fontWeight: '700', color: 'fg.muted' }}>インポートモード</Text>
+        <Text sx={{ fontSize: 1, fontWeight: '600', color: 'fg.muted' }}>インポートモード</Text>
         <Select
           value={importMode}
           onChange={(e) => handleModeChange(e.target.value as ImportMode)}

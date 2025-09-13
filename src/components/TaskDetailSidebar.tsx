@@ -56,12 +56,12 @@ const TaskDetailSidebar = memo<TaskDetailSidebarProps>(({ task, isOpen, onClose 
     top: 0,
     right: 0,
     width: '440px',
-    height: "100vh",
+    height: '100vh',
     bg: "canvas.default",
     boxShadow: '0 16px 32px rgba(0, 0, 0, 0.24)',
     borderLeft: { md: '1px solid' },
     borderColor: 'border.default',
-    zIndex: 1000,
+    zIndex: 1020,
     overflowY: 'auto' as const
   }), []);
 

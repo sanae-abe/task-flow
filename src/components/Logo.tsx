@@ -64,7 +64,7 @@ const Logo: React.FC<LogoProps> = ({ size = 'medium' }) => {
           fontSize,
           margin: 0,
           color: 'fg.default',
-          fontWeight: '700',
+          fontWeight: '600',
           lineHeight: 'condensed'
         }}
       >

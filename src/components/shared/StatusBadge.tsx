@@ -108,7 +108,7 @@ const StatusBadge = memo<StatusBadgeProps>(({
         alignItems: 'center',
         gap: IconComponent ? '4px' : 0,
         color: colors.cssColor,
-        fontWeight: '700',
+        fontWeight: '600',
         alignSelf: 'flex-start',
         padding: `${sizeStyles.py * 4}px ${sizeStyles.px * 4}px`,
         ...sx

@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { Text, Button, IconButton } from '@primer/react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@primer/octicons-react';
 
@@ -6,8 +6,6 @@ import { useKanban } from '../contexts/KanbanContext';
 import type { Task } from '../types';
 import { sortTasks } from '../utils/taskSort';
 import { filterTasks } from '../utils/taskFilter';
-
-import TaskDetailSidebar from './TaskDetailSidebar';
 
 interface CalendarDayProps {
   date: Date;
@@ -120,42 +118,9 @@ const CalendarDay: React.FC<CalendarDayProps> = React.memo(({
 CalendarDay.displayName = 'CalendarDay';
 
 const CalendarView: React.FC = () => {
-  const { state } = useKanban();
+  const { state, openTaskDetail } = useKanban();
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
-  const [isTaskDetailOpen, setIsTaskDetailOpen] = useState(false);
-  const selectedTaskIdRef = useRef<string | null>(null);
 
-  // selectedTaskを最新の状態に同期 - 無限ループを防止
-  useEffect(() => {
-    const selectedTaskId = selectedTaskIdRef.current;
-    if (selectedTaskId && state.currentBoard) {
-      // 全カラムからselectedTaskのIDで最新のタスクを検索
-      let updatedTask: Task | null = null;
-      
-      for (const column of state.currentBoard.columns) {
-        const foundTask = column.tasks.find(task => task.id === selectedTaskId);
-        if (foundTask) {
-          updatedTask = foundTask;
-          break;
-        }
-      }
-      
-      if (updatedTask && selectedTask && JSON.stringify(updatedTask) !== JSON.stringify(selectedTask)) {
-        setSelectedTask(updatedTask);
-      } else if (!updatedTask && selectedTask) {
-        // タスクが見つからない場合（削除された場合）はサイドバーを閉じる
-        setSelectedTask(null);
-        setIsTaskDetailOpen(false);
-        selectedTaskIdRef.current = null;
-      }
-    }
-  }, [state.currentBoard, selectedTask]);
-
-  // selectedTaskのIDを追跡
-  useEffect(() => {
-    selectedTaskIdRef.current = selectedTask?.id || null;
-  }, [selectedTask?.id]);
 
   const { year, month } = useMemo(() => ({
     year: currentDate.getFullYear(),
@@ -233,14 +198,8 @@ const CalendarView: React.FC = () => {
   }, []);
 
   const handleTaskClick = useCallback((task: Task) => {
-    setSelectedTask(task);
-    setIsTaskDetailOpen(true);
-  }, []);
-
-  const handleCloseTaskDetail = useCallback(() => {
-    setIsTaskDetailOpen(false);
-    setSelectedTask(null);
-  }, []);
+    openTaskDetail(task.id);
+  }, [openTaskDetail]);
 
   const monthNames = useMemo(() => [
     '1月', '2月', '3月', '4月', '5月', '6月',
@@ -265,7 +224,7 @@ const CalendarView: React.FC = () => {
 
   const titleStyles = useMemo(() => ({
     fontSize: '20px',
-    fontWeight: 'bold',
+    fontWeight: '600',
   }), []);
 
   const navigationStyles = useMemo(() => ({
@@ -303,7 +262,7 @@ const CalendarView: React.FC = () => {
     padding: '8px',
     backgroundColor: 'var(--bgColor-default)',
     textAlign: 'center' as const,
-    fontWeight: 'bold',
+    fontWeight: '600',
     fontSize: '12px',
     color: 'var(--fg-muted)',
   }), []);
@@ -372,11 +331,6 @@ const CalendarView: React.FC = () => {
         </div>
       </div>
 
-      <TaskDetailSidebar
-        task={selectedTask}
-        isOpen={isTaskDetailOpen}
-        onClose={handleCloseTaskDetail}
-      />
     </div>
   );
 };

@@ -11,7 +11,7 @@ const containerStyles: React.CSSProperties = {
   top: '20px',
   left: '50%',
   transform: 'translateX(-50%)',
-  zIndex: 1010,
+  zIndex: 1040,
   pointerEvents: 'none',
   display: 'flex',
   flexDirection: 'column',

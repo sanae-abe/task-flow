@@ -66,3 +66,20 @@ export const formatDateTime = (date: string | Date): string =>
     minute: '2-digit'
   });
 
+export const formatDate = (date: string | Date, format?: string): string => {
+  const dateObj = new Date(date);
+  
+  if (format === 'MM/dd') {
+    return dateObj.toLocaleDateString('ja-JP', {
+      month: '2-digit',
+      day: '2-digit'
+    });
+  }
+  
+  return dateObj.toLocaleDateString('ja-JP', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  });
+};
+

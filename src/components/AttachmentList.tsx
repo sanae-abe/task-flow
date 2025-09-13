@@ -48,7 +48,7 @@ const AttachmentList: React.FC<AttachmentListProps> = ({
             }}>
               <Text sx={{ 
                 fontSize: 1, 
-                fontWeight: '700', 
+                fontWeight: '600', 
                 wordBreak: 'break-word',
                 lineHeight: 1.2
               }}>

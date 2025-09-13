@@ -1,9 +1,10 @@
-import { PlusIcon, CalendarIcon, ProjectIcon, TriangleDownIcon } from '@primer/octicons-react';
+import { PlusIcon, CalendarIcon, ProjectIcon, TriangleDownIcon, TableIcon } from '@primer/octicons-react';
 import { Box, ActionMenu, ActionList, Button } from '@primer/react';
 import React from 'react';
 
 import { useKanban } from '../contexts/KanbanContext';
 import { useSubHeader } from '../hooks/useSubHeader';
+import { useViewRoute } from '../hooks/useViewRoute';
 
 import BoardActionMenu from './BoardActionMenu';
 import BoardCreateDialog from './BoardCreateDialog';
@@ -17,7 +18,8 @@ import TaskSortSelector from './TaskSortSelector';
 import TaskStatsDisplay from './TaskStatsDisplay';
 
 const SubHeader: React.FC = () => {
-  const { setSortOption, setTaskFilter, setViewMode } = useKanban();
+  const { setSortOption, setTaskFilter } = useKanban();
+  const { navigateToView } = useViewRoute();
   const {
     state,
     dialogState,
@@ -125,18 +127,24 @@ const SubHeader: React.FC = () => {
             <Button
               variant="invisible"
               size="small"
-              leadingVisual={state.viewMode === 'kanban' ? ProjectIcon : CalendarIcon}
+              leadingVisual={
+                state.viewMode === 'kanban' ? ProjectIcon : 
+                state.viewMode === 'calendar' ? CalendarIcon : 
+                TableIcon
+              }
               trailingVisual={TriangleDownIcon}
               aria-label="ビューモードを選択"
             >
-              {state.viewMode === 'kanban' ? 'カンバン' : 'カレンダー'}
+              {state.viewMode === 'kanban' ? 'カンバン' : 
+               state.viewMode === 'calendar' ? 'カレンダー' : 
+               'テーブル'}
             </Button>
           </ActionMenu.Anchor>
           <ActionMenu.Overlay>
             <ActionList>
               <ActionList.Item
                 selected={state.viewMode === 'kanban'}
-                onSelect={() => setViewMode('kanban')}
+                onSelect={() => navigateToView('kanban')}
               >
                 <ActionList.LeadingVisual>
                   <ProjectIcon />
@@ -145,12 +153,21 @@ const SubHeader: React.FC = () => {
               </ActionList.Item>
               <ActionList.Item
                 selected={state.viewMode === 'calendar'}
-                onSelect={() => setViewMode('calendar')}
+                onSelect={() => navigateToView('calendar')}
               >
                 <ActionList.LeadingVisual>
                   <CalendarIcon />
                 </ActionList.LeadingVisual>
                 カレンダー
+              </ActionList.Item>
+              <ActionList.Item
+                selected={state.viewMode === 'table'}
+                onSelect={() => navigateToView('table')}
+              >
+                <ActionList.LeadingVisual>
+                  <TableIcon />
+                </ActionList.LeadingVisual>
+                テーブル
               </ActionList.Item>
             </ActionList>
           </ActionMenu.Overlay>

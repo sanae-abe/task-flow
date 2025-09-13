@@ -38,7 +38,7 @@ const TaskCardContent: React.FC<TaskDisplayProps> = ({
         <Heading sx={{
           fontSize: 1,
           margin: 0,
-          fontWeight: '700',
+          fontWeight: '500',
           color: 'fg.default',
           lineHeight: '1.4',
           flex: 1
@@ -52,11 +52,12 @@ const TaskCardContent: React.FC<TaskDisplayProps> = ({
           fontSize: 1, color: "fg.muted",
           lineHeight: '1.5',
           display: '-webkit-box',
-          WebkitLineClamp: 3,
+          WebkitLineClamp: 2,
           WebkitBoxOrient: 'vertical',
           overflow: 'hidden',
           wordBreak: 'break-word',
-          whiteSpace: 'pre-wrap'
+          whiteSpace: 'pre-wrap',
+          mb: '2px'
         }}>
           {task.description}
         </Text>

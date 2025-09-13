@@ -13,6 +13,8 @@ interface KanbanState {
   taskFilter: TaskFilter;
   viewMode: ViewMode;
   labels: Label[];
+  selectedTaskId: string | null;
+  isTaskDetailOpen: boolean;
 }
 
 type KanbanAction =
@@ -36,7 +38,9 @@ type KanbanAction =
   | { type: 'DELETE_SUBTASK'; payload: { taskId: string; subTaskId: string } }
   | { type: 'SET_SORT_OPTION'; payload: SortOption }
   | { type: 'SET_TASK_FILTER'; payload: TaskFilter }
-  | { type: 'SET_VIEW_MODE'; payload: ViewMode };
+  | { type: 'SET_VIEW_MODE'; payload: ViewMode }
+  | { type: 'OPEN_TASK_DETAIL'; payload: { taskId: string } }
+  | { type: 'CLOSE_TASK_DETAIL' };
 
 interface KanbanContextType {
   state: KanbanState;
@@ -60,6 +64,8 @@ interface KanbanContextType {
   setSortOption: (option: SortOption) => void;
   setTaskFilter: (filter: TaskFilter) => void;
   setViewMode: (mode: ViewMode) => void;
+  openTaskDetail: (taskId: string) => void;
+  closeTaskDetail: () => void;
   getAllLabels: () => Label[];
   loadInitialData: (data: { boards: KanbanBoard[]; labels: Label[]; tasks: Task[]; columns: Column[] }) => void;
 }
@@ -643,6 +649,20 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
         viewMode: action.payload,
       };
     }
+    case 'OPEN_TASK_DETAIL': {
+      return {
+        ...state,
+        selectedTaskId: action.payload.taskId,
+        isTaskDetailOpen: true,
+      };
+    }
+    case 'CLOSE_TASK_DETAIL': {
+      return {
+        ...state,
+        selectedTaskId: null,
+        isTaskDetailOpen: false,
+      };
+    }
     
     default:
       return state;
@@ -657,6 +677,8 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     taskFilter: { type: 'all', label: 'すべてのタスク' },
     viewMode: 'kanban',
     labels: [],
+    selectedTaskId: null,
+    isTaskDetailOpen: false,
   });
   const [isInitialized, setIsInitialized] = React.useState(false);
   const notify = useNotify();
@@ -1013,6 +1035,14 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     dispatch({ type: 'SET_VIEW_MODE', payload: mode });
   }, []);
 
+  const openTaskDetail = useCallback((taskId: string) => {
+    dispatch({ type: 'OPEN_TASK_DETAIL', payload: { taskId } });
+  }, []);
+
+  const closeTaskDetail = useCallback(() => {
+    dispatch({ type: 'CLOSE_TASK_DETAIL' });
+  }, []);
+
   // 全ボードから全ラベルを取得（名前でユニーク化）
   const getAllLabels = useCallback((): Label[] => {
     const labelMap = new Map<string, Label>();
@@ -1060,6 +1090,8 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       setSortOption,
       setTaskFilter,
       setViewMode,
+      openTaskDetail,
+      closeTaskDetail,
       getAllLabels,
       loadInitialData,
     }),
@@ -1084,6 +1116,8 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       setSortOption,
       setTaskFilter,
       setViewMode,
+      openTaskDetail,
+      closeTaskDetail,
       getAllLabels,
       loadInitialData,
     ]

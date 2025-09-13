@@ -90,7 +90,7 @@ const styles = {
   },
   fileName: {
     fontSize: 0,
-    fontWeight: '700',
+    fontWeight: '600',
     wordBreak: 'break-word'
   },
   fileSize: {
