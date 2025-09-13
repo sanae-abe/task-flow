@@ -1,4 +1,4 @@
-import type { KanbanBoard } from '../types';
+import type { KanbanBoard, Priority, Label, SubTask, FileAttachment } from '../types';
 
 const STORAGE_KEY = 'kanban-boards';
 
@@ -9,6 +9,11 @@ interface StoredTask {
   createdAt: string;
   updatedAt: string;
   dueDate?: string;
+  priority?: Priority;
+  files?: FileAttachment[];
+  subTasks?: SubTask[];
+  completedAt?: string | null;
+  labels?: Label[];
 }
 
 interface StoredColumn {
@@ -23,6 +28,7 @@ interface StoredBoard {
   createdAt: string;
   updatedAt: string;
   columns: StoredColumn[];
+  labels?: Label[];
 }
 
 export const saveBoards = (boards: KanbanBoard[], currentBoardId?: string): void => {
@@ -61,15 +67,21 @@ export const loadBoards = (): KanbanBoard[] => {
     
     return boards.map((board: StoredBoard) => ({
       ...board,
-      createdAt: new Date(board.createdAt),
-      updatedAt: new Date(board.updatedAt),
+      labels: board.labels || [],
+      createdAt: typeof board.createdAt === 'string' ? board.createdAt : new Date(board.createdAt).toISOString(),
+      updatedAt: typeof board.updatedAt === 'string' ? board.updatedAt : new Date(board.updatedAt).toISOString(),
       columns: board.columns.map((column: StoredColumn) => ({
         ...column,
         tasks: column.tasks.map((task: StoredTask) => ({
           ...task,
-          createdAt: new Date(task.createdAt),
-          updatedAt: new Date(task.updatedAt),
-          dueDate: task.dueDate ? new Date(task.dueDate) : undefined,
+          priority: task.priority || 'medium',
+          files: task.files || [],
+          subTasks: task.subTasks || [],
+          completedAt: task.completedAt || null,
+          labels: task.labels || [],
+          createdAt: typeof task.createdAt === 'string' ? task.createdAt : new Date(task.createdAt).toISOString(),
+          updatedAt: typeof task.updatedAt === 'string' ? task.updatedAt : new Date(task.updatedAt).toISOString(),
+          dueDate: task.dueDate ? (typeof task.dueDate === 'string' ? task.dueDate : new Date(task.dueDate).toISOString()) : null,
         })),
       })),
     }));

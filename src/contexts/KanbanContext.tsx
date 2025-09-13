@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import type { KanbanBoard, Column, Task, Label, SubTask, FileAttachment, SortOption, TaskFilter, ViewMode } from '../types';
 import { saveBoards, loadBoards } from '../utils/storage';
 import { useNotify } from './NotificationContext';
+import logger from '../utils/logger';
 
 interface KanbanState {
   boards: KanbanBoard[];
@@ -11,10 +12,12 @@ interface KanbanState {
   sortOption: SortOption;
   taskFilter: TaskFilter;
   viewMode: ViewMode;
+  labels: Label[];
 }
 
 type KanbanAction =
   | { type: 'LOAD_BOARDS'; payload: KanbanBoard[] }
+  | { type: 'LOAD_INITIAL_DATA'; payload: { boards: KanbanBoard[]; labels: Label[] } }
   | { type: 'IMPORT_BOARDS'; payload: { boards: KanbanBoard[]; replaceAll?: boolean } }
   | { type: 'CREATE_BOARD'; payload: { title: string } }
   | { type: 'SET_CURRENT_BOARD'; payload: string }
@@ -58,6 +61,7 @@ interface KanbanContextType {
   setTaskFilter: (filter: TaskFilter) => void;
   setViewMode: (mode: ViewMode) => void;
   getAllLabels: () => Label[];
+  loadInitialData: (data: { boards: KanbanBoard[]; labels: Label[]; tasks: Task[]; columns: Column[] }) => void;
 }
 
 const KanbanContext = createContext<KanbanContextType | undefined>(undefined);
@@ -74,7 +78,7 @@ const updateBoardInState = (state: KanbanState, updatedBoard: KanbanBoard): Kanb
 // ヘルパー関数: ボードのupdatedAtを更新
 const updateBoardTimestamp = (board: KanbanBoard): KanbanBoard => ({
     ...board,
-    updatedAt: new Date(),
+    updatedAt: new Date().toISOString(),
   });
 
 // ヘルパー関数: LocalStorageのcurrent-board-idを安全に管理
@@ -87,7 +91,7 @@ const updateCurrentBoardId = (boardId: string | null) => {
     }
   } catch (error) {
     // eslint-disable-next-line no-console
-    console.warn('LocalStorage access failed:', error);
+    logger.warn('LocalStorage access failed:', error);
   }
 };
 
@@ -97,7 +101,7 @@ const getCurrentBoardId = (): string | null => {
     return localStorage.getItem('current-board-id');
   } catch (error) {
     // eslint-disable-next-line no-console
-    console.warn('LocalStorage access failed:', error);
+    logger.warn('LocalStorage access failed:', error);
     return null;
   }
 };
@@ -108,7 +112,7 @@ const saveSortOption = (sortOption: SortOption) => {
     localStorage.setItem('sort-option', sortOption);
   } catch (error) {
     // eslint-disable-next-line no-console
-    console.warn('LocalStorage access failed:', error);
+    logger.warn('LocalStorage access failed:', error);
   }
 };
 
@@ -119,7 +123,7 @@ const loadSortOption = (): SortOption => {
     return (saved as SortOption) ?? 'manual';
   } catch (error) {
     // eslint-disable-next-line no-console
-    console.warn('LocalStorage access failed:', error);
+    logger.warn('LocalStorage access failed:', error);
     return 'manual';
   }
 };
@@ -144,6 +148,27 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
         ...state,
         boards,
         currentBoard,
+      };
+    }
+
+    case 'LOAD_INITIAL_DATA': {
+      const { boards, labels } = action.payload;
+      let currentBoard: KanbanBoard | null = null;
+      
+      if (boards.length > 0) {
+        const savedCurrentBoardId = getCurrentBoardId();
+        if (savedCurrentBoardId) {
+          currentBoard = boards.find(board => board.id === savedCurrentBoardId) ?? boards[0] ?? null;
+        } else {
+          currentBoard = boards[0] ?? null;
+        }
+      }
+      
+      return {
+        ...state,
+        boards,
+        currentBoard,
+        labels,
       };
     }
 
@@ -185,6 +210,7 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
       const newBoard: KanbanBoard = {
         id: uuidv4(),
         title: action.payload.title,
+        labels: [],
         columns: [
           {
             id: uuidv4(),
@@ -205,8 +231,8 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
             color: '#d1fae5'
           },
         ],
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
       };
       updateCurrentBoardId(newBoard.id);
       return {
@@ -286,11 +312,14 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
         id: uuidv4(),
         title: action.payload.title,
         description: action.payload.description,
-        dueDate: action.payload.dueDate,
-        labels: action.payload.labels,
-        attachments: action.payload.attachments,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        dueDate: action.payload.dueDate?.toISOString() || null,
+        labels: action.payload.labels || [],
+        files: action.payload.attachments || [],
+        priority: 'medium',
+        subTasks: [],
+        completedAt: null,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
       };
       
       const updatedBoard = updateBoardTimestamp({
@@ -307,14 +336,13 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
     
     case 'MOVE_TASK': {
       if (!state.currentBoard) {
-// eslint-disable-next-line no-console
-        console.log('❌ MOVE_TASK: No current board');
+        logger.debug('❌ MOVE_TASK: No current board');
         return state;
       }
       
       const { taskId, sourceColumnId, targetColumnId, targetIndex } = action.payload;
 // eslint-disable-next-line no-console
-      console.log('🚀 MOVE_TASK Action:', { taskId, sourceColumnId, targetColumnId, targetIndex });
+      logger.debug('🚀 MOVE_TASK Action:', { taskId, sourceColumnId, targetColumnId, targetIndex });
       
       // 移動するタスクを取得
       let taskToMove: Task | undefined;
@@ -322,14 +350,14 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
         if (column.id === sourceColumnId) {
           taskToMove = column.tasks.find(task => task.id === taskId);
 // eslint-disable-next-line no-console
-          console.log('📋 Task to move found:', taskToMove?.title);
+          logger.debug('📋 Task to move found:', taskToMove?.title);
           break;
         }
       }
       
       if (!taskToMove) {
 // eslint-disable-next-line no-console
-        console.log('❌ MOVE_TASK: Task to move not found');
+        logger.debug('❌ MOVE_TASK: Task to move not found');
         return state;
       }
       
@@ -341,42 +369,42 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
       const isMovingFromCompleted = sourceColumnIndex === rightmostColumnIndex;
       
       // タスクのcompletedAtを適切に設定
-      const updatedTask = { ...taskToMove, updatedAt: new Date() };
+      const updatedTask = { ...taskToMove, updatedAt: new Date().toISOString() };
       if (isMovingToCompleted && !isMovingFromCompleted) {
         // 完了状態に移動：completedAtを設定
-        updatedTask.completedAt = new Date();
+        updatedTask.completedAt = new Date().toISOString();
 // eslint-disable-next-line no-console
-        console.log('✅ Setting completedAt for task completion');
+        logger.debug('✅ Setting completedAt for task completion');
       } else if (isMovingFromCompleted && !isMovingToCompleted) {
         // 完了状態から移動：completedAtをクリア
-        updatedTask.completedAt = undefined;
+        updatedTask.completedAt = null;
 // eslint-disable-next-line no-console
-        console.log('🔄 Clearing completedAt for task reopening');
+        logger.debug('🔄 Clearing completedAt for task reopening');
       }
       
       const updatedBoard = updateBoardTimestamp({
         ...state.currentBoard,
         columns: state.currentBoard.columns.map(column => {
 // eslint-disable-next-line no-console
-          console.log(`🔍 Processing column '${column.title}' (ID: ${column.id})`);
+          logger.debug(`🔍 Processing column '${column.title}' (ID: ${column.id})`);
           
           // 同じカラム内での移動の場合
           if (sourceColumnId === targetColumnId && column.id === sourceColumnId) {
 // eslint-disable-next-line no-console
-            console.log(`🔄 Same column reorder in '${column.title}'`);
+            logger.debug(`🔄 Same column reorder in '${column.title}'`);
             const newTasks = [...column.tasks];
             // まず、移動するタスクを削除
             const taskIndex = newTasks.findIndex(task => task.id === taskId);
             if (taskIndex !== -1) {
               newTasks.splice(taskIndex, 1);
 // eslint-disable-next-line no-console
-              console.log(`📤 Removed task from index ${taskIndex}`);
+              logger.debug(`📤 Removed task from index ${taskIndex}`);
             }
             // 次に、新しい位置に挿入
             const safeTargetIndex = Math.max(0, Math.min(targetIndex, newTasks.length));
             newTasks.splice(safeTargetIndex, 0, updatedTask);
 // eslint-disable-next-line no-console
-            console.log(`📥 Added task at index ${safeTargetIndex}: ${column.tasks.length} → ${newTasks.length}`);
+            logger.debug(`📥 Added task at index ${safeTargetIndex}: ${column.tasks.length} → ${newTasks.length}`);
             return {
               ...column,
               tasks: newTasks,
@@ -387,7 +415,7 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
           if (column.id === sourceColumnId) {
             const filteredTasks = column.tasks.filter(task => task.id !== taskId);
 // eslint-disable-next-line no-console
-            console.log(`📤 Removing from source column '${column.title}': ${column.tasks.length} → ${filteredTasks.length}`);
+            logger.debug(`📤 Removing from source column '${column.title}': ${column.tasks.length} → ${filteredTasks.length}`);
             return {
               ...column,
               tasks: filteredTasks,
@@ -397,7 +425,7 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
             const newTasks = [...column.tasks];
             const safeTargetIndex = Math.max(0, Math.min(targetIndex, newTasks.length));
 // eslint-disable-next-line no-console
-            console.log(`📥 Adding to target column '${column.title}' at index ${safeTargetIndex}: ${newTasks.length} → ${newTasks.length + 1}`);
+            logger.debug(`📥 Adding to target column '${column.title}' at index ${safeTargetIndex}: ${newTasks.length} → ${newTasks.length + 1}`);
             newTasks.splice(safeTargetIndex, 0, updatedTask);
             return {
               ...column,
@@ -405,13 +433,13 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
             };
           }
 // eslint-disable-next-line no-console
-          console.log(`⏭️ Skipping column '${column.title}' (not source or target)`);
+          logger.debug(`⏭️ Skipping column '${column.title}' (not source or target)`);
           return column;
         }),
       });
       
 // eslint-disable-next-line no-console
-      console.log('✅ MOVE_TASK: Board updated successfully');
+      logger.debug('✅ MOVE_TASK: Board updated successfully');
       return updateBoardInState(state, updatedBoard);
     }
 
@@ -426,7 +454,7 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
           ...column,
           tasks: column.tasks.map(task =>
             task.id === action.payload.taskId
-              ? { ...task, ...action.payload.updates, updatedAt: new Date() }
+              ? { ...task, ...action.payload.updates, updatedAt: new Date().toISOString() }
               : task
           ),
         })),
@@ -516,7 +544,7 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
         id: uuidv4(),
         title,
         completed: false,
-        createdAt: new Date()
+        createdAt: new Date().toISOString()
       };
 
       const updatedBoard = updateBoardTimestamp({
@@ -528,7 +556,7 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
               ? {
                   ...task,
                   subTasks: [...(task.subTasks ?? []), newSubTask],
-                  updatedAt: new Date()
+                  updatedAt: new Date().toISOString()
                 }
               : task
           )
@@ -558,7 +586,7 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
                       ? { ...subTask, completed: !subTask.completed }
                       : subTask
                   ),
-                  updatedAt: new Date()
+                  updatedAt: new Date().toISOString()
                 }
               : task
           )
@@ -584,7 +612,7 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
               ? {
                   ...task,
                   subTasks: task.subTasks?.filter(subTask => subTask.id !== subTaskId),
-                  updatedAt: new Date()
+                  updatedAt: new Date().toISOString()
                 }
               : task
           )
@@ -628,6 +656,7 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     sortOption: loadSortOption(),
     taskFilter: { type: 'all', label: 'すべてのタスク' },
     viewMode: 'kanban',
+    labels: [],
   });
   const [isInitialized, setIsInitialized] = React.useState(false);
   const notify = useNotify();
@@ -651,6 +680,7 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       const defaultBoard: KanbanBoard = {
         id: uuidv4(),
         title: 'デモプロジェクト',
+        labels: [],
         columns: [
           {
             id: uuidv4(),
@@ -660,34 +690,40 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
                 id: uuidv4(),
                 title: '重要タスク - プロジェクト企画',
                 description: 'プロジェクトの目標設定、要件定義、スコープの明確化\n\n詳細:\n• ステークホルダーとの要件整理\n• プロジェクトスコープの決定\n• 成功指標の設定',
-                dueDate: new Date(Date.now() - 24 * 60 * 60 * 1000), // 昨日期限（期限切れ）
+                dueDate: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), // 昨日期限（期限切れ）
                 labels: [
                   { id: uuidv4(), name: '緊急', color: 'danger' },
                   { id: uuidv4(), name: '企画', color: 'primary' }
                 ],
                 subTasks: [
-                  { id: uuidv4(), title: 'ステークホルダー分析', completed: true, createdAt: new Date() },
-                  { id: uuidv4(), title: '要件定義書作成', completed: false, createdAt: new Date() },
-                  { id: uuidv4(), title: 'スコープ確定', completed: false, createdAt: new Date() }
+                  { id: uuidv4(), title: 'ステークホルダー分析', completed: true, createdAt: new Date().toISOString() },
+                  { id: uuidv4(), title: '要件定義書作成', completed: false, createdAt: new Date().toISOString() },
+                  { id: uuidv4(), title: 'スコープ確定', completed: false, createdAt: new Date().toISOString() }
                 ],
-                createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
-                updatedAt: new Date(Date.now() - 2 * 60 * 60 * 1000),
+                priority: 'high',
+                files: [],
+                completedAt: null,
+                createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+                updatedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
               },
               {
                 id: uuidv4(),
                 title: 'データベース設計',
                 description: 'データベーススキーマの設計と最適化',
-                dueDate: new Date(Date.now() + 24 * 60 * 60 * 1000), // 明日期限
+                dueDate: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // 明日期限
                 labels: [
                   { id: uuidv4(), name: '設計', color: 'primary' },
                   { id: uuidv4(), name: 'データベース', color: 'success' }
                 ],
                 subTasks: [
-                  { id: uuidv4(), title: 'ER図作成', completed: false, createdAt: new Date() },
-                  { id: uuidv4(), title: 'インデックス設計', completed: false, createdAt: new Date() }
+                  { id: uuidv4(), title: 'ER図作成', completed: false, createdAt: new Date().toISOString() },
+                  { id: uuidv4(), title: 'インデックス設計', completed: false, createdAt: new Date().toISOString() }
                 ],
-                createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
-                updatedAt: new Date(Date.now() - 30 * 60 * 1000),
+                priority: 'medium',
+                files: [],
+                completedAt: null,
+                createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+                updatedAt: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
               },
             ],
             color: '#f6f8fa'
@@ -700,46 +736,51 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
                 id: uuidv4(),
                 title: 'UIコンポーネント開発',
                 description: 'React コンポーネントライブラリの構築\nPrimerデザインシステムを使用してコンポーネントを実装',
-                dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 1週間後
+                dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 1週間後
                 labels: [
                   { id: uuidv4(), name: 'フロントエンド', color: 'success' },
                   { id: uuidv4(), name: 'React', color: 'primary' }
                 ],
                 subTasks: [
-                  { id: uuidv4(), title: 'ボタンコンポーネント', completed: true, createdAt: new Date() },
-                  { id: uuidv4(), title: 'フォームコンポーネント', completed: true, createdAt: new Date() },
-                  { id: uuidv4(), title: 'モーダルコンポーネント', completed: false, createdAt: new Date() },
-                  { id: uuidv4(), title: 'ドロップダウンコンポーネント', completed: false, createdAt: new Date() }
+                  { id: uuidv4(), title: 'ボタンコンポーネント', completed: true, createdAt: new Date().toISOString() },
+                  { id: uuidv4(), title: 'フォームコンポーネント', completed: true, createdAt: new Date().toISOString() },
+                  { id: uuidv4(), title: 'モーダルコンポーネント', completed: false, createdAt: new Date().toISOString() },
+                  { id: uuidv4(), title: 'ドロップダウンコンポーネント', completed: false, createdAt: new Date().toISOString() }
                 ],
-                attachments: [
+                files: [
                   {
                     id: uuidv4(),
                     name: 'design-spec.md',
                     type: 'text/markdown',
                     size: 2048,
                     data: 'data:text/markdown;base64,IyDjg4fjgrbjgqTjg7Pjgrnjg5rjg4Pjgq/KU2ljqrjgobnjgovjgqjjgreHRmLjg7HjGV0aqW1tbLm5lbnAL',
-                    uploadedAt: new Date()
+                    uploadedAt: new Date().toISOString()
                   }
                 ],
-                createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
-                updatedAt: new Date(Date.now() - 10 * 60 * 1000),
+                priority: 'medium',
+                completedAt: null,
+                createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+                updatedAt: new Date(Date.now() - 10 * 60 * 1000).toISOString(),
               },
               {
                 id: uuidv4(),
                 title: 'API開発',
                 description: 'REST API エンドポイントの実装\n認証、CRUD操作、エラーハンドリングを含む',
-                dueDate: new Date(), // 今日期限
+                dueDate: new Date().toISOString(), // 今日期限
                 labels: [
                   { id: uuidv4(), name: 'バックエンド', color: 'severe' },
                   { id: uuidv4(), name: 'API', color: 'attention' }
                 ],
                 subTasks: [
-                  { id: uuidv4(), title: 'ユーザー認証API', completed: true, createdAt: new Date() },
-                  { id: uuidv4(), title: 'タスク管理API', completed: false, createdAt: new Date() },
-                  { id: uuidv4(), title: 'ファイルアップロードAPI', completed: false, createdAt: new Date() }
+                  { id: uuidv4(), title: 'ユーザー認証API', completed: true, createdAt: new Date().toISOString() },
+                  { id: uuidv4(), title: 'タスク管理API', completed: false, createdAt: new Date().toISOString() },
+                  { id: uuidv4(), title: 'ファイルアップロードAPI', completed: false, createdAt: new Date().toISOString() }
                 ],
-                createdAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000),
-                updatedAt: new Date(Date.now() - 5 * 60 * 1000),
+                priority: 'high',
+                files: [],
+                completedAt: null,
+                createdAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
+                updatedAt: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
               },
             ],
             color: '#fef3c7'
@@ -757,22 +798,25 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
                   { id: uuidv4(), name: '品質保証', color: 'attention' }
                 ],
                 subTasks: [
-                  { id: uuidv4(), title: 'ユニットテスト', completed: true, createdAt: new Date() },
-                  { id: uuidv4(), title: 'インテグレーションテスト', completed: true, createdAt: new Date() },
-                  { id: uuidv4(), title: 'E2Eテスト', completed: true, createdAt: new Date() }
+                  { id: uuidv4(), title: 'ユニットテスト', completed: true, createdAt: new Date().toISOString() },
+                  { id: uuidv4(), title: 'インテグレーションテスト', completed: true, createdAt: new Date().toISOString() },
+                  { id: uuidv4(), title: 'E2Eテスト', completed: true, createdAt: new Date().toISOString() }
                 ],
-                attachments: [
+                files: [
                   {
                     id: uuidv4(),
                     name: 'test-results.json',
                     type: 'application/json',
                     size: 1024,
                     data: 'data:application/json;base64,eyJ0ZXN0UmVzdWx0cyI6ICJwYXNzZWQifQ==',
-                    uploadedAt: new Date()
+                    uploadedAt: new Date().toISOString()
                   }
                 ],
-                createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-                updatedAt: new Date(Date.now() - 15 * 60 * 1000),
+                priority: 'low',
+                dueDate: null,
+                completedAt: null,
+                createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+                updatedAt: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
               },
             ],
             color: '#e0e7ff'
@@ -790,24 +834,26 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
                   { id: uuidv4(), name: '完了', color: 'success' }
                 ],
                 subTasks: [
-                  { id: uuidv4(), title: 'React 19調査', completed: true, createdAt: new Date() },
-                  { id: uuidv4(), title: 'TypeScript 5.7調査', completed: true, createdAt: new Date() },
-                  { id: uuidv4(), title: 'Primer React調査', completed: true, createdAt: new Date() },
-                  { id: uuidv4(), title: '調査結果まとめ', completed: true, createdAt: new Date() }
+                  { id: uuidv4(), title: 'React 19調査', completed: true, createdAt: new Date().toISOString() },
+                  { id: uuidv4(), title: 'TypeScript 5.7調査', completed: true, createdAt: new Date().toISOString() },
+                  { id: uuidv4(), title: 'Primer React調査', completed: true, createdAt: new Date().toISOString() },
+                  { id: uuidv4(), title: '調査結果まとめ', completed: true, createdAt: new Date().toISOString() }
                 ],
-                attachments: [
+                files: [
                   {
                     id: uuidv4(),
                     name: 'tech-research.pdf',
                     type: 'application/pdf',
                     size: 5120,
                     data: 'data:application/pdf;base64,JVBERi0xLjQKJeLjz9MKMSAwIG9iagoKZW5kb2JqCg==',
-                    uploadedAt: new Date()
+                    uploadedAt: new Date().toISOString()
                   }
                 ],
-                completedAt: new Date(Date.now() - 24 * 60 * 60 * 1000),
-                createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000),
-                updatedAt: new Date(Date.now() - 24 * 60 * 60 * 1000),
+                priority: 'low',
+                dueDate: null,
+                completedAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+                createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+                updatedAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
               },
               {
                 id: uuidv4(),
@@ -819,20 +865,23 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
                   { id: uuidv4(), name: '完了', color: 'success' }
                 ],
                 subTasks: [
-                  { id: uuidv4(), title: '脆弱性スキャン', completed: true, createdAt: new Date() },
-                  { id: uuidv4(), title: 'ペネトレーションテスト', completed: true, createdAt: new Date() },
-                  { id: uuidv4(), title: 'セキュリティレポート作成', completed: true, createdAt: new Date() }
+                  { id: uuidv4(), title: '脆弱性スキャン', completed: true, createdAt: new Date().toISOString() },
+                  { id: uuidv4(), title: 'ペネトレーションテスト', completed: true, createdAt: new Date().toISOString() },
+                  { id: uuidv4(), title: 'セキュリティレポート作成', completed: true, createdAt: new Date().toISOString() }
                 ],
-                completedAt: new Date(Date.now() - 48 * 60 * 60 * 1000),
-                createdAt: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000),
-                updatedAt: new Date(Date.now() - 48 * 60 * 60 * 1000),
+                priority: 'medium',
+                dueDate: null,
+                files: [],
+                completedAt: new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString(),
+                createdAt: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
+                updatedAt: new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString(),
               },
             ],
             color: '#d1fae5'
           },
         ],
-        createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000),
-        updatedAt: new Date(),
+        createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
+        updatedAt: new Date().toISOString(),
       };
       const initialBoards = [defaultBoard];
       updateCurrentBoardId(defaultBoard.id);
@@ -983,6 +1032,10 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     
     return Array.from(labelMap.values());
   }, [state.boards]);
+
+  const loadInitialData = useCallback((data: { boards: KanbanBoard[]; labels: Label[]; tasks: Task[]; columns: Column[] }) => {
+    dispatch({ type: 'LOAD_INITIAL_DATA', payload: { boards: data.boards, labels: data.labels } });
+  }, []);
   
   const contextValue = useMemo(
     () => ({
@@ -1008,6 +1061,7 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       setTaskFilter,
       setViewMode,
       getAllLabels,
+      loadInitialData,
     }),
     [
       state,
@@ -1031,6 +1085,7 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       setTaskFilter,
       setViewMode,
       getAllLabels,
+      loadInitialData,
     ]
   );
 

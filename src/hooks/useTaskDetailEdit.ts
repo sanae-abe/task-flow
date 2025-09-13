@@ -30,7 +30,8 @@ export const useTaskDetailEdit = (task: Task | null): UseTaskDetailEditResult =>
     
     setEditTitle(task.title);
     setEditDescription(task.description ?? '');
-    setEditDueDate(task.dueDate?.toISOString().split('T')[0] ?? '');
+    const editDueDateValue = task.dueDate ? new Date(task.dueDate).toISOString().split('T')[0] : '';
+    setEditDueDate(editDueDateValue as string);
     setEditLabels(task.labels ?? []);
   }, [task]);
 

@@ -1,6 +1,8 @@
-import { XIcon, CheckCircleIcon, PencilIcon, ArrowRightIcon, FilterIcon, UploadIcon, InfoIcon, CloudOfflineIcon, CalendarIcon } from '@primer/octicons-react';
+import { XIcon, CheckCircleIcon, PencilIcon, ArrowRightIcon, FilterIcon, UploadIcon, InfoIcon, CalendarIcon } from '@primer/octicons-react';
 import { Button, Box, Heading, Text } from '@primer/react';
 import React, { useEffect, useCallback } from 'react';
+
+import Logo from './Logo';
 
 // 定数定義
 const SIDEBAR_WIDTH = '440px';
@@ -142,12 +144,15 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
           }}
         >
             <Heading id="help-title" sx={{
-                fontSize: '1.25rem !important',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 2,
+              fontSize: '1.25rem !important',
               '& svg': {
                 color: 'accent.emphasis', marginRight: '2px'
               } }}
             >
-            <CloudOfflineIcon size={20} /> ToDo 使い方ガイド
+            <Logo />使い方ガイド
           </Heading>
           <Button
             onClick={onClose}

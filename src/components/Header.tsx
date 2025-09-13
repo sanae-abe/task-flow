@@ -68,7 +68,7 @@ const VerticalDivider: React.FC = () => (
 // 左側セクションコンポーネント
 const LeftSection: React.FC = () => (
   <Box sx={headerStyles.leftSection}>
-    <Logo />
+    <Logo size="large" />
     <VerticalDivider />
     <BoardSelector />
   </Box>

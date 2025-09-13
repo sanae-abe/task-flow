@@ -64,12 +64,12 @@ const TaskCardContent: React.FC<TaskDisplayProps> = ({
 
       <TaskLabels labels={task.labels} />
 
-      {(task.dueDate || (task.subTasks && task.subTasks.length > 0) || (task.attachments && task.attachments.length > 0)) && (
+      {(task.dueDate || (task.subTasks && task.subTasks.length > 0) || (task.files && task.files.length > 0)) && (
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
           <div>
             {task.dueDate && (
               <DueDateBadge
-                dueDate={task.dueDate}
+                dueDate={new Date(task.dueDate)}
                 isOverdue={isOverdue}
                 isDueToday={isDueToday}
                 isDueTomorrow={isDueTomorrow}
@@ -79,7 +79,7 @@ const TaskCardContent: React.FC<TaskDisplayProps> = ({
           </div>
           <TaskIndicators 
             subTasks={task.subTasks}
-            attachments={task.attachments}
+            attachments={task.files}
           />
         </Box>
       )}

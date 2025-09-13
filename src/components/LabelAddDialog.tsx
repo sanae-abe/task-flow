@@ -78,8 +78,10 @@ const LabelAddDialog: React.FC<LabelAddDialogProps> = ({
       onLabelCreated(newLabel);
       resetForm();
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('ラベル作成エラー:', error);
+      // ラベル作成時のエラーはユーザーに適切に表示されるため、コンソールログは開発時のみ
+      if (process.env.NODE_ENV === 'development') {
+        console.error('ラベル作成エラー:', error);
+      }
       setErrorMessage('ラベルの作成に失敗しました');
       setIsLoading(false);
     }
@@ -176,7 +178,7 @@ const LabelAddDialog: React.FC<LabelAddDialogProps> = ({
                 py: 1,
                 borderRadius: 1,
                 fontSize: 0,
-                fontWeight: '500',
+                fontWeight: '400',
                 border: '1px solid',
                 borderColor: 'border.default',
                 maxWidth: 'fit-content'

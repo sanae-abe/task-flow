@@ -13,6 +13,8 @@ interface BoardActionMenuProps {
   hasCompletedTasks: boolean;
   /** ボードを削除可能かどうか（複数ボードがある場合のみ可能） */
   canDeleteBoard: boolean;
+  /** ボード作成時のコールバック */
+  onCreateBoard: () => void;
   /** ボード名編集時のコールバック */
   onEditBoard: () => void;
   /** ボード削除時のコールバック */
@@ -30,6 +32,7 @@ interface BoardActionMenuProps {
 const BoardActionMenu = memo<BoardActionMenuProps>(({
   hasCompletedTasks,
   canDeleteBoard,
+  onCreateBoard,
   onEditBoard,
   onDeleteBoard,
   onClearCompletedTasks,
@@ -48,6 +51,14 @@ const BoardActionMenu = memo<BoardActionMenuProps>(({
       </ActionMenu.Anchor>
       <ActionMenu.Overlay>
         <ActionList>
+          {/* ボード作成アクション */}
+          <ActionList.Item onSelect={onCreateBoard}>
+            <ActionList.LeadingVisual>
+              <PencilIcon />
+            </ActionList.LeadingVisual>
+            新しいボード
+          </ActionList.Item>
+          
           {/* ボード管理アクション */}
           <ActionList.Item onSelect={onEditBoard}>
             <ActionList.LeadingVisual>

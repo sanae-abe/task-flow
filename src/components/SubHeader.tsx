@@ -1,5 +1,5 @@
 import { PlusIcon, CalendarIcon, ProjectIcon, TriangleDownIcon } from '@primer/octicons-react';
-import { Box, Button, ActionMenu, ActionList } from '@primer/react';
+import { Box, ActionMenu, ActionList, Button } from '@primer/react';
 import React from 'react';
 
 import { useKanban } from '../contexts/KanbanContext';
@@ -102,6 +102,7 @@ const SubHeader: React.FC = () => {
         <BoardActionMenu
           hasCompletedTasks={hasCompletedTasks}
           canDeleteBoard={canDeleteBoard}
+          onCreateBoard={handlers.startCreateBoard}
           onEditBoard={handlers.openEditDialog}
           onDeleteBoard={handlers.openDeleteConfirm}
           onClearCompletedTasks={handlers.openClearCompletedConfirm}

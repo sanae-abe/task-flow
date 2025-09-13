@@ -108,7 +108,7 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
         type,
         message: message.trim(),
         duration: persistent ? undefined : duration,
-        createdAt: new Date()
+        createdAt: new Date().toISOString()
       };
 
       setNotifications(prev => {

@@ -1,7 +1,7 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Box } from '@primer/react';
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { useTaskCard } from '../hooks/useTaskCard';
 import type { Task } from '../types';
@@ -46,7 +46,7 @@ const getCardStyles = (isRightmostColumn: boolean, isDragging: boolean, transfor
   }
 });
 
-const TaskCard: React.FC<TaskCardProps> = ({ task, columnId, onTaskClick }) => {
+const TaskCard: React.FC<TaskCardProps> = React.memo(({ task, columnId, onTaskClick }) => {
   const taskCardData = useTaskCard(task, columnId);
   
   const {
@@ -59,11 +59,11 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, columnId, onTaskClick }) => {
     isOver,
   } = useSortable({ id: task.id });
 
-  const handleTaskClick = () => {
+  const handleTaskClick = useCallback(() => {
     if (onTaskClick) {
       onTaskClick(task);
     }
-  };
+  }, [onTaskClick, task]);
   
   return (
     <>
@@ -119,6 +119,8 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, columnId, onTaskClick }) => {
       />
     </>
   );
-};
+});
+
+TaskCard.displayName = 'TaskCard';
 
 export default TaskCard;

@@ -50,6 +50,7 @@ const styles = {
     px: 1,
     py: 0,
     whiteSpace: 'nowrap',
+    translate: '0 2px',
     flexShrink: 0,
     '&:hover': {
       backgroundColor: 'canvas.subtle',

@@ -1,13 +1,13 @@
 {
-  "name": "todo-app",
+  "name": "cheer-app",
   "version": "0.1.0",
-  "description": "A modern ToDo application built with React and TypeScript",
+  "description": "A modern Cheer task management application built with React and TypeScript",
   "private": true,
   "keywords": [
-    "todo",
+    "cheer",
+    "task-management",
     "react",
     "typescript",
-    "task-management",
     "productivity"
   ],
   "author": "Your Name",

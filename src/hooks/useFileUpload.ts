@@ -88,7 +88,7 @@ export const useFileUpload = (
           type: file.type,
           size: file.size,
           data: base64Data,
-          uploadedAt: new Date()
+          uploadedAt: new Date().toISOString()
         });
       };
       reader.onerror = () => reject(new Error('ファイルの読み込みに失敗しました'));

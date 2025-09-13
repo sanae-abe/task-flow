@@ -58,7 +58,7 @@ export const useTaskEdit = ({
     if (isOpen && task) {
       setTitle(task.title);
       setDescription(task.description ?? '');
-      const dateValue = task.dueDate ? task.dueDate.toISOString().split('T')[0] : '';
+      const dateValue = task.dueDate ? new Date(task.dueDate).toISOString().split('T')[0] : '';
       setDueDate(dateValue ?? '');
       
       // completedAtをdatetime-local形式（YYYY-MM-DDTHH:mm）にフォーマット
@@ -68,7 +68,7 @@ export const useTaskEdit = ({
       setCompletedAt(completedAtValue);
       
       setLabels(task.labels ?? []);
-      setAttachments(task.attachments ?? []);
+      setAttachments(task.files ?? []);
       
       // 現在のタスクがどのカラムにあるかを特定
       const currentColumn = state.currentBoard?.columns.find(column =>
@@ -139,12 +139,12 @@ export const useTaskEdit = ({
       const updatedTask: Task = {
         ...task,
         title: title.trim(),
-        description: description.trim() || undefined,
-        dueDate: dueDateObj,
-        completedAt: completedAtObj,
+        description: description.trim() || '',
+        dueDate: dueDateObj?.toISOString() || null,
+        completedAt: completedAtObj?.toISOString() || null,
         labels,
-        attachments,
-        updatedAt: new Date()
+        files: attachments,
+        updatedAt: new Date().toISOString()
       };
       
       onSave(updatedTask);

@@ -128,28 +128,29 @@ const CalendarView: React.FC = () => {
 
   // selectedTaskを最新の状態に同期 - 無限ループを防止
   useEffect(() => {
-    if (selectedTask?.id && state.currentBoard && selectedTaskIdRef.current === selectedTask.id) {
+    const selectedTaskId = selectedTaskIdRef.current;
+    if (selectedTaskId && state.currentBoard) {
       // 全カラムからselectedTaskのIDで最新のタスクを検索
       let updatedTask: Task | null = null;
       
       for (const column of state.currentBoard.columns) {
-        const foundTask = column.tasks.find(task => task.id === selectedTask.id);
+        const foundTask = column.tasks.find(task => task.id === selectedTaskId);
         if (foundTask) {
           updatedTask = foundTask;
           break;
         }
       }
       
-      if (updatedTask && JSON.stringify(updatedTask) !== JSON.stringify(selectedTask)) {
+      if (updatedTask && selectedTask && JSON.stringify(updatedTask) !== JSON.stringify(selectedTask)) {
         setSelectedTask(updatedTask);
-      } else if (!updatedTask) {
+      } else if (!updatedTask && selectedTask) {
         // タスクが見つからない場合（削除された場合）はサイドバーを閉じる
         setSelectedTask(null);
         setIsTaskDetailOpen(false);
         selectedTaskIdRef.current = null;
       }
     }
-  }, [state.currentBoard, selectedTask?.id]);
+  }, [state.currentBoard, selectedTask]);
 
   // selectedTaskのIDを追跡
   useEffect(() => {

@@ -33,7 +33,7 @@ const TaskDisplayContent = React.memo<TaskDisplayContentProps>(({ task, columnNa
       {task.dueDate && (
         <TaskDisplaySection title="期限">
           <ContentBox>
-            <DueDateDisplay dueDate={task.dueDate} showYear />
+            <DueDateDisplay dueDate={new Date(task.dueDate)} showYear />
           </ContentBox>
         </TaskDisplaySection>
       )}
@@ -62,9 +62,9 @@ const TaskDisplayContent = React.memo<TaskDisplayContentProps>(({ task, columnNa
         </TaskDisplaySection>
       )}
 
-      {task.attachments && task.attachments.length > 0 && (
+      {task.files && task.files.length > 0 && (
         <TaskDisplaySection title="ファイル添付">
-          <FileList attachments={task.attachments} />
+          <FileList attachments={task.files} />
         </TaskDisplaySection>
       )}
     </>

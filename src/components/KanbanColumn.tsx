@@ -1,7 +1,7 @@
 import { useDroppable } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { Box } from '@primer/react';
-import React from 'react';
+import React, { useMemo, useCallback } from 'react';
 
 import { useKanban } from '../contexts/KanbanContext';
 import { useColumnState } from '../hooks/useColumnState';
@@ -98,7 +98,7 @@ const ColumnDialogs: React.FC<ColumnDialogsProps> = ({
   </>
 );
 
-const KanbanColumn: React.FC<KanbanColumnProps> = ({ column, onTaskClick }) => {
+const KanbanColumn: React.FC<KanbanColumnProps> = React.memo(({ column, onTaskClick }) => {
   const { state } = useKanban();
   const {
     showCreateDialog,
@@ -120,9 +120,16 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({ column, onTaskClick }) => {
   });
 
   // フィルターを適用してからソート
-  const filteredTasks = filterTasks(column.tasks, state.taskFilter);
-  const sortedTasks = sortTasks(filteredTasks, state.sortOption);
-  const taskIds = sortedTasks.map(task => task.id);
+  const { sortedTasks, taskIds } = useMemo(() => {
+    const filteredTasks = filterTasks(column.tasks, state.taskFilter);
+    const sortedTasks = sortTasks(filteredTasks, state.sortOption);
+    const taskIds = sortedTasks.map(task => task.id);
+    return { sortedTasks, taskIds };
+  }, [column.tasks, state.taskFilter, state.sortOption]);
+
+  const handleAddTaskClick = useCallback(() => {
+    setShowCreateDialog(true);
+  }, [setShowCreateDialog]);
   
   return (
     <Box sx={COLUMN_STYLES.container}>
@@ -130,7 +137,7 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({ column, onTaskClick }) => {
         column={column}
         onTitleEdit={handleTitleEdit}
         onDeleteColumn={handleDeleteColumn}
-        onAddTask={() => setShowCreateDialog(true)}
+        onAddTask={handleAddTaskClick}
       />
       
       <Box ref={setNodeRef} sx={COLUMN_STYLES.taskList}>
@@ -170,6 +177,8 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({ column, onTaskClick }) => {
       />
     </Box>
   );
-};
+});
+
+KanbanColumn.displayName = 'KanbanColumn';
 
 export default KanbanColumn;

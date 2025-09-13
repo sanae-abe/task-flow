@@ -6,9 +6,11 @@ import KanbanBoard from './components/KanbanBoard';
 import CalendarView from './components/CalendarView';
 import NotificationContainer from './components/NotificationContainer';
 import HelpSidebar from './components/HelpSidebar';
+import OfflineIndicator from './components/OfflineIndicator';
 import { KanbanProvider, useKanban } from './contexts/KanbanContext';
 import { NotificationProvider } from './contexts/NotificationContext';
 import { useHelp } from './hooks/useHelp';
+import { useDataSync } from './hooks/useDataSync';
 
 // 定数定義
 const Z_INDEX = 1000;
@@ -28,6 +30,9 @@ const styles = {
 const AppContent: React.FC = () => {
   const { state } = useKanban();
   const { isHelpOpen, openHelp, closeHelp } = useHelp();
+  
+  // データ同期の初期化
+  useDataSync();
 
   return (
     <div className="app" role="application" aria-label="ToDoアプリケーション">
@@ -40,6 +45,7 @@ const AppContent: React.FC = () => {
       </main>
       <NotificationContainer />
       <HelpSidebar isOpen={isHelpOpen} onClose={closeHelp} />
+      <OfflineIndicator />
     </div>
   );
 };
