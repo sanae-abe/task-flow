@@ -6,7 +6,7 @@ import { useKanban } from '../contexts/KanbanContext';
 import type { Task } from '../types';
 import { sortTasks } from '../utils/taskSort';
 import { filterTasks } from '../utils/taskFilter';
-import { formatDate, getDateStatus, formatDueDate } from '../utils/dateHelpers';
+import { formatDate, getDateStatus, formatDueDateWithYear } from '../utils/dateHelpers';
 import LabelChip from './LabelChip';
 import StatusBadge from './shared/StatusBadge';
 import SubTaskProgressBar from './SubTaskProgressBar';
@@ -111,7 +111,7 @@ const TableView: React.FC = () => {
         <Box
           sx={{
             display: 'grid',
-            gridTemplateColumns: '1fr 150px 210px 180px 100px 100px 120px 120px 60px',
+            gridTemplateColumns: '40px 1fr 150px 210px 180px 100px 100px 120px 120px',
             bg: 'canvas.default',
             borderBottom: '2px solid',
             borderColor: 'border.default',
@@ -120,6 +120,7 @@ const TableView: React.FC = () => {
             gap: 2,
           }}
         >
+          <Text sx={{ fontWeight: 'bold', fontSize: 1 }}>操作</Text>
           <Text sx={{ fontWeight: 'bold', fontSize: 1 }}>タスク</Text>
           <Text sx={{ fontWeight: 'bold', fontSize: 1 }}>ステータス</Text>
           <Text sx={{ fontWeight: 'bold', fontSize: 1 }}>期限</Text>
@@ -128,7 +129,6 @@ const TableView: React.FC = () => {
           <Text sx={{ fontWeight: 'bold', fontSize: 1 }}>添付</Text>
           <Text sx={{ fontWeight: 'bold', fontSize: 1 }}>進捗</Text>
           <Text sx={{ fontWeight: 'bold', fontSize: 1 }}>作成日</Text>
-          <Text sx={{ fontWeight: 'bold', fontSize: 1 }}>操作</Text>
         </Box>
 
         {/* データ行 */}
@@ -141,10 +141,11 @@ const TableView: React.FC = () => {
               key={task.id}
               sx={{
                 display: 'grid',
-                gridTemplateColumns: '1fr 150px 210px 180px 100px 100px 120px 120px 60px',
-                py: 3,
+                gridTemplateColumns: '40px 1fr 150px 210px 180px 100px 100px 120px 120px',
+                py: 2,
                 px: 3,
                 gap: 2,
+                alignItems: 'center',
                 borderBottom: index < filteredAndSortedTasks.length - 1 ? '1px solid' : 'none',
                 borderColor: 'border.default',
                 cursor: 'pointer',
@@ -154,6 +155,37 @@ const TableView: React.FC = () => {
               }}
               onClick={() => handleTaskClick(task)}
             >
+              {/* 操作 */}
+              <Box onClick={(e: React.MouseEvent) => e.stopPropagation()}>
+                <ActionMenu>
+                  <ActionMenu.Anchor>
+                    <IconButton
+                      aria-label="タスクの操作"
+                      icon={KebabHorizontalIcon}
+                      variant="invisible"
+                      size="small"
+                    />
+                  </ActionMenu.Anchor>
+                  <ActionMenu.Overlay>
+                    <ActionList>
+                      <ActionList.Item
+                        onSelect={() => handleTaskComplete(taskWithColumn)}
+                        disabled={taskWithColumn.columnId === currentBoard.columns[currentBoard.columns.length - 1]?.id}
+                      >
+                        完了にする
+                      </ActionList.Item>
+                      <ActionList.Divider />
+                      <ActionList.Item
+                        onSelect={() => handleTaskDelete(taskWithColumn)}
+                        variant="danger"
+                      >
+                        削除
+                      </ActionList.Item>
+                    </ActionList>
+                  </ActionMenu.Overlay>
+                </ActionMenu>
+              </Box>
+
               {/* タスク名と説明 */}
               <Box>
                 <Text
@@ -167,7 +199,7 @@ const TableView: React.FC = () => {
                   {task.title}
                 </Text>
               </Box>
-              
+
               {/* ステータス */}
               <Box onClick={(e: React.MouseEvent) => e.stopPropagation()}>
                 <ActionMenu>
@@ -214,40 +246,23 @@ const TableView: React.FC = () => {
                   (() => {
                     const dueDate = new Date(task.dueDate);
                     const { isOverdue, isDueToday, isDueTomorrow } = getDateStatus(dueDate);
-                    const formattedDate = formatDueDate(dueDate);
-                    
+                    const formattedDate = formatDueDateWithYear(dueDate);
+
                     return (
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                        <Text 
-                          sx={{ 
-                            fontSize: '12px',
-                            color: isOverdue 
-                              ? 'danger.emphasis' 
-                              : isDueToday 
-                              ? 'attention.emphasis'
-                              : isDueTomorrow 
-                              ? 'accent.emphasis' 
-                              : 'fg.default'
-                          }}
-                        >
-                          {formattedDate}
-                        </Text>
-                        {isOverdue && (
-                          <StatusBadge variant="danger" size="small">
-                            期限切れ
-                          </StatusBadge>
-                        )}
-                        {isDueToday && (
-                          <StatusBadge variant="warning" size="small">
-                            本日期限
-                          </StatusBadge>
-                        )}
-                        {isDueTomorrow && (
-                          <StatusBadge variant="info" size="small">
-                            明日期限
-                          </StatusBadge>
-                        )}
-                      </Box>
+                      <Text
+                        sx={{
+                          fontSize: '12px',
+                          color: isOverdue
+                            ? 'danger.emphasis'
+                            : isDueToday
+                            ? 'attention.emphasis'
+                            : isDueTomorrow
+                            ? 'accent.emphasis'
+                            : 'fg.default'
+                        }}
+                      >
+                        {formattedDate}
+                      </Text>
                     );
                   })()
                 ) : (
@@ -338,49 +353,6 @@ const TableView: React.FC = () => {
                 <Text sx={{ fontSize: 0, color: 'fg.muted' }}>
                   {formatDate(task.createdAt, 'MM/dd')}
                 </Text>
-              </Box>
-              
-              {/* 操作 */}
-              <Box onClick={(e: React.MouseEvent) => e.stopPropagation()}>
-                <ActionMenu>
-                  <ActionMenu.Anchor>
-                    <IconButton
-                      aria-label="タスクの操作"
-                      icon={KebabHorizontalIcon}
-                      variant="invisible"
-                      size="small"
-                    />
-                  </ActionMenu.Anchor>
-                  <ActionMenu.Overlay>
-                    <ActionList>
-                      <ActionList.Group title="ステータス変更">
-                        {currentBoard.columns.map((column) => (
-                          <ActionList.Item
-                            key={column.id}
-                            onSelect={() => handleStatusChange(taskWithColumn, column.id)}
-                            disabled={taskWithColumn.columnId === column.id}
-                          >
-                            {column.title}に移動
-                          </ActionList.Item>
-                        ))}
-                      </ActionList.Group>
-                      <ActionList.Divider />
-                      <ActionList.Item
-                        onSelect={() => handleTaskComplete(taskWithColumn)}
-                        disabled={taskWithColumn.columnId === currentBoard.columns[currentBoard.columns.length - 1]?.id}
-                      >
-                        完了にする
-                      </ActionList.Item>
-                      <ActionList.Divider />
-                      <ActionList.Item
-                        onSelect={() => handleTaskDelete(taskWithColumn)}
-                        variant="danger"
-                      >
-                        削除
-                      </ActionList.Item>
-                    </ActionList>
-                  </ActionMenu.Overlay>
-                </ActionMenu>
               </Box>
             </Box>
           );
