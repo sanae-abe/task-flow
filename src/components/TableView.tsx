@@ -1,6 +1,6 @@
 import React, { useMemo, useCallback } from 'react';
 import { Text, Box, IconButton, ActionMenu, ActionList, Button } from '@primer/react';
-import { KebabHorizontalIcon, CheckIcon, PaperclipIcon } from '@primer/octicons-react';
+import { KebabHorizontalIcon, CheckIcon, PaperclipIcon, TriangleDownIcon } from '@primer/octicons-react';
 
 import { useKanban } from '../contexts/KanbanContext';
 import type { Task } from '../types';
@@ -169,10 +169,43 @@ const TableView: React.FC = () => {
               </Box>
               
               {/* ステータス */}
-              <Box>
-                <StatusBadge variant="neutral">
-                  {taskWithColumn.status}
-                </StatusBadge>
+              <Box onClick={(e: React.MouseEvent) => e.stopPropagation()}>
+                <ActionMenu>
+                  <ActionMenu.Anchor>
+                    <Button
+                      variant="invisible"
+                      size="small"
+                      trailingVisual={TriangleDownIcon}
+                      sx={{
+                        padding: 0,
+                        minHeight: 'auto',
+                        border: 'none',
+                        '&:hover': {
+                          bg: 'transparent',
+                        },
+                      }}
+                    >
+                      <StatusBadge variant="neutral">
+                        {taskWithColumn.status}
+                      </StatusBadge>
+                    </Button>
+                  </ActionMenu.Anchor>
+                  <ActionMenu.Overlay>
+                    <ActionList>
+                      <ActionList.Group title="ステータス変更">
+                        {currentBoard.columns.map((column) => (
+                          <ActionList.Item
+                            key={column.id}
+                            onSelect={() => handleStatusChange(taskWithColumn, column.id)}
+                            selected={taskWithColumn.columnId === column.id}
+                          >
+                            {column.title}
+                          </ActionList.Item>
+                        ))}
+                      </ActionList.Group>
+                    </ActionList>
+                  </ActionMenu.Overlay>
+                </ActionMenu>
               </Box>
               
               {/* 期限 */}
