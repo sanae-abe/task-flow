@@ -95,7 +95,7 @@ const TableView: React.FC = () => {
         height: 'calc(100vh - 120px)',
         overflow: 'auto',
         bg: 'canvas.subtle',
-        p: 4,
+        p: '32px',
       }}
     >
       {/* テーブル */}
