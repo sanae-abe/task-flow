@@ -1,0 +1,142 @@
+{
+  "name": "todo-app",
+  "version": "1.0.0",
+  "description": "React + TypeScriptで構築されたTodoアプリケーション",
+  "type": "web-application",
+  "framework": "react",
+  "language": "typescript",
+  "environment": {
+    "development": {
+      "port": 3000,
+      "host": "localhost",
+      "url": "http://localhost:3000"
+    },
+    "production": {
+      "buildCommand": "npm run build",
+      "buildDir": "build",
+      "startCommand": "npm start"
+    }
+  },
+  "features": {
+    "kanban": {
+      "enabled": true,
+      "description": "カンバンボードによるタスク管理"
+    },
+    "tableView": {
+      "enabled": true,
+      "description": "テーブル形式でのタスク表示"
+    },
+    "taskManagement": {
+      "enabled": true,
+      "description": "タスクの作成・編集・削除機能"
+    },
+    "statusTracking": {
+      "enabled": true,
+      "description": "タスクステータス管理（未着手・進行中・完了）"
+    },
+    "dueDateManagement": {
+      "enabled": true,
+      "description": "期限設定と期限表示機能"
+    },
+    "columnCustomization": {
+      "enabled": true,
+      "description": "カラムの表示/非表示切り替え機能"
+    }
+  },
+  "dependencies": {
+    "react": "^19.1.1",
+    "typescript": "^5.7.3",
+    "styled-components": "^6.1.19",
+    "@primer/react": "^37.31.0",
+    "@dnd-kit/core": "^6.3.1"
+  },
+  "scripts": {
+    "dev": "npm run start",
+    "build": "npm run build",
+    "test": "npm run test",
+    "lint": "npm run lint",
+    "typecheck": "npm run typecheck",
+    "quality": "npm run quality",
+    "audit": "npm run audit"
+  },
+  "paths": {
+    "src": "./src",
+    "components": "./src/components",
+    "hooks": "./src/hooks",
+    "contexts": "./src/contexts",
+    "types": "./src/types",
+    "utils": "./src/utils"
+  },
+  "mainComponents": [
+    {
+      "name": "TaskForm",
+      "path": "./src/components/TaskForm.tsx",
+      "description": "タスクの作成・編集フォーム"
+    },
+    {
+      "name": "KanbanBoard",
+      "path": "./src/components/KanbanBoard.tsx",
+      "description": "カンバン形式の表示"
+    },
+    {
+      "name": "TableView",
+      "path": "./src/components/TableView.tsx",
+      "description": "テーブル形式の表示"
+    },
+    {
+      "name": "TaskCard",
+      "path": "./src/components/TaskCard.tsx",
+      "description": "個別タスクカード"
+    },
+    {
+      "name": "CommonDialog",
+      "path": "./src/components/CommonDialog.tsx",
+      "description": "共通ダイアログコンポーネント"
+    }
+  ],
+  "stateManagement": {
+    "type": "React Context API",
+    "contexts": [
+      {
+        "name": "TaskContext",
+        "description": "タスク管理の状態管理"
+      },
+      {
+        "name": "TableColumnsContext",
+        "description": "テーブルカラムの表示管理"
+      }
+    ]
+  },
+  "styling": {
+    "framework": "styled-components",
+    "designSystem": "@primer/react",
+    "responsive": true,
+    "darkMode": false
+  },
+  "buildTools": {
+    "bundler": "webpack",
+    "compiler": "typescript",
+    "linter": "eslint",
+    "formatter": "prettier",
+    "testRunner": "jest"
+  },
+  "quality": {
+    "coverage": {
+      "threshold": {
+        "branches": 80,
+        "functions": 80,
+        "lines": 80,
+        "statements": 80
+      }
+    },
+    "security": {
+      "eslintSecurity": true,
+      "audit": true
+    }
+  },
+  "deployment": {
+    "type": "static",
+    "buildCommand": "npm run build",
+    "outputDirectory": "build"
+  }
+}

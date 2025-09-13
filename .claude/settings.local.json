@@ -11,7 +11,8 @@
       "Bash(git commit -m \"$(cat <<''EOF''\nfeat: テーブルビューにカラム表示/非表示切り替え機能を実装\n\n新機能:\n- カラム管理用のTableColumnManagerコンポーネント追加\n- 歯車アイコンからカラムの表示/非表示を切り替え可能\n- 設定はlocalStorageに自動保存される\n- カスタムカラムの追加・削除機能\n- カラム幅の調整機能\n\n技術的実装:\n- React Contextベースのカラム状態管理システム\n- TableColumnsContextでグローバルな状態管理\n- useTableColumnsフックの代替としてContextを使用\n- 型安全なTableColumn定義とTableColumnsHookReturn interface\n\nUI/UX改善:\n- 直感的なカラム設定UI\n- リアルタイムでの表示更新\n- 視覚的なカラム表示/非表示インジケーター\n- 詳細設定ダイアログでの高度な管理機能\n\n🤖 Generated with [Claude Code](https://claude.ai/code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
       "mcp__ide__getDiagnostics",
       "Bash(npm run typecheck)",
-      "Bash(PORT=3001 npm start)"
+      "Bash(PORT=3001 npm start)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nrefactor: テーブルビューからカラム追加機能を削除\n\nUI/UX簡素化:\n- TableColumnManagerからカラム追加ボタンとダイアログを削除\n- カラム管理メニューを表示/非表示切り替えと詳細設定のみに簡素化\n- より直感的で使いやすいインターフェースに変更\n\n技術的改善:\n- TableColumnsContextからaddCustomColumn関数を削除\n- 未使用のインポート（PlusIcon、Select、TableColumn型）を削除\n- インターフェースとcontextValueからaddCustomColumn参照を削除\n- TypeScript型エラーの解決\n\n🤖 Generated with [Claude Code](https://claude.ai/code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")"
     ],
     "deny": [],
     "ask": []
