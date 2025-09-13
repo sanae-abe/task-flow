@@ -72,7 +72,7 @@ export type FormAction =
   | { type: 'SET_FIELD_TOUCHED'; fieldId: string; touched: boolean }
   | { type: 'SET_SUBMITTING'; isSubmitting: boolean }
   | { type: 'SET_ERRORS'; errors: FormError[] }
-  | { type: 'RESET_FORM'; initialValues?: Record<string, unknown> }
+  | { type: 'RESET_FORM'; newState: FormState }
   | { type: 'VALIDATE_FORM' };
 
 // 統合フォームプロパティ

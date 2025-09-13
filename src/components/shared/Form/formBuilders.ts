@@ -16,14 +16,20 @@ export const createFormField = (
     label: string;
     onChange: (value: unknown) => void;
   }
-): FormFieldConfig => ({
-  value: '',
-  placeholder: '',
-  autoFocus: false,
-  disabled: false,
-  hideLabel: false,
-  ...config
-});
+): FormFieldConfig => {
+  const defaultValue = config.type === 'recurrence-selector'
+    ? { enabled: false, pattern: 'daily' as const, interval: 1 }
+    : '';
+
+  return {
+    value: defaultValue,
+    placeholder: '',
+    autoFocus: false,
+    disabled: false,
+    hideLabel: false,
+    ...config
+  };
+};
 
 /**
  * タスク編集フォーム用フィールド設定を生成
@@ -162,7 +168,7 @@ export const createTaskFormFields = (
         name: 'recurrence',
         type: 'recurrence-selector',
         label: '繰り返し設定（任意）',
-        value: values.recurrence || { enabled: false, pattern: 'daily', interval: 1 },
+        value: values.recurrence ?? { enabled: false, pattern: 'daily', interval: 1 },
         onChange: handlers.setRecurrence as (value: unknown) => void,
         disabled: !values.dueDate, // 期限が未設定の場合は無効化
         helpText: !values.dueDate ? '繰り返し設定をするには期限を設定してください' : undefined

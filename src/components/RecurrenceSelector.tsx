@@ -48,23 +48,27 @@ const RecurrenceSelector: React.FC<RecurrenceSelectorProps> = ({
       pattern: 'daily' as RecurrencePattern,
       interval: 1,
     };
-    if (recurrence && recurrence.enabled !== undefined) {
-      return { ...defaultConfig, ...recurrence };
-    }
-    return defaultConfig;
+    return recurrence ? { ...defaultConfig, ...recurrence } : defaultConfig;
   });
 
   const [errors, setErrors] = useState<string[]>([]);
 
+  // propsのrecurrenceが変更された時に内部状態を更新
   useEffect(() => {
-    if (recurrence && typeof recurrence === 'object' && recurrence.enabled !== undefined) {
+    if (recurrence) {
+      const defaultConfig: RecurrenceConfig = {
+        enabled: false,
+        pattern: 'daily' as RecurrencePattern,
+        interval: 1,
+      };
+      const newConfig = { ...defaultConfig, ...recurrence };
+
+      // 値が実際に変更された場合のみ更新
       setConfig(prev => {
-        // 深い比較で変更があった場合のみ更新
-        const newConfig = { ...prev, ...recurrence };
-        if (JSON.stringify(prev) === JSON.stringify(newConfig)) {
-          return prev;
+        if (JSON.stringify(prev) !== JSON.stringify(newConfig)) {
+          return newConfig;
         }
-        return newConfig;
+        return prev;
       });
     }
   }, [recurrence]);
@@ -72,7 +76,6 @@ const RecurrenceSelector: React.FC<RecurrenceSelectorProps> = ({
   useEffect(() => {
     if (!config) {
       setErrors([]);
-      onRecurrenceChange(undefined);
       return;
     }
 
@@ -81,10 +84,12 @@ const RecurrenceSelector: React.FC<RecurrenceSelectorProps> = ({
 
     if (newErrors.length === 0) {
       const resultConfig = config.enabled ? config : undefined;
-      // 親から渡されたrecurrenceと同じ場合は呼び出さない
-      // recurrenceがundefinedの場合も安全にハンドリング
-      const currentRecurrence = recurrence || undefined;
-      if (JSON.stringify(resultConfig) !== JSON.stringify(currentRecurrence)) {
+
+      // 親から渡されたrecurrenceと比較して変更があった場合のみ呼び出し
+      const configString = JSON.stringify(resultConfig);
+      const recurrenceString = JSON.stringify(recurrence);
+
+      if (configString !== recurrenceString) {
         onRecurrenceChange(resultConfig);
       }
     }

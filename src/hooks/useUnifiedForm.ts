@@ -1,4 +1,4 @@
-import { useCallback, useReducer, useEffect } from 'react';
+import { useCallback, useReducer, useEffect, useRef } from 'react';
 import type { 
   FormState, 
   FormAction, 
@@ -10,13 +10,21 @@ import type {
 
 // フォーム初期状態
 const createInitialState = (
-  fields: FormFieldConfig[], 
+  fields: FormFieldConfig[],
   initialValues?: Record<string, unknown>
 ): FormState => ({
-  values: fields.reduce((acc, field) => ({
-    ...acc,
-    [field.name]: initialValues?.[field.name] ?? field.value ?? ''
-  }), {}),
+  values: fields.reduce((acc, field) => {
+    // initialValuesに値があるかチェック（undefinedも含む）
+    const hasInitialValue = initialValues && field.name in initialValues;
+    const value = hasInitialValue
+      ? initialValues[field.name]
+      : field.value ?? '';
+
+    return {
+      ...acc,
+      [field.name]: value
+    };
+  }, {}),
   errors: [],
   touched: {},
   isSubmitting: false,
@@ -76,15 +84,8 @@ const formReducer = (state: FormState, action: FormAction): FormState => {
     }
     
     case 'RESET_FORM': {
-      const initialValues = action.initialValues ?? {};
-      return {
-        values: initialValues,
-        errors: [],
-        touched: {},
-        isSubmitting: false,
-        isDirty: false,
-        isValid: true
-      };
+      // fieldsを参照するため、reducerの外で処理する必要がある
+      return action.newState;
     }
     
     case 'VALIDATE_FORM': {
@@ -142,13 +143,16 @@ const validateField = (value: unknown, validation?: ValidationRule): string | nu
  * @returns フォーム状態と操作関数
  */
 export const useUnifiedForm = (
-  fields: FormFieldConfig[], 
+  fields: FormFieldConfig[],
   initialValues?: Record<string, unknown>
 ): UseFormReturn => {
   const [state, dispatch] = useReducer(
-    formReducer, 
+    formReducer,
     createInitialState(fields, initialValues)
   );
+
+  // 前回のinitialValuesを追跡するためのref
+  const prevInitialValuesRef = useRef<string | null>(null);
   
   // フィールド値設定
   const setValue = useCallback((fieldId: string, value: unknown) => {
@@ -208,8 +212,9 @@ export const useUnifiedForm = (
   
   // フォームリセット
   const resetForm = useCallback((newInitialValues?: Record<string, unknown>) => {
-    dispatch({ type: 'RESET_FORM', initialValues: newInitialValues });
-  }, []);
+    const newState = createInitialState(fields, newInitialValues);
+    dispatch({ type: 'RESET_FORM', newState });
+  }, [fields]);
   
   // フォーム送信ハンドラー
   const handleSubmit = useCallback((
@@ -249,7 +254,13 @@ export const useUnifiedForm = (
   // 初期値変更時の状態更新
   useEffect(() => {
     if (initialValues) {
-      resetForm(initialValues);
+      const initialValuesString = JSON.stringify(initialValues);
+
+      // 前回の値と比較して変更があった場合のみリセット
+      if (prevInitialValuesRef.current !== initialValuesString) {
+        prevInitialValuesRef.current = initialValuesString;
+        resetForm(initialValues);
+      }
     }
   }, [initialValues, resetForm]);
   
