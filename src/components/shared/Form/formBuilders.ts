@@ -1,9 +1,9 @@
-import type { 
-  FormFieldConfig, 
-  FieldType, 
-  ValidationRule 
+import type {
+  FormFieldConfig,
+  FieldType,
+  ValidationRule
 } from '../../../types/unified-form';
-import type { Label, FileAttachment } from '../../../types';
+import type { Label, FileAttachment, RecurrenceConfig } from '../../../types';
 
 /**
  * フォームフィールド作成ヘルパー関数
@@ -37,6 +37,7 @@ export const createTaskFormFields = (
     labels: Label[];
     attachments: FileAttachment[];
     columnId?: string;
+    recurrence?: RecurrenceConfig;
   },
   handlers: {
     setTitle: (value: string) => void;
@@ -46,12 +47,14 @@ export const createTaskFormFields = (
     setLabels: (labels: Label[]) => void;
     setAttachments: (attachments: FileAttachment[]) => void;
     setColumnId?: (value: string) => void;
+    setRecurrence?: (recurrence: RecurrenceConfig) => void;
   },
   options: {
     isCompleted?: boolean;
     showLabels?: boolean;
     showAttachments?: boolean;
     showStatus?: boolean;
+    showRecurrence?: boolean;
     statusOptions?: Array<{ value: string; label: string }>;
     onKeyPress?: (event: React.KeyboardEvent) => void;
   } = {}
@@ -147,6 +150,22 @@ export const createTaskFormFields = (
         label: 'ファイル添付（任意）',
         value: values.attachments,
         onChange: handlers.setAttachments as (value: unknown) => void
+      })
+    );
+  }
+
+  // 繰り返し設定
+  if (options.showRecurrence && handlers.setRecurrence) {
+    fields.push(
+      createFormField({
+        id: 'task-recurrence',
+        name: 'recurrence',
+        type: 'recurrence-selector',
+        label: '繰り返し設定（任意）',
+        value: values.recurrence,
+        onChange: handlers.setRecurrence as (value: unknown) => void,
+        disabled: !values.dueDate, // 期限が未設定の場合は無効化
+        helpText: !values.dueDate ? '繰り返し設定をするには期限を設定してください' : undefined
       })
     );
   }

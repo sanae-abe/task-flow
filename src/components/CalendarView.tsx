@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { Text, Button, IconButton } from '@primer/react';
-import { ChevronLeftIcon, ChevronRightIcon } from '@primer/octicons-react';
+import { ChevronLeftIcon, ChevronRightIcon, SyncIcon } from '@primer/octicons-react';
 import { DndContext, DragOverlay, useDraggable, useDroppable } from '@dnd-kit/core';
 
 import { useKanban } from '../contexts/KanbanContext';
@@ -73,7 +73,12 @@ const CalendarTask: React.FC<CalendarTaskProps> = React.memo(({ task, onTaskClic
         }
       }}
     >
-      {task.title}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+        {task.recurrence?.enabled && (
+          <SyncIcon size={10} />
+        )}
+        <span style={{ flex: 1, minWidth: 0 }}>{task.title}</span>
+      </div>
     </div>
   );
 });

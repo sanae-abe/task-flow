@@ -1,6 +1,6 @@
 import React, { useMemo, useCallback, useState } from 'react';
 import { Text, Box, IconButton, ActionMenu, ActionList, Button } from '@primer/react';
-import { XIcon, CheckIcon, PaperclipIcon, TriangleDownIcon } from '@primer/octicons-react';
+import { XIcon, CheckIcon, PaperclipIcon, TriangleDownIcon, SyncIcon } from '@primer/octicons-react';
 
 import { useKanban } from '../contexts/KanbanContext';
 import { useTableColumns } from '../contexts/TableColumnsContext';
@@ -104,7 +104,10 @@ const TableView: React.FC = () => {
 
       case 'title':
         return (
-          <Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            {task.recurrence?.enabled && (
+              <SyncIcon size={12} />
+            )}
             <Text
               sx={{
                 display: 'block',

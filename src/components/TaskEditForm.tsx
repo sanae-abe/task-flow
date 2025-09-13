@@ -1,6 +1,6 @@
 import React, { memo, useMemo } from 'react';
 
-import type { Label, FileAttachment } from '../types';
+import type { Label, FileAttachment, RecurrenceConfig } from '../types';
 
 import { UnifiedForm, createTaskFormFields } from './shared/Form';
 
@@ -21,6 +21,8 @@ interface TaskEditFormProps {
   columnId: string;
   setColumnId: (value: string) => void;
   statusOptions: Array<{ value: string; label: string }>;
+  recurrence: RecurrenceConfig;
+  setRecurrence: (recurrence: RecurrenceConfig) => void;
   onKeyPress: (event: React.KeyboardEvent) => void;
 }
 
@@ -41,6 +43,8 @@ const TaskEditForm = memo<TaskEditFormProps>(({
   columnId,
   setColumnId,
   statusOptions,
+  recurrence,
+  setRecurrence,
   onKeyPress
 }) => {
   // フォームフィールド設定を生成
@@ -52,7 +56,8 @@ const TaskEditForm = memo<TaskEditFormProps>(({
       completedAt,
       labels,
       attachments,
-      columnId
+      columnId,
+      recurrence
     },
     {
       setTitle,
@@ -61,19 +66,21 @@ const TaskEditForm = memo<TaskEditFormProps>(({
       setCompletedAt,
       setLabels,
       setAttachments,
-      setColumnId
+      setColumnId,
+      setRecurrence
     },
     {
       isCompleted,
       showLabels: true,
       showAttachments: true,
       showStatus: true,
+      showRecurrence: true,
       statusOptions,
       onKeyPress
     }
   ), [
-    title, description, dueDate, completedAt, labels, attachments, columnId,
-    setTitle, setDescription, setDueDate, setCompletedAt, setLabels, setAttachments, setColumnId,
+    title, description, dueDate, completedAt, labels, attachments, columnId, recurrence,
+    setTitle, setDescription, setDueDate, setCompletedAt, setLabels, setAttachments, setColumnId, setRecurrence,
     isCompleted, statusOptions, onKeyPress
   ]);
 
@@ -90,8 +97,9 @@ const TaskEditForm = memo<TaskEditFormProps>(({
     completedAt,
     labels,
     attachments,
-    columnId
-  }), [title, description, dueDate, completedAt, labels, attachments, columnId]);
+    columnId,
+    recurrence
+  }), [title, description, dueDate, completedAt, labels, attachments, columnId, recurrence]);
 
   return (
     <UnifiedForm

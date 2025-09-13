@@ -1,4 +1,4 @@
-import { CheckCircleIcon, CheckCircleFillIcon } from '@primer/octicons-react';
+import { CheckCircleIcon, CheckCircleFillIcon, SyncIcon } from '@primer/octicons-react';
 import { Box, Text, Heading } from '@primer/react';
 import React from 'react';
 
@@ -41,8 +41,14 @@ const TaskCardContent: React.FC<TaskDisplayProps> = ({
           fontWeight: '500',
           color: 'fg.default',
           lineHeight: '1.4',
-          flex: 1
+          flex: 1,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 1
         }}>
+          {task.recurrence?.enabled && (
+            <SyncIcon size={12} />
+          )}
           {task.title}
         </Heading>
       </Box>

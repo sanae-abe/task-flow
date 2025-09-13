@@ -2,20 +2,21 @@ import type { ReactNode } from 'react';
 import type { Label, FileAttachment } from '../types';
 
 // 基本フォームフィールド型
-export type FieldType = 
-  | 'text' 
-  | 'textarea' 
-  | 'date' 
-  | 'datetime-local' 
-  | 'password' 
-  | 'email' 
-  | 'number' 
-  | 'select' 
-  | 'checkbox' 
-  | 'radio' 
-  | 'file' 
-  | 'label-selector' 
-  | 'color-selector' 
+export type FieldType =
+  | 'text'
+  | 'textarea'
+  | 'date'
+  | 'datetime-local'
+  | 'password'
+  | 'email'
+  | 'number'
+  | 'select'
+  | 'checkbox'
+  | 'radio'
+  | 'file'
+  | 'label-selector'
+  | 'color-selector'
+  | 'recurrence-selector'
   | 'custom';
 
 // バリデーションルール
@@ -43,6 +44,7 @@ export interface FormFieldConfig {
   hideLabel?: boolean;
   customComponent?: ReactNode;
   sx?: Record<string, unknown>;
+  helpText?: string;
   onChange: (value: unknown) => void;
   onKeyDown?: (event: React.KeyboardEvent) => void;
 }

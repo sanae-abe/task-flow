@@ -51,7 +51,7 @@ const RecurrenceSelector: React.FC<RecurrenceSelectorProps> = ({
 
   useEffect(() => {
     if (recurrence) {
-      setConfig({ ...config, ...recurrence });
+      setConfig(prev => ({ ...prev, ...recurrence }));
     }
   }, [recurrence]);
 

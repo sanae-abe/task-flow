@@ -40,6 +40,8 @@ const TaskEditDialog = memo<TaskEditDialogProps>(({
     columnId,
     setColumnId,
     statusOptions,
+    recurrence,
+    setRecurrence,
     showDeleteConfirm,
     setShowDeleteConfirm,
     handleSave,
@@ -85,6 +87,8 @@ const TaskEditDialog = memo<TaskEditDialogProps>(({
           columnId={columnId}
           setColumnId={setColumnId}
           statusOptions={statusOptions}
+          recurrence={recurrence}
+          setRecurrence={setRecurrence}
           onKeyPress={handleKeyPress}
         />
         

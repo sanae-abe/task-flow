@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 
 import { useKanban } from '../contexts/KanbanContext';
-import type { Task, Label, FileAttachment } from '../types';
+import type { Task, Label, FileAttachment, RecurrenceConfig } from '../types';
 
 interface UseTaskEditProps {
   task: Task | null;
@@ -28,6 +28,8 @@ interface UseTaskEditReturn {
   columnId: string;
   setColumnId: (value: string) => void;
   statusOptions: Array<{ value: string; label: string }>;
+  recurrence: RecurrenceConfig;
+  setRecurrence: (recurrence: RecurrenceConfig) => void;
   showDeleteConfirm: boolean;
   setShowDeleteConfirm: (show: boolean) => void;
   handleSave: () => void;
@@ -52,6 +54,11 @@ export const useTaskEdit = ({
   const [labels, setLabels] = useState<Label[]>([]);
   const [attachments, setAttachments] = useState<FileAttachment[]>([]);
   const [columnId, setColumnId] = useState('');
+  const [recurrence, setRecurrence] = useState<RecurrenceConfig>({
+    enabled: false,
+    pattern: 'daily',
+    interval: 1
+  });
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   useEffect(() => {
@@ -69,7 +76,14 @@ export const useTaskEdit = ({
       
       setLabels(task.labels ?? []);
       setAttachments(task.files ?? []);
-      
+
+      // 繰り返し設定の初期化
+      setRecurrence(task.recurrence || {
+        enabled: false,
+        pattern: 'daily',
+        interval: 1
+      });
+
       // 現在のタスクがどのカラムにあるかを特定
       const currentColumn = state.currentBoard?.columns.find(column =>
         column.tasks.some(t => t.id === task.id)
@@ -83,6 +97,11 @@ export const useTaskEdit = ({
       setCompletedAt('');
       setLabels([]);
       setAttachments([]);
+      setRecurrence({
+        enabled: false,
+        pattern: 'daily',
+        interval: 1
+      });
       setColumnId('');
     }
   }, [isOpen, task, state.currentBoard]);
@@ -91,9 +110,9 @@ export const useTaskEdit = ({
   useEffect(() => {
     if (state.currentBoard?.columns && columnId) {
       const targetColumn = state.currentBoard.columns.find(col => col.id === columnId);
-      const isLastColumn = targetColumn && 
+      const isLastColumn = targetColumn &&
         state.currentBoard.columns.indexOf(targetColumn) === state.currentBoard.columns.length - 1;
-      
+
       // 完了カラムに移動した場合で、現在完了日時が空の場合
       if (isLastColumn && !completedAt) {
         const now = new Date().toISOString().slice(0, 16);
@@ -105,6 +124,16 @@ export const useTaskEdit = ({
       }
     }
   }, [columnId, state.currentBoard, completedAt]);
+
+  // 期限が削除された場合、繰り返し設定を無効化
+  useEffect(() => {
+    if (!dueDate && recurrence.enabled) {
+      setRecurrence({
+        ...recurrence,
+        enabled: false
+      });
+    }
+  }, [dueDate, recurrence]);
 
   const handleSave = useCallback(() => {
     if (task && title.trim()) {
@@ -144,12 +173,13 @@ export const useTaskEdit = ({
         completedAt: completedAtObj?.toISOString() || null,
         labels,
         files: attachments,
+        recurrence: recurrence.enabled && dueDateObj ? recurrence : undefined,
         updatedAt: new Date().toISOString()
       };
       
       onSave(updatedTask);
     }
-  }, [task, title, description, dueDate, completedAt, labels, attachments, columnId, state.currentBoard, moveTask, onSave]);
+  }, [task, title, description, dueDate, completedAt, labels, attachments, recurrence, columnId, state.currentBoard, moveTask, onSave]);
 
   const handleDelete = useCallback(() => {
     setShowDeleteConfirm(true);
@@ -213,6 +243,8 @@ export const useTaskEdit = ({
     columnId,
     setColumnId,
     statusOptions,
+    recurrence,
+    setRecurrence,
     showDeleteConfirm,
     setShowDeleteConfirm,
     handleSave,
