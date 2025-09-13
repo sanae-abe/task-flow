@@ -222,9 +222,10 @@ const UnifiedFormField = memo<UnifiedFormFieldProps>(({
         );
 
       case 'recurrence-selector':
+        const recurrenceValue = value as RecurrenceConfig | undefined;
         return (
           <RecurrenceSelector
-            recurrence={value as RecurrenceConfig ?? { enabled: false, pattern: 'daily', interval: 1 }}
+            recurrence={recurrenceValue || { enabled: false, pattern: 'daily', interval: 1 }}
             onRecurrenceChange={(recurrence: RecurrenceConfig | undefined) => handleChange(recurrence)}
           />
         );
