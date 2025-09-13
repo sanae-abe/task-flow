@@ -80,7 +80,7 @@ const TableView: React.FC = () => {
             <ActionMenu>
               <ActionMenu.Anchor>
                 <IconButton
-                  aria-label="タスクの操作"
+                  aria-label="タスクを削除"
                   icon={KebabHorizontalIcon}
                   variant="invisible"
                   size="small"
@@ -88,13 +88,6 @@ const TableView: React.FC = () => {
               </ActionMenu.Anchor>
               <ActionMenu.Overlay>
                 <ActionList>
-                  <ActionList.Item
-                    onSelect={() => handleTaskComplete(task)}
-                    disabled={task.columnId === currentBoard?.columns[currentBoard.columns.length - 1]?.id}
-                  >
-                    完了にする
-                  </ActionList.Item>
-                  <ActionList.Divider />
                   <ActionList.Item
                     onSelect={() => handleTaskDelete(task)}
                     variant="danger"
@@ -289,6 +282,56 @@ const TableView: React.FC = () => {
             <Text sx={{ fontSize: 0, color: 'fg.muted' }}>
               {formatDate(task.createdAt, 'MM/dd')}
             </Text>
+          </Box>
+        );
+
+      case 'updatedAt':
+        return (
+          <Box>
+            <Text sx={{ fontSize: 0, color: 'fg.muted' }}>
+              {formatDate(task.updatedAt, 'MM/dd HH:mm')}
+            </Text>
+          </Box>
+        );
+
+      case 'completedAt':
+        return (
+          <Box>
+            {task.completedAt ? (
+              <Text sx={{ fontSize: 0, color: 'fg.muted' }}>
+                {formatDate(task.completedAt, 'MM/dd HH:mm')}
+              </Text>
+            ) : (
+              <Text sx={{ color: 'fg.muted', fontSize: 0 }}>
+                -
+              </Text>
+            )}
+          </Box>
+        );
+
+      case 'description':
+        return (
+          <Box>
+            {task.description ? (
+              <Text
+                sx={{
+                  display: 'block',
+                  fontSize: 0,
+                  color: 'fg.default',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                  maxWidth: '580px'
+                }}
+                title={task.description}
+              >
+                {task.description}
+              </Text>
+            ) : (
+              <Text sx={{ color: 'fg.muted', fontSize: 0 }}>
+                -
+              </Text>
+            )}
           </Box>
         );
 

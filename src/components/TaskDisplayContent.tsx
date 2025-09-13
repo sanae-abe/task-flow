@@ -38,20 +38,20 @@ const TaskDisplayContent = React.memo<TaskDisplayContentProps>(({ task, columnNa
         </TaskDisplaySection>
       )}
 
+      {columnName && (
+        <TaskDisplaySection title="ステータス">
+          <ContentBox>
+            <Text sx={{ fontSize: 1 }}>{columnName}</Text>
+          </ContentBox>
+        </TaskDisplaySection>
+      )}
+
       {task.completedAt && (
         <TaskDisplaySection title="完了日時">
           <ContentBox>
             <Text sx={{ fontSize: 1 }}>
               {formatDateTime(task.completedAt)}
             </Text>
-          </ContentBox>
-        </TaskDisplaySection>
-      )}
-
-      {columnName && (
-        <TaskDisplaySection title="ステータス">
-          <ContentBox>
-            <Text sx={{ fontSize: 1 }}>{columnName}</Text>
           </ContentBox>
         </TaskDisplaySection>
       )}

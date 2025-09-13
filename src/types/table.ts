@@ -33,29 +33,22 @@ export interface TableColumnsHookReturn {
 
 export const DEFAULT_COLUMNS: TableColumn[] = [
   {
-    id: 'actions',
-    label: '操作',
-    width: '40px',
-    visible: true,
-    sortable: false,
-    type: 'actions'
-  },
-  {
     id: 'title',
     label: 'タスク',
-    width: '650px',
+    width: '480px',
     visible: true,
     sortable: true,
     type: 'text',
     accessor: 'title'
   },
   {
-    id: 'status',
-    label: 'ステータス',
-    width: '150px',
-    visible: true,
-    sortable: true,
-    type: 'status'
+    id: 'description',
+    label: '説明',
+    width: '600px',
+    visible: false,
+    sortable: false,
+    type: 'text',
+    accessor: 'description'
   },
   {
     id: 'dueDate',
@@ -67,6 +60,31 @@ export const DEFAULT_COLUMNS: TableColumn[] = [
     accessor: 'dueDate'
   },
   {
+    id: 'status',
+    label: 'ステータス',
+    width: '150px',
+    visible: true,
+    sortable: true,
+    type: 'status'
+  },
+  {
+    id: 'progress',
+    label: '進捗',
+    width: '120px',
+    visible: false,
+    sortable: true,
+    type: 'progress'
+  },
+  {
+    id: 'completedAt',
+    label: '完了日時',
+    width: '150px',
+    visible: false,
+    sortable: true,
+    type: 'date',
+    accessor: 'completedAt'
+  },
+  {
     id: 'labels',
     label: 'ラベル',
     width: '180px',
@@ -75,10 +93,28 @@ export const DEFAULT_COLUMNS: TableColumn[] = [
     type: 'labels'
   },
   {
+    id: 'createdAt',
+    label: '作成日',
+    width: '120px',
+    visible: false,
+    sortable: true,
+    type: 'date',
+    accessor: 'createdAt'
+  },
+  {
+    id: 'updatedAt',
+    label: '更新日時',
+    width: '150px',
+    visible: true,
+    sortable: true,
+    type: 'date',
+    accessor: 'updatedAt'
+  },
+  {
     id: 'subTasks',
     label: 'サブタスク',
     width: '100px',
-    visible: true,
+    visible: false,
     sortable: false,
     type: 'text'
   },
@@ -86,26 +122,17 @@ export const DEFAULT_COLUMNS: TableColumn[] = [
     id: 'files',
     label: '添付',
     width: '100px',
-    visible: true,
+    visible: false,
     sortable: false,
     type: 'text'
   },
   {
-    id: 'progress',
-    label: '進捗',
-    width: '120px',
-    visible: true,
-    sortable: true,
-    type: 'progress'
-  },
-  {
-    id: 'createdAt',
-    label: '作成日',
-    width: '120px',
-    visible: true,
-    sortable: true,
-    type: 'date',
-    accessor: 'createdAt'
+    id: 'actions',
+    label: '操作',
+    width: '40px',
+    visible: false,
+    sortable: false,
+    type: 'actions'
   }
 ];
 
