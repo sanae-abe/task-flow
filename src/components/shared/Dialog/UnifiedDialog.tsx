@@ -80,7 +80,7 @@ const getDialogStyles = (variant: DialogVariant, size: DialogSize) => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        py: 4,
+        py: 4
       }
     },
     inline: {

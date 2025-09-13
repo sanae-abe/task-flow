@@ -63,6 +63,7 @@ const DIALOG_STYLES = {
   largeContent: {
     bg: 'canvas.default',
     p: '16px',
+    pb: 8,
     minWidth: '600px',
     maxWidth: '640px',
     maxHeight: '90vh',
