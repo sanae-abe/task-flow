@@ -56,7 +56,7 @@ const DIALOG_STYLES = {
     bg: 'canvas.default',
     p: '16px',
     minWidth: '300px',
-    maxWidth: '400px',
+    maxWidth: '460px',
     maxHeight: '90vh',
     overflowY: 'auto',
   },

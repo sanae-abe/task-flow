@@ -14,8 +14,7 @@ import {
   GearIcon,
   TrashIcon,
   GrabberIcon,
-  EyeIcon,
-  EyeClosedIcon
+  CheckIcon
 } from '@primer/octicons-react';
 
 import { useTableColumns } from '../contexts/TableColumnsContext';
@@ -107,7 +106,13 @@ const TableColumnManager: React.FC = () => {
                   onSelect={() => toggleColumnVisibility(column.id)}
                 >
                   <ActionList.LeadingVisual>
-                    {column.visible ? <EyeIcon /> : <EyeClosedIcon />}
+                    <Box
+                      sx={{
+                        color: column.visible ? 'inherit' : 'white'
+                      }}
+                    >
+                      <CheckIcon />
+                    </Box>
                   </ActionList.LeadingVisual>
                   {column.label}
                 </ActionList.Item>
