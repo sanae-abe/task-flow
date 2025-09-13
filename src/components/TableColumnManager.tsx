@@ -8,12 +8,10 @@ import {
   Button,
   FormControl,
   TextInput,
-  Select,
   Dialog
 } from '@primer/react';
 import {
   GearIcon,
-  PlusIcon,
   TrashIcon,
   GrabberIcon,
   EyeIcon,
@@ -21,51 +19,20 @@ import {
 } from '@primer/octicons-react';
 
 import { useTableColumns } from '../contexts/TableColumnsContext';
-import type { TableColumn } from '../types/table';
 
-interface AddColumnFormData {
-  label: string;
-  width: string;
-  type: TableColumn['type'];
-}
 
 const TableColumnManager: React.FC = () => {
   const {
     columns,
     toggleColumnVisibility,
     updateColumnWidth,
-    addCustomColumn,
     removeColumn,
     resetToDefaults
   } = useTableColumns();
 
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [isAddingColumn, setIsAddingColumn] = useState(false);
-  const [newColumnForm, setNewColumnForm] = useState<AddColumnFormData>({
-    label: '',
-    width: '120px',
-    type: 'text'
-  });
 
-  const handleAddColumn = () => {
-    if (newColumnForm.label.trim()) {
-      addCustomColumn({
-        label: newColumnForm.label,
-        width: newColumnForm.width,
-        visible: true,
-        sortable: newColumnForm.type !== 'actions',
-        type: newColumnForm.type
-      });
-
-      setNewColumnForm({
-        label: '',
-        width: '120px',
-        type: 'text'
-      });
-      setIsAddingColumn(false);
-    }
-  };
 
   const handleWidthChange = (columnId: string, newWidth: string) => {
     updateColumnWidth(columnId, newWidth);
@@ -100,12 +67,6 @@ const TableColumnManager: React.FC = () => {
               ))}
             </ActionList.Group>
             <ActionList.Divider />
-            <ActionList.Item onSelect={() => setIsAddingColumn(true)}>
-              <ActionList.LeadingVisual>
-                <PlusIcon />
-              </ActionList.LeadingVisual>
-              カラムを追加
-            </ActionList.Item>
             <ActionList.Item onSelect={() => setIsSettingsOpen(true)}>
               <ActionList.LeadingVisual>
                 <GearIcon />
@@ -120,63 +81,6 @@ const TableColumnManager: React.FC = () => {
         </ActionMenu.Overlay>
       </ActionMenu>
 
-      {/* カラム追加ダイアログ */}
-      {isAddingColumn && (
-        <Dialog
-          onClose={() => setIsAddingColumn(false)}
-          aria-labelledby="add-column-title"
-        >
-        <Dialog.Header id="add-column-title">
-          カラムを追加
-        </Dialog.Header>
-        <Box sx={{ p: 3 }}>
-          <FormControl>
-            <FormControl.Label>カラム名</FormControl.Label>
-            <TextInput
-              value={newColumnForm.label}
-              onChange={(e) => setNewColumnForm(prev => ({ ...prev, label: e.target.value }))}
-              placeholder="カラム名を入力"
-              autoFocus
-            />
-          </FormControl>
-
-          <FormControl sx={{ mt: 3 }}>
-            <FormControl.Label>幅</FormControl.Label>
-            <TextInput
-              value={newColumnForm.width}
-              onChange={(e) => setNewColumnForm(prev => ({ ...prev, width: e.target.value }))}
-              placeholder="例: 120px, 10%, 1fr"
-            />
-          </FormControl>
-
-          <FormControl sx={{ mt: 3 }}>
-            <FormControl.Label>タイプ</FormControl.Label>
-            <Select
-              value={newColumnForm.type}
-              onChange={(e) => setNewColumnForm(prev => ({ ...prev, type: e.target.value as TableColumn['type'] }))}
-            >
-              <Select.Option value="text">テキスト</Select.Option>
-              <Select.Option value="date">日付</Select.Option>
-              <Select.Option value="number">数値</Select.Option>
-            </Select>
-          </FormControl>
-
-          <Box sx={{ display: 'flex', gap: 2, mt: 4, justifyContent: 'flex-end' }}>
-            <Button
-              onClick={() => setIsAddingColumn(false)}
-            >
-              キャンセル
-            </Button>
-            <Button
-              onClick={handleAddColumn}
-              disabled={!newColumnForm.label.trim()}
-            >
-              追加
-            </Button>
-          </Box>
-        </Box>
-        </Dialog>
-      )}
 
       {/* 詳細設定ダイアログ */}
       {isSettingsOpen && (

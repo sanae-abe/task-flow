@@ -11,7 +11,6 @@ interface TableColumnsContextType {
   toggleColumnVisibility: (columnId: string) => void;
   updateColumnWidth: (columnId: string, width: string) => void;
   reorderColumns: (newOrder: string[]) => void;
-  addCustomColumn: (column: Omit<TableColumn, 'id'>) => void;
   removeColumn: (columnId: string) => void;
   resetToDefaults: () => void;
   forceRender: number;
@@ -115,38 +114,6 @@ export const TableColumnsProvider: React.FC<{ children: React.ReactNode }> = ({ 
     });
   }, []);
 
-  // カスタムカラムを追加
-  const addCustomColumn = useCallback((column: Omit<TableColumn, 'id'>) => {
-    setSettings(currentSettings => {
-      const newColumn: TableColumn = {
-        id: `custom-${Date.now()}`,
-        label: column.label,
-        width: column.width,
-        visible: column.visible,
-        sortable: column.sortable,
-        type: column.type,
-        accessor: column.accessor,
-        render: column.render
-      };
-
-      const newColumns = [...currentSettings.columns, newColumn];
-      const newOrder = [...currentSettings.columnOrder, newColumn.id];
-
-      const newSettings = {
-        columns: newColumns,
-        columnOrder: newOrder
-      };
-
-      // localStorageに保存
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(newSettings));
-      } catch (error) {
-        console.error('Failed to save settings:', error);
-      }
-
-      return newSettings;
-    });
-  }, []);
 
   // カラムを削除（カスタムカラムのみ）
   const removeColumn = useCallback((columnId: string) => {
@@ -209,7 +176,6 @@ export const TableColumnsProvider: React.FC<{ children: React.ReactNode }> = ({ 
     toggleColumnVisibility,
     updateColumnWidth,
     reorderColumns,
-    addCustomColumn,
     removeColumn,
     resetToDefaults,
     forceRender
@@ -221,7 +187,6 @@ export const TableColumnsProvider: React.FC<{ children: React.ReactNode }> = ({ 
     toggleColumnVisibility,
     updateColumnWidth,
     reorderColumns,
-    addCustomColumn,
     removeColumn,
     resetToDefaults,
     forceRender
