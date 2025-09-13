@@ -16,12 +16,12 @@ interface TaskEditDialogProps {
   onCancel: () => void;
 }
 
-const TaskEditDialog = memo<TaskEditDialogProps>(({ 
+const TaskEditDialog = memo<TaskEditDialogProps>(({
   task,
   isOpen,
-  onSave, 
+  onSave,
   onDelete,
-  onCancel 
+  onCancel
 }) => {
   const {
     title,
@@ -56,6 +56,7 @@ const TaskEditDialog = memo<TaskEditDialogProps>(({
     onDelete,
     onCancel
   });
+
 
   if (!isOpen || !task) {
     return null;

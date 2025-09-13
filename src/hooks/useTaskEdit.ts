@@ -54,35 +54,45 @@ export const useTaskEdit = ({
   const [labels, setLabels] = useState<Label[]>([]);
   const [attachments, setAttachments] = useState<FileAttachment[]>([]);
   const [columnId, setColumnId] = useState('');
-  const [recurrence, setRecurrence] = useState<RecurrenceConfig>({
-    enabled: false,
-    pattern: 'daily',
-    interval: 1
+  const [recurrence, setRecurrence] = useState<RecurrenceConfig>(() => {
+    // 初期化時にtaskがある場合は、そのrecurrenceを使用
+    if (task?.recurrence) {
+      return task.recurrence;
+    }
+    return {
+      enabled: false,
+      pattern: 'daily',
+      interval: 1
+    };
   });
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   useEffect(() => {
     if (isOpen && task) {
+
       setTitle(task.title);
       setDescription(task.description ?? '');
       const dateValue = task.dueDate ? new Date(task.dueDate).toISOString().split('T')[0] : '';
       setDueDate(dateValue ?? '');
-      
+
       // completedAtをdatetime-local形式（YYYY-MM-DDTHH:mm）にフォーマット
-      const completedAtValue = task.completedAt 
+      const completedAtValue = task.completedAt
         ? new Date(task.completedAt).toISOString().slice(0, 16)
         : '';
       setCompletedAt(completedAtValue);
-      
+
       setLabels(task.labels ?? []);
       setAttachments(task.files ?? []);
 
       // 繰り返し設定の初期化
-      setRecurrence(task.recurrence || {
+      const recurrenceConfig = task.recurrence || {
         enabled: false,
         pattern: 'daily',
         interval: 1
-      });
+      };
+
+
+      setRecurrence(recurrenceConfig);
 
       // 現在のタスクがどのカラムにあるかを特定
       const currentColumn = state.currentBoard?.columns.find(column =>
@@ -91,6 +101,7 @@ export const useTaskEdit = ({
       setColumnId(currentColumn?.id ?? '');
     } else if (!isOpen) {
       // ダイアログが閉じられた時にフォームをリセット
+
       setTitle('');
       setDescription('');
       setDueDate('');
@@ -226,6 +237,14 @@ export const useTaskEdit = ({
     }));
   }, [state.currentBoard]);
 
+  // 現在のrecurrenceを計算（状態更新を待たずに直接計算）
+  const currentRecurrence = useMemo(() => {
+    if (isOpen && task?.recurrence) {
+      return task.recurrence;
+    }
+    return recurrence;
+  }, [isOpen, task?.recurrence, recurrence]);
+
   return {
     title,
     setTitle,
@@ -243,7 +262,7 @@ export const useTaskEdit = ({
     columnId,
     setColumnId,
     statusOptions,
-    recurrence,
+    recurrence: currentRecurrence,
     setRecurrence,
     showDeleteConfirm,
     setShowDeleteConfirm,

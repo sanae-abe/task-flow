@@ -12,25 +12,30 @@ import type {
 const createInitialState = (
   fields: FormFieldConfig[],
   initialValues?: Record<string, unknown>
-): FormState => ({
-  values: fields.reduce((acc, field) => {
+): FormState => {
+  const values = fields.reduce((acc, field) => {
     // initialValuesに値があるかチェック（undefinedも含む）
     const hasInitialValue = initialValues && field.name in initialValues;
     const value = hasInitialValue
       ? initialValues[field.name]
       : field.value ?? '';
 
+
     return {
       ...acc,
       [field.name]: value
     };
-  }, {}),
-  errors: [],
-  touched: {},
-  isSubmitting: false,
-  isDirty: false,
-  isValid: true
-});
+  }, {});
+
+  return {
+    values,
+    errors: [],
+    touched: {},
+    isSubmitting: false,
+    isDirty: false,
+    isValid: true
+  };
+};
 
 // フォームレデューサー
 const formReducer = (state: FormState, action: FormAction): FormState => {
