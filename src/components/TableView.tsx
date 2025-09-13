@@ -8,11 +8,14 @@ import type { Task } from '../types';
 import type { TaskWithColumn, TableColumn } from '../types/table';
 import { sortTasks } from '../utils/taskSort';
 import { filterTasks } from '../utils/taskFilter';
-import { formatDate, getDateStatus, formatDueDateWithYear } from '../utils/dateHelpers';
+import { formatDate, getDateStatus } from '../utils/dateHelpers';
 import LabelChip from './LabelChip';
 import StatusBadge from './shared/StatusBadge';
 import SubTaskProgressBar from './SubTaskProgressBar';
 import TableColumnManager from './TableColumnManager';
+
+// 型ガード関数
+const isTaskWithColumn = (task: Task): task is TaskWithColumn => 'columnId' in task && 'columnTitle' in task && 'status' in task;
 
 const TableView: React.FC = () => {
   const { state, moveTask, deleteTask, setTaskFilter, openTaskDetail } = useKanban();
@@ -53,14 +56,6 @@ const TableView: React.FC = () => {
     }
   }, [currentBoard, moveTask]);
 
-  const handleTaskComplete = useCallback((task: TaskWithColumn) => {
-    if (!currentBoard) {return;}
-    
-    const rightmostColumn = currentBoard.columns[currentBoard.columns.length - 1];
-    if (rightmostColumn && task.columnId !== rightmostColumn.id) {
-      moveTask(task.id, task.columnId, rightmostColumn.id, rightmostColumn.tasks.length);
-    }
-  }, [currentBoard, moveTask]);
 
   const handleTaskDelete = useCallback((task: TaskWithColumn) => {
     deleteTask(task.id, task.columnId);
@@ -162,39 +157,36 @@ const TableView: React.FC = () => {
           </Box>
         );
 
-      case 'dueDate':
-        return (
-          <Box>
-            {task.dueDate ? (
-              (() => {
-                const dueDate = new Date(task.dueDate);
-                const { isOverdue, isDueToday, isDueTomorrow } = getDateStatus(dueDate);
-                const formattedDate = formatDueDateWithYear(dueDate);
-
-                return (
-                  <Text
-                    sx={{
-                      fontSize: 0,
-                      color: isOverdue
-                        ? 'danger.emphasis'
-                        : isDueToday
-                        ? 'attention.emphasis'
-                        : isDueTomorrow
-                        ? 'accent.emphasis'
-                        : 'fg.muted'
-                    }}
-                  >
-                    {formattedDate}
-                  </Text>
-                );
-              })()
-            ) : (
+      case 'dueDate': {
+        if (!task.dueDate) {
+          return (
+            <Box>
               <Text sx={{ color: 'fg.muted', fontSize: 0 }}>
                 -
               </Text>
-            )}
+            </Box>
+          );
+        }
+
+        const dueDate = new Date(task.dueDate);
+        const { isOverdue, isDueToday, isDueTomorrow } = getDateStatus(dueDate);
+        const formattedDate = formatDate(task.dueDate, 'MM/dd HH:mm');
+
+        const getDateColor = () => {
+          if (isOverdue) {return 'danger.emphasis';}
+          if (isDueToday) {return 'attention.emphasis';}
+          if (isDueTomorrow) {return 'accent.emphasis';}
+          return 'fg.muted';
+        };
+
+        return (
+          <Box>
+            <Text sx={{ fontSize: 0, color: getDateColor() }}>
+              {formattedDate}
+            </Text>
           </Box>
         );
+      }
 
       case 'labels':
         return (
@@ -348,7 +340,7 @@ const TableView: React.FC = () => {
           </Box>
         );
     }
-  }, [currentBoard, handleStatusChange, handleTaskComplete, handleTaskDelete, getCompletionRate]);
+  }, [currentBoard, handleStatusChange, handleTaskDelete, getCompletionRate]);
 
   if (!currentBoard) {
     return (
@@ -424,8 +416,11 @@ const TableView: React.FC = () => {
 
         {/* データ行 */}
         {filteredAndSortedTasks.map((task, index) => {
-          const taskWithColumn = task as TaskWithColumn;
-          
+          if (!isTaskWithColumn(task)) {
+            console.warn('Task is missing required column properties:', task);
+            return null;
+          }
+
           return (
             <Box
               key={task.id}
@@ -448,7 +443,7 @@ const TableView: React.FC = () => {
             >
               {tableColumnsData.visibleColumns.map((column: TableColumn) => (
                 <Box key={column.id}>
-                  {renderCell(taskWithColumn, column.id)}
+                  {renderCell(task, column.id)}
                 </Box>
               ))}
             </Box>

@@ -105,7 +105,7 @@ export const DEFAULT_COLUMNS: TableColumn[] = [
     id: 'updatedAt',
     label: '更新日',
     width: '120px',
-    visible: true,
+    visible: false,
     sortable: true,
     type: 'date',
     accessor: 'updatedAt'
@@ -130,7 +130,7 @@ export const DEFAULT_COLUMNS: TableColumn[] = [
     id: 'actions',
     label: '操作',
     width: '80px',
-    visible: false,
+    visible: true,
     sortable: false,
     type: 'actions'
   }
