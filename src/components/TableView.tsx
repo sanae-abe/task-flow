@@ -1,24 +1,23 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, useEffect, useState } from 'react';
 import { Text, Box, IconButton, ActionMenu, ActionList, Button } from '@primer/react';
 import { KebabHorizontalIcon, CheckIcon, PaperclipIcon, TriangleDownIcon } from '@primer/octicons-react';
 
 import { useKanban } from '../contexts/KanbanContext';
+import { useTableColumns } from '../contexts/TableColumnsContext';
 import type { Task } from '../types';
+import type { TaskWithColumn, TableColumn } from '../types/table';
 import { sortTasks } from '../utils/taskSort';
 import { filterTasks } from '../utils/taskFilter';
 import { formatDate, getDateStatus, formatDueDateWithYear } from '../utils/dateHelpers';
 import LabelChip from './LabelChip';
 import StatusBadge from './shared/StatusBadge';
 import SubTaskProgressBar from './SubTaskProgressBar';
-
-interface TaskWithColumn extends Task {
-  columnId: string;
-  columnTitle: string;
-  status: string;
-}
+import TableColumnManager from './TableColumnManager';
 
 const TableView: React.FC = () => {
   const { state, moveTask, deleteTask, setTaskFilter, openTaskDetail } = useKanban();
+  const tableColumnsData = useTableColumns();
+
 
   const currentBoard = state.currentBoard;
 
@@ -73,6 +72,237 @@ const TableView: React.FC = () => {
     return Math.round((completed / task.subTasks.length) * 100);
   }, []);
 
+  const renderCell = useCallback((task: TaskWithColumn, columnId: string) => {
+    switch (columnId) {
+      case 'actions':
+        return (
+          <Box onClick={(e: React.MouseEvent) => e.stopPropagation()}>
+            <ActionMenu>
+              <ActionMenu.Anchor>
+                <IconButton
+                  aria-label="タスクの操作"
+                  icon={KebabHorizontalIcon}
+                  variant="invisible"
+                  size="small"
+                />
+              </ActionMenu.Anchor>
+              <ActionMenu.Overlay>
+                <ActionList>
+                  <ActionList.Item
+                    onSelect={() => handleTaskComplete(task)}
+                    disabled={task.columnId === currentBoard?.columns[currentBoard.columns.length - 1]?.id}
+                  >
+                    完了にする
+                  </ActionList.Item>
+                  <ActionList.Divider />
+                  <ActionList.Item
+                    onSelect={() => handleTaskDelete(task)}
+                    variant="danger"
+                  >
+                    削除
+                  </ActionList.Item>
+                </ActionList>
+              </ActionMenu.Overlay>
+            </ActionMenu>
+          </Box>
+        );
+
+      case 'title':
+        return (
+          <Box>
+            <Text
+              sx={{
+                fontWeight: 'semibold',
+                color: task.completedAt ? 'fg.muted' : 'fg.default',
+                textDecoration: task.completedAt ? 'line-through' : 'none',
+                fontSize: 1,
+              }}
+            >
+              {task.title}
+            </Text>
+          </Box>
+        );
+
+      case 'status':
+        return (
+          <Box onClick={(e: React.MouseEvent) => e.stopPropagation()}>
+            <ActionMenu>
+              <ActionMenu.Anchor>
+                <Button
+                  variant="invisible"
+                  size="small"
+                  trailingVisual={TriangleDownIcon}
+                  sx={{
+                    padding: 0,
+                    minHeight: 'auto',
+                    border: 'none',
+                    '&:hover': {
+                      bg: 'transparent',
+                    },
+                  }}
+                >
+                  <StatusBadge variant="neutral">
+                    {task.status}
+                  </StatusBadge>
+                </Button>
+              </ActionMenu.Anchor>
+              <ActionMenu.Overlay>
+                <ActionList>
+                  <ActionList.Group title="ステータス変更">
+                    {currentBoard?.columns.map((column) => (
+                      <ActionList.Item
+                        key={column.id}
+                        onSelect={() => handleStatusChange(task, column.id)}
+                        selected={task.columnId === column.id}
+                      >
+                        {column.title}
+                      </ActionList.Item>
+                    ))}
+                  </ActionList.Group>
+                </ActionList>
+              </ActionMenu.Overlay>
+            </ActionMenu>
+          </Box>
+        );
+
+      case 'dueDate':
+        return (
+          <Box>
+            {task.dueDate ? (
+              (() => {
+                const dueDate = new Date(task.dueDate);
+                const { isOverdue, isDueToday, isDueTomorrow } = getDateStatus(dueDate);
+                const formattedDate = formatDueDateWithYear(dueDate);
+
+                return (
+                  <Text
+                    sx={{
+                      fontSize: '12px',
+                      color: isOverdue
+                        ? 'danger.emphasis'
+                        : isDueToday
+                        ? 'attention.emphasis'
+                        : isDueTomorrow
+                        ? 'accent.emphasis'
+                        : 'fg.default'
+                    }}
+                  >
+                    {formattedDate}
+                  </Text>
+                );
+              })()
+            ) : (
+              <Text sx={{ color: 'fg.muted', fontSize: '12px' }}>
+                期限なし
+              </Text>
+            )}
+          </Box>
+        );
+
+      case 'labels':
+        return (
+          <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', alignItems: 'center' }}>
+            {task.labels?.slice(0, 2).map((label) => (
+              <LabelChip
+                key={label.id}
+                label={label}
+              />
+            ))}
+            {task.labels && task.labels.length > 2 && (
+              <Text
+                sx={{
+                  fontSize: 0,
+                  color: 'fg.muted',
+                  px: 2,
+                  py: 1,
+                  border: '1px solid',
+                  borderColor: 'border.default',
+                  borderRadius: 2,
+                }}
+              >
+                +{task.labels.length - 2}
+              </Text>
+            )}
+          </Box>
+        );
+
+      case 'subTasks':
+        return (
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            {task.subTasks && task.subTasks.length > 0 ? (
+              <>
+                <CheckIcon size={12} />
+                <Text sx={{ fontSize: 0, color: 'fg.muted' }}>
+                  {task.subTasks.filter(sub => sub.completed).length}/{task.subTasks.length}
+                </Text>
+              </>
+            ) : (
+              <Text sx={{ color: 'fg.muted', fontSize: 0 }}>
+                -
+              </Text>
+            )}
+          </Box>
+        );
+
+      case 'files':
+        return (
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            {task.files && task.files.length > 0 ? (
+              <>
+                <PaperclipIcon size={12} />
+                <Text sx={{ fontSize: 0, color: 'fg.muted' }}>
+                  {task.files.length}
+                </Text>
+              </>
+            ) : (
+              <Text sx={{ color: 'fg.muted', fontSize: 0 }}>
+                -
+              </Text>
+            )}
+          </Box>
+        );
+
+      case 'progress':
+        return (
+          <Box>
+            {task.subTasks && task.subTasks.length > 0 ? (
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                <SubTaskProgressBar
+                  completedCount={task.subTasks.filter(sub => sub.completed).length}
+                  totalCount={task.subTasks.length}
+                />
+                <Text sx={{ fontSize: 0, color: 'fg.muted' }}>
+                  {getCompletionRate(task)}%
+                </Text>
+              </Box>
+            ) : (
+              <Text sx={{ color: 'fg.muted', fontSize: 0 }}>
+                -
+              </Text>
+            )}
+          </Box>
+        );
+
+      case 'createdAt':
+        return (
+          <Box>
+            <Text sx={{ fontSize: 0, color: 'fg.muted' }}>
+              {formatDate(task.createdAt, 'MM/dd')}
+            </Text>
+          </Box>
+        );
+
+      default:
+        return (
+          <Box>
+            <Text sx={{ fontSize: 0, color: 'fg.muted' }}>
+              -
+            </Text>
+          </Box>
+        );
+    }
+  }, [currentBoard, handleStatusChange, handleTaskComplete, handleTaskDelete, getCompletionRate]);
+
   if (!currentBoard) {
     return (
       <Box
@@ -91,6 +321,7 @@ const TableView: React.FC = () => {
 
   return (
     <Box
+      key={`tableview-${tableColumnsData.forceRender}`}
       sx={{
         height: 'calc(100vh - 120px)',
         overflow: 'auto',
@@ -100,6 +331,7 @@ const TableView: React.FC = () => {
     >
       {/* テーブル */}
       <Box
+        key={`table-${tableColumnsData.forceRender}`}
         sx={{
           borderRadius: 2,
           overflow: 'auto',
@@ -110,40 +342,49 @@ const TableView: React.FC = () => {
       >
         {/* ヘッダー行 */}
         <Box
+          style={{ gridTemplateColumns: tableColumnsData.gridTemplateColumns }}
           sx={{
             display: 'grid',
-            gridTemplateColumns: '40px 650px 150px 210px 180px 100px 100px 120px 120px',
             bg: 'canvas.default',
             borderBottom: '2px solid',
             borderColor: 'border.default',
             py: 2,
             px: 3,
             gap: 2,
-            minWidth: '1170px',
+            minWidth: 'fit-content',
+            position: 'relative',
           }}
         >
-          <Text sx={{ fontWeight: 'bold', fontSize: 1 }}>操作</Text>
-          <Text sx={{ fontWeight: 'bold', fontSize: 1 }}>タスク</Text>
-          <Text sx={{ fontWeight: 'bold', fontSize: 1 }}>ステータス</Text>
-          <Text sx={{ fontWeight: 'bold', fontSize: 1 }}>期限</Text>
-          <Text sx={{ fontWeight: 'bold', fontSize: 1 }}>ラベル</Text>
-          <Text sx={{ fontWeight: 'bold', fontSize: 1 }}>サブタスク</Text>
-          <Text sx={{ fontWeight: 'bold', fontSize: 1 }}>添付</Text>
-          <Text sx={{ fontWeight: 'bold', fontSize: 1 }}>進捗</Text>
-          <Text sx={{ fontWeight: 'bold', fontSize: 1 }}>作成日</Text>
+          {tableColumnsData.visibleColumns.map((column: TableColumn) => (
+            <Box key={column.id} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Text sx={{ fontWeight: 'bold', fontSize: 1 }}>
+                {column.label}
+              </Text>
+            </Box>
+          ))}
+          {/* 設定ボタンを固定位置に配置 */}
+          <Box
+            sx={{
+              position: 'absolute',
+              top: '50%',
+              right: 3,
+              transform: 'translateY(-50%)',
+            }}
+          >
+            <TableColumnManager />
+          </Box>
         </Box>
 
         {/* データ行 */}
         {filteredAndSortedTasks.map((task, index) => {
           const taskWithColumn = task as TaskWithColumn;
-          const completionRate = getCompletionRate(task);
           
           return (
             <Box
               key={task.id}
+              style={{ gridTemplateColumns: tableColumnsData.gridTemplateColumns }}
               sx={{
                 display: 'grid',
-                gridTemplateColumns: '40px 650px 150px 210px 180px 100px 100px 120px 120px',
                 py: 2,
                 px: 3,
                 gap: 2,
@@ -151,212 +392,18 @@ const TableView: React.FC = () => {
                 borderBottom: index < filteredAndSortedTasks.length - 1 ? '1px solid' : 'none',
                 borderColor: 'border.default',
                 cursor: 'pointer',
-                minWidth: '1170px',
+                minWidth: 'fit-content',
                 '&:hover': {
                   bg: 'canvas.subtle',
                 },
               }}
               onClick={() => handleTaskClick(task)}
             >
-              {/* 操作 */}
-              <Box onClick={(e: React.MouseEvent) => e.stopPropagation()}>
-                <ActionMenu>
-                  <ActionMenu.Anchor>
-                    <IconButton
-                      aria-label="タスクの操作"
-                      icon={KebabHorizontalIcon}
-                      variant="invisible"
-                      size="small"
-                    />
-                  </ActionMenu.Anchor>
-                  <ActionMenu.Overlay>
-                    <ActionList>
-                      <ActionList.Item
-                        onSelect={() => handleTaskComplete(taskWithColumn)}
-                        disabled={taskWithColumn.columnId === currentBoard.columns[currentBoard.columns.length - 1]?.id}
-                      >
-                        完了にする
-                      </ActionList.Item>
-                      <ActionList.Divider />
-                      <ActionList.Item
-                        onSelect={() => handleTaskDelete(taskWithColumn)}
-                        variant="danger"
-                      >
-                        削除
-                      </ActionList.Item>
-                    </ActionList>
-                  </ActionMenu.Overlay>
-                </ActionMenu>
-              </Box>
-
-              {/* タスク名と説明 */}
-              <Box>
-                <Text
-                  sx={{
-                    fontWeight: 'semibold',
-                    color: task.completedAt ? 'fg.muted' : 'fg.default',
-                    textDecoration: task.completedAt ? 'line-through' : 'none',
-                    fontSize: 1,
-                  }}
-                >
-                  {task.title}
-                </Text>
-              </Box>
-
-              {/* ステータス */}
-              <Box onClick={(e: React.MouseEvent) => e.stopPropagation()}>
-                <ActionMenu>
-                  <ActionMenu.Anchor>
-                    <Button
-                      variant="invisible"
-                      size="small"
-                      trailingVisual={TriangleDownIcon}
-                      sx={{
-                        padding: 0,
-                        minHeight: 'auto',
-                        border: 'none',
-                        '&:hover': {
-                          bg: 'transparent',
-                        },
-                      }}
-                    >
-                      <StatusBadge variant="neutral">
-                        {taskWithColumn.status}
-                      </StatusBadge>
-                    </Button>
-                  </ActionMenu.Anchor>
-                  <ActionMenu.Overlay>
-                    <ActionList>
-                      <ActionList.Group title="ステータス変更">
-                        {currentBoard.columns.map((column) => (
-                          <ActionList.Item
-                            key={column.id}
-                            onSelect={() => handleStatusChange(taskWithColumn, column.id)}
-                            selected={taskWithColumn.columnId === column.id}
-                          >
-                            {column.title}
-                          </ActionList.Item>
-                        ))}
-                      </ActionList.Group>
-                    </ActionList>
-                  </ActionMenu.Overlay>
-                </ActionMenu>
-              </Box>
-              
-              {/* 期限 */}
-              <Box>
-                {task.dueDate ? (
-                  (() => {
-                    const dueDate = new Date(task.dueDate);
-                    const { isOverdue, isDueToday, isDueTomorrow } = getDateStatus(dueDate);
-                    const formattedDate = formatDueDateWithYear(dueDate);
-
-                    return (
-                      <Text
-                        sx={{
-                          fontSize: '12px',
-                          color: isOverdue
-                            ? 'danger.emphasis'
-                            : isDueToday
-                            ? 'attention.emphasis'
-                            : isDueTomorrow
-                            ? 'accent.emphasis'
-                            : 'fg.default'
-                        }}
-                      >
-                        {formattedDate}
-                      </Text>
-                    );
-                  })()
-                ) : (
-                  <Text sx={{ color: 'fg.muted', fontSize: '12px' }}>
-                    期限なし
-                  </Text>
-                )}
-              </Box>
-              
-              {/* ラベル */}
-              <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', alignItems: 'center' }}>
-                {task.labels?.slice(0, 2).map((label) => (
-                  <LabelChip
-                    key={label.id}
-                    label={label}
-                  />
-                ))}
-                {task.labels && task.labels.length > 2 && (
-                  <Text
-                    sx={{
-                      fontSize: 0,
-                      color: 'fg.muted',
-                      px: 2,
-                      py: 1,
-                      border: '1px solid',
-                      borderColor: 'border.default',
-                      borderRadius: 2,
-                    }}
-                  >
-                    +{task.labels.length - 2}
-                  </Text>
-                )}
-              </Box>
-              
-              {/* サブタスク */}
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                {task.subTasks && task.subTasks.length > 0 ? (
-                  <>
-                    <CheckIcon size={12} />
-                    <Text sx={{ fontSize: 0, color: 'fg.muted' }}>
-                      {task.subTasks.filter(sub => sub.completed).length}/{task.subTasks.length}
-                    </Text>
-                  </>
-                ) : (
-                  <Text sx={{ color: 'fg.muted', fontSize: 0 }}>
-                    -
-                  </Text>
-                )}
-              </Box>
-              
-              {/* 添付ファイル */}
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                {task.files && task.files.length > 0 ? (
-                  <>
-                    <PaperclipIcon size={12} />
-                    <Text sx={{ fontSize: 0, color: 'fg.muted' }}>
-                      {task.files.length}
-                    </Text>
-                  </>
-                ) : (
-                  <Text sx={{ color: 'fg.muted', fontSize: 0 }}>
-                    -
-                  </Text>
-                )}
-              </Box>
-              
-              {/* 進捗 */}
-              <Box>
-                {task.subTasks && task.subTasks.length > 0 ? (
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                    <SubTaskProgressBar
-                      completedCount={task.subTasks.filter(sub => sub.completed).length}
-                      totalCount={task.subTasks.length}
-                    />
-                    <Text sx={{ fontSize: 0, color: 'fg.muted' }}>
-                      {completionRate}%
-                    </Text>
-                  </Box>
-                ) : (
-                  <Text sx={{ color: 'fg.muted', fontSize: 0 }}>
-                    -
-                  </Text>
-                )}
-              </Box>
-              
-              {/* 作成日 */}
-              <Box>
-                <Text sx={{ fontSize: 0, color: 'fg.muted' }}>
-                  {formatDate(task.createdAt, 'MM/dd')}
-                </Text>
-              </Box>
+              {tableColumnsData.visibleColumns.map((column: TableColumn) => (
+                <Box key={column.id}>
+                  {renderCell(taskWithColumn, column.id)}
+                </Box>
+              ))}
             </Box>
           );
         })}

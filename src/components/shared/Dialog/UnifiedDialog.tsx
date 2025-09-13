@@ -1,5 +1,5 @@
 import { XIcon } from '@primer/octicons-react';
-import { Box, Text, ThemeProvider, BaseStyles, useTheme } from '@primer/react';
+import { Box, Text, ThemeProvider, BaseStyles } from '@primer/react';
 import React, { useCallback, useEffect, memo } from 'react';
 import { createPortal } from 'react-dom';
 
@@ -169,7 +169,6 @@ const UnifiedDialog = memo<UnifiedDialogProps>(({
   closeOnBackdropClick = true,
   closeOnEscape = true
 }) => {
-  const theme = useTheme();
   const handleBackdropClick = useCallback((event: React.MouseEvent) => {
     if (closeOnBackdropClick && event.target === event.currentTarget) {
       onClose();
@@ -207,7 +206,7 @@ const UnifiedDialog = memo<UnifiedDialogProps>(({
   const titleId = ariaLabelledBy ?? `dialog-title-${Math.random().toString(36).substr(2, 9)}`;
 
   const dialogContent = (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider>
       <BaseStyles>
         <Box
           sx={styles.backdrop}

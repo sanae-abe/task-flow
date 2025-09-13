@@ -12,6 +12,7 @@ import HelpSidebar from './components/HelpSidebar';
 import TaskDetailSidebar from './components/TaskDetailSidebar';
 import { KanbanProvider, useKanban } from './contexts/KanbanContext';
 import { NotificationProvider } from './contexts/NotificationContext';
+import { TableColumnsProvider } from './contexts/TableColumnsContext';
 import { useHelp } from './hooks/useHelp';
 import { useDataSync } from './hooks/useDataSync';
 import { useViewRoute } from './hooks/useViewRoute';
@@ -95,7 +96,9 @@ function App() {
       <BaseStyles>
         <NotificationProvider>
           <KanbanProvider>
-            <AppContent />
+            <TableColumnsProvider>
+              <AppContent />
+            </TableColumnsProvider>
           </KanbanProvider>
         </NotificationProvider>
       </BaseStyles>
