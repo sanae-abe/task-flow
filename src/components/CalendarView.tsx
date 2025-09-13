@@ -1,11 +1,71 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { Text, Button, IconButton } from '@primer/react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@primer/octicons-react';
+import { DndContext, DragOverlay, useDraggable, useDroppable } from '@dnd-kit/core';
 
 import { useKanban } from '../contexts/KanbanContext';
 import type { Task } from '../types';
 import { sortTasks } from '../utils/taskSort';
 import { filterTasks } from '../utils/taskFilter';
+import { useCalendarDragAndDrop } from '../hooks/useCalendarDragAndDrop';
+
+interface CalendarTaskProps {
+  task: Task;
+  onTaskClick: (task: Task) => void;
+}
+
+const CalendarTask: React.FC<CalendarTaskProps> = React.memo(({ task, onTaskClick }) => {
+  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
+    id: task.id,
+    data: {
+      type: 'calendar-task',
+      task,
+    },
+  });
+
+  const taskItemStyles = useMemo(() => ({
+    fontSize: '13px',
+    padding: '2px 8px',
+    borderRadius: '6px',
+    backgroundColor: isDragging ? 'var(--bgColor-accent-muted)' : 'var(--bgColor-accent-muted)',
+    color: 'var(--fgColor-accent)',
+    cursor: isDragging ? 'grabbing' : 'grab',
+    whiteSpace: 'nowrap' as const,
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    opacity: isDragging ? 0.5 : 1,
+    transform: isDragging ? 'rotate(5deg)' : 'none',
+    transition: 'opacity 200ms, transform 200ms',
+  }), [isDragging]);
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={taskItemStyles}
+      // eslint-disable-next-line react/jsx-props-no-spreading
+      {...listeners}
+      // eslint-disable-next-line react/jsx-props-no-spreading
+      {...attributes}
+      onClick={(e: React.MouseEvent) => {
+        e.stopPropagation();
+        onTaskClick(task);
+      }}
+      title={task.title}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onTaskClick(task);
+        }
+      }}
+    >
+      {task.title}
+    </div>
+  );
+});
+
+CalendarTask.displayName = 'CalendarTask';
 
 interface CalendarDayProps {
   date: Date;
@@ -15,13 +75,21 @@ interface CalendarDayProps {
   onTaskClick: (task: Task) => void;
 }
 
-const CalendarDay: React.FC<CalendarDayProps> = React.memo(({ 
-  date, 
-  tasks, 
-  isToday, 
-  isCurrentMonth, 
-  onTaskClick 
+const CalendarDay: React.FC<CalendarDayProps> = React.memo(({
+  date,
+  tasks,
+  isToday,
+  isCurrentMonth,
+  onTaskClick
 }) => {
+  const { setNodeRef, isOver } = useDroppable({
+    id: `calendar-day-${date.toISOString()}`,
+    data: {
+      type: 'calendar-date',
+      date,
+    },
+  });
+
   const dayStyles = useMemo(() => ({
     minHeight: '120px',
     backgroundColor: isCurrentMonth ? 'var(--bgColor-default)' : 'var(--bgColor-muted)',
@@ -29,7 +97,9 @@ const CalendarDay: React.FC<CalendarDayProps> = React.memo(({
     padding: '8px',
     position: 'relative' as const,
     overflow: 'hidden',
-  }), [isCurrentMonth]);
+    border: isOver ? '2px dashed var(--borderColor-accent-emphasis)' : '1px solid transparent',
+    transition: 'border-color 200ms ease',
+  }), [isCurrentMonth, isOver]);
 
   const headerStyles = useMemo(() => ({
     display: 'flex',
@@ -62,24 +132,12 @@ const CalendarDay: React.FC<CalendarDayProps> = React.memo(({
     overflow: 'hidden',
   }), []);
 
-  const taskItemStyles = useMemo(() => ({
-    fontSize: '13px',
-    padding: '2px 8px',
-    borderRadius: '6px',
-    backgroundColor: 'var(--bgColor-accent-muted)',
-    color: 'var(--fgColor-accent)',
-    cursor: 'pointer',
-    whiteSpace: 'nowrap' as const,
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-  }), []);
-
   const handleTaskClick = useCallback((task: Task) => {
     onTaskClick(task);
   }, [onTaskClick]);
 
   return (
-    <div style={dayStyles}>
+    <div ref={setNodeRef} style={dayStyles}>
       <div style={headerStyles}>
         <span style={dayNumberStyles}>{date.getDate()}</span>
         {tasks.length > 3 && (
@@ -90,25 +148,11 @@ const CalendarDay: React.FC<CalendarDayProps> = React.memo(({
       </div>
       <div style={tasksContainerStyles}>
         {tasks.slice(0, 3).map((task) => (
-          <div 
-            key={task.id} 
-            style={taskItemStyles}
-            onClick={(e: React.MouseEvent) => {
-              e.stopPropagation();
-              handleTaskClick(task);
-            }}
-            title={task.title}
-            role="button"
-            tabIndex={0}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                handleTaskClick(task);
-              }
-            }}
-          >
-            {task.title}
-          </div>
+          <CalendarTask
+            key={task.id}
+            task={task}
+            onTaskClick={handleTaskClick}
+          />
         ))}
       </div>
     </div>
@@ -118,8 +162,16 @@ const CalendarDay: React.FC<CalendarDayProps> = React.memo(({
 CalendarDay.displayName = 'CalendarDay';
 
 const CalendarView: React.FC = () => {
-  const { state, openTaskDetail } = useKanban();
+  const { state, openTaskDetail, updateTask } = useKanban();
   const [currentDate, setCurrentDate] = useState(new Date());
+
+  const handleTaskDateChange = useCallback((taskId: string, newDate: Date) => {
+    updateTask(taskId, { dueDate: newDate.toISOString() });
+  }, [updateTask]);
+
+  const { activeTask, sensors, handleDragStart, handleDragOver, handleDragEnd } = useCalendarDragAndDrop({
+    onTaskDateChange: handleTaskDateChange,
+  });
 
 
   const { year, month } = useMemo(() => ({
@@ -276,62 +328,90 @@ const CalendarView: React.FC = () => {
   }
 
   return (
-    <div style={containerStyles}>
-      <div style={headerStyles}>
-        <span style={titleStyles}>
-          {year}年 {monthNames[month]}
-        </span>
-        <div style={navigationStyles}>
-          <IconButton
-            icon={ChevronLeftIcon}
-            aria-label="前の月"
-            onClick={() => navigateMonth('prev')}
-            size="small"
-          />
-          <Button
-            size="small"
-            onClick={() => setCurrentDate(new Date())}
-          >
-            今日
-          </Button>
-          <IconButton
-            icon={ChevronRightIcon}
-            aria-label="次の月"
-            onClick={() => navigateMonth('next')}
-            size="small"
-          />
+    <DndContext
+      sensors={sensors}
+      onDragStart={handleDragStart}
+      onDragOver={handleDragOver}
+      onDragEnd={handleDragEnd}
+    >
+      <div style={containerStyles}>
+        <div style={headerStyles}>
+          <span style={titleStyles}>
+            {year}年 {monthNames[month]}
+          </span>
+          <div style={navigationStyles}>
+            <IconButton
+              icon={ChevronLeftIcon}
+              aria-label="前の月"
+              onClick={() => navigateMonth('prev')}
+              size="small"
+            />
+            <Button
+              size="small"
+              onClick={() => setCurrentDate(new Date())}
+            >
+              今日
+            </Button>
+            <IconButton
+              icon={ChevronRightIcon}
+              aria-label="次の月"
+              onClick={() => navigateMonth('next')}
+              size="small"
+            />
+          </div>
         </div>
-      </div>
 
-      <div style={calendarGridContainerStyles}>
-        <div style={weekHeaderStyles}>
-          {weekDays.map((day) => (
-            <div key={day} style={weekDayStyles}>
-              {day}
+        <div style={calendarGridContainerStyles}>
+          <div style={weekHeaderStyles}>
+            {weekDays.map((day) => (
+              <div key={day} style={weekDayStyles}>
+                {day}
+              </div>
+            ))}
+          </div>
+
+          <div style={calendarGridStyles}>
+            {calendarDays.map(({ date, isCurrentMonth, isToday }, index) => {
+              const dateKey = date.toDateString();
+              const tasksForDate = tasksGroupedByDate.get(dateKey) || [];
+
+              return (
+                <CalendarDay
+                  key={index}
+                  date={date}
+                  tasks={tasksForDate}
+                  isToday={isToday}
+                  isCurrentMonth={isCurrentMonth}
+                  onTaskClick={handleTaskClick}
+                />
+              );
+            })}
+          </div>
+        </div>
+
+        <DragOverlay>
+          {activeTask ? (
+            <div
+              style={{
+                fontSize: '13px',
+                padding: '2px 8px',
+                borderRadius: '6px',
+                backgroundColor: 'var(--bgColor-accent-emphasis)',
+                color: 'white',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                maxWidth: '200px',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+                transform: 'rotate(5deg)',
+              }}
+            >
+              {activeTask.title}
             </div>
-          ))}
-        </div>
-
-        <div style={calendarGridStyles}>
-          {calendarDays.map(({ date, isCurrentMonth, isToday }, index) => {
-            const dateKey = date.toDateString();
-            const tasksForDate = tasksGroupedByDate.get(dateKey) || [];
-
-            return (
-              <CalendarDay
-                key={index}
-                date={date}
-                tasks={tasksForDate}
-                isToday={isToday}
-                isCurrentMonth={isCurrentMonth}
-                onTaskClick={handleTaskClick}
-              />
-            );
-          })}
-        </div>
+          ) : null}
+        </DragOverlay>
       </div>
-
-    </div>
+    </DndContext>
   );
 };
 
