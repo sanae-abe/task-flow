@@ -6,20 +6,20 @@ export interface LabelColors {
 export const getLabelColors = (variant: string): LabelColors => {
   switch (variant) {
     case 'default':
-      return { bg: 'neutral.emphasis', color: 'fg.onEmphasis' };
+      return { bg: '#656d76', color: '#ffffff' };
     case 'primary':
-      return { bg: 'accent.emphasis', color: 'fg.onEmphasis' };
+      return { bg: '#0969da', color: '#ffffff' };
     case 'success':
-      return { bg: 'success.emphasis', color: 'fg.onEmphasis' };
+      return { bg: '#1a7f37', color: '#ffffff' };
     case 'attention':
-      return { bg: 'attention.emphasis', color: 'fg.onEmphasis' };
+      return { bg: '#9a6700', color: '#ffffff' };
     case 'severe':
-      return { bg: 'severe.emphasis', color: 'fg.onEmphasis' };
+      return { bg: '#bc4c00', color: '#ffffff' };
     case 'danger':
-      return { bg: 'danger.emphasis', color: 'fg.onEmphasis' };
+      return { bg: '#d1242f', color: '#ffffff' };
     case 'done':
-      return { bg: 'done.emphasis', color: 'fg.onEmphasis' };
+      return { bg: '#8250df', color: '#ffffff' };
     default:
-      return { bg: 'neutral.emphasis', color: 'fg.onEmphasis' };
+      return { bg: '#656d76', color: '#ffffff' };
   }
 };

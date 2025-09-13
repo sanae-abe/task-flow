@@ -68,7 +68,7 @@ const ColorSelector = memo<ColorSelectorProps>(({
                 height: `${COLOR_BUTTON_SIZE}px`,
                 minHeight: `${COLOR_BUTTON_SIZE}px`,
                 p: 0,
-                bg: colors.bg,
+                backgroundColor: colors.bg,
                 border: '2px solid',
                 borderColor: isSelected ? 'accent.emphasis' : 'transparent',
                 borderRadius: 2,
@@ -81,13 +81,15 @@ const ColorSelector = memo<ColorSelectorProps>(({
                 '&:hover': {
                   borderColor: isSelected ? 'accent.emphasis' : 'neutral.emphasis',
                   transform: `scale(${HOVER_SCALE})`,
-                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                  backgroundColor: colors.bg
                 },
                 '&:focus': {
                   borderColor: 'accent.emphasis',
-                  outline: `${FOCUS_OUTLINE_WIDTH  } solid`,
+                  outline: `${FOCUS_OUTLINE_WIDTH} solid`,
                   outlineColor: 'accent.fg',
-                  outlineOffset: FOCUS_OUTLINE_OFFSET
+                  outlineOffset: FOCUS_OUTLINE_OFFSET,
+                  backgroundColor: colors.bg
                 }
               }}
             >
