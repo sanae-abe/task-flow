@@ -3,12 +3,10 @@ import { Box, Button } from '@primer/react';
 import React from 'react';
 
 import { useKanban } from '../contexts/KanbanContext';
-import type { Label, FileAttachment } from '../types';
 
 import OfflineIndicator from './OfflineIndicator';
 import BoardSelector from './BoardSelector';
 import Logo from './Logo';
-import TaskCreateDialog from './TaskCreateDialog';
 
 
 // 定数定義
@@ -109,26 +107,10 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ onHelpClick }) => {
-  const { state, createTask } = useKanban();
-  const [isCreatingTask, setIsCreatingTask] = React.useState(false);
+  const { openTaskForm } = useKanban();
 
   const handleStartCreateTask = () => {
-    setIsCreatingTask(true);
-  };
-
-  const handleCreateTask = (title: string, description: string, dueDate?: Date, labels?: Label[], attachments?: FileAttachment[]) => {
-    if (state.currentBoard) {
-      // 最初のカラムにタスクを追加
-      const firstColumn = state.currentBoard.columns[0];
-      if (firstColumn) {
-        createTask(firstColumn.id, title, description, dueDate, labels, attachments);
-      }
-    }
-    setIsCreatingTask(false);
-  };
-
-  const handleCancelCreateTask = () => {
-    setIsCreatingTask(false);
+    openTaskForm();
   };
 
   return (
@@ -137,12 +119,6 @@ const Header: React.FC<HeaderProps> = ({ onHelpClick }) => {
         <LeftSection />
         <RightSection onCreateClick={handleStartCreateTask} onHelpClick={onHelpClick} />
       </Box>
-      
-      <TaskCreateDialog
-        isOpen={isCreatingTask}
-        onSave={handleCreateTask}
-        onCancel={handleCancelCreateTask}
-      />
     </Box>
   );
 };

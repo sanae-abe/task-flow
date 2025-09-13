@@ -27,14 +27,13 @@ const CalendarTask: React.FC<CalendarTaskProps> = React.memo(({ task, onTaskClic
     fontSize: '13px',
     padding: '2px 8px',
     borderRadius: '6px',
-    backgroundColor: isDragging ? 'var(--bgColor-accent-muted)' : 'var(--bgColor-accent-muted)',
+    backgroundColor: 'var(--bgColor-accent-muted)',
     color: 'var(--fgColor-accent)',
     cursor: isDragging ? 'grabbing' : 'grab',
     whiteSpace: 'nowrap' as const,
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     opacity: isDragging ? 0.5 : 1,
-    transform: isDragging ? 'rotate(5deg)' : 'none',
     transition: 'opacity 200ms, transform 200ms',
   }), [isDragging]);
 
@@ -73,6 +72,7 @@ interface CalendarDayProps {
   isToday: boolean;
   isCurrentMonth: boolean;
   onTaskClick: (task: Task) => void;
+  onDateClick: (date: Date) => void;
 }
 
 const CalendarDay: React.FC<CalendarDayProps> = React.memo(({
@@ -80,7 +80,8 @@ const CalendarDay: React.FC<CalendarDayProps> = React.memo(({
   tasks,
   isToday,
   isCurrentMonth,
-  onTaskClick
+  onTaskClick,
+  onDateClick
 }) => {
   const { setNodeRef, isOver } = useDroppable({
     id: `calendar-day-${date.toISOString()}`,
@@ -97,7 +98,7 @@ const CalendarDay: React.FC<CalendarDayProps> = React.memo(({
     padding: '8px',
     position: 'relative' as const,
     overflow: 'hidden',
-    border: isOver ? '2px dashed var(--borderColor-accent-emphasis)' : '1px solid transparent',
+    border: isOver ? '1px dashed var(--fgColor-accent)' : '1px solid transparent',
     transition: 'border-color 200ms ease',
   }), [isCurrentMonth, isOver]);
 
@@ -136,8 +137,19 @@ const CalendarDay: React.FC<CalendarDayProps> = React.memo(({
     onTaskClick(task);
   }, [onTaskClick]);
 
+  const handleDateClick = useCallback((e: React.MouseEvent) => {
+    // タスクのクリックイベントではない場合のみ日付クリックを処理
+    if (e.target === e.currentTarget) {
+      onDateClick(date);
+    }
+  }, [onDateClick, date]);
+
   return (
-    <div ref={setNodeRef} style={dayStyles}>
+    <div
+      ref={setNodeRef}
+      style={dayStyles}
+      onClick={handleDateClick}
+    >
       <div style={headerStyles}>
         <span style={dayNumberStyles}>{date.getDate()}</span>
         {tasks.length > 3 && (
@@ -162,11 +174,13 @@ const CalendarDay: React.FC<CalendarDayProps> = React.memo(({
 CalendarDay.displayName = 'CalendarDay';
 
 const CalendarView: React.FC = () => {
-  const { state, openTaskDetail, updateTask } = useKanban();
+  const { state, openTaskDetail, updateTask, openTaskForm } = useKanban();
   const [currentDate, setCurrentDate] = useState(new Date());
 
   const handleTaskDateChange = useCallback((taskId: string, newDate: Date) => {
-    updateTask(taskId, { dueDate: newDate.toISOString() });
+    // タイムゾーンの問題を避けるため、ローカル日付文字列を使用
+    const localDateString = new Date(newDate.getFullYear(), newDate.getMonth(), newDate.getDate()).toISOString();
+    updateTask(taskId, { dueDate: localDateString });
   }, [updateTask]);
 
   const { activeTask, sensors, handleDragStart, handleDragOver, handleDragEnd } = useCalendarDragAndDrop({
@@ -252,6 +266,11 @@ const CalendarView: React.FC = () => {
   const handleTaskClick = useCallback((task: Task) => {
     openTaskDetail(task.id);
   }, [openTaskDetail]);
+
+  const handleDateClick = useCallback((date: Date) => {
+    // タスクのクリックと干渉しないように、日付セルの余白部分がクリックされた場合のみ処理
+    openTaskForm(date);
+  }, [openTaskForm]);
 
   const monthNames = useMemo(() => [
     '1月', '2月', '3月', '4月', '5月', '6月',
@@ -383,6 +402,7 @@ const CalendarView: React.FC = () => {
                   isToday={isToday}
                   isCurrentMonth={isCurrentMonth}
                   onTaskClick={handleTaskClick}
+                  onDateClick={handleDateClick}
                 />
               );
             })}
@@ -396,14 +416,15 @@ const CalendarView: React.FC = () => {
                 fontSize: '13px',
                 padding: '2px 8px',
                 borderRadius: '6px',
-                backgroundColor: 'var(--bgColor-accent-emphasis)',
-                color: 'white',
+                backgroundColor: 'var(--bgColor-accent-muted)',
+                color: 'var(--fgColor-accent)',
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 maxWidth: '200px',
                 boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
-                transform: 'rotate(5deg)',
+                opacity: 0.5,
+                transition: 'opacity 200ms, transform 200ms'
               }}
             >
               {activeTask.title}

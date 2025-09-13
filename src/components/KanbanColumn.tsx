@@ -14,7 +14,6 @@ import ColumnHeader from './ColumnHeader';
 import ConfirmDialog from './ConfirmDialog';
 import DropIndicator from './DropIndicator';
 import TaskCard from './TaskCard';
-import TaskCreateDialog from './TaskCreateDialog';
 
 const COLUMN_CONFIG = {
   WIDTH: '320px',
@@ -51,11 +50,8 @@ interface KanbanColumnProps {
 
 interface ColumnDialogsProps {
   readonly column: Column;
-  readonly showCreateDialog: boolean;
   readonly showEditDialog: boolean;
   readonly showDeleteConfirm: boolean;
-  readonly onAddTask: (title: string, description: string, dueDate?: Date) => void;
-  readonly onCancelCreateTask: () => void;
   readonly onTitleSave: (newTitle: string) => void;
   readonly onTitleCancel: () => void;
   readonly onConfirmDeleteColumn: () => void;
@@ -64,23 +60,14 @@ interface ColumnDialogsProps {
 
 const ColumnDialogs: React.FC<ColumnDialogsProps> = ({
   column,
-  showCreateDialog,
   showEditDialog,
   showDeleteConfirm,
-  onAddTask,
-  onCancelCreateTask,
   onTitleSave,
   onTitleCancel,
   onConfirmDeleteColumn,
   onCancelDeleteColumn
 }) => (
   <>
-    <TaskCreateDialog
-      isOpen={showCreateDialog}
-      onSave={onAddTask}
-      onCancel={onCancelCreateTask}
-    />
-
     <ColumnEditDialog
       isOpen={showEditDialog}
       currentTitle={column.title}
@@ -99,10 +86,8 @@ const ColumnDialogs: React.FC<ColumnDialogsProps> = ({
 );
 
 const KanbanColumn: React.FC<KanbanColumnProps> = React.memo(({ column, onTaskClick }) => {
-  const { state } = useKanban();
+  const { state, openTaskForm } = useKanban();
   const {
-    showCreateDialog,
-    setShowCreateDialog,
     showEditDialog,
     showDeleteConfirm,
     handleTitleEdit,
@@ -110,9 +95,7 @@ const KanbanColumn: React.FC<KanbanColumnProps> = React.memo(({ column, onTaskCl
     handleTitleCancel,
     handleDeleteColumn,
     handleConfirmDeleteColumn,
-    handleCancelDeleteColumn,
-    handleAddTask,
-    handleCancelCreateTask
+    handleCancelDeleteColumn
   } = useColumnState(column);
   
   const { setNodeRef, isOver } = useDroppable({
@@ -128,8 +111,8 @@ const KanbanColumn: React.FC<KanbanColumnProps> = React.memo(({ column, onTaskCl
   }, [column.tasks, state.taskFilter, state.sortOption]);
 
   const handleAddTaskClick = useCallback(() => {
-    setShowCreateDialog(true);
-  }, [setShowCreateDialog]);
+    openTaskForm();
+  }, [openTaskForm]);
   
   return (
     <Box sx={COLUMN_STYLES.container}>
@@ -165,11 +148,8 @@ const KanbanColumn: React.FC<KanbanColumnProps> = React.memo(({ column, onTaskCl
 
       <ColumnDialogs
         column={column}
-        showCreateDialog={showCreateDialog}
         showEditDialog={showEditDialog}
         showDeleteConfirm={showDeleteConfirm}
-        onAddTask={handleAddTask}
-        onCancelCreateTask={handleCancelCreateTask}
         onTitleSave={handleTitleSave}
         onTitleCancel={handleTitleCancel}
         onConfirmDeleteColumn={handleConfirmDeleteColumn}

@@ -385,8 +385,9 @@ const TableView: React.FC = () => {
           sx={{
             display: 'grid',
             bg: 'canvas.default',
-            borderBottom: '2px solid',
+            borderBottom: '1px solid',
             borderColor: 'border.default',
+            boxShadow: '0 0 2px rgba(0,0,0,0.05)',
             py: 2,
             px: 3,
             gap: 2,

@@ -2,64 +2,96 @@ import { Box, Text } from '@primer/react';
 import React, { useState, useEffect, useCallback, memo } from 'react';
 
 import type { Label, FileAttachment } from '../types';
+import { useKanban } from '../contexts/KanbanContext';
 
 import CommonDialog, { DialogActions } from './CommonDialog';
 import FileUploader from './FileUploader';
 import FormField, { TextareaField, DateField } from './FormField';
 import LabelSelector from './LabelSelector';
 
-interface TaskCreateDialogProps {
-  isOpen: boolean;
-  onSave: (title: string, description: string, dueDate?: Date, labels?: Label[], attachments?: FileAttachment[]) => void;
-  onCancel: () => void;
-}
-
-const TaskCreateDialog = memo<TaskCreateDialogProps>(({ 
-  isOpen, 
-  onSave, 
-  onCancel 
-}) => {
+const TaskCreateDialog = memo(() => {
+  const {
+    state,
+    closeTaskForm,
+    createTask,
+  } = useKanban();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [dueDate, setDueDate] = useState('');
   const [labels, setLabels] = useState<Label[]>([]);
   const [attachments, setAttachments] = useState<FileAttachment[]>([]);
 
+  // デフォルト日付が設定されている場合は期限日に設定
   useEffect(() => {
-    if (isOpen) {
+    if (state.taskFormDefaultDate) {
+      // タイムゾーンの問題を避けるため、ローカル日付を使用
+      const year = state.taskFormDefaultDate.getFullYear();
+      const month = String(state.taskFormDefaultDate.getMonth() + 1).padStart(2, '0');
+      const day = String(state.taskFormDefaultDate.getDate()).padStart(2, '0');
+      const dateString = `${year}-${month}-${day}`;
+      setDueDate(dateString);
+    }
+  }, [state.taskFormDefaultDate]);
+
+  useEffect(() => {
+    if (state.isTaskFormOpen) {
       setTitle('');
       setDescription('');
-      setDueDate('');
+      if (!state.taskFormDefaultDate) {
+        setDueDate('');
+      }
       setLabels([]);
       setAttachments([]);
     }
-  }, [isOpen]);
+  }, [state.isTaskFormOpen, state.taskFormDefaultDate]);
 
   const handleSave = useCallback(() => {
-    if (title.trim()) {
-      const dueDateObj = dueDate ? new Date(dueDate) : undefined;
-      onSave(title.trim(), description.trim(), dueDateObj, labels, attachments);
+    if (!title.trim() || !state.currentBoard) {
+      return;
     }
-  }, [title, description, dueDate, labels, attachments, onSave]);
+
+    const dueDateObj = dueDate ? new Date(dueDate) : undefined;
+    const defaultColumnId = state.currentBoard.columns[0]?.id;
+
+    if (defaultColumnId) {
+      createTask(
+        defaultColumnId,
+        title.trim(),
+        description.trim(),
+        dueDateObj,
+        labels,
+        attachments
+      );
+      closeTaskForm();
+    }
+  }, [title, description, dueDate, labels, attachments, createTask, closeTaskForm, state.currentBoard]);
 
   const handleKeyPress = useCallback((event: React.KeyboardEvent) => {
     if (event.key === 'Escape') {
-      onCancel();
+      closeTaskForm();
     }
-  }, [onCancel]);
+    if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
+      event.preventDefault();
+      handleSave();
+    }
+  }, [closeTaskForm, handleSave]);
 
   const isFormValid = title.trim().length > 0;
 
+  if (!state.isTaskFormOpen || !state.currentBoard) {
+    return null;
+  }
+
   return (
     <CommonDialog
-      isOpen={isOpen}
+      isOpen={state.isTaskFormOpen}
       title="新しいタスクを追加"
-      onClose={onCancel}
+      onClose={closeTaskForm}
       ariaLabelledBy="task-create-dialog-title"
       size="large"
       actions={
         <DialogActions
-          onCancel={onCancel}
+          onCancel={closeTaskForm}
           onConfirm={handleSave}
           confirmText="追加"
           isConfirmDisabled={!isFormValid}

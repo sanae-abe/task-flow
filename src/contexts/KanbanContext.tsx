@@ -15,6 +15,8 @@ interface KanbanState {
   labels: Label[];
   selectedTaskId: string | null;
   isTaskDetailOpen: boolean;
+  isTaskFormOpen: boolean;
+  taskFormDefaultDate?: Date;
 }
 
 type KanbanAction =
@@ -40,7 +42,9 @@ type KanbanAction =
   | { type: 'SET_TASK_FILTER'; payload: TaskFilter }
   | { type: 'SET_VIEW_MODE'; payload: ViewMode }
   | { type: 'OPEN_TASK_DETAIL'; payload: { taskId: string } }
-  | { type: 'CLOSE_TASK_DETAIL' };
+  | { type: 'CLOSE_TASK_DETAIL' }
+  | { type: 'OPEN_TASK_FORM'; payload?: { defaultDate?: Date } }
+  | { type: 'CLOSE_TASK_FORM' };
 
 interface KanbanContextType {
   state: KanbanState;
@@ -66,6 +70,8 @@ interface KanbanContextType {
   setViewMode: (mode: ViewMode) => void;
   openTaskDetail: (taskId: string) => void;
   closeTaskDetail: () => void;
+  openTaskForm: (defaultDate?: Date) => void;
+  closeTaskForm: () => void;
   getAllLabels: () => Label[];
   loadInitialData: (data: { boards: KanbanBoard[]; labels: Label[]; tasks: Task[]; columns: Column[] }) => void;
 }
@@ -663,6 +669,20 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
         isTaskDetailOpen: false,
       };
     }
+    case 'OPEN_TASK_FORM': {
+      return {
+        ...state,
+        isTaskFormOpen: true,
+        taskFormDefaultDate: action.payload?.defaultDate,
+      };
+    }
+    case 'CLOSE_TASK_FORM': {
+      return {
+        ...state,
+        isTaskFormOpen: false,
+        taskFormDefaultDate: undefined,
+      };
+    }
     
     default:
       return state;
@@ -679,6 +699,7 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     labels: [],
     selectedTaskId: null,
     isTaskDetailOpen: false,
+    isTaskFormOpen: false,
   });
   const [isInitialized, setIsInitialized] = React.useState(false);
   const notify = useNotify();
@@ -1043,6 +1064,14 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     dispatch({ type: 'CLOSE_TASK_DETAIL' });
   }, []);
 
+  const openTaskForm = useCallback((defaultDate?: Date) => {
+    dispatch({ type: 'OPEN_TASK_FORM', payload: { defaultDate } });
+  }, []);
+
+  const closeTaskForm = useCallback(() => {
+    dispatch({ type: 'CLOSE_TASK_FORM' });
+  }, []);
+
   // 全ボードから全ラベルを取得（名前でユニーク化）
   const getAllLabels = useCallback((): Label[] => {
     const labelMap = new Map<string, Label>();
@@ -1092,6 +1121,8 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       setViewMode,
       openTaskDetail,
       closeTaskDetail,
+      openTaskForm,
+      closeTaskForm,
       getAllLabels,
       loadInitialData,
     }),
@@ -1118,6 +1149,8 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       setViewMode,
       openTaskDetail,
       closeTaskDetail,
+      openTaskForm,
+      closeTaskForm,
       getAllLabels,
       loadInitialData,
     ]

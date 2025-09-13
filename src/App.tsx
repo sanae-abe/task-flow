@@ -10,6 +10,7 @@ import TableView from './components/TableView';
 import NotificationContainer from './components/NotificationContainer';
 import HelpSidebar from './components/HelpSidebar';
 import TaskDetailSidebar from './components/TaskDetailSidebar';
+import TaskCreateDialog from './components/TaskCreateDialog';
 import { KanbanProvider, useKanban } from './contexts/KanbanContext';
 import { NotificationProvider } from './contexts/NotificationContext';
 import { TableColumnsProvider } from './contexts/TableColumnsContext';
@@ -86,6 +87,7 @@ const AppContent: React.FC = () => {
         isOpen={state.isTaskDetailOpen}
         onClose={closeTaskDetail}
       />
+      <TaskCreateDialog />
     </div>
   );
 };
