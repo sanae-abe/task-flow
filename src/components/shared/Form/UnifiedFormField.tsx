@@ -227,6 +227,7 @@ const UnifiedFormField = memo<UnifiedFormFieldProps>(({
           <RecurrenceSelector
             recurrence={recurrenceValue}
             onRecurrenceChange={(recurrence: RecurrenceConfig | undefined) => handleChange(recurrence)}
+            disabled={disabled}
           />
         );
 

@@ -162,7 +162,7 @@ export const createTaskFormFields = (
         name: 'recurrence',
         type: 'recurrence-selector',
         label: '繰り返し設定（任意）',
-        value: values.recurrence,
+        value: values.recurrence || { enabled: false, pattern: 'daily', interval: 1 },
         onChange: handlers.setRecurrence as (value: unknown) => void,
         disabled: !values.dueDate, // 期限が未設定の場合は無効化
         helpText: !values.dueDate ? '繰り返し設定をするには期限を設定してください' : undefined

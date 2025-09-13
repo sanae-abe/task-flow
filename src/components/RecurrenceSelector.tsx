@@ -17,6 +17,7 @@ import {
 interface RecurrenceSelectorProps {
   recurrence?: RecurrenceConfig;
   onRecurrenceChange: (recurrence: RecurrenceConfig | undefined) => void;
+  disabled?: boolean;
 }
 
 const PATTERN_OPTIONS: { value: RecurrencePattern; label: string }[] = [
@@ -39,6 +40,7 @@ const WEEKDAYS = [
 const RecurrenceSelector: React.FC<RecurrenceSelectorProps> = ({
   recurrence,
   onRecurrenceChange,
+  disabled = false,
 }) => {
   const [config, setConfig] = useState<RecurrenceConfig>(() => {
     const defaultConfig: RecurrenceConfig = {
@@ -55,7 +57,7 @@ const RecurrenceSelector: React.FC<RecurrenceSelectorProps> = ({
   const [errors, setErrors] = useState<string[]>([]);
 
   useEffect(() => {
-    if (recurrence) {
+    if (recurrence && typeof recurrence === 'object' && recurrence.enabled !== undefined) {
       setConfig(prev => {
         // 深い比較で変更があった場合のみ更新
         const newConfig = { ...prev, ...recurrence };
@@ -80,7 +82,9 @@ const RecurrenceSelector: React.FC<RecurrenceSelectorProps> = ({
     if (newErrors.length === 0) {
       const resultConfig = config.enabled ? config : undefined;
       // 親から渡されたrecurrenceと同じ場合は呼び出さない
-      if (JSON.stringify(resultConfig) !== JSON.stringify(recurrence)) {
+      // recurrenceがundefinedの場合も安全にハンドリング
+      const currentRecurrence = recurrence || undefined;
+      if (JSON.stringify(resultConfig) !== JSON.stringify(currentRecurrence)) {
         onRecurrenceChange(resultConfig);
       }
     }
@@ -148,16 +152,17 @@ const RecurrenceSelector: React.FC<RecurrenceSelectorProps> = ({
       <Label>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
           <Checkbox
-            checked={config.enabled}
+            checked={config.enabled && !disabled}
             onChange={(e) => handleEnabledChange(e.target.checked)}
+            disabled={disabled}
           />
-          <Text sx={{ fontSize: 1, color: 'fg.muted', fontWeight: '700' }}>
+          <Text sx={{ fontSize: 1, color: disabled ? 'fg.disabled' : 'fg.muted', fontWeight: '700' }}>
             繰り返し設定
           </Text>
         </Box>
       </Label>
 
-      {config.enabled && (
+      {config.enabled && !disabled && (
         <Box sx={{ pl: 4, display: 'flex', flexDirection: 'column', gap: 3 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <Text sx={{ fontSize: 1, minWidth: '60px' }}>パターン:</Text>
