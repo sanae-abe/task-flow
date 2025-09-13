@@ -1,4 +1,4 @@
-import { CalendarIcon, AlertIcon, ClockIcon, XCircleIcon } from '@primer/octicons-react';
+import { AlertIcon, ClockIcon, XCircleIcon } from '@primer/octicons-react';
 import { Text } from '@primer/react';
 import { memo } from 'react';
 
@@ -69,7 +69,6 @@ const DueDateDisplay = memo<DueDateDisplayProps>(({ dueDate, showYear = false })
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1 }}>
-        <CalendarIcon size={16} />
         <Text sx={{ fontSize: 1 }}>{formattedDate}</Text>
       </div>
       {badgeConfig && (

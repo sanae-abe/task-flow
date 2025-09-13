@@ -127,7 +127,7 @@ export const useTaskEdit = ({
 
   // 期限が削除された場合、繰り返し設定を無効化
   useEffect(() => {
-    if (!dueDate && recurrence.enabled) {
+    if (!dueDate && recurrence && recurrence.enabled) {
       setRecurrence({
         ...recurrence,
         enabled: false

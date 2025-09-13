@@ -1,4 +1,4 @@
-import { CalendarIcon } from '@primer/octicons-react';
+import { SyncIcon } from '@primer/octicons-react';
 import React from 'react';
 
 import type { DueDateBadgeProps } from '../types/date';
@@ -9,7 +9,8 @@ const DueDateBadge: React.FC<DueDateBadgeProps> = ({
   isOverdue,
   isDueToday,
   isDueTomorrow,
-  formatDueDate
+  formatDueDate,
+  isRecurrence = false
 }) => {
   const getVariant = () => {
     if (isOverdue()) {
@@ -27,11 +28,10 @@ const DueDateBadge: React.FC<DueDateBadgeProps> = ({
   return (
     <StatusBadge
       variant={getVariant()}
-      icon={CalendarIcon}
       size="medium"
       sx={{ border: 'none', bg: 'transparent' }}
     >
-      期限: {formatDueDate(dueDate)}
+      期限: {formatDueDate(dueDate)} {isRecurrence && <SyncIcon size={12} />}
     </StatusBadge>
   );
 };

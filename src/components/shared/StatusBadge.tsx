@@ -110,7 +110,6 @@ const StatusBadge = memo<StatusBadgeProps>(({
         color: colors.cssColor,
         fontWeight: '600',
         alignSelf: 'flex-start',
-        padding: `${sizeStyles.py * 4}px ${sizeStyles.px * 4}px`,
         ...sx
       }}
     >

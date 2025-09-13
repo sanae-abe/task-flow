@@ -7,4 +7,5 @@ export interface DateHelpers {
 
 export interface DueDateBadgeProps extends DateHelpers {
   dueDate: Date;
+  isRecurrence?: boolean;
 }
