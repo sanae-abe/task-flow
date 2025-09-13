@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   Text,
   Box,
@@ -34,11 +34,11 @@ const TableColumnManager: React.FC = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
 
-  const handleWidthChange = (columnId: string, newWidth: string) => {
+  const handleWidthChange = useCallback((columnId: string, newWidth: string) => {
     updateColumnWidth(columnId, newWidth);
-  };
+  }, [updateColumnWidth]);
 
-  const isCustomColumn = (columnId: string) => columnId.startsWith('custom-');
+  const isCustomColumn = useCallback((columnId: string) => columnId.startsWith('custom-'), []);
 
   return (
     <>
@@ -88,8 +88,8 @@ const TableColumnManager: React.FC = () => {
           onClose={() => setIsSettingsOpen(false)}
           aria-labelledby="column-settings-title"
         >
-        <Dialog.Header id="column-settings-title">
-          カラム設定
+        <Dialog.Header>
+          <Text id="column-settings-title">カラム設定</Text>
         </Dialog.Header>
         <Box sx={{ p: 3 }}>
           <Text sx={{ mb: 3, color: 'fg.muted' }}>
@@ -137,14 +137,22 @@ const TableColumnManager: React.FC = () => {
                 </Box>
 
                 <FormControl>
-                  <FormControl.Label visuallyHidden>幅</FormControl.Label>
+                  <FormControl.Label visuallyHidden>
+                    {column.label}の幅を設定
+                  </FormControl.Label>
                   <TextInput
                     value={column.width}
-                    onChange={(e) => handleWidthChange(column.id, e.target.value)}
-                    placeholder="幅"
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      handleWidthChange(column.id, e.target.value)
+                    }
+                    placeholder="幅 (例: 150px)"
                     size="small"
-                    sx={{ width: '100px' }}
+                    sx={{ width: '120px' }}
+                    aria-describedby={`width-help-${column.id}`}
                   />
+                  <FormControl.Caption id={`width-help-${column.id}`}>
+                    px単位で入力
+                  </FormControl.Caption>
                 </FormControl>
 
                 {isCustomColumn(column.id) && (
