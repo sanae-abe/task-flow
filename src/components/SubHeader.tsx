@@ -135,7 +135,7 @@ const SubHeader: React.FC = () => {
             </Button>
           </ActionMenu.Anchor>
           <ActionMenu.Overlay>
-            <ActionList>
+            <ActionList selectionVariant="single">
               <ActionList.Item
                 selected={state.viewMode === 'kanban'}
                 onSelect={() => navigateToView('kanban')}

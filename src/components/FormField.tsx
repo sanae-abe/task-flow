@@ -29,14 +29,13 @@ const FormField = memo<FormFieldProps>(({
   };
 
   return (
-    <FormControl sx={sx ? { ...FORM_STYLES.container, ...sx } : FORM_STYLES.container}>
+    <FormControl id={id} sx={sx ? { ...FORM_STYLES.container, ...sx } : FORM_STYLES.container}>
       {!hideLabel && (
-        <FormControl.Label htmlFor={id}>
+        <FormControl.Label>
           {label}
         </FormControl.Label>
       )}
       <TextInput
-        id={id}
         value={value}
         onChange={handleChange}
         onKeyDown={onKeyDown}
@@ -65,17 +64,16 @@ export const TextareaField = memo<TextareaFieldProps>(({
   };
 
   return (
-    <FormControl sx={FORM_STYLES.container}>
-      <FormControl.Label htmlFor={id}>
+    <FormControl id={id} sx={FORM_STYLES.container}>
+      <FormControl.Label>
         {label}
       </FormControl.Label>
       <Textarea
-        id={id}
         value={value}
         onChange={handleChange}
         onKeyDown={onKeyDown}
         placeholder={placeholder}
-        sx={{ 
+        sx={{
           ...FORM_STYLES.input,
           resize: 'none',
           height: `${rows * 20 + 16}px`
@@ -99,12 +97,11 @@ export const DateField = memo<DateFieldProps>(({
   };
 
   return (
-    <FormControl sx={FORM_STYLES.container}>
-      <FormControl.Label htmlFor={id}>
+    <FormControl id={id} sx={FORM_STYLES.container}>
+      <FormControl.Label>
         {label}
       </FormControl.Label>
       <TextInput
-        id={id}
         type="date"
         value={value}
         onChange={handleChange}
@@ -129,12 +126,11 @@ export const DateTimeField = memo<DateTimeFieldProps>(({
   };
 
   return (
-    <FormControl sx={FORM_STYLES.container}>
-      <FormControl.Label htmlFor={id}>
+    <FormControl id={id} sx={FORM_STYLES.container}>
+      <FormControl.Label>
         {label}
       </FormControl.Label>
       <TextInput
-        id={id}
         type="datetime-local"
         value={value}
         onChange={handleChange}

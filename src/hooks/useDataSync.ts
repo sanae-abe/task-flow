@@ -20,11 +20,17 @@ export const useDataSync = () => {
   // データの保存
   const saveToIndexedDB = useCallback(async () => {
     try {
-      const allTasks = state.boards.flatMap(board => 
+      // IndexedDBが初期化されているかチェック
+      if (!indexedDBManager.isInitialized()) {
+        console.log('IndexedDBが初期化されていません。初期化を実行します...');
+        await indexedDBManager.init();
+      }
+
+      const allTasks = state.boards.flatMap(board =>
         board.columns.flatMap(column => column.tasks)
       );
       const allColumns = state.boards.flatMap(board => board.columns);
-      
+
       const dataToSave = {
         tasks: allTasks,
         columns: allColumns,

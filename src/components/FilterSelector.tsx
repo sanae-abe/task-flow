@@ -131,8 +131,8 @@ const FilterSelector = memo<FilterSelectorProps>(({
         </Button>
       </ActionMenu.Anchor>
       <ActionMenu.Overlay style={{ zIndex: 150 }}>
-        <ActionList>
-          <ActionList.Group title="期限でフィルター">
+        <ActionList selectionVariant="single">
+          <ActionList.Group title="期限でフィルター" selectionVariant="single">
             {filterConfigs.slice(0, 4).map((config) => {
               const IconComponent = getFilterIcon(config.icon);
               return (
@@ -151,7 +151,7 @@ const FilterSelector = memo<FilterSelectorProps>(({
           </ActionList.Group>
           
           {availableLabels.length > 0 && (
-            <ActionList.Group title="ラベルでフィルター">
+            <ActionList.Group title="ラベルでフィルター" selectionVariant="single">
               <ActionMenu>
                 <ActionMenu.Anchor>
                   <ActionList.Item
@@ -164,7 +164,7 @@ const FilterSelector = memo<FilterSelectorProps>(({
                   </ActionList.Item>
                 </ActionMenu.Anchor>
                 <ActionMenu.Overlay style={{ zIndex: 200 }}>
-                  <ActionList>
+                  <ActionList selectionVariant="single">
                     <ActionList.Item
                       onSelect={() => handleFilterSelect('label')}
                       selected={currentFilter.type === 'has-labels'}

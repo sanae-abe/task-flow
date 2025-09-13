@@ -14,7 +14,7 @@ const DIALOG_STYLES = {
     right: 0,
     bottom: 0,
     bg: 'primer.canvas.backdrop',
-    zIndex: 9999,
+    zIndex: 1050,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center'

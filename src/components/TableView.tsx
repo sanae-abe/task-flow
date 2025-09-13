@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, useEffect, useState } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { Text, Box, IconButton, ActionMenu, ActionList, Button } from '@primer/react';
 import { KebabHorizontalIcon, CheckIcon, PaperclipIcon, TriangleDownIcon } from '@primer/octicons-react';
 
@@ -147,8 +147,8 @@ const TableView: React.FC = () => {
                 </Button>
               </ActionMenu.Anchor>
               <ActionMenu.Overlay>
-                <ActionList>
-                  <ActionList.Group title="ステータス変更">
+                <ActionList selectionVariant="single">
+                  <ActionList.Group title="ステータス変更" selectionVariant="single">
                     {currentBoard?.columns.map((column) => (
                       <ActionList.Item
                         key={column.id}

@@ -39,7 +39,7 @@ const TaskSortSelector: React.FC<TaskSortSelectorProps> = ({
       </ActionMenu.Anchor>
       
       <ActionMenu.Overlay>
-        <ActionList>
+        <ActionList selectionVariant="single">
           {SORT_OPTIONS.map((option) => (
             <ActionList.Item
               key={option.option}

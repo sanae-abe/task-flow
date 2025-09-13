@@ -103,7 +103,6 @@ const UnifiedFormField = memo<UnifiedFormFieldProps>(({
       case 'number':
         return (
           <TextInput
-            id={id}
             name={name}
             type={type}
             value={toStringValue(value)}
@@ -127,7 +126,6 @@ const UnifiedFormField = memo<UnifiedFormFieldProps>(({
       case 'datetime-local':
         return (
           <TextInput
-            id={id}
             name={name}
             type={type}
             value={toStringValue(value)}
@@ -148,7 +146,6 @@ const UnifiedFormField = memo<UnifiedFormFieldProps>(({
       case 'textarea':
         return (
           <Textarea
-            id={id}
             name={name}
             value={toStringValue(value)}
             onChange={handleInputChange}
@@ -173,7 +170,6 @@ const UnifiedFormField = memo<UnifiedFormFieldProps>(({
       case 'select':
         return (
           <Select
-            id={id}
             name={name}
             value={toStringValue(value)}
             onChange={handleInputChange}
@@ -232,9 +228,9 @@ const UnifiedFormField = memo<UnifiedFormFieldProps>(({
   };
 
   return (
-    <FormControl sx={sx ? { ...UNIFIED_FORM_STYLES.container, ...sx } : UNIFIED_FORM_STYLES.container}>
+    <FormControl id={id} sx={sx ? { ...UNIFIED_FORM_STYLES.container, ...sx } : UNIFIED_FORM_STYLES.container}>
       {!hideLabel && (
-        <FormControl.Label htmlFor={id}>
+        <FormControl.Label>
           {label}
           {validation?.required && (
             <Text as="span" sx={{ color: 'danger.fg', ml: 1 }}>*</Text>

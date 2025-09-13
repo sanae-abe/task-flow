@@ -127,12 +127,11 @@ const LabelAddDialog: React.FC<LabelAddDialogProps> = ({
     >
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mb: 4 }}>
         {/* ラベル名入力 */}
-        <FormControl>
-          <FormControl.Label htmlFor="label-text-input">
+        <FormControl id="label-text-input">
+          <FormControl.Label>
             ラベル名
           </FormControl.Label>
           <TextInput
-            id="label-text-input"
             value={labelText}
             onChange={(e) => {
               setLabelText(e.target.value);

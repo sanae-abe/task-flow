@@ -71,9 +71,11 @@ const TaskCard: React.FC<TaskCardProps> = React.memo(({ task, columnId, onTaskCl
       
       <Box
         ref={setNodeRef}
-        bg="canvas.default"
-        p={3}
-        sx={getCardStyles(taskCardData.isRightmostColumn, isDragging, transform, transition)}
+        sx={{
+          bg: "canvas.default",
+          p: 3,
+          ...getCardStyles(taskCardData.isRightmostColumn, isDragging, transform, transition)
+        }}
         {...attributes}
         {...listeners}
         onClick={handleTaskClick}

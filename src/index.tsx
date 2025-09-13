@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
+import { StyleSheetManager } from 'styled-components';
 
 import './index.css';
 import App from './App';
@@ -10,11 +11,17 @@ import * as serviceWorker from './utils/serviceWorker';
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
+// shouldForwardProp function to filter out sx and other style props
+const shouldForwardProp = (prop: string) =>
+  !['sx', 'bg', 'p', 'px', 'py', 'm', 'mx', 'my'].includes(prop);
+
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <StyleSheetManager shouldForwardProp={shouldForwardProp}>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </StyleSheetManager>
   </React.StrictMode>
 );
 
