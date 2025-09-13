@@ -1,9 +1,10 @@
 import React, { createContext, useContext, useReducer, useEffect, useMemo, useCallback, type ReactNode } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
-import type { KanbanBoard, Column, Task, Label, SubTask, FileAttachment, SortOption, TaskFilter, ViewMode } from '../types';
+import type { KanbanBoard, Column, Task, Label, SubTask, FileAttachment, SortOption, TaskFilter, ViewMode, RecurrenceConfig } from '../types';
 import { saveBoards, loadBoards } from '../utils/storage';
 import { useNotify } from './NotificationContext';
+import { calculateNextDueDate, isRecurrenceComplete } from '../utils/recurrence';
 import logger from '../utils/logger';
 
 interface KanbanState {
@@ -28,7 +29,7 @@ type KanbanAction =
   | { type: 'UPDATE_BOARD'; payload: { boardId: string; updates: Partial<KanbanBoard> } }
   | { type: 'DELETE_BOARD'; payload: { boardId: string } }
   | { type: 'CREATE_COLUMN'; payload: { boardId: string; title: string } }
-  | { type: 'CREATE_TASK'; payload: { columnId: string; title: string; description: string; dueDate?: Date; labels?: Label[]; attachments?: FileAttachment[] } }
+  | { type: 'CREATE_TASK'; payload: { columnId: string; title: string; description: string; dueDate?: Date; labels?: Label[]; attachments?: FileAttachment[]; recurrence?: RecurrenceConfig } }
   | { type: 'MOVE_TASK'; payload: { taskId: string; sourceColumnId: string; targetColumnId: string; targetIndex: number } }
   | { type: 'UPDATE_TASK'; payload: { taskId: string; updates: Partial<Task> } }
   | { type: 'DELETE_TASK'; payload: { taskId: string; columnId: string } }
@@ -54,7 +55,7 @@ interface KanbanContextType {
   updateBoard: (boardId: string, updates: Partial<KanbanBoard>) => void;
   deleteBoard: (boardId: string) => void;
   createColumn: (title: string) => void;
-  createTask: (columnId: string, title: string, description: string, dueDate?: Date, labels?: Label[], attachments?: FileAttachment[]) => void;
+  createTask: (columnId: string, title: string, description: string, dueDate?: Date, labels?: Label[], attachments?: FileAttachment[], recurrence?: RecurrenceConfig) => void;
   moveTask: (taskId: string, sourceColumnId: string, targetColumnId: string, targetIndex: number) => void;
   updateTask: (taskId: string, updates: Partial<Task>) => void;
   deleteTask: (taskId: string, columnId: string) => void;
@@ -332,6 +333,9 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
         completedAt: null,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
+        recurrence: action.payload.recurrence,
+        recurrenceId: action.payload.recurrence?.enabled ? uuidv4() : undefined,
+        occurrenceCount: action.payload.recurrence?.enabled ? 1 : undefined,
       };
       
       const updatedBoard = updateBoardTimestamp({
@@ -387,6 +391,27 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
         updatedTask.completedAt = new Date().toISOString();
 // eslint-disable-next-line no-console
         logger.debug('✅ Setting completedAt for task completion');
+
+        // 繰り返しタスクの処理
+        if (updatedTask.recurrence?.enabled && updatedTask.dueDate) {
+          const nextDueDate = calculateNextDueDate(updatedTask.dueDate, updatedTask.recurrence);
+          const currentCount = (updatedTask.occurrenceCount || 1) + 1;
+
+          if (nextDueDate && !isRecurrenceComplete(updatedTask.recurrence, currentCount, nextDueDate)) {
+            // 次回期限を設定して未完了状態に戻す
+            updatedTask.dueDate = nextDueDate;
+            updatedTask.completedAt = null;
+            updatedTask.occurrenceCount = currentCount;
+            updatedTask.updatedAt = new Date().toISOString();
+
+// eslint-disable-next-line no-console
+            logger.debug('🔄 Recurring task: next due date set to', nextDueDate);
+          } else {
+            // 繰り返し終了
+// eslint-disable-next-line no-console
+            logger.debug('✅ Recurring task completed all occurrences');
+          }
+        }
       } else if (isMovingFromCompleted && !isMovingToCompleted) {
         // 完了状態から移動：completedAtをクリア
         updatedTask.completedAt = null;
@@ -538,7 +563,11 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
         ...state.currentBoard,
         columns: state.currentBoard.columns.map(column =>
           column.id === rightmostColumnId
-            ? { ...column, tasks: [] }
+            ? {
+                ...column,
+                // 繰り返しタスクは削除せずに保持
+                tasks: column.tasks.filter(task => task.recurrence?.enabled)
+              }
             : column
         ),
       });
@@ -976,8 +1005,8 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     notify.success(`「${title}」を作成しました`);
   }, [state.currentBoard, notify]);
   
-  const createTask = useCallback((columnId: string, title: string, description: string, dueDate?: Date, labels?: Label[], attachments?: FileAttachment[]) => {
-    dispatch({ type: 'CREATE_TASK', payload: { columnId, title, description, dueDate, labels, attachments } });
+  const createTask = useCallback((columnId: string, title: string, description: string, dueDate?: Date, labels?: Label[], attachments?: FileAttachment[], recurrence?: RecurrenceConfig) => {
+    dispatch({ type: 'CREATE_TASK', payload: { columnId, title, description, dueDate, labels, attachments, recurrence } });
     notify.success(`「${title}」を作成しました`);
   }, [notify]);
   

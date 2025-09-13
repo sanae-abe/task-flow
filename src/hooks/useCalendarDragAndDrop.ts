@@ -12,13 +12,14 @@ import {
 import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 
 import type { Task } from '../types';
+import type { VirtualRecurringTask } from '../utils/calendarRecurrence';
 
 interface UseCalendarDragAndDropProps {
   onTaskDateChange: (taskId: string, newDate: Date) => void;
 }
 
 interface UseCalendarDragAndDropReturn {
-  activeTask: Task | null;
+  activeTask: Task | VirtualRecurringTask | null;
   sensors: ReturnType<typeof useSensors>;
   handleDragStart: (event: DragStartEvent) => void;
   handleDragOver: (event: DragOverEvent) => void;
@@ -28,7 +29,7 @@ interface UseCalendarDragAndDropReturn {
 export const useCalendarDragAndDrop = ({
   onTaskDateChange,
 }: UseCalendarDragAndDropProps): UseCalendarDragAndDropReturn => {
-  const [activeTask, setActiveTask] = useState<Task | null>(null);
+  const [activeTask, setActiveTask] = useState<Task | VirtualRecurringTask | null>(null);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -52,7 +53,9 @@ export const useCalendarDragAndDrop = ({
 
     // active.dataからタスク情報を取得
     if (active.data.current?.['type'] === 'calendar-task') {
-      setActiveTask(active.data.current['task'] as Task);
+      const task = active.data.current['task'] as Task | VirtualRecurringTask;
+      // 仮想タスクの場合はドラッグ無効だが、型の安全性のため設定
+      setActiveTask(task);
     }
   }, []);
 

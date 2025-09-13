@@ -8,48 +8,62 @@ import type { Task } from '../types';
 import { sortTasks } from '../utils/taskSort';
 import { filterTasks } from '../utils/taskFilter';
 import { useCalendarDragAndDrop } from '../hooks/useCalendarDragAndDrop';
+import {
+  generateCalendarTasks,
+  getCalendarDateRange,
+  isVirtualTask,
+  type VirtualRecurringTask
+} from '../utils/calendarRecurrence';
 
 interface CalendarTaskProps {
-  task: Task;
-  onTaskClick: (task: Task) => void;
+  task: Task | VirtualRecurringTask;
+  onTaskClick: (task: Task | VirtualRecurringTask) => void;
 }
 
 const CalendarTask: React.FC<CalendarTaskProps> = React.memo(({ task, onTaskClick }) => {
+  const isVirtual = isVirtualTask(task);
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: task.id,
     data: {
       type: 'calendar-task',
       task,
     },
+    disabled: isVirtual, // 仮想タスクはドラッグ無効
   });
 
   const taskItemStyles = useMemo(() => ({
     fontSize: '13px',
     padding: '2px 8px',
     borderRadius: '6px',
-    backgroundColor: 'var(--bgColor-accent-muted)',
-    color: 'var(--fgColor-accent)',
-    cursor: isDragging ? 'grabbing' : 'grab',
+    backgroundColor: isVirtual
+      ? 'var(--bgColor-neutral-muted)'
+      : 'var(--bgColor-accent-muted)',
+    color: isVirtual
+      ? 'var(--fgColor-muted)'
+      : 'var(--fgColor-accent)',
+    cursor: isVirtual ? 'pointer' : (isDragging ? 'grabbing' : 'grab'),
     whiteSpace: 'nowrap' as const,
     overflow: 'hidden',
     textOverflow: 'ellipsis',
-    opacity: isDragging ? 0.5 : 1,
+    opacity: isDragging ? 0.5 : (isVirtual ? 0.7 : 1),
     transition: 'opacity 200ms, transform 200ms',
-  }), [isDragging]);
+    border: isVirtual ? '1px dashed var(--borderColor-muted)' : 'none',
+  }), [isDragging, isVirtual]);
 
   return (
     <div
       ref={setNodeRef}
       style={taskItemStyles}
+      // 仮想タスクの場合はドラッグ関連の属性を無効化
       // eslint-disable-next-line react/jsx-props-no-spreading
-      {...listeners}
+      {...(isVirtual ? {} : listeners)}
       // eslint-disable-next-line react/jsx-props-no-spreading
-      {...attributes}
+      {...(isVirtual ? {} : attributes)}
       onClick={(e: React.MouseEvent) => {
         e.stopPropagation();
         onTaskClick(task);
       }}
-      title={task.title}
+      title={`${task.title}${isVirtual ? ' (繰り返し予定)' : ''}`}
       role="button"
       tabIndex={0}
       onKeyDown={(e) => {
@@ -68,10 +82,10 @@ CalendarTask.displayName = 'CalendarTask';
 
 interface CalendarDayProps {
   date: Date;
-  tasks: Task[];
+  tasks: (Task | VirtualRecurringTask)[];
   isToday: boolean;
   isCurrentMonth: boolean;
-  onTaskClick: (task: Task) => void;
+  onTaskClick: (task: Task | VirtualRecurringTask) => void;
   onDateClick: (date: Date) => void;
 }
 
@@ -163,7 +177,7 @@ const CalendarDay: React.FC<CalendarDayProps> = React.memo(({
           <CalendarTask
             key={task.id}
             task={task}
-            onTaskClick={handleTaskClick}
+            onTaskClick={handleTaskClick as (task: Task | VirtualRecurringTask) => void}
           />
         ))}
       </div>
@@ -178,7 +192,7 @@ const CalendarView: React.FC = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
 
   const handleTaskDateChange = useCallback((taskId: string, newDate: Date) => {
-    // タイムゾーンの問題を避けるため、ローカル日付文字列を使用
+    // 仮想タスクの場合はドラッグ不可のため、この関数は実際のタスクのみ処理
     const localDateString = new Date(newDate.getFullYear(), newDate.getMonth(), newDate.getDate()).toISOString();
     updateTask(taskId, { dueDate: localDateString });
   }, [updateTask]);
@@ -232,9 +246,9 @@ const CalendarView: React.FC = () => {
   const tasksGroupedByDate = useMemo(() => {
     if (!state.currentBoard) {return new Map();}
 
-    const taskMap = new Map<string, Task[]>();
+    const taskMap = new Map<string, (Task | VirtualRecurringTask)[]>();
 
-    // 全カラムからタスクを収集してフィルタ・ソートを適用
+    // 全カラムからタスクを収集
     const allTasks: Task[] = [];
     state.currentBoard.columns.forEach(column => {
       allTasks.push(...column.tasks);
@@ -242,9 +256,15 @@ const CalendarView: React.FC = () => {
 
     const filteredTasks = filterTasks(allTasks, state.taskFilter);
     const sortedTasks = sortTasks(filteredTasks, state.sortOption);
-    
-    // ソート済みタスクを日付ごとにグループ化（ソート順を維持）
-    sortedTasks.forEach(task => {
+
+    // カレンダー表示範囲を取得
+    const { startDate, endDate } = getCalendarDateRange(currentDate);
+
+    // 実際のタスクと仮想繰り返しタスクを生成
+    const calendarTasks = generateCalendarTasks(sortedTasks, startDate, endDate);
+
+    // タスクを日付ごとにグループ化
+    calendarTasks.forEach(task => {
       if (task.dueDate) {
         const dateKey = new Date(task.dueDate).toDateString();
         const existingTasks = taskMap.get(dateKey) || [];
@@ -253,7 +273,7 @@ const CalendarView: React.FC = () => {
     });
 
     return taskMap;
-  }, [state.currentBoard, state.taskFilter, state.sortOption]);
+  }, [state.currentBoard, state.taskFilter, state.sortOption, currentDate]);
 
   const navigateMonth = useCallback((direction: 'prev' | 'next') => {
     setCurrentDate(prev => {
@@ -263,8 +283,13 @@ const CalendarView: React.FC = () => {
     });
   }, []);
 
-  const handleTaskClick = useCallback((task: Task) => {
-    openTaskDetail(task.id);
+  const handleTaskClick = useCallback((task: Task | VirtualRecurringTask) => {
+    if (isVirtualTask(task)) {
+      // 仮想タスクの場合は元のタスクのIDを使用
+      openTaskDetail(task.originalTaskId);
+    } else {
+      openTaskDetail(task.id);
+    }
   }, [openTaskDetail]);
 
   const handleDateClick = useCallback((date: Date) => {
@@ -401,7 +426,7 @@ const CalendarView: React.FC = () => {
                   tasks={tasksForDate}
                   isToday={isToday}
                   isCurrentMonth={isCurrentMonth}
-                  onTaskClick={handleTaskClick}
+                  onTaskClick={handleTaskClick as (task: Task | VirtualRecurringTask) => void}
                   onDateClick={handleDateClick}
                 />
               );

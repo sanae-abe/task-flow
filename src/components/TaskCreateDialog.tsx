@@ -1,13 +1,14 @@
 import { Box, Text } from '@primer/react';
 import React, { useState, useEffect, useCallback, memo } from 'react';
 
-import type { Label, FileAttachment } from '../types';
+import type { Label, FileAttachment, RecurrenceConfig } from '../types';
 import { useKanban } from '../contexts/KanbanContext';
 
 import CommonDialog, { DialogActions } from './CommonDialog';
 import FileUploader from './FileUploader';
 import FormField, { TextareaField, DateField } from './FormField';
 import LabelSelector from './LabelSelector';
+import RecurrenceSelector from './RecurrenceSelector';
 
 const TaskCreateDialog = memo(() => {
   const {
@@ -20,6 +21,7 @@ const TaskCreateDialog = memo(() => {
   const [dueDate, setDueDate] = useState('');
   const [labels, setLabels] = useState<Label[]>([]);
   const [attachments, setAttachments] = useState<FileAttachment[]>([]);
+  const [recurrence, setRecurrence] = useState<RecurrenceConfig | undefined>();
 
   // デフォルト日付が設定されている場合は期限日に設定
   useEffect(() => {
@@ -42,6 +44,7 @@ const TaskCreateDialog = memo(() => {
       }
       setLabels([]);
       setAttachments([]);
+      setRecurrence(undefined);
     }
   }, [state.isTaskFormOpen, state.taskFormDefaultDate]);
 
@@ -60,11 +63,12 @@ const TaskCreateDialog = memo(() => {
         description.trim(),
         dueDateObj,
         labels,
-        attachments
+        attachments,
+        recurrence
       );
       closeTaskForm();
     }
-  }, [title, description, dueDate, labels, attachments, createTask, closeTaskForm, state.currentBoard]);
+  }, [title, description, dueDate, labels, attachments, recurrence, createTask, closeTaskForm, state.currentBoard]);
 
   const handleKeyPress = useCallback((event: React.KeyboardEvent) => {
     if (event.key === 'Escape') {
@@ -137,6 +141,11 @@ const TaskCreateDialog = memo(() => {
             onLabelsChange={setLabels}
           />
         </Box>
+
+        <RecurrenceSelector
+          recurrence={recurrence}
+          onRecurrenceChange={setRecurrence}
+        />
 
         <Box sx={{ mb: 4 }}>
           <Text sx={{ fontSize: 1, color: 'fg.muted', mb: 1, display: 'block', fontWeight: '700' }}>

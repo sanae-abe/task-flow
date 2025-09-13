@@ -38,6 +38,18 @@ export interface SubTask {
   createdAt: string;
 }
 
+export type RecurrencePattern = 'daily' | 'weekly' | 'monthly' | 'yearly';
+
+export interface RecurrenceConfig {
+  enabled: boolean;
+  pattern: RecurrencePattern;
+  interval: number; // 間隔（例：2週間おき = interval: 2, pattern: 'weekly'）
+  daysOfWeek?: number[]; // 週次の場合の曜日指定（0=日曜日, 1=月曜日...）
+  dayOfMonth?: number; // 月次の場合の日指定
+  endDate?: string; // 終了日（指定された場合のみ）
+  maxOccurrences?: number; // 最大回数（指定された場合のみ）
+}
+
 export interface Task {
   id: string;
   title: string;
@@ -50,6 +62,9 @@ export interface Task {
   labels: Label[];
   subTasks: SubTask[];
   files: FileAttachment[];
+  recurrence?: RecurrenceConfig;
+  recurrenceId?: string; // 同じ繰り返しグループを識別するID
+  occurrenceCount?: number; // 何回目の発生か
 }
 
 export interface Column {
