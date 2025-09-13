@@ -192,29 +192,77 @@ export function getRecurrenceDescription(recurrence: RecurrenceConfig | undefine
   }
 
   let description = '';
-  const patternLabel = getRecurrencePatternLabel(recurrence.pattern);
 
-  if (recurrence.interval === 1) {
-    description = patternLabel;
-  } else {
-    description = `${recurrence.interval}${recurrence.pattern === 'daily' ? '日' :
-                   recurrence.pattern === 'weekly' ? '週' :
-                   recurrence.pattern === 'monthly' ? 'ヶ月' : '年'}ごと`;
+  switch (recurrence.pattern) {
+    case 'daily':
+      if (recurrence.interval === 1) {
+        description = '毎日繰り返す';
+      } else {
+        description = `${recurrence.interval} 日ごとに繰り返す`;
+      }
+      break;
+
+    case 'weekly':
+      if (recurrence.daysOfWeek && recurrence.daysOfWeek.length > 0) {
+        const dayNames = recurrence.daysOfWeek.map(getDayName).join('、');
+        if (recurrence.interval === 1) {
+          description = `毎週 ${dayNames}曜日に繰り返す`;
+        } else {
+          description = `${recurrence.interval} 週ごとの ${dayNames}曜日に繰り返す`;
+        }
+      } else {
+        if (recurrence.interval === 1) {
+          description = '毎週繰り返す';
+        } else {
+          description = `${recurrence.interval} 週ごとに繰り返す`;
+        }
+      }
+      break;
+
+    case 'monthly':
+      if (recurrence.weekOfMonth && recurrence.dayOfWeekInMonth !== undefined) {
+        // 第N曜日の場合
+        const dayName = getDayName(recurrence.dayOfWeekInMonth);
+        const weekText = recurrence.weekOfMonth === -1 ? '最終' : `第 ${recurrence.weekOfMonth}`;
+        if (recurrence.interval === 1) {
+          description = `毎月の ${weekText} ${dayName}曜日に繰り返す`;
+        } else {
+          description = `${recurrence.interval} ヶ月ごとの ${weekText} ${dayName}曜日に繰り返す`;
+        }
+      } else if (recurrence.dayOfMonth) {
+        // 日付指定の場合
+        if (recurrence.interval === 1) {
+          description = `毎月の ${recurrence.dayOfMonth} 日に繰り返す`;
+        } else {
+          description = `${recurrence.interval} ヶ月ごとの ${recurrence.dayOfMonth} 日に繰り返す`;
+        }
+      } else {
+        // 指定なしの場合
+        if (recurrence.interval === 1) {
+          description = '毎月繰り返す';
+        } else {
+          description = `${recurrence.interval} ヶ月ごとに繰り返す`;
+        }
+      }
+      break;
+
+    case 'yearly':
+      if (recurrence.interval === 1) {
+        description = '1 年ごとに繰り返す';
+      } else {
+        description = `${recurrence.interval} 年ごとに繰り返す`;
+      }
+      break;
+
+    default:
+      description = '繰り返し設定エラー';
   }
 
-  if (recurrence.pattern === 'weekly' && recurrence.daysOfWeek) {
-    const dayNames = recurrence.daysOfWeek.map(getDayName).join('、');
-    description += ` (${dayNames})`;
-  }
-
-  if (recurrence.pattern === 'monthly' && recurrence.dayOfMonth) {
-    description += ` (${recurrence.dayOfMonth}日)`;
-  }
-
+  // 終了条件の追加
   if (recurrence.endDate) {
     description += ` (${recurrence.endDate}まで)`;
   } else if (recurrence.maxOccurrences) {
-    description += ` (${recurrence.maxOccurrences}回)`;
+    description += ` (${recurrence.maxOccurrences}回まで)`;
   }
 
   return description;

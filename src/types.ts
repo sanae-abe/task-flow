@@ -46,6 +46,8 @@ export interface RecurrenceConfig {
   interval: number; // 間隔（例：2週間おき = interval: 2, pattern: 'weekly'）
   daysOfWeek?: number[]; // 週次の場合の曜日指定（0=日曜日, 1=月曜日...）
   dayOfMonth?: number; // 月次の場合の日指定
+  weekOfMonth?: number; // 月次の場合の第N週指定（1=第1週, 2=第2週, -1=最終週）
+  dayOfWeekInMonth?: number; // 月次の場合の曜日指定（weekOfMonthと組み合わせて使用）
   endDate?: string; // 終了日（指定された場合のみ）
   maxOccurrences?: number; // 最大回数（指定された場合のみ）
 }
