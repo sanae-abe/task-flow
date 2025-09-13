@@ -1,6 +1,6 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, useState } from 'react';
 import { Text, Box, IconButton, ActionMenu, ActionList, Button } from '@primer/react';
-import { KebabHorizontalIcon, CheckIcon, PaperclipIcon, TriangleDownIcon } from '@primer/octicons-react';
+import { XIcon, CheckIcon, PaperclipIcon, TriangleDownIcon } from '@primer/octicons-react';
 
 import { useKanban } from '../contexts/KanbanContext';
 import { useTableColumns } from '../contexts/TableColumnsContext';
@@ -13,6 +13,7 @@ import LabelChip from './LabelChip';
 import StatusBadge from './shared/StatusBadge';
 import SubTaskProgressBar from './SubTaskProgressBar';
 import TableColumnManager from './TableColumnManager';
+import DeleteConfirmDialog from './DeleteConfirmDialog';
 
 // 型ガード関数
 const isTaskWithColumn = (task: Task): task is TaskWithColumn => 'columnId' in task && 'columnTitle' in task && 'status' in task;
@@ -20,7 +21,10 @@ const isTaskWithColumn = (task: Task): task is TaskWithColumn => 'columnId' in t
 const TableView: React.FC = () => {
   const { state, moveTask, deleteTask, setTaskFilter, openTaskDetail } = useKanban();
   const tableColumnsData = useTableColumns();
-
+  const [deleteConfirmDialog, setDeleteConfirmDialog] = useState<{
+    isOpen: boolean;
+    task: TaskWithColumn | null;
+  }>({ isOpen: false, task: null });
 
   const currentBoard = state.currentBoard;
 
@@ -57,9 +61,19 @@ const TableView: React.FC = () => {
   }, [currentBoard, moveTask]);
 
 
-  const handleTaskDelete = useCallback((task: TaskWithColumn) => {
-    deleteTask(task.id, task.columnId);
-  }, [deleteTask]);
+  const handleTaskDeleteClick = useCallback((task: TaskWithColumn) => {
+    setDeleteConfirmDialog({ isOpen: true, task });
+  }, []);
+
+  const handleTaskDelete = useCallback(() => {
+    if (deleteConfirmDialog.task) {
+      deleteTask(deleteConfirmDialog.task.id, deleteConfirmDialog.task.columnId);
+    }
+  }, [deleteTask, deleteConfirmDialog.task]);
+
+  const handleDeleteDialogClose = useCallback(() => {
+    setDeleteConfirmDialog({ isOpen: false, task: null });
+  }, []);
 
   const getCompletionRate = useCallback((task: Task): number => {
     if (!task.subTasks || task.subTasks.length === 0) {return 0;}
@@ -72,26 +86,19 @@ const TableView: React.FC = () => {
       case 'actions':
         return (
           <Box onClick={(e: React.MouseEvent) => e.stopPropagation()}>
-            <ActionMenu>
-              <ActionMenu.Anchor>
-                <IconButton
-                  aria-label="タスクを削除"
-                  icon={KebabHorizontalIcon}
-                  variant="invisible"
-                  size="small"
-                />
-              </ActionMenu.Anchor>
-              <ActionMenu.Overlay>
-                <ActionList>
-                  <ActionList.Item
-                    onSelect={() => handleTaskDelete(task)}
-                    variant="danger"
-                  >
-                    削除
-                  </ActionList.Item>
-                </ActionList>
-              </ActionMenu.Overlay>
-            </ActionMenu>
+            <IconButton
+              aria-label="タスクを削除"
+              variant="invisible"
+              icon={XIcon}
+              size="small"
+              onClick={() => handleTaskDeleteClick(task)}
+              sx={{
+                '&:hover': {
+                  bg: 'transparent',
+                  color: 'danger.fg'
+                }
+              }}
+            />
           </Box>
         );
 
@@ -340,7 +347,7 @@ const TableView: React.FC = () => {
           </Box>
         );
     }
-  }, [currentBoard, handleStatusChange, handleTaskDelete, getCompletionRate]);
+  }, [currentBoard, handleStatusChange, handleTaskDeleteClick, getCompletionRate]);
 
   if (!currentBoard) {
     return (
@@ -482,6 +489,13 @@ const TableView: React.FC = () => {
         </Box>
       )}
 
+      {/* 削除確認ダイアログ */}
+      <DeleteConfirmDialog
+        isOpen={deleteConfirmDialog.isOpen}
+        onClose={handleDeleteDialogClose}
+        onConfirm={handleTaskDelete}
+        taskTitle={deleteConfirmDialog.task?.title || ''}
+      />
     </Box>
   );
 };

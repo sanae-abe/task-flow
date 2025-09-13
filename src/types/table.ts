@@ -128,9 +128,9 @@ export const DEFAULT_COLUMNS: TableColumn[] = [
   },
   {
     id: 'actions',
-    label: '操作',
+    label: '削除',
     width: '80px',
-    visible: true,
+    visible: false,
     sortable: false,
     type: 'actions'
   }

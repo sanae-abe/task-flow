@@ -21,27 +21,49 @@ const DIALOG_STYLES = {
     animation: 'dialog-backdrop-fade-in 200ms cubic-bezier(0.33, 1, 0.68, 1)'
   },
   container: {
+    overflow: 'hidden',
     display: 'flex',
-    flexDirection: 'column' as const,
-    bg: 'bgColor.default',
+    flexDirection: 'column',
     boxShadow: 'shadow.large',
     width: '100%',
-    minWidth: '400px',
-    maxWidth: '640px',
-    maxHeight: '90vh',
     overflowY: 'auto',
+    bg: 'canvas.default',
     borderRadius: 'var(--borderRadius-large, var(--borderRadius-large, .75rem))',
     animation: 'dialog-scale-fade-in 200ms cubic-bezier(0.33, 1, 0.68, 1)'
   },
   content: {
     p: '16px',
     bg: 'canvas.default',
-    position: 'relative' as const
+    position: 'relative'
+  },
+  smallContainer: {
+    overflow: 'hidden',
+    bg: 'canvas.default',
+    minWidth: '460px',
+    maxWidth: '640px',
+    maxHeight: '90vh',
+    borderRadius: 'var(--borderRadius-large, var(--borderRadius-large, .75rem))'
+  },
+  largeContainer: {
+    overflow: 'hidden',
+    bg: 'canvas.default',
+    minWidth: '600px',
+    maxWidth: '640px',
+    maxHeight: '90vh',
+    borderRadius: 'var(--borderRadius-large, var(--borderRadius-large, .75rem))'
+  },
+  smallContent: {
+    bg: 'canvas.default',
+    p: '16px',
+    minWidth: '300px',
+    maxWidth: '400px',
+    maxHeight: '90vh',
+    overflowY: 'auto',
   },
   largeContent: {
     bg: 'canvas.default',
     p: '16px',
-    minWidth: '6  00px',
+    minWidth: '600px',
     maxWidth: '640px',
     maxHeight: '90vh',
     overflowY: 'auto'
@@ -50,6 +72,7 @@ const DIALOG_STYLES = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
+    position: 'relative',
     p: '0.5rem ',
     bg: 'white',
     boxShadow: '0 1px 0 var(--borderColor-default,var(--color-border-default))',  
@@ -75,7 +98,7 @@ interface CommonDialogProps {
   children: React.ReactNode;
   actions?: React.ReactNode;
   ariaLabelledBy?: string;
-  size?: 'default' | 'large';
+  size?: 'small' | 'default' | 'large';
 }
 
 interface DialogHeaderProps {
@@ -164,18 +187,25 @@ const CommonDialog = memo<CommonDialogProps>(({
           aria-modal="true"
           aria-labelledby={ariaLabelledBy}
         >
-          <Box sx={DIALOG_STYLES.container}
-          onClick={handleContainerClick}>
+          <Box sx={size === 'large' ? DIALOG_STYLES.largeContainer :
+                  size === 'small' ? DIALOG_STYLES.smallContainer :
+                  DIALOG_STYLES.container}
+              onClick={handleContainerClick}
+          >
             <DialogHeader 
               title={title} 
               onClose={onClose} 
               titleId={ariaLabelledBy}
             />
             <Box
-              sx={size === 'large' ? DIALOG_STYLES.largeContent : DIALOG_STYLES.content}
+              sx={size === 'large' ? DIALOG_STYLES.largeContent :
+                  size === 'small' ? DIALOG_STYLES.smallContent :
+                  DIALOG_STYLES.content}
             >
               {children}
-              {actions}
+              <div style={{marginTop: '24px'}}>
+                {actions}
+              </div>
             </Box>
           </Box>
         </Box>
