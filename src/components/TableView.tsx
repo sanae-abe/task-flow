@@ -1,6 +1,6 @@
 import React, { useMemo, useCallback } from 'react';
 import { Text, Box, IconButton, ActionMenu, ActionList, Button } from '@primer/react';
-import { KebabHorizontalIcon } from '@primer/octicons-react';
+import { KebabHorizontalIcon, CheckIcon, PaperclipIcon } from '@primer/octicons-react';
 
 import { useKanban } from '../contexts/KanbanContext';
 import type { Task } from '../types';
@@ -111,7 +111,7 @@ const TableView: React.FC = () => {
         <Box
           sx={{
             display: 'grid',
-            gridTemplateColumns: '1fr 150px 210px 180px 120px 120px 60px',
+            gridTemplateColumns: '1fr 150px 210px 180px 100px 100px 120px 120px 60px',
             bg: 'canvas.default',
             borderBottom: '2px solid',
             borderColor: 'border.default',
@@ -124,6 +124,8 @@ const TableView: React.FC = () => {
           <Text sx={{ fontWeight: 'bold', fontSize: 1 }}>ステータス</Text>
           <Text sx={{ fontWeight: 'bold', fontSize: 1 }}>期限</Text>
           <Text sx={{ fontWeight: 'bold', fontSize: 1 }}>ラベル</Text>
+          <Text sx={{ fontWeight: 'bold', fontSize: 1 }}>サブタスク</Text>
+          <Text sx={{ fontWeight: 'bold', fontSize: 1 }}>添付</Text>
           <Text sx={{ fontWeight: 'bold', fontSize: 1 }}>進捗</Text>
           <Text sx={{ fontWeight: 'bold', fontSize: 1 }}>作成日</Text>
           <Text sx={{ fontWeight: 'bold', fontSize: 1 }}>操作</Text>
@@ -139,7 +141,7 @@ const TableView: React.FC = () => {
               key={task.id}
               sx={{
                 display: 'grid',
-                gridTemplateColumns: '1fr 150px 210px 180px 120px 120px 60px',
+                gridTemplateColumns: '1fr 150px 210px 180px 100px 100px 120px 120px 60px',
                 py: 3,
                 px: 3,
                 gap: 2,
@@ -243,6 +245,38 @@ const TableView: React.FC = () => {
                     }}
                   >
                     +{task.labels.length - 2}
+                  </Text>
+                )}
+              </Box>
+              
+              {/* サブタスク */}
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                {task.subTasks && task.subTasks.length > 0 ? (
+                  <>
+                    <CheckIcon size={12} />
+                    <Text sx={{ fontSize: 0, color: 'fg.muted' }}>
+                      {task.subTasks.filter(sub => sub.completed).length}/{task.subTasks.length}
+                    </Text>
+                  </>
+                ) : (
+                  <Text sx={{ color: 'fg.muted', fontSize: 0 }}>
+                    -
+                  </Text>
+                )}
+              </Box>
+              
+              {/* 添付ファイル */}
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                {task.files && task.files.length > 0 ? (
+                  <>
+                    <PaperclipIcon size={12} />
+                    <Text sx={{ fontSize: 0, color: 'fg.muted' }}>
+                      {task.files.length}
+                    </Text>
+                  </>
+                ) : (
+                  <Text sx={{ color: 'fg.muted', fontSize: 0 }}>
+                    -
                   </Text>
                 )}
               </Box>
