@@ -153,8 +153,8 @@ const CalendarDay: React.FC<CalendarDayProps> = React.memo(({
       <div style={headerStyles}>
         <span style={dayNumberStyles}>{date.getDate()}</span>
         {tasks.length > 3 && (
-          <Text fontSize="10px" color="fg.muted">
-            +{tasks.length - 3}
+          <Text fontSize="12px" color="fg.muted">
+            他 {tasks.length - 3} 件
           </Text>
         )}
       </div>
