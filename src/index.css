@@ -38,3 +38,13 @@ html, body, #root {
     transform: scale(1);
   }
 }
+
+/* Sidebar Animation Keyframes */
+@keyframes sidebar-slide-in-right {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}

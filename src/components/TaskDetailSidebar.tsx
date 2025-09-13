@@ -62,7 +62,8 @@ const TaskDetailSidebar = memo<TaskDetailSidebarProps>(({ task, isOpen, onClose 
     borderLeft: { md: '1px solid' },
     borderColor: 'border.default',
     zIndex: 1020,
-    overflowY: 'auto' as const
+    overflowY: 'auto' as const,
+    animation: 'sidebar-slide-in-right 250ms cubic-bezier(0.33, 1, 0.68, 1)'
   }), []);
 
   const headerStyles = useMemo(() => ({

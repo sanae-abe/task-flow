@@ -127,7 +127,8 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
         borderLeft: '1px solid',
         borderColor: 'border.default',
         zIndex: SIDEBAR_Z_INDEX,
-        overflowY: 'auto'
+        overflowY: 'auto',
+        animation: 'sidebar-slide-in-right 250ms cubic-bezier(0.33, 1, 0.68, 1)'
       }}
     >
       <Box sx={{ display: "flex", height: "100%", flexDirection: "column" }}>
