@@ -43,7 +43,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({
   }, [attachments, onAttachmentsChange]);
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, width: '100%' }}>
       {showModeSelector && (
         <ImportModeSelector
           selectedMode={importMode}

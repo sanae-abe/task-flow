@@ -17,3 +17,24 @@ html, body, #root {
 #__primerPortalRoot__ {
   z-index: 1080;
 }
+
+/* Dialog Animation Keyframes */
+@keyframes dialog-backdrop-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes dialog-scale-fade-in {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

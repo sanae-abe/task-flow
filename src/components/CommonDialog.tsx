@@ -17,29 +17,32 @@ const DIALOG_STYLES = {
     zIndex: 1050,
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    animation: 'dialog-backdrop-fade-in 200ms cubic-bezier(0.33, 1, 0.68, 1)'
+  },
+  container: {
+    display: 'flex',
+    flexDirection: 'column' as const,
+    bg: 'bgColor.default',
+    boxShadow: 'shadow.large',
+    width: '100%',
+    minWidth: '400px',
+    maxWidth: '640px',
+    maxHeight: '90vh',
+    overflowY: 'auto',
+    borderRadius: 'var(--borderRadius-large, var(--borderRadius-large, .75rem))',
+    animation: 'dialog-scale-fade-in 200ms cubic-bezier(0.33, 1, 0.68, 1)'
   },
   content: {
+    p: '16px',
     bg: 'canvas.default',
-    border: '1px solid',
-    borderColor: 'border.default',
-    borderRadius: 2,
-    boxShadow: 'shadow.large',
-    p: 4,
-    minWidth: '400px',
-    maxWidth: '500px',
-    maxHeight: '90vh',
-    overflowY: 'auto'
+    position: 'relative' as const
   },
   largeContent: {
     bg: 'canvas.default',
-    border: '1px solid',
-    borderColor: 'border.default',
-    borderRadius: 2,
-    boxShadow: 'shadow.large',
-    p: 4,
-    minWidth: '500px',
-    maxWidth: '600px',
+    p: '16px',
+    minWidth: '6  00px',
+    maxWidth: '640px',
     maxHeight: '90vh',
     overflowY: 'auto'
   },
@@ -47,7 +50,16 @@ const DIALOG_STYLES = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    mb: 3
+    p: '0.5rem ',
+    bg: 'white',
+    boxShadow: '0 1px 0 var(--borderColor-default,var(--color-border-default))',  
+    zIndex: 1
+  },
+  title: {
+    fontSize: 'var(--text-body-size-medium,.875rem)', fontWeight: '600',
+    px: '8px',
+    py: '6px',
+    lineHeight: 'var(--text-body-line-height-medium,1.5)'
   },
   actions: {
     display: 'flex',
@@ -81,7 +93,7 @@ export const DialogHeader = memo<DialogHeaderProps>(({
   <Box sx={DIALOG_STYLES.header}>
     <Text 
       id={titleId}
-      sx={{ fontSize: 2, fontWeight: '700' }}
+      sx={DIALOG_STYLES.title}
     >
       {title}
     </Text>
@@ -134,7 +146,7 @@ const CommonDialog = memo<CommonDialogProps>(({
     }
   }, [onClose]);
 
-  const handleContentClick = useCallback((event: React.MouseEvent) => {
+  const handleContainerClick = useCallback((event: React.MouseEvent) => {
     event.stopPropagation();
   }, []);
 
@@ -152,17 +164,19 @@ const CommonDialog = memo<CommonDialogProps>(({
           aria-modal="true"
           aria-labelledby={ariaLabelledBy}
         >
-          <Box
-            sx={size === 'large' ? DIALOG_STYLES.largeContent : DIALOG_STYLES.content}
-            onClick={handleContentClick}
-          >
+          <Box sx={DIALOG_STYLES.container}
+          onClick={handleContainerClick}>
             <DialogHeader 
               title={title} 
               onClose={onClose} 
               titleId={ariaLabelledBy}
             />
-            {children}
-            {actions}
+            <Box
+              sx={size === 'large' ? DIALOG_STYLES.largeContent : DIALOG_STYLES.content}
+            >
+              {children}
+              {actions}
+            </Box>
           </Box>
         </Box>
       </BaseStyles>

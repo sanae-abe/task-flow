@@ -24,17 +24,25 @@ const getDialogStyles = (variant: DialogVariant, size: DialogSize) => {
         zIndex: 9999,
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        animation: 'dialog-backdrop-fade-in 200ms cubic-bezier(0.33, 1, 0.68, 1)'
+      },
+      container: {
+        display: 'flex',
+        flexDirection: 'column' as const,
+        bg: 'canvas.default',
+        boxShadow: 'shadow.large',
+        minWidth: '400px',
+        maxWidth: '640px',
+        maxHeight: '90vh',
+        overflowY: 'auto',
+        borderRadius: 'var(--borderRadius-large, var(--borderRadius-large, .75rem))',
+        animation: 'dialog-scale-fade-in 200ms cubic-bezier(0.33, 1, 0.68, 1)'
       },
       content: {
+        p: '16px',
         bg: 'canvas.default',
-        border: '1px solid',
-        borderColor: 'border.default',
-        borderRadius: 2,
-        boxShadow: 'shadow.large',
-        p: 4,
-        maxHeight: '90vh',
-        overflowY: 'auto'
+        borderRadius: 'var(--borderRadius-large, var(--borderRadius-large, .75rem))',
       }
     },
     overlay: {
@@ -49,20 +57,30 @@ const getDialogStyles = (variant: DialogVariant, size: DialogSize) => {
         display: 'flex',
         alignItems: 'flex-start',
         justifyContent: 'center',
-        pt: 0
+        pt: 0,
+        animation: 'dialog-backdrop-fade-in 200ms cubic-bezier(0.33, 1, 0.68, 1)'
+      },
+      container: {
+        display: 'flex',
+        flexDirection: 'column' as const,
+        bg: 'canvas.default',
+        boxShadow: 'shadow.large',
+        padding: '0.5rem',
+        minWidth: '400px',
+        maxWidth: '640px',
+        maxHeight: '90vh',
+        overflowY: 'auto',
+        borderRadius: 'var(--borderRadius-large, var(--borderRadius-large, .75rem))',
+        animation: 'dialog-scale-fade-in 200ms cubic-bezier(0.33, 1, 0.68, 1)'
       },
       content: {
         bg: 'canvas.default',
-        borderBottom: '1px solid',
-        borderColor: 'border.default',
-        boxShadow: 'shadow.large',
         width: '100%',
         minHeight: '112px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         py: 4,
-        position: 'relative' as const
       }
     },
     inline: {
@@ -72,10 +90,20 @@ const getDialogStyles = (variant: DialogVariant, size: DialogSize) => {
         zIndex: 1,
         display: 'block'
       },
+      container: {
+        display: 'flex',
+        flexDirection: 'column' as const,
+        bg: 'canvas.default',
+        boxShadow: 'shadow.large',
+        padding: '0.5rem',
+        minWidth: '400px',
+        maxWidth: '640px',
+        maxHeight: '90vh',
+        overflowY: 'auto',
+        borderRadius: 'var(--borderRadius-large, var(--borderRadius-large, .75rem))',
+      },
       content: {
         bg: 'canvas.subtle',
-        border: '1px solid',
-        borderColor: 'border.default',
         borderRadius: 2,
         p: 3
       }
@@ -84,14 +112,15 @@ const getDialogStyles = (variant: DialogVariant, size: DialogSize) => {
 
   // サイズ別のスタイル
   const sizeStyles = {
-    small: { minWidth: '300px', maxWidth: '400px' },
-    medium: { minWidth: '400px', maxWidth: '500px' },
-    large: { minWidth: '500px', maxWidth: '600px' },
-    xl: { minWidth: '600px', maxWidth: '800px' }
+    small: { minWidth: '296px', maxWidth: '320px' },
+    medium: { minWidth: '320px', maxWidth: '480px' },
+    large: { minWidth: '480px', maxWidth: '640px' },
+    xl: { minWidth: '640px', maxWidth: '800px' }
   };
 
   return {
     backdrop: variantStyles[variant].backdrop,
+    container: variantStyles[variant].container,
     content: {
       ...variantStyles[variant].content,
       ...sizeStyles[size]
@@ -109,17 +138,27 @@ const DialogHeader = memo<{
   hideCloseButton?: boolean;
 }>(({ title, onClose, titleId, hideCloseButton = false }) => (
   <Box sx={{
+    position: 'relative',
+    p: '0.5rem',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    mb: 3
+    pb: '16',
+    bg: 'canvas.default',
+    boxShadow: '0 1px 0 var(--borderColor-default,var(--color-border-default))'
   }}>
     <Text 
       id={titleId}
-      sx={{ fontSize: 2, fontWeight: '700' }}
+      sx={{
+        fontSize: 'var(--text-body-size-medium,.875rem)', fontWeight: '600',
+        px: '8px',
+        py: '6px',
+        lineHeight: 'var(--text-body-line-height-medium,1.5)'
+      }}
     >
       {title}
     </Text>
+
     {!hideCloseButton && (
       <IconButton
         icon={XIcon}
@@ -142,7 +181,7 @@ const DialogFooter = memo<{
     display: 'flex',
     justifyContent: 'flex-end',
     gap: 2,
-    mt: 3
+    p: 3
   }}>
     {children}
   </Box>
@@ -175,7 +214,7 @@ const UnifiedDialog = memo<UnifiedDialogProps>(({
     }
   }, [onClose, closeOnBackdropClick]);
 
-  const handleContentClick = useCallback((event: React.MouseEvent) => {
+  const handleContainerClick = useCallback((event: React.MouseEvent) => {
     event.stopPropagation();
   }, []);
 
@@ -216,8 +255,8 @@ const UnifiedDialog = memo<UnifiedDialogProps>(({
           aria-labelledby={titleId}
         >
           <Box
-            sx={styles.content}
-            onClick={handleContentClick}
+            sx={styles.container}
+            onClick={handleContainerClick}
           >
             {!hideHeader && (
               <DialogHeader
@@ -227,8 +266,7 @@ const UnifiedDialog = memo<UnifiedDialogProps>(({
                 hideCloseButton={variant === 'overlay'}
               />
             )}
-            
-            <Box sx={{ flex: 1 }}>
+            <Box sx={styles.content}>
               {children}
             </Box>
 
