@@ -49,7 +49,7 @@ const LabelChip = memo<LabelChipProps>(({
     bg: colors.bg,
     color: colors.color,
     px: 2,
-    py: 1,
+    py: 0.75,
     borderRadius: 2,
     fontSize: 0,
     fontWeight: '400',
