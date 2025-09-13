@@ -56,7 +56,7 @@ const BoardActionMenu = memo<BoardActionMenuProps>(({
             <ActionList.LeadingVisual>
               <PencilIcon />
             </ActionList.LeadingVisual>
-            新しいボード
+            ボード作成
           </ActionList.Item>
           
           {/* ボード管理アクション */}

@@ -87,11 +87,11 @@ const RightSection: React.FC<RightSectionProps> = ({ onCreateClick, onHelpClick 
     <Button
       onClick={onCreateClick}
       variant="primary"
-      aria-label="タスク追加"
+      aria-label="タスク作成"
       leadingVisual={PlusIcon}
       sx={headerStyles.createButton}
     >
-      タスク追加
+      タスク作成
     </Button>
     <Button
       onClick={onHelpClick}

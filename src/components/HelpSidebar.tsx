@@ -197,7 +197,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
             />
             <HelpItem
               title="タスク作成"
-              description="ヘッダーの「タスク追加」ボタンまたは各カラムの「+」ボタンでタスクを作成"
+              description="ヘッダーの「タスク作成」ボタンまたは各カラムの「+」ボタンでタスクを作成"
             />
             <HelpItem
               title="ドラッグ&ドロップ"

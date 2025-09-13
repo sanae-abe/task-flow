@@ -94,12 +94,6 @@ const SubHeader: React.FC = () => {
             カラム追加
           </SubHeaderButton>
         )}
-        <SubHeaderButton
-          icon={PlusIcon}
-          onClick={handlers.startCreateBoard}
-        >
-          ボード作成
-        </SubHeaderButton>
         
         <BoardActionMenu
           hasCompletedTasks={hasCompletedTasks}
