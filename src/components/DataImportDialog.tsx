@@ -1,6 +1,6 @@
 import { useState, useCallback, memo } from 'react';
 import { Box, Button, Text, Spinner, Flash, Select } from '@primer/react';
-import { FileIcon } from '@primer/octicons-react';
+import { FileIcon, UploadIcon } from '@primer/octicons-react';
 
 import { useKanban } from '../contexts/KanbanContext';
 import { validateImportData, readFileAsText } from '../utils/dataExport';
@@ -29,46 +29,53 @@ export const DataImportDialog = memo<DataImportDialogProps>(({ isOpen, onClose }
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState<MessageType | null>(null);
   const [importMode, setImportMode] = useState<ImportMode>('merge');
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  const processFile = useCallback(async (file: File) => {
+    setIsLoading(true);
+    setMessage(null);
+
+    try {
+      const fileContent = await readFileAsText(file);
+      const parsedData = JSON.parse(fileContent);
+      const validatedData = validateImportData(parsedData);
+
+      const replaceAll = importMode === 'replace';
+      importBoards(validatedData.boards, replaceAll);
+
+      const importedCount = validatedData.boards.length;
+      const modeText = replaceAll ? '置換' : '追加';
+      setMessage({
+        type: 'success',
+        text: `${importedCount}個のボードを${modeText}しました`
+      });
+
+      // 成功後に少し待ってからダイアログを閉じる
+      setTimeout(() => {
+        onClose();
+        setMessage(null);
+        setSelectedFile(null);
+      }, 1500);
+
+    } catch (error) {
+      let errorMessage = 'インポートに失敗しました';
+      if (error instanceof SyntaxError) {
+        errorMessage = 'JSONファイルの形式が正しくありません';
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      setMessage({ type: 'error', text: errorMessage });
+    } finally {
+      setIsLoading(false);
+    }
+  }, [importMode, importBoards, onClose]);
 
   const dropZoneProps = useDataImportDropZone({
     maxFileSize: MAX_FILE_SIZE,
-    onFileProcessed: useCallback(async (file: File) => {
-      setIsLoading(true);
+    onFileSelected: useCallback((file: File) => {
+      setSelectedFile(file);
       setMessage(null);
-
-      try {
-        const fileContent = await readFileAsText(file);
-        const parsedData = JSON.parse(fileContent);
-        const validatedData = validateImportData(parsedData);
-
-        const replaceAll = importMode === 'replace';
-        importBoards(validatedData.boards, replaceAll);
-
-        const importedCount = validatedData.boards.length;
-        const modeText = replaceAll ? '置換' : '追加';
-        setMessage({ 
-          type: 'success', 
-          text: `${importedCount}個のボードを${modeText}しました` 
-        });
-
-        // 成功後に少し待ってからダイアログを閉じる
-        setTimeout(() => {
-          onClose();
-          setMessage(null);
-        }, 1500);
-
-      } catch (error) {
-        let errorMessage = 'インポートに失敗しました';
-        if (error instanceof SyntaxError) {
-          errorMessage = 'JSONファイルの形式が正しくありません';
-        } else if (error instanceof Error) {
-          errorMessage = error.message;
-        }
-        setMessage({ type: 'error', text: errorMessage });
-      } finally {
-        setIsLoading(false);
-      }
-    }, [importMode, importBoards, onClose]),
+    }, []),
     disabled: isLoading
   });
 
@@ -76,12 +83,19 @@ export const DataImportDialog = memo<DataImportDialogProps>(({ isOpen, onClose }
     if (!isLoading) {
       onClose();
       setMessage(null);
+      setSelectedFile(null);
     }
   }, [isLoading, onClose]);
 
   const handleModeChange = useCallback((mode: ImportMode) => {
     setImportMode(mode);
   }, []);
+
+  const handleUpload = useCallback(() => {
+    if (selectedFile) {
+      processFile(selectedFile);
+    }
+  }, [selectedFile, processFile]);
 
   return (
     <CommonDialog
@@ -103,15 +117,27 @@ export const DataImportDialog = memo<DataImportDialogProps>(({ isOpen, onClose }
             <Button onClick={handleDialogClose} disabled={isLoading}>
               キャンセル
             </Button>
-            <Button
-              variant="primary"
-              onClick={dropZoneProps.handleFileSelect}
-              disabled={isLoading}
-              leadingVisual={FileIcon}
-              sx={{ color: 'fg.onEmphasis !important' }}
-            >
-              {isLoading ? 'インポート中...' : 'JSONファイルを選択'}
-            </Button>
+            {!selectedFile ? (
+              <Button
+                variant="primary"
+                onClick={dropZoneProps.handleFileSelect}
+                disabled={isLoading}
+                leadingVisual={FileIcon}
+                sx={{ color: 'fg.onEmphasis !important' }}
+              >
+                JSONファイルを選択
+              </Button>
+            ) : (
+              <Button
+                variant="primary"
+                onClick={handleUpload}
+                disabled={isLoading}
+                leadingVisual={UploadIcon}
+                sx={{ color: 'fg.onEmphasis !important' }}
+              >
+                {isLoading ? 'インポート中...' : 'インポート実行'}
+              </Button>
+            )}
           </Box>
         </Box>
       }
@@ -128,6 +154,17 @@ export const DataImportDialog = memo<DataImportDialogProps>(({ isOpen, onClose }
           <Select.Option value="replace">既存データを置換</Select.Option>
         </Select>
       </Box>
+
+      {/* 選択されたファイル表示 */}
+      {selectedFile && (
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mb: 3, p: 2, bg: 'canvas.subtle', borderRadius: 2 }}>
+          <Text sx={{ fontSize: 1, fontWeight: '600', color: 'fg.default' }}>選択されたファイル</Text>
+          <Text sx={{ fontSize: 1, color: 'fg.muted' }}>{selectedFile.name}</Text>
+          <Text sx={{ fontSize: 0, color: 'fg.muted' }}>
+            サイズ: {(selectedFile.size / 1024).toFixed(1)} KB
+          </Text>
+        </Box>
+      )}
 
       {/* ローディング表示 */}
       {isLoading && (

@@ -2,13 +2,13 @@ import { useCallback, useRef, useState } from 'react';
 
 interface UseDataImportDropZoneOptions {
   maxFileSize: number;
-  onFileProcessed: (file: File) => void;
+  onFileSelected: (file: File) => void;
   disabled?: boolean;
 }
 
 export const useDataImportDropZone = ({
   maxFileSize,
-  onFileProcessed,
+  onFileSelected,
   disabled = false
 }: UseDataImportDropZoneOptions) => {
   const [isDragOver, setIsDragOver] = useState(false);
@@ -85,8 +85,8 @@ export const useDataImportDropZone = ({
       return;
     }
     
-    onFileProcessed(file);
-  }, [disabled, validateFile, onFileProcessed]);
+    onFileSelected(file);
+  }, [disabled, validateFile, onFileSelected]);
 
   const handleFileSelect = useCallback(() => {
     if (disabled) {return;}
@@ -106,8 +106,8 @@ export const useDataImportDropZone = ({
       return;
     }
     
-    onFileProcessed(file);
-  }, [disabled, validateFile, onFileProcessed]);
+    onFileSelected(file);
+  }, [disabled, validateFile, onFileSelected]);
 
   return {
     isDragOver,

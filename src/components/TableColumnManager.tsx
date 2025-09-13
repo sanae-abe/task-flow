@@ -85,12 +85,10 @@ const TableColumnManager: React.FC = () => {
       {/* 詳細設定ダイアログ */}
       {isSettingsOpen && (
         <Dialog
+          title="カラム設定"
           onClose={() => setIsSettingsOpen(false)}
           aria-labelledby="column-settings-title"
         >
-        <Dialog.Header>
-          <Text id="column-settings-title">カラム設定</Text>
-        </Dialog.Header>
         <Box sx={{ p: 3 }}>
           <Text sx={{ mb: 3, color: 'fg.muted' }}>
             カラムの表示・非表示、幅の調整、削除を行えます。
