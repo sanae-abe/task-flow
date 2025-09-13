@@ -24,14 +24,17 @@ import { useTableColumns } from '../contexts/TableColumnsContext';
 const TableColumnManager: React.FC = () => {
   const {
     columns,
+    columnOrder,
     toggleColumnVisibility,
     updateColumnWidth,
+    reorderColumns,
     removeColumn,
     resetToDefaults
   } = useTableColumns();
 
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [draggedColumnId, setDraggedColumnId] = useState<string | null>(null);
 
 
   const handleWidthChange = useCallback((columnId: string, newWidth: string) => {
@@ -39,6 +42,50 @@ const TableColumnManager: React.FC = () => {
   }, [updateColumnWidth]);
 
   const isCustomColumn = useCallback((columnId: string) => columnId.startsWith('custom-'), []);
+
+  // ドラッグ開始
+  const handleDragStart = useCallback((e: React.DragEvent, columnId: string) => {
+    setDraggedColumnId(columnId);
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', columnId);
+  }, []);
+
+  // ドラッグオーバー
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  }, []);
+
+  // ドロップ
+  const handleDrop = useCallback((e: React.DragEvent, targetColumnId: string) => {
+    e.preventDefault();
+
+    if (!draggedColumnId || draggedColumnId === targetColumnId) {
+      setDraggedColumnId(null);
+      return;
+    }
+
+    const currentOrder = [...columnOrder];
+    const draggedIndex = currentOrder.indexOf(draggedColumnId);
+    const targetIndex = currentOrder.indexOf(targetColumnId);
+
+    if (draggedIndex === -1 || targetIndex === -1) {
+      setDraggedColumnId(null);
+      return;
+    }
+
+    // 配列の要素を移動
+    currentOrder.splice(draggedIndex, 1);
+    currentOrder.splice(targetIndex, 0, draggedColumnId);
+
+    reorderColumns(currentOrder);
+    setDraggedColumnId(null);
+  }, [draggedColumnId, columnOrder, reorderColumns]);
+
+  // ドラッグ終了
+  const handleDragEnd = useCallback(() => {
+    setDraggedColumnId(null);
+  }, []);
 
   return (
     <>
@@ -90,65 +137,85 @@ const TableColumnManager: React.FC = () => {
           aria-labelledby="column-settings-title"
         >
           <div style={{ marginBottom: '20px', color: 'fg.muted' }}>
-            カラムの並び替え、幅の調整を行えます。幅はpx単位で入力してください。
+            カラムをドラッグして並び替え、幅の調整ができます。幅はpx単位で入力してください。
           </div>
 
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            {columns.map((column) => (
-              <Box
-                key={column.id}
-                sx={{
-                  display: 'flex',
-                  py: 1,
-                  alignItems: 'center',
-                  border: '1px solid',
-                  borderColor: 'border.default',
-                  borderRadius: 2,
-                  bg: column.visible ? 'canvas.default' : 'canvas.subtle'
-                }}
-              >
-                <IconButton
-                  aria-label="並び替え"
-                  icon={GrabberIcon}
-                  variant="invisible"
-                  size="small"
-                  sx={{ cursor: 'grab' }}
-                />
+            {columnOrder.map((columnId) => {
+              const column = columns.find(col => col.id === columnId);
+              if (!column) {
+                return null;
+              }
 
-                <Box sx={{ flex: 1 }}>
-                  <Text sx={{ fontWeight: 'semibold' }}>
-                    {column.label}
-                  </Text>
-                </Box>
+              const isDragging = draggedColumnId === column.id;
 
-                <FormControl>
-                  <FormControl.Label visuallyHidden>
-                    {column.label}の幅を設定
-                  </FormControl.Label>
-                  <TextInput
-                    value={column.width}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      handleWidthChange(column.id, e.target.value)
-                    }
-                    placeholder="幅 (例: 150px)"
-                    size="small"
-                    sx={{ width: '120px', mr: 1 }}
-                    aria-describedby={`width-help-${column.id}`}
-                  />
-                </FormControl>
-
-                {isCustomColumn(column.id) && (
+              return (
+                <Box
+                  key={column.id}
+                  draggable
+                  onDragStart={(e: React.DragEvent) => handleDragStart(e, column.id)}
+                  onDragOver={handleDragOver}
+                  onDrop={(e: React.DragEvent) => handleDrop(e, column.id)}
+                  onDragEnd={handleDragEnd}
+                  sx={{
+                    display: 'flex',
+                    py: 1,
+                    alignItems: 'center',
+                    border: '1px solid',
+                    borderColor: isDragging ? 'accent.emphasis' : 'border.default',
+                    borderRadius: 2,
+                    bg: column.visible ? 'canvas.default' : 'canvas.subtle',
+                    opacity: isDragging ? 0.5 : 1,
+                    cursor: 'move',
+                    transition: 'all 0.2s ease'
+                  }}
+                >
                   <IconButton
-                    aria-label="カラムを削除"
-                    icon={TrashIcon}
+                    aria-label="並び替え"
+                    icon={GrabberIcon}
                     variant="invisible"
                     size="small"
-                    onClick={() => removeColumn(column.id)}
-                    sx={{ color: 'danger.emphasis' }}
+                    sx={{
+                      cursor: 'grab',
+                      '&:active': { cursor: 'grabbing' }
+                    }}
                   />
-                )}
-              </Box>
-            ))}
+
+                  <Box sx={{ flex: 1 }}>
+                    <Text sx={{ fontWeight: 'semibold' }}>
+                      {column.label}
+                    </Text>
+                  </Box>
+
+                  <FormControl>
+                    <FormControl.Label visuallyHidden>
+                      {column.label}の幅を設定
+                    </FormControl.Label>
+                    <TextInput
+                      value={column.width}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleWidthChange(column.id, e.target.value)
+                      }
+                      placeholder="幅 (例: 150px)"
+                      size="small"
+                      sx={{ width: '120px', mr: 1 }}
+                      aria-describedby={`width-help-${column.id}`}
+                    />
+                  </FormControl>
+
+                  {isCustomColumn(column.id) && (
+                    <IconButton
+                      aria-label="カラムを削除"
+                      icon={TrashIcon}
+                      variant="invisible"
+                      size="small"
+                      onClick={() => removeColumn(column.id)}
+                      sx={{ color: 'danger.emphasis' }}
+                    />
+                  )}
+                </Box>
+              );
+            })}
           </Box>
 
           <Box sx={{ display: 'flex', gap: 2, mt: 4, justifyContent: 'flex-end' }}>
