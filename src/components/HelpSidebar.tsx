@@ -1,4 +1,4 @@
-import { XIcon, CheckCircleIcon, PencilIcon, ArrowRightIcon, FilterIcon, UploadIcon, InfoIcon, CalendarIcon } from '@primer/octicons-react';
+import { XIcon, CheckCircleIcon, PencilIcon, ArrowRightIcon, FilterIcon, UploadIcon, InfoIcon, CalendarIcon, TriangleDownIcon } from '@primer/octicons-react';
 import { Button, Box, Heading, Text } from '@primer/react';
 import React, { useEffect, useCallback } from 'react';
 
@@ -53,7 +53,7 @@ const HelpSection: React.FC<HelpSectionProps> = ({ title, icon: Icon, children, 
 );
 
 interface HelpItemProps {
-  title: string;
+  title: string | React.ReactNode;
   description: string;
   highlight?: boolean;
 }
@@ -179,7 +179,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
             />
             <HelpItem
               title="テーブルビュー"
-              description="全タスクを一覧表形式で表示・管理"
+              description="全タスクを一覧表形式で表示・管理、カラム表示のカスタマイズが可能"
             />
             <HelpItem
               title="切り替え方法"
@@ -226,6 +226,14 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
             <HelpItem
               title="期限設定"
               description="日時指定で期限管理、期限切れタスクは自動警告"
+            />
+            <HelpItem
+              title="時刻設定"
+              description="期限日に時刻を追加設定、デフォルトは23:59で詳細時刻管理が可能"
+            />
+            <HelpItem
+              title="繰り返し設定"
+              description="毎日・毎週・毎月・毎年の繰り返しパターンでタスクを自動再作成"
             />
           </HelpSection>
 
@@ -278,6 +286,25 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
             />
           </HelpSection>
 
+          <HelpSection title="テーブルビューの詳細機能" icon={TriangleDownIcon} color="accent.emphasis">
+            <HelpItem
+              title="カラム管理"
+              description="テーブル右上の設定ボタンから表示カラムの表示/非表示を切り替え"
+            />
+            <HelpItem
+              title="利用可能なカラム"
+              description="タスク名、ステータス、期限、ラベル、サブタスク、ファイル、進捗、作成日、更新日、完了日、説明、繰り返し設定"
+            />
+            <HelpItem
+              title="タスク件数表示"
+              description="タスク名カラムに現在表示中のタスク数をカウンター表示"
+            />
+            <HelpItem
+              title="進捗表示"
+              description="サブタスクの完了状況をプログレスバーと割合で視覚的に表示"
+            />
+          </HelpSection>
+
           <HelpSection title="データ管理" icon={ArrowRightIcon} color="sponsors.emphasis">
             <HelpItem
               title="ローカル保存"
@@ -301,6 +328,15 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
             <HelpItem
               title="完了管理"
               description="右端のカラムが「完了」状態として自動処理"
+            />
+            <HelpItem
+              title={
+                <>
+                  期限と時刻・<br />
+                  繰り返し設定
+                </>
+              }
+              description="期限を設定すると時刻設定と繰り返し設定が有効になります"
             />
             <HelpItem
               title="オフライン対応"

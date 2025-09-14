@@ -20,7 +20,6 @@ const TaskEditActions = memo<TaskEditActionsProps>(({
         display: 'flex',
         justifyContent: 'space-between',
         gap: 2,
-        mt: 4
       }}
     >
       <Button

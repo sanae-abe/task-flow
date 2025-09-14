@@ -260,7 +260,7 @@ const CommonDialog = memo<CommonDialogProps>(({
             >
               {children}
               {actions && (
-                <div style={{marginTop: '24px'}}>
+                <div>
                   {actions}
                 </div>
               )}

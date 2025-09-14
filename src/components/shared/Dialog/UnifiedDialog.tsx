@@ -181,7 +181,8 @@ const DialogFooter = memo<{
     display: 'flex',
     justifyContent: 'flex-end',
     gap: 2,
-    p: 3
+    px: 3,
+    pb: 3
   }}>
     {children}
   </Box>
