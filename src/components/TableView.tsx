@@ -104,25 +104,20 @@ const TableView: React.FC = () => {
 
       case 'title':
         return (
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            {task.recurrence?.enabled && (
-              <SyncIcon size={12} />
-            )}
-            <Text
-              sx={{
-                display: 'block',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-                fontWeight: 'semibold',
-                color: task.completedAt ? 'fg.muted' : 'fg.default',
-                textDecoration: task.completedAt ? 'line-through' : 'none',
-                fontSize: 1,
-              }}
-            >
-              {task.title}
-            </Text>
-          </Box>
+          <Text
+            sx={{
+              display: 'block',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+              fontWeight: 'semibold',
+              color: task.completedAt ? 'fg.muted' : 'fg.default',
+              textDecoration: task.completedAt ? 'line-through' : 'none',
+              fontSize: 1,
+            }}
+          >
+            {task.title}
+          </Text>
         );
 
       case 'status':
@@ -190,9 +185,12 @@ const TableView: React.FC = () => {
         };
 
         return (
-          <Box>
-            <Text sx={{ fontSize: 0, color: getDateColor() }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Text sx={{ display: 'flex', alignItems: 'center', gap: 1, fontSize: 0, color: getDateColor() }}>
               {formattedDate}
+              {task.recurrence?.enabled && (
+                <SyncIcon size={12} />
+              )}
             </Text>
           </Box>
         );

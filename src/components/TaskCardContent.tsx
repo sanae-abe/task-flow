@@ -69,7 +69,7 @@ const TaskCardContent: React.FC<TaskDisplayProps> = ({
       <TaskLabels labels={task.labels} />
 
       {(task.dueDate || (task.subTasks && task.subTasks.length > 0) || (task.files && task.files.length > 0)) && (
-        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: 'center' }}>
           <div>
             {task.dueDate && (
               <DueDateBadge

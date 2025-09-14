@@ -760,8 +760,8 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
             tasks: [
               {
                 id: uuidv4(),
-                title: '重要タスク - プロジェクト企画',
-                description: 'プロジェクトの目標設定、要件定義、スコープの明確化\n\n詳細:\n• ステークホルダーとの要件整理\n• プロジェクトスコープの決定\n• 成功指標の設定',
+                title: 'プロジェクト企画書作成',
+                description: 'プロジェクトの要件定義と企画書の作成\n\n・ステークホルダー要件整理\n・スコープと目標設定',
                 dueDate: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), // 昨日期限（期限切れ）
                 labels: [
                   { id: uuidv4(), name: '緊急', color: 'danger' },
@@ -769,121 +769,40 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
                 ],
                 subTasks: [
                   { id: uuidv4(), title: 'ステークホルダー分析', completed: true, createdAt: new Date().toISOString() },
-                  { id: uuidv4(), title: '要件定義書作成', completed: false, createdAt: new Date().toISOString() },
-                  { id: uuidv4(), title: 'スコープ確定', completed: false, createdAt: new Date().toISOString() }
+                  { id: uuidv4(), title: '要件定義書作成', completed: false, createdAt: new Date().toISOString() }
                 ],
                 priority: 'high',
-                files: [],
-                completedAt: null,
-                createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-                updatedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-              },
-              {
-                id: uuidv4(),
-                title: 'データベース設計',
-                description: 'データベーススキーマの設計と最適化',
-                dueDate: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // 明日期限
-                labels: [
-                  { id: uuidv4(), name: '設計', color: 'primary' },
-                  { id: uuidv4(), name: 'データベース', color: 'success' }
-                ],
-                subTasks: [
-                  { id: uuidv4(), title: 'ER図作成', completed: false, createdAt: new Date().toISOString() },
-                  { id: uuidv4(), title: 'インデックス設計', completed: false, createdAt: new Date().toISOString() }
-                ],
-                priority: 'medium',
                 files: [],
                 completedAt: null,
                 createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-                updatedAt: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
+                updatedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
               },
               {
                 id: uuidv4(),
-                title: '日次定例会議',
-                description: 'チーム全体の日次スタンドアップミーティング\n\n・進捗報告\n・課題共有\n・今日の目標確認',
-                dueDate: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // 明日期限
+                title: 'ドキュメント整理',
+                description: '技術ドキュメントの整理と更新\n\n・README更新\n・API仕様書作成',
+                dueDate: null, // 期限なし
                 labels: [
-                  { id: uuidv4(), name: '会議', color: 'attention' },
-                  { id: uuidv4(), name: '定例', color: 'default' }
+                  { id: uuidv4(), name: 'ドキュメント', color: 'default' }
                 ],
                 subTasks: [
-                  { id: uuidv4(), title: 'アジェンダ準備', completed: false, createdAt: new Date().toISOString() },
-                  { id: uuidv4(), title: '会議室予約', completed: true, createdAt: new Date().toISOString() }
+                  { id: uuidv4(), title: 'README更新', completed: false, createdAt: new Date().toISOString() },
+                  { id: uuidv4(), title: 'API仕様書作成', completed: false, createdAt: new Date().toISOString() }
                 ],
-                priority: 'medium',
-                files: [],
-                completedAt: null,
-                createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-                updatedAt: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
-                recurrence: {
-                  enabled: true,
-                  pattern: 'daily',
-                  interval: 1
-                }
-              },
-              {
-                id: uuidv4(),
-                title: '週次レポート作成',
-                description: 'プロジェクトの週次進捗レポートを作成\n\n・KPI集計\n・課題整理\n・次週の計画',
-                dueDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(), // 2日後期限（金曜日想定）
-                labels: [
-                  { id: uuidv4(), name: 'レポート', color: 'primary' },
-                  { id: uuidv4(), name: '管理', color: 'default' }
+                priority: 'low',
+                files: [
+                  {
+                    id: uuidv4(),
+                    name: 'project-spec.md',
+                    type: 'text/markdown',
+                    size: 2048,
+                    data: 'data:text/markdown;base64,IyDjg4fjgrbjgqTjg7Pjgrnjg5rjg4Pjgq/KU2ljqrjgobnjgovjgqjjgreHRmLjg7HjGV0aqW1tbLm5lbnAL',
+                    uploadedAt: new Date().toISOString()
+                  }
                 ],
-                subTasks: [
-                  { id: uuidv4(), title: 'データ収集', completed: false, createdAt: new Date().toISOString() },
-                  { id: uuidv4(), title: 'グラフ作成', completed: false, createdAt: new Date().toISOString() },
-                  { id: uuidv4(), title: 'レポート文書化', completed: false, createdAt: new Date().toISOString() }
-                ],
-                priority: 'high',
-                files: [],
                 completedAt: null,
                 createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-                updatedAt: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
-                recurrence: {
-                  enabled: true,
-                  pattern: 'weekly',
-                  interval: 1,
-                  daysOfWeek: [5] // 金曜日
-                }
-              },
-              {
-                id: uuidv4(),
-                title: 'チームビルディング企画',
-                description: '四半期チームビルディングイベントの企画と準備\n\n・会場選定\n・プログラム検討\n・予算調整',
-                dueDate: null, // 期限なし
-                labels: [
-                  { id: uuidv4(), name: 'イベント', color: 'attention' },
-                  { id: uuidv4(), name: 'チーム', color: 'success' }
-                ],
-                subTasks: [
-                  { id: uuidv4(), title: '企画会議', completed: false, createdAt: new Date().toISOString() },
-                  { id: uuidv4(), title: '会場候補リストアップ', completed: false, createdAt: new Date().toISOString() }
-                ],
-                priority: 'low',
-                files: [],
-                completedAt: null,
-                createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-                updatedAt: new Date(Date.now() - 45 * 60 * 1000).toISOString(),
-              },
-              {
-                id: uuidv4(),
-                title: '技術調査 - 新ライブラリ検証',
-                description: '新しいフロントエンドライブラリの調査と検証\n\n・パフォーマンス検証\n・既存システムとの互換性\n・導入コスト試算',
-                dueDate: null, // 期限なし
-                labels: [
-                  { id: uuidv4(), name: '調査', color: 'primary' },
-                  { id: uuidv4(), name: '技術', color: 'default' }
-                ],
-                subTasks: [
-                  { id: uuidv4(), title: 'ライブラリ比較表作成', completed: false, createdAt: new Date().toISOString() },
-                  { id: uuidv4(), title: 'POC実装', completed: false, createdAt: new Date().toISOString() }
-                ],
-                priority: 'low',
-                files: [],
-                completedAt: null,
-                createdAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
-                updatedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+                updatedAt: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
               },
             ],
             color: '#f6f8fa'
@@ -895,158 +814,49 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
               {
                 id: uuidv4(),
                 title: 'UIコンポーネント開発',
-                description: 'React コンポーネントライブラリの構築\nPrimerデザインシステムを使用してコンポーネントを実装',
-                dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 1週間後
+                description: 'Reactコンポーネントの実装と整備\n\n・ボタンコンポーネント\n・フォームコンポーネント',
+                dueDate: new Date().toISOString(), // 本日期限
                 labels: [
                   { id: uuidv4(), name: 'フロントエンド', color: 'success' },
                   { id: uuidv4(), name: 'React', color: 'primary' }
                 ],
                 subTasks: [
                   { id: uuidv4(), title: 'ボタンコンポーネント', completed: true, createdAt: new Date().toISOString() },
-                  { id: uuidv4(), title: 'フォームコンポーネント', completed: true, createdAt: new Date().toISOString() },
-                  { id: uuidv4(), title: 'モーダルコンポーネント', completed: false, createdAt: new Date().toISOString() },
-                  { id: uuidv4(), title: 'ドロップダウンコンポーネント', completed: false, createdAt: new Date().toISOString() }
-                ],
-                files: [
-                  {
-                    id: uuidv4(),
-                    name: 'design-spec.md',
-                    type: 'text/markdown',
-                    size: 2048,
-                    data: 'data:text/markdown;base64,IyDjg4fjgrbjgqTjg7Pjgrnjg5rjg4Pjgq/KU2ljqrjgobnjgovjgqjjgreHRmLjg7HjGV0aqW1tbLm5lbnAL',
-                    uploadedAt: new Date().toISOString()
-                  }
+                  { id: uuidv4(), title: 'フォームコンポーネント', completed: false, createdAt: new Date().toISOString() }
                 ],
                 priority: 'medium',
+                files: [],
                 completedAt: null,
-                createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+                createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
                 updatedAt: new Date(Date.now() - 10 * 60 * 1000).toISOString(),
               },
               {
                 id: uuidv4(),
-                title: 'API開発',
-                description: 'REST API エンドポイントの実装\n認証、CRUD操作、エラーハンドリングを含む',
-                dueDate: new Date().toISOString(), // 今日期限
+                title: '週次レポート作成',
+                description: 'プロジェクト進捗の週次レポート作成\n\n・進捗まとめ\n・課題整理',
+                dueDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(), // 2日後期限
                 labels: [
-                  { id: uuidv4(), name: 'バックエンド', color: 'severe' },
-                  { id: uuidv4(), name: 'API', color: 'attention' }
+                  { id: uuidv4(), name: 'レポート', color: 'primary' },
+                  { id: uuidv4(), name: '定例', color: 'default' }
                 ],
                 subTasks: [
-                  { id: uuidv4(), title: 'ユーザー認証API', completed: true, createdAt: new Date().toISOString() },
-                  { id: uuidv4(), title: 'タスク管理API', completed: false, createdAt: new Date().toISOString() },
-                  { id: uuidv4(), title: 'ファイルアップロードAPI', completed: false, createdAt: new Date().toISOString() }
-                ],
-                priority: 'high',
-                files: [],
-                completedAt: null,
-                createdAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
-                updatedAt: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
-              },
-              {
-                id: uuidv4(),
-                title: 'バックアップ実行',
-                description: 'データベースとファイルシステムの定期バックアップ\n\n・データベースダンプ作成\n・ファイル同期\n・バックアップ検証',
-                dueDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(), // 3日後期限
-                labels: [
-                  { id: uuidv4(), name: 'インフラ', color: 'severe' },
-                  { id: uuidv4(), name: 'バックアップ', color: 'attention' },
-                  { id: uuidv4(), name: '自動化', color: 'success' }
-                ],
-                subTasks: [
-                  { id: uuidv4(), title: 'バックアップスクリプト確認', completed: true, createdAt: new Date().toISOString() },
-                  { id: uuidv4(), title: 'ストレージ容量確認', completed: false, createdAt: new Date().toISOString() },
-                  { id: uuidv4(), title: 'バックアップテスト実行', completed: false, createdAt: new Date().toISOString() }
+                  { id: uuidv4(), title: 'データ収集', completed: false, createdAt: new Date().toISOString() },
+                  { id: uuidv4(), title: 'レポート作成', completed: false, createdAt: new Date().toISOString() }
                 ],
                 priority: 'high',
                 files: [],
                 completedAt: null,
                 createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-                updatedAt: new Date(Date.now() - 20 * 60 * 1000).toISOString(),
+                updatedAt: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
                 recurrence: {
                   enabled: true,
-                  pattern: 'monthly',
+                  pattern: 'weekly',
                   interval: 1,
-                  dayOfMonth: 1 // 毎月1日
+                  daysOfWeek: [5] // 金曜日
                 }
-              },
-              {
-                id: uuidv4(),
-                title: 'ドキュメント整備',
-                description: 'プロジェクトドキュメントの整理と更新\n\n・README更新\n・API仕様書作成\n・開発ガイドライン整備',
-                dueDate: null, // 期限なし
-                labels: [
-                  { id: uuidv4(), name: 'ドキュメント', color: 'default' },
-                  { id: uuidv4(), name: '保守', color: 'attention' }
-                ],
-                subTasks: [
-                  { id: uuidv4(), title: 'README更新', completed: false, createdAt: new Date().toISOString() },
-                  { id: uuidv4(), title: 'API仕様書作成', completed: false, createdAt: new Date().toISOString() },
-                  { id: uuidv4(), title: '開発環境セットアップ手順', completed: true, createdAt: new Date().toISOString() }
-                ],
-                priority: 'low',
-                files: [],
-                completedAt: null,
-                createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-                updatedAt: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
               },
             ],
             color: '#fef3c7'
-          },
-          {
-            id: uuidv4(),
-            title: 'レビュー待ち',
-            tasks: [
-              {
-                id: uuidv4(),
-                title: 'テストケース作成',
-                description: 'ユニットテストとE2Eテストの実装',
-                labels: [
-                  { id: uuidv4(), name: 'テスト', color: 'done' },
-                  { id: uuidv4(), name: '品質保証', color: 'attention' }
-                ],
-                subTasks: [
-                  { id: uuidv4(), title: 'ユニットテスト', completed: true, createdAt: new Date().toISOString() },
-                  { id: uuidv4(), title: 'インテグレーションテスト', completed: true, createdAt: new Date().toISOString() },
-                  { id: uuidv4(), title: 'E2Eテスト', completed: true, createdAt: new Date().toISOString() }
-                ],
-                files: [
-                  {
-                    id: uuidv4(),
-                    name: 'test-results.json',
-                    type: 'application/json',
-                    size: 1024,
-                    data: 'data:application/json;base64,eyJ0ZXN0UmVzdWx0cyI6ICJwYXNzZWQifQ==',
-                    uploadedAt: new Date().toISOString()
-                  }
-                ],
-                priority: 'low',
-                dueDate: null,
-                completedAt: null,
-                createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-                updatedAt: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
-              },
-              {
-                id: uuidv4(),
-                title: 'パフォーマンス改善レビュー',
-                description: 'アプリケーションのパフォーマンス最適化案の検討\n\n・バンドルサイズ削減\n・ローディング時間短縮\n・メモリ使用量最適化',
-                dueDate: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // 明日期限
-                labels: [
-                  { id: uuidv4(), name: 'パフォーマンス', color: 'attention' },
-                  { id: uuidv4(), name: '最適化', color: 'success' }
-                ],
-                subTasks: [
-                  { id: uuidv4(), title: 'Lighthouse監査結果確認', completed: true, createdAt: new Date().toISOString() },
-                  { id: uuidv4(), title: '改善案リストアップ', completed: true, createdAt: new Date().toISOString() },
-                  { id: uuidv4(), title: '実装優先度決定', completed: false, createdAt: new Date().toISOString() }
-                ],
-                priority: 'medium',
-                files: [],
-                completedAt: null,
-                createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-                updatedAt: new Date(Date.now() - 20 * 60 * 1000).toISOString(),
-              },
-            ],
-            color: '#e0e7ff'
           },
           {
             id: uuidv4(),
@@ -1054,75 +864,22 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
             tasks: [
               {
                 id: uuidv4(),
-                title: '技術調査と検証',
-                description: '使用するフレームワークとライブラリの技術検証\n\n調査結果をドキュメント化済み',
+                title: '月次レポート作成',
+                description: '月次進捗レポートの作成と送付\n\n・データ集計\n・分析レポート作成',
+                dueDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), // 2日前期限（期限内に完了）
                 labels: [
-                  { id: uuidv4(), name: '調査', color: 'done' },
-                  { id: uuidv4(), name: '完了', color: 'success' }
-                ],
-                subTasks: [
-                  { id: uuidv4(), title: 'React 19調査', completed: true, createdAt: new Date().toISOString() },
-                  { id: uuidv4(), title: 'TypeScript 5.7調査', completed: true, createdAt: new Date().toISOString() },
-                  { id: uuidv4(), title: 'Primer React調査', completed: true, createdAt: new Date().toISOString() },
-                  { id: uuidv4(), title: '調査結果まとめ', completed: true, createdAt: new Date().toISOString() }
-                ],
-                files: [
-                  {
-                    id: uuidv4(),
-                    name: 'tech-research.pdf',
-                    type: 'application/pdf',
-                    size: 5120,
-                    data: 'data:application/pdf;base64,JVBERi0xLjQKJeLjz9MKMSAwIG9iagoKZW5kb2JqCg==',
-                    uploadedAt: new Date().toISOString()
-                  }
-                ],
-                priority: 'low',
-                dueDate: null,
-                completedAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-                createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
-                updatedAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-              },
-              {
-                id: uuidv4(),
-                title: 'セキュリティ監査',
-                description: 'アプリケーションのセキュリティ脆弱性チェック',
-                labels: [
-                  { id: uuidv4(), name: 'セキュリティ', color: 'danger' },
-                  { id: uuidv4(), name: '監査', color: 'default' },
-                  { id: uuidv4(), name: '完了', color: 'success' }
-                ],
-                subTasks: [
-                  { id: uuidv4(), title: '脆弱性スキャン', completed: true, createdAt: new Date().toISOString() },
-                  { id: uuidv4(), title: 'ペネトレーションテスト', completed: true, createdAt: new Date().toISOString() },
-                  { id: uuidv4(), title: 'セキュリティレポート作成', completed: true, createdAt: new Date().toISOString() }
-                ],
-                priority: 'medium',
-                dueDate: null,
-                files: [],
-                completedAt: new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString(),
-                createdAt: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
-                updatedAt: new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString(),
-              },
-              {
-                id: uuidv4(),
-                title: 'システム監視レポート（先月分）',
-                description: '月次システム監視レポート作成と送付\n\n・パフォーマンス統計\n・アラート分析\n・改善提案',
-                dueDate: null,
-                labels: [
-                  { id: uuidv4(), name: '監視', color: 'attention' },
-                  { id: uuidv4(), name: '月次', color: 'default' },
+                  { id: uuidv4(), name: 'レポート', color: 'primary' },
                   { id: uuidv4(), name: '完了', color: 'success' }
                 ],
                 subTasks: [
                   { id: uuidv4(), title: 'データ集計', completed: true, createdAt: new Date().toISOString() },
-                  { id: uuidv4(), title: 'グラフ作成', completed: true, createdAt: new Date().toISOString() },
-                  { id: uuidv4(), title: 'レポート送付', completed: true, createdAt: new Date().toISOString() }
+                  { id: uuidv4(), title: 'レポート作成', completed: true, createdAt: new Date().toISOString() }
                 ],
                 priority: 'medium',
                 files: [],
-                completedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-                createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
-                updatedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+                completedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+                createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+                updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
                 recurrence: {
                   enabled: true,
                   pattern: 'monthly',
@@ -1130,29 +887,7 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
                   dayOfMonth: 28
                 },
                 recurrenceId: 'monthly-report-2024',
-                occurrenceCount: 3
-              },
-              {
-                id: uuidv4(),
-                title: 'コードレビュー対応',
-                description: '指摘事項の修正とコード品質改善\n\n・リファクタリング\n・テストカバレッジ向上\n・パフォーマンス最適化',
-                dueDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), // 2日前期限（期限内に完了）
-                labels: [
-                  { id: uuidv4(), name: 'コードレビュー', color: 'primary' },
-                  { id: uuidv4(), name: '品質改善', color: 'success' },
-                  { id: uuidv4(), name: '完了', color: 'success' }
-                ],
-                subTasks: [
-                  { id: uuidv4(), title: 'ESLintエラー修正', completed: true, createdAt: new Date().toISOString() },
-                  { id: uuidv4(), title: 'TypeScript型エラー修正', completed: true, createdAt: new Date().toISOString() },
-                  { id: uuidv4(), title: 'ユニットテスト追加', completed: true, createdAt: new Date().toISOString() },
-                  { id: uuidv4(), title: 'コメント追加', completed: true, createdAt: new Date().toISOString() }
-                ],
-                priority: 'medium',
-                files: [],
-                completedAt: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(), // 6時間前に完了
-                createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-                updatedAt: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
+                occurrenceCount: 2
               },
             ],
             color: '#d1fae5'
