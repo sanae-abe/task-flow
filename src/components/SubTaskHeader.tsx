@@ -25,7 +25,7 @@ const SubTaskHeader: React.FC<SubTaskHeaderProps> = ({
         variant="invisible"
         size="small"
         leadingVisual={PlusIcon}
-        aria-label="サブタスクを追加"
+        aria-label="サブタスクを作成"
       >
         追加
       </Button>

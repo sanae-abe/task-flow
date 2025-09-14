@@ -170,7 +170,7 @@ export const handleTaskActions = (state: KanbanState, action: KanbanAction): Kan
             tasks: filteredTasks,
           };
         } else if (column.id === targetColumnId) {
-          // ターゲットカラムにタスクを追加
+          // ターゲットカラムにタスクを作成
           const newTasks = [...column.tasks];
           const safeTargetIndex = Math.max(0, Math.min(targetIndex, newTasks.length));
           newTasks.splice(safeTargetIndex, 0, updatedTask);
