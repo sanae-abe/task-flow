@@ -14,6 +14,16 @@ import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import type { Task } from '../types';
 import type { VirtualRecurringTask } from '../utils/calendarRecurrence';
 
+// 型ガード関数: タスクオブジェクトの妥当性をチェック
+function isValidTask(obj: unknown): obj is Task | VirtualRecurringTask {
+  return (
+    obj !== null &&
+    typeof obj === 'object' &&
+    'id' in obj &&
+    typeof (obj as { id: unknown }).id === 'string'
+  );
+}
+
 interface UseCalendarDragAndDropProps {
   onTaskDateChange: (taskId: string, newDate: Date) => void;
 }
@@ -53,9 +63,11 @@ export const useCalendarDragAndDrop = ({
 
     // active.dataからタスク情報を取得
     if (active.data.current?.['type'] === 'calendar-task') {
-      const task = active.data.current['task'] as Task | VirtualRecurringTask;
-      // 仮想タスクの場合はドラッグ無効だが、型の安全性のため設定
-      setActiveTask(task);
+      const task = active.data.current['task'];
+      if (isValidTask(task)) {
+        // 仮想タスクの場合はドラッグ無効だが、型の安全性のため設定
+        setActiveTask(task);
+      }
     }
   }, []);
 

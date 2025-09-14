@@ -18,7 +18,7 @@ export const useFirstTimeUser = () => {
   useEffect(() => {
     try {
       const savedValue = localStorage.getItem(FIRST_TIME_USER_KEY);
-      const isFirstTime = savedValue === null;
+      const isFirstTime = !savedValue;
 
       setState({
         isFirstTimeUser: isFirstTime,

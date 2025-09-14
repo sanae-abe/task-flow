@@ -37,7 +37,7 @@ const styles = {
 } as const;
 
 const AppContent: React.FC = () => {
-  const { state, closeTaskDetail, createBoard } = useKanban();
+  const { state, closeTaskDetail } = useKanban();
   const { isHelpOpen, openHelp, closeHelp } = useHelp();
   const { findTaskById } = useTaskFinder(state.currentBoard);
   const { shouldShowHint, markAsExistingUser, markHintAsShown } = useFirstTimeUser();
@@ -64,12 +64,6 @@ const AppContent: React.FC = () => {
     markAsExistingUser();
   };
 
-  const handleCreateBoardFromHint = () => {
-    markHintAsShown();
-    markAsExistingUser();
-    // デフォルトで「マイプロジェクト」という名前で新しいボードを作成
-    createBoard('マイプロジェクト');
-  };
 
   return (
     <div className="app" role="application" aria-label="Cheerアプリケーション">
@@ -126,7 +120,6 @@ const AppContent: React.FC = () => {
           }}>
             <FirstTimeUserHint
               onDismiss={handleDismissHint}
-              onCreateBoard={handleCreateBoardFromHint}
             />
           </div>
         </>

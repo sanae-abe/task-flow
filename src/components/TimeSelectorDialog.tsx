@@ -57,8 +57,8 @@ const TimeSelectorDialog: React.FC<TimeSelectorDialogProps> = ({
         />
       }
     >
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mb: 4 }}>
-        <Text sx={{ fontSize: 1, color: 'fg.muted', mb: 1, display: 'block', fontWeight: '700' }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mb: 4 }}>
+        <Text sx={{ fontSize: 1, display: 'block', fontWeight: '700' }}>
           時刻
         </Text>
         <TextInput

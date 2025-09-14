@@ -4,7 +4,6 @@ import { Box, Button } from '@primer/react';
 
 interface FirstTimeUserHintProps {
   onDismiss: () => void;
-  onCreateBoard: () => void;
 }
 
 const FirstTimeUserHint: React.FC<FirstTimeUserHintProps> = ({

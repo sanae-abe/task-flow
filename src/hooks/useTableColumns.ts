@@ -3,6 +3,13 @@ import { DEFAULT_COLUMNS, type TableColumn, type TableColumnSettings, type Table
 
 const STORAGE_KEY = 'cheer-table-columns';
 
+// 開発環境でのみログを出力するヘルパー関数
+const debugLog = (message: string, ...args: any[]) => {
+  if (process.env.NODE_ENV === 'development') {
+    console.log(message, ...args);
+  }
+};
+
 export const useTableColumns = (): TableColumnsHookReturn => {
   // 強制再レンダリング用のカウンター
   const [forceRender, setForceRender] = useState(0);
@@ -35,9 +42,9 @@ export const useTableColumns = (): TableColumnsHookReturn => {
 
   // カラムの表示/非表示を切り替え
   const toggleColumnVisibility = useCallback((columnId: string) => {
-    console.log('🎯 toggleColumnVisibility called with:', columnId);
+    debugLog('🎯 toggleColumnVisibility called with:', columnId);
     setSettings(currentSettings => {
-      console.log('🔍 Current settings before toggle:', currentSettings.columns.map(c => ({id: c.id, visible: c.visible})));
+      debugLog('🔍 Current settings before toggle:', currentSettings.columns.map(c => ({id: c.id, visible: c.visible})));
 
       const newColumns = currentSettings.columns.map(col =>
         col.id === columnId ? { ...col, visible: !col.visible } : { ...col }
@@ -48,25 +55,25 @@ export const useTableColumns = (): TableColumnsHookReturn => {
         columnOrder: [...currentSettings.columnOrder]
       };
 
-      console.log('🔄 New settings after toggle:', newColumns.map(c => ({id: c.id, visible: c.visible})));
+      debugLog('🔄 New settings after toggle:', newColumns.map(c => ({id: c.id, visible: c.visible})));
 
       // localStorageに保存
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(newSettings));
-        console.log('💾 Settings saved to localStorage');
+        debugLog('💾 Settings saved to localStorage');
       } catch (error) {
-        console.error('Failed to save settings:', error);
+        debugLog('❌ Failed to save settings:', error);
       }
 
       // 強制再レンダリングを発生させる
       setForceRender(prev => {
-        console.log('🔄 Force render incrementing from', prev, 'to', prev + 1);
+        debugLog('🔄 Force render incrementing from', prev, 'to', prev + 1);
         return prev + 1;
       });
 
       // カスタムイベントを発行してTableViewに通知
       setTimeout(() => {
-        console.log('📡 Dispatching table-columns-visibility-changed event');
+        debugLog('📡 Dispatching table-columns-visibility-changed event');
         window.dispatchEvent(new CustomEvent('table-columns-visibility-changed', {
           detail: { timestamp: Date.now() }
         }));
@@ -91,7 +98,7 @@ export const useTableColumns = (): TableColumnsHookReturn => {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(newSettings));
       } catch (error) {
-        console.error('Failed to save settings:', error);
+        debugLog('❌ Failed to save settings:', error);
       }
 
       return newSettings;
@@ -110,7 +117,7 @@ export const useTableColumns = (): TableColumnsHookReturn => {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(newSettings));
       } catch (error) {
-        console.error('Failed to save settings:', error);
+        debugLog('❌ Failed to save settings:', error);
       }
 
       return newSettings;
@@ -143,7 +150,7 @@ export const useTableColumns = (): TableColumnsHookReturn => {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(newSettings));
       } catch (error) {
-        console.error('Failed to save settings:', error);
+        debugLog('❌ Failed to save settings:', error);
       }
 
       return newSettings;
@@ -170,7 +177,7 @@ export const useTableColumns = (): TableColumnsHookReturn => {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(newSettings));
       } catch (error) {
-        console.error('Failed to save settings:', error);
+        debugLog('❌ Failed to save settings:', error);
       }
 
       return newSettings;

@@ -162,7 +162,7 @@ const RecurrenceDetailDialog: React.FC<RecurrenceDetailDialogProps> = ({
           onConfirm={handleSave}
           confirmText="保存"
           isConfirmDisabled={!isFormValid}
-          showDelete={Boolean(recurrence?.enabled)}
+          showDelete={!!recurrence?.enabled}
           onDelete={handleDelete}
           deleteText="削除"
         />
@@ -239,7 +239,7 @@ const RecurrenceDetailDialog: React.FC<RecurrenceDetailDialogProps> = ({
 
         <Box>
           <div style={{ marginBottom: '8px' }}>
-            <Text sx={{ fontSize: 1, fontWeight: '600', color: 'fg.muted' }}>終了条件（任意）:</Text>
+            <Text sx={{ fontSize: 1, fontWeight: '600' }}>終了条件（任意）:</Text>
           </div>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, pl: 2 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
