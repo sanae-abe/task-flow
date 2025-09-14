@@ -146,7 +146,7 @@ const TaskCreateDialog = memo(() => {
 
         <Box sx={{ mb: 4 }}>
           <Box sx={{ mb: 2 }}>
-            <Text sx={{ fontSize: 1, color: 'fg.muted', mb: 1, display: 'block', fontWeight: '700' }}>
+            <Text sx={{ fontSize: 1, mb: 1, display: 'block', fontWeight: '700' }}>
               期限（任意）
             </Text>
             <TextInput
@@ -192,7 +192,7 @@ const TaskCreateDialog = memo(() => {
         </Box>
 
         <Box sx={{ mb: 4 }}>
-          <Text sx={{ fontSize: 1, color: 'fg.muted', mb: 1, display: 'block', fontWeight: '700' }}>
+          <Text sx={{ fontSize: 1, mb: 1, display: 'block', fontWeight: '700' }}>
             ファイル添付（任意）
           </Text>
           <FileUploader
