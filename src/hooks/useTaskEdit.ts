@@ -61,17 +61,7 @@ export const useTaskEdit = ({
   const [labels, setLabels] = useState<Label[]>([]);
   const [attachments, setAttachments] = useState<FileAttachment[]>([]);
   const [columnId, setColumnId] = useState('');
-  const [recurrence, setRecurrence] = useState<RecurrenceConfig | undefined>(() => {
-    // 初期化時にtaskがある場合は、そのrecurrenceを使用
-    if (task?.recurrence) {
-      return task.recurrence;
-    }
-    return {
-      enabled: false,
-      pattern: 'daily',
-      interval: 1
-    };
-  });
+  const [recurrence, setRecurrence] = useState<RecurrenceConfig | undefined>(undefined);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   useEffect(() => {
@@ -111,13 +101,7 @@ export const useTaskEdit = ({
       setAttachments(task.files ?? []);
 
       // 繰り返し設定の初期化
-      const recurrenceConfig = task.recurrence || {
-        enabled: false,
-        pattern: 'daily',
-        interval: 1
-      };
-
-      setRecurrence(recurrenceConfig);
+      setRecurrence(task.recurrence);
 
       // 現在のタスクがどのカラムにあるかを特定
       const currentColumn = state.currentBoard?.columns.find(column =>
@@ -134,11 +118,7 @@ export const useTaskEdit = ({
       setCompletedAt('');
       setLabels([]);
       setAttachments([]);
-      setRecurrence({
-        enabled: false,
-        pattern: 'daily',
-        interval: 1
-      });
+      setRecurrence(undefined);
       setColumnId('');
     }
   }, [isOpen, task, state.currentBoard]);
@@ -286,13 +266,6 @@ export const useTaskEdit = ({
     }));
   }, [state.currentBoard]);
 
-  // 現在のrecurrenceを計算（状態更新を待たずに直接計算）
-  const currentRecurrence = useMemo(() => {
-    if (isOpen && task?.recurrence) {
-      return task.recurrence;
-    }
-    return recurrence;
-  }, [isOpen, task?.recurrence, recurrence]);
 
   return {
     title,
@@ -315,7 +288,7 @@ export const useTaskEdit = ({
     columnId,
     setColumnId,
     statusOptions,
-    recurrence: currentRecurrence,
+    recurrence,
     setRecurrence,
     showDeleteConfirm,
     setShowDeleteConfirm,
