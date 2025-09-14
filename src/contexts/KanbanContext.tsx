@@ -45,7 +45,8 @@ type KanbanAction =
   | { type: 'OPEN_TASK_DETAIL'; payload: { taskId: string } }
   | { type: 'CLOSE_TASK_DETAIL' }
   | { type: 'OPEN_TASK_FORM'; payload?: { defaultDate?: Date } }
-  | { type: 'CLOSE_TASK_FORM' };
+  | { type: 'CLOSE_TASK_FORM' }
+  | { type: 'CHECK_OVERDUE_RECURRING_TASKS' };
 
 interface KanbanContextType {
   state: KanbanState;
@@ -75,6 +76,7 @@ interface KanbanContextType {
   closeTaskForm: () => void;
   getAllLabels: () => Label[];
   loadInitialData: (data: { boards: KanbanBoard[]; labels: Label[]; tasks: Task[]; columns: Column[] }) => void;
+  checkOverdueRecurringTasks: () => void;
 }
 
 const KanbanContext = createContext<KanbanContextType | undefined>(undefined);
@@ -712,7 +714,80 @@ const kanbanReducer = (state: KanbanState, action: KanbanAction): KanbanState =>
         taskFormDefaultDate: undefined,
       };
     }
-    
+
+    case 'CHECK_OVERDUE_RECURRING_TASKS': {
+      if (!state.currentBoard) {
+        return state;
+      }
+
+      const now = new Date();
+      let hasChanges = false;
+      const updatedColumns = state.currentBoard.columns.map((column, columnIndex) => {
+        // 一番左のカラム（最初のカラム）ではない場合のみチェック
+        if (columnIndex === 0) {
+          return column;
+        }
+
+        const { remainingTasks } = column.tasks.reduce(
+          (acc, task) => {
+            // 繰り返しタスクで、期限が過ぎていて、まだ完了していない場合
+            if (
+              task.recurrence?.enabled &&
+              task.dueDate &&
+              !task.completedAt &&
+              new Date(task.dueDate) <= now
+            ) {
+              hasChanges = true;
+            } else {
+              acc.remainingTasks.push(task);
+            }
+            return acc;
+          },
+          { remainingTasks: [] as Task[] }
+        );
+
+        return {
+          ...column,
+          tasks: remainingTasks,
+        };
+      });
+
+      if (!hasChanges) {
+        return state;
+      }
+
+      // 移動されたタスクを一番左のカラムに追加
+      const firstColumn = updatedColumns[0];
+      if (!firstColumn) {
+        return state;
+      }
+
+      const allMovedTasks = state.currentBoard.columns.slice(1).flatMap(column =>
+        column.tasks.filter(task =>
+          task.recurrence?.enabled &&
+          task.dueDate &&
+          !task.completedAt &&
+          new Date(task.dueDate) <= now
+        )
+      );
+
+      if (allMovedTasks.length > 0) {
+        updatedColumns[0] = {
+          ...firstColumn,
+          tasks: [...firstColumn.tasks, ...allMovedTasks],
+        };
+
+        logger.debug(`🔄 Moved ${allMovedTasks.length} overdue recurring tasks to first column`);
+      }
+
+      const updatedBoard = updateBoardTimestamp({
+        ...state.currentBoard,
+        columns: updatedColumns,
+      });
+
+      return updateBoardInState(state, updatedBoard);
+    }
+
     default:
       return state;
   }
@@ -912,6 +987,7 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       saveBoards(state.boards, state.currentBoard?.id);
     }
   }, [state.boards, state.currentBoard, isInitialized]);
+
   
   const createBoard = useCallback((title: string) => {
     dispatch({ type: 'CREATE_BOARD', payload: { title } });
@@ -1065,6 +1141,11 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   const loadInitialData = useCallback((data: { boards: KanbanBoard[]; labels: Label[]; tasks: Task[]; columns: Column[] }) => {
     dispatch({ type: 'LOAD_INITIAL_DATA', payload: { boards: data.boards, labels: data.labels } });
   }, []);
+
+  const checkOverdueRecurringTasks = useCallback(() => {
+    dispatch({ type: 'CHECK_OVERDUE_RECURRING_TASKS' });
+  }, []);
+
   
   const contextValue = useMemo(
     () => ({
@@ -1095,6 +1176,7 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       closeTaskForm,
       getAllLabels,
       loadInitialData,
+      checkOverdueRecurringTasks,
     }),
     [
       state,
@@ -1123,8 +1205,26 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       closeTaskForm,
       getAllLabels,
       loadInitialData,
+      checkOverdueRecurringTasks,
     ]
   );
+
+  // 繰り返しタスクの期限日チェック
+  useEffect(() => {
+    if (!isInitialized || !state.currentBoard) {
+      return;
+    }
+
+    // 初回チェック
+    checkOverdueRecurringTasks();
+
+    // 10分ごとにチェック
+    const interval = setInterval(() => {
+      checkOverdueRecurringTasks();
+    }, 10 * 60 * 1000); // 10分
+
+    return () => clearInterval(interval);
+  }, [isInitialized, state.currentBoard?.id, checkOverdueRecurringTasks]);
 
   return (
     <KanbanContext.Provider value={contextValue}>

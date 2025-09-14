@@ -18,7 +18,8 @@ const DIALOG_STYLES = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    animation: 'dialog-backdrop-fade-in 200ms cubic-bezier(0.33, 1, 0.68, 1)'
+    animation: 'dialog-backdrop-fade-in 200ms cubic-bezier(0.33, 1, 0.68, 1)',
+    padding: '16px'
   },
   container: {
     overflow: 'hidden',
@@ -26,7 +27,8 @@ const DIALOG_STYLES = {
     flexDirection: 'column',
     boxShadow: 'shadow.large',
     width: '100%',
-    overflowY: 'auto',
+    maxWidth: '640px',
+    maxHeight: 'calc(100vh - 32px)',
     bg: 'canvas.default',
     borderRadius: 'var(--borderRadius-large, var(--borderRadius-large, .75rem))',
     animation: 'dialog-scale-fade-in 200ms cubic-bezier(0.33, 1, 0.68, 1)'
@@ -34,40 +36,50 @@ const DIALOG_STYLES = {
   content: {
     p: '16px',
     bg: 'canvas.default',
-    position: 'relative'
+    position: 'relative',
+    overflowY: 'auto',
+    flex: 1
   },
   smallContainer: {
     overflow: 'hidden',
+    display: 'flex',
+    flexDirection: 'column',
     bg: 'canvas.default',
     minWidth: '460px',
     maxWidth: '640px',
-    maxHeight: '90vh',
-    borderRadius: 'var(--borderRadius-large, var(--borderRadius-large, .75rem))'
+    maxHeight: 'calc(100vh - 32px)',
+    borderRadius: 'var(--borderRadius-large, var(--borderRadius-large, .75rem))',
+    boxShadow: 'shadow.large',
+    animation: 'dialog-scale-fade-in 200ms cubic-bezier(0.33, 1, 0.68, 1)'
   },
   largeContainer: {
     overflow: 'hidden',
+    display: 'flex',
+    flexDirection: 'column',
     bg: 'canvas.default',
     minWidth: '600px',
     maxWidth: '640px',
-    maxHeight: '90vh',
-    borderRadius: 'var(--borderRadius-large, var(--borderRadius-large, .75rem))'
+    maxHeight: 'calc(100vh - 32px)',
+    borderRadius: 'var(--borderRadius-large, var(--borderRadius-large, .75rem))',
+    boxShadow: 'shadow.large',
+    animation: 'dialog-scale-fade-in 200ms cubic-bezier(0.33, 1, 0.68, 1)'
   },
   smallContent: {
     bg: 'canvas.default',
     p: '16px',
     minWidth: '300px',
     maxWidth: '460px',
-    maxHeight: '90vh',
     overflowY: 'auto',
+    flex: 1
   },
   largeContent: {
     bg: 'canvas.default',
     p: '16px',
-    pb: 8,
+    pb: 3,
     minWidth: '600px',
     maxWidth: '640px',
-    maxHeight: '90vh',
-    overflowY: 'auto'
+    overflowY: 'auto',
+    flex: 1
   },
   header: {
     display: 'flex',
@@ -171,16 +183,29 @@ export const DialogActions = memo<DialogActionsProps>(({
   </Box>
 ));
 
-const CommonDialog = memo<CommonDialogProps>(({ 
-  isOpen, 
-  title, 
-  onClose, 
-  children, 
+const CommonDialog = memo<CommonDialogProps>(({
+  isOpen,
+  title,
+  onClose,
+  children,
   actions,
   ariaLabelledBy,
   size = 'default'
 }) => {
   const theme = useTheme();
+  const [isSmallScreen, setIsSmallScreen] = React.useState(false);
+
+  React.useEffect(() => {
+    const checkScreenSize = () => {
+      setIsSmallScreen(window.innerWidth < 680);
+    };
+
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
+
   const handleBackdropClick = useCallback((event: React.MouseEvent) => {
     if (event.target === event.currentTarget) {
       onClose();
@@ -205,9 +230,16 @@ const CommonDialog = memo<CommonDialogProps>(({
           aria-modal="true"
           aria-labelledby={ariaLabelledBy}
         >
-          <Box sx={size === 'large' ? DIALOG_STYLES.largeContainer :
-                  size === 'small' ? DIALOG_STYLES.smallContainer :
-                  DIALOG_STYLES.container}
+          <Box sx={{
+                  ...(size === 'large' ? DIALOG_STYLES.largeContainer :
+                      size === 'small' ? DIALOG_STYLES.smallContainer :
+                      DIALOG_STYLES.container),
+                  ...(isSmallScreen && {
+                    minWidth: '90vw',
+                    maxWidth: '90vw',
+                    width: '90vw'
+                  })
+                }}
               onClick={handleContainerClick}
           >
             <DialogHeader 
@@ -216,9 +248,15 @@ const CommonDialog = memo<CommonDialogProps>(({
               titleId={ariaLabelledBy}
             />
             <Box
-              sx={size === 'large' ? DIALOG_STYLES.largeContent :
-                  size === 'small' ? DIALOG_STYLES.smallContent :
-                  DIALOG_STYLES.content}
+              sx={{
+                ...(size === 'large' ? DIALOG_STYLES.largeContent :
+                    size === 'small' ? DIALOG_STYLES.smallContent :
+                    DIALOG_STYLES.content),
+                ...(isSmallScreen && {
+                  minWidth: 'auto',
+                  maxWidth: 'none'
+                })
+              }}
             >
               {children}
               <div style={{marginTop: '24px'}}>
