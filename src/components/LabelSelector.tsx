@@ -92,7 +92,6 @@ const LabelSelector = memo<LabelSelectorProps>(({
   }), []);
 
   const buttonStyles = useMemo(() => ({
-    color: 'fg.muted',
     '&:hover': {
       color: 'fg.default',
       bg: 'neutral.subtle'

@@ -49,9 +49,7 @@ const RecurrenceSelector: React.FC<RecurrenceSelectorProps> = ({
         onClick={handleButtonClick}
         disabled={disabled}
         sx={{
-          color: disabled ? 'fg.disabled' : 'inherit',
-          border: '1px solid var(--borderColor-default)',
-          bg: 'canvas.default',
+          color: disabled ? 'fg.disabled' : 'fg.default',
           '& span': {
             display: 'flex',
             alignItems: 'center',
