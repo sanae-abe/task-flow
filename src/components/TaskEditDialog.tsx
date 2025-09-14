@@ -30,6 +30,10 @@ const TaskEditDialog = memo<TaskEditDialogProps>(({
     setDescription,
     dueDate,
     setDueDate,
+    dueTime,
+    setDueTime,
+    hasTime,
+    setHasTime,
     completedAt,
     setCompletedAt,
     isCompleted,
@@ -78,6 +82,10 @@ const TaskEditDialog = memo<TaskEditDialogProps>(({
           setDescription={setDescription}
           dueDate={dueDate}
           setDueDate={setDueDate}
+          dueTime={dueTime}
+          setDueTime={setDueTime}
+          hasTime={hasTime}
+          setHasTime={setHasTime}
           completedAt={completedAt}
           setCompletedAt={setCompletedAt}
           isCompleted={isCompleted}

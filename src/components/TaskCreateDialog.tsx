@@ -1,13 +1,12 @@
-import { Box, Text } from '@primer/react';
+import { Box, Text, Checkbox, TextInput, Label } from '@primer/react';
 import React, { useState, useEffect, useCallback, memo } from 'react';
 
-import type { Label, FileAttachment, RecurrenceConfig } from '../types';
+import type { Label as LabelType, FileAttachment, RecurrenceConfig } from '../types';
 import { useKanban } from '../contexts/KanbanContext';
-import { toDateTimeLocalString, fromDateTimeLocalString } from '../utils/dateHelpers';
 
 import CommonDialog, { DialogActions } from './CommonDialog';
 import FileUploader from './FileUploader';
-import FormField, { TextareaField, DateTimeField } from './FormField';
+import FormField, { TextareaField } from './FormField';
 import LabelSelector from './LabelSelector';
 import RecurrenceSelector from './RecurrenceSelector';
 
@@ -20,18 +19,18 @@ const TaskCreateDialog = memo(() => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [dueDate, setDueDate] = useState('');
-  const [labels, setLabels] = useState<Label[]>([]);
+  const [dueTime, setDueTime] = useState('');
+  const [hasTime, setHasTime] = useState(false);
+  const [labels, setLabels] = useState<LabelType[]>([]);
   const [attachments, setAttachments] = useState<FileAttachment[]>([]);
   const [recurrence, setRecurrence] = useState<RecurrenceConfig | undefined>();
 
   // デフォルト日付が設定されている場合は期限日に設定
   useEffect(() => {
     if (state.taskFormDefaultDate) {
-      // デフォルト時刻を23:59に設定
       const defaultDate = new Date(state.taskFormDefaultDate);
-      defaultDate.setHours(23, 59, 59, 999);
-      const dateTimeString = toDateTimeLocalString(defaultDate);
-      setDueDate(dateTimeString);
+      const dateString = defaultDate.toISOString().split('T')[0]; // YYYY-MM-DD形式
+      setDueDate(dateString || '');
     }
   }, [state.taskFormDefaultDate]);
 
@@ -42,6 +41,8 @@ const TaskCreateDialog = memo(() => {
       if (!state.taskFormDefaultDate) {
         setDueDate('');
       }
+      setDueTime('');
+      setHasTime(false);
       setLabels([]);
       setAttachments([]);
       setRecurrence(undefined);
@@ -53,7 +54,20 @@ const TaskCreateDialog = memo(() => {
       return;
     }
 
-    const dueDateObj = dueDate ? fromDateTimeLocalString(dueDate) || undefined : undefined;
+    let dueDateObj: Date | undefined = undefined;
+
+    if (dueDate) {
+      if (hasTime && dueTime) {
+        // 日付と時刻を組み合わせ
+        const dateTimeString = `${dueDate}T${dueTime}`;
+        dueDateObj = new Date(dateTimeString);
+      } else {
+        // 日付のみの場合は23:59:59に設定
+        dueDateObj = new Date(dueDate);
+        dueDateObj.setHours(23, 59, 59, 999);
+      }
+    }
+
     const defaultColumnId = state.currentBoard.columns[0]?.id;
 
     if (defaultColumnId) {
@@ -68,7 +82,7 @@ const TaskCreateDialog = memo(() => {
       );
       closeTaskForm();
     }
-  }, [title, description, dueDate, labels, attachments, recurrence, createTask, closeTaskForm, state.currentBoard]);
+  }, [title, description, dueDate, dueTime, hasTime, labels, attachments, recurrence, createTask, closeTaskForm, state.currentBoard]);
 
   const handleKeyPress = useCallback((event: React.KeyboardEvent) => {
     if (event.key === 'Escape') {
@@ -124,16 +138,56 @@ const TaskCreateDialog = memo(() => {
           rows={4}
         />
 
-        <DateTimeField
-          id="task-due-date"
-          label="期限（任意）"
-          value={dueDate}
-          onChange={setDueDate}
-          onKeyDown={handleKeyPress}
+        <Box sx={{ mb: 4 }}>
+          <Box sx={{ mb: 2 }}>
+            <Text sx={{ fontSize: 1, color: 'fg.muted', mb: 1, display: 'block', fontWeight: '700' }}>
+              期限（任意）
+            </Text>
+            <TextInput
+              type="date"
+              value={dueDate}
+              onChange={(e) => setDueDate(e.target.value)}
+              onKeyDown={handleKeyPress}
+              sx={{ width: '100%' }}
+              step="1"
+            />
+          </Box>
+
+          {dueDate && (
+            <Label sx={{ border: 0, display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+              <Checkbox
+                checked={hasTime}
+                onChange={(e) => setHasTime(e.target.checked)}
+              />
+              <Text sx={{ fontSize: 1 }}>時刻を設定</Text>
+            </Label>
+          )}
+
+          {hasTime && dueDate && (
+            <Box sx={{ mb: 2 }}>
+              <Text sx={{ fontSize: 1, color: 'fg.muted', mb: 1, display: 'block', fontWeight: '700' }}>
+                時刻
+              </Text>
+              <TextInput
+                type="time"
+                value={dueTime}
+                onChange={(e) => setDueTime(e.target.value)}
+                onKeyDown={handleKeyPress}
+                sx={{ width: '100%' }}
+                step="300"
+              />
+            </Box>
+          )}
+
+          <RecurrenceSelector
+            recurrence={recurrence}
+            onRecurrenceChange={setRecurrence}
+            disabled={!dueDate}
         />
+        </Box>
 
         <Box sx={{ mb: 4 }}>
-          <Text sx={{ fontSize: 1, color: 'fg.muted', mb: 1, display: 'block', fontWeight: '700' }}>
+          <Text sx={{ fontSize: 1, mb: 1, display: 'block', fontWeight: '700' }}>
             ラベル（任意）
           </Text>
           <LabelSelector
@@ -141,11 +195,6 @@ const TaskCreateDialog = memo(() => {
             onLabelsChange={setLabels}
           />
         </Box>
-
-        <RecurrenceSelector
-          recurrence={recurrence}
-          onRecurrenceChange={setRecurrence}
-        />
 
         <Box sx={{ mb: 4 }}>
           <Text sx={{ fontSize: 1, color: 'fg.muted', mb: 1, display: 'block', fontWeight: '700' }}>

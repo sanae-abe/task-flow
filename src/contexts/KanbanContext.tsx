@@ -847,6 +847,44 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
                   daysOfWeek: [5] // 金曜日
                 }
               },
+              {
+                id: uuidv4(),
+                title: 'チームビルディング企画',
+                description: '四半期チームビルディングイベントの企画と準備\n\n・会場選定\n・プログラム検討\n・予算調整',
+                dueDate: null, // 期限なし
+                labels: [
+                  { id: uuidv4(), name: 'イベント', color: 'attention' },
+                  { id: uuidv4(), name: 'チーム', color: 'success' }
+                ],
+                subTasks: [
+                  { id: uuidv4(), title: '企画会議', completed: false, createdAt: new Date().toISOString() },
+                  { id: uuidv4(), title: '会場候補リストアップ', completed: false, createdAt: new Date().toISOString() }
+                ],
+                priority: 'low',
+                files: [],
+                completedAt: null,
+                createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+                updatedAt: new Date(Date.now() - 45 * 60 * 1000).toISOString(),
+              },
+              {
+                id: uuidv4(),
+                title: '技術調査 - 新ライブラリ検証',
+                description: '新しいフロントエンドライブラリの調査と検証\n\n・パフォーマンス検証\n・既存システムとの互換性\n・導入コスト試算',
+                dueDate: null, // 期限なし
+                labels: [
+                  { id: uuidv4(), name: '調査', color: 'primary' },
+                  { id: uuidv4(), name: '技術', color: 'default' }
+                ],
+                subTasks: [
+                  { id: uuidv4(), title: 'ライブラリ比較表作成', completed: false, createdAt: new Date().toISOString() },
+                  { id: uuidv4(), title: 'POC実装', completed: false, createdAt: new Date().toISOString() }
+                ],
+                priority: 'low',
+                files: [],
+                completedAt: null,
+                createdAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
+                updatedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+              },
             ],
             color: '#f6f8fa'
           },
@@ -931,6 +969,26 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
                   dayOfMonth: 1 // 毎月1日
                 }
               },
+              {
+                id: uuidv4(),
+                title: 'ドキュメント整備',
+                description: 'プロジェクトドキュメントの整理と更新\n\n・README更新\n・API仕様書作成\n・開発ガイドライン整備',
+                dueDate: null, // 期限なし
+                labels: [
+                  { id: uuidv4(), name: 'ドキュメント', color: 'default' },
+                  { id: uuidv4(), name: '保守', color: 'attention' }
+                ],
+                subTasks: [
+                  { id: uuidv4(), title: 'README更新', completed: false, createdAt: new Date().toISOString() },
+                  { id: uuidv4(), title: 'API仕様書作成', completed: false, createdAt: new Date().toISOString() },
+                  { id: uuidv4(), title: '開発環境セットアップ手順', completed: true, createdAt: new Date().toISOString() }
+                ],
+                priority: 'low',
+                files: [],
+                completedAt: null,
+                createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+                updatedAt: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
+              },
             ],
             color: '#fef3c7'
           },
@@ -966,6 +1024,26 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
                 completedAt: null,
                 createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
                 updatedAt: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
+              },
+              {
+                id: uuidv4(),
+                title: 'パフォーマンス改善レビュー',
+                description: 'アプリケーションのパフォーマンス最適化案の検討\n\n・バンドルサイズ削減\n・ローディング時間短縮\n・メモリ使用量最適化',
+                dueDate: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // 明日期限
+                labels: [
+                  { id: uuidv4(), name: 'パフォーマンス', color: 'attention' },
+                  { id: uuidv4(), name: '最適化', color: 'success' }
+                ],
+                subTasks: [
+                  { id: uuidv4(), title: 'Lighthouse監査結果確認', completed: true, createdAt: new Date().toISOString() },
+                  { id: uuidv4(), title: '改善案リストアップ', completed: true, createdAt: new Date().toISOString() },
+                  { id: uuidv4(), title: '実装優先度決定', completed: false, createdAt: new Date().toISOString() }
+                ],
+                priority: 'medium',
+                files: [],
+                completedAt: null,
+                createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+                updatedAt: new Date(Date.now() - 20 * 60 * 1000).toISOString(),
               },
             ],
             color: '#e0e7ff'
@@ -1053,6 +1131,28 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
                 },
                 recurrenceId: 'monthly-report-2024',
                 occurrenceCount: 3
+              },
+              {
+                id: uuidv4(),
+                title: 'コードレビュー対応',
+                description: '指摘事項の修正とコード品質改善\n\n・リファクタリング\n・テストカバレッジ向上\n・パフォーマンス最適化',
+                dueDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), // 2日前期限（期限内に完了）
+                labels: [
+                  { id: uuidv4(), name: 'コードレビュー', color: 'primary' },
+                  { id: uuidv4(), name: '品質改善', color: 'success' },
+                  { id: uuidv4(), name: '完了', color: 'success' }
+                ],
+                subTasks: [
+                  { id: uuidv4(), title: 'ESLintエラー修正', completed: true, createdAt: new Date().toISOString() },
+                  { id: uuidv4(), title: 'TypeScript型エラー修正', completed: true, createdAt: new Date().toISOString() },
+                  { id: uuidv4(), title: 'ユニットテスト追加', completed: true, createdAt: new Date().toISOString() },
+                  { id: uuidv4(), title: 'コメント追加', completed: true, createdAt: new Date().toISOString() }
+                ],
+                priority: 'medium',
+                files: [],
+                completedAt: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(), // 6時間前に完了
+                createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+                updatedAt: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
               },
             ],
             color: '#d1fae5'

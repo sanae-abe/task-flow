@@ -1,4 +1,4 @@
-import { Text, TextInput, Textarea, Select, FormControl } from '@primer/react';
+import { Text, TextInput, Textarea, Select, FormControl, Checkbox } from '@primer/react';
 import React, { memo } from 'react';
 
 import type { FormFieldConfig } from '../../../types/unified-form';
@@ -60,7 +60,10 @@ const UnifiedFormField = memo<UnifiedFormFieldProps>(({
   onFocus,
   error,
   touched,
-  helpText
+  helpText,
+  step,
+  min,
+  max
 }) => {
   // 共通のイベントハンドラー
   const handleChange = (newValue: unknown) => {
@@ -121,11 +124,15 @@ const UnifiedFormField = memo<UnifiedFormFieldProps>(({
             aria-invalid={hasError}
             aria-describedby={hasError ? `${id}-error` : undefined}
             aria-label={hideLabel ? label : undefined}
+            {...(step ? { step } : {})}
+            {...(min ? { min } : {})}
+            {...(max ? { max } : {})}
           />
         );
 
       case 'date':
       case 'datetime-local':
+      case 'time':
         return (
           <TextInput
             name={name}
@@ -139,6 +146,24 @@ const UnifiedFormField = memo<UnifiedFormFieldProps>(({
             disabled={disabled}
             sx={UNIFIED_FORM_STYLES.input}
             validationStatus={validationStatus}
+            aria-required={validation?.required}
+            aria-invalid={hasError}
+            aria-describedby={hasError ? `${id}-error` : undefined}
+            {...(step ? { step } : {})}
+            {...(min ? { min } : {})}
+            {...(max ? { max } : {})}
+          />
+        );
+
+      case 'checkbox':
+        return (
+          <Checkbox
+            name={name}
+            checked={Boolean(value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange(e.target.checked)}
+            onBlur={handleBlur}
+            onFocus={handleFocus}
+            disabled={disabled}
             aria-required={validation?.required}
             aria-invalid={hasError}
             aria-describedby={hasError ? `${id}-error` : undefined}

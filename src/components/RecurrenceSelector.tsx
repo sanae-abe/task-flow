@@ -2,17 +2,15 @@ import {
   Box,
   Text,
   Checkbox,
-  Select,
-  TextInput,
   Label,
+  Button,
 } from '@primer/react';
-import React, { useState, useEffect, useCallback } from 'react';
+import { GearIcon } from '@primer/octicons-react';
+import React, { useState, useCallback } from 'react';
 
-import type { RecurrenceConfig, RecurrencePattern } from '../types';
-import {
-  validateRecurrenceConfig,
-  getRecurrenceDescription,
-} from '../utils/recurrence';
+import type { RecurrenceConfig } from '../types';
+import { getRecurrenceDescription } from '../utils/recurrence';
+import RecurrenceDetailDialog from './RecurrenceDetailDialog';
 
 interface RecurrenceSelectorProps {
   recurrence?: RecurrenceConfig;
@@ -20,266 +18,88 @@ interface RecurrenceSelectorProps {
   disabled?: boolean;
 }
 
-const PATTERN_OPTIONS: { value: RecurrencePattern; label: string }[] = [
-  { value: 'daily', label: '毎日' },
-  { value: 'weekly', label: '毎週' },
-  { value: 'monthly', label: '毎月' },
-  { value: 'yearly', label: '毎年' },
-];
-
-const WEEKDAYS = [
-  { value: 0, label: '日' },
-  { value: 1, label: '月' },
-  { value: 2, label: '火' },
-  { value: 3, label: '水' },
-  { value: 4, label: '木' },
-  { value: 5, label: '金' },
-  { value: 6, label: '土' },
-];
 
 const RecurrenceSelector: React.FC<RecurrenceSelectorProps> = ({
   recurrence,
   onRecurrenceChange,
   disabled = false,
 }) => {
-  const [config, setConfig] = useState<RecurrenceConfig>(() => {
-    const defaultConfig: RecurrenceConfig = {
-      enabled: false,
-      pattern: 'daily' as RecurrencePattern,
-      interval: 1,
-    };
-    return recurrence ? { ...defaultConfig, ...recurrence } : defaultConfig;
-  });
-
-  const [errors, setErrors] = useState<string[]>([]);
-
-  // propsのrecurrenceが変更された時に内部状態を更新
-  useEffect(() => {
-    if (recurrence) {
-      const defaultConfig: RecurrenceConfig = {
-        enabled: false,
-        pattern: 'daily' as RecurrencePattern,
-        interval: 1,
-      };
-      const newConfig = { ...defaultConfig, ...recurrence };
-
-      // 値が実際に変更された場合のみ更新
-      setConfig(prev => {
-        if (JSON.stringify(prev) !== JSON.stringify(newConfig)) {
-          return newConfig;
-        }
-        return prev;
-      });
-    }
-  }, [recurrence]);
-
-  useEffect(() => {
-    if (!config) {
-      setErrors([]);
-      return;
-    }
-
-    const newErrors = validateRecurrenceConfig(config);
-    setErrors(newErrors);
-
-    if (newErrors.length === 0) {
-      const resultConfig = config.enabled ? config : undefined;
-
-      // 親から渡されたrecurrenceと比較して変更があった場合のみ呼び出し
-      const configString = JSON.stringify(resultConfig);
-      const recurrenceString = JSON.stringify(recurrence);
-
-      if (configString !== recurrenceString) {
-        onRecurrenceChange(resultConfig);
-      }
-    }
-  }, [config, onRecurrenceChange, recurrence]);
+  const [isDetailDialogOpen, setIsDetailDialogOpen] = useState(false);
 
   const handleEnabledChange = useCallback((checked: boolean) => {
-    setConfig(prev => ({ ...prev, enabled: checked }));
-  }, []);
-
-  const handlePatternChange = useCallback((value: string) => {
-    setConfig(prev => ({
-      ...prev,
-      pattern: value as RecurrencePattern,
-      daysOfWeek: value === 'weekly' ? [new Date().getDay()] : undefined,
-      dayOfMonth: value === 'monthly' ? new Date().getDate() : undefined,
-    }));
-  }, []);
-
-  const handleIntervalChange = useCallback((value: string) => {
-    const interval = parseInt(value, 10);
-    if (!isNaN(interval) && interval > 0) {
-      setConfig(prev => ({ ...prev, interval }));
+    if (checked) {
+      // チェックされた場合、詳細設定ダイアログを開く
+      setIsDetailDialogOpen(true);
+    } else {
+      // チェックを外された場合、繰り返し設定をクリア
+      onRecurrenceChange(undefined);
     }
+  }, [onRecurrenceChange]);
+
+  const handleDetailDialogSave = useCallback((newRecurrence: RecurrenceConfig | undefined) => {
+    onRecurrenceChange(newRecurrence);
+  }, [onRecurrenceChange]);
+
+  const handleDetailDialogClose = useCallback(() => {
+    setIsDetailDialogOpen(false);
   }, []);
 
-  const handleDaysOfWeekChange = useCallback((day: number, checked: boolean) => {
-    setConfig(prev => {
-      const daysOfWeek = prev.daysOfWeek || [];
-      const newDaysOfWeek = checked
-        ? [...daysOfWeek, day].sort((a, b) => a - b)
-        : daysOfWeek.filter(d => d !== day);
-
-      return { ...prev, daysOfWeek: newDaysOfWeek };
-    });
-  }, []);
-
-  const handleDayOfMonthChange = useCallback((value: string) => {
-    const dayOfMonth = parseInt(value, 10);
-    if (!isNaN(dayOfMonth) && dayOfMonth >= 1 && dayOfMonth <= 31) {
-      setConfig(prev => ({ ...prev, dayOfMonth }));
-    }
-  }, []);
-
-  const handleEndDateChange = useCallback((value: string) => {
-    setConfig(prev => ({
-      ...prev,
-      endDate: value || undefined,
-      maxOccurrences: value ? undefined : prev.maxOccurrences,
-    }));
-  }, []);
-
-  const handleMaxOccurrencesChange = useCallback((value: string) => {
-    const maxOccurrences = parseInt(value, 10);
-    if (value === '' || (!isNaN(maxOccurrences) && maxOccurrences > 0)) {
-      setConfig(prev => ({
-        ...prev,
-        maxOccurrences: value === '' ? undefined : maxOccurrences,
-        endDate: value !== '' ? undefined : prev.endDate,
-      }));
-    }
+  const handleSettingsClick = useCallback(() => {
+    setIsDetailDialogOpen(true);
   }, []);
 
   return (
-    <Box sx={{ mb: 4 }}>
-      <Label>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-          <Checkbox
-            checked={Boolean(config?.enabled) && !disabled}
-            onChange={(e) => handleEnabledChange(e.target.checked)}
-            disabled={disabled}
-          />
-          <Text sx={{ fontSize: 1, color: disabled ? 'fg.disabled' : 'fg.muted', fontWeight: '700' }}>
-            繰り返し設定
-          </Text>
-        </Box>
-      </Label>
-
-      {Boolean(config?.enabled) && !disabled && (
-        <Box sx={{ pl: 4, display: 'flex', flexDirection: 'column', gap: 3 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <Text sx={{ fontSize: 1, minWidth: '60px' }}>パターン:</Text>
-            <Select
-              value={config?.pattern || 'daily'}
-              onChange={(e) => handlePatternChange(e.target.value)}
-              sx={{ width: '120px' }}
-            >
-              {PATTERN_OPTIONS.map(option => (
-                <Select.Option key={option.value} value={option.value}>
-                  {option.label}
-                </Select.Option>
-              ))}
-            </Select>
-          </Box>
-
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <Text sx={{ fontSize: 1, minWidth: '60px' }}>間隔:</Text>
-            <TextInput
-              type="number"
-              value={(config?.interval || 1).toString()}
-              onChange={(e) => handleIntervalChange(e.target.value)}
-              sx={{ width: '80px' }}
-              min={1}
+    <>
+      <Box sx={{ mb: 4 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Label sx={{ border: 0, display: 'flex', alignItems: 'center', gap: 2, flex: 1 }}>
+            <Checkbox
+              checked={Boolean(recurrence?.enabled) && !disabled}
+              onChange={(e) => handleEnabledChange(e.target.checked)}
+              disabled={disabled}
             />
-            <Text sx={{ fontSize: 1 }}>
-              {config?.pattern === 'daily' ? '日ごと' :
-               config?.pattern === 'weekly' ? '週間ごと' :
-               config?.pattern === 'monthly' ? 'ヶ月ごと' : '年ごと'}
+            <Text sx={{ fontSize: 1, color: disabled ? 'fg.disabled' : 'inherit' }}>
+              繰り返し設定
+            </Text>
+          </Label>
+
+          {Boolean(recurrence?.enabled) && !disabled && (
+            <Button
+              variant="invisible"
+              size="small"
+              leadingVisual={GearIcon}
+              onClick={handleSettingsClick}
+              sx={{ color: 'fg.muted' }}
+            >
+              設定
+            </Button>
+          )}
+        </Box>
+
+        {Boolean(recurrence?.enabled) && !disabled && (
+          <Box sx={{ pl: 4 }}>
+            <Text sx={{ fontSize: 0, color: 'fg.muted' }}>
+              {getRecurrenceDescription(recurrence)}
             </Text>
           </Box>
+        )}
 
-          {config?.pattern === 'weekly' && (
-            <Box>
-              <Text sx={{ fontSize: 1, mb: 2 }}>曜日選択:</Text>
-              <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                {WEEKDAYS.map(day => (
-                  <Label key={day.value} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Checkbox
-                      checked={config?.daysOfWeek?.includes(day.value) || false}
-                      onChange={(e) => handleDaysOfWeekChange(day.value, e.target.checked)}
-                    />
-                    <Text sx={{ fontSize: 1 }}>{day.label}</Text>
-                  </Label>
-                ))}
-              </Box>
-            </Box>
-          )}
-
-          {config?.pattern === 'monthly' && (
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              <Text sx={{ fontSize: 1, minWidth: '60px' }}>日付:</Text>
-              <TextInput
-                type="number"
-                value={config?.dayOfMonth?.toString() || ''}
-                onChange={(e) => handleDayOfMonthChange(e.target.value)}
-                placeholder="毎月の日付（1-31）"
-                sx={{ width: '150px' }}
-                min={1}
-                max={31}
-              />
-              <Text sx={{ fontSize: 1 }}>日</Text>
-            </Box>
-          )}
-
-          <Box>
-            <Text sx={{ fontSize: 1, mb: 2 }}>終了条件（任意）:</Text>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, pl: 2 }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <Text sx={{ fontSize: 1, minWidth: '60px' }}>終了日:</Text>
-                <TextInput
-                  type="date"
-                  value={config?.endDate || ''}
-                  onChange={(e) => handleEndDateChange(e.target.value)}
-                  sx={{ width: '150px' }}
-                />
-              </Box>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <Text sx={{ fontSize: 1, minWidth: '60px' }}>最大回数:</Text>
-                <TextInput
-                  type="number"
-                  value={config?.maxOccurrences?.toString() || ''}
-                  onChange={(e) => handleMaxOccurrencesChange(e.target.value)}
-                  placeholder="回数"
-                  sx={{ width: '80px' }}
-                  min={1}
-                />
-                <Text sx={{ fontSize: 1 }}>回</Text>
-              </Box>
-            </Box>
+        {disabled && (
+          <Box sx={{ pl: 4 }}>
+            <Text sx={{ fontSize: 0, color: 'fg.muted' }}>
+              期限を設定してから繰り返し設定を有効にしてください
+            </Text>
           </Box>
+        )}
+      </Box>
 
-          {Boolean(config?.enabled) && (
-            <Box sx={{ p: 2, bg: 'canvas.subtle', borderRadius: 2 }}>
-              <Text sx={{ fontSize: 0, color: 'fg.muted' }}>
-                設定内容: {getRecurrenceDescription(Boolean(config?.enabled) ? config : undefined)}
-              </Text>
-            </Box>
-          )}
-
-          {errors.length > 0 && (
-            <Box sx={{ p: 2, bg: 'danger.subtle', borderRadius: 2 }}>
-              {errors.map((error, index) => (
-                <Text key={index} sx={{ fontSize: 0, color: 'danger.fg', display: 'block' }}>
-                  {error}
-                </Text>
-              ))}
-            </Box>
-          )}
-        </Box>
-      )}
-    </Box>
+      <RecurrenceDetailDialog
+        isOpen={isDetailDialogOpen}
+        recurrence={recurrence}
+        onSave={handleDetailDialogSave}
+        onClose={handleDetailDialogClose}
+      />
+    </>
   );
 };
 

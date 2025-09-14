@@ -70,3 +70,27 @@ html, body, #root {
     opacity: 1;
   }
 }
+
+/* Force show spinbuttons for number, date, and time inputs */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: auto !important;
+  opacity: 1 !important;
+  margin: 0;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator,
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  opacity: 1 !important;
+  cursor: pointer;
+}
+
+/* Firefox number input spinbuttons */
+input[type="number"] {
+  -moz-appearance: auto !important;
+}
+
+input[type="number"]::-moz-number-spinner {
+  opacity: 1 !important;
+}

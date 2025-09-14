@@ -7,6 +7,7 @@ export type FieldType =
   | 'textarea'
   | 'date'
   | 'datetime-local'
+  | 'time'
   | 'password'
   | 'email'
   | 'number'
@@ -45,6 +46,9 @@ export interface FormFieldConfig {
   customComponent?: ReactNode;
   sx?: Record<string, unknown>;
   helpText?: string;
+  step?: string | number; // number, time, datetime-local用のstep属性
+  min?: string | number; // number, date, time, datetime-local用のmin属性
+  max?: string | number; // number, date, time, datetime-local用のmax属性
   onChange: (value: unknown) => void;
   onKeyDown?: (event: React.KeyboardEvent) => void;
 }

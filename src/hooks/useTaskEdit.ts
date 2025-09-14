@@ -19,6 +19,10 @@ interface UseTaskEditReturn {
   setDescription: (value: string) => void;
   dueDate: string;
   setDueDate: (value: string) => void;
+  dueTime: string;
+  setDueTime: (value: string) => void;
+  hasTime: boolean;
+  setHasTime: (value: boolean) => void;
   completedAt: string;
   setCompletedAt: (value: string) => void;
   isCompleted: boolean;
@@ -51,6 +55,8 @@ export const useTaskEdit = ({
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [dueDate, setDueDate] = useState('');
+  const [dueTime, setDueTime] = useState('');
+  const [hasTime, setHasTime] = useState(false);
   const [completedAt, setCompletedAt] = useState('');
   const [labels, setLabels] = useState<Label[]>([]);
   const [attachments, setAttachments] = useState<FileAttachment[]>([]);
@@ -70,11 +76,30 @@ export const useTaskEdit = ({
 
   useEffect(() => {
     if (isOpen && task) {
-
       setTitle(task.title);
       setDescription(task.description ?? '');
-      const dateValue = task.dueDate ? toDateTimeLocalString(new Date(task.dueDate)) : '';
-      setDueDate(dateValue);
+
+      // 期限の処理
+      if (task.dueDate) {
+        const dueDate = new Date(task.dueDate);
+        const dateStr = dueDate.toISOString().split('T')[0]; // YYYY-MM-DD形式
+        setDueDate(dateStr || '');
+
+        // 時刻チェック（23:59:59以外の場合は時刻を設定）
+        const is23_59_59 = dueDate.getHours() === 23 && dueDate.getMinutes() === 59 && dueDate.getSeconds() === 59;
+        if (!is23_59_59) {
+          setHasTime(true);
+          const timeStr = `${String(dueDate.getHours()).padStart(2, '0')}:${String(dueDate.getMinutes()).padStart(2, '0')}`;
+          setDueTime(timeStr);
+        } else {
+          setHasTime(false);
+          setDueTime('');
+        }
+      } else {
+        setDueDate('');
+        setDueTime('');
+        setHasTime(false);
+      }
 
       // completedAtをdatetime-local形式（YYYY-MM-DDTHH:mm）にフォーマット
       const completedAtValue = task.completedAt
@@ -92,7 +117,6 @@ export const useTaskEdit = ({
         interval: 1
       };
 
-
       setRecurrence(recurrenceConfig);
 
       // 現在のタスクがどのカラムにあるかを特定
@@ -102,10 +126,11 @@ export const useTaskEdit = ({
       setColumnId(currentColumn?.id ?? '');
     } else if (!isOpen) {
       // ダイアログが閉じられた時にフォームをリセット
-
       setTitle('');
       setDescription('');
       setDueDate('');
+      setDueTime('');
+      setHasTime(false);
       setCompletedAt('');
       setLabels([]);
       setAttachments([]);
@@ -149,9 +174,29 @@ export const useTaskEdit = ({
     }
   }, [dueDate, recurrence]);
 
+  // 時刻設定がオフになった場合、時刻をクリア
+  useEffect(() => {
+    if (!hasTime) {
+      setDueTime('');
+    }
+  }, [hasTime]);
+
   const handleSave = useCallback(() => {
     if (task && title.trim()) {
-      const dueDateObj = dueDate ? fromDateTimeLocalString(dueDate) || undefined : undefined;
+      let dueDateObj: Date | undefined = undefined;
+
+      if (dueDate) {
+        if (hasTime && dueTime) {
+          // 日付と時刻を組み合わせ
+          const dateTimeString = `${dueDate}T${dueTime}`;
+          dueDateObj = new Date(dateTimeString);
+        } else {
+          // 日付のみの場合は23:59:59に設定
+          dueDateObj = new Date(dueDate);
+          dueDateObj.setHours(23, 59, 59, 999);
+        }
+      }
+
       let completedAtObj = completedAt ? fromDateTimeLocalString(completedAt) || undefined : undefined;
       
       // カラムの変更があった場合は移動処理を実行
@@ -194,7 +239,7 @@ export const useTaskEdit = ({
       
       onSave(updatedTask);
     }
-  }, [task, title, description, dueDate, completedAt, labels, attachments, recurrence, columnId, state.currentBoard, moveTask, onSave]);
+  }, [task, title, description, dueDate, dueTime, hasTime, completedAt, labels, attachments, recurrence, columnId, state.currentBoard, moveTask, onSave]);
 
   const handleDelete = useCallback(() => {
     setShowDeleteConfirm(true);
@@ -256,6 +301,10 @@ export const useTaskEdit = ({
     setDescription,
     dueDate,
     setDueDate,
+    dueTime,
+    setDueTime,
+    hasTime,
+    setHasTime,
     completedAt,
     setCompletedAt,
     isCompleted,

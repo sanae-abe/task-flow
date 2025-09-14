@@ -54,6 +54,8 @@ export const createTaskFormFields = (
     title: string;
     description: string;
     dueDate: string;
+    dueTime?: string;
+    hasTime?: boolean;
     completedAt?: string;
     labels: Label[];
     attachments: FileAttachment[];
@@ -64,6 +66,8 @@ export const createTaskFormFields = (
     setTitle: (value: string) => void;
     setDescription: (value: string) => void;
     setDueDate: (value: string) => void;
+    setDueTime?: (value: string) => void;
+    setHasTime?: (value: boolean) => void;
     setCompletedAt?: (value: string) => void;
     setLabels: (labels: Label[]) => void;
     setAttachments: (attachments: FileAttachment[]) => void;
@@ -109,13 +113,60 @@ export const createTaskFormFields = (
     createFormField({
       id: 'task-due-date',
       name: 'dueDate',
-      type: 'datetime-local',
+      type: 'date',
       label: '期限（任意）',
       value: values.dueDate,
       onChange: handlers.setDueDate as (value: unknown) => void,
-      onKeyDown: options.onKeyPress
+      onKeyDown: options.onKeyPress,
+      step: "1"
     })
   ];
+
+  // 時刻設定チェックボックス（期限が設定されている場合のみ）
+  if (values.dueDate && handlers.setHasTime) {
+    fields.push(
+      createFormField({
+        id: 'task-has-time',
+        name: 'hasTime',
+        type: 'checkbox',
+        label: '時刻を設定',
+        value: values.hasTime || false,
+        onChange: handlers.setHasTime as (value: unknown) => void
+      })
+    );
+  }
+
+  // 時刻入力フィールド（チェックボックスが選択されている場合のみ）
+  if (values.dueDate && values.hasTime && handlers.setDueTime) {
+    fields.push(
+      createFormField({
+        id: 'task-due-time',
+        name: 'dueTime',
+        type: 'time',
+        label: '時刻',
+        value: values.dueTime || '',
+        onChange: handlers.setDueTime as (value: unknown) => void,
+        onKeyDown: options.onKeyPress,
+        step: "300" // 5分間隔
+      })
+    );
+  }
+
+  // 繰り返し設定
+  if (options.showRecurrence && handlers.setRecurrence) {
+    fields.push(
+      createFormField({
+        id: 'task-recurrence',
+        name: 'recurrence',
+        type: 'recurrence-selector',
+        label: '繰り返し設定（任意）',
+        value: values.recurrence || { enabled: false, pattern: 'daily', interval: 1 },
+        onChange: handlers.setRecurrence as (value: unknown) => void,
+        disabled: !values.dueDate, // 期限が未設定の場合は無効化
+        helpText: !values.dueDate ? '繰り返し設定をするには期限を設定してください' : undefined
+      })
+    );
+  }
 
   // ステータス選択フィールド
   if (options.showStatus && options.statusOptions && handlers.setColumnId) {
@@ -142,7 +193,8 @@ export const createTaskFormFields = (
         label: '完了日時',
         value: values.completedAt ?? '',
         onChange: handlers.setCompletedAt as (value: unknown) => void,
-        onKeyDown: options.onKeyPress
+        onKeyDown: options.onKeyPress,
+        step: "300" // 5分間隔
       })
     );
   }
@@ -171,22 +223,6 @@ export const createTaskFormFields = (
         label: 'ファイル添付（任意）',
         value: values.attachments,
         onChange: handlers.setAttachments as (value: unknown) => void
-      })
-    );
-  }
-
-  // 繰り返し設定
-  if (options.showRecurrence && handlers.setRecurrence) {
-    fields.push(
-      createFormField({
-        id: 'task-recurrence',
-        name: 'recurrence',
-        type: 'recurrence-selector',
-        label: '繰り返し設定（任意）',
-        value: values.recurrence || { enabled: false, pattern: 'daily', interval: 1 },
-        onChange: handlers.setRecurrence as (value: unknown) => void,
-        disabled: !values.dueDate, // 期限が未設定の場合は無効化
-        helpText: !values.dueDate ? '繰り返し設定をするには期限を設定してください' : undefined
       })
     );
   }

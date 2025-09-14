@@ -140,18 +140,17 @@ export function validateRecurrenceConfig(recurrence: RecurrenceConfig | undefine
     errors.push('間隔は1以上の数値を指定してください');
   }
 
-  if (recurrence.pattern === 'weekly' && recurrence.daysOfWeek) {
-    if (recurrence.daysOfWeek.length === 0) {
+  if (recurrence.pattern === 'weekly') {
+    if (!recurrence.daysOfWeek || recurrence.daysOfWeek.length === 0) {
       errors.push('週次繰り返しの場合は曜日を選択してください');
-    }
-    if (recurrence.daysOfWeek.some(day => day < 0 || day > 6)) {
+    } else if (recurrence.daysOfWeek.some(day => day < 0 || day > 6)) {
       errors.push('曜日は0-6の範囲で指定してください');
     }
   }
 
-  if (recurrence.pattern === 'monthly' && recurrence.dayOfMonth) {
-    if (recurrence.dayOfMonth < 1 || recurrence.dayOfMonth > 31) {
-      errors.push('日付は1-31の範囲で指定してください');
+  if (recurrence.pattern === 'monthly') {
+    if (!recurrence.dayOfMonth || recurrence.dayOfMonth < 1 || recurrence.dayOfMonth > 31) {
+      errors.push('月次繰り返しの場合は日付（1-31）を指定してください');
     }
   }
 

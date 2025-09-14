@@ -11,6 +11,10 @@ interface TaskEditFormProps {
   setDescription: (value: string) => void;
   dueDate: string;
   setDueDate: (value: string) => void;
+  dueTime: string;
+  setDueTime: (value: string) => void;
+  hasTime: boolean;
+  setHasTime: (value: boolean) => void;
   completedAt: string;
   setCompletedAt: (value: string) => void;
   isCompleted: boolean;
@@ -33,6 +37,10 @@ const TaskEditForm = memo<TaskEditFormProps>(({
   setDescription,
   dueDate,
   setDueDate,
+  dueTime,
+  setDueTime,
+  hasTime,
+  setHasTime,
   completedAt,
   setCompletedAt,
   isCompleted,
@@ -53,6 +61,8 @@ const TaskEditForm = memo<TaskEditFormProps>(({
       title,
       description,
       dueDate,
+      dueTime,
+      hasTime,
       completedAt,
       labels,
       attachments,
@@ -63,6 +73,8 @@ const TaskEditForm = memo<TaskEditFormProps>(({
       setTitle,
       setDescription,
       setDueDate,
+      setDueTime,
+      setHasTime,
       setCompletedAt,
       setLabels,
       setAttachments,
@@ -79,8 +91,8 @@ const TaskEditForm = memo<TaskEditFormProps>(({
       onKeyPress
     }
   ), [
-    title, description, dueDate, completedAt, labels, attachments, columnId, recurrence,
-    setTitle, setDescription, setDueDate, setCompletedAt, setLabels, setAttachments, setColumnId, setRecurrence,
+    title, description, dueDate, dueTime, hasTime, completedAt, labels, attachments, columnId, recurrence,
+    setTitle, setDescription, setDueDate, setDueTime, setHasTime, setCompletedAt, setLabels, setAttachments, setColumnId, setRecurrence,
     isCompleted, statusOptions, onKeyPress
   ]);
 
@@ -94,12 +106,14 @@ const TaskEditForm = memo<TaskEditFormProps>(({
     title,
     description,
     dueDate,
+    dueTime,
+    hasTime,
     completedAt,
     labels,
     attachments,
     columnId,
     recurrence
-  }), [title, description, dueDate, completedAt, labels, attachments, columnId, recurrence]);
+  }), [title, description, dueDate, dueTime, hasTime, completedAt, labels, attachments, columnId, recurrence]);
 
   return (
     <UnifiedForm
