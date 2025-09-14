@@ -35,8 +35,12 @@ const SubTaskItem: React.FC<SubTaskItemProps> = ({
         borderRadius: 2,
         bg: 'canvas.default',
         cursor: 'pointer',
+        position: 'relative',
         '&:hover': {
           bg: 'canvas.subtle'
+        },
+        '&:hover .delete-button': {
+          opacity: '1 !important'
         }
       }}
     >
@@ -63,20 +67,28 @@ const SubTaskItem: React.FC<SubTaskItemProps> = ({
       >
         {subTask.title}
       </Text>
-      <IconButton
-        icon={XIcon}
-        onClick={handleDelete}
-        ariaLabel={`${subTask.title}を削除`}
-        variant="danger"
-        size="small"
-        stopPropagation
+      <Box
+        className="delete-button"
         sx={{
-          '&:hover': {
-            bg: 'transparent',
-            color: 'danger.fg'
-          }
+          opacity: 0,
+          transition: 'opacity 0.2s ease'
         }}
-      />
+      >
+        <IconButton
+          icon={XIcon}
+          onClick={handleDelete}
+          ariaLabel={`${subTask.title}を削除`}
+          size="small"
+          stopPropagation
+          sx={{
+            color: 'fg.muted',
+            '&:hover': {
+              bg: 'transparent',
+              color: 'danger.fg'
+            }
+          }}
+        />
+      </Box>
     </Box>
   );
 };
