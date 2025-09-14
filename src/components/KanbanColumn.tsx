@@ -17,7 +17,7 @@ import TaskCard from './TaskCard';
 
 const COLUMN_CONFIG = {
   WIDTH: '320px',
-  MIN_HEIGHT: '600px',
+  MIN_HEIGHT: 'calc(100vh - 112px - 48px)', // ヘッダーとフッターの高さとpaddingBlockを考慮
   TASK_LIST_MIN_HEIGHT: '320px',
   HORIZONTAL_PADDING: 2,
   TASK_GAP: 3
