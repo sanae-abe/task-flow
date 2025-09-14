@@ -33,8 +33,8 @@ interface UseTaskEditReturn {
   columnId: string;
   setColumnId: (value: string) => void;
   statusOptions: Array<{ value: string; label: string }>;
-  recurrence: RecurrenceConfig;
-  setRecurrence: (recurrence: RecurrenceConfig) => void;
+  recurrence: RecurrenceConfig | undefined;
+  setRecurrence: (recurrence: RecurrenceConfig | undefined) => void;
   showDeleteConfirm: boolean;
   setShowDeleteConfirm: (show: boolean) => void;
   handleSave: () => void;
@@ -61,7 +61,7 @@ export const useTaskEdit = ({
   const [labels, setLabels] = useState<Label[]>([]);
   const [attachments, setAttachments] = useState<FileAttachment[]>([]);
   const [columnId, setColumnId] = useState('');
-  const [recurrence, setRecurrence] = useState<RecurrenceConfig>(() => {
+  const [recurrence, setRecurrence] = useState<RecurrenceConfig | undefined>(() => {
     // 初期化時にtaskがある場合は、そのrecurrenceを使用
     if (task?.recurrence) {
       return task.recurrence;
@@ -233,7 +233,7 @@ export const useTaskEdit = ({
         completedAt: completedAtObj?.toISOString() || null,
         labels,
         files: attachments,
-        recurrence: recurrence.enabled && dueDateObj ? recurrence : undefined,
+        recurrence: recurrence?.enabled && dueDateObj ? recurrence : undefined,
         updatedAt: new Date().toISOString()
       };
       

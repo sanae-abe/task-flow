@@ -38,7 +38,7 @@ const TimeSelector: React.FC<TimeSelectorProps> = ({
 
   const getButtonText = () => {
     if (hasTime && dueTime) {
-      return `時刻: ${dueTime}`;
+      return `${dueTime} まで`;
     }
     return '時刻を設定';
   };

@@ -1,8 +1,13 @@
-import React, { memo, useMemo } from 'react';
+import { Box, Text, TextInput, Select } from '@primer/react';
+import React, { memo, useCallback } from 'react';
 
 import type { Label, FileAttachment, RecurrenceConfig } from '../types';
 
-import { UnifiedForm, createTaskFormFields } from './shared/Form';
+import FileUploader from './FileUploader';
+import FormField, { TextareaField } from './FormField';
+import LabelSelector from './LabelSelector';
+import RecurrenceSelector from './RecurrenceSelector';
+import TimeSelector from './TimeSelector';
 
 interface TaskEditFormProps {
   title: string;
@@ -15,9 +20,6 @@ interface TaskEditFormProps {
   setDueTime: (value: string) => void;
   hasTime: boolean;
   setHasTime: (value: boolean) => void;
-  completedAt: string;
-  setCompletedAt: (value: string) => void;
-  isCompleted: boolean;
   labels: Label[];
   setLabels: (labels: Label[]) => void;
   attachments: FileAttachment[];
@@ -25,8 +27,8 @@ interface TaskEditFormProps {
   columnId: string;
   setColumnId: (value: string) => void;
   statusOptions: Array<{ value: string; label: string }>;
-  recurrence: RecurrenceConfig;
-  setRecurrence: (recurrence: RecurrenceConfig) => void;
+  recurrence: RecurrenceConfig | undefined;
+  setRecurrence: (recurrence: RecurrenceConfig | undefined) => void;
   onKeyPress: (event: React.KeyboardEvent) => void;
 }
 
@@ -41,9 +43,6 @@ const TaskEditForm = memo<TaskEditFormProps>(({
   setDueTime,
   hasTime,
   setHasTime,
-  completedAt,
-  setCompletedAt,
-  isCompleted,
   labels,
   setLabels,
   attachments,
@@ -55,75 +54,101 @@ const TaskEditForm = memo<TaskEditFormProps>(({
   setRecurrence,
   onKeyPress
 }) => {
-  // フォームフィールド設定を生成
-  const formFields = useMemo(() => createTaskFormFields(
-    {
-      title,
-      description,
-      dueDate,
-      dueTime,
-      hasTime,
-      completedAt,
-      labels,
-      attachments,
-      columnId,
-      recurrence
-    },
-    {
-      setTitle,
-      setDescription,
-      setDueDate,
-      setDueTime,
-      setHasTime,
-      setCompletedAt,
-      setLabels,
-      setAttachments,
-      setColumnId,
-      setRecurrence
-    },
-    {
-      isCompleted,
-      showLabels: true,
-      showAttachments: true,
-      showStatus: true,
-      showRecurrence: true,
-      statusOptions,
-      onKeyPress
-    }
-  ), [
-    title, description, dueDate, dueTime, hasTime, completedAt, labels, attachments, columnId, recurrence,
-    setTitle, setDescription, setDueDate, setDueTime, setHasTime, setCompletedAt, setLabels, setAttachments, setColumnId, setRecurrence,
-    isCompleted, statusOptions, onKeyPress
-  ]);
-
-  // 統合フォームではonSubmitは不要（親コンポーネントで管理）
-  const handleSubmit = () => {
-    // 空実装：親コンポーネントで送信処理を管理
-  };
-
-  // 初期値を明示的に設定
-  const initialValues = useMemo(() => ({
-    title,
-    description,
-    dueDate,
-    dueTime,
-    hasTime,
-    completedAt,
-    labels,
-    attachments,
-    columnId,
-    recurrence
-  }), [title, description, dueDate, dueTime, hasTime, completedAt, labels, attachments, columnId, recurrence]);
+  const handleTimeChange = useCallback((newHasTime: boolean, newTime: string) => {
+    setHasTime(newHasTime);
+    setDueTime(newTime);
+  }, [setHasTime, setDueTime]);
 
   return (
-    <UnifiedForm
-      fields={formFields}
-      initialValues={initialValues}
-      onSubmit={handleSubmit}
-      showCancelButton={false}
-      validateOnChange
-      validateOnBlur
-    />
+    <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', gap: 0 }}>
+      <FormField
+        id="task-title"
+        label="タイトル"
+        value={title}
+        placeholder="タスクタイトルを入力"
+        onChange={setTitle}
+        onKeyDown={onKeyPress}
+        autoFocus
+        required
+      />
+
+      <TextareaField
+        id="task-description"
+        label="説明（任意）"
+        value={description}
+        placeholder="タスクの説明を入力"
+        onChange={setDescription}
+        onKeyDown={onKeyPress}
+        rows={4}
+      />
+
+      <Box sx={{ mb: 4 }}>
+        <Box sx={{ mb: 2 }}>
+          <Text sx={{ fontSize: 1, color: 'fg.muted', mb: 1, display: 'block', fontWeight: '700' }}>
+            期限（任意）
+          </Text>
+          <TextInput
+            type="date"
+            value={dueDate}
+            onChange={(e) => setDueDate(e.target.value)}
+            onKeyDown={onKeyPress}
+            sx={{ width: '100%' }}
+            step="1"
+          />
+        </Box>
+
+        <TimeSelector
+          hasTime={hasTime}
+          dueTime={dueTime}
+          onTimeChange={handleTimeChange}
+          disabled={!dueDate}
+        />
+
+        <RecurrenceSelector
+          recurrence={recurrence}
+          onRecurrenceChange={setRecurrence}
+          disabled={!dueDate}
+        />
+      </Box>
+
+      <Box sx={{ mb: 4 }}>
+        <Text sx={{ fontSize: 1, color: 'fg.muted', mb: 1, display: 'block', fontWeight: '700' }}>
+          ステータス
+        </Text>
+        <Select
+          value={columnId}
+          onChange={(e) => setColumnId(e.target.value)}
+          sx={{ width: '100%' }}
+        >
+          {statusOptions.map(option => (
+            <Select.Option key={option.value} value={option.value}>
+              {option.label}
+            </Select.Option>
+          ))}
+        </Select>
+      </Box>
+
+      <Box sx={{ mb: 4 }}>
+        <Text sx={{ fontSize: 1, mb: 1, display: 'block', fontWeight: '700' }}>
+          ラベル（任意）
+        </Text>
+        <LabelSelector
+          selectedLabels={labels}
+          onLabelsChange={setLabels}
+        />
+      </Box>
+
+      <Box sx={{ mb: 4 }}>
+        <Text sx={{ fontSize: 1, color: 'fg.muted', mb: 1, display: 'block', fontWeight: '700' }}>
+          ファイル添付（任意）
+        </Text>
+        <FileUploader
+          attachments={attachments}
+          onAttachmentsChange={setAttachments}
+          showModeSelector={false}
+        />
+      </Box>
+    </Box>
   );
 });
 
