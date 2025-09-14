@@ -268,7 +268,7 @@ const RecurrenceDetailDialog: React.FC<RecurrenceDetailDialogProps> = ({
         </Box>
 
         {config && (
-          <Box sx={{ p: 2, bg: 'canvas.subtle', borderRadius: 2 }}>
+          <Box sx={{ p: 2, bg: 'canvas.subtle', borderRadius: 2, mb: 4 }}>
             <Text sx={{ fontSize: 0, color: 'fg.muted' }}>
               設定内容: {getRecurrenceDescription(config)}
             </Text>
@@ -278,7 +278,7 @@ const RecurrenceDetailDialog: React.FC<RecurrenceDetailDialogProps> = ({
         {errors.length > 0 && (
           <Box sx={{ p: 2, bg: 'danger.subtle', borderRadius: 2 }}>
             {errors.map((error, index) => (
-              <Text key={index} sx={{ fontSize: 0, color: 'danger.fg', display: 'block' }}>
+              <Text key={index} sx={{ fontSize: 0, color: 'danger.fg', display: 'block', mb: 4 }}>
                 {error}
               </Text>
             ))}
