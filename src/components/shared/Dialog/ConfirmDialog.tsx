@@ -46,14 +46,16 @@ const ConfirmDialog = memo<ConfirmDialogProps>(({
       closeOnEscape
       closeOnBackdropClick
     >
-      <Text sx={{ 
-        color: 'fg.muted', 
-        mb: 3, 
-        display: 'block', 
-        lineHeight: 1.5 
-      }}>
-        {message}
-      </Text>
+      {message && (
+        <Text sx={{ 
+          color: 'fg.muted', 
+          mb: 3, 
+          display: 'block', 
+          lineHeight: 1.5 
+        }}>
+          {message}
+        </Text>
+      )}
     </UnifiedDialog>
   );
 });
