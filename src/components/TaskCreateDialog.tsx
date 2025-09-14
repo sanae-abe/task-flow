@@ -3,10 +3,11 @@ import React, { useState, useEffect, useCallback, memo } from 'react';
 
 import type { Label, FileAttachment, RecurrenceConfig } from '../types';
 import { useKanban } from '../contexts/KanbanContext';
+import { toDateTimeLocalString, fromDateTimeLocalString } from '../utils/dateHelpers';
 
 import CommonDialog, { DialogActions } from './CommonDialog';
 import FileUploader from './FileUploader';
-import FormField, { TextareaField, DateField } from './FormField';
+import FormField, { TextareaField, DateTimeField } from './FormField';
 import LabelSelector from './LabelSelector';
 import RecurrenceSelector from './RecurrenceSelector';
 
@@ -26,12 +27,11 @@ const TaskCreateDialog = memo(() => {
   // デフォルト日付が設定されている場合は期限日に設定
   useEffect(() => {
     if (state.taskFormDefaultDate) {
-      // タイムゾーンの問題を避けるため、ローカル日付を使用
-      const year = state.taskFormDefaultDate.getFullYear();
-      const month = String(state.taskFormDefaultDate.getMonth() + 1).padStart(2, '0');
-      const day = String(state.taskFormDefaultDate.getDate()).padStart(2, '0');
-      const dateString = `${year}-${month}-${day}`;
-      setDueDate(dateString);
+      // デフォルト時刻を9:00に設定
+      const defaultDate = new Date(state.taskFormDefaultDate);
+      defaultDate.setHours(9, 0, 0, 0);
+      const dateTimeString = toDateTimeLocalString(defaultDate);
+      setDueDate(dateTimeString);
     }
   }, [state.taskFormDefaultDate]);
 
@@ -53,7 +53,7 @@ const TaskCreateDialog = memo(() => {
       return;
     }
 
-    const dueDateObj = dueDate ? new Date(dueDate) : undefined;
+    const dueDateObj = dueDate ? fromDateTimeLocalString(dueDate) : undefined;
     const defaultColumnId = state.currentBoard.columns[0]?.id;
 
     if (defaultColumnId) {
@@ -124,7 +124,7 @@ const TaskCreateDialog = memo(() => {
           rows={4}
         />
 
-        <DateField
+        <DateTimeField
           id="task-due-date"
           label="期限（任意）"
           value={dueDate}

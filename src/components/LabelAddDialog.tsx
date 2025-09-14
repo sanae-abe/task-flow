@@ -114,7 +114,7 @@ const LabelAddDialog: React.FC<LabelAddDialogProps> = ({
       isOpen={isOpen}
       title="新しいラベルを追加"
       onClose={handleClose}
-      size="large"
+      size="small"
       actions={
         <DialogActions
           onCancel={handleClose}
@@ -125,7 +125,7 @@ const LabelAddDialog: React.FC<LabelAddDialogProps> = ({
         />
       }
     >
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mb: 4 }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mb: 3 }}>
         {/* ラベル名入力 */}
         <FormControl id="label-text-input">
           <FormControl.Label>
@@ -173,13 +173,11 @@ const LabelAddDialog: React.FC<LabelAddDialogProps> = ({
                 alignItems: 'center',
                 bg: colors.bg,
                 color: colors.color,
+                borderRadius: '6px',
                 px: 2,
-                py: 1,
-                borderRadius: 1,
+                py: '3px',
                 fontSize: 0,
                 fontWeight: '400',
-                border: '1px solid',
-                borderColor: 'border.default',
                 maxWidth: 'fit-content'
               }}
               role="img"

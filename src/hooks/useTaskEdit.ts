@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 
 import { useKanban } from '../contexts/KanbanContext';
 import type { Task, Label, FileAttachment, RecurrenceConfig } from '../types';
+import { toDateTimeLocalString, fromDateTimeLocalString } from '../utils/dateHelpers';
 
 interface UseTaskEditProps {
   task: Task | null;
@@ -72,12 +73,12 @@ export const useTaskEdit = ({
 
       setTitle(task.title);
       setDescription(task.description ?? '');
-      const dateValue = task.dueDate ? new Date(task.dueDate).toISOString().split('T')[0] : '';
-      setDueDate(dateValue ?? '');
+      const dateValue = task.dueDate ? toDateTimeLocalString(new Date(task.dueDate)) : '';
+      setDueDate(dateValue);
 
       // completedAtをdatetime-local形式（YYYY-MM-DDTHH:mm）にフォーマット
       const completedAtValue = task.completedAt
-        ? new Date(task.completedAt).toISOString().slice(0, 16)
+        ? toDateTimeLocalString(new Date(task.completedAt))
         : '';
       setCompletedAt(completedAtValue);
 
@@ -126,7 +127,7 @@ export const useTaskEdit = ({
 
       // 完了カラムに移動した場合で、現在完了日時が空の場合
       if (isLastColumn && !completedAt) {
-        const now = new Date().toISOString().slice(0, 16);
+        const now = toDateTimeLocalString(new Date());
         setCompletedAt(now);
       }
       // 完了カラム以外に移動した場合で、完了日時が設定されている場合
@@ -148,8 +149,8 @@ export const useTaskEdit = ({
 
   const handleSave = useCallback(() => {
     if (task && title.trim()) {
-      const dueDateObj = dueDate ? new Date(dueDate) : undefined;
-      let completedAtObj = completedAt ? new Date(completedAt) : undefined;
+      const dueDateObj = dueDate ? fromDateTimeLocalString(dueDate) : undefined;
+      let completedAtObj = completedAt ? fromDateTimeLocalString(completedAt) : undefined;
       
       // カラムの変更があった場合は移動処理を実行
       const currentColumn = state.currentBoard?.columns.find(column =>

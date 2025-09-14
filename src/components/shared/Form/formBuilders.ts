@@ -94,7 +94,7 @@ export const createTaskFormFields = (
     createFormField({
       id: 'task-due-date',
       name: 'dueDate',
-      type: 'date',
+      type: 'datetime-local',
       label: '期限（任意）',
       value: values.dueDate,
       onChange: handlers.setDueDate as (value: unknown) => void,

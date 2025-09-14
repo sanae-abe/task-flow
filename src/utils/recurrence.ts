@@ -65,7 +65,7 @@ export function calculateNextDueDate(
     }
   }
 
-  return nextDate.toISOString().split('T')[0] || null;
+  return nextDate.toISOString();
 }
 
 /**

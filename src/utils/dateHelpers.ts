@@ -39,10 +39,14 @@ export const formatDueDate = (date: Date): string => {
     month: 'long',
     day: 'numeric'
   });
+  const timeStr = date.toLocaleTimeString('ja-JP', {
+    hour: '2-digit',
+    minute: '2-digit'
+  });
   const weekdayStr = date.toLocaleDateString('ja-JP', {
     weekday: 'short'
   });
-  return `${dateStr}（${weekdayStr}）`;
+  return `${dateStr}（${weekdayStr}）${timeStr}`;
 };
 
 export const formatDueDateWithYear = (date: Date): string => {
@@ -51,10 +55,14 @@ export const formatDueDateWithYear = (date: Date): string => {
     month: 'long',
     day: 'numeric'
   });
+  const timeStr = date.toLocaleTimeString('ja-JP', {
+    hour: '2-digit',
+    minute: '2-digit'
+  });
   const weekdayStr = date.toLocaleDateString('ja-JP', {
     weekday: 'short'
   });
-  return `${dateStr}（${weekdayStr}）`;
+  return `${dateStr}（${weekdayStr}）${timeStr}`;
 };
 
 export const formatDateTime = (date: string | Date): string => 
@@ -68,18 +76,50 @@ export const formatDateTime = (date: string | Date): string =>
 
 export const formatDate = (date: string | Date, format?: string): string => {
   const dateObj = new Date(date);
-  
+
   if (format === 'MM/dd') {
     return dateObj.toLocaleDateString('ja-JP', {
       month: '2-digit',
       day: '2-digit'
     });
   }
-  
+
   return dateObj.toLocaleDateString('ja-JP', {
     year: 'numeric',
     month: 'short',
     day: 'numeric'
   });
+};
+
+/**
+ * DateオブジェクトをHTML datetime-local input用の文字列に変換
+ */
+export const toDateTimeLocalString = (date: Date): string => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const hour = String(date.getHours()).padStart(2, '0');
+  const minute = String(date.getMinutes()).padStart(2, '0');
+
+  return `${year}-${month}-${day}T${hour}:${minute}`;
+};
+
+/**
+ * HTML datetime-local input用の文字列をDateオブジェクトに変換
+ */
+export const fromDateTimeLocalString = (dateTimeString: string): Date | null => {
+  if (!dateTimeString) {
+    return null;
+  }
+
+  const date = new Date(dateTimeString);
+  return isNaN(date.getTime()) ? null : date;
+};
+
+/**
+ * 現在の日付時刻をdatetime-local形式で取得
+ */
+export const getCurrentDateTimeLocal = (): string => {
+  return toDateTimeLocalString(new Date());
 };
 
