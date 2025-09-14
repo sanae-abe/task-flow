@@ -102,7 +102,7 @@ export function generateCalendarTasks(
     }
   });
 
-  // 実際のタスクを追加
+  // 実際のタスクを作成
   tasks.forEach(task => {
     calendarTasks.push(task);
 

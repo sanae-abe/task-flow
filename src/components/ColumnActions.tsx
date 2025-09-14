@@ -19,7 +19,7 @@ const ColumnActions: React.FC<ColumnActionsProps> = ({
         variant="invisible"
         size="small"
         leadingVisual={PlusIcon}
-        aria-label="タスクを追加"
+        aria-label="タスクを作成"
       />
       <ActionMenu>
         <ActionMenu.Anchor>

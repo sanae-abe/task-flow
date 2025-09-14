@@ -109,7 +109,7 @@ const TaskCreateDialog = memo(() => {
   return (
     <CommonDialog
       isOpen={state.isTaskFormOpen}
-      title="新しいタスクを追加"
+      title="新しいタスクを作成"
       onClose={closeTaskForm}
       ariaLabelledBy="task-create-dialog-title"
       size="large"
