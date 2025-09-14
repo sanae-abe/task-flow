@@ -11,9 +11,11 @@ export interface DialogActionsProps {
   cancelText?: string;
   isConfirmDisabled?: boolean;
   confirmVariant?: 'primary' | 'danger';
+  // 削除系操作（永続的な削除）
   showDelete?: boolean;
   onDelete?: () => void;
   deleteText?: string;
+  // 除去系操作（設定の無効化など）
   showRemove?: boolean;
   onRemove?: () => void;
   removeText?: string;

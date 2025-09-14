@@ -162,7 +162,7 @@ const RecurrenceDetailDialog: React.FC<RecurrenceDetailDialogProps> = ({
           onConfirm={handleSave}
           confirmText="保存"
           isConfirmDisabled={!isFormValid}
-          showDelete={recurrence?.enabled || false}
+          showDelete={Boolean(recurrence?.enabled)}
           onDelete={handleDelete}
           deleteText="削除"
         />

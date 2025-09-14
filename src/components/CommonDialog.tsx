@@ -259,11 +259,7 @@ const CommonDialog = memo<CommonDialogProps>(({
               }}
             >
               {children}
-              {actions && (
-                <div>
-                  {actions}
-                </div>
-              )}
+              {actions}
             </Box>
           </Box>
         </Box>
