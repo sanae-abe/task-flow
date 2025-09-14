@@ -37,7 +37,26 @@ const TableColumnManager: React.FC = () => {
 
 
   const handleWidthChange = useCallback((columnId: string, newWidth: string) => {
-    updateColumnWidth(columnId, newWidth);
+    // 空文字列は許可
+    if (newWidth === '') {
+      updateColumnWidth(columnId, newWidth);
+      return;
+    }
+
+    // pxを削除して数値のみを取得
+    const numericValue = parseInt(newWidth.replace(/px$/, ''), 10);
+
+    // 50px～1000pxの範囲内かチェック
+    if (!isNaN(numericValue) && numericValue >= 50 && numericValue <= 1000) {
+      // px単位で保存
+      const formattedWidth = `${numericValue}px`;
+      updateColumnWidth(columnId, formattedWidth);
+    } else if (!isNaN(numericValue)) {
+      // 範囲外の場合は最小値/最大値に調整
+      const clampedValue = Math.max(50, Math.min(1000, numericValue));
+      const formattedWidth = `${clampedValue}px`;
+      updateColumnWidth(columnId, formattedWidth);
+    }
   }, [updateColumnWidth]);
 
   const isCustomColumn = useCallback((columnId: string) => columnId.startsWith('custom-'), []);
@@ -142,7 +161,7 @@ const TableColumnManager: React.FC = () => {
           aria-labelledby="column-settings-title"
         >
           <div style={{ marginBottom: '20px', color: 'fg.muted' }}>
-            カラムをドラッグして並び替え、幅の調整ができます。幅はpx単位で入力してください。
+            カラムをドラッグして並び替え、幅の調整ができます。幅は50px〜1000pxの範囲で入力してください。
           </div>
 
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -201,7 +220,7 @@ const TableColumnManager: React.FC = () => {
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                         handleWidthChange(column.id, e.target.value)
                       }
-                      placeholder="幅 (例: 150px)"
+                      placeholder="幅 (50px〜1000px)"
                       size="small"
                       sx={{ width: '120px', mr: 1 }}
                       aria-describedby={`width-help-${column.id}`}
