@@ -1,5 +1,4 @@
 import {
-  Box,
   Button,
 } from '@primer/react';
 import { SyncIcon } from '@primer/octicons-react';
@@ -46,34 +45,23 @@ const RecurrenceSelector: React.FC<RecurrenceSelectorProps> = ({
 
   return (
     <>
-      <Box sx={{ mb: 4 }}>
-        <Button
-          onClick={handleButtonClick}
-          disabled={disabled}
-          sx={{
-            width: '100%',
-            color: disabled ? 'fg.disabled' : 'inherit',
-            border: '1px solid var(--borderColor-default)',
-            bg: 'canvas.default',
-            '& span': {
-              display: 'flex',
-              alignItems: 'center',
-              gap: 1
-            }
-          }}
-        >
-          <SyncIcon size={16} />
-          {getButtonText()}
-        </Button>
-
-        {disabled && (
-          <Box sx={{ mt: 2 }}>
-            <Box sx={{ fontSize: 0, color: 'fg.muted' }}>
-              ※期限を設定すると時刻設定と繰り返し設定が有効になります
-            </Box>
-          </Box>
-        )}
-      </Box>
+      <Button
+        onClick={handleButtonClick}
+        disabled={disabled}
+        sx={{
+          color: disabled ? 'fg.disabled' : 'inherit',
+          border: '1px solid var(--borderColor-default)',
+          bg: 'canvas.default',
+          '& span': {
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1
+          }
+        }}
+      >
+        <SyncIcon size={16} />
+        {getButtonText()}
+      </Button>
 
       <RecurrenceDetailDialog
         isOpen={isDetailDialogOpen}

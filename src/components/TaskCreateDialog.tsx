@@ -159,18 +159,26 @@ const TaskCreateDialog = memo(() => {
             />
           </Box>
 
-          <TimeSelector
-            hasTime={hasTime}
-            dueTime={dueTime}
-            onTimeChange={handleTimeChange}
-            disabled={!dueDate}
-          />
+        <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+            <TimeSelector
+              hasTime={hasTime}
+              dueTime={dueTime}
+              onTimeChange={handleTimeChange}
+              disabled={!dueDate}
+            />
 
-          <RecurrenceSelector
-            recurrence={recurrence}
-            onRecurrenceChange={setRecurrence}
-            disabled={!dueDate}
-          />
+            <RecurrenceSelector
+              recurrence={recurrence}
+              onRecurrenceChange={setRecurrence}
+              disabled={!dueDate}
+            />
+          </Box>
+
+          {!dueDate && (
+            <Box sx={{ mt: 2, fontSize: 0, color: 'fg.muted' }}>
+              ※期限を設定すると時刻設定と繰り返し設定が有効になります
+            </Box>
+          )}
         </Box>
 
         <Box sx={{ mb: 4 }}>

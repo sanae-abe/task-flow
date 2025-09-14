@@ -121,7 +121,6 @@ const LabelSelector = memo<LabelSelectorProps>(({
         {/* ラベル選択 */}
         <ActionMenu>
           <ActionMenu.Button
-            size="small"
             leadingVisual={TagIcon}
             sx={buttonStyles}
             aria-label="ラベル選択メニューを開く"
@@ -171,7 +170,6 @@ const LabelSelector = memo<LabelSelectorProps>(({
 
         {/* ラベル追加 */}
         <Button
-          size="small"
           leadingVisual={PlusIcon}
           onClick={handleAddDialogOpen}
           sx={buttonStyles}

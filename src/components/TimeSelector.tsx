@@ -1,5 +1,4 @@
 import {
-  Box,
   Button,
 } from '@primer/react';
 import { ClockIcon } from '@primer/octicons-react';
@@ -45,27 +44,23 @@ const TimeSelector: React.FC<TimeSelectorProps> = ({
 
   return (
     <>
-      <Box sx={{ mb: 2 }}>
-        <Button
-          onClick={handleButtonClick}
-          disabled={disabled}
-          sx={{
-            width: '100%',
-            color: disabled ? 'fg.disabled' : 'inherit',
-            border: '1px solid var(--borderColor-default)',
-            bg: 'canvas.default',
-            '& span': {
-              display: 'flex',
-              alignItems: 'center',
-              gap: 1
-            }
-          }}
-        >
-          <ClockIcon size={16} />
-          {getButtonText()}
-        </Button>
-
-      </Box>
+      <Button
+        onClick={handleButtonClick}
+        disabled={disabled}
+        sx={{
+          color: disabled ? 'fg.disabled' : 'inherit',
+          border: '1px solid var(--borderColor-default)',
+          bg: 'canvas.default',
+          '& span': {
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1
+          }
+        }}
+      >
+        <ClockIcon size={16} />
+        {getButtonText()}
+      </Button>
 
       <TimeSelectorDialog
         isOpen={isDetailDialogOpen}
