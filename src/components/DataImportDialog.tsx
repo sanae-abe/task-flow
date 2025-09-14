@@ -102,6 +102,7 @@ export const DataImportDialog = memo<DataImportDialogProps>(({ isOpen, onClose }
       isOpen={isOpen}
       title="データインポート"
       onClose={handleDialogClose}
+      size="small"
       ariaLabelledBy="import-dialog-title"
       actions={
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
