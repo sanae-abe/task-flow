@@ -1,10 +1,11 @@
 import {
   Box,
   Text,
-  Checkbox,
   Select,
   TextInput,
-  Label,
+  ActionMenu,
+  ActionList,
+  Checkbox,
 } from '@primer/react';
 import React, { useState, useEffect, useCallback } from 'react';
 
@@ -202,21 +203,33 @@ const RecurrenceDetailDialog: React.FC<RecurrenceDetailDialogProps> = ({
         </Box>
 
         {config?.pattern === 'weekly' && (
-          <Box>
-            <div style={{ marginBottom: '8px' }}>
-              <Text sx={{ fontSize: 1, mb: 2 }}>曜日選択:</Text>
-            </div>
-            <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-              {WEEKDAYS.map(day => (
-                <Label key={day.value} sx={{ display: 'flex', alignItems: 'center', gap: 1, border: 0 }}>
-                  <Checkbox
-                    checked={config?.daysOfWeek?.includes(day.value) || false}
-                    onChange={(e) => handleDaysOfWeekChange(day.value, e.target.checked)}
-                  />
-                  <Text sx={{ fontSize: 1 }}>{day.label}</Text>
-                </Label>
-              ))}
-            </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Text sx={{ fontSize: 1, minWidth: '60px' }}>曜日選択:</Text>
+            <ActionMenu>
+              <ActionMenu.Button sx={{ width: '200px' }}>
+                {config?.daysOfWeek && config.daysOfWeek.length > 0
+                  ? `${config.daysOfWeek.map(day => WEEKDAYS.find(w => w.value === day)?.label).join('、')}曜日`
+                  : '曜日を選択'}
+              </ActionMenu.Button>
+              <ActionMenu.Overlay>
+                <ActionList>
+                  {WEEKDAYS.map(day => (
+                    <ActionList.Item
+                      key={day.value}
+                      onSelect={() => handleDaysOfWeekChange(day.value, !config?.daysOfWeek?.includes(day.value))}
+                    >
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, width: '100%' }}>
+                        <Checkbox
+                          checked={config?.daysOfWeek?.includes(day.value) || false}
+                          onChange={() => {}}
+                        />
+                        {day.label}
+                      </Box>
+                    </ActionList.Item>
+                  ))}
+                </ActionList>
+              </ActionMenu.Overlay>
+            </ActionMenu>
           </Box>
         )}
 
