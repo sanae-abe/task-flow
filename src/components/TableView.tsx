@@ -1,5 +1,5 @@
 import React, { useMemo, useCallback, useState } from 'react';
-import { Text, Box, IconButton, ActionMenu, ActionList, Button } from '@primer/react';
+import { Text, Box, IconButton, ActionMenu, ActionList, Button, CounterLabel } from '@primer/react';
 import { XIcon, CheckIcon, PaperclipIcon, TriangleDownIcon, SyncIcon } from '@primer/octicons-react';
 
 import { useKanban } from '../contexts/KanbanContext';
@@ -429,6 +429,11 @@ const TableView: React.FC = () => {
               <Text sx={{ fontWeight: 'bold', fontSize: 1 }}>
                 {column.label}
               </Text>
+              {column.id === 'title' && (
+                <CounterLabel sx={{ ml: 1, flexShrink: 0 }}>
+                  {filteredAndSortedTasks.length}
+                </CounterLabel>
+              )}
             </Box>
           ))}
           {/* 設定ボタンを固定位置に配置 */}
