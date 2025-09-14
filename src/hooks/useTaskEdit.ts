@@ -149,8 +149,8 @@ export const useTaskEdit = ({
 
   const handleSave = useCallback(() => {
     if (task && title.trim()) {
-      const dueDateObj = dueDate ? fromDateTimeLocalString(dueDate) : undefined;
-      let completedAtObj = completedAt ? fromDateTimeLocalString(completedAt) : undefined;
+      const dueDateObj = dueDate ? fromDateTimeLocalString(dueDate) || undefined : undefined;
+      let completedAtObj = completedAt ? fromDateTimeLocalString(completedAt) || undefined : undefined;
       
       // カラムの変更があった場合は移動処理を実行
       const currentColumn = state.currentBoard?.columns.find(column =>

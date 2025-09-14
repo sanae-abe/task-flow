@@ -173,6 +173,7 @@ const LabelAddDialog: React.FC<LabelAddDialogProps> = ({
                 alignItems: 'center',
                 bg: colors.bg,
                 color: colors.color,
+                border: 0,
                 borderRadius: '6px',
                 px: 2,
                 py: '3px',

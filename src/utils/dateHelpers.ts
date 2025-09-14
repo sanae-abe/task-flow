@@ -119,7 +119,6 @@ export const fromDateTimeLocalString = (dateTimeString: string): Date | null => 
 /**
  * 現在の日付時刻をdatetime-local形式で取得
  */
-export const getCurrentDateTimeLocal = (): string => {
-  return toDateTimeLocalString(new Date());
-};
+export const getCurrentDateTimeLocal = (): string =>
+  toDateTimeLocalString(new Date());
 

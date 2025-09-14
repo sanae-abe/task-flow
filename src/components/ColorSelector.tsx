@@ -71,7 +71,7 @@ const ColorSelector = memo<ColorSelectorProps>(({
                 backgroundColor: colors.bg,
                 border: '2px solid',
                 borderColor: isSelected ? 'accent.emphasis' : 'transparent',
-                borderRadius: 2,
+                borderRadius: '6px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',

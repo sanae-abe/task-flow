@@ -53,7 +53,7 @@ const TaskCreateDialog = memo(() => {
       return;
     }
 
-    const dueDateObj = dueDate ? fromDateTimeLocalString(dueDate) : undefined;
+    const dueDateObj = dueDate ? fromDateTimeLocalString(dueDate) || undefined : undefined;
     const defaultColumnId = state.currentBoard.columns[0]?.id;
 
     if (defaultColumnId) {
