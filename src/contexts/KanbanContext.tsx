@@ -797,6 +797,56 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
                 createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
                 updatedAt: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
               },
+              {
+                id: uuidv4(),
+                title: '日次定例会議',
+                description: 'チーム全体の日次スタンドアップミーティング\n\n・進捗報告\n・課題共有\n・今日の目標確認',
+                dueDate: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // 明日期限
+                labels: [
+                  { id: uuidv4(), name: '会議', color: 'attention' },
+                  { id: uuidv4(), name: '定例', color: 'default' }
+                ],
+                subTasks: [
+                  { id: uuidv4(), title: 'アジェンダ準備', completed: false, createdAt: new Date().toISOString() },
+                  { id: uuidv4(), title: '会議室予約', completed: true, createdAt: new Date().toISOString() }
+                ],
+                priority: 'medium',
+                files: [],
+                completedAt: null,
+                createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+                updatedAt: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
+                recurrence: {
+                  enabled: true,
+                  pattern: 'daily',
+                  interval: 1
+                }
+              },
+              {
+                id: uuidv4(),
+                title: '週次レポート作成',
+                description: 'プロジェクトの週次進捗レポートを作成\n\n・KPI集計\n・課題整理\n・次週の計画',
+                dueDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(), // 2日後期限（金曜日想定）
+                labels: [
+                  { id: uuidv4(), name: 'レポート', color: 'primary' },
+                  { id: uuidv4(), name: '管理', color: 'default' }
+                ],
+                subTasks: [
+                  { id: uuidv4(), title: 'データ収集', completed: false, createdAt: new Date().toISOString() },
+                  { id: uuidv4(), title: 'グラフ作成', completed: false, createdAt: new Date().toISOString() },
+                  { id: uuidv4(), title: 'レポート文書化', completed: false, createdAt: new Date().toISOString() }
+                ],
+                priority: 'high',
+                files: [],
+                completedAt: null,
+                createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+                updatedAt: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
+                recurrence: {
+                  enabled: true,
+                  pattern: 'weekly',
+                  interval: 1,
+                  daysOfWeek: [5] // 金曜日
+                }
+              },
             ],
             color: '#f6f8fa'
           },
@@ -853,6 +903,33 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
                 completedAt: null,
                 createdAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
                 updatedAt: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
+              },
+              {
+                id: uuidv4(),
+                title: 'バックアップ実行',
+                description: 'データベースとファイルシステムの定期バックアップ\n\n・データベースダンプ作成\n・ファイル同期\n・バックアップ検証',
+                dueDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(), // 3日後期限
+                labels: [
+                  { id: uuidv4(), name: 'インフラ', color: 'severe' },
+                  { id: uuidv4(), name: 'バックアップ', color: 'attention' },
+                  { id: uuidv4(), name: '自動化', color: 'success' }
+                ],
+                subTasks: [
+                  { id: uuidv4(), title: 'バックアップスクリプト確認', completed: true, createdAt: new Date().toISOString() },
+                  { id: uuidv4(), title: 'ストレージ容量確認', completed: false, createdAt: new Date().toISOString() },
+                  { id: uuidv4(), title: 'バックアップテスト実行', completed: false, createdAt: new Date().toISOString() }
+                ],
+                priority: 'high',
+                files: [],
+                completedAt: null,
+                createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+                updatedAt: new Date(Date.now() - 20 * 60 * 1000).toISOString(),
+                recurrence: {
+                  enabled: true,
+                  pattern: 'monthly',
+                  interval: 1,
+                  dayOfMonth: 1 // 毎月1日
+                }
               },
             ],
             color: '#fef3c7'
@@ -947,6 +1024,35 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
                 completedAt: new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString(),
                 createdAt: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
                 updatedAt: new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString(),
+              },
+              {
+                id: uuidv4(),
+                title: 'システム監視レポート（先月分）',
+                description: '月次システム監視レポート作成と送付\n\n・パフォーマンス統計\n・アラート分析\n・改善提案',
+                dueDate: null,
+                labels: [
+                  { id: uuidv4(), name: '監視', color: 'attention' },
+                  { id: uuidv4(), name: '月次', color: 'default' },
+                  { id: uuidv4(), name: '完了', color: 'success' }
+                ],
+                subTasks: [
+                  { id: uuidv4(), title: 'データ集計', completed: true, createdAt: new Date().toISOString() },
+                  { id: uuidv4(), title: 'グラフ作成', completed: true, createdAt: new Date().toISOString() },
+                  { id: uuidv4(), title: 'レポート送付', completed: true, createdAt: new Date().toISOString() }
+                ],
+                priority: 'medium',
+                files: [],
+                completedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+                createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+                updatedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+                recurrence: {
+                  enabled: true,
+                  pattern: 'monthly',
+                  interval: 1,
+                  dayOfMonth: 28
+                },
+                recurrenceId: 'monthly-report-2024',
+                occurrenceCount: 3
               },
             ],
             color: '#d1fae5'
