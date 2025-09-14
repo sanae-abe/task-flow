@@ -1,0 +1,96 @@
+@import '@primer/css/dist/primer.css';
+
+html, body, #root {
+  overflow-x: hidden;
+  max-width: 100vw;
+  min-height: 100vh;
+  box-sizing: border-box;
+  background-color: #f6f8fa;
+}
+.app {
+  min-height: 100vh;
+  background-color: #f6f8fa;
+  font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Meiryo", "Yu Gothic", -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+  padding-top: 112px; /* ヘッダー(50px) + サブヘッダー(45px) の高さ分 */
+}
+
+#__primerPortalRoot__ {
+  z-index: 1080;
+}
+
+/* Dialog Animation Keyframes */
+@keyframes dialog-backdrop-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes dialog-scale-fade-in {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Sidebar Animation Keyframes */
+@keyframes sidebar-slide-in-right {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+/* Tooltip Animation Keyframes */
+@keyframes fadeInSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Overlay Animation Keyframes */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Force show spinbuttons for number, date, and time inputs */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: auto !important;
+  opacity: 1 !important;
+  margin: 0;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator,
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  opacity: 1 !important;
+  cursor: pointer;
+}
+
+/* Firefox number input spinbuttons */
+input[type="number"] {
+  -moz-appearance: auto !important;
+}
+
+input[type="number"]::-moz-number-spinner {
+  opacity: 1 !important;
+}

@@ -1,0 +1,31 @@
+import type { Icon } from '@primer/octicons-react';
+import { Button, type ButtonProps } from '@primer/react';
+import React from 'react';
+
+interface SubHeaderButtonProps extends Omit<ButtonProps, 'size' | 'variant'> {
+  icon: Icon;
+  children: React.ReactNode;
+}
+
+const SubHeaderButton: React.FC<SubHeaderButtonProps> = ({ 
+  icon: IconComponent, 
+  children, 
+  ...props 
+}) => (
+    <Button
+      size="small"
+      variant="invisible"
+      {...props}
+    >
+      <span style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '4px'
+      }}>
+        <IconComponent size={16} />
+        {children}
+      </span>
+    </Button>
+  );
+
+export default SubHeaderButton;

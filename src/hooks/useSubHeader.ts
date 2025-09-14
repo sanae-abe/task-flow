@@ -1,0 +1,170 @@
+import { useState, useMemo, useCallback } from 'react';
+
+import { useKanban } from '../contexts/KanbanContext';
+import { useNotify } from '../contexts/NotificationContext';
+import { exportData, exportBoard } from '../utils/dataExport';
+
+import { useTaskStats } from './useTaskStats';
+
+type SubHeaderDialogState = {
+  readonly isCreatingColumn: boolean;
+  readonly isCreatingBoard: boolean;
+  readonly showDeleteConfirm: boolean;
+  readonly showEditDialog: boolean;
+  readonly showClearCompletedConfirm: boolean;
+  readonly showImportDialog: boolean;
+};
+
+type SubHeaderHandlers = {
+  readonly startCreateColumn: () => void;
+  readonly startCreateBoard: () => void;
+  readonly editBoardTitle: (newTitle: string) => void;
+  readonly createColumn: (title: string) => void;
+  readonly createBoard: (title: string) => void;
+  readonly cancelCreateColumn: () => void;
+  readonly cancelCreateBoard: () => void;
+  readonly deleteBoard: () => void;
+  readonly clearCompletedTasks: () => void;
+  readonly openEditDialog: () => void;
+  readonly closeEditDialog: () => void;
+  readonly openDeleteConfirm: () => void;
+  readonly closeDeleteConfirm: () => void;
+  readonly openClearCompletedConfirm: () => void;
+  readonly closeClearCompletedConfirm: () => void;
+  readonly exportAllData: () => void;
+  readonly exportCurrentBoard: () => void;
+  readonly openImportDialog: () => void;
+  readonly closeImportDialog: () => void;
+};
+
+type UseSubHeaderReturn = {
+  readonly state: ReturnType<typeof useKanban>['state'];
+  readonly dialogState: SubHeaderDialogState;
+  readonly taskStats: ReturnType<typeof useTaskStats>;
+  readonly hasCompletedTasks: boolean;
+  readonly canDeleteBoard: boolean;
+  readonly handlers: SubHeaderHandlers;
+};
+
+export const useSubHeader = (): UseSubHeaderReturn => {
+  const { state, updateBoard, createColumn, createBoard, deleteBoard, clearCompletedTasks } = useKanban();
+  const notify = useNotify();
+  
+  const [dialogState, setDialogState] = useState<SubHeaderDialogState>({
+    isCreatingColumn: false,
+    isCreatingBoard: false,
+    showDeleteConfirm: false,
+    showEditDialog: false,
+    showClearCompletedConfirm: false,
+    showImportDialog: false,
+  });
+
+  const allTasks = useMemo(() => {
+    if (!state.currentBoard?.columns.length) {
+      return [];
+    }
+    return state.currentBoard.columns
+      .slice(0, -1)
+      .flatMap(column => column.tasks);
+  }, [state.currentBoard?.columns]);
+
+  const taskStats = useTaskStats(allTasks);
+
+  const hasCompletedTasks = useMemo(() => {
+    const columns = state.currentBoard?.columns;
+    if (!columns?.length) {
+      return false;
+    }
+    
+    const rightmostColumn = columns[columns.length - 1];
+    return (rightmostColumn?.tasks?.length ?? 0) > 0;
+  }, [state.currentBoard?.columns]);
+
+  const canDeleteBoard = useMemo(() => state.boards.length > 1, [state.boards.length]);
+
+  const updateDialogState = useCallback((updates: Partial<SubHeaderDialogState>): void => {
+    setDialogState(prev => ({ ...prev, ...updates }));
+  }, []);
+  const handlers = useMemo((): SubHeaderHandlers => {
+    const currentBoardId = state.currentBoard?.id;
+    
+    return {
+      startCreateColumn: () => updateDialogState({ isCreatingColumn: true }),
+      startCreateBoard: () => updateDialogState({ isCreatingBoard: true }),
+      
+      editBoardTitle: (newTitle: string) => {
+        if (currentBoardId) {
+          updateBoard(currentBoardId, { title: newTitle });
+          updateDialogState({ showEditDialog: false });
+        }
+      },
+      
+      createColumn: (title: string) => {
+        createColumn(title);
+        updateDialogState({ isCreatingColumn: false });
+      },
+      
+      createBoard: (title: string) => {
+        createBoard(title);
+        updateDialogState({ isCreatingBoard: false });
+      },
+      
+      cancelCreateColumn: () => updateDialogState({ isCreatingColumn: false }),
+      cancelCreateBoard: () => updateDialogState({ isCreatingBoard: false }),
+      
+      deleteBoard: () => {
+        if (currentBoardId && canDeleteBoard) {
+          deleteBoard(currentBoardId);
+          updateDialogState({ showDeleteConfirm: false });
+        }
+      },
+      
+      clearCompletedTasks: () => {
+        clearCompletedTasks();
+        updateDialogState({ showClearCompletedConfirm: false });
+      },
+      
+      openEditDialog: () => updateDialogState({ showEditDialog: true }),
+      closeEditDialog: () => updateDialogState({ showEditDialog: false }),
+      openDeleteConfirm: () => updateDialogState({ showDeleteConfirm: true }),
+      closeDeleteConfirm: () => updateDialogState({ showDeleteConfirm: false }),
+      openClearCompletedConfirm: () => updateDialogState({ showClearCompletedConfirm: true }),
+      closeClearCompletedConfirm: () => updateDialogState({ showClearCompletedConfirm: false }),
+      
+      exportAllData: () => {
+        exportData(state.boards);
+        notify.success('全データをエクスポートしました');
+      },
+      
+      exportCurrentBoard: () => {
+        if (state.currentBoard) {
+          exportBoard(state.currentBoard);
+          notify.success(`「${state.currentBoard.title}」をエクスポートしました`);
+        }
+      },
+      
+      openImportDialog: () => updateDialogState({ showImportDialog: true }),
+      closeImportDialog: () => updateDialogState({ showImportDialog: false }),
+    };
+  }, [
+    state.boards,
+    state.currentBoard,
+    canDeleteBoard,
+    updateDialogState,
+    updateBoard,
+    createColumn,
+    createBoard,
+    deleteBoard,
+    clearCompletedTasks,
+    notify,
+  ]);
+
+  return {
+    state,
+    dialogState,
+    taskStats,
+    hasCompletedTasks,
+    canDeleteBoard,
+    handlers,
+  };
+};

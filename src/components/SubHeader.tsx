@@ -1,0 +1,215 @@
+import { PlusIcon, CalendarIcon, ProjectIcon, TriangleDownIcon, TableIcon } from '@primer/octicons-react';
+import { Box, ActionMenu, ActionList, Button } from '@primer/react';
+import React from 'react';
+
+import { useKanban } from '../contexts/KanbanContext';
+import { useSubHeader } from '../hooks/useSubHeader';
+import { useViewRoute } from '../hooks/useViewRoute';
+
+import BoardActionMenu from './BoardActionMenu';
+import BoardCreateDialog from './BoardCreateDialog';
+import BoardEditDialog from './BoardEditDialog';
+import ColumnCreateDialog from './ColumnCreateDialog';
+import ConfirmDialog from './ConfirmDialog';
+import { DataImportDialog } from './DataImportDialog';
+import FilterSelector from './FilterSelector';
+import SubHeaderButton from './SubHeaderButton';
+import TaskSortSelector from './TaskSortSelector';
+import TaskStatsDisplay from './TaskStatsDisplay';
+
+const SubHeader: React.FC = () => {
+  const { setSortOption, setTaskFilter } = useKanban();
+  const { navigateToView } = useViewRoute();
+  const {
+    state,
+    dialogState,
+    taskStats,
+    hasCompletedTasks,
+    canDeleteBoard,
+    handlers,
+  } = useSubHeader();
+
+  // 利用可能なラベル一覧を取得（名前で重複除去）
+  const availableLabels = React.useMemo(() => {
+    if (!state.currentBoard) {return [];}
+    const labelMap = new Map();
+    state.currentBoard.columns.forEach(column => {
+      column.tasks.forEach(task => {
+        task.labels?.forEach(label => {
+          // ラベル名で重複を除去し、同じ名前のラベルは1つだけ表示
+          if (!labelMap.has(label.name)) {
+            labelMap.set(label.name, label);
+          }
+        });
+      });
+    });
+    return Array.from(labelMap.values());
+  }, [state.currentBoard]);
+
+  if (!state.currentBoard) {
+    return null;
+  }
+
+
+  return (
+    <Box
+      sx={{
+        bg: 'canvas.default',
+        borderBottom: '1px solid',
+        borderColor: 'border.default',
+        px: 5,
+        py: 2,
+        zIndex: 999,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        width: '100%',
+        overflow: 'hidden'
+      }}
+    >
+      <TaskStatsDisplay stats={taskStats} />
+
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <FilterSelector
+          currentFilter={state.taskFilter}
+          onFilterChange={setTaskFilter}
+          availableLabels={availableLabels}
+        />
+        <TaskSortSelector
+          currentSort={state.sortOption}
+          onSortChange={setSortOption}
+        />
+        <Box
+          sx={{
+            width: '1px',
+            height: '24px',
+            bg: 'border.default',
+          }}
+        />
+        {state.viewMode === 'kanban' && (
+          <SubHeaderButton
+            icon={PlusIcon}
+            onClick={handlers.startCreateColumn}
+          >
+            カラム追加
+          </SubHeaderButton>
+        )}
+        
+        <BoardActionMenu
+          hasCompletedTasks={hasCompletedTasks}
+          canDeleteBoard={canDeleteBoard}
+          onCreateBoard={handlers.startCreateBoard}
+          onEditBoard={handlers.openEditDialog}
+          onDeleteBoard={handlers.openDeleteConfirm}
+          onClearCompletedTasks={handlers.openClearCompletedConfirm}
+          onExportData={handlers.exportAllData}
+          onExportBoard={handlers.exportCurrentBoard}
+          onImportData={handlers.openImportDialog}
+        />
+        
+        <Box
+          sx={{
+            width: '1px',
+            height: '24px',
+            bg: 'border.default',
+          }}
+        />
+        
+        {/* View Mode ActionMenu */}
+        <ActionMenu>
+          <ActionMenu.Anchor>
+            <Button
+              variant="invisible"
+              size="small"
+              leadingVisual={
+                state.viewMode === 'kanban' ? ProjectIcon : 
+                state.viewMode === 'calendar' ? CalendarIcon : 
+                TableIcon
+              }
+              trailingVisual={TriangleDownIcon}
+              aria-label="ビューモードを選択"
+            >
+              {state.viewMode === 'kanban' ? 'カンバン' : 
+               state.viewMode === 'calendar' ? 'カレンダー' : 
+               'テーブル'}
+            </Button>
+          </ActionMenu.Anchor>
+          <ActionMenu.Overlay>
+            <ActionList selectionVariant="single">
+              <ActionList.Item
+                selected={state.viewMode === 'kanban'}
+                onSelect={() => navigateToView('kanban')}
+              >
+                <ActionList.LeadingVisual>
+                  <ProjectIcon />
+                </ActionList.LeadingVisual>
+                カンバン
+              </ActionList.Item>
+              <ActionList.Item
+                selected={state.viewMode === 'calendar'}
+                onSelect={() => navigateToView('calendar')}
+              >
+                <ActionList.LeadingVisual>
+                  <CalendarIcon />
+                </ActionList.LeadingVisual>
+                カレンダー
+              </ActionList.Item>
+              <ActionList.Item
+                selected={state.viewMode === 'table'}
+                onSelect={() => navigateToView('table')}
+              >
+                <ActionList.LeadingVisual>
+                  <TableIcon />
+                </ActionList.LeadingVisual>
+                テーブル
+              </ActionList.Item>
+            </ActionList>
+          </ActionMenu.Overlay>
+        </ActionMenu>
+      </Box>
+
+      <ConfirmDialog
+        isOpen={dialogState.showDeleteConfirm}
+        title="プロジェクトを削除"
+        message={`「${state.currentBoard.title}」を削除しますか？この操作は元に戻せません。`}
+        onConfirm={handlers.deleteBoard}
+        onCancel={handlers.closeDeleteConfirm}
+      />
+
+      <ConfirmDialog
+        isOpen={dialogState.showClearCompletedConfirm}
+        title="完了したタスクをクリア"
+        message="完了したタスクをすべて削除しますか？この操作は元に戻せません。"
+        onConfirm={handlers.clearCompletedTasks}
+        onCancel={handlers.closeClearCompletedConfirm}
+      />
+
+      <BoardEditDialog
+        isOpen={dialogState.showEditDialog}
+        currentTitle={state.currentBoard.title}
+        onSave={handlers.editBoardTitle}
+        onCancel={handlers.closeEditDialog}
+      />
+
+      <ColumnCreateDialog
+        isOpen={dialogState.isCreatingColumn}
+        onSave={handlers.createColumn}
+        onCancel={handlers.cancelCreateColumn}
+      />
+
+      <DataImportDialog
+        isOpen={dialogState.showImportDialog}
+        onClose={handlers.closeImportDialog}
+      />
+
+      <BoardCreateDialog
+        isOpen={dialogState.isCreatingBoard}
+        onSave={handlers.createBoard}
+        onCancel={handlers.cancelCreateBoard}
+      />
+
+    </Box>
+  );
+};
+
+export default SubHeader;

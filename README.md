@@ -1,93 +1,192 @@
-# cheer-app
+<div align="center">
+  <img src="public/logo192.svg" alt="Cheer Logo" width="80" height="80" />
+  <h1>Cheer</h1>
+  <p>React + TypeScript で構築されたモダンなタスク管理アプリケーション</p>
+</div>
 
+![GitHub](https://img.shields.io/badge/license-MIT-blue.svg)
+![React](https://img.shields.io/badge/React-19.1.1-blue.svg)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.7.3-blue.svg)
+![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)
 
+## ✨ 主要機能
 
-## Getting started
+### 📋 タスク管理
+- **ドラッグ&ドロップ**: 直感的なタスク移動とカラム並び替え
+- **カスタムラベル**: 10種類のPrimerカラーバリアント対応
+- **期限管理**: 期限切れ・当日・明日期限の自動警告表示
+- **時刻設定**: 期限日に詳細時刻を設定（デフォルト23:59）
+- **繰り返し設定**: 毎日・毎週・毎月・毎年の自動タスク再作成
+- **完了機能**: ワンクリックでタスク完了状態を切り替え
+- **サブタスク**: チェックリスト形式のサブタスク管理と進捗表示
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+### 📎 ファイル機能
+- **ファイル添付**: ドラッグ&ドロップによるファイルアップロード（5MBまで）
+- **プレビュー**: 画像・テキストファイルのフルスクリーンプレビュー
+- **ダウンロード**: Base64エンコード形式でブラウザ内保存・ダウンロード
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+### 📅 カレンダービュー
+- **月次表示**: タスクをカレンダー形式で視覚的に管理
+- **期限ベース**: 期限日ごとにタスクを整理して表示
+- **インタラクティブ**: カレンダーから直接タスクの詳細確認・編集
+- **フィルタリング**: カレンダー内でもラベルやステータスでフィルタ可能
+- **ソート機能**: 各日付内でタスクの並び順をカスタマイズ
 
-## Add your files
+### 📊 テーブルビュー
+- **カラム管理**: 表示カラムの表示/非表示切り替え機能
+- **豊富な表示項目**: タスク名・ステータス・期限・ラベル・サブタスク・ファイル・進捗・作成日・更新日・完了日・説明・繰り返し設定
+- **タスク件数表示**: リアルタイムなタスク数カウンター
+- **進捗表示**: サブタスクの完了状況を視覚的なプログレスバーで表示
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/topics/git/add_files/#add-files-to-a-git-repository) or push an existing Git repository with the following command:
+### 🔍 フィルタリング・ソート
+- **スマートフィルタ**: 期限別・ラベル別の高度なフィルタリング
+- **多軸ソート**: 作成日・更新日・期限・名前順の4種類ソート
+- **統計表示**: 未完了タスク数・期限警告の集計表示
+
+### 💾 データ管理
+- **ローカル保存**: ブラウザのlocalStorageでオフライン対応
+- **データインポート**: JSONファイルによるデータ一括インポート
+- **複数ボード**: プロジェクト別のボード管理
+
+### 🎨 UI/UX
+- **Primerデザイン**: GitHubのPrimerデザインシステム採用
+- **レスポンシブ**: モバイル・デスクトップ対応
+- **アクセシビリティ**: WCAG準拠のアクセシブルUI
+- **ダークモード**: ユーザー設定に応じたテーマ対応
+
+## 🚀 クイックスタート
+
+### 環境要件
+- Node.js 18.0.0以上
+- npm 8.0.0以上
+
+### インストール
+```bash
+# リポジトリのクローン
+git clone ssh://git@rendezvous.m3.com:3789/sanae-abe/cheer-app.git
+cd cheer-app
+
+# 依存関係のインストール
+npm install
+
+# 開発サーバーの起動
+npm start
+```
+
+アプリケーションは [http://localhost:3000](http://localhost:3000) で起動します。
+
+## 🛠️ 利用可能なスクリプト
+
+### 開発
+```bash
+npm start          # 開発サーバー起動
+npm run typecheck  # TypeScript型チェック
+npm run lint       # ESLintによるコード品質チェック
+npm run format     # Prettierによるコード整形
+```
+
+### テスト
+```bash
+npm test               # インタラクティブテスト実行
+npm run test:coverage  # カバレッジレポート生成
+npm run test:ci        # CI用テスト実行
+```
+
+### ビルド・デプロイ
+```bash
+npm run build      # プロダクションビルド
+npm run analyze    # バンドルサイズ解析
+```
+
+### コード品質
+```bash
+npm run quality        # 全品質チェック実行
+npm run quality:fix    # 自動修正付き品質チェック
+npm run audit          # セキュリティ監査
+npm run audit:security # 高レベルセキュリティチェック
+```
+
+## 🏗️ 技術スタック
+
+### フロントエンド
+- **React 19.1.1**: UIライブラリ
+- **TypeScript 5.7.3**: 型安全性とDX向上
+- **Primer React**: GitHubのデザインシステム
+- **Styled Components**: CSS-in-JS
+- **@dnd-kit**: ドラッグ&ドロップ機能
+
+### 開発ツール
+- **ESLint**: コード品質・セキュリティチェック
+- **Prettier**: コード整形
+- **Jest**: テストフレームワーク
+- **React Testing Library**: UIテスト
+
+### アーキテクチャ
+- **Context API**: グローバル状態管理
+- **Custom Hooks**: ロジック再利用
+- **Component-based**: 再利用可能なコンポーネント設計
+- **TypeScript Strict**: 厳密な型チェック
+
+## 📁 プロジェクト構造
 
 ```
-cd existing_repo
-git remote add origin https://rendezvous.m3.com/sanae-abe/cheer-app.git
-git branch -M main
-git push -uf origin main
+src/
+├── components/          # 再利用可能なUIコンポーネント
+│   ├── dialogs/        # ダイアログコンポーネント
+│   ├── forms/          # フォームコンポーネント
+│   └── ui/             # 基本UIコンポーネント
+├── contexts/           # React Context (状態管理)
+├── hooks/              # カスタムフック
+├── types/              # TypeScript型定義
+├── utils/              # ユーティリティ関数
+└── App.tsx             # メインアプリケーション
 ```
 
-## Integrate with your tools
+## 🔧 設定
 
-- [ ] [Set up project integrations](https://rendezvous.m3.com/sanae-abe/cheer-app/-/settings/integrations)
+### ESLintカスタマイズ
+```bash
+# セキュリティ重視の設定
+npm run lint:security
 
-## Collaborate with your team
+# 自動修正
+npm run lint -- --fix
+```
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/user/project/merge_requests/auto_merge/)
+### TypeScript設定
+- `strict: true` - 厳密な型チェック
+- `noEmit: true` - 型チェックのみ実行
 
-## Test and Deploy
+### テストカバレッジ目標
+- Branches: 80%
+- Functions: 80%
+- Lines: 80%
+- Statements: 80%
 
-Use the built-in continuous integration in GitLab.
+## 🤝 コントリビューション
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+1. フォークを作成
+2. フィーチャーブランチを作成 (`git checkout -b feature/amazing-feature`)
+3. 変更をコミット (`git commit -m 'Add amazing feature'`)
+4. ブランチにプッシュ (`git push origin feature/amazing-feature`)
+5. プルリクエストを作成
 
-***
+### 開発ガイドライン
+- TypeScript strictモード必須
+- ESLint + Prettier準拠
+- テストカバレッジ80%以上
+- セキュリティファーストの設計
 
-# Editing this README
+## 📝 ライセンス
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+MIT License - 詳細は [LICENSE](LICENSE) ファイルを参照
 
-## Suggestions for a good README
+## 🙏 謝辞
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+- [GitHub Primer](https://primer.style/) - デザインシステム
+- [dnd kit](https://dndkit.com/) - ドラッグ&ドロップライブラリ
+- [Create React App](https://create-react-app.dev/) - 初期プロジェクト構成
 
-## Name
-Choose a self-explaining name for your project.
+---
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+💡 **Pro Tip**: `npm run quality:fix` でコード品質を一括改善できます！
