@@ -11,6 +11,12 @@ export interface DialogActionsProps {
   cancelText?: string;
   isConfirmDisabled?: boolean;
   confirmVariant?: 'primary' | 'danger';
+  showDelete?: boolean;
+  onDelete?: () => void;
+  deleteText?: string;
+  showRemove?: boolean;
+  onRemove?: () => void;
+  removeText?: string;
 }
 
 // フォーム関連の型

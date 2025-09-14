@@ -1,4 +1,4 @@
-import { Box, Text, Checkbox, TextInput, Label } from '@primer/react';
+import { Box, Text, TextInput } from '@primer/react';
 import React, { useState, useEffect, useCallback, memo } from 'react';
 
 import type { Label as LabelType, FileAttachment, RecurrenceConfig } from '../types';
@@ -9,6 +9,7 @@ import FileUploader from './FileUploader';
 import FormField, { TextareaField } from './FormField';
 import LabelSelector from './LabelSelector';
 import RecurrenceSelector from './RecurrenceSelector';
+import TimeSelector from './TimeSelector';
 
 const TaskCreateDialog = memo(() => {
   const {
@@ -48,6 +49,11 @@ const TaskCreateDialog = memo(() => {
       setRecurrence(undefined);
     }
   }, [state.isTaskFormOpen, state.taskFormDefaultDate]);
+
+  const handleTimeChange = useCallback((newHasTime: boolean, newTime: string) => {
+    setHasTime(newHasTime);
+    setDueTime(newTime);
+  }, []);
 
   const handleSave = useCallback(() => {
     if (!title.trim() || !state.currentBoard) {
@@ -153,37 +159,18 @@ const TaskCreateDialog = memo(() => {
             />
           </Box>
 
-          {dueDate && (
-            <Label sx={{ border: 0, display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-              <Checkbox
-                checked={hasTime}
-                onChange={(e) => setHasTime(e.target.checked)}
-              />
-              <Text sx={{ fontSize: 1 }}>時刻を設定</Text>
-            </Label>
-          )}
-
-          {hasTime && dueDate && (
-            <Box sx={{ mb: 2 }}>
-              <Text sx={{ fontSize: 1, color: 'fg.muted', mb: 1, display: 'block', fontWeight: '700' }}>
-                時刻
-              </Text>
-              <TextInput
-                type="time"
-                value={dueTime}
-                onChange={(e) => setDueTime(e.target.value)}
-                onKeyDown={handleKeyPress}
-                sx={{ width: '100%' }}
-                step="300"
-              />
-            </Box>
-          )}
+          <TimeSelector
+            hasTime={hasTime}
+            dueTime={dueTime}
+            onTimeChange={handleTimeChange}
+            disabled={!dueDate}
+          />
 
           <RecurrenceSelector
             recurrence={recurrence}
             onRecurrenceChange={setRecurrence}
             disabled={!dueDate}
-        />
+          />
         </Box>
 
         <Box sx={{ mb: 4 }}>

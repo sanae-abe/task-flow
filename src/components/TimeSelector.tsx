@@ -1,0 +1,81 @@
+import {
+  Box,
+  Button,
+} from '@primer/react';
+import { ClockIcon } from '@primer/octicons-react';
+import React, { useState, useCallback } from 'react';
+
+import TimeSelectorDialog from './TimeSelectorDialog';
+
+interface TimeSelectorProps {
+  hasTime: boolean;
+  dueTime: string;
+  onTimeChange: (hasTime: boolean, time: string) => void;
+  disabled?: boolean;
+}
+
+const TimeSelector: React.FC<TimeSelectorProps> = ({
+  hasTime,
+  dueTime,
+  onTimeChange,
+  disabled = false,
+}) => {
+  const [isDetailDialogOpen, setIsDetailDialogOpen] = useState(false);
+
+  const handleDetailDialogSave = useCallback((newHasTime: boolean, newTime: string) => {
+    onTimeChange(newHasTime, newTime);
+  }, [onTimeChange]);
+
+  const handleDetailDialogClose = useCallback(() => {
+    setIsDetailDialogOpen(false);
+  }, []);
+
+  const handleButtonClick = useCallback(() => {
+    if (!disabled) {
+      setIsDetailDialogOpen(true);
+    }
+  }, [disabled]);
+
+  const getButtonText = () => {
+    if (hasTime && dueTime) {
+      return `時刻: ${dueTime}`;
+    }
+    return '時刻を設定';
+  };
+
+  return (
+    <>
+      <Box sx={{ mb: 2 }}>
+        <Button
+          onClick={handleButtonClick}
+          disabled={disabled}
+          sx={{
+            width: '100%',
+            color: disabled ? 'fg.disabled' : 'inherit',
+            border: '1px solid var(--borderColor-default)',
+            bg: 'canvas.default',
+            '& span': {
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1
+            }
+          }}
+        >
+          <ClockIcon size={16} />
+          {getButtonText()}
+        </Button>
+
+      </Box>
+
+      <TimeSelectorDialog
+        isOpen={isDetailDialogOpen}
+        hasTime={hasTime}
+        dueTime={dueTime}
+        onSave={handleDetailDialogSave}
+        onClose={handleDetailDialogClose}
+      />
+    </>
+  );
+};
+
+export default TimeSelector;

@@ -1,11 +1,8 @@
 import {
   Box,
-  Text,
-  Checkbox,
-  Label,
   Button,
 } from '@primer/react';
-import { GearIcon } from '@primer/octicons-react';
+import { SyncIcon } from '@primer/octicons-react';
 import React, { useState, useCallback } from 'react';
 
 import type { RecurrenceConfig } from '../types';
@@ -26,16 +23,6 @@ const RecurrenceSelector: React.FC<RecurrenceSelectorProps> = ({
 }) => {
   const [isDetailDialogOpen, setIsDetailDialogOpen] = useState(false);
 
-  const handleEnabledChange = useCallback((checked: boolean) => {
-    if (checked) {
-      // チェックされた場合、詳細設定ダイアログを開く
-      setIsDetailDialogOpen(true);
-    } else {
-      // チェックを外された場合、繰り返し設定をクリア
-      onRecurrenceChange(undefined);
-    }
-  }, [onRecurrenceChange]);
-
   const handleDetailDialogSave = useCallback((newRecurrence: RecurrenceConfig | undefined) => {
     onRecurrenceChange(newRecurrence);
   }, [onRecurrenceChange]);
@@ -44,51 +31,46 @@ const RecurrenceSelector: React.FC<RecurrenceSelectorProps> = ({
     setIsDetailDialogOpen(false);
   }, []);
 
-  const handleSettingsClick = useCallback(() => {
-    setIsDetailDialogOpen(true);
-  }, []);
+  const handleButtonClick = useCallback(() => {
+    if (!disabled) {
+      setIsDetailDialogOpen(true);
+    }
+  }, [disabled]);
+
+  const getButtonText = () => {
+    if (recurrence?.enabled) {
+      return getRecurrenceDescription(recurrence);
+    }
+    return '繰り返し設定';
+  };
 
   return (
     <>
       <Box sx={{ mb: 4 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <Label sx={{ border: 0, display: 'flex', alignItems: 'center', gap: 2, flex: 1 }}>
-            <Checkbox
-              checked={Boolean(recurrence?.enabled) && !disabled}
-              onChange={(e) => handleEnabledChange(e.target.checked)}
-              disabled={disabled}
-            />
-            <Text sx={{ fontSize: 1, color: disabled ? 'fg.disabled' : 'inherit' }}>
-              繰り返し設定
-            </Text>
-          </Label>
-
-          {Boolean(recurrence?.enabled) && !disabled && (
-            <Button
-              variant="invisible"
-              size="small"
-              leadingVisual={GearIcon}
-              onClick={handleSettingsClick}
-              sx={{ color: 'fg.muted' }}
-            >
-              設定
-            </Button>
-          )}
-        </Box>
-
-        {Boolean(recurrence?.enabled) && !disabled && (
-          <Box sx={{ pl: 4 }}>
-            <Text sx={{ fontSize: 0, color: 'fg.muted' }}>
-              {getRecurrenceDescription(recurrence)}
-            </Text>
-          </Box>
-        )}
+        <Button
+          onClick={handleButtonClick}
+          disabled={disabled}
+          sx={{
+            width: '100%',
+            color: disabled ? 'fg.disabled' : 'inherit',
+            border: '1px solid var(--borderColor-default)',
+            bg: 'canvas.default',
+            '& span': {
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1
+            }
+          }}
+        >
+          <SyncIcon size={16} />
+          {getButtonText()}
+        </Button>
 
         {disabled && (
-          <Box sx={{ pl: 4 }}>
-            <Text sx={{ fontSize: 0, color: 'fg.muted' }}>
-              期限を設定してから繰り返し設定を有効にしてください
-            </Text>
+          <Box sx={{ mt: 2 }}>
+            <Box sx={{ fontSize: 0, color: 'fg.muted' }}>
+              ※期限を設定すると時刻設定と繰り返し設定が有効になります
+            </Box>
           </Box>
         )}
       </Box>

@@ -143,6 +143,11 @@ const RecurrenceDetailDialog: React.FC<RecurrenceDetailDialogProps> = ({
     onClose();
   }, [onClose]);
 
+  const handleDelete = useCallback(() => {
+    onSave(undefined);
+    onClose();
+  }, [onSave, onClose]);
+
   const isFormValid = errors.length === 0;
 
   return (
@@ -157,6 +162,9 @@ const RecurrenceDetailDialog: React.FC<RecurrenceDetailDialogProps> = ({
           onConfirm={handleSave}
           confirmText="保存"
           isConfirmDisabled={!isFormValid}
+          showDelete={recurrence?.enabled || false}
+          onDelete={handleDelete}
+          deleteText="削除"
         />
       }
     >
@@ -195,10 +203,12 @@ const RecurrenceDetailDialog: React.FC<RecurrenceDetailDialogProps> = ({
 
         {config?.pattern === 'weekly' && (
           <Box>
-            <Text sx={{ fontSize: 1, mb: 2 }}>曜日選択:</Text>
+            <div style={{ marginBottom: '8px' }}>
+              <Text sx={{ fontSize: 1, mb: 2 }}>曜日選択:</Text>
+            </div>
             <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
               {WEEKDAYS.map(day => (
-                <Label key={day.value} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Label key={day.value} sx={{ display: 'flex', alignItems: 'center', gap: 1, border: 0 }}>
                   <Checkbox
                     checked={config?.daysOfWeek?.includes(day.value) || false}
                     onChange={(e) => handleDaysOfWeekChange(day.value, e.target.checked)}
@@ -228,7 +238,9 @@ const RecurrenceDetailDialog: React.FC<RecurrenceDetailDialogProps> = ({
         )}
 
         <Box>
-          <Text sx={{ fontSize: 1, mb: 2 }}>終了条件（任意）:</Text>
+          <div style={{ marginBottom: '8px' }}>
+            <Text sx={{ fontSize: 1, fontWeight: '600', color: 'fg.muted' }}>終了条件（任意）:</Text>
+          </div>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, pl: 2 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
               <Text sx={{ fontSize: 1, minWidth: '60px' }}>終了日:</Text>

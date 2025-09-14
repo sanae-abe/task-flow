@@ -131,15 +131,32 @@ export const DialogHeader = memo<DialogHeaderProps>(({
   </Box>
 ));
 
-export const DialogActions = memo<DialogActionsProps>(({ 
-  onCancel, 
-  onConfirm, 
+export const DialogActions = memo<DialogActionsProps>(({
+  onCancel,
+  onConfirm,
   confirmText,
   cancelText = 'キャンセル',
   isConfirmDisabled = false,
-  confirmVariant = 'primary'
+  confirmVariant = 'primary',
+  showDelete = false,
+  onDelete,
+  deleteText = '削除',
+  showRemove = false,
+  onRemove,
+  removeText = '削除'
 }) => (
   <Box sx={DIALOG_STYLES.actions}>
+    {showDelete && onDelete && (
+      <Button variant="danger" onClick={onDelete}>
+        {deleteText}
+      </Button>
+    )}
+    {showRemove && onRemove && (
+      <Button variant="danger" onClick={onRemove}>
+        {removeText}
+      </Button>
+    )}
+    <Box sx={{ flex: 1 }} />
     <Button onClick={onCancel}>
       {cancelText}
     </Button>
