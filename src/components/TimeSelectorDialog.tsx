@@ -57,19 +57,17 @@ const TimeSelectorDialog: React.FC<TimeSelectorDialogProps> = ({
         />
       }
     >
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-        <Box>
-          <Text sx={{ fontSize: 1, color: 'fg.muted', mb: 1, display: 'block', fontWeight: '700' }}>
-            時刻
-          </Text>
-          <TextInput
-            type="time"
-            value={localDueTime}
-            onChange={(e) => setLocalDueTime(e.target.value)}
-            sx={{ width: '100%' }}
-            step="300"
-          />
-        </Box>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mb: 4 }}>
+        <Text sx={{ fontSize: 1, color: 'fg.muted', mb: 1, display: 'block', fontWeight: '700' }}>
+          時刻
+        </Text>
+        <TextInput
+          type="time"
+          value={localDueTime}
+          onChange={(e) => setLocalDueTime(e.target.value)}
+          sx={{ width: '100%' }}
+          step="300"
+        />
       </Box>
     </CommonDialog>
   );
