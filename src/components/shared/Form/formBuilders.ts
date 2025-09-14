@@ -17,9 +17,24 @@ export const createFormField = (
     onChange: (value: unknown) => void;
   }
 ): FormFieldConfig => {
-  const defaultValue = config.type === 'recurrence-selector'
-    ? { enabled: false, pattern: 'daily' as const, interval: 1 }
-    : '';
+  const getDefaultValue = () => {
+    switch (config.type) {
+      case 'recurrence-selector':
+        return { enabled: false, pattern: 'daily' as const, interval: 1 };
+      case 'number':
+        return 0;
+      case 'checkbox':
+        return false;
+      case 'label-selector':
+        return [];
+      case 'file':
+        return [];
+      default:
+        return '';
+    }
+  };
+
+  const defaultValue = getDefaultValue();
 
   return {
     value: defaultValue,
@@ -168,7 +183,7 @@ export const createTaskFormFields = (
         name: 'recurrence',
         type: 'recurrence-selector',
         label: '繰り返し設定（任意）',
-        value: values.recurrence ?? { enabled: false, pattern: 'daily', interval: 1 },
+        value: values.recurrence || { enabled: false, pattern: 'daily', interval: 1 },
         onChange: handlers.setRecurrence as (value: unknown) => void,
         disabled: !values.dueDate, // 期限が未設定の場合は無効化
         helpText: !values.dueDate ? '繰り返し設定をするには期限を設定してください' : undefined

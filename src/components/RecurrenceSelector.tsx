@@ -157,7 +157,7 @@ const RecurrenceSelector: React.FC<RecurrenceSelectorProps> = ({
       <Label>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
           <Checkbox
-            checked={config.enabled && !disabled}
+            checked={Boolean(config?.enabled) && !disabled}
             onChange={(e) => handleEnabledChange(e.target.checked)}
             disabled={disabled}
           />
@@ -167,12 +167,12 @@ const RecurrenceSelector: React.FC<RecurrenceSelectorProps> = ({
         </Box>
       </Label>
 
-      {config.enabled && !disabled && (
+      {Boolean(config?.enabled) && !disabled && (
         <Box sx={{ pl: 4, display: 'flex', flexDirection: 'column', gap: 3 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <Text sx={{ fontSize: 1, minWidth: '60px' }}>パターン:</Text>
             <Select
-              value={config.pattern}
+              value={config?.pattern || 'daily'}
               onChange={(e) => handlePatternChange(e.target.value)}
               sx={{ width: '120px' }}
             >
@@ -188,26 +188,26 @@ const RecurrenceSelector: React.FC<RecurrenceSelectorProps> = ({
             <Text sx={{ fontSize: 1, minWidth: '60px' }}>間隔:</Text>
             <TextInput
               type="number"
-              value={config.interval.toString()}
+              value={(config?.interval || 1).toString()}
               onChange={(e) => handleIntervalChange(e.target.value)}
               sx={{ width: '80px' }}
               min={1}
             />
             <Text sx={{ fontSize: 1 }}>
-              {config.pattern === 'daily' ? '日ごと' :
-               config.pattern === 'weekly' ? '週間ごと' :
-               config.pattern === 'monthly' ? 'ヶ月ごと' : '年ごと'}
+              {config?.pattern === 'daily' ? '日ごと' :
+               config?.pattern === 'weekly' ? '週間ごと' :
+               config?.pattern === 'monthly' ? 'ヶ月ごと' : '年ごと'}
             </Text>
           </Box>
 
-          {config.pattern === 'weekly' && (
+          {config?.pattern === 'weekly' && (
             <Box>
               <Text sx={{ fontSize: 1, mb: 2 }}>曜日選択:</Text>
               <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
                 {WEEKDAYS.map(day => (
                   <Label key={day.value} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                     <Checkbox
-                      checked={config.daysOfWeek?.includes(day.value) || false}
+                      checked={config?.daysOfWeek?.includes(day.value) || false}
                       onChange={(e) => handleDaysOfWeekChange(day.value, e.target.checked)}
                     />
                     <Text sx={{ fontSize: 1 }}>{day.label}</Text>
@@ -217,12 +217,12 @@ const RecurrenceSelector: React.FC<RecurrenceSelectorProps> = ({
             </Box>
           )}
 
-          {config.pattern === 'monthly' && (
+          {config?.pattern === 'monthly' && (
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
               <Text sx={{ fontSize: 1, minWidth: '60px' }}>日付:</Text>
               <TextInput
                 type="number"
-                value={config.dayOfMonth?.toString() || ''}
+                value={config?.dayOfMonth?.toString() || ''}
                 onChange={(e) => handleDayOfMonthChange(e.target.value)}
                 placeholder="毎月の日付（1-31）"
                 sx={{ width: '150px' }}
@@ -240,7 +240,7 @@ const RecurrenceSelector: React.FC<RecurrenceSelectorProps> = ({
                 <Text sx={{ fontSize: 1, minWidth: '60px' }}>終了日:</Text>
                 <TextInput
                   type="date"
-                  value={config.endDate || ''}
+                  value={config?.endDate || ''}
                   onChange={(e) => handleEndDateChange(e.target.value)}
                   sx={{ width: '150px' }}
                 />
@@ -249,7 +249,7 @@ const RecurrenceSelector: React.FC<RecurrenceSelectorProps> = ({
                 <Text sx={{ fontSize: 1, minWidth: '60px' }}>最大回数:</Text>
                 <TextInput
                   type="number"
-                  value={config.maxOccurrences?.toString() || ''}
+                  value={config?.maxOccurrences?.toString() || ''}
                   onChange={(e) => handleMaxOccurrencesChange(e.target.value)}
                   placeholder="回数"
                   sx={{ width: '80px' }}
@@ -260,10 +260,10 @@ const RecurrenceSelector: React.FC<RecurrenceSelectorProps> = ({
             </Box>
           </Box>
 
-          {config.enabled && (
+          {Boolean(config?.enabled) && (
             <Box sx={{ p: 2, bg: 'canvas.subtle', borderRadius: 2 }}>
               <Text sx={{ fontSize: 0, color: 'fg.muted' }}>
-                設定内容: {getRecurrenceDescription(config.enabled ? config : undefined)}
+                設定内容: {getRecurrenceDescription(Boolean(config?.enabled) ? config : undefined)}
               </Text>
             </Box>
           )}
