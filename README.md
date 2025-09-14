@@ -63,8 +63,8 @@
 ### インストール
 ```bash
 # リポジトリのクローン
-git clone https://github.com/your-username/todo-app.git
-cd todo-app
+git clone ssh://git@rendezvous.m3.com:3789/sanae-abe/cheer-app.git
+cd cheer-app
 
 # 依存関係のインストール
 npm install

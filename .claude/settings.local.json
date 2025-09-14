@@ -1,8 +1,11 @@
 {
   "permissions": {
     "allow": [
-      "Bash(git log --name-status --since=\"30 days ago\" --pretty=format:\"%h %ad %s\" --date=short)",
-      "Bash(git log --name-status --since=\"60 days ago\" --diff-filter=A --pretty=format:\"%h %ad %s\" --date=short)"
+      "Bash(git push -u origin main)",
+      "Bash(git pull origin main --allow-unrelated-histories)",
+      "Bash(git pull origin main --allow-unrelated-histories --no-rebase)",
+      "Bash(git add .)",
+      "Bash(git commit -m \"feat: ローカル変更をコミット\n\n🤖 Generated with [Claude Code](https://claude.ai/code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\")"
     ],
     "deny": [],
     "ask": []
