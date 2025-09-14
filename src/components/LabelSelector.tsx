@@ -100,7 +100,7 @@ const LabelSelector = memo<LabelSelectorProps>(({
   }), []);
 
   return (
-    <Box sx={{ mt: 1 }}>
+    <Box sx={{ mt: 2 }}>
       {/* 選択されたラベルを表示 */}
       {/* & button のセレクタのスタイルは保持 */}
       {selectedLabels.length > 0 && (
@@ -121,7 +121,6 @@ const LabelSelector = memo<LabelSelectorProps>(({
         {/* ラベル選択 */}
         <ActionMenu>
           <ActionMenu.Button
-            variant="invisible"
             size="small"
             leadingVisual={TagIcon}
             sx={buttonStyles}
@@ -172,7 +171,6 @@ const LabelSelector = memo<LabelSelectorProps>(({
 
         {/* ラベル追加 */}
         <Button
-          variant="invisible"
           size="small"
           leadingVisual={PlusIcon}
           onClick={handleAddDialogOpen}

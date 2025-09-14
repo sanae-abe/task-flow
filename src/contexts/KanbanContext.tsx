@@ -893,7 +893,7 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
                   return date.toISOString();
                 })(), // 3日後18:00期限
                 labels: [
-                  { id: uuidv4(), name: 'バックエンド', color: 'primary' },
+                  { id: uuidv4(), name: 'バックエンド', color: 'attention' },
                   { id: uuidv4(), name: 'DB', color: 'secondary' }
                 ],
                 subTasks: [
@@ -923,7 +923,7 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
                   return date.toISOString();
                 })(), // 本日期限（23:59）
                 labels: [
-                  { id: uuidv4(), name: 'フロントエンド', color: 'success' },
+                  { id: uuidv4(), name: 'フロントエンド', color: 'accent' },
                   { id: uuidv4(), name: 'React', color: 'primary' }
                 ],
                 subTasks: [

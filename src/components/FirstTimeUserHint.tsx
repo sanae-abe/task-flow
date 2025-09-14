@@ -1,5 +1,5 @@
 import React from 'react';
-import { LightBulbIcon, XIcon } from '@primer/octicons-react';
+import { SparklesFillIcon, XIcon } from '@primer/octicons-react';
 import { Box, Button } from '@primer/react';
 
 interface FirstTimeUserHintProps {
@@ -46,7 +46,7 @@ const FirstTimeUserHint: React.FC<FirstTimeUserHintProps> = ({
   }}>
     <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}>
       <Box sx={{ color: 'accent.fg' }}>
-        <LightBulbIcon size={16} />
+        <SparklesFillIcon size={16} />
       </Box>
       <Box sx={{ flex: 1 }}>
         <Box sx={{ fontWeight: 'bold', mb: 1, fontSize: 1 }}>
