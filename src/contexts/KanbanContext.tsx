@@ -837,7 +837,11 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
                 id: uuidv4(),
                 title: 'プロジェクト企画書作成',
                 description: 'プロジェクトの要件定義と企画書の作成\n\n・ステークホルダー要件整理\n・スコープと目標設定',
-                dueDate: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), // 昨日期限（期限切れ）
+                dueDate: (() => {
+                  const date = new Date(Date.now() - 24 * 60 * 60 * 1000);
+                  date.setHours(23, 59, 59, 999);
+                  return date.toISOString();
+                })(), // 昨日期限（期限切れ・23:59）
                 labels: [
                   { id: uuidv4(), name: '緊急', color: 'danger' },
                   { id: uuidv4(), name: '企画', color: 'primary' }
@@ -879,6 +883,29 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
                 createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
                 updatedAt: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
               },
+              {
+                id: uuidv4(),
+                title: 'データベース設計',
+                description: 'データベーススキーマの設計と最適化\n\n・テーブル設計\n・インデックス設定\n・パフォーマンス調整',
+                dueDate: (() => {
+                  const date = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
+                  date.setHours(18, 0, 0, 0);
+                  return date.toISOString();
+                })(), // 3日後18:00期限
+                labels: [
+                  { id: uuidv4(), name: 'バックエンド', color: 'primary' },
+                  { id: uuidv4(), name: 'DB', color: 'secondary' }
+                ],
+                subTasks: [
+                  { id: uuidv4(), title: 'ER図作成', completed: false, createdAt: new Date().toISOString() },
+                  { id: uuidv4(), title: 'テーブル定義', completed: false, createdAt: new Date().toISOString() }
+                ],
+                priority: 'high',
+                files: [],
+                completedAt: null,
+                createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+                updatedAt: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
+              },
             ],
             color: '#f6f8fa'
           },
@@ -890,7 +917,11 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
                 id: uuidv4(),
                 title: 'UIコンポーネント開発',
                 description: 'Reactコンポーネントの実装と整備\n\n・ボタンコンポーネント\n・フォームコンポーネント',
-                dueDate: new Date().toISOString(), // 本日期限
+                dueDate: (() => {
+                  const date = new Date();
+                  date.setHours(23, 59, 59, 999);
+                  return date.toISOString();
+                })(), // 本日期限（23:59）
                 labels: [
                   { id: uuidv4(), name: 'フロントエンド', color: 'success' },
                   { id: uuidv4(), name: 'React', color: 'primary' }
@@ -909,7 +940,11 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
                 id: uuidv4(),
                 title: '週次レポート作成',
                 description: 'プロジェクト進捗の週次レポート作成\n\n・進捗まとめ\n・課題整理',
-                dueDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(), // 2日後期限
+                dueDate: (() => {
+                  const date = new Date(Date.now() + 2 * 24 * 60 * 60 * 1000);
+                  date.setHours(17, 0, 0, 0);
+                  return date.toISOString();
+                })(), // 2日後17:00期限
                 labels: [
                   { id: uuidv4(), name: 'レポート', color: 'primary' },
                   { id: uuidv4(), name: '定例', color: 'default' }
@@ -941,7 +976,11 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
                 id: uuidv4(),
                 title: '月次レポート作成',
                 description: '月次進捗レポートの作成と送付\n\n・データ集計\n・分析レポート作成',
-                dueDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), // 2日前期限（期限内に完了）
+                dueDate: (() => {
+                  const date = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000);
+                  date.setHours(12, 0, 0, 0);
+                  return date.toISOString();
+                })(), // 2日前12:00期限（期限内に完了）
                 labels: [
                   { id: uuidv4(), name: 'レポート', color: 'primary' },
                   { id: uuidv4(), name: '完了', color: 'success' }
