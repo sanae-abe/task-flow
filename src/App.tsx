@@ -11,6 +11,7 @@ import NotificationContainer from './components/NotificationContainer';
 import HelpSidebar from './components/HelpSidebar';
 import TaskDetailSidebar from './components/TaskDetailSidebar';
 import TaskCreateDialog from './components/TaskCreateDialog';
+import FirstTimeUserHint from './components/FirstTimeUserHint';
 import { KanbanProvider, useKanban } from './contexts/KanbanContext';
 import { NotificationProvider } from './contexts/NotificationContext';
 import { TableColumnsProvider } from './contexts/TableColumnsContext';
@@ -18,6 +19,7 @@ import { useHelp } from './hooks/useHelp';
 import { useDataSync } from './hooks/useDataSync';
 import { useViewRoute } from './hooks/useViewRoute';
 import { useTaskFinder } from './hooks/useTaskFinder';
+import { useFirstTimeUser } from './hooks/useFirstTimeUser';
 
 // 定数定義
 const Z_INDEX = 1000;
@@ -35,13 +37,14 @@ const styles = {
 } as const;
 
 const AppContent: React.FC = () => {
-  const { state, closeTaskDetail } = useKanban();
+  const { state, closeTaskDetail, createBoard } = useKanban();
   const { isHelpOpen, openHelp, closeHelp } = useHelp();
   const { findTaskById } = useTaskFinder(state.currentBoard);
-  
+  const { shouldShowHint, markAsExistingUser, markHintAsShown } = useFirstTimeUser();
+
   // データ同期の初期化
   useDataSync();
-  
+
   // URL同期の初期化
   useViewRoute();
 
@@ -55,16 +58,29 @@ const AppContent: React.FC = () => {
     }
   }, [state.selectedTaskId, selectedTask, state.isTaskDetailOpen, closeTaskDetail]);
 
+  // ヒント表示時の処理
+  const handleDismissHint = () => {
+    markHintAsShown();
+    markAsExistingUser();
+  };
+
+  const handleCreateBoardFromHint = () => {
+    markHintAsShown();
+    markAsExistingUser();
+    // デフォルトで「マイプロジェクト」という名前で新しいボードを作成
+    createBoard('マイプロジェクト');
+  };
+
   return (
     <div className="app" role="application" aria-label="Cheerアプリケーション">
       <div style={styles.fixedHeader}>
         <Header onHelpClick={openHelp} />
         <SubHeader />
       </div>
-      <main 
+      <main
         aria-label={
-          state.viewMode === 'kanban' ? 'カンバンボード' : 
-          state.viewMode === 'calendar' ? 'カレンダービュー' : 
+          state.viewMode === 'kanban' ? 'カンバンボード' :
+          state.viewMode === 'calendar' ? 'カレンダービュー' :
           'テーブルビュー'
         }
         style={{
@@ -80,6 +96,41 @@ const AppContent: React.FC = () => {
           <Route path="*" element={<Navigate to="/kanban" replace />} />
         </Routes>
       </main>
+      {shouldShowHint && (
+        <>
+          {/* オーバーレイ背景 */}
+          <div
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: 'rgba(0, 0, 0, 0.5)',
+              zIndex: 9998,
+              animation: 'fadeIn 0.2s ease-out',
+              cursor: 'pointer'
+            }}
+            onClick={handleDismissHint}
+            role="button"
+            aria-label="ヒントを閉じる"
+          />
+
+          {/* ツールチップ */}
+          <div style={{
+            position: 'fixed',
+            top: '100px',
+            right: '80px',
+            zIndex: 9999,
+            animation: 'fadeInSlide 0.3s ease-out'
+          }}>
+            <FirstTimeUserHint
+              onDismiss={handleDismissHint}
+              onCreateBoard={handleCreateBoardFromHint}
+            />
+          </div>
+        </>
+      )}
       <NotificationContainer />
       <HelpSidebar isOpen={isHelpOpen} onClose={closeHelp} />
       <TaskDetailSidebar
