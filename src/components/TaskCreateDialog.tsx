@@ -27,9 +27,9 @@ const TaskCreateDialog = memo(() => {
   // デフォルト日付が設定されている場合は期限日に設定
   useEffect(() => {
     if (state.taskFormDefaultDate) {
-      // デフォルト時刻を9:00に設定
+      // デフォルト時刻を23:59に設定
       const defaultDate = new Date(state.taskFormDefaultDate);
-      defaultDate.setHours(9, 0, 0, 0);
+      defaultDate.setHours(23, 59, 59, 999);
       const dateTimeString = toDateTimeLocalString(defaultDate);
       setDueDate(dateTimeString);
     }

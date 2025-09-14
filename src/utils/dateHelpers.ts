@@ -39,12 +39,20 @@ export const formatDueDate = (date: Date): string => {
     month: 'long',
     day: 'numeric'
   });
+  const weekdayStr = date.toLocaleDateString('ja-JP', {
+    weekday: 'short'
+  });
+
+  // 23:59:59の場合は時刻を表示しない
+  const isEndOfDay = date.getHours() === 23 && date.getMinutes() === 59 && date.getSeconds() === 59;
+
+  if (isEndOfDay) {
+    return `${dateStr}（${weekdayStr}）`;
+  }
+
   const timeStr = date.toLocaleTimeString('ja-JP', {
     hour: '2-digit',
     minute: '2-digit'
-  });
-  const weekdayStr = date.toLocaleDateString('ja-JP', {
-    weekday: 'short'
   });
   return `${dateStr}（${weekdayStr}）${timeStr}`;
 };
@@ -55,12 +63,20 @@ export const formatDueDateWithYear = (date: Date): string => {
     month: 'long',
     day: 'numeric'
   });
+  const weekdayStr = date.toLocaleDateString('ja-JP', {
+    weekday: 'short'
+  });
+
+  // 23:59:59の場合は時刻を表示しない
+  const isEndOfDay = date.getHours() === 23 && date.getMinutes() === 59 && date.getSeconds() === 59;
+
+  if (isEndOfDay) {
+    return `${dateStr}（${weekdayStr}）`;
+  }
+
   const timeStr = date.toLocaleTimeString('ja-JP', {
     hour: '2-digit',
     minute: '2-digit'
-  });
-  const weekdayStr = date.toLocaleDateString('ja-JP', {
-    weekday: 'short'
   });
   return `${dateStr}（${weekdayStr}）${timeStr}`;
 };
@@ -93,6 +109,7 @@ export const formatDate = (date: string | Date, format?: string): string => {
 
 /**
  * DateオブジェクトをHTML datetime-local input用の文字列に変換
+ * 秒は含まず、分単位までの精度で変換
  */
 export const toDateTimeLocalString = (date: Date): string => {
   const year = date.getFullYear();

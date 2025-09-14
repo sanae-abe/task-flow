@@ -127,8 +127,10 @@ export const useTaskEdit = ({
 
       // 完了カラムに移動した場合で、現在完了日時が空の場合
       if (isLastColumn && !completedAt) {
-        const now = toDateTimeLocalString(new Date());
-        setCompletedAt(now);
+        const now = new Date();
+        now.setHours(23, 59, 59, 999);
+        const timeString = toDateTimeLocalString(now);
+        setCompletedAt(timeString);
       }
       // 完了カラム以外に移動した場合で、完了日時が設定されている場合
       else if (!isLastColumn && completedAt) {
@@ -164,9 +166,10 @@ export const useTaskEdit = ({
           targetColumn && 
           state.currentBoard.columns.indexOf(targetColumn) === state.currentBoard.columns.length - 1;
         
-        // 完了カラムに移動する場合は完了日時を現在時刻に設定
+        // 完了カラムに移動する場合は完了日時を23:59に設定
         if (isLastColumn && !task.completedAt) {
           completedAtObj = new Date();
+          completedAtObj.setHours(23, 59, 59, 999);
         }
         // 完了カラムから他のカラムに移動する場合は完了日時をクリア
         else if (!isLastColumn && task.completedAt) {
