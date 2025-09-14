@@ -60,6 +60,14 @@ export const DEFAULT_COLUMNS: TableColumn[] = [
     accessor: 'dueDate'
   },
   {
+    id: 'recurrence',
+    label: '繰り返し',
+    width: '160px',
+    visible: false,
+    sortable: false,
+    type: 'text'
+  },
+  {
     id: 'status',
     label: 'ステータス',
     width: '120px',

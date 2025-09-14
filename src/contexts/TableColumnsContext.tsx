@@ -30,10 +30,26 @@ export const TableColumnsProvider: React.FC<{ children: React.ReactNode }> = ({ 
 
         // デフォルトカラムとマージして、新しいカラムが追加された場合に対応
         const mergedColumns = mergeWithDefaults(parsed.columns);
+
+        // 新しく追加されたカラムをcolumnOrderに追加
+        const existingOrder = parsed.columnOrder.filter(id => mergedColumns.some(col => col.id === id));
+        const newColumns = mergedColumns.filter(col => !existingOrder.includes(col.id));
+        const updatedOrder = [...existingOrder, ...newColumns.map(col => col.id)];
+
         const result = {
           columns: mergedColumns,
-          columnOrder: parsed.columnOrder.filter(id => mergedColumns.some(col => col.id === id))
+          columnOrder: updatedOrder
         };
+
+        // 新しいカラムが追加された場合は、ローカルストレージを更新
+        if (newColumns.length > 0) {
+          try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(result));
+          } catch (error) {
+            console.error('Failed to update localStorage:', error);
+          }
+        }
+
         return result;
       }
     } catch (error) {

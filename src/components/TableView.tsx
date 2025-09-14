@@ -339,6 +339,27 @@ const TableView: React.FC = () => {
           </Box>
         );
 
+      case 'recurrence':
+        return (
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            {task.recurrence?.enabled ? (
+              <>
+                <SyncIcon size={12} />
+                <Text sx={{ fontSize: 0, color: 'fg.default' }}>
+                  {task.recurrence.pattern === 'daily' && '毎日'}
+                  {task.recurrence.pattern === 'weekly' && '毎週'}
+                  {task.recurrence.pattern === 'monthly' && '毎月'}
+                  {task.recurrence.pattern === 'yearly' && '毎年'}
+                </Text>
+              </>
+            ) : (
+              <Text sx={{ color: 'fg.muted', fontSize: 0 }}>
+                -
+              </Text>
+            )}
+          </Box>
+        );
+
       default:
         return (
           <Box>
