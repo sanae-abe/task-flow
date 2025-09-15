@@ -9,6 +9,7 @@ import type { TaskWithColumn, TableColumn } from '../types/table';
 import { sortTasks } from '../utils/taskSort';
 import { filterTasks } from '../utils/taskFilter';
 import { formatDate, getDateStatus } from '../utils/dateHelpers';
+import { stripHtml } from '../utils/textHelpers';
 import LabelChip from './LabelChip';
 import StatusBadge from './shared/StatusBadge';
 import SubTaskProgressBar from './SubTaskProgressBar';
@@ -327,9 +328,9 @@ const TableView: React.FC = () => {
                   whiteSpace: 'nowrap',
                   maxWidth: '580px'
                 }}
-                title={task.description}
+                title={stripHtml(task.description)}
               >
-                {task.description}
+                {stripHtml(task.description)}
               </Text>
             ) : (
               <Text sx={{ color: 'fg.muted', fontSize: 0 }}>

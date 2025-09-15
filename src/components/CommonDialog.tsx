@@ -206,14 +206,28 @@ const CommonDialog = memo<CommonDialogProps>(({
     return () => window.removeEventListener('resize', checkScreenSize);
   }, []);
 
-  const handleBackdropClick = useCallback((event: React.MouseEvent) => {
+  const [mouseDownTarget, setMouseDownTarget] = React.useState<EventTarget | null>(null);
+
+  const handleBackdropMouseDown = useCallback((event: React.MouseEvent) => {
     if (event.target === event.currentTarget) {
+      setMouseDownTarget(event.target);
+    }
+  }, []);
+
+  const handleBackdropClick = useCallback((event: React.MouseEvent) => {
+    if (event.target === event.currentTarget && event.target === mouseDownTarget) {
       onClose();
     }
-  }, [onClose]);
+    setMouseDownTarget(null);
+  }, [onClose, mouseDownTarget]);
 
   const handleContainerClick = useCallback((event: React.MouseEvent) => {
     event.stopPropagation();
+  }, []);
+
+  const handleContainerMouseDown = useCallback((event: React.MouseEvent) => {
+    event.stopPropagation();
+    setMouseDownTarget(null);
   }, []);
 
   if (!isOpen) {
@@ -225,6 +239,7 @@ const CommonDialog = memo<CommonDialogProps>(({
       <BaseStyles>
         <Box
           sx={DIALOG_STYLES.backdrop}
+          onMouseDown={handleBackdropMouseDown}
           onClick={handleBackdropClick}
           role="dialog"
           aria-modal="true"
@@ -240,6 +255,7 @@ const CommonDialog = memo<CommonDialogProps>(({
                     width: '90vw'
                   })
                 }}
+              onMouseDown={handleContainerMouseDown}
               onClick={handleContainerClick}
           >
             <DialogHeader 

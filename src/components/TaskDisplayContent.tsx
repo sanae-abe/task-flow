@@ -8,6 +8,7 @@ import { getRecurrenceDescription } from '../utils/recurrence';
 import ContentBox from './ContentBox';
 import DueDateDisplay from './DueDateDisplay';
 import FileList from './FileList';
+import LinkifiedText from './LinkifiedText';
 import TaskDisplaySection from './TaskDisplaySection';
 import TaskLabels from './TaskLabels';
 
@@ -24,9 +25,9 @@ const TaskDisplayContent = React.memo<TaskDisplayContentProps>(({ task, columnNa
           emptyText="説明が設定されていません"
         >
           {task.description && (
-            <Text sx={{ fontSize: 1, whiteSpace: 'pre-wrap' }}>
+            <LinkifiedText sx={{ fontSize: 1, whiteSpace: 'pre-wrap' }}>
               {task.description}
-            </Text>
+            </LinkifiedText>
           )}
         </ContentBox>
       </TaskDisplaySection>

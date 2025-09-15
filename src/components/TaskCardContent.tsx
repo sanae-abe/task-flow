@@ -3,6 +3,7 @@ import { Box, Text, Heading } from '@primer/react';
 import React from 'react';
 
 import type { TaskDisplayProps } from '../types/task';
+import { stripHtml } from '../utils/textHelpers';
 import IconButton from './shared/IconButton';
 
 import DueDateBadge from './DueDateBadge';
@@ -62,7 +63,7 @@ const TaskCardContent: React.FC<TaskDisplayProps> = ({
           whiteSpace: 'pre-wrap',
           mb: '2px'
         }}>
-          {task.description}
+          {stripHtml(task.description)}
         </Text>
       )}
 
