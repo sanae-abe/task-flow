@@ -110,7 +110,8 @@ const Logo: React.FC<LogoProps> = ({ size = 'medium' }) => {
           fontSize,
           margin: 0,
           color: 'var(--fgColor-default)',
-          fontWeight: '700',
+          fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif',
+          fontWeight: '600',
           lineHeight: 'condensed',
           translate: '0 -2px'
         }}

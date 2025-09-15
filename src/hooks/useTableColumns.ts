@@ -4,7 +4,7 @@ import { DEFAULT_COLUMNS, type TableColumn, type TableColumnSettings, type Table
 const STORAGE_KEY = 'taskflow-table-columns';
 
 // 開発環境でのみログを出力するヘルパー関数
-const debugLog = (message: string, ...args: any[]) => {
+const debugLog = (message: string, ...args: unknown[]) => {
   if (process.env.NODE_ENV === 'development') {
     console.log(message, ...args);
   }

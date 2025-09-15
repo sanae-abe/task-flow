@@ -6,9 +6,10 @@ import { useKanban } from '../contexts/KanbanContext';
 
 import CommonDialog, { DialogActions } from './CommonDialog';
 import FileUploader from './FileUploader';
-import FormField, { TextareaField } from './FormField';
+import FormField from './FormField';
 import LabelSelector from './LabelSelector';
 import RecurrenceSelector from './RecurrenceSelector';
+import RichTextEditor from './RichTextEditor';
 import TimeSelector from './TimeSelector';
 
 const TaskCreateDialog = memo(() => {
@@ -134,15 +135,16 @@ const TaskCreateDialog = memo(() => {
           required
         />
 
-        <TextareaField
-          id="task-description"
-          label="説明（任意）"
-          value={description}
-          placeholder="タスクの説明を入力"
-          onChange={setDescription}
-          onKeyDown={handleKeyPress}
-          rows={4}
-        />
+        <Box sx={{ mb: 4 }}>
+          <Text sx={{ fontSize: 1, mb: 2, display: 'block', fontWeight: '700' }}>
+            説明（任意）
+          </Text>
+          <RichTextEditor
+            value={description}
+            onChange={setDescription}
+            placeholder="タスクの説明を入力"
+          />
+        </Box>
 
         <Box sx={{ mb: 4 }}>
           <Box sx={{ mb: 2 }}>

@@ -4,9 +4,10 @@ import React, { memo, useCallback } from 'react';
 import type { Label, FileAttachment, RecurrenceConfig } from '../types';
 
 import FileUploader from './FileUploader';
-import FormField, { TextareaField } from './FormField';
+import FormField from './FormField';
 import LabelSelector from './LabelSelector';
 import RecurrenceSelector from './RecurrenceSelector';
+import RichTextEditor from './RichTextEditor';
 import TimeSelector from './TimeSelector';
 
 interface TaskEditFormProps {
@@ -72,15 +73,16 @@ const TaskEditForm = memo<TaskEditFormProps>(({
         required
       />
 
-      <TextareaField
-        id="task-description"
-        label="説明（任意）"
-        value={description}
-        placeholder="タスクの説明を入力"
-        onChange={setDescription}
-        onKeyDown={onKeyPress}
-        rows={4}
-      />
+      <Box sx={{ mb: 4 }}>
+        <Text sx={{ fontSize: 1, mb: 2, display: 'block', fontWeight: '700' }}>
+          説明（任意）
+        </Text>
+        <RichTextEditor
+          value={description}
+          onChange={setDescription}
+          placeholder="タスクの説明を入力"
+        />
+      </Box>
 
       <Box sx={{ mb: 4 }}>
         <Box sx={{ mb: 2 }}>
