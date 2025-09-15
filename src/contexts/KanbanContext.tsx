@@ -826,29 +826,30 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     if (boards.length === 0) {
       const defaultBoard: KanbanBoard = {
         id: uuidv4(),
-        title: 'デモプロジェクト',
+        title: 'TaskFlow デモプロジェクト',
         labels: [],
         columns: [
           {
             id: uuidv4(),
-            title: 'バックログ',
+            title: '📋 計画中',
             tasks: [
               {
                 id: uuidv4(),
-                title: 'プロジェクト企画書作成',
-                description: 'プロジェクトの要件定義と企画書の作成\n\n・ステークホルダー要件整理\n・スコープと目標設定',
+                title: 'TaskFlow リッチテキスト機能の実装',
+                description: '<p><strong>リッチテキストエディタの実装</strong></p><p>TaskFlowにリッチテキスト編集機能を追加し、ユーザーがより表現力豊かなタスク説明を作成できるようにする。</p><p><strong>主要機能：</strong></p><ul><li>太字、斜体、下線のテキスト装飾</li><li>リンクの自動挿入とプレビュー</li><li>Slackスタイルのインラインコード: <code>npm install</code></li><li>GitHub風のコードブロック機能</li></ul><p><strong>参考リンク：</strong><br><a href="https://github.com/facebook/lexical" target="_blank" rel="noopener noreferrer">Lexical Editor</a><br><a href="https://www.npmjs.com/package/react-quill" target="_blank" rel="noopener noreferrer">React Quill</a></p>',
                 dueDate: (() => {
-                  const date = new Date(Date.now() - 24 * 60 * 60 * 1000);
+                  const date = new Date(Date.now() - 12 * 60 * 60 * 1000);
                   date.setHours(23, 59, 59, 999);
                   return date.toISOString();
                 })(), // 昨日期限（期限切れ・23:59）
                 labels: [
-                  { id: uuidv4(), name: '緊急', color: 'danger' },
-                  { id: uuidv4(), name: '企画', color: 'primary' }
+                  { id: uuidv4(), name: '🔥 緊急', color: 'danger' },
+                  { id: uuidv4(), name: '⚡ フロントエンド', color: 'primary' }
                 ],
                 subTasks: [
-                  { id: uuidv4(), title: 'ステークホルダー分析', completed: true, createdAt: new Date().toISOString() },
-                  { id: uuidv4(), title: '要件定義書作成', completed: false, createdAt: new Date().toISOString() }
+                  { id: uuidv4(), title: 'RichTextEditor コンポーネント設計', completed: true, createdAt: new Date().toISOString() },
+                  { id: uuidv4(), title: 'リンク挿入ダイアログの実装', completed: true, createdAt: new Date().toISOString() },
+                  { id: uuidv4(), title: 'コードブロック機能の追加', completed: false, createdAt: new Date().toISOString() }
                 ],
                 priority: 'high',
                 files: [],
@@ -858,24 +859,26 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
               },
               {
                 id: uuidv4(),
-                title: 'ドキュメント整理',
-                description: '技術ドキュメントの整理と更新\n\n・README更新\n・API仕様書作成',
+                title: 'API ドキュメントの作成',
+                description: '<p><strong>REST API ドキュメンテーションの作成</strong></p><p>TaskFlow の API エンドポイントに関する包括的なドキュメントを作成し、開発者が簡単に統合できるようにする。</p><div style="background-color: #f6f8fa; border: 1px solid #d0d7de; border-radius: 6px; padding: 8px; font-family: \'SFMono-Regular\', \'Consolas\', \'Liberation Mono\', \'Menlo\', monospace; font-size: 13px; line-height: 1.45; overflow-x: auto; color: #24292f;"><pre style="margin: 0 !important; white-space: pre; overflow-wrap: normal; color: inherit; background: transparent; border: none; padding: 0;" contenteditable="true" spellcheck="false"># API エンドポイント例\nGET /api/tasks          # タスク一覧取得\nPOST /api/tasks         # 新規タスク作成\nPUT /api/tasks/:id      # タスク更新\nDELETE /api/tasks/:id   # タスク削除</pre></div><p><strong>必要なドキュメント：</strong></p><ul><li>OpenAPI 仕様書の作成</li><li>Postman コレクションの準備</li><li>使用例とコードサンプル</li></ul>',
                 dueDate: null, // 期限なし
                 labels: [
-                  { id: uuidv4(), name: 'ドキュメント', color: 'default' }
+                  { id: uuidv4(), name: '📚 ドキュメント', color: 'default' },
+                  { id: uuidv4(), name: '🔧 API', color: 'secondary' }
                 ],
                 subTasks: [
-                  { id: uuidv4(), title: 'README更新', completed: false, createdAt: new Date().toISOString() },
-                  { id: uuidv4(), title: 'API仕様書作成', completed: false, createdAt: new Date().toISOString() }
+                  { id: uuidv4(), title: 'OpenAPI 3.0 仕様書の作成', completed: false, createdAt: new Date().toISOString() },
+                  { id: uuidv4(), title: 'Postman コレクションの準備', completed: false, createdAt: new Date().toISOString() },
+                  { id: uuidv4(), title: 'サンプルコードの作成', completed: false, createdAt: new Date().toISOString() }
                 ],
-                priority: 'low',
+                priority: 'medium',
                 files: [
                   {
                     id: uuidv4(),
-                    name: 'project-spec.md',
-                    type: 'text/markdown',
-                    size: 2048,
-                    data: 'data:text/markdown;base64,IyDjg4fjgrbjgqTjg7Pjgrnjg5rjg4Pjgq/KU2ljqrjgobnjgovjgqjjgreHRmLjg7HjGV0aqW1tbLm5lbnAL',
+                    name: 'api-specification.yaml',
+                    type: 'text/yaml',
+                    size: 4096,
+                    data: 'data:text/yaml;base64,b3BlbmFwaTogMy4wLjAKaW5mbzoKICB0aXRsZTogVGFza0Zsb3cgQVBJCiAgdmVyc2lvbjogMS4wLjA=',
                     uploadedAt: new Date().toISOString()
                   }
                 ],
@@ -883,52 +886,30 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
                 createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
                 updatedAt: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
               },
-              {
-                id: uuidv4(),
-                title: 'データベース設計',
-                description: 'データベーススキーマの設計と最適化\n\n・テーブル設計\n・インデックス設定\n・パフォーマンス調整',
-                dueDate: (() => {
-                  const date = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
-                  date.setHours(18, 0, 0, 0);
-                  return date.toISOString();
-                })(), // 3日後18:00期限
-                labels: [
-                  { id: uuidv4(), name: 'バックエンド', color: 'success' },
-                  { id: uuidv4(), name: 'DB', color: 'secondary' }
-                ],
-                subTasks: [
-                  { id: uuidv4(), title: 'ER図作成', completed: false, createdAt: new Date().toISOString() },
-                  { id: uuidv4(), title: 'テーブル定義', completed: false, createdAt: new Date().toISOString() }
-                ],
-                priority: 'high',
-                files: [],
-                completedAt: null,
-                createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-                updatedAt: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
-              },
             ],
-            color: '#f6f8fa'
+            color: '#fff2cc'
           },
           {
             id: uuidv4(),
-            title: '進行中',
+            title: '🚀 開発中',
             tasks: [
               {
                 id: uuidv4(),
-                title: 'UIコンポーネント開発',
-                description: 'Reactコンポーネントの実装と整備\n\n・ボタンコンポーネント\n・フォームコンポーネント',
+                title: 'TypeScript型定義の改善',
+                description: '<p><strong>型安全性の向上とDX改善</strong></p><p>TaskFlowの型定義を改善し、開発者体験を向上させます。</p><p><strong>改善項目：</strong></p><ul><li>ジェネリクス型の活用</li><li>Union型とDiscriminated Union</li><li>型ガードの実装</li><li>Utilityタイプの活用</li></ul><p><code>TypeScript 5.0</code> の新機能を活用してより堅牢なコードベースを構築します。</p><p><strong>参考：</strong> <a href="https://www.typescriptlang.org/docs/" target="_blank" rel="noopener noreferrer">TypeScript公式ドキュメント</a></p>',
                 dueDate: (() => {
                   const date = new Date();
                   date.setHours(23, 59, 59, 999);
                   return date.toISOString();
                 })(), // 本日期限（23:59）
                 labels: [
-                  { id: uuidv4(), name: 'フロントエンド', color: 'accent' },
-                  { id: uuidv4(), name: 'React', color: 'primary' }
+                  { id: uuidv4(), name: '⚡ フロントエンド', color: 'accent' },
+                  { id: uuidv4(), name: '🔷 TypeScript', color: 'primary' }
                 ],
                 subTasks: [
-                  { id: uuidv4(), title: 'ボタンコンポーネント', completed: true, createdAt: new Date().toISOString() },
-                  { id: uuidv4(), title: 'フォームコンポーネント', completed: false, createdAt: new Date().toISOString() }
+                  { id: uuidv4(), title: 'Generic型の定義見直し', completed: true, createdAt: new Date().toISOString() },
+                  { id: uuidv4(), title: '型ガードの実装', completed: false, createdAt: new Date().toISOString() },
+                  { id: uuidv4(), title: 'Utilityタイプの活用', completed: false, createdAt: new Date().toISOString() }
                 ],
                 priority: 'medium',
                 files: [],
@@ -938,20 +919,21 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
               },
               {
                 id: uuidv4(),
-                title: '週次レポート作成',
-                description: 'プロジェクト進捗の週次レポート作成\n\n・進捗まとめ\n・課題整理',
+                title: 'パフォーマンステストとレポート作成',
+                description: '<p><strong>アプリケーションのパフォーマンス測定と最適化</strong></p><p>TaskFlowアプリケーションの<em>Lighthouse</em>スコア向上と<u>Web Vitals</u>指標の改善を行います。</p><p><strong>測定項目：</strong></p><ul><li><strong>FCP</strong>: 1.8秒以下</li><li><strong>LCP</strong>: 2.5秒以下</li><li><strong>CLS</strong>: 0.1以下</li><li><strong>FID</strong>: 100ms以下</li></ul><p><code>npm run lighthouse</code> でパフォーマンステストを実行します。</p><p><strong>参考ツール：</strong><br><a href="https://developers.google.com/web/tools/lighthouse" target="_blank" rel="noopener noreferrer">Google Lighthouse</a></p>',
                 dueDate: (() => {
                   const date = new Date(Date.now() + 2 * 24 * 60 * 60 * 1000);
                   date.setHours(17, 0, 0, 0);
                   return date.toISOString();
                 })(), // 2日後17:00期限
                 labels: [
-                  { id: uuidv4(), name: 'レポート', color: 'primary' },
-                  { id: uuidv4(), name: '定例', color: 'default' }
+                  { id: uuidv4(), name: '📊 パフォーマンス', color: 'primary' },
+                  { id: uuidv4(), name: '🔄 定例', color: 'default' }
                 ],
                 subTasks: [
-                  { id: uuidv4(), title: 'データ収集', completed: false, createdAt: new Date().toISOString() },
-                  { id: uuidv4(), title: 'レポート作成', completed: false, createdAt: new Date().toISOString() }
+                  { id: uuidv4(), title: 'Lighthouse テストの実行', completed: false, createdAt: new Date().toISOString() },
+                  { id: uuidv4(), title: 'Bundle サイズの分析', completed: false, createdAt: new Date().toISOString() },
+                  { id: uuidv4(), title: '最適化レポートの作成', completed: false, createdAt: new Date().toISOString() }
                 ],
                 priority: 'high',
                 files: [],
@@ -966,28 +948,30 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
                 }
               },
             ],
-            color: '#fef3c7'
+            color: '#dbeafe'
           },
           {
             id: uuidv4(),
-            title: '完了',
+            title: '✅ 完了',
             tasks: [
               {
                 id: uuidv4(),
-                title: '月次レポート作成',
-                description: '月次進捗レポートの作成と送付\n\n・データ集計\n・分析レポート作成',
+                title: 'ユーザー認証システムの実装',
+                description: '<p><strong>セキュアな認証機能の実装完了</strong></p><p>JWT ベースの認証システムを実装し、<u>セキュリティベストプラクティス</u>に従った堅牢な認証機能を構築しました。</p><p><strong>実装された機能：</strong></p><ul><li><em>JWT トークンベース認証</em></li><li><strong>パスワードハッシュ化</strong> (bcrypt)</li><li>セッション管理とリフレッシュトークン</li><li>ロールベースアクセス制御 (RBAC)</li></ul><p><code>jwt.sign()</code> と <code>bcrypt</code> を使用した安全な実装です。</p><p><strong>参考：</strong><br><a href="https://jwt.io/" target="_blank" rel="noopener noreferrer">JWT.io</a> | <a href="https://owasp.org/www-project-top-ten/" target="_blank" rel="noopener noreferrer">OWASP Top 10</a></p>',
                 dueDate: (() => {
                   const date = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000);
                   date.setHours(12, 0, 0, 0);
                   return date.toISOString();
                 })(), // 2日前12:00期限（期限内に完了）
                 labels: [
-                  { id: uuidv4(), name: 'レポート', color: 'primary' },
-                  { id: uuidv4(), name: '完了', color: 'success' }
+                  { id: uuidv4(), name: '🔐 セキュリティ', color: 'primary' },
+                  { id: uuidv4(), name: '✅ 完了', color: 'success' }
                 ],
                 subTasks: [
-                  { id: uuidv4(), title: 'データ集計', completed: true, createdAt: new Date().toISOString() },
-                  { id: uuidv4(), title: 'レポート作成', completed: true, createdAt: new Date().toISOString() }
+                  { id: uuidv4(), title: 'JWT ライブラリの選定と導入', completed: true, createdAt: new Date().toISOString() },
+                  { id: uuidv4(), title: 'ユーザー登録・ログイン API の実装', completed: true, createdAt: new Date().toISOString() },
+                  { id: uuidv4(), title: 'パスワードハッシュ化の実装', completed: true, createdAt: new Date().toISOString() },
+                  { id: uuidv4(), title: 'セッション管理機能の追加', completed: true, createdAt: new Date().toISOString() }
                 ],
                 priority: 'medium',
                 files: [],
@@ -1002,6 +986,39 @@ export const KanbanProvider: React.FC<{ children: ReactNode }> = ({ children }) 
                 },
                 recurrenceId: 'monthly-report-2024',
                 occurrenceCount: 2
+              },
+              {
+                id: uuidv4(),
+                title: 'Git ワークフローの標準化',
+                description: '<p><strong>チーム開発でのGitワークフロー統一</strong></p><p>開発チームで統一されたGitワークフローを確立し、<em>コードレビュー</em>プロセスとブランチ戦略を標準化しました。</p><p><strong>採用したワークフロー：</strong><br><code>GitHub Flow</code> ベースのシンプルなワークフロー</p><p><strong>ブランチルール：</strong></p><ol><li><strong>main</strong> ブランチは常にデプロイ可能状態を保つ</li><li>機能開発は <code>feature/</code> ブランチで行う</li><li>バグ修正は <code>fix/</code> ブランチで行う</li><li>全てのマージは Pull Request 経由で実施</li></ol><p><strong>参考：</strong> <a href="https://guides.github.com/introduction/flow/" target="_blank" rel="noopener noreferrer">GitHub Flow</a></p>',
+                dueDate: (() => {
+                  const date = new Date(Date.now() - 5 * 24 * 60 * 60 * 1000);
+                  date.setHours(16, 30, 0, 0);
+                  return date.toISOString();
+                })(), // 5日前16:30期限（期限内に完了）
+                labels: [
+                  { id: uuidv4(), name: '🔧 開発環境', color: 'secondary' },
+                  { id: uuidv4(), name: '✅ 完了', color: 'success' }
+                ],
+                subTasks: [
+                  { id: uuidv4(), title: 'ブランチ命名規則の策定', completed: true, createdAt: new Date().toISOString() },
+                  { id: uuidv4(), title: 'プルリクエストテンプレートの作成', completed: true, createdAt: new Date().toISOString() },
+                  { id: uuidv4(), title: 'CI/CD パイプラインの設定', completed: true, createdAt: new Date().toISOString() }
+                ],
+                priority: 'medium',
+                files: [
+                  {
+                    id: uuidv4(),
+                    name: 'git-workflow-guide.md',
+                    type: 'text/markdown',
+                    size: 3072,
+                    data: 'data:text/markdown;base64,IyBHaXQgV29ya2Zsb3cgR3VpZGUKCiMjIOODluODqeODs+ODgOaImeetpCrjZqrmAl...',
+                    uploadedAt: new Date().toISOString()
+                  }
+                ],
+                completedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+                createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+                updatedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
               },
             ],
             color: '#d1fae5'
