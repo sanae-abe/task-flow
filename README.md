@@ -1,5 +1,5 @@
 <div align="center">
-<h1 style="color:#0969da;">
+<h1>
   <img src="public/logo192.svg" alt="TaskFlow Logo" width="80" height="80" /><br>
   TaskFlow</h1>
   <p>React + TypeScript で構築されたモダンなタスク管理アプリケーション</p>
