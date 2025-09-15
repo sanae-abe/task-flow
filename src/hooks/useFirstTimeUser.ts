@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-const FIRST_TIME_USER_KEY = 'cheer-first-time-user';
+const FIRST_TIME_USER_KEY = 'taskflow-first-time-user';
 
 interface FirstTimeUserState {
   isFirstTimeUser: boolean;

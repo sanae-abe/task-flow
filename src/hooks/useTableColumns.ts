@@ -1,7 +1,7 @@
 import { useState, useCallback, useMemo } from 'react';
 import { DEFAULT_COLUMNS, type TableColumn, type TableColumnSettings, type TableColumnsHookReturn } from '../types/table';
 
-const STORAGE_KEY = 'cheer-table-columns';
+const STORAGE_KEY = 'taskflow-table-columns';
 
 // 開発環境でのみログを出力するヘルパー関数
 const debugLog = (message: string, ...args: any[]) => {

@@ -1,6 +1,6 @@
 <div align="center">
-  <img src="public/logo192.svg" alt="Cheer Logo" width="80" height="80" />
-  <h1>Cheer</h1>
+  <img src="public/logo192.svg" alt="TaskFlow Logo" width="80" height="80" />
+  <h1>TaskFlow</h1>
   <p>React + TypeScript で構築されたモダンなタスク管理アプリケーション</p>
 </div>
 
@@ -63,8 +63,8 @@
 ### インストール
 ```bash
 # リポジトリのクローン
-git clone ssh://git@rendezvous.m3.com:3789/sanae-abe/cheer-app.git
-cd cheer-app
+git clone ssh://git@rendezvous.m3.com:3789/sanae-abe/taskflow-app.git
+cd taskflow-app
 
 # 依存関係のインストール
 npm install

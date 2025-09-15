@@ -1,10 +1,10 @@
 {
-  "name": "cheer-app",
+  "name": "taskflow-app",
   "version": "0.1.0",
-  "description": "A modern Cheer task management application built with React and TypeScript",
+  "description": "A modern TaskFlow task management application built with React and TypeScript",
   "private": true,
   "keywords": [
-    "cheer",
+    "taskflow",
     "task-management",
     "react",
     "typescript",

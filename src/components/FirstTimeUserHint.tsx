@@ -49,7 +49,7 @@ const FirstTimeUserHint: React.FC<FirstTimeUserHintProps> = ({
       </Box>
       <Box sx={{ flex: 1 }}>
         <Box sx={{ fontWeight: 'bold', mb: 1, fontSize: 1 }}>
-          Cheerアプリへようこそ！
+          TaskFlowアプリへようこそ！
         </Box>
         <Box sx={{ fontSize: 0, color: 'fg.muted', lineHeight: 1.4 }}>
           「ボード設定」メニューから新しいボードを作成して、プロジェクトごとにタスクを管理しましょう

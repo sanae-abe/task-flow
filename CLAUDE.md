@@ -1,7 +1,7 @@
 # CLAUDE.md
 
 ## プロジェクト概要
-React + TypeScriptで構築されたモダンなタスク管理アプリケーション（Cheer）
+React + TypeScriptで構築されたモダンなタスク管理アプリケーション（TaskFlow）
 
 ## 技術スタック
 - Frontend: React 19.1.1 + TypeScript 5.7.3
