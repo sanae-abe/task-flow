@@ -109,7 +109,7 @@ const Logo: React.FC<LogoProps> = ({ size = 'medium' }) => {
         sx={{
           fontSize,
           margin: 0,
-          color: 'var(--fgColor-accent)',
+          color: 'var(--fgColor-default)',
           fontWeight: '700',
           lineHeight: 'condensed',
           translate: '0 -2px'
