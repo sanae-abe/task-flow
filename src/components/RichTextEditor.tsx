@@ -305,6 +305,10 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           ref={editorRef}
           as="div"
           contentEditable={!disabled}
+          role="textbox"
+          aria-multiline="true"
+          aria-label="リッチテキストエディタ"
+          aria-describedby={disabled ? undefined : "rich-editor-help"}
           onInput={handleInput}
           onKeyDown={handleKeyDown}
           onFocus={handleFocus}
@@ -381,6 +385,22 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
             }}
           >
             クリックして編集
+          </Text>
+        )}
+
+        {/* アクセシビリティ用のヘルプテキスト */}
+        {!disabled && (
+          <Text
+            id="rich-editor-help"
+            sx={{
+              position: 'absolute',
+              left: '-9999px',
+              width: '1px',
+              height: '1px',
+              overflow: 'hidden',
+            }}
+          >
+            リッチテキストエディタ。Ctrl+Bで太字、Ctrl+Iで斜体、Ctrl+Uで下線、Ctrl+Kでリンク、Ctrl+`でコード、Ctrl+Shift+`でコードブロックを挿入できます。
           </Text>
         )}
       </Box>

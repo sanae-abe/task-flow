@@ -206,20 +206,20 @@ const CommonDialog = memo<CommonDialogProps>(({
     return () => window.removeEventListener('resize', checkScreenSize);
   }, []);
 
-  const [mouseDownTarget, setMouseDownTarget] = React.useState<EventTarget | null>(null);
+  const mouseDownTargetRef = React.useRef<EventTarget | null>(null);
 
   const handleBackdropMouseDown = useCallback((event: React.MouseEvent) => {
     if (event.target === event.currentTarget) {
-      setMouseDownTarget(event.target);
+      mouseDownTargetRef.current = event.target;
     }
   }, []);
 
   const handleBackdropClick = useCallback((event: React.MouseEvent) => {
-    if (event.target === event.currentTarget && event.target === mouseDownTarget) {
+    if (event.target === event.currentTarget && event.target === mouseDownTargetRef.current) {
       onClose();
     }
-    setMouseDownTarget(null);
-  }, [onClose, mouseDownTarget]);
+    mouseDownTargetRef.current = null;
+  }, [onClose]);
 
   const handleContainerClick = useCallback((event: React.MouseEvent) => {
     event.stopPropagation();
@@ -227,7 +227,7 @@ const CommonDialog = memo<CommonDialogProps>(({
 
   const handleContainerMouseDown = useCallback((event: React.MouseEvent) => {
     event.stopPropagation();
-    setMouseDownTarget(null);
+    mouseDownTargetRef.current = null;
   }, []);
 
   if (!isOpen) {
