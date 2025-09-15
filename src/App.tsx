@@ -66,7 +66,7 @@ const AppContent: React.FC = () => {
 
 
   return (
-    <div className="app" role="application" aria-label="Cheerアプリケーション">
+    <div className="app" role="application" aria-label="TaskFlowアプリケーション">
       <div style={styles.fixedHeader}>
         <Header onHelpClick={openHelp} />
         <SubHeader />
