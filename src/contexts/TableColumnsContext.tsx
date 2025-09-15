@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useCallback, useMemo } from 'react';
 import { DEFAULT_COLUMNS, type TableColumn, type TableColumnSettings } from '../types/table';
 
-const STORAGE_KEY = 'cheer-table-columns';
+const STORAGE_KEY = 'taskflow-table-columns';
 
 interface TableColumnsContextType {
   columns: TableColumn[];
