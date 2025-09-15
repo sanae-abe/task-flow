@@ -111,7 +111,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
       }
 
       // コードブロックを挿入（GitHub風）
-      const codeBlockHtml = `<div style="background-color: #f6f8fa; border: 1px solid #d0d7de; border-radius: 6px; padding: 8px; font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', 'Menlo', monospace; font-size: 13px; line-height: 1.45; overflow-x: auto; color: #24292f;"><pre style="margin: 0 !important; white-space: pre; overflow-wrap: normal; color: inherit; background: transparent; border: none; padding: 0;" contenteditable="true" spellcheck="false">${initialCode}</pre></div>`;
+      const codeBlockHtml = `<div style="margin: 0 0 8px;background-color: #f6f8fa; border: 1px solid #d0d7de; border-radius: 6px; padding: 8px; font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', 'Menlo', monospace; font-size: 13px; line-height: 1.45; overflow-x: auto; color: #24292f;"><pre style="margin: 0 !important; white-space: pre; overflow-wrap: normal; color: inherit; background: transparent; border: none; padding: 0;" contenteditable="true" spellcheck="false">${initialCode}</pre></div>`;
       document.execCommand('insertHTML', false, codeBlockHtml);
 
       handleInput();
