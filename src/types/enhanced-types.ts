@@ -15,14 +15,14 @@ export type BoardId = string & { readonly __brand: 'BoardId' };
 export const isTaskId = (value: string): value is TaskId => typeof value === 'string' && value.length > 0;
 
 export const isValidTask = (obj: unknown): obj is Task => (
-    typeof obj === 'object' &&
-    obj !== null &&
-    'id' in obj &&
-    'title' in obj &&
-    'createdAt' in obj &&
-    typeof (obj as Record<string, unknown>).id === 'string' &&
-    typeof (obj as Record<string, unknown>).title === 'string'
-  );
+  typeof obj === 'object' &&
+  obj !== null &&
+  'id' in obj &&
+  'title' in obj &&
+  'createdAt' in obj &&
+  typeof (obj as Record<string, unknown>)['id'] === 'string' &&
+  typeof (obj as Record<string, unknown>)['title'] === 'string'
+);
 
 // Conditional Types for Enhanced Type Safety
 export type TaskWithStatus<T extends Task> = T extends { completedAt: string }

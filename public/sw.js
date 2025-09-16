@@ -4,13 +4,13 @@ const DYNAMIC_CACHE_NAME = 'taskflow-dynamic-v2.0.0';
 
 // Critical resources for immediate caching
 const urlsToCache = [
-  '/',
-  '/static/css/main.css',
-  '/static/js/main.js',
-  '/manifest.json',
-  '/favicon.ico',
-  '/logo192.svg',
-  '/logo512.svg'
+  './index.html',
+  './static/css/main.css',
+  './static/js/main.js',
+  './manifest.json',
+  './favicon.ico',
+  './logo192.svg',
+  './logo512.svg'
 ];
 
 // Static assets patterns
@@ -132,7 +132,7 @@ async function networkFirstStrategy(request) {
 
     // Fallback to offline page for navigation requests
     if (request.destination === 'document') {
-      const offlineResponse = await caches.match('/');
+      const offlineResponse = await caches.match('./index.html');
       if (offlineResponse) {
         return offlineResponse;
       }
