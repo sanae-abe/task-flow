@@ -1,0 +1,38 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add src/contexts/KanbanContext.tsx)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nfeat: デモプロジェクトデータの大幅改善\n\nリッチテキスト機能を活用した現実的な開発タスクに刷新：\n\n- TaskFlow リッチテキスト機能の実装\n  - HTML、リンク、コードブロックを含む詳細な説明\n  - Lexical、React Quillなどの技術リンク\n  - 期限切れタスクのデモンストレーション\n\n- TypeScript型定義の改善\n  - ジェネリクス、Union型の活用例\n  - 技術ドキュメントへのリンク\n  - 本日期限のタスク例\n\n- パフォーマンステスト\n  - Web Vitals指標の詳細な説明\n  - Lighthouseツールの活用\n  - 繰り返しタスクの設定例\n\n- ユーザー認証システム（完了済み）\n  - JWT、bcryptの技術実装詳細\n  - セキュリティリンクの参照\n  - 繰り返し設定のデモ\n\n- Git ワークフロー標準化（完了済み）\n  - GitHub Flowの説明とリンク\n  - ブランチ戦略の詳細\n  - ファイル添付機能のデモ\n\n絵文字ラベルとカラー分類でより視覚的で分かりやすいデモを実現\n\n🤖 Generated with [Claude Code](https://claude.ai/code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git checkout -b feat/demo-project-enhancement)",
+      "Bash(git push -u origin feat/demo-project-enhancement)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nfeat: Interフォントを追加してロゴデザインを改善\n\n- Google FontsのInterフォントをindex.htmlに追加\n- LogoコンポーネントでInterフォントを適用\n- プロフェッショナルで現代的な印象に向上\n- フォントウェイトを700から600に調整してより洗練された見た目に\n\n🤖 Generated with [Claude Code](https://claude.ai/code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git add .)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nfeat: 新しいグリッドスタイルのロゴとアイコンに更新\n\n- モダンな9ブロックグリッドデザインのロゴに変更\n- SVGアイコンを統一カラー（#0969da）に更新\n- タスク管理ツールらしい構造的なデザインを採用\n- 全てのfaviconとアプリアイコンを新デザインに統一\n- ロゴタイプでFlowを強調表示するスタイル改善\n\n🤖 Generated with [Claude Code](https://claude.ai/code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git push)",
+      "Bash(mkdir -p public/sanae-abe/task-flow)",
+      "Bash(npm run build)",
+      "Bash(cp -r build/* public/sanae-abe/task-flow/)",
+      "Bash(mv public/sanae-abe/task-flow public/sanae-abe/taskflow)",
+      "Bash(lsof -ti:3000)",
+      "Bash(xargs kill -9)",
+      "Bash(npm start)",
+      "Bash(grep -E '\\.(ico|png|svg)$')",
+      "Bash(pkill -f \"npm start\")",
+      "Bash(python3 -m http.server 8080)",
+      "Bash(sed -i '' 's|\"\"/favicon|\"\"/sanae-abe/taskflow/favicon|g; s|\"\"/apple-touch-icon|\"\"/sanae-abe/taskflow/apple-touch-icon|g; s|\"\"/manifest|\"\"/sanae-abe/taskflow/manifest|g; s|\"\"/static|\"\"/sanae-abe/taskflow/static|g' public/sanae-abe/taskflow/index.html)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nfix: S3静的ホスティング環境でのSPAルーティング問題を完全解決\n\nHashRouterの採用によりS3環境での確実なルーティングを実現：\n\n- BrowserRouter → HashRouterに変更してS3互換性を向上\n- Service Worker無効化によりキャッシュエラーを解決\n- 静的ファイル参照を相対パス（./）に統一\n- 無限ネストディレクトリ問題を根本解決\n- package.json homepage設定を相対パス（\"./\"）に変更\n- 404フォールバック処理をHashRouter用に最適化\n\nURL形式の変更:\n- 旧: /sanae-abe/taskflow/kanban → 404エラー\n- 新: /sanae-abe/taskflow/index.html#/kanban → 正常動作\n\nこれによりS3静的ホスティング環境でも直接URL・リロード・\nブックマークすべてが正常に機能するようになった\n\n🤖 Generated with [Claude Code](https://claude.ai/code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git add -A)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nchore: デプロイ用重複ディレクトリを削除\n\n/public/sanae-abe/taskflow/の重複ファイルを削除：\n- デプロイ時は npm run build で自動生成される\n- 開発用ファイル（/public/）のみを管理対象に統一\n- git管理の複雑さを解消\n\n🤖 Generated with [Claude Code](https://claude.ai/code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git checkout -b feat/cleanup-duplicate-files)",
+      "Bash(git push -u origin feat/cleanup-duplicate-files)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nfeat: ロゴとアイコンファイルの最終調整\n\n- CustomLogoのSVGデザインを調整\n- 新しいPNGアイコンファイルを追加\n- 既存のSVGアイコンファイルを更新\n- Logoコンポーネントのサイズとスタイル調整\n\n🤖 Generated with [Claude Code](https://claude.ai/code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(find . -name \".DS_Store\" -type f -delete)",
+      "Bash(rm -rf build/)",
+      "Bash(rm -f .tsbuildinfo)",
+      "Bash(serena init)",
+      "Bash(uvx --from git+https://github.com/oraios/serena serena-mcp-server --help)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

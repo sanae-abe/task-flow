@@ -1,0 +1,46 @@
+project:
+  name: "taskflow-app"
+  type: "react-typescript"
+  description: "React + TypeScript製のモダンなタスク管理アプリケーション"
+
+context: "ide-assistant"
+
+modes:
+  - "interactive"
+  - "editing"
+
+settings:
+  tool_timeout: 30.0
+  log_level: "INFO"
+  enable_web_dashboard: false
+  enable_gui_log_window: false
+
+project_structure:
+  src_dir: "src"
+  public_dir: "public"
+  build_dir: "build"
+  config_files:
+    - "package.json"
+    - "tsconfig.json"
+    - "CLAUDE.md"
+
+technologies:
+  frontend:
+    - "React 19.1.1"
+    - "TypeScript 5.7.3"
+    - "Primer React"
+    - "Styled Components"
+  build_tools:
+    - "Create React App"
+    - "npm"
+  testing:
+    - "Jest"
+    - "React Testing Library"
+
+development_commands:
+  start: "npm start"
+  build: "npm run build"
+  test: "npm test"
+  lint: "npm run lint"
+  typecheck: "npm run typecheck"
+  quality: "npm run quality"
