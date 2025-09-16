@@ -1,78 +1,248 @@
-const CACHE_NAME = 'todo-app-v1';
+const CACHE_NAME = 'taskflow-v2.0.0';
+const STATIC_CACHE_NAME = 'taskflow-static-v2.0.0';
+const DYNAMIC_CACHE_NAME = 'taskflow-dynamic-v2.0.0';
+
+// Critical resources for immediate caching
 const urlsToCache = [
-  '/sanae-abe/taskflow/',
-  '/sanae-abe/taskflow/static/js/bundle.js',
-  '/sanae-abe/taskflow/static/css/main.css',
-  '/sanae-abe/taskflow/manifest.json',
-  '/sanae-abe/taskflow/favicon.ico',
-  '/sanae-abe/taskflow/logo192.svg',
-  '/sanae-abe/taskflow/logo512.svg'
+  '/',
+  '/static/css/main.css',
+  '/static/js/main.js',
+  '/manifest.json',
+  '/favicon.ico',
+  '/logo192.svg',
+  '/logo512.svg'
 ];
+
+// Static assets patterns
+const STATIC_ASSETS = /\.(css|js|png|jpg|jpeg|svg|ico|woff|woff2|ttf|eot)$/;
+const API_CACHE_DURATION = 5 * 60 * 1000; // 5分
 
 // Service Worker のインストール
 self.addEventListener('install', (event) => {
+  console.log('[SW] Installing Service Worker');
   event.waitUntil(
-    caches.open(CACHE_NAME)
+    caches.open(STATIC_CACHE_NAME)
       .then((cache) => {
-        console.log('Cache opened');
+        console.log('[SW] Precaching static assets');
         return cache.addAll(urlsToCache);
+      })
+      .then(() => {
+        console.log('[SW] Skip waiting');
+        return self.skipWaiting();
       })
   );
 });
 
 // Service Worker のアクティベート
 self.addEventListener('activate', (event) => {
+  console.log('[SW] Activating Service Worker');
+  const expectedCaches = [STATIC_CACHE_NAME, DYNAMIC_CACHE_NAME];
+
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME) {
-            console.log('Deleting old cache:', cacheName);
+          if (!expectedCaches.includes(cacheName)) {
+            console.log('[SW] Deleting old cache:', cacheName);
             return caches.delete(cacheName);
           }
         })
       );
+    }).then(() => {
+      console.log('[SW] Claiming clients');
+      return self.clients.claim();
     })
   );
 });
 
 // ネットワークリクエストの処理
 self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        // キャッシュにあればそれを返す
-        if (response) {
-          return response;
-        }
+  const { request } = event;
+  const url = new URL(request.url);
 
-        // ネットワークからフェッチを試行
-        return fetch(event.request).then((response) => {
-          // レスポンスが正常でない場合はそのまま返す
-          if (!response || response.status !== 200 || response.type !== 'basic') {
-            return response;
-          }
+  // Skip cross-origin requests
+  if (url.origin !== location.origin) {
+    return;
+  }
 
-          // レスポンスをクローンしてキャッシュに保存
-          const responseToCache = response.clone();
-          caches.open(CACHE_NAME)
-            .then((cache) => {
-              cache.put(event.request, responseToCache);
-            });
+  // HTML requests - Network First with Cache Fallback
+  if (request.destination === 'document') {
+    event.respondWith(networkFirstStrategy(request));
+    return;
+  }
 
-          return response;
-        }).catch(() => {
-          // ネットワークが利用できない場合、キャッシュから返す
-          return caches.match('/sanae-abe/taskflow/');
-        });
-      }
-    )
-  );
+  // Static assets - Cache First
+  if (STATIC_ASSETS.test(url.pathname)) {
+    event.respondWith(cacheFirstStrategy(request));
+    return;
+  }
+
+  // API requests - Network First with short cache
+  if (url.pathname.startsWith('/api/')) {
+    event.respondWith(networkFirstWithTimestamp(request));
+    return;
+  }
+
+  // Default: Network First
+  event.respondWith(networkFirstStrategy(request));
 });
 
-// オフライン状態の通知
+// Cache First Strategy
+async function cacheFirstStrategy(request) {
+  const cache = await caches.open(STATIC_CACHE_NAME);
+  const cached = await cache.match(request);
+
+  if (cached) {
+    // Update cache in background if needed
+    updateCacheInBackground(request, cache);
+    return cached;
+  }
+
+  try {
+    const response = await fetch(request);
+    if (response.ok) {
+      cache.put(request, response.clone());
+    }
+    return response;
+  } catch (error) {
+    console.log('[SW] Network failed for', request.url);
+    throw error;
+  }
+}
+
+// Network First Strategy
+async function networkFirstStrategy(request) {
+  try {
+    const response = await fetch(request);
+
+    if (response.ok) {
+      const cache = await caches.open(DYNAMIC_CACHE_NAME);
+      cache.put(request, response.clone());
+    }
+
+    return response;
+  } catch (error) {
+    console.log('[SW] Network failed, trying cache for', request.url);
+    const cache = await caches.open(DYNAMIC_CACHE_NAME);
+    const cached = await cache.match(request);
+
+    if (cached) {
+      return cached;
+    }
+
+    // Fallback to offline page for navigation requests
+    if (request.destination === 'document') {
+      const offlineResponse = await caches.match('/');
+      if (offlineResponse) {
+        return offlineResponse;
+      }
+    }
+
+    throw error;
+  }
+}
+
+// Network First with Timestamp for API
+async function networkFirstWithTimestamp(request) {
+  const cache = await caches.open(DYNAMIC_CACHE_NAME);
+  const cached = await cache.match(request);
+
+  // Check if cached response is still fresh
+  if (cached) {
+    const cachedDate = cached.headers.get('sw-cached-date');
+    if (cachedDate && (Date.now() - parseInt(cachedDate)) < API_CACHE_DURATION) {
+      return cached;
+    }
+  }
+
+  try {
+    const response = await fetch(request);
+    if (response.ok) {
+      const responseWithTimestamp = new Response(response.body, {
+        status: response.status,
+        statusText: response.statusText,
+        headers: {
+          ...response.headers,
+          'sw-cached-date': Date.now().toString()
+        }
+      });
+      cache.put(request, responseWithTimestamp.clone());
+      return responseWithTimestamp;
+    }
+    return response;
+  } catch (error) {
+    if (cached) {
+      return cached;
+    }
+    throw error;
+  }
+}
+
+// Background cache update
+async function updateCacheInBackground(request, cache) {
+  try {
+    const response = await fetch(request);
+    if (response.ok) {
+      await cache.put(request, response);
+    }
+  } catch (error) {
+    // Silent fail for background updates
+  }
+}
+
+// メッセージハンドラー
 self.addEventListener('message', (event) => {
+  console.log('[SW] Received message:', event.data);
+
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
+    return;
+  }
+
+  if (event.data && event.data.type === 'GET_VERSION') {
+    event.ports[0].postMessage({ version: CACHE_NAME });
+    return;
+  }
+
+  if (event.data && event.data.type === 'CACHE_NEW_ROUTE') {
+    cacheNewRoute(event.data.url);
+    return;
   }
 });
+
+// 新しいルートのキャッシュ
+async function cacheNewRoute(url) {
+  try {
+    const cache = await caches.open(DYNAMIC_CACHE_NAME);
+    await cache.add(url);
+    console.log('[SW] Cached new route:', url);
+  } catch (error) {
+    console.log('[SW] Failed to cache new route:', url, error);
+  }
+}
+
+// Background sync for offline actions
+self.addEventListener('sync', (event) => {
+  console.log('[SW] Background sync:', event.tag);
+
+  if (event.tag === 'background-sync') {
+    event.waitUntil(doBackgroundSync());
+  }
+});
+
+async function doBackgroundSync() {
+  console.log('[SW] Performing background sync');
+  // ここでオフライン時のアクションを処理
+  // 例: ローカルストレージの変更をサーバーに同期
+}
+
+// Performance optimization - Cache cleanup
+setInterval(() => {
+  caches.keys().then((cacheNames) => {
+    cacheNames.forEach((cacheName) => {
+      if (!cacheName.includes('v2.0.0')) {
+        caches.delete(cacheName);
+      }
+    });
+  });
+}, 24 * 60 * 60 * 1000); // 24時間ごと

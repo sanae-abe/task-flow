@@ -12,9 +12,8 @@ import HelpSidebar from './components/HelpSidebar';
 import TaskDetailSidebar from './components/TaskDetailSidebar';
 import TaskCreateDialog from './components/TaskCreateDialog';
 import FirstTimeUserHint from './components/FirstTimeUserHint';
-import { KanbanProvider, useKanban } from './contexts/KanbanContext';
-import { NotificationProvider } from './contexts/NotificationContext';
-import { TableColumnsProvider } from './contexts/TableColumnsContext';
+import { useKanban } from './contexts/KanbanContext';
+import AppProviders from './contexts/AppProviders';
 import { useHelp } from './hooks/useHelp';
 import { useDataSync } from './hooks/useDataSync';
 import { useViewRoute } from './hooks/useViewRoute';
@@ -140,13 +139,9 @@ function App() {
   return (
     <ThemeProvider>
       <BaseStyles>
-        <NotificationProvider>
-          <KanbanProvider>
-            <TableColumnsProvider>
-              <AppContent />
-            </TableColumnsProvider>
-          </KanbanProvider>
-        </NotificationProvider>
+        <AppProviders>
+          <AppContent />
+        </AppProviders>
       </BaseStyles>
     </ThemeProvider>
   );

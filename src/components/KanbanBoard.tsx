@@ -2,8 +2,11 @@ import { DndContext, DragOverlay, closestCenter, pointerWithin, rectIntersection
 import { Text, Box } from '@primer/react';
 import React from 'react';
 
-import { useKanban } from '../contexts/KanbanContext';
+import { useBoard } from '../contexts/BoardContext';
+import { useTask } from '../contexts/TaskContext';
+import { useUI } from '../contexts/UIContext';
 import { useDragAndDrop } from '../hooks/useDragAndDrop';
+import { useKeyboardDragAndDrop } from '../hooks/useKeyboardDragAndDrop';
 import { KANBAN_BOARD_STYLES } from '../styles/kanbanBoardStyles';
 import type { Task } from '../types';
 
@@ -11,15 +14,23 @@ import KanbanColumn from './KanbanColumn';
 import TaskCard from './TaskCard';
 
 const KanbanBoard: React.FC = () => {
-  const { state, moveTask, setSortOption, openTaskDetail } = useKanban();
+  const { currentBoard } = useBoard();
+  const { moveTask } = useTask();
+  const { setSortOption, openTaskDetail } = useUI();
   
   const { activeTask, sensors, handleDragStart, handleDragOver, handleDragEnd } = useDragAndDrop({
-    board: state.currentBoard,
+    board: currentBoard,
+    onMoveTask: moveTask,
+    onSortToManual: () => setSortOption('manual'),
+  });
+
+  const keyboardDragAndDrop = useKeyboardDragAndDrop({
+    board: currentBoard,
     onMoveTask: moveTask,
     onSortToManual: () => setSortOption('manual'),
   });
   
-  if (!state.currentBoard) {
+  if (!currentBoard) {
     return (
       <Box sx={KANBAN_BOARD_STYLES.emptyState}>
         <Text sx={KANBAN_BOARD_STYLES.emptyStateText}>Please select a board</Text>
@@ -45,8 +56,8 @@ const KanbanBoard: React.FC = () => {
     
     if (rectIntersections.length > 0) {
       // タスクとカラムが重なっている場合、タスクを優先
-      const taskIntersections = rectIntersections.filter(intersection => 
-        state.currentBoard?.columns.some(column => 
+      const taskIntersections = rectIntersections.filter(intersection =>
+        currentBoard?.columns.some(column =>
           column.tasks.some(task => task.id === intersection.id)
         )
       );
@@ -74,11 +85,12 @@ const KanbanBoard: React.FC = () => {
         onDragEnd={handleDragEnd}
       >
         <Box sx={KANBAN_BOARD_STYLES.columnsContainer}>
-          {state.currentBoard.columns.map((column) => (
-            <KanbanColumn 
-              key={column.id} 
-              column={column} 
+          {currentBoard.columns.map((column) => (
+            <KanbanColumn
+              key={column.id}
+              column={column}
               onTaskClick={handleTaskClick}
+              keyboardDragAndDrop={keyboardDragAndDrop}
             />
           ))}
         </Box>
