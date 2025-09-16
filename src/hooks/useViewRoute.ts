@@ -50,6 +50,8 @@ export const useViewRoute = () => {
     }
   }, []);
 
+  // HashRouter使用のため404リダイレクト処理は不要
+
   // URLの変更を監視してビューモードを更新（ブラウザナビゲーション対応）
   useEffect(() => {
     if (isNavigatingRef.current) {
@@ -58,7 +60,7 @@ export const useViewRoute = () => {
     }
 
     const viewModeFromUrl = getViewModeFromPath(location.pathname);
-    
+
     // 現在のビューモードと異なる場合のみ更新
     if (state.viewMode !== viewModeFromUrl) {
       isUpdatingViewModeRef.current = true;

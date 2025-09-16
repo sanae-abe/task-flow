@@ -44,14 +44,5 @@
   "scope": "/",
   "lang": "ja",
   "dir": "ltr",
-  "categories": ["productivity", "business"],
-  "screenshots": [
-    {
-      "src": "logo512.svg",
-      "sizes": "512x512",
-      "type": "image/svg+xml",
-      "form_factor": "wide",
-      "label": "タスク管理画面"
-    }
-  ]
+  "categories": ["productivity", "business"]
 }
