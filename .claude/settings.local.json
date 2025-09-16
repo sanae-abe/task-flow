@@ -51,7 +51,9 @@
       "mcp__serena__find_file",
       "mcp__serena__find_symbol",
       "Bash(npm run lint)",
-      "Bash(kill -9 9776 33814)"
+      "Bash(kill -9 9776 33814)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nfix: 削除されたKanbanContextファイルによるビルドエラーを完全解決\n\nContext構造の変更に対応した包括的修復：\n\n- KanbanContextの再作成 - 新しいContext構造（BoardContext、TaskContext、\n  LabelContext、UIContext）との互換性レイヤーとして実装\n- AppProvidersの統合 - 分割されたContextを適切な階層で提供\n- 型安全性の向上 - ViewMode、SortOption、TaskFilter等の適切な型定義\n- ESLintエラー修正 - useFocusTrap.tsの中括弧ルール準拠\n- インポートエラー解決 - 全ファイルでのKanbanContext参照を修正\n\n修復結果：\n- TypeScript型チェック: ✅ エラーゼロ\n- プロダクションビルド: ✅ 成功\n- 開発サーバー: ✅ 正常起動（localhost:3000）\n- 機能性: ✅ 完全復旧\n\nこれによりTaskFlowアプリケーションが完全に動作可能な状態に回復\n\n🤖 Generated with [Claude Code](https://claude.ai/code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "mcp__serena__search_for_pattern"
     ],
     "deny": [],
     "ask": []

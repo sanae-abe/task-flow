@@ -20,8 +20,8 @@ export const isValidTask = (obj: unknown): obj is Task => (
     'id' in obj &&
     'title' in obj &&
     'createdAt' in obj &&
-    typeof (obj as any).id === 'string' &&
-    typeof (obj as any).title === 'string'
+    typeof (obj as Record<string, unknown>).id === 'string' &&
+    typeof (obj as Record<string, unknown>).title === 'string'
   );
 
 // Conditional Types for Enhanced Type Safety
