@@ -4,6 +4,7 @@ import React, { useCallback, memo } from 'react';
 import { createPortal } from 'react-dom';
 
 import type { DialogActionsProps } from '../types/dialog';
+import { useFocusTrap } from '../hooks/useFocusTrap';
 import IconButton from './shared/IconButton';
 
 const DIALOG_STYLES = {
@@ -194,6 +195,7 @@ const CommonDialog = memo<CommonDialogProps>(({
 }) => {
   const theme = useTheme();
   const [isSmallScreen, setIsSmallScreen] = React.useState(false);
+  const { containerRef, handleEscapeKey } = useFocusTrap(isOpen);
 
   React.useEffect(() => {
     const checkScreenSize = () => {
@@ -230,6 +232,21 @@ const CommonDialog = memo<CommonDialogProps>(({
     mouseDownTargetRef.current = null;
   }, []);
 
+  // Escapeキーでダイアログを閉じる
+  React.useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      handleEscapeKey(event, onClose);
+    };
+
+    if (isOpen) {
+      document.addEventListener('keydown', handleKeyDown);
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, onClose, handleEscapeKey]);
+
   if (!isOpen) {
     return null;
   }
@@ -245,7 +262,9 @@ const CommonDialog = memo<CommonDialogProps>(({
           aria-modal="true"
           aria-labelledby={ariaLabelledBy}
         >
-          <Box sx={{
+          <Box
+              ref={containerRef}
+              sx={{
                   ...(size === 'large' ? DIALOG_STYLES.largeContainer :
                       size === 'small' ? DIALOG_STYLES.smallContainer :
                       DIALOG_STYLES.container),

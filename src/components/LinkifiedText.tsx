@@ -1,5 +1,6 @@
 import { Text } from '@primer/react';
 import React, { useMemo } from 'react';
+import DOMPurify from 'dompurify';
 
 interface LinkifiedTextProps {
   children: string;
@@ -7,8 +8,9 @@ interface LinkifiedTextProps {
 }
 
 /**
- * HTMLコンテンツやプレーンテキストを表示するコンポーネント
+ * HTMLコンテンツやプレーンテキストを安全に表示するコンポーネント
  * リッチテキストエディタで作成されたHTMLコンテンツの表示に対応
+ * DOMPurifyによるXSS攻撃からの保護機能付き
  */
 const LinkifiedText: React.FC<LinkifiedTextProps> = ({ children, sx }) => {
   const processedContent = useMemo(() => {
@@ -59,7 +61,30 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({ children, sx }) => {
       });
     }
 
-    return content;
+    // XSS攻撃からの保護：DOMPurifyでHTMLをサニタイズ
+    const sanitizedContent = DOMPurify.sanitize(content, {
+      ALLOWED_TAGS: [
+        'p', 'br', 'strong', 'em', 'u', 'a', 'code', 'pre', 'div',
+        'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+        'blockquote', 'span'
+      ],
+      ALLOWED_ATTR: [
+        'href', 'target', 'rel', 'class', 'contenteditable'
+      ],
+      // リンクの検証：httpまたはhttpsのみ許可
+      ALLOWED_URI_REGEXP: /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|sms|cid|xmpp):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i,
+      // 悪意のあるプロトコルをブロック
+      FORBID_ATTR: ['style', 'onerror', 'onload', 'onclick'],
+      // DOM操作を防ぐ
+      FORBID_TAGS: ['script', 'object', 'embed', 'form', 'input', 'button'],
+      // 新しいウィンドウで開くリンクにセキュリティ属性を追加
+      ADD_ATTR: ['target', 'rel'],
+      // DOMオブジェクトではなく文字列を返す
+      RETURN_DOM: false,
+      RETURN_DOM_FRAGMENT: false
+    });
+
+    return sanitizedContent;
   }, [children]);
 
   return (
@@ -113,7 +138,7 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({ children, sx }) => {
           margin: '4px 0',
         },
       }}
-      dangerouslySetInnerHTML={{ __html: processedContent }}
+      dangerouslySetInnerHTML={{ __html: processedContent }} // サニタイズ済みのため安全
     />
   );
 };

@@ -3,7 +3,7 @@ import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { Box } from '@primer/react';
 import React, { useMemo, useCallback } from 'react';
 
-import { useKanban } from '../contexts/KanbanContext';
+import { useUI } from '../contexts/UIContext';
 import { useColumnState } from '../hooks/useColumnState';
 import type { Column, Task } from '../types';
 import { sortTasks } from '../utils/taskSort';
@@ -46,6 +46,11 @@ const COLUMN_STYLES = {
 interface KanbanColumnProps {
   readonly column: Column;
   readonly onTaskClick?: (task: Task) => void;
+  readonly keyboardDragAndDrop?: {
+    selectedTaskId: string | null;
+    isDragMode: boolean;
+    handleKeyDown: (event: React.KeyboardEvent, taskId: string) => void;
+  };
 }
 
 interface ColumnDialogsProps {
@@ -85,8 +90,8 @@ const ColumnDialogs: React.FC<ColumnDialogsProps> = ({
   </>
 );
 
-const KanbanColumn: React.FC<KanbanColumnProps> = React.memo(({ column, onTaskClick }) => {
-  const { state, openTaskForm } = useKanban();
+const KanbanColumn: React.FC<KanbanColumnProps> = React.memo(({ column, onTaskClick, keyboardDragAndDrop }) => {
+  const { taskFilter, sortOption, openTaskForm } = useUI();
   const {
     showEditDialog,
     showDeleteConfirm,
@@ -104,11 +109,11 @@ const KanbanColumn: React.FC<KanbanColumnProps> = React.memo(({ column, onTaskCl
 
   // フィルターを適用してからソート
   const { sortedTasks, taskIds } = useMemo(() => {
-    const filteredTasks = filterTasks(column.tasks, state.taskFilter);
-    const sortedTasks = sortTasks(filteredTasks, state.sortOption);
+    const filteredTasks = filterTasks(column.tasks, taskFilter);
+    const sortedTasks = sortTasks(filteredTasks, sortOption);
     const taskIds = sortedTasks.map(task => task.id);
     return { sortedTasks, taskIds };
-  }, [column.tasks, state.taskFilter, state.sortOption]);
+  }, [column.tasks, taskFilter, sortOption]);
 
   const handleAddTaskClick = useCallback(() => {
     openTaskForm();
@@ -132,10 +137,11 @@ const KanbanColumn: React.FC<KanbanColumnProps> = React.memo(({ column, onTaskCl
           
           {sortedTasks.map((task, index) => (
             <React.Fragment key={task.id}>
-              <TaskCard 
-                task={task} 
+              <TaskCard
+                task={task}
                 columnId={column.id}
                 onTaskClick={onTaskClick}
+                keyboardDragAndDrop={keyboardDragAndDrop}
               />
               {/* 最後のタスクの後にもドロップインジケーターを表示 */}
               {index === sortedTasks.length - 1 && (

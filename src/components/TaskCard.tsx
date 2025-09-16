@@ -16,6 +16,11 @@ interface TaskCardProps {
   task: Task;
   columnId: string;
   onTaskClick?: (task: Task) => void;
+  keyboardDragAndDrop?: {
+    selectedTaskId: string | null;
+    isDragMode: boolean;
+    handleKeyDown: (event: React.KeyboardEvent, taskId: string) => void;
+  };
 }
 
 const getCardStyles = (isRightmostColumn: boolean, isDragging: boolean, transform: { x: number; y: number; scaleX: number; scaleY: number } | null, transition: string | undefined) => ({
@@ -45,7 +50,7 @@ const getCardStyles = (isRightmostColumn: boolean, isDragging: boolean, transfor
   }
 });
 
-const TaskCard: React.FC<TaskCardProps> = React.memo(({ task, columnId, onTaskClick }) => {
+const TaskCard: React.FC<TaskCardProps> = React.memo(({ task, columnId, onTaskClick, keyboardDragAndDrop }) => {
   const taskCardData = useTaskCard(task, columnId);
   
   const {
@@ -63,6 +68,22 @@ const TaskCard: React.FC<TaskCardProps> = React.memo(({ task, columnId, onTaskCl
       onTaskClick(task);
     }
   }, [onTaskClick, task]);
+
+  const handleKeyDown = useCallback((event: React.KeyboardEvent) => {
+    if (keyboardDragAndDrop) {
+      keyboardDragAndDrop.handleKeyDown(event, task.id);
+    }
+  }, [keyboardDragAndDrop, task.id]);
+
+  // キーボードドラッグ&ドロップ用のスタイル
+  const isKeyboardSelected = keyboardDragAndDrop?.selectedTaskId === task.id;
+  const isInDragMode = keyboardDragAndDrop?.isDragMode;
+
+  const keyboardDragStyles = isKeyboardSelected && isInDragMode ? {
+    outline: '2px solid #0969da',
+    outlineOffset: '2px',
+    boxShadow: '0 0 0 4px rgba(9, 105, 218, 0.3)'
+  } : {};
   
   return (
     <>
@@ -74,11 +95,18 @@ const TaskCard: React.FC<TaskCardProps> = React.memo(({ task, columnId, onTaskCl
         sx={{
           bg: "canvas.default",
           p: 3,
-          ...getCardStyles(taskCardData.isRightmostColumn, isDragging, transform, transition)
+          ...getCardStyles(taskCardData.isRightmostColumn, isDragging, transform, transition),
+          ...keyboardDragStyles
         }}
         {...attributes}
         {...listeners}
         onClick={handleTaskClick}
+        onKeyDown={handleKeyDown}
+        tabIndex={0}
+        role="button"
+        aria-label={`タスク: ${task.title}. キーボードでの移動にはSpaceキーまたはEnterキーを押してください。`}
+        aria-pressed={isKeyboardSelected}
+        data-task-id={task.id}
       >
         <TaskCardContent
           task={task}
