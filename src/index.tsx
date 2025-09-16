@@ -1,12 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
+import { HashRouter } from 'react-router-dom';
 import { StyleSheetManager } from 'styled-components';
 
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import * as serviceWorker from './utils/serviceWorker';
+// import * as serviceWorker from './utils/serviceWorker';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -15,25 +15,29 @@ const root = ReactDOM.createRoot(
 const shouldForwardProp = (prop: string) =>
   !['sx', 'bg', 'p', 'px', 'py', 'm', 'mx', 'my'].includes(prop);
 
+// HashRouter使用（S3環境での確実なルーティング）
+console.log('NODE_ENV:', process.env.NODE_ENV);
+console.log('Using HashRouter for S3 compatibility');
+
 root.render(
   <React.StrictMode>
     <StyleSheetManager shouldForwardProp={shouldForwardProp}>
-      <BrowserRouter>
+      <HashRouter>
         <App />
-      </BrowserRouter>
+      </HashRouter>
     </StyleSheetManager>
   </React.StrictMode>
 );
 
-// Service Worker registration
-serviceWorker.register({
-  onSuccess: () => {
-    console.log('Service Worker registered successfully');
-  },
-  onUpdate: () => {
-    console.log('New content is available; please refresh');
-  },
-});
+// Service Worker registration - temporarily disabled for debugging
+// serviceWorker.register({
+//   onSuccess: () => {
+//     console.log('Service Worker registered successfully');
+//   },
+//   onUpdate: () => {
+//     console.log('New content is available; please refresh');
+//   },
+// });
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

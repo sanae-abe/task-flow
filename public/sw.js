@@ -1,12 +1,12 @@
 const CACHE_NAME = 'todo-app-v1';
 const urlsToCache = [
-  '/',
-  '/static/js/bundle.js',
-  '/static/css/main.css',
-  '/manifest.json',
-  '/favicon.ico',
-  '/logo192.svg',
-  '/logo512.svg'
+  '/sanae-abe/taskflow/',
+  '/sanae-abe/taskflow/static/js/bundle.js',
+  '/sanae-abe/taskflow/static/css/main.css',
+  '/sanae-abe/taskflow/manifest.json',
+  '/sanae-abe/taskflow/favicon.ico',
+  '/sanae-abe/taskflow/logo192.svg',
+  '/sanae-abe/taskflow/logo512.svg'
 ];
 
 // Service Worker のインストール
@@ -63,7 +63,7 @@ self.addEventListener('fetch', (event) => {
           return response;
         }).catch(() => {
           // ネットワークが利用できない場合、キャッシュから返す
-          return caches.match('/');
+          return caches.match('/sanae-abe/taskflow/');
         });
       }
     )
