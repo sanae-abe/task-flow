@@ -18,9 +18,9 @@ const CustomLogo: React.FC<{ size: number }> = ({ size }) => (
 
 const Logo: React.FC<LogoProps> = ({ size = 'medium' }) => {
   const sizeConfig = {
-    small: { iconSize: 16, fontSize: '12px', gap: 0.5 },
-    medium: { iconSize: 28, fontSize: '18px', gap: 1 },
-    large: { iconSize: 36, fontSize: '24px', gap: 2 }
+    small: { iconSize: 24, fontSize: '18px', gap: 0.5 },
+    medium: { iconSize: 28, fontSize: '22px', gap: 1 },
+    large: { iconSize: 32, fontSize: '24px', gap: 2 }
   };
 
   const { iconSize, fontSize, gap } = sizeConfig[size];
