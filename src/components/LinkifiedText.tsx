@@ -29,15 +29,27 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({ children, sx }) => {
 
     // HTML内容を正規化：不要な<pre>タグで囲まれた改行を修正
     if (isHtml) {
+      // デバッグ用ログ
+      console.log('Original content:', content);
+
       // コードブロックを一時的に保護
       const codeBlocks: string[] = [];
       content = content.replace(
-        /<div[^>]*><div[^>]*><pre[^>]*contenteditable[^>]*>[\s\S]*?<\/pre><\/div><\/div>/g,
-        (match) => {
-          codeBlocks.push(match);
+        /<div[^>]*><pre[^>]*contenteditable[^>]*>([\s\S]*?)<\/pre><\/div>/g,
+        (match, innerContent) => {
+          console.log('Found code block:', match);
+          // コードブロック内のHTMLタグをエスケープして保護
+          const escapedContent = innerContent
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+          const protectedBlock = match.replace(innerContent, escapedContent);
+          codeBlocks.push(protectedBlock);
           return `__CODEBLOCK_${codeBlocks.length - 1}__`;
         }
       );
+
+      console.log('After code block protection:', content);
+      console.log('Code blocks found:', codeBlocks.length);
 
       // 自動生成された<pre>タグを削除（コードブロック以外）
       content = content.replace(/<pre>([^<]*)<\/pre>/g, '$1');
@@ -59,6 +71,8 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({ children, sx }) => {
       codeBlocks.forEach((block, index) => {
         content = content.replace(`__CODEBLOCK_${index}__`, block);
       });
+
+      console.log('After code block restoration:', content);
     }
 
     // XSS攻撃からの保護：DOMPurifyでHTMLをサニタイズ
@@ -69,12 +83,12 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({ children, sx }) => {
         'blockquote', 'span'
       ],
       ALLOWED_ATTR: [
-        'href', 'target', 'rel', 'class', 'contenteditable'
+        'href', 'target', 'rel', 'class', 'contenteditable', 'style', 'spellcheck'
       ],
       // リンクの検証：httpまたはhttpsのみ許可
       ALLOWED_URI_REGEXP: /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|sms|cid|xmpp):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i,
       // 悪意のあるプロトコルをブロック
-      FORBID_ATTR: ['style', 'onerror', 'onload', 'onclick'],
+      FORBID_ATTR: ['onerror', 'onload', 'onclick'],
       // DOM操作を防ぐ
       FORBID_TAGS: ['script', 'object', 'embed', 'form', 'input', 'button'],
       // 新しいウィンドウで開くリンクにセキュリティ属性を追加
@@ -83,6 +97,8 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({ children, sx }) => {
       RETURN_DOM: false,
       RETURN_DOM_FRAGMENT: false
     });
+
+    console.log('After DOMPurify sanitization:', sanitizedContent);
 
     return sanitizedContent;
   }, [children]);
