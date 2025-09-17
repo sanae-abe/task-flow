@@ -358,25 +358,37 @@ const RichTextEditor = () => {
                   },
                   {
                     id: uuidv4(),
-                    title: 'ダークモード表示の不具合修正',
-                    description: `<p>ダークモード切り替え時に一部要素の色が正しく変更されない問題を修正。</p><p><strong>不具合箇所：</strong></p><ul><li>ドロップダウンメニューの背景色</li><li>ツールチップの文字色</li><li>アイコンボタンのホバー状態</li></ul><p><strong>対応方法：</strong></p><div style="margin: 0 0 8px; border: 1px solid #d0d7de !important; border-radius: 6px; padding: 8px; font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', 'Menlo', monospace; font-size: 13px; line-height: 1.45; overflow-x: auto; color: #24292f; background-color: #f6f8fa;"><pre style="margin: 0 !important; white-space: pre; overflow-wrap: normal; color: inherit; background: transparent; border: none; padding: 0;" contenteditable="true" spellcheck="false">// CSS変数を使用した修正例
-:root[data-theme="dark"] {
-  --dropdown-bg: #1c2128;
-  --tooltip-color: #ffffff;
-  --icon-hover-bg: rgba(255, 255, 255, 0.1);
-}</pre></div>`,
+                    title: '週次レポートの作成',
+                    description: `<p>チーム進捗と課題を整理した週次レポートの作成と共有。</p><p><strong>レポート内容：</strong></p><ul><li>完了タスクと進捗状況</li><li>発生した課題と解決策</li><li>来週の計画と目標</li></ul><p><strong>共有方法：</strong></p><div style="margin: 0 0 8px; border: 1px solid #d0d7de !important; border-radius: 6px; padding: 8px; font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', 'Menlo', monospace; font-size: 13px; line-height: 1.45; overflow-x: auto; color: #24292f; background-color: #f6f8fa;"><pre style="margin: 0 !important; white-space: pre; overflow-wrap: normal; color: inherit; background: transparent; border: none; padding: 0;" contenteditable="true" spellcheck="false">// レポート自動生成スクリプト例
+const generateWeeklyReport = () => {
+  const completedTasks = getCompletedTasks(lastWeek);
+  const upcomingTasks = getUpcomingTasks(nextWeek);
+
+  return {
+    period: getWeekRange(),
+    completed: completedTasks,
+    upcoming: upcomingTasks,
+    issues: getIssues()
+  };
+};</pre></div>`,
                     createdAt: new Date().toISOString(),
                     updatedAt: new Date().toISOString(),
                     dueDate: todayEvening.toISOString(), // 今日の18:00
                     priority: 'medium' as Priority,
-                    labels: [], // ラベルなし
+                    labels: [labels[3]!], // ドキュメント
                     files: [],
                     subTasks: [
-                      { id: uuidv4(), title: '不具合箇所の特定', completed: true, createdAt: new Date().toISOString() },
-                      { id: uuidv4(), title: 'CSS変数の追加', completed: false, createdAt: new Date().toISOString() },
-                      { id: uuidv4(), title: '動作確認テスト', completed: false, createdAt: new Date().toISOString() }
+                      { id: uuidv4(), title: 'タスク完了状況の集計', completed: true, createdAt: new Date().toISOString() },
+                      { id: uuidv4(), title: '課題とブロッカーの整理', completed: false, createdAt: new Date().toISOString() },
+                      { id: uuidv4(), title: 'レポート作成と共有', completed: false, createdAt: new Date().toISOString() }
                     ],
                     completedAt: null,
+                    recurrence: {
+                      enabled: true,
+                      pattern: 'weekly',
+                      interval: 1,
+                      endDate: undefined
+                    }
                   }
                 ]
               },
@@ -460,13 +472,7 @@ const authenticateUser = async (email, password) => {
                       { id: uuidv4(), title: '認証ミドルウェア実装', completed: true, createdAt: new Date().toISOString() },
                       { id: uuidv4(), title: 'セキュリティテスト', completed: true, createdAt: new Date().toISOString() }
                     ],
-                    completedAt: new Date(today.getTime() - 86400000 * 2).toISOString(),
-                    recurrence: {
-                      enabled: true,
-                      pattern: 'monthly',
-                      interval: 1,
-                      endDate: undefined
-                    }
+                    completedAt: new Date(today.getTime() - 86400000 * 2).toISOString()
                   },
                   {
                     id: uuidv4(),
