@@ -212,6 +212,15 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
               description="タスクカードをクリックして詳細表示・編集"
             />
             <HelpItem
+              title={
+                <>
+                  リッチテキスト<br />
+                  エディタ
+                </>
+              }
+              description="タスクの説明欄で太字・斜体・下線・リンク・コードブロックを使用可能。Ctrl+B（太字）、Ctrl+I（斜体）、Ctrl+U（下線）、Ctrl+K（リンク）、Ctrl+`（コード）、Ctrl+Shift+`（コードブロック）"
+            />
+            <HelpItem
               title="完了機能"
               description="タスク名左のチェックアイコンで即座に完了状態に移動"
             />
