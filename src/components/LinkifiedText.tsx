@@ -32,9 +32,14 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({ children, sx }) => {
       // コードブロックを一時的に保護
       const codeBlocks: string[] = [];
       content = content.replace(
-        /<div[^>]*><div[^>]*><pre[^>]*contenteditable[^>]*>[\s\S]*?<\/pre><\/div><\/div>/g,
-        (match) => {
-          codeBlocks.push(match);
+        /<div[^>]*><pre[^>]*contenteditable[^>]*>([\s\S]*?)<\/pre><\/div>/g,
+        (match, innerContent) => {
+          // コードブロック内のHTMLタグをエスケープして保護
+          const escapedContent = innerContent
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+          const protectedBlock = match.replace(innerContent, escapedContent);
+          codeBlocks.push(protectedBlock);
           return `__CODEBLOCK_${codeBlocks.length - 1}__`;
         }
       );
@@ -69,12 +74,12 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({ children, sx }) => {
         'blockquote', 'span'
       ],
       ALLOWED_ATTR: [
-        'href', 'target', 'rel', 'class', 'contenteditable'
+        'href', 'target', 'rel', 'class', 'contenteditable', 'style', 'spellcheck'
       ],
       // リンクの検証：httpまたはhttpsのみ許可
       ALLOWED_URI_REGEXP: /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|sms|cid|xmpp):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i,
       // 悪意のあるプロトコルをブロック
-      FORBID_ATTR: ['style', 'onerror', 'onload', 'onclick'],
+      FORBID_ATTR: ['onerror', 'onload', 'onclick'],
       // DOM操作を防ぐ
       FORBID_TAGS: ['script', 'object', 'embed', 'form', 'input', 'button'],
       // 新しいウィンドウで開くリンクにセキュリティ属性を追加
