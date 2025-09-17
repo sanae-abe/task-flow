@@ -312,22 +312,22 @@ export const BoardProvider: React.FC<BoardProviderProps> = ({ children }) => {
 
           // デモ用ラベル
           const labels = [
-            { id: uuidv4(), name: '🔥 緊急', color: '#dc3545' },
-            { id: uuidv4(), name: '💡 機能改善', color: '#28a745' },
-            { id: uuidv4(), name: '🐛 バグ修正', color: '#6c757d' },
-            { id: uuidv4(), name: '📚 ドキュメント', color: '#007bff' }
+            { id: uuidv4(), name: '緊急', color: '#d1242f' },
+            { id: uuidv4(), name: '機能改善', color: '#1a7f37' },
+            { id: uuidv4(), name: 'バグ修正', color: '#656d76' },
+            { id: uuidv4(), name: 'ドキュメント', color: '#0969da' }
           ];
 
           const defaultBoard: KanbanBoard = {
             id: uuidv4(),
-            title: 'TaskFlow 開発プロジェクト',
+            title: 'TaskFlow デモプロジェクト',
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
             labels,
             columns: [
               {
                 id: uuidv4(),
-                title: 'TODO',
+                title: '📝 未着手',
                 tasks: [
                   {
                     id: uuidv4(),
@@ -382,7 +382,7 @@ const RichTextEditor = () => {
               },
               {
                 id: uuidv4(),
-                title: '進行中',
+                title: '🚀 進行中',
                 tasks: [
                   {
                     id: uuidv4(),
@@ -431,7 +431,7 @@ const optimizedQuery = await db.task.findMany({
               },
               {
                 id: uuidv4(),
-                title: '完了',
+                title: '✅ 完了',
                 tasks: [
                   {
                     id: uuidv4(),
