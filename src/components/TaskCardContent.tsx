@@ -20,7 +20,7 @@ const TaskCardContent: React.FC<TaskDisplayProps> = ({
   isRightmostColumn = false
 }) => (
     <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0, gap: 2 }}>
-      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+      <Box sx={{ display: 'flex', alignItems: 'flex-start', margin: '4px 0' }}>
         {onComplete && (
           <IconButton
             icon={isRightmostColumn ? CheckCircleFillIcon : CheckCircleIcon}
@@ -30,8 +30,9 @@ const TaskCardContent: React.FC<TaskDisplayProps> = ({
             size="small"
             sx={{
               pl: 0,
-              width: '24px',
-              height: '28px',
+              pt: 0,
+              width: '26px',
+              height: '20px',
               '&:hover': {
                 bg: 'transparent',
                 color: 'success.fg',
@@ -47,7 +48,6 @@ const TaskCardContent: React.FC<TaskDisplayProps> = ({
           lineHeight: '1.4',
           flex: 1,
           display: 'flex',
-          alignItems: 'center',
           gap: 1
         }}>
           {task.title}
