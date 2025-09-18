@@ -20,7 +20,8 @@ type BoardAction =
   | { type: 'CREATE_COLUMN'; payload: { boardId: string; title: string } }
   | { type: 'DELETE_COLUMN'; payload: { columnId: string } }
   | { type: 'UPDATE_COLUMN'; payload: { columnId: string; updates: Partial<Column> } }
-  | { type: 'IMPORT_BOARDS'; payload: { boards: KanbanBoard[]; replaceAll?: boolean } };
+  | { type: 'IMPORT_BOARDS'; payload: { boards: KanbanBoard[]; replaceAll?: boolean } }
+  | { type: 'REORDER_BOARDS'; payload: { boards: KanbanBoard[] } };
 
 interface BoardContextType {
   state: BoardState;
@@ -34,6 +35,7 @@ interface BoardContextType {
   deleteColumn: (columnId: string) => void;
   updateColumn: (columnId: string, updates: Partial<Column>) => void;
   importBoards: (boards: KanbanBoard[], replaceAll?: boolean) => void;
+  reorderBoards: (boards: KanbanBoard[]) => void;
 }
 
 const BoardContext = createContext<BoardContextType | undefined>(undefined);
@@ -259,10 +261,19 @@ const boardReducer = (state: BoardState, action: BoardAction): BoardState => {
       };
     }
 
+    case 'REORDER_BOARDS': {
+      const { boards: reorderedBoards } = action.payload;
+      
+      return {
+        ...state,
+        boards: reorderedBoards,
+      };
+    }
+
     default:
       return state;
   }
-};
+};;
 
 interface BoardProviderProps {
   children: ReactNode;
@@ -583,6 +594,9 @@ const authenticateUser = async (email, password) => {
       : `${boards.length}個のボードをインポートしました`;
     notify.success(message);
   }, [notify]);
+  const reorderBoards = useCallback((boards: KanbanBoard[]) => {
+    dispatch({ type: 'REORDER_BOARDS', payload: { boards } });
+  }, []);
 
   const exportData = useCallback(() => ({
     boards: state.boards,
@@ -603,8 +617,9 @@ const authenticateUser = async (email, password) => {
     deleteColumn,
     updateColumn,
     importBoards,
+    reorderBoards,
     exportData
-  }), [state, dispatch, createBoard, setCurrentBoard, updateBoard, deleteBoard, createColumn, deleteColumn, updateColumn, importBoards, exportData]);
+  }), [state, dispatch, createBoard, setCurrentBoard, updateBoard, deleteBoard, createColumn, deleteColumn, updateColumn, importBoards, reorderBoards, exportData]);
 
   return (
     <BoardContext.Provider value={value}>
