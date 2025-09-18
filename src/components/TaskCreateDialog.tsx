@@ -161,7 +161,7 @@ const TaskCreateDialog = memo(() => {
                 type="date"
                 value={dueDate}
                 onChange={(e) => setDueDate(e.target.value)}
-                style={{ width: '100%' }}
+                sx={{ width: '100%' }}
               />
             </div>
             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '8px' }}>
