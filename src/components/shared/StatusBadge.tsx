@@ -13,6 +13,8 @@ interface StatusBadgeProps {
   icon?: Icon | React.ComponentType<{ size: number }>;
   /** バッジのテキスト */
   children: React.ReactNode;
+  /** フォントウェイト */
+  fontWeight?: string | number;
   /** 追加のCSS */
   sx?: Record<string, unknown>;
 }
@@ -28,6 +30,7 @@ const StatusBadge = memo<StatusBadgeProps>(({
   size = 'medium',
   icon: IconComponent,
   children,
+  fontWeight = '600',
   sx
 }) => {
   // バリアント別の色定義
@@ -108,7 +111,7 @@ const StatusBadge = memo<StatusBadgeProps>(({
         alignItems: 'center',
         gap: IconComponent ? '4px' : 0,
         color: colors.cssColor,
-        fontWeight: '400',
+        fontWeight,
         alignSelf: 'flex-start',
         ...sx
       }}
