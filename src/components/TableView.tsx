@@ -112,7 +112,7 @@ const TableView: React.FC = () => {
               textOverflow: 'ellipsis',
               whiteSpace: 'nowrap',
               fontWeight: 'semibold',
-              color: task.completedAt ? 'fg.muted' : 'fg.default',
+              color: task.completedAt ? 'fg.default' : 'fg.default',
               textDecoration: task.completedAt ? 'line-through' : 'none',
               fontSize: 1,
             }}
@@ -139,7 +139,7 @@ const TableView: React.FC = () => {
                     },
                   }}
                 >
-                  <StatusBadge size="medium" variant="neutral" fontWeight="400">
+                  <StatusBadge size="medium" variant="default" fontWeight="400">
                     {task.status}
                   </StatusBadge>
                 </Button>
@@ -167,7 +167,7 @@ const TableView: React.FC = () => {
         if (!task.dueDate) {
           return (
             <Box>
-              <Text sx={{ color: 'fg.muted', fontSize: 1 }}>
+              <Text sx={{ color: 'fg.default', fontSize: 1 }}>
                 -
               </Text>
             </Box>
@@ -182,18 +182,16 @@ const TableView: React.FC = () => {
           if (isOverdue) {return 'danger.emphasis';}
           if (isDueToday) {return 'attention.emphasis';}
           if (isDueTomorrow) {return 'accent.emphasis';}
-          return 'fg.muted';
+          return 'fg.default';
         };
 
         return (
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Text sx={{ display: 'flex', alignItems: 'center', gap: 1, fontSize: 1, color: getDateColor() }}>
-              {formattedDate}
-              {task.recurrence?.enabled && (
-                <SyncIcon size={12} />
-              )}
-            </Text>
-          </Box>
+          <Text sx={{ display: 'flex', alignItems: 'center', gap: 1, fontSize: 1, color: getDateColor() }}>
+            {formattedDate}
+            {task.recurrence?.enabled && (
+              <SyncIcon size={12} />
+            )}
+          </Text>
         );
       }
 
@@ -210,7 +208,7 @@ const TableView: React.FC = () => {
               <Text
                 sx={{
                   fontSize: 0,
-                  color: 'fg.muted',
+                  color: 'fg.default',
                   px: 2,
                   py: 1,
                   border: '1px solid',
@@ -230,12 +228,12 @@ const TableView: React.FC = () => {
             {task.subTasks && task.subTasks.length > 0 ? (
               <>
                 <CheckIcon size={12} />
-                <Text sx={{ fontSize: 1, color: 'fg.muted' }}>
+                <Text sx={{ fontSize: 1, color: 'fg.default' }}>
                   {task.subTasks.filter(sub => sub.completed).length}/{task.subTasks.length}
                 </Text>
               </>
             ) : (
-              <Text sx={{ color: 'fg.muted', fontSize: 1 }}>
+              <Text sx={{ color: 'fg.default', fontSize: 1 }}>
                 -
               </Text>
             )}
@@ -248,12 +246,12 @@ const TableView: React.FC = () => {
             {task.files && task.files.length > 0 ? (
               <>
                 <PaperclipIcon size={12} />
-                <Text sx={{ fontSize: 1, color: 'fg.muted' }}>
+                <Text sx={{ fontSize: 1, color: 'fg.default' }}>
                   {task.files.length}
                 </Text>
               </>
             ) : (
-              <Text sx={{ color: 'fg.muted', fontSize: 1 }}>
+              <Text sx={{ color: 'fg.default', fontSize: 1 }}>
                 -
               </Text>
             )}
@@ -269,12 +267,12 @@ const TableView: React.FC = () => {
                   completedCount={task.subTasks.filter(sub => sub.completed).length}
                   totalCount={task.subTasks.length}
                 />
-                <Text sx={{ fontSize: 1, color: 'fg.muted' }}>
+                <Text sx={{ fontSize: 1, color: 'fg.default' }}>
                   {getCompletionRate(task)}%
                 </Text>
               </Box>
             ) : (
-              <Text sx={{ color: 'fg.muted', fontSize: 1 }}>
+              <Text sx={{ color: 'fg.default', fontSize: 1 }}>
                 -
               </Text>
             )}
@@ -283,31 +281,27 @@ const TableView: React.FC = () => {
 
       case 'createdAt':
         return (
-          <Box>
-            <Text sx={{ fontSize: 1, color: 'fg.muted' }}>
-              {formatDate(task.createdAt, 'MM/dd HH:mm')}
-            </Text>
-          </Box>
+          <Text sx={{ fontSize: 1, color: 'fg.default' }}>
+            {formatDate(task.createdAt, 'MM/dd HH:mm')}
+          </Text>
         );
 
       case 'updatedAt':
         return (
-          <Box>
-            <Text sx={{ fontSize: 1, color: 'fg.muted' }}>
-              {formatDate(task.updatedAt, 'MM/dd HH:mm')}
-            </Text>
-          </Box>
+          <Text sx={{ fontSize: 1, color: 'fg.default' }}>
+            {formatDate(task.updatedAt, 'MM/dd HH:mm')}
+          </Text>
         );
 
       case 'completedAt':
         return (
           <Box>
             {task.completedAt ? (
-              <Text sx={{ fontSize: 1, color: 'fg.muted' }}>
+              <Text sx={{ fontSize: 1, color: 'fg.default' }}>
                 {formatDate(task.completedAt, 'MM/dd HH:mm')}
               </Text>
             ) : (
-              <Text sx={{ color: 'fg.muted', fontSize: 1 }}>
+              <Text sx={{ color: 'fg.default', fontSize: 1 }}>
                 -
               </Text>
             )}
@@ -333,7 +327,7 @@ const TableView: React.FC = () => {
                 {stripHtml(task.description)}
               </Text>
             ) : (
-              <Text sx={{ color: 'fg.muted', fontSize: 0 }}>
+              <Text sx={{ color: 'fg.default', fontSize: 0 }}>
                 -
               </Text>
             )}
@@ -342,11 +336,11 @@ const TableView: React.FC = () => {
 
       case 'recurrence':
         return (
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: 'fg.default' }}>
             {task.recurrence?.enabled ? (
               <>
                 <SyncIcon size={12} />
-                <Text sx={{ fontSize: 1, color: 'fg.default' }}>
+                <Text sx={{ fontSize: 1 }}>
                   {task.recurrence.pattern === 'daily' && '毎日'}
                   {task.recurrence.pattern === 'weekly' && '毎週'}
                   {task.recurrence.pattern === 'monthly' && '毎月'}
@@ -354,7 +348,7 @@ const TableView: React.FC = () => {
                 </Text>
               </>
             ) : (
-              <Text sx={{ color: 'fg.muted', fontSize: 1 }}>
+              <Text sx={{ color: 'fg.default', fontSize: 1 }}>
                 -
               </Text>
             )}
@@ -363,11 +357,9 @@ const TableView: React.FC = () => {
 
       default:
         return (
-          <Box>
-            <Text sx={{ fontSize: 1, color: 'fg.muted' }}>
-              -
-            </Text>
-          </Box>
+          <Text sx={{ fontSize: 1, color: 'fg.default' }}>
+            -
+          </Text>
         );
     }
   }, [currentBoard, handleStatusChange, handleTaskDeleteClick, getCompletionRate]);
@@ -380,7 +372,7 @@ const TableView: React.FC = () => {
           alignItems: 'center',
           justifyContent: 'center',
           height: 'calc(100vh - 120px)',
-          color: 'fg.muted',
+          color: 'fg.default',
         }}
       >
         <Text>ボードを選択してください</Text>
@@ -496,7 +488,7 @@ const TableView: React.FC = () => {
             alignItems: 'center',
             justifyContent: 'center',
             py: 8,
-            color: 'fg.muted',
+            color: 'fg.default',
           }}
         >
           <Text sx={{ fontSize: 1, mb: 2 }}>

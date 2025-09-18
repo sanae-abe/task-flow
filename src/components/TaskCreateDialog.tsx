@@ -1,4 +1,4 @@
-import { Box, Text, TextInput } from '@primer/react';
+import { TextInput, FormControl } from '@primer/react';
 import React, { useState, useEffect, useCallback, memo } from 'react';
 
 import type { Label as LabelType, FileAttachment, RecurrenceConfig } from '../types';
@@ -75,11 +75,12 @@ const TaskCreateDialog = memo(() => {
       }
     }
 
-    const defaultColumnId = state.currentBoard.columns[0]?.id;
+    // taskFormDefaultStatusが指定されている場合はそのカラムを使用、なければ最初のカラムを使用
+    const targetColumnId = state.taskFormDefaultStatus || state.currentBoard.columns[0]?.id;
 
-    if (defaultColumnId) {
+    if (targetColumnId) {
       createTask(
-        defaultColumnId,
+        targetColumnId,
         title.trim(),
         description.trim(),
         dueDateObj,
@@ -89,7 +90,7 @@ const TaskCreateDialog = memo(() => {
       );
       closeTaskForm();
     }
-  }, [title, description, dueDate, dueTime, hasTime, labels, attachments, recurrence, createTask, closeTaskForm, state.currentBoard]);
+  }, [title, description, dueDate, dueTime, hasTime, labels, attachments, recurrence, createTask, closeTaskForm, state.currentBoard, state.taskFormDefaultStatus]);
 
   const handleKeyPress = useCallback((event: React.KeyboardEvent) => {
     if (event.key === 'Escape') {
@@ -123,87 +124,87 @@ const TaskCreateDialog = memo(() => {
         />
       }
     >
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '16px',
+          padding: '16px',
+        }}
+        onKeyDown={handleKeyPress}
+      >
         <FormField
           id="task-title"
           label="タイトル"
           value={title}
-          placeholder="タスクタイトルを入力"
+          placeholder="タスクのタイトルを入力..."
           onChange={setTitle}
           onKeyDown={handleKeyPress}
           autoFocus
           required
         />
 
-        <Box sx={{ mb: 4 }}>
-          <Text sx={{ fontSize: 1, mb: 2, display: 'block', fontWeight: '700' }}>
-            説明（任意）
-          </Text>
-          <RichTextEditor
-            value={description}
-            onChange={setDescription}
-            placeholder="タスクの説明を入力"
-          />
-        </Box>
-
-        <Box sx={{ mb: 4 }}>
-          <Box sx={{ mb: 2 }}>
-            <Text sx={{ fontSize: 1, mb: 1, display: 'block', fontWeight: '700' }}>
-              期限（任意）
-            </Text>
-            <TextInput
-              type="date"
-              value={dueDate}
-              onChange={(e) => setDueDate(e.target.value)}
-              onKeyDown={handleKeyPress}
-              sx={{ width: '100%' }}
-              step="1"
+        <div style={{ marginBottom: '16px' }}>
+          <FormControl>
+            <FormControl.Label>説明</FormControl.Label>
+            <RichTextEditor
+              value={description}
+              onChange={setDescription}
+              placeholder="タスクの詳細を入力..."
             />
-          </Box>
+          </FormControl>
+        </div>
 
-        <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+        <div style={{ marginBottom: '16px' }}>
+          <FormControl>
+            <FormControl.Label>期限日</FormControl.Label>
             <TimeSelector
               hasTime={hasTime}
               dueTime={dueTime}
               onTimeChange={handleTimeChange}
               disabled={!dueDate}
             />
+          </FormControl>
+          <TextInput
+            type="date"
+            value={dueDate}
+            onChange={(e) => setDueDate(e.target.value)}
+            style={{ width: '100%', marginTop: '8px' }}
+          />
+        </div>
 
+        <div style={{ marginBottom: '16px' }}>
+          <FormControl>
+            <FormControl.Label>ラベル</FormControl.Label>
+            <LabelSelector
+              selectedLabels={labels}
+              onLabelsChange={setLabels}
+            />
+          </FormControl>
+        </div>
+
+        <div style={{ marginBottom: '16px' }}>
+          <FormControl>
+            <FormControl.Label>繰り返し</FormControl.Label>
             <RecurrenceSelector
               recurrence={recurrence}
               onRecurrenceChange={setRecurrence}
               disabled={!dueDate}
             />
-          </Box>
+          </FormControl>
+        </div>
 
-          {!dueDate && (
-            <Box sx={{ mt: 2, fontSize: 0, color: 'fg.muted' }}>
-              ※期限を設定すると時刻設定と繰り返し設定が有効になります
-            </Box>
-          )}
-        </Box>
-
-        <Box sx={{ mb: 4 }}>
-          <Text sx={{ fontSize: 1, mb: 1, display: 'block', fontWeight: '700' }}>
-            ラベル（任意）
-          </Text>
-          <LabelSelector
-            selectedLabels={labels}
-            onLabelsChange={setLabels}
-          />
-        </Box>
-
-        <Box sx={{ mb: 4 }}>
-          <Text sx={{ fontSize: 1, mb: 1, display: 'block', fontWeight: '700' }}>
-            ファイル添付（任意）
-          </Text>
-          <FileUploader
-            attachments={attachments}
-            onAttachmentsChange={setAttachments}
-            showModeSelector={false}
-          />
-        </Box>
-      </Box>
+        <div style={{ marginBottom: '16px' }}>
+          <FormControl>
+            <FormControl.Label>ファイル添付</FormControl.Label>
+            <FileUploader
+              attachments={attachments}
+              onAttachmentsChange={setAttachments}
+              showModeSelector={false}
+            />
+          </FormControl>
+        </div>
+      </div>
     </CommonDialog>
   );
 });
