@@ -92,7 +92,7 @@ const StatusBadge = memo<StatusBadgeProps>(({
         return {
           px: 2,
           py: 1,
-          fontSize: 0,
+          fontSize: 1,
           iconSize: 12
         };
     }
@@ -108,7 +108,7 @@ const StatusBadge = memo<StatusBadgeProps>(({
         alignItems: 'center',
         gap: IconComponent ? '4px' : 0,
         color: colors.cssColor,
-        fontWeight: '600',
+        fontWeight: '400',
         alignSelf: 'flex-start',
         ...sx
       }}
@@ -120,7 +120,6 @@ const StatusBadge = memo<StatusBadgeProps>(({
         sx={{ 
           fontSize: sizeStyles.fontSize, 
           color: colors.color,
-          fontWeight: '700'
         }}
       >
         {children}

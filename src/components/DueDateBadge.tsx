@@ -28,7 +28,7 @@ const DueDateBadge: React.FC<DueDateBadgeProps> = ({
   return (
     <StatusBadge
       variant={getVariant()}
-      size="medium"
+      size="small"
       sx={{ border: 'none', bg: 'transparent' }}
     >
       期限: {formatDueDate(dueDate)} {isRecurrence && <SyncIcon size={12} />}
