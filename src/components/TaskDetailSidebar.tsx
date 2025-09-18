@@ -1,6 +1,6 @@
 import { TrashIcon, XIcon, PencilIcon } from '@primer/octicons-react';
 import { Button, Box, Heading } from '@primer/react';
-import { useEffect, useCallback, useMemo, memo } from 'react';
+import { useEffect, useCallback, useMemo, memo, useRef } from 'react';
 
 import { useTaskActions } from '../hooks/useTaskActions';
 import { useTaskColumn } from '../hooks/useTaskColumn';
@@ -34,6 +34,10 @@ const TaskDetailSidebar = memo<TaskDetailSidebarProps>(({ task, isOpen, onClose 
     handleToggleSubTask,
     handleDeleteSubTask
   } = useTaskActions(task, onClose);
+
+  // スクロール位置をリセットするためのref
+  const sidebarRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   // イベントハンドラーをメモ化
   const handleEscapeKey = useCallback((event: KeyboardEvent) => {
@@ -112,12 +116,26 @@ const TaskDetailSidebar = memo<TaskDetailSidebarProps>(({ task, isOpen, onClose 
     };
   }, [isOpen, handleEscapeKey]);
 
+  // タスクが変更された時にスクロール位置をトップにリセット
+  useEffect(() => {
+    if (isOpen && task) {
+      // サイドバー全体とコンテンツ部分の両方をリセット
+      if (sidebarRef.current) {
+        sidebarRef.current.scrollTop = 0;
+      }
+      if (contentRef.current) {
+        contentRef.current.scrollTop = 0;
+      }
+    }
+  }, [task, isOpen]);
+
   if (!isOpen || !task) {
     return null;
   }
 
   return (
     <Box
+      ref={sidebarRef}
       sx={sidebarStyles}
       role="dialog"
       aria-label="タスク詳細"
@@ -140,7 +158,7 @@ const TaskDetailSidebar = memo<TaskDetailSidebarProps>(({ task, isOpen, onClose 
         </Box>
 
         {/* Content */}
-        <Box sx={contentStyles}>
+        <Box ref={contentRef} sx={contentStyles}>
           <TaskDisplayContent task={task} columnName={columnName} />
           <SubTaskList
             subTasks={task.subTasks ?? []}

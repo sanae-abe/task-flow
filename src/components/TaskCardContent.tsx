@@ -29,6 +29,9 @@ const TaskCardContent: React.FC<TaskDisplayProps> = ({
             variant="success"
             size="small"
             sx={{
+              pl: 0,
+              width: '24px',
+              height: '28px',
               '&:hover': {
                 bg: 'transparent',
                 color: 'success.fg',
