@@ -220,6 +220,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
         borderColor: 'border.default',
         borderRadius: 2,
         overflow: 'hidden',
+        width: '100%',
         '&:focus-within': {
           borderColor: 'accent.fg',
           boxShadow: '0 0 0 2px rgba(9, 105, 218, 0.3)',
@@ -300,7 +301,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
       )}
 
       {/* エディタ本体 */}
-      <Box sx={{ position: 'relative', minHeight }}>
+      <Box sx={{ position: 'relative', minHeight,}}>
         <Box
           ref={editorRef}
           as="div"

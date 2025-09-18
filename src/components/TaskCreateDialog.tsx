@@ -128,8 +128,6 @@ const TaskCreateDialog = memo(() => {
         style={{
           display: 'flex',
           flexDirection: 'column',
-          gap: '16px',
-          padding: '16px',
         }}
         onKeyDown={handleKeyPress}
       >
@@ -144,7 +142,7 @@ const TaskCreateDialog = memo(() => {
           required
         />
 
-        <div style={{ marginBottom: '16px' }}>
+        <div style={{ width:'100%', marginBottom: '16px' }}>
           <FormControl>
             <FormControl.Label>説明</FormControl.Label>
             <RichTextEditor
@@ -155,25 +153,34 @@ const TaskCreateDialog = memo(() => {
           </FormControl>
         </div>
 
-        <div style={{ marginBottom: '16px' }}>
+        <div style={{ marginTop: '8px', marginBottom: '16px' }}>
           <FormControl>
             <FormControl.Label>期限日</FormControl.Label>
-            <TimeSelector
-              hasTime={hasTime}
-              dueTime={dueTime}
-              onTimeChange={handleTimeChange}
-              disabled={!dueDate}
-            />
+            <div style={{ width: '100%' }}>
+              <TextInput
+                type="date"
+                value={dueDate}
+                onChange={(e) => setDueDate(e.target.value)}
+                style={{ width: '100%' }}
+              />
+            </div>
+            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '8px' }}>
+              <TimeSelector
+                hasTime={hasTime}
+                dueTime={dueTime}
+                onTimeChange={handleTimeChange}
+                disabled={!dueDate}
+              />
+              <RecurrenceSelector
+                recurrence={recurrence}
+                onRecurrenceChange={setRecurrence}
+                disabled={!dueDate}
+              />
+            </div>
           </FormControl>
-          <TextInput
-            type="date"
-            value={dueDate}
-            onChange={(e) => setDueDate(e.target.value)}
-            style={{ width: '100%', marginTop: '8px' }}
-          />
         </div>
 
-        <div style={{ marginBottom: '16px' }}>
+        <div style={{ marginTop: '8px', marginBottom: '16px' }}>
           <FormControl>
             <FormControl.Label>ラベル</FormControl.Label>
             <LabelSelector
@@ -183,18 +190,7 @@ const TaskCreateDialog = memo(() => {
           </FormControl>
         </div>
 
-        <div style={{ marginBottom: '16px' }}>
-          <FormControl>
-            <FormControl.Label>繰り返し</FormControl.Label>
-            <RecurrenceSelector
-              recurrence={recurrence}
-              onRecurrenceChange={setRecurrence}
-              disabled={!dueDate}
-            />
-          </FormControl>
-        </div>
-
-        <div style={{ marginBottom: '16px' }}>
+        <div style={{ marginTop: '8px', marginBottom: '24px' }}>
           <FormControl>
             <FormControl.Label>ファイル添付</FormControl.Label>
             <FileUploader
