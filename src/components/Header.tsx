@@ -17,7 +17,7 @@ const DIVIDER_HEIGHT = '24px';
 // スタイル定義オブジェクト
 const headerStyles = {
   container: {
-    px: 4,
+    px: 6,
     py: 0,
     bg: 'canvas.default',
     borderBottom: '1px solid',

@@ -20,6 +20,7 @@ interface KanbanContextType {
     selectedTaskId: string | null;
     isTaskFormOpen: boolean;
     taskFormDefaultDate: Date | null;
+    taskFormDefaultStatus?: string;
   };
   // Board関連のメソッド
   createBoard: (title: string) => void;
@@ -80,6 +81,7 @@ export const KanbanProvider: React.FC<KanbanProviderProps> = ({ children }) => {
       selectedTaskId: ui.state.selectedTaskId || null,
       isTaskFormOpen: ui.state.isTaskFormOpen || false,
       taskFormDefaultDate: ui.state.taskFormDefaultDate || null,
+      taskFormDefaultStatus: ui.state.taskFormDefaultStatus,
     },
     // Board関連のメソッド
     createBoard: board.createBoard,

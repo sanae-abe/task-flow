@@ -11,6 +11,7 @@ interface UIState {
   isTaskDetailOpen: boolean;
   isTaskFormOpen: boolean;
   taskFormDefaultDate?: Date;
+  taskFormDefaultStatus?: string;
 }
 
 type UIAction =
@@ -19,7 +20,7 @@ type UIAction =
   | { type: 'SET_VIEW_MODE'; payload: ViewMode }
   | { type: 'OPEN_TASK_DETAIL'; payload: { taskId: string } }
   | { type: 'CLOSE_TASK_DETAIL' }
-  | { type: 'OPEN_TASK_FORM'; payload?: { defaultDate?: Date } }
+  | { type: 'OPEN_TASK_FORM'; payload?: { defaultDate?: Date; defaultStatus?: string } }
   | { type: 'CLOSE_TASK_FORM' }
   | { type: 'LOAD_SORT_OPTION'; payload: SortOption };
 
@@ -33,7 +34,7 @@ interface UIContextType {
   setViewMode: (mode: ViewMode) => void;
   openTaskDetail: (taskId: string) => void;
   closeTaskDetail: () => void;
-  openTaskForm: (defaultDate?: Date) => void;
+  openTaskForm: (defaultDate?: Date, defaultStatus?: string) => void;
   closeTaskForm: () => void;
 }
 
@@ -142,6 +143,7 @@ const uiReducer = (state: UIState, action: UIAction): UIState => {
         ...state,
         isTaskFormOpen: true,
         taskFormDefaultDate: action.payload?.defaultDate,
+        taskFormDefaultStatus: action.payload?.defaultStatus,
       };
 
     case 'CLOSE_TASK_FORM':
@@ -149,12 +151,13 @@ const uiReducer = (state: UIState, action: UIAction): UIState => {
         ...state,
         isTaskFormOpen: false,
         taskFormDefaultDate: undefined,
+        taskFormDefaultStatus: undefined,
       };
 
     default:
       return state;
   }
-};
+};;
 
 interface UIProviderProps {
   children: ReactNode;
@@ -210,9 +213,9 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
     dispatch({ type: 'CLOSE_TASK_DETAIL' });
   }, []);
 
-  const openTaskForm = useCallback((defaultDate?: Date) => {
-    dispatch({ type: 'OPEN_TASK_FORM', payload: { defaultDate } });
-  }, []);
+  const openTaskForm = useCallback((defaultDate?: Date, defaultStatus?: string) => {
+    dispatch({ type: 'OPEN_TASK_FORM', payload: { defaultDate, defaultStatus } });
+  }, []);;
 
   const closeTaskForm = useCallback(() => {
     dispatch({ type: 'CLOSE_TASK_FORM' });

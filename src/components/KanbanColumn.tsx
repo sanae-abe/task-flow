@@ -116,8 +116,8 @@ const KanbanColumn: React.FC<KanbanColumnProps> = React.memo(({ column, onTaskCl
   }, [column.tasks, taskFilter, sortOption]);
 
   const handleAddTaskClick = useCallback(() => {
-    openTaskForm();
-  }, [openTaskForm]);
+    openTaskForm(undefined, column.id);
+  }, [openTaskForm, column.id]);
   
   return (
     <Box sx={COLUMN_STYLES.container}>
