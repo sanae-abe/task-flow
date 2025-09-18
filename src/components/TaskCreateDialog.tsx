@@ -142,7 +142,7 @@ const TaskCreateDialog = memo(() => {
           required
         />
 
-        <div style={{ width:'100%', marginBottom: '16px' }}>
+        <div style={{ width: '100%', marginBottom: '16px' }}>
           <FormControl>
             <FormControl.Label>説明</FormControl.Label>
             <RichTextEditor
@@ -160,7 +160,7 @@ const TaskCreateDialog = memo(() => {
               <TextInput
                 type="date"
                 value={dueDate}
-                onChange={(e) => setDueDate(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDueDate(e.target.value)}
                 sx={{ width: '100%' }}
               />
             </div>
