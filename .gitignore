@@ -24,4 +24,4 @@ yarn-error.log*
 .tsbuildinfo
 
 # Claude Code
-.claude/
+.claude/.settings.local.json
