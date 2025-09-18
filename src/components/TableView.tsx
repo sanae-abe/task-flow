@@ -139,7 +139,7 @@ const TableView: React.FC = () => {
                     },
                   }}
                 >
-                  <StatusBadge size="medium" variant="neutral">
+                  <StatusBadge size="medium" variant="neutral" fontWeight="400">
                     {task.status}
                   </StatusBadge>
                 </Button>
