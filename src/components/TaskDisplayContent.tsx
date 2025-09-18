@@ -25,7 +25,7 @@ const TaskDisplayContent = React.memo<TaskDisplayContentProps>(({ task, columnNa
           emptyText="説明が設定されていません"
         >
           {task.description && (
-            <LinkifiedText sx={{ fontSize: 1, whiteSpace: 'pre-wrap' }}>
+            <LinkifiedText sx={{ fontSize: 1, whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}>
               {task.description}
             </LinkifiedText>
           )}
