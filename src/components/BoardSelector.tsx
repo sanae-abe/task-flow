@@ -1,7 +1,20 @@
 import { Button, Box, Text } from '@primer/react';
 import React, { memo } from 'react';
+import {
+  DndContext,
+  DragOverlay,
+  closestCenter,
+  defaultDropAnimationSideEffects,
+} from '@dnd-kit/core';
+import {
+  SortableContext,
+  horizontalListSortingStrategy,
+  useSortable,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
-import { useKanban } from '../contexts/KanbanContext';
+import { useBoard } from '../contexts/BoardContext';
+import { useBoardDragAndDrop } from '../hooks/useBoardDragAndDrop';
 import type { KanbanBoard } from '../types';
 
 // スタイル定義
@@ -31,7 +44,13 @@ const styles = {
   tabContainer: {
     height: '100%',
     display: 'flex',
-    alignItems: 'center'
+    alignItems: 'center',
+    transition: 'transform 200ms ease'
+  },
+  draggingTab: {
+    opacity: 0.5,
+    transform: 'rotate(5deg)',
+    zIndex: 1000
   },
   selectedTab: {
     px: 0,
@@ -52,9 +71,13 @@ const styles = {
     whiteSpace: 'nowrap',
     translate: '0 2px',
     flexShrink: 0,
+    cursor: 'grab',
     '&:hover': {
       backgroundColor: 'canvas.subtle',
       color: 'fg.default'
+    },
+    '&:active': {
+      cursor: 'grabbing'
     }
   },
   selectedButton: {
@@ -64,6 +87,20 @@ const styles = {
   unselectedButton: {
     fontWeight: '400',
     color: 'fg.muted'
+  },
+  overlayButton: {
+    fontSize: 1,
+    borderRadius: '6px',
+    px: 1,
+    py: 0,
+    whiteSpace: 'nowrap',
+    flexShrink: 0,
+    fontWeight: '600',
+    color: 'fg.default',
+    backgroundColor: 'canvas.default',
+    border: '1px solid',
+    borderColor: 'border.default',
+    boxShadow: 'shadow.medium'
   }
 } as const;
 
@@ -76,15 +113,34 @@ const EmptyBoardsMessage: React.FC = memo(() => (
   </Box>
 ));
 
-// ボードタブコンポーネント
-interface BoardTabProps {
+// ソート可能なボードタブコンポーネント
+interface SortableBoardTabProps {
   board: KanbanBoard;
   isSelected: boolean;
   onSelect: (boardId: string) => void;
 }
 
-const BoardTab: React.FC<BoardTabProps> = memo(({ board, isSelected, onSelect }) => {
-  const tabStyles = isSelected ? styles.selectedTab : styles.unselectedTab;
+const SortableBoardTab: React.FC<SortableBoardTabProps> = memo(({ board, isSelected, onSelect }) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: board.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  const tabStyles = {
+    ...styles.tabContainer,
+    ...(isSelected ? styles.selectedTab : styles.unselectedTab),
+    ...(isDragging ? styles.draggingTab : {})
+  };
+
   const buttonStyles = {
     ...styles.tabButton,
     ...(isSelected ? styles.selectedButton : styles.unselectedButton)
@@ -92,13 +148,12 @@ const BoardTab: React.FC<BoardTabProps> = memo(({ board, isSelected, onSelect })
 
   return (
     <Box
-      key={board.id}
-      sx={{
-        ...styles.tabContainer,
-        ...tabStyles
-      }}
-      role="tab"
+      ref={setNodeRef}
+      style={style}
+      sx={tabStyles}
       aria-selected={isSelected}
+      {...attributes}
+      {...listeners}
     >
       <Button
         variant="invisible"
@@ -113,25 +168,78 @@ const BoardTab: React.FC<BoardTabProps> = memo(({ board, isSelected, onSelect })
   );
 });
 
+// ドラッグオーバーレイ用ボードタブ
+interface DragOverlayBoardTabProps {
+  board: KanbanBoard;
+}
+
+const DragOverlayBoardTab: React.FC<DragOverlayBoardTabProps> = memo(({ board }) => (
+  <Box sx={{
+    ...styles.tabContainer,
+    ...styles.selectedTab
+  }}>
+    <Button
+      variant="invisible"
+      size="medium"
+      sx={styles.overlayButton}
+    >
+      {board.title}
+    </Button>
+  </Box>
+));
+
 // メインコンポーネント
 const BoardSelector: React.FC = () => {
-  const { state, setCurrentBoard } = useKanban();
+  const { state, setCurrentBoard, reorderBoards } = useBoard();
+
+  const { sensors, activeBoard, handleDragStart, handleDragEnd } = useBoardDragAndDrop({
+    boards: state.boards,
+    onReorderBoards: reorderBoards,
+  });
 
   if (state.boards.length === 0) {
     return <EmptyBoardsMessage />;
   }
 
   return (
-    <Box sx={styles.container} role="tablist" aria-label="ボード選択">
-      {state.boards.map((board) => (
-        <BoardTab
-          key={board.id}
-          board={board}
-          isSelected={state.currentBoard?.id === board.id}
-          onSelect={setCurrentBoard}
-        />
-      ))}
-    </Box>
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCenter}
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+    >
+      <SortableContext
+        items={state.boards.map(board => board.id)}
+        strategy={horizontalListSortingStrategy}
+      >
+        <Box sx={styles.container} role="tablist" aria-label="ボード選択">
+          {state.boards.map((board) => (
+            <SortableBoardTab
+              key={board.id}
+              board={board}
+              isSelected={state.currentBoard?.id === board.id}
+              onSelect={setCurrentBoard}
+            />
+          ))}
+        </Box>
+      </SortableContext>
+
+      <DragOverlay
+        dropAnimation={{
+          sideEffects: defaultDropAnimationSideEffects({
+            styles: {
+              active: {
+                opacity: '0.5',
+              },
+            },
+          }),
+        }}
+      >
+        {activeBoard ? (
+          <DragOverlayBoardTab board={activeBoard} />
+        ) : null}
+      </DragOverlay>
+    </DndContext>
   );
 };
 
