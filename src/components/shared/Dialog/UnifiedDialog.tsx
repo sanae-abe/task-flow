@@ -209,11 +209,25 @@ const UnifiedDialog = memo<UnifiedDialogProps>(({
   closeOnBackdropClick = true,
   closeOnEscape = true
 }) => {
+  const mouseDownTargetRef = React.useRef<EventTarget | null>(null);
+
+  const handleBackdropMouseDown = useCallback((event: React.MouseEvent) => {
+    if (event.target === event.currentTarget) {
+      mouseDownTargetRef.current = event.target;
+    }
+  }, []);
+
   const handleBackdropClick = useCallback((event: React.MouseEvent) => {
-    if (closeOnBackdropClick && event.target === event.currentTarget) {
+    if (closeOnBackdropClick && event.target === event.currentTarget && event.target === mouseDownTargetRef.current) {
       onClose();
     }
+    mouseDownTargetRef.current = null;
   }, [onClose, closeOnBackdropClick]);
+
+  const handleBackdropMouseUp = useCallback((event: React.MouseEvent) => {
+    // mouseupイベントでの閉じる動作を防止（何もしない）
+    event.stopPropagation();
+  }, []);
 
   const handleContainerClick = useCallback((event: React.MouseEvent) => {
     event.stopPropagation();
@@ -250,7 +264,9 @@ const UnifiedDialog = memo<UnifiedDialogProps>(({
       <BaseStyles>
         <Box
           sx={styles.backdrop}
+          onMouseDown={handleBackdropMouseDown}
           onClick={handleBackdropClick}
+          onMouseUp={handleBackdropMouseUp}
           role="dialog"
           aria-modal={variant !== 'inline' ? 'true' : undefined}
           aria-labelledby={titleId}
