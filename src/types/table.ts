@@ -86,7 +86,7 @@ export const DEFAULT_COLUMNS: TableColumn[] = [
   {
     id: 'completedAt',
     label: '完了日',
-    width: '120px',
+    width: '160px',
     visible: false,
     sortable: true,
     type: 'date',
@@ -103,7 +103,7 @@ export const DEFAULT_COLUMNS: TableColumn[] = [
   {
     id: 'createdAt',
     label: '作成日',
-    width: '120px',
+    width: '160px',
     visible: false,
     sortable: true,
     type: 'date',
@@ -112,7 +112,7 @@ export const DEFAULT_COLUMNS: TableColumn[] = [
   {
     id: 'updatedAt',
     label: '更新日',
-    width: '120px',
+    width: '160px',
     visible: false,
     sortable: true,
     type: 'date',

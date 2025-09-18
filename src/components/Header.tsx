@@ -11,7 +11,7 @@ import Logo from './Logo';
 
 // 定数定義
 const HEADER_HEIGHT = '67px';
-const MAX_CONTENT_WIDTH = '1440px';
+const MAX_CONTENT_WIDTH = '100%';
 const DIVIDER_HEIGHT = '24px';
 
 // スタイル定義オブジェクト
