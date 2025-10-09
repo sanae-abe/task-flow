@@ -46,6 +46,15 @@ const SubHeader: React.FC = () => {
     return Array.from(labelMap.values());
   }, [state.currentBoard]);
 
+  // カラム情報を位置指定のために準備
+  const currentColumns = React.useMemo(() => {
+    if (!state.currentBoard) {return [];}
+    return state.currentBoard.columns.map(column => ({
+      id: column.id,
+      title: column.title
+    }));
+  }, [state.currentBoard]);
+
   if (!state.currentBoard) {
     return null;
   }
@@ -195,6 +204,7 @@ const SubHeader: React.FC = () => {
         isOpen={dialogState.isCreatingColumn}
         onSave={handlers.createColumn}
         onCancel={handlers.cancelCreateColumn}
+        columns={currentColumns}
       />
 
       <DataImportDialog

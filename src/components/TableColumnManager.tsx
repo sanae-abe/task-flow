@@ -31,10 +31,8 @@ const TableColumnManager: React.FC = () => {
     resetToDefaults
   } = useTableColumns();
 
-
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [draggedColumnId, setDraggedColumnId] = useState<string | null>(null);
-
 
   const handleWidthChange = useCallback((columnId: string, newWidth: string) => {
     // 空文字列は許可
@@ -151,7 +149,6 @@ const TableColumnManager: React.FC = () => {
           </ActionList>
         </ActionMenu.Overlay>
       </ActionMenu>
-
 
       {/* 詳細設定ダイアログ */}
       {isSettingsOpen && (

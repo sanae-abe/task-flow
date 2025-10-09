@@ -158,6 +158,7 @@ export const TableColumnsProvider: React.FC<{ children: React.ReactNode }> = ({ 
     });
   }, []);
 
+
   // 設定をリセット
   const resetToDefaults = useCallback(() => {
     // localStorageもクリア

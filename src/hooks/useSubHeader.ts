@@ -18,8 +18,8 @@ type SubHeaderDialogState = {
 type SubHeaderHandlers = {
   readonly startCreateColumn: () => void;
   readonly startCreateBoard: () => void;
-  readonly editBoardTitle: (newTitle: string) => void;
-  readonly createColumn: (title: string) => void;
+  readonly editBoardTitle: (title: string) => void;
+  readonly createColumn: (title: string, insertIndex?: number) => void;
   readonly createBoard: (title: string) => void;
   readonly cancelCreateColumn: () => void;
   readonly cancelCreateBoard: () => void;
@@ -99,8 +99,8 @@ export const useSubHeader = (): UseSubHeaderReturn => {
         }
       },
       
-      createColumn: (title: string) => {
-        createColumn(title);
+      createColumn: (title: string, insertIndex?: number) => {
+        createColumn(title, insertIndex);
         updateDialogState({ isCreatingColumn: false });
       },
       

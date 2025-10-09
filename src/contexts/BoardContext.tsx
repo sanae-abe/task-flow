@@ -17,7 +17,7 @@ type BoardAction =
   | { type: 'SET_CURRENT_BOARD'; payload: string }
   | { type: 'UPDATE_BOARD'; payload: { boardId: string; updates: Partial<KanbanBoard> } }
   | { type: 'DELETE_BOARD'; payload: { boardId: string } }
-  | { type: 'CREATE_COLUMN'; payload: { boardId: string; title: string } }
+  | { type: 'CREATE_COLUMN'; payload: { boardId: string; title: string; insertIndex?: number } }
   | { type: 'DELETE_COLUMN'; payload: { columnId: string } }
   | { type: 'UPDATE_COLUMN'; payload: { columnId: string; updates: Partial<Column> } }
   | { type: 'IMPORT_BOARDS'; payload: { boards: KanbanBoard[]; replaceAll?: boolean } }
@@ -31,7 +31,7 @@ interface BoardContextType {
   setCurrentBoard: (boardId: string) => void;
   updateBoard: (boardId: string, updates: Partial<KanbanBoard>) => void;
   deleteBoard: (boardId: string) => void;
-  createColumn: (title: string) => void;
+  createColumn: (title: string, insertIndex?: number) => void;
   deleteColumn: (columnId: string) => void;
   updateColumn: (columnId: string, updates: Partial<Column>) => void;
   importBoards: (boards: KanbanBoard[], replaceAll?: boolean) => void;
@@ -174,9 +174,16 @@ const boardReducer = (state: BoardState, action: BoardAction): BoardState => {
         tasks: [],
       };
 
+      const currentColumns = [...state.currentBoard.columns];
+      const insertIndex = action.payload.insertIndex !== undefined
+        ? Math.max(0, Math.min(action.payload.insertIndex, currentColumns.length))
+        : currentColumns.length;
+
+      currentColumns.splice(insertIndex, 0, newColumn);
+
       const updatedBoard = updateBoardTimestamp({
         ...state.currentBoard,
-        columns: [...state.currentBoard.columns, newColumn],
+        columns: currentColumns,
       });
 
       return {
@@ -568,12 +575,12 @@ const authenticateUser = async (email, password) => {
     }
   }, [state.boards, notify]);
 
-  const createColumn = useCallback((title: string) => {
+  const createColumn = useCallback((title: string, insertIndex?: number) => {
     if (!state.currentBoard) {
       notify.error('ボードが選択されていません');
       return;
     }
-    dispatch({ type: 'CREATE_COLUMN', payload: { boardId: state.currentBoard.id, title } });
+    dispatch({ type: 'CREATE_COLUMN', payload: { boardId: state.currentBoard.id, title, insertIndex } });
     notify.success(`カラム「${title}」を作成しました`);
   }, [state.currentBoard, notify]);
 

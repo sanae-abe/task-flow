@@ -38,7 +38,7 @@ interface KanbanContextType {
   toggleSubTask: (taskId: string, subTaskId: string) => void;
   deleteSubTask: (taskId: string, subTaskId: string) => void;
   // Column関連のメソッド
-  createColumn: (title: string) => void;
+  createColumn: (title: string, insertIndex?: number) => void;
   updateColumn: (columnId: string, updates: Partial<Column>) => void;
   deleteColumn: (columnId: string) => void;
   // Label関連のメソッド
