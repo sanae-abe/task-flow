@@ -253,7 +253,7 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
         onClose={onClose}
         title="設定"
         variant="modal"
-        size="large"
+        size="xl"
       >
         <Box sx={{ display: 'flex', height: '500px' }}>
           {/* 左サイドメニュー */}

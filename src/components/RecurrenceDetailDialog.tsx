@@ -185,7 +185,6 @@ const RecurrenceDetailDialog: React.FC<RecurrenceDetailDialogProps> = ({
       isOpen={isOpen}
       title="繰り返し設定の詳細"
       onClose={onClose}
-      size="small"
       actions={actions}
     >
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>

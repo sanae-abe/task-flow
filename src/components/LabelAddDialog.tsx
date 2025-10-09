@@ -130,7 +130,6 @@ const LabelAddDialog: React.FC<LabelAddDialogProps> = ({
       isOpen={isOpen}
       title="新しいラベルを追加"
       onClose={handleClose}
-      size="small"
       actions={actions}
     >
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mb: 3 }}>

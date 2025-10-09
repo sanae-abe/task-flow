@@ -73,7 +73,6 @@ const TimeSelectorDialog: React.FC<TimeSelectorDialogProps> = ({
       isOpen={isOpen}
       title="時刻設定"
       onClose={handleCancel}
-      size="small"
       actions={actions}
     >
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mb: 4 }}>

@@ -104,7 +104,6 @@ export const DataImportDialog = memo<DataImportDialogProps>(({ isOpen, onClose }
       isOpen={isOpen}
       title="データインポート"
       onClose={handleDialogClose}
-      size="small"
       ariaLabelledBy="import-dialog-title"
     >
       {/* インポートモード選択 */}

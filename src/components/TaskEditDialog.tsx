@@ -71,7 +71,7 @@ const TaskEditDialog = memo<TaskEditDialogProps>(({
         isOpen={isOpen}
         title="タスクを編集"
         onClose={onCancel}
-        size="large"
+        size="xl"
         ariaLabelledBy="task-edit-dialog-title"
       >
         <TaskEditForm

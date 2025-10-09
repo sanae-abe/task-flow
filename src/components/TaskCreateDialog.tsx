@@ -130,7 +130,7 @@ const TaskCreateDialog = memo(() => {
       title="新しいタスクを作成"
       onClose={closeTaskForm}
       ariaLabelledBy="task-create-dialog-title"
-      size="large"
+      size="xl"
       actions={actions}
     >
       <div
