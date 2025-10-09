@@ -76,7 +76,7 @@ const ColumnCreateDialog = memo<ColumnCreateDialogProps>(({
           autoFocus
           required
         />
-        <div style={{ marginBottom: '8px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
           <FormControl.Label htmlFor="insert-position-select">
             挿入位置
           </FormControl.Label>

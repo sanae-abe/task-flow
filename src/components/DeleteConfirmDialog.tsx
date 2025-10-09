@@ -43,7 +43,7 @@ const DeleteConfirmDialog: React.FC<DeleteConfirmDialogProps> = ({
       variant="modal"
       actions={actions}
     >
-      <Text sx={{ mb: 3 }}>
+      <Text>
         「{taskTitle}」を削除しますか？
       </Text>
       <Text sx={{ fontSize: 1, color: 'fg.muted' }}>

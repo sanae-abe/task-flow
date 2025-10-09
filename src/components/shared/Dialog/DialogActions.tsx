@@ -29,6 +29,7 @@ const DialogActions = memo<DialogActionsProps>(({ actions, layout = 'standard' }
           display: 'flex',
           justifyContent: 'space-between',
           gap: 2,
+          width: '100%'
         }}
       >
         <Box sx={{ display: 'flex', gap: 2 }}>

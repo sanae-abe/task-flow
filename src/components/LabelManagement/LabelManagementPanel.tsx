@@ -126,7 +126,7 @@ const LabelManagementPanel: React.FC = () => {
           leadingVisual={PlusIcon}
           onClick={handleCreate}
         >
-          最初のラベルを作成
+          ラベルを作成
         </Button>
       </div>
 
@@ -158,7 +158,7 @@ const LabelManagementPanel: React.FC = () => {
           {/* テーブルヘッダー */}
           <Box sx={{
             display: 'grid',
-            gridTemplateColumns: '1fr 80px 100px',
+            gridTemplateColumns: '1fr 80px 80px',
             gap: 2,
             p: 2,
             bg: 'canvas.subtle',
@@ -180,7 +180,7 @@ const LabelManagementPanel: React.FC = () => {
                 key={label.id}
                 sx={{
                   display: 'grid',
-                  gridTemplateColumns: '1fr 80px 100px',
+                  gridTemplateColumns: '1fr 80px 80px',
                   gap: 2,
                   p: 2,
                   alignItems: 'center',

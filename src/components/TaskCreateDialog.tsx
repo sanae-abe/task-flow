@@ -186,6 +186,12 @@ const TaskCreateDialog = memo(() => {
                 disabled={!dueDate}
               />
             </div>
+
+            {!dueDate && (
+              <div style={{ marginTop: '8px', fontSize: '12px', color: 'fg.muted' }}>
+                ※期限を設定すると時刻設定と繰り返し設定が有効になります
+              </div>
+            )}
           </FormControl>
         </div>
 

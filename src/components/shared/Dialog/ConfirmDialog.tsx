@@ -49,7 +49,6 @@ const ConfirmDialog = memo<ConfirmDialogProps>(({
       {message && (
         <Text sx={{ 
           color: 'fg.muted', 
-          mb: 3, 
           display: 'block', 
           lineHeight: 1.5 
         }}>
