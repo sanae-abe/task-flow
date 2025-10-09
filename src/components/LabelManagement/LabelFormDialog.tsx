@@ -191,7 +191,7 @@ const LabelFormDialog: React.FC<LabelFormDialogProps> = ({
         </Box>
 
         {/* ラベル名入力 */}
-        <FormControl required>
+        <FormControl>
           <FormControl.Label>ラベル名</FormControl.Label>
           <TextInput
             value={formData.name}

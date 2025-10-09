@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useMemo } from 'react';
-import { Box, Button, Text, IconButton } from '@primer/react';
-import { PlusIcon, PencilIcon, TrashIcon } from '@primer/octicons-react';
+import { Button, Box, Text, IconButton } from '@primer/react';
+import { PencilIcon, TrashIcon, TagIcon, PlusIcon } from '@primer/octicons-react';
 
 import type { Label } from '../../types';
 import { useLabel } from '../../contexts/LabelContext';
@@ -107,33 +107,28 @@ const LabelManagementPanel: React.FC = () => {
   }, [deleteDialog.label, deleteLabel, handleCloseDeleteDialog]);
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, p: 3 }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
       {/* ヘッダー */}
-      <Box sx={{
+      <div style={{
         display: 'flex',
-        justifyContent: 'space-between',
         alignItems: 'center',
-        borderBottom: '1px solid',
-        borderColor: 'border.muted',
-        pb: 3
+        justifyContent: 'space-between',
+        gap: '8px'
       }}>
-        <Box>
-          <Text sx={{ fontSize: 1, fontWeight: 'bold', color: 'fg.default' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <TagIcon size={20} />
+          <Text sx={{ fontSize: 2, fontWeight: 'bold' }}>
             ラベル管理
           </Text>
-          <Text sx={{ fontSize: 0, color: 'fg.muted', mt: 1 }}>
-            プロジェクトで使用するラベルを作成・編集・削除できます
-          </Text>
-        </Box>
+        </div>
         <Button
           variant="primary"
-          size="small"
           leadingVisual={PlusIcon}
           onClick={handleCreate}
         >
-          新しいラベル
+          最初のラベルを作成
         </Button>
-      </Box>
+      </div>
 
       {/* ラベル一覧 */}
       {labelsWithUsage.length === 0 ? (
@@ -142,91 +137,103 @@ const LabelManagementPanel: React.FC = () => {
           py: 6,
           border: '1px dashed',
           borderColor: 'border.muted',
-          borderRadius: 2
+          borderRadius: 2,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 2,
+          justifyContent: 'center',
+          alignItems: 'center'
         }}>
-          <Text sx={{ color: 'fg.muted', mb: 3, display: 'block' }}>
+          <Text sx={{ color: 'fg.muted' }}>
             まだラベルがありません
           </Text>
-          <Button
-            variant="primary"
-            leadingVisual={PlusIcon}
-            onClick={handleCreate}
-          >
-            最初のラベルを作成
-          </Button>
         </Box>
       ) : (
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+        <Box sx={{
+          border: '1px solid',
+          borderColor: 'border.default',
+          borderRadius: 2,
+          overflow: 'hidden'
+        }}>
+          {/* テーブルヘッダー */}
           <Box sx={{
             display: 'grid',
-            gridTemplateColumns: '1fr auto auto auto',
+            gridTemplateColumns: '1fr 80px 100px',
             gap: 2,
-            alignItems: 'center',
-            px: 3,
-            py: 2,
-            fontSize: 0,
-            fontWeight: 'bold',
-            color: 'fg.muted',
+            p: 2,
+            bg: 'canvas.subtle',
             borderBottom: '1px solid',
-            borderColor: 'border.muted'
-          }}>
+            borderColor: 'border.default',
+            fontSize: 1,
+            fontWeight: 'bold',
+            color: 'fg.muted'
+          }}> 
             <Text>ラベル</Text>
             <Text sx={{ textAlign: 'center' }}>使用数</Text>
-            <Text sx={{ textAlign: 'center' }}>編集</Text>
-            <Text sx={{ textAlign: 'center' }}>削除</Text>
+            <Text sx={{ textAlign: 'center' }}>操作</Text>
           </Box>
 
-          {labelsWithUsage.map((label) => (
-            <Box
-              key={label.id}
-              sx={{
-                display: 'grid',
-                gridTemplateColumns: '1fr auto auto auto',
-                gap: 2,
-                alignItems: 'center',
-                px: 3,
-                py: 2,
-                border: '1px solid',
-                borderColor: 'border.default',
-                borderRadius: 2,
-                '&:hover': {
-                  bg: 'canvas.subtle'
-                }
-              }}
-            >
-              {/* ラベル表示 */}
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <LabelChip label={label} />
-              </Box>
+          {/* テーブルボディ */}
+          <Box sx={{ maxHeight: '400px', overflow: 'auto' }}>
+            {labelsWithUsage.map((label, index) => (
+              <Box
+                key={label.id}
+                sx={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 80px 100px',
+                  gap: 2,
+                  p: 2,
+                  alignItems: 'center',
+                  borderBottom: index < labelsWithUsage.length - 1 ? '1px solid' : 'none',
+                  borderColor: 'border.muted',
+                  '&:hover': {
+                    bg: 'canvas.subtle',
+                    '& .label-actions': {
+                      opacity: 1
+                    }
+                  }
+                }}
+              >
+                {/* ラベル表示 */}
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <LabelChip label={label} />
+                </Box>
 
-              {/* 使用数 */}
-              <Box sx={{ textAlign: 'center', minWidth: '60px' }}>
-                <CounterLabel count={label.usageCount} />
-              </Box>
+                {/* 使用数 */}
+                <Box sx={{ textAlign: 'center' }}>
+                  <CounterLabel count={label.usageCount} />
+                </Box>
 
-              {/* 編集ボタン */}
-              <Box sx={{ textAlign: 'center' }}>
-                <IconButton
-                  icon={PencilIcon}
-                  aria-label={`ラベル「${label.name}」を編集`}
-                  size="small"
-                  variant="invisible"
-                  onClick={() => handleEdit(label)}
-                />
+                {/* 編集ボタン */}
+                <Box
+                  className="label-actions"
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    gap: 1,
+                    opacity: 0,
+                    transition: 'opacity 0.2s ease'
+                  }}
+                >
+                  <IconButton
+                    icon={PencilIcon}
+                    aria-label={`ラベル「${label.name}」を編集`}
+                    size="small"
+                    variant="invisible"
+                    onClick={() => handleEdit(label)}
+                  />
+                  {/* 削除ボタン */}
+                  <IconButton
+                    icon={TrashIcon}
+                    aria-label={`ラベル「${label.name}」を削除`}
+                    size="small"
+                    variant="invisible"
+                    onClick={() => handleDelete(label)}
+                  />
+                </Box>
               </Box>
-
-              {/* 削除ボタン */}
-              <Box sx={{ textAlign: 'center' }}>
-                <IconButton
-                  icon={TrashIcon}
-                  aria-label={`ラベル「${label.name}」を削除`}
-                  size="small"
-                  variant="invisible"
-                  onClick={() => handleDelete(label)}
-                />
-              </Box>
-            </Box>
-          ))}
+            ))}
+          </Box>
         </Box>
       )}
 

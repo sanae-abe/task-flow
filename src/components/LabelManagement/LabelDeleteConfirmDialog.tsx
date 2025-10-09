@@ -75,7 +75,7 @@ const LabelDeleteConfirmDialog: React.FC<LabelDeleteConfirmDialogProps> = ({
           alignItems: 'center',
           gap: 2,
           p: 3,
-          bg: 'canvas.subtle',
+          bg: 'white',
           borderRadius: 2,
           border: '1px solid',
           borderColor: 'border.default'

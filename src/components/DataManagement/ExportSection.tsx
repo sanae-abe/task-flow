@@ -51,21 +51,21 @@ export const ExportSection = memo<ExportSectionProps>(({
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
       {/* セクション概要 */}
-      <Box sx={{
+      <div style={{
         display: 'flex',
         flexDirection: 'column',
-        gap: 2
+        gap: '8px'
       }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <DatabaseIcon size={20} />
           <Text sx={{ fontSize: 2, fontWeight: 'bold' }}>
             データ管理
           </Text>
-        </Box>
+        </div>
         <Text sx={{ fontSize: 1, color: 'fg.muted', pb: 2 }}>
           タスク管理データをJSON形式でエクスポートできます。バックアップや他の環境への移行にご利用ください。
         </Text>
-      </Box>
+      </div>
 
       {/* 全データエクスポート - 折りたたみ式 */}
       <CollapsibleSection
