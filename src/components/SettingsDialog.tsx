@@ -10,6 +10,7 @@ import ColorSelector from './ColorSelector';
 import LabelChip from './LabelChip';
 import { DataImportDialog } from './DataImportDialog';
 import { LabelManagementPanel } from './LabelManagement';
+import { DataManagementPanel } from './DataManagement';
 
 interface SettingsDialogProps {
   isOpen: boolean;
@@ -25,6 +26,9 @@ interface LabelFormData {
 
 // フィーチャーフラグ - 新しいラベル管理UIの使用
 const USE_NEW_LABEL_MANAGEMENT = true;
+
+// フィーチャーフラグ - 新しいデータ管理UIの使用
+const USE_NEW_DATA_MANAGEMENT = true;
 
 const SettingsDialog: React.FC<SettingsDialogProps> = ({
   isOpen,
@@ -298,17 +302,26 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
                 renderLabelsTab()
               )
             ) : (
-              renderDataTab()
+              USE_NEW_DATA_MANAGEMENT ? (
+                <DataManagementPanel
+                  onExportAll={onExportData}
+                  onExportCurrent={onExportBoard}
+                />
+              ) : (
+                renderDataTab()
+              )
             )}
           </Box>
         </Box>
       </UnifiedDialog>
 
-      {/* インポートダイアログ */}
-      <DataImportDialog
-        isOpen={showImportDialog}
-        onClose={handleCloseImportDialog}
-      />
+      {/* インポートダイアログ（旧UIのみで使用） */}
+      {!USE_NEW_DATA_MANAGEMENT && (
+        <DataImportDialog
+          isOpen={showImportDialog}
+          onClose={handleCloseImportDialog}
+        />
+      )}
     </>
   );
 };
