@@ -273,7 +273,7 @@ const boardReducer = (state: BoardState, action: BoardAction): BoardState => {
     default:
       return state;
   }
-};;
+};
 
 interface BoardProviderProps {
   children: ReactNode;

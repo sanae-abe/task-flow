@@ -157,7 +157,7 @@ const uiReducer = (state: UIState, action: UIAction): UIState => {
     default:
       return state;
   }
-};;
+};
 
 interface UIProviderProps {
   children: ReactNode;
@@ -215,7 +215,7 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
 
   const openTaskForm = useCallback((defaultDate?: Date, defaultStatus?: string) => {
     dispatch({ type: 'OPEN_TASK_FORM', payload: { defaultDate, defaultStatus } });
-  }, []);;
+  }, []);
 
   const closeTaskForm = useCallback(() => {
     dispatch({ type: 'CLOSE_TASK_FORM' });
