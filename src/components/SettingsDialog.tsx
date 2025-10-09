@@ -1,11 +1,11 @@
 import { GearIcon, TagIcon, DownloadIcon, UploadIcon, PlusIcon, TrashIcon, PencilIcon } from '@primer/octicons-react';
-import { Box, Button, Text, IconButton, TextInput, FormControl } from '@primer/react';
+import { Box, Button, Text, IconButton, TextInput, FormControl, NavList } from '@primer/react';
 import React, { useState, useCallback } from 'react';
 
 import { useLabel } from '../contexts/LabelContext';
 import type { Label } from '../types';
 
-import CommonDialog from './CommonDialog';
+import UnifiedDialog from './shared/Dialog/UnifiedDialog';
 import ColorSelector from './ColorSelector';
 import LabelChip from './LabelChip';
 import { DataImportDialog } from './DataImportDialog';
@@ -248,45 +248,41 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
 
   return (
     <>
-      <CommonDialog
+      <UnifiedDialog
         isOpen={isOpen}
         onClose={onClose}
         title="設定"
+        variant="modal"
         size="large"
       >
         <Box sx={{ display: 'flex', height: '500px' }}>
           {/* 左サイドメニュー */}
           <Box sx={{
-            width: '200px',
+            width: '150px',
             borderRight: '1px solid',
             borderColor: 'border.default',
-            pr: 3,
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 1
+            pr: 3
           }}>
-            <Button
-              variant={activeTab === 'labels' ? 'primary' : 'invisible'}
-              leadingVisual={TagIcon}
-              onClick={() => setActiveTab('labels')}
-              sx={{
-                justifyContent: 'flex-start',
-                width: '100%'
-              }}
-            >
-              ラベル管理
-            </Button>
-            <Button
-              variant={activeTab === 'data' ? 'primary' : 'invisible'}
-              leadingVisual={GearIcon}
-              onClick={() => setActiveTab('data')}
-              sx={{
-                justifyContent: 'flex-start',
-                width: '100%'
-              }}
-            >
-              データ管理
-            </Button>
+            <NavList>
+              <NavList.Item
+                aria-current={activeTab === 'labels' ? 'page' : undefined}
+                onClick={() => setActiveTab('labels')}
+              >
+                <NavList.LeadingVisual>
+                  <TagIcon />
+                </NavList.LeadingVisual>
+                ラベル管理
+              </NavList.Item>
+              <NavList.Item
+                aria-current={activeTab === 'data' ? 'page' : undefined}
+                onClick={() => setActiveTab('data')}
+              >
+                <NavList.LeadingVisual>
+                  <GearIcon />
+                </NavList.LeadingVisual>
+                データ管理
+              </NavList.Item>
+            </NavList>
           </Box>
 
           {/* メインコンテンツ */}
@@ -294,7 +290,7 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
             {activeTab === 'labels' ? renderLabelsTab() : renderDataTab()}
           </Box>
         </Box>
-      </CommonDialog>
+      </UnifiedDialog>
 
       {/* インポートダイアログ */}
       <DataImportDialog
