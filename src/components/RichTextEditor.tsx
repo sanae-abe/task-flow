@@ -149,6 +149,28 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
   }, [selectedText, savedRange, handleInput]);
 
 
+  const handlePaste = useCallback((e: React.ClipboardEvent) => {
+    e.preventDefault();
+
+    // クリップボードからプレーンテキストを取得
+    const plainText = e.clipboardData.getData('text/plain');
+
+    if (plainText) {
+      // HTMLエスケープして安全にする
+      const escapedText = plainText
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;')
+        .replace(/\n/g, '<br>'); // 改行をBRタグに変換
+
+      // プレーンテキストとして挿入
+      document.execCommand('insertHTML', false, escapedText);
+      handleInput();
+    }
+  }, [handleInput]);
+
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     // コードブロック内でのEnterキーの処理
     const target = e.target as HTMLElement;
@@ -312,6 +334,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           aria-describedby={disabled ? undefined : "rich-editor-help"}
           onInput={handleInput}
           onKeyDown={handleKeyDown}
+          onPaste={handlePaste}
           onFocus={handleFocus}
           onBlur={handleBlur}
           suppressContentEditableWarning
@@ -401,7 +424,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
               overflow: 'hidden',
             }}
           >
-            リッチテキストエディタ。Ctrl+Bで太字、Ctrl+Iで斜体、Ctrl+Uで下線、Ctrl+Kでリンク、Ctrl+`でコード、Ctrl+Shift+`でコードブロックを挿入できます。
+            リッチテキストエディタ。Ctrl+Bで太字、Ctrl+Iで斜体、Ctrl+Uで下線、Ctrl+Kでリンク、Ctrl+`でコード、Ctrl+Shift+`でコードブロックを挿入できます。ペーストはプレーンテキストとして貼り付けられます。
           </Text>
         )}
       </Box>
