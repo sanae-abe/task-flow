@@ -14,18 +14,46 @@ interface LinkifiedTextProps {
  */
 const LinkifiedText: React.FC<LinkifiedTextProps> = ({ children, sx }) => {
   const processedContent = useMemo(() => {
-    // HTMLタグが含まれている場合はそのまま表示、プレーンテキストの場合はURLを自動リンク化
+    // URL自動リンク化を実行する関数
+    const linkifyUrls = (text: string) => text.replace(
+      /(https?:\/\/[^\s]+|www\.[^\s]+|[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}[^\s]*)/g,
+      (url) => {
+        const href = url.startsWith('http') ? url : `https://${url}`;
+        return `<a href="${href}" target="_blank" rel="noopener noreferrer">${url}</a>`;
+      }
+    );
+
+    // HTMLタグが含まれているかチェック
     const isHtml = /<[^>]+>/.test(children);
 
-    let content = isHtml
-      ? children
-      : children.replace(
-          /(https?:\/\/[^\s]+|www\.[^\s]+|[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}[^\s]*)/g,
-          (url) => {
-            const href = url.startsWith('http') ? url : `https://${url}`;
-            return `<a href="${href}" target="_blank" rel="noopener noreferrer">${url}</a>`;
-          }
-        );
+    let content: string;
+
+    if (isHtml) {
+      // HTMLコンテンツの場合、既存のリンクタグ以外の部分でURL自動リンク化を実行
+      const linkMap = new Map<string, string>();
+
+      content = children.replace(
+        // 既存のリンクタグを一時的に保護
+        /<a\s[^>]*href[^>]*>.*?<\/a>/gi,
+        (match) => {
+          // リンクタグをプレースホルダーに置換
+          const placeholder = `__LINK_PLACEHOLDER_${Math.random().toString(36).substr(2, 9)}__`;
+          linkMap.set(placeholder, match);
+          return placeholder;
+        }
+      );
+
+      // リンクタグ以外の部分でURL自動リンク化
+      content = linkifyUrls(content);
+
+      // プレースホルダーを元のリンクタグに戻す
+      linkMap.forEach((originalLink, placeholder) => {
+        content = content.replace(placeholder, originalLink);
+      });
+    } else {
+      // プレーンテキストの場合はそのままURL自動リンク化
+      content = linkifyUrls(children);
+    }
 
     // HTML内容を正規化：不要な<pre>タグで囲まれた改行を修正
     if (isHtml) {
@@ -77,7 +105,7 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({ children, sx }) => {
         'href', 'target', 'rel', 'class', 'contenteditable', 'style', 'spellcheck'
       ],
       // リンクの検証：httpまたはhttpsのみ許可
-      ALLOWED_URI_REGEXP: /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|sms|cid|xmpp):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i,
+      ALLOWED_URI_REGEXP: /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|sms|cid|xmpp):|[^a-z]|[a-z+.-]+(?:[^a-z+.-:]|$))/i,
       // 悪意のあるプロトコルをブロック
       FORBID_ATTR: ['onerror', 'onload', 'onclick'],
       // DOM操作を防ぐ
@@ -95,45 +123,22 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({ children, sx }) => {
   return (
     <Text
       sx={{
-        ...sx,
-        '& p': {
-          margin: '0 0 8px 0',
-          lineHeight: 1.5,
-          '&:last-child': {
-            margin: 0,
-          },
-          '&:empty': {
-            display: 'none',
-          },
-        },
-        '& br': {
-          lineHeight: 1.5,
-        },
-        '& strong': {
-          fontWeight: 'bold',
-        },
-        '& em': {
-          fontStyle: 'italic',
-        },
-        '& u': {
-          textDecoration: 'underline',
-        },
         '& a': {
           color: 'accent.fg',
-          textDecoration: 'underline',
+          textDecoration: 'none',
           '&:hover': {
-            color: 'accent.emphasis',
+            textDecoration: 'underline',
           },
         },
         '& code': {
-          backgroundColor: '#e8f5e8',
-          color: '#e01e5a',
+          backgroundColor: 'canvas.subtle',
+          color: 'accent.fg',
           padding: '2px 4px',
           borderRadius: '4px',
-          fontFamily: "'Monaco', 'Menlo', 'Consolas', monospace",
+          fontFamily: 'mono',
           fontSize: '0.875em',
-          border: '1px solid #d1d9e0',
-          fontWeight: '500',
+          border: '1px solid',
+          borderColor: 'border.default',
         },
         '& ul, & ol': {
           margin: '8px 0',
@@ -142,8 +147,35 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({ children, sx }) => {
         '& li': {
           margin: '4px 0',
         },
+
+        '& pre': {
+          backgroundColor: 'canvas.subtle',
+          color: 'fg.default',
+          padding: '8px',
+          borderRadius: '6px',
+          fontFamily: 'mono',
+          fontSize: '13px',
+          lineHeight: '1.45',
+          overflowX: 'auto',
+          border: '1px solid',
+          borderColor: 'border.default',
+          margin: '0 0 8px',
+          '& code': {
+            backgroundColor: 'transparent',
+            color: 'inherit',
+            padding: 0,
+            border: 'none',
+          },
+        },
+        '& p': {
+          margin: '0 0 8px',
+          '&:last-child': {
+            margin: 0,
+          },
+        },
+        ...sx,
       }}
-      dangerouslySetInnerHTML={{ __html: processedContent }} // サニタイズ済みのため安全
+      dangerouslySetInnerHTML={{ __html: processedContent }}
     />
   );
 };

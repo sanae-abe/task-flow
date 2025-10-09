@@ -373,9 +373,10 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
             },
             '& a': {
               color: 'accent.fg',
-              textDecoration: 'underline',
+              textDecoration: 'none',
               '&:hover': {
                 color: 'accent.emphasis',
+                textDecoration: 'underline',
               },
             },
             '& pre[contenteditable="true"]': {
