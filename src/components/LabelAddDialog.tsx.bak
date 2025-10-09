@@ -3,11 +3,11 @@ import { useState, useCallback, useMemo } from 'react';
 
 import { useKanban } from '../contexts/KanbanContext';
 import type { Label } from '../types';
-import type { DialogAction } from '../types/unified-dialog';
 import { createLabel } from '../utils/labels';
 import { getLabelColors } from '../utils/labelHelpers';
 
 import UnifiedDialog from './shared/Dialog/UnifiedDialog';
+import { DialogActions } from './CommonDialog';
 import ColorSelector from './ColorSelector';
 
 // 定数
@@ -110,28 +110,22 @@ const LabelAddDialog: React.FC<LabelAddDialogProps> = ({
     }
   }, [isValid, isLoading, handleCreate]);
 
-  const actions: DialogAction[] = useMemo(() => [
-    {
-      label: 'キャンセル',
-      onClick: handleClose,
-      variant: 'default'
-    },
-    {
-      label: '作成',
-      onClick: handleCreate,
-      variant: 'primary',
-      disabled: !isValid || isLoading
-    }
-  ], [handleClose, handleCreate, isValid, isLoading]);
-
   return (
     <UnifiedDialog
       variant="modal"
-      isOpen={isOpen}
+      hideFooter={true}      isOpen={isOpen}
       title="新しいラベルを追加"
       onClose={handleClose}
       size="small"
-      actions={actions}
+      actions={
+        <DialogActions
+          onCancel={handleClose}
+          onConfirm={handleCreate}
+          confirmText="作成"
+          cancelText="キャンセル"
+          isConfirmDisabled={!isValid || isLoading}
+        />
+      }
     >
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mb: 3 }}>
         {/* ラベル名入力 */}

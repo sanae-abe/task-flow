@@ -184,6 +184,8 @@ export const DialogActions = memo<DialogActionsProps>(({
   </Box>
 ));
 
+DialogActions.displayName = 'DialogActions';
+
 const CommonDialog = memo<CommonDialogProps>(({
   isOpen,
   title,

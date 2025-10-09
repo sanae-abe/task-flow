@@ -1,11 +1,11 @@
 import { TextInput, FormControl } from '@primer/react';
-import React, { useState, useEffect, useCallback, memo, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, memo } from 'react';
 
 import type { Label as LabelType, FileAttachment, RecurrenceConfig } from '../types';
-import type { DialogAction } from '../types/unified-dialog';
 import { useKanban } from '../contexts/KanbanContext';
 
 import UnifiedDialog from './shared/Dialog/UnifiedDialog';
+import { DialogActions } from './CommonDialog';
 import FileUploader from './FileUploader';
 import FormField from './FormField';
 import LabelSelector from './LabelSelector';
@@ -105,20 +105,6 @@ const TaskCreateDialog = memo(() => {
 
   const isFormValid = title.trim().length > 0;
 
-  const actions: DialogAction[] = useMemo(() => [
-    {
-      label: 'キャンセル',
-      onClick: closeTaskForm,
-      variant: 'default'
-    },
-    {
-      label: '追加',
-      onClick: handleSave,
-      variant: 'primary',
-      disabled: !isFormValid
-    }
-  ], [closeTaskForm, handleSave, isFormValid]);
-
   if (!state.isTaskFormOpen || !state.currentBoard) {
     return null;
   }
@@ -126,12 +112,19 @@ const TaskCreateDialog = memo(() => {
   return (
     <UnifiedDialog
       variant="modal"
-      isOpen={state.isTaskFormOpen}
+      hideFooter={true}      isOpen={state.isTaskFormOpen}
       title="新しいタスクを作成"
       onClose={closeTaskForm}
       ariaLabelledBy="task-create-dialog-title"
       size="large"
-      actions={actions}
+      actions={
+        <DialogActions
+          onCancel={closeTaskForm}
+          onConfirm={handleSave}
+          confirmText="追加"
+          isConfirmDisabled={!isFormValid}
+        />
+      }
     >
       <div
         style={{

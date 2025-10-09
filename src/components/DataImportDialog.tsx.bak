@@ -98,14 +98,50 @@ export const DataImportDialog = memo<DataImportDialogProps>(({ isOpen, onClose }
   }, [selectedFile, processFile]);
 
   return (
-    <UnifiedDialog
-      variant="modal"
-      hideFooter
+    <CommonDialogCompat
       isOpen={isOpen}
       title="データインポート"
       onClose={handleDialogClose}
       size="small"
       ariaLabelledBy="import-dialog-title"
+      actions={
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+          {/* メッセージ表示 */}
+          {message && (
+            <Flash variant={message.type === 'error' ? 'danger' : 'success'}>
+              {message.text}
+            </Flash>
+          )}
+          
+          {/* アクションボタン */}
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+            <Button onClick={handleDialogClose} disabled={isLoading}>
+              キャンセル
+            </Button>
+            {!selectedFile ? (
+              <Button
+                variant="primary"
+                onClick={dropZoneProps.handleFileSelect}
+                disabled={isLoading}
+                leadingVisual={FileIcon}
+                sx={{ color: 'fg.onEmphasis !important' }}
+              >
+                JSONファイルを選択
+              </Button>
+            ) : (
+              <Button
+                variant="primary"
+                onClick={handleUpload}
+                disabled={isLoading}
+                leadingVisual={UploadIcon}
+                sx={{ color: 'fg.onEmphasis !important' }}
+              >
+                {isLoading ? 'インポート中...' : 'インポート実行'}
+              </Button>
+            )}
+          </Box>
+        </Box>
+      }
     >
       {/* インポートモード選択 */}
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mb: 3 }}>
@@ -139,41 +175,6 @@ export const DataImportDialog = memo<DataImportDialogProps>(({ isOpen, onClose }
         </Box>
       )}
       
-      {/* メッセージ表示 */}
-      {message && (
-        <Flash variant={message.type === 'error' ? 'danger' : 'success'} sx={{ mb: 3 }}>
-          {message.text}
-        </Flash>
-      )}
-
-      {/* アクションボタン */}
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, mt: 3 }}>
-        <Button onClick={handleDialogClose} disabled={isLoading}>
-          キャンセル
-        </Button>
-        {!selectedFile ? (
-          <Button
-            variant="primary"
-            onClick={dropZoneProps.handleFileSelect}
-            disabled={isLoading}
-            leadingVisual={FileIcon}
-            sx={{ color: 'fg.onEmphasis !important' }}
-          >
-            JSONファイルを選択
-          </Button>
-        ) : (
-          <Button
-            variant="primary"
-            onClick={handleUpload}
-            disabled={isLoading}
-            leadingVisual={UploadIcon}
-            sx={{ color: 'fg.onEmphasis !important' }}
-          >
-            {isLoading ? 'インポート中...' : 'インポート実行'}
-          </Button>
-        )}
-      </Box>
-
       {/* 隠しファイル入力 */}
       <input
         ref={dropZoneProps.fileInputRef}
@@ -183,7 +184,7 @@ export const DataImportDialog = memo<DataImportDialogProps>(({ isOpen, onClose }
         style={{ display: 'none' }}
         disabled={isLoading}
       />
-    </UnifiedDialog>
+    </CommonDialogCompat>
   );
 });
 

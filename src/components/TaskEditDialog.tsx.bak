@@ -65,9 +65,7 @@ const TaskEditDialog = memo<TaskEditDialogProps>(({
 
   return (
     <>
-      <UnifiedDialog
-        variant="modal"
-        hideFooter
+      <CommonDialogCompat
         isOpen={isOpen}
         title="タスクを編集"
         onClose={onCancel}
@@ -103,7 +101,7 @@ const TaskEditDialog = memo<TaskEditDialogProps>(({
           onCancel={onCancel}
           isValid={isValid}
         />
-      </UnifiedDialog>
+      </CommonDialogCompat>
 
       <ConfirmDialog
         isOpen={showDeleteConfirm}

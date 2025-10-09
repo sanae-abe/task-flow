@@ -1,7 +1,7 @@
 import { Box, Button, Text, TextInput } from '@primer/react';
 import React, { useState, useCallback, useMemo } from 'react';
 
-import CommonDialog from './CommonDialog';
+import UnifiedDialog from './shared/Dialog/UnifiedDialog';
 
 interface LinkInsertDialogProps {
   isOpen: boolean;
@@ -55,11 +55,13 @@ const LinkInsertDialog: React.FC<LinkInsertDialogProps> = ({
   }, [handleInsert, isValidUrl]);
 
   return (
-    <CommonDialog
+    <UnifiedDialog
       title="リンクを挿入"
       isOpen={isOpen}
       onClose={handleCancel}
+      variant="modal"
       size="large"
+      hideFooter
     >
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mb: 3 }}>
         <Box>
@@ -123,7 +125,7 @@ const LinkInsertDialog: React.FC<LinkInsertDialogProps> = ({
           挿入
         </Button>
       </Box>
-    </CommonDialog>
+    </UnifiedDialog>
   );
 };
 
