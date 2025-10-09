@@ -1,4 +1,4 @@
-import { memo, useCallback, useState } from 'react';
+import { memo } from 'react';
 import { Box, Text, Button, Select, Flash, Spinner } from '@primer/react';
 import { UploadIcon, FileIcon, AlertIcon } from '@primer/octicons-react';
 
@@ -15,8 +15,6 @@ interface ImportSectionProps {
 }
 
 export const ImportSection = memo<ImportSectionProps>(({ onImportSuccess }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-
   const {
     state,
     selectFile,
@@ -40,21 +38,12 @@ export const ImportSection = memo<ImportSectionProps>(({ onImportSuccess }) => {
     disabled: state.isLoading
   });
 
-  const handleToggleExpand = useCallback(() => {
-    setIsExpanded(prev => !prev);
-  }, []);
-
   return (
     <CollapsibleSection
       icon={UploadIcon}
       title="データのインポート"
-      description="バックアップファイルからデータを復元"
-      isExpanded={isExpanded}
-      onToggle={handleToggleExpand}
-      iconBg="attention.subtle"
-      iconColor="attention.fg"
-      expandedBg="attention.subtle"
-      expandedBorderColor="attention.emphasis"
+      iconBg="var(--bgColor-attention-muted)"
+      iconColor="var(--fgColor-attention)"
     >
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
         {/* 警告メッセージ */}

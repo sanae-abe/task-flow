@@ -1,4 +1,4 @@
-import { memo, useMemo, useState, useCallback } from 'react';
+import { memo, useMemo } from 'react';
 import { Box, Text, Button } from '@primer/react';
 import { DownloadIcon, DatabaseIcon, ProjectIcon } from '@primer/octicons-react';
 
@@ -22,10 +22,6 @@ export const ExportSection = memo<ExportSectionProps>(({
   onExportCurrent
 }) => {
   const { state } = useKanban();
-  const [expandedSections, setExpandedSections] = useState({
-    all: false,
-    current: false
-  });
 
   // 全体の統計情報を計算
   const allDataStatistics = useMemo(
@@ -40,13 +36,6 @@ export const ExportSection = memo<ExportSectionProps>(({
   );
 
   const currentBoardName = state.currentBoard?.title || '未選択';
-
-  const toggleSection = useCallback((section: 'all' | 'current') => {
-    setExpandedSections(prev => ({
-      ...prev,
-      [section]: !prev[section]
-    }));
-  }, []);
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
@@ -71,13 +60,8 @@ export const ExportSection = memo<ExportSectionProps>(({
       <CollapsibleSection
         icon={DatabaseIcon}
         title="全データをエクスポート"
-        description="すべてのボード、タスク、ラベルをエクスポート"
-        isExpanded={expandedSections.all}
-        onToggle={() => toggleSection('all')}
-        iconBg="accent.subtle"
-        iconColor="accent.fg"
-        expandedBg="accent.subtle"
-        expandedBorderColor="accent.emphasis"
+        iconBg="var(--bgColor-accent-muted)"
+        iconColor="var(--fgColor-accent)"
       >
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
           <Text sx={{ fontSize: 1, color: 'fg.muted' }}>
@@ -107,13 +91,8 @@ export const ExportSection = memo<ExportSectionProps>(({
       <CollapsibleSection
         icon={ProjectIcon}
         title="現在のボードをエクスポート"
-        description={`ボード「${currentBoardName}」のみをエクスポート`}
-        isExpanded={expandedSections.current}
-        onToggle={() => toggleSection('current')}
-        iconBg="success.subtle"
-        iconColor="success.fg"
-        expandedBg="success.subtle"
-        expandedBorderColor="success.emphasis"
+        iconBg="var(--bgColor-success-muted)"
+        iconColor="var(--fgColor-success)"
       >
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
           <Text sx={{ fontSize: 1, color: 'fg.muted' }}>

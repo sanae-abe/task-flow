@@ -1,96 +1,101 @@
 import { memo, ReactNode } from 'react';
-import { Box, Text } from '@primer/react';
-import { ChevronDownIcon, ChevronUpIcon } from '@primer/octicons-react';
 
 /**
- * 折りたたみ可能なセクションコンポーネント
+ * 折りたたみ可能なセクションコンポーネント（ネイティブdetails/summaryベース）
  */
 interface CollapsibleSectionProps {
   /** セクションのアイコン */
   icon: React.ComponentType<{ size?: number }>;
   /** セクションのタイトル */
   title: string;
-  /** セクションの説明文 */
-  description: string;
-  /** 展開状態 */
-  isExpanded: boolean;
-  /** 展開/折りたたみ切り替えのコールバック */
-  onToggle: () => void;
   /** アイコンの背景色 */
   iconBg?: string;
   /** アイコンの文字色 */
   iconColor?: string;
-  /** 展開時の背景色 */
-  expandedBg?: string;
-  /** 展開時の境界線色 */
-  expandedBorderColor?: string;
   /** 子コンテンツ */
   children: ReactNode;
+  /** デフォルトで開いているかどうか */
+  defaultOpen?: boolean;
 }
 
 export const CollapsibleSection = memo<CollapsibleSectionProps>(({
   icon: Icon,
   title,
-  isExpanded,
-  onToggle,
-  iconBg = 'accent.subtle',
-  iconColor = 'accent.fg',
-  expandedBorderColor = 'accent.emphasis',
-  children
+  iconBg = 'var(--bgColor-accent-muted)',
+  iconColor = 'var(--fgColor-accent)',
+  children,
+  defaultOpen = false
 }) => (
-  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-    {/* セクションヘッダー（折りたたみ可能） */}
-    <Box
-      sx={{
-        p: 3,
-        border: '1px solid',
-        borderColor: isExpanded ? expandedBorderColor : 'border.default',
-        borderRadius: 2,
-        bg: 'canvas.default',
-        cursor: 'pointer',
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+    <details
+      open={defaultOpen}
+      style={{
+        padding: '12px',
+        border: '1px solid var(--borderColor-default)',
+        borderRadius: '6px',
+        backgroundColor: 'var(--bgColor-default)',
         transition: 'all 0.2s ease'
       }}
-      onClick={onToggle}
     >
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <Box
-            sx={{
+      <summary
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          cursor: 'pointer',
+          listStyle: 'none',
+          outline: 'none',
+          marginBottom: 0
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div
+            style={{
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               width: '36px',
               height: '36px',
-              borderRadius: 2,
-              bg: iconBg,
+              borderRadius: '6px',
+              backgroundColor: iconBg,
               color: iconColor
             }}
           >
             <Icon size={16} />
-          </Box>
-          <Text sx={{ fontSize: 2, fontWeight: 'bold' }}>
+          </div>
+          <span style={{ fontSize: '16px', fontWeight: 'bold' }}>
             {title}
-          </Text>
-        </Box>
-        {isExpanded ? (
-          <ChevronUpIcon size={20} />
-        ) : (
-          <ChevronDownIcon size={20} />
-        )}
-      </Box>
-      {/* 展開時のコンテンツ */}
-      {isExpanded && (
-        <Box
-          sx={{
-            p: 3,
-            bg: 'canvas.default'
+          </span>
+        </div>
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 16 16"
+          fill="currentColor"
+          style={{
+            transform: 'rotate(0deg)',
+            transition: 'transform 0.2s ease'
           }}
         >
-          {children}
-        </Box>
-      )}
-    </Box>
-  </Box>
+          <path d="M12.78 5.22a.749.749 0 0 1 0 1.06l-4.25 4.25a.749.749 0 0 1-1.06 0L3.22 6.28a.749.749 0 1 1 1.06-1.06L8 8.939l3.72-3.719a.749.749 0 0 1 1.06 0Z"/>
+        </svg>
+      </summary>
+      <div style={{ paddingTop: '12px' }}>
+        {children}
+      </div>
+    </details>
+    <style>{`
+      details[open] > summary svg {
+        transform: rotate(180deg);
+      }
+      details > summary::-webkit-details-marker {
+        display: none;
+      }
+      details > summary::marker {
+        content: '';
+      }
+    `}</style>
+  </div>
 ));
 
 CollapsibleSection.displayName = 'CollapsibleSection';
