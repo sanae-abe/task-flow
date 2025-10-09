@@ -199,7 +199,7 @@ const TaskCreateDialog = memo(() => {
           </FormControl>
         </div>
 
-        <div style={{ marginTop: '8px', marginBottom: '24px' }}>
+        <div style={{ marginTop: '8px' }}>
           <FormControl>
             <FormControl.Label>ファイル添付</FormControl.Label>
             <FileUploader
