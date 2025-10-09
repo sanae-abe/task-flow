@@ -149,27 +149,37 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
   }, [selectedText, savedRange, handleInput]);
 
 
-  const handlePaste = useCallback((e: React.ClipboardEvent) => {
+  // HTMLエスケープ処理を行う関数
+  const escapeHtml = useCallback((text: string): string => text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+    .replace(/\n/g, '<br>'), []); // 改行をBRタグに変換
+
+  const handlePaste = useCallback((e: React.ClipboardEvent<HTMLDivElement>) => {
     e.preventDefault();
 
-    // クリップボードからプレーンテキストを取得
-    const plainText = e.clipboardData.getData('text/plain');
+    try {
+      // クリップボードからプレーンテキストを取得
+      const plainText = e.clipboardData.getData('text/plain');
 
-    if (plainText) {
-      // HTMLエスケープして安全にする
-      const escapedText = plainText
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;')
-        .replace(/\n/g, '<br>'); // 改行をBRタグに変換
+      if (plainText && plainText.trim() !== '') {
+        // HTMLエスケープして安全にする
+        const escapedText = escapeHtml(plainText);
 
-      // プレーンテキストとして挿入
-      document.execCommand('insertHTML', false, escapedText);
-      handleInput();
+        // プレーンテキストとして挿入
+        document.execCommand('insertHTML', false, escapedText);
+        handleInput();
+      }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('ペースト操作でエラーが発生しました:', error);
+      // エラーが発生した場合は通常のペースト動作にフォールバック
+      // この場合はpreventDefaultを無効化できないため、ログのみ出力
     }
-  }, [handleInput]);
+  }, [escapeHtml, handleInput]);
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     // コードブロック内でのEnterキーの処理
