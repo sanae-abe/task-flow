@@ -30,10 +30,6 @@ export const CollapsibleSection = memo<CollapsibleSectionProps>(({
     <details
       open={defaultOpen}
       style={{
-        padding: '12px',
-        border: '1px solid var(--borderColor-default)',
-        borderRadius: '6px',
-        backgroundColor: 'var(--bgColor-default)',
         transition: 'all 0.2s ease'
       }}
     >
@@ -45,7 +41,11 @@ export const CollapsibleSection = memo<CollapsibleSectionProps>(({
           cursor: 'pointer',
           listStyle: 'none',
           outline: 'none',
-          marginBottom: 0
+          marginBottom: 0,
+          border: '1px solid var(--borderColor-default)',
+          borderRadius: '6px',
+          padding: '12px',
+          backgroundColor: 'var(--bgColor-default)'
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -74,19 +74,24 @@ export const CollapsibleSection = memo<CollapsibleSectionProps>(({
           fill="currentColor"
           style={{
             transform: 'rotate(0deg)',
-            transition: 'transform 0.2s ease'
+            transition: 'transform 0.2s ease',
           }}
         >
-          <path d="M12.78 5.22a.749.749 0 0 1 0 1.06l-4.25 4.25a.749.749 0 0 1-1.06 0L3.22 6.28a.749.749 0 1 1 1.06-1.06L8 8.939l3.72-3.719a.749.749 0 0 1 1.06 0Z"/>
+          <path d="M12.78 5.22a.749.749 0 0 1 0 1.06l-4.25 4.25a.749.749 0 0 1-1.06 0L3.22 6.28a.749.749 0 1 1 1.06-1.06L8 8.939l3.72-3.719a.749.749 0 0 1 1.06 0Z" />
         </svg>
       </summary>
-      <div style={{ paddingTop: '12px' }}>
+      <div style={{
+        marginTop: '12px',
+        border: '1px solid var(--borderColor-default)',
+        borderRadius: '6px',
+        padding: '12px'
+      }}>
         {children}
       </div>
     </details>
     <style>{`
-      details[open] > summary svg {
-        transform: rotate(180deg);
+      details[open] > summary > svg {
+        transform: rotate(180deg) !important;
       }
       details > summary::-webkit-details-marker {
         display: none;
