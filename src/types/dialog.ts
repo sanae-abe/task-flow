@@ -91,7 +91,12 @@ export interface BoardEditDialogProps extends DialogWithFormProps {
   currentTitle: string;
 }
 
-export interface ColumnCreateDialogProps extends DialogWithFormProps {}
+export interface ColumnCreateDialogProps {
+  isOpen: boolean;
+  onSave: (title: string, insertIndex?: number) => void;
+  onCancel: () => void;
+  columns?: Array<{ id: string; title: string }>;
+}
 
 export interface ColumnEditDialogProps extends DialogWithFormProps {
   currentTitle: string;
