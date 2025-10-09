@@ -1,4 +1,4 @@
-import { PencilIcon, TrashIcon, KebabHorizontalIcon, CheckCircleIcon, DownloadIcon, UploadIcon } from '@primer/octicons-react';
+import { PencilIcon, TrashIcon, KebabHorizontalIcon, CheckCircleIcon } from '@primer/octicons-react';
 import { ActionMenu, ActionList } from '@primer/react';
 import { memo } from 'react';
 
@@ -6,7 +6,7 @@ import SubHeaderButton from './SubHeaderButton';
 
 /**
  * ボード設定用のアクションメニューコンポーネント
- * ボード管理、データの入出力、タスク管理の機能を提供
+ * ボード管理とタスク管理の機能を提供
  */
 interface BoardActionMenuProps {
   /** 完了したタスクが存在するかどうか */
@@ -21,12 +21,6 @@ interface BoardActionMenuProps {
   onDeleteBoard: () => void;
   /** 完了タスククリア時のコールバック */
   onClearCompletedTasks: () => void;
-  /** 全データエクスポート時のコールバック */
-  onExportData: () => void;
-  /** 現在のボードエクスポート時のコールバック */
-  onExportBoard: () => void;
-  /** データインポート時のコールバック */
-  onImportData: () => void;
 }
 
 const BoardActionMenu = memo<BoardActionMenuProps>(({
@@ -36,9 +30,6 @@ const BoardActionMenu = memo<BoardActionMenuProps>(({
   onEditBoard,
   onDeleteBoard,
   onClearCompletedTasks,
-  onExportData,
-  onExportBoard,
-  onImportData,
 }) => (
     <ActionMenu>
       <ActionMenu.Anchor>
@@ -65,27 +56,6 @@ const BoardActionMenu = memo<BoardActionMenuProps>(({
               <PencilIcon />
             </ActionList.LeadingVisual>
             ボード名を編集
-          </ActionList.Item>
-          
-          {/* データ管理アクション */}
-          <ActionList.Divider />
-          <ActionList.Item onSelect={onExportData}>
-            <ActionList.LeadingVisual>
-              <DownloadIcon />
-            </ActionList.LeadingVisual>
-            全データをエクスポート
-          </ActionList.Item>
-          <ActionList.Item onSelect={onExportBoard}>
-            <ActionList.LeadingVisual>
-              <DownloadIcon />
-            </ActionList.LeadingVisual>
-            このボードをエクスポート
-          </ActionList.Item>
-          <ActionList.Item onSelect={onImportData}>
-            <ActionList.LeadingVisual>
-              <UploadIcon />
-            </ActionList.LeadingVisual>
-            データをインポート
           </ActionList.Item>
 
           {/* タスク管理アクション */}

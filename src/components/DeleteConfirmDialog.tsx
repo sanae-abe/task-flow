@@ -1,7 +1,8 @@
 import { Text } from '@primer/react';
-import React from 'react';
+import React, { useMemo } from 'react';
 
-import CommonDialog, { DialogActions } from './CommonDialog';
+import UnifiedDialog from './shared/Dialog/UnifiedDialog';
+import type { DialogAction } from '../types/unified-dialog';
 
 interface DeleteConfirmDialogProps {
   isOpen: boolean;
@@ -21,22 +22,26 @@ const DeleteConfirmDialog: React.FC<DeleteConfirmDialogProps> = ({
     onClose();
   };
 
+  const actions: DialogAction[] = useMemo(() => [
+    {
+      label: 'キャンセル',
+      onClick: onClose,
+      variant: 'default'
+    },
+    {
+      label: '削除',
+      onClick: handleConfirm,
+      variant: 'danger'
+    }
+  ], [onClose, handleConfirm]);
+
   return (
-    <CommonDialog
+    <UnifiedDialog
       isOpen={isOpen}
       title="タスクの削除"
       onClose={onClose}
-      ariaLabelledBy="delete-task-dialog-title"
-      size="small"
-      actions={
-        <DialogActions
-          onCancel={onClose}
-          onConfirm={handleConfirm}
-          confirmText="削除"
-          cancelText="キャンセル"
-          confirmVariant="danger"
-        />
-      }
+      variant="modal"
+      actions={actions}
     >
       <Text sx={{ mb: 3 }}>
         「{taskTitle}」を削除しますか？
@@ -44,7 +49,7 @@ const DeleteConfirmDialog: React.FC<DeleteConfirmDialogProps> = ({
       <Text sx={{ fontSize: 1, color: 'fg.muted' }}>
         この操作は取り消せません。
       </Text>
-    </CommonDialog>
+    </UnifiedDialog>
   );
 };
 

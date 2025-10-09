@@ -1,4 +1,4 @@
-import { PlusIcon, QuestionIcon } from '@primer/octicons-react';
+import { PlusIcon, QuestionIcon, GearIcon } from '@primer/octicons-react';
 import { Box, Button } from '@primer/react';
 import React from 'react';
 
@@ -77,9 +77,10 @@ const LeftSection: React.FC = () => (
 interface RightSectionProps {
   onCreateClick: () => void;
   onHelpClick: () => void;
+  onSettingsClick: () => void;
 }
 
-const RightSection: React.FC<RightSectionProps> = ({ onCreateClick, onHelpClick }) => (
+const RightSection: React.FC<RightSectionProps> = ({ onCreateClick, onHelpClick, onSettingsClick }) => (
   <Box sx={headerStyles.rightSection}>
     <OfflineIndicator />
     <Button
@@ -90,6 +91,14 @@ const RightSection: React.FC<RightSectionProps> = ({ onCreateClick, onHelpClick 
       sx={headerStyles.createButton}
     >
       タスク作成
+    </Button>
+    <Button
+      onClick={onSettingsClick}
+      variant="invisible"
+      aria-label="設定を開く"
+      leadingVisual={GearIcon}
+    >
+      設定
     </Button>
     <Button
       onClick={onHelpClick}
@@ -104,9 +113,10 @@ const RightSection: React.FC<RightSectionProps> = ({ onCreateClick, onHelpClick 
 
 interface HeaderProps {
   onHelpClick: () => void;
+  onSettingsClick: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ onHelpClick }) => {
+const Header: React.FC<HeaderProps> = ({ onHelpClick, onSettingsClick }) => {
   const { openTaskForm } = useKanban();
 
   const handleStartCreateTask = () => {
@@ -117,7 +127,11 @@ const Header: React.FC<HeaderProps> = ({ onHelpClick }) => {
     <Box as="header" sx={headerStyles.container} role="banner">
       <Box sx={headerStyles.content}>
         <LeftSection />
-        <RightSection onCreateClick={handleStartCreateTask} onHelpClick={onHelpClick} />
+        <RightSection
+          onCreateClick={handleStartCreateTask}
+          onHelpClick={onHelpClick}
+          onSettingsClick={onSettingsClick}
+        />
       </Box>
     </Box>
   );

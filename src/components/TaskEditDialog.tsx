@@ -3,7 +3,7 @@ import { memo } from 'react';
 import { useTaskEdit } from '../hooks/useTaskEdit';
 import type { Task } from '../types';
 
-import CommonDialog from './CommonDialog';
+import UnifiedDialog from './shared/Dialog/UnifiedDialog';
 import ConfirmDialog from './ConfirmDialog';
 import TaskEditActions from './TaskEditActions';
 import TaskEditForm from './TaskEditForm';
@@ -65,11 +65,13 @@ const TaskEditDialog = memo<TaskEditDialogProps>(({
 
   return (
     <>
-      <CommonDialog
+      <UnifiedDialog
+        variant="modal"
+        hideFooter
         isOpen={isOpen}
         title="タスクを編集"
         onClose={onCancel}
-        size="large"
+        size="xl"
         ariaLabelledBy="task-edit-dialog-title"
       >
         <TaskEditForm
@@ -101,7 +103,7 @@ const TaskEditDialog = memo<TaskEditDialogProps>(({
           onCancel={onCancel}
           isValid={isValid}
         />
-      </CommonDialog>
+      </UnifiedDialog>
 
       <ConfirmDialog
         isOpen={showDeleteConfirm}

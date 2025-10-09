@@ -35,7 +35,6 @@ const getDialogStyles = (variant: DialogVariant, size: DialogSize) => {
         minWidth: '400px',
         maxWidth: '640px',
         maxHeight: '90vh',
-        overflowY: 'auto',
         borderRadius: 'var(--borderRadius-large, var(--borderRadius-large, .75rem))',
         animation: 'dialog-scale-fade-in 200ms cubic-bezier(0.33, 1, 0.68, 1)'
       },
@@ -43,6 +42,7 @@ const getDialogStyles = (variant: DialogVariant, size: DialogSize) => {
         p: '16px',
         bg: 'canvas.default',
         borderRadius: 'var(--borderRadius-large, var(--borderRadius-large, .75rem))',
+        overflowY: 'auto'
       }
     },
     overlay: {
@@ -100,7 +100,7 @@ const getDialogStyles = (variant: DialogVariant, size: DialogSize) => {
         maxWidth: '640px',
         maxHeight: '90vh',
         overflowY: 'auto',
-        borderRadius: 'var(--borderRadius-large, var(--borderRadius-large, .75rem))',
+        borderRadius: 'var(--borderRadius-large)',
       },
       content: {
         bg: 'canvas.subtle',
@@ -143,8 +143,8 @@ const DialogHeader = memo<{
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    pb: '16',
     bg: 'canvas.default',
+    borderRadius: 'var(--borderRadius-large) var(--borderRadius-large) 0 0',
     boxShadow: '0 1px 0 var(--borderColor-default,var(--color-border-default))'
   }}>
     <Text 

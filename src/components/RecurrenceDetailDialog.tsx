@@ -7,14 +7,15 @@ import {
   ActionList,
   Checkbox,
 } from '@primer/react';
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 
 import type { RecurrenceConfig, RecurrencePattern } from '../types';
+import type { DialogAction } from '../types/unified-dialog';
 import {
   validateRecurrenceConfig,
   getRecurrenceDescription,
 } from '../utils/recurrence';
-import CommonDialog, { DialogActions } from './CommonDialog';
+import UnifiedDialog from './shared/Dialog/UnifiedDialog';
 
 interface RecurrenceDetailDialogProps {
   isOpen: boolean;
@@ -151,23 +152,40 @@ const RecurrenceDetailDialog: React.FC<RecurrenceDetailDialogProps> = ({
 
   const isFormValid = errors.length === 0;
 
+  const actions: DialogAction[] = useMemo(() => {
+    const actionList: DialogAction[] = [
+      {
+        label: 'キャンセル',
+        onClick: handleCancel,
+        variant: 'default'
+      },
+      {
+        label: '保存',
+        onClick: handleSave,
+        variant: 'primary',
+        disabled: !isFormValid
+      }
+    ];
+
+    // 既存の繰り返し設定がある場合は削除ボタンを追加
+    if (recurrence?.enabled) {
+      actionList.splice(1, 0, {
+        label: '削除',
+        onClick: handleDelete,
+        variant: 'danger'
+      });
+    }
+
+    return actionList;
+  }, [handleCancel, handleSave, handleDelete, isFormValid, recurrence?.enabled]);
+
   return (
-    <CommonDialog
+    <UnifiedDialog
+      variant="modal"
       isOpen={isOpen}
       title="繰り返し設定の詳細"
       onClose={onClose}
-      size="small"
-      actions={
-        <DialogActions
-          onCancel={handleCancel}
-          onConfirm={handleSave}
-          confirmText="保存"
-          isConfirmDisabled={!isFormValid}
-          showDelete={!!recurrence?.enabled}
-          onDelete={handleDelete}
-          deleteText="削除"
-        />
-      }
+      actions={actions}
     >
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -300,7 +318,7 @@ const RecurrenceDetailDialog: React.FC<RecurrenceDetailDialogProps> = ({
           )}
         </div>
       </Box>
-    </CommonDialog>
+    </UnifiedDialog>
   );
 };
 

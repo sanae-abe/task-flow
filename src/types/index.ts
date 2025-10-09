@@ -14,9 +14,7 @@ export * from './unified-menu';
 export * from './enhanced-types';
 
 // Dialog types - avoiding conflicts
-export type {
-  CommonDialogProps,
-} from './dialog';
+// (Note: CommonDialogProps removed as CommonDialog is no longer used)
 
 // Runtime type safety utilities (avoiding conflicts)
 export type {

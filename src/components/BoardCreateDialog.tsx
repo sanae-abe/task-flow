@@ -1,8 +1,7 @@
 import { memo } from 'react';
 
 import type { BoardCreateDialogProps } from '../types/dialog';
-
-import SimpleFormDialog from './SimpleFormDialog';
+import { SimpleFormDialog } from './shared/Dialog';
 
 const BoardCreateDialog = memo<BoardCreateDialogProps>(({ 
   isOpen, 
@@ -14,11 +13,10 @@ const BoardCreateDialog = memo<BoardCreateDialogProps>(({
       title="新しいボードを作成"
       fieldLabel="ボード名"
       placeholder="ボード名を入力"
-      confirmText="作成"
+      saveText="作成"
       onSave={onSave}
       onCancel={onCancel}
-      ariaLabelledBy="board-create-title"
-      inputId="board-title-input"
+      onClose={onCancel}
     />
   ));
 

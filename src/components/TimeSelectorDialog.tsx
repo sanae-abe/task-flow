@@ -1,7 +1,8 @@
 import { Box, Text, TextInput } from '@primer/react';
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 
-import CommonDialog, { DialogActions } from './CommonDialog';
+import UnifiedDialog from './shared/Dialog/UnifiedDialog';
+import type { DialogAction } from '../types/unified-dialog';
 
 interface TimeSelectorDialogProps {
   isOpen: boolean;
@@ -40,22 +41,39 @@ const TimeSelectorDialog: React.FC<TimeSelectorDialogProps> = ({
     onClose();
   }, [onSave, onClose]);
 
+  const actions: DialogAction[] = useMemo(() => {
+    const actionList: DialogAction[] = [
+      {
+        label: 'キャンセル',
+        onClick: handleCancel,
+        variant: 'default'
+      },
+      {
+        label: '保存',
+        onClick: handleSave,
+        variant: 'primary'
+      }
+    ];
+
+    // hasTimeがtrueの場合は削除ボタンを追加
+    if (hasTime) {
+      actionList.splice(1, 0, {
+        label: '時刻設定を削除',
+        onClick: handleRemove,
+        variant: 'danger'
+      });
+    }
+
+    return actionList;
+  }, [handleCancel, handleSave, handleRemove, hasTime]);
+
   return (
-    <CommonDialog
+    <UnifiedDialog
+      variant="modal"
       isOpen={isOpen}
       title="時刻設定"
       onClose={handleCancel}
-      size="small"
-      actions={
-        <DialogActions
-          onCancel={handleCancel}
-          onConfirm={handleSave}
-          confirmText="保存"
-          showRemove={hasTime}
-          onRemove={handleRemove}
-          removeText="時刻設定を削除"
-        />
-      }
+      actions={actions}
     >
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mb: 4 }}>
         <Text sx={{ fontSize: 1, display: 'block', fontWeight: '700' }}>
@@ -69,7 +87,7 @@ const TimeSelectorDialog: React.FC<TimeSelectorDialogProps> = ({
           step="300"
         />
       </Box>
-    </CommonDialog>
+    </UnifiedDialog>
   );
 };
 

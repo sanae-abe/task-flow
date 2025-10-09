@@ -1,9 +1,4 @@
 // 共通ダイアログ関連の型
-export interface CommonDialogProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
 export interface DialogActionsProps {
   onCancel: () => void;
   onConfirm: () => void;

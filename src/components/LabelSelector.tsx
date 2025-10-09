@@ -11,7 +11,7 @@ import { useKanban } from '../contexts/KanbanContext';
 import type { Label } from '../types';
 import { getLabelColors } from '../utils/labelHelpers';
 
-import LabelAddDialog from './LabelAddDialog';
+import { LabelFormDialog } from './LabelManagement';
 import LabelChip from './LabelChip';
 
 /**
@@ -179,7 +179,8 @@ const LabelSelector = memo<LabelSelectorProps>(({
       </Box>
 
       {/* ラベル追加ダイアログ */}
-      <LabelAddDialog
+      <LabelFormDialog
+        mode="create"
         isOpen={isAddDialogOpen}
         onClose={handleAddDialogClose}
         onLabelCreated={handleLabelCreated}
