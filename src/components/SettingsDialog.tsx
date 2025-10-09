@@ -37,7 +37,6 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
             width={{ min: '150px', max: '150px', default: '150px' }}
             padding="none"
             divider="none"
-            sx={{ height: '100%' }}
           >
             <NavList>
               <NavList.Item

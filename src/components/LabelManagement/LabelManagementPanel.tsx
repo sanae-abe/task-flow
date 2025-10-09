@@ -6,7 +6,7 @@ import type { Label } from '../../types';
 import { useLabel } from '../../contexts/LabelContext';
 import LabelChip from '../LabelChip';
 import LabelFormDialog from './LabelFormDialog';
-import LabelDeleteConfirmDialog from './LabelDeleteConfirmDialog';
+import ConfirmDialog from '../shared/Dialog/ConfirmDialog';
 
 const CounterLabel: React.FC<{ count: number }> = ({ count }) => (
   <Text
@@ -247,12 +247,20 @@ const LabelManagementPanel: React.FC = () => {
       />
 
       {/* 削除確認ダイアログ */}
-      <LabelDeleteConfirmDialog
+      <ConfirmDialog
         isOpen={deleteDialog.isOpen}
+        title="ラベルの削除"
+        message={
+          deleteDialog.label
+            ? `ラベル「${deleteDialog.label.name}」を削除しますか？この操作は元に戻せません。`
+            : ''
+        }
         onClose={handleCloseDeleteDialog}
         onConfirm={handleConfirmDelete}
-        label={deleteDialog.label}
-        usageCount={deleteDialog.label ? getCurrentBoardLabelUsageCount(deleteDialog.label.id) : 0}
+        onCancel={handleCloseDeleteDialog}
+        confirmText="削除"
+        cancelText="キャンセル"
+        confirmVariant="danger"
       />
     </Box>
   );
