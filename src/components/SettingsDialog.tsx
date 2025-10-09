@@ -254,22 +254,24 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
         title="設定"
         size="large"
       >
-        <Box sx={{ display: 'flex', flexDirection: 'column', height: '500px' }}>
-          {/* タブナビゲーション */}
+        <Box sx={{ display: 'flex', height: '500px' }}>
+          {/* 左サイドメニュー */}
           <Box sx={{
-            display: 'flex',
-            borderBottom: '1px solid',
+            width: '200px',
+            borderRight: '1px solid',
             borderColor: 'border.default',
-            mb: 3
+            pr: 3,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 1
           }}>
             <Button
               variant={activeTab === 'labels' ? 'primary' : 'invisible'}
               leadingVisual={TagIcon}
               onClick={() => setActiveTab('labels')}
               sx={{
-                borderRadius: 0,
-                borderBottomLeftRadius: 0,
-                borderBottomRightRadius: 0
+                justifyContent: 'flex-start',
+                width: '100%'
               }}
             >
               ラベル管理
@@ -279,17 +281,16 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
               leadingVisual={GearIcon}
               onClick={() => setActiveTab('data')}
               sx={{
-                borderRadius: 0,
-                borderBottomLeftRadius: 0,
-                borderBottomRightRadius: 0
+                justifyContent: 'flex-start',
+                width: '100%'
               }}
             >
               データ管理
             </Button>
           </Box>
 
-          {/* タブコンテンツ */}
-          <Box sx={{ flex: 1, overflow: 'auto' }}>
+          {/* メインコンテンツ */}
+          <Box sx={{ flex: 1, pl: 3, overflow: 'auto' }}>
             {activeTab === 'labels' ? renderLabelsTab() : renderDataTab()}
           </Box>
         </Box>
