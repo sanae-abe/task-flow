@@ -1,10 +1,11 @@
-import { memo, useMemo } from 'react';
+import { memo, useMemo, useState, useCallback } from 'react';
 import { Box, Text, Button } from '@primer/react';
 import { DownloadIcon, DatabaseIcon, ProjectIcon } from '@primer/octicons-react';
 
 import { useKanban } from '../../contexts/KanbanContext';
-import { calculateDataStatistics, calculateCurrentBoardStatistics, formatFileSize } from '../../utils/dataStatistics';
+import { calculateDataStatistics, calculateCurrentBoardStatistics } from '../../utils/dataStatistics';
 import { DataStatistics } from './DataStatistics';
+import { CollapsibleSection } from './CollapsibleSection';
 
 /**
  * データエクスポート機能を提供するセクション
@@ -21,6 +22,10 @@ export const ExportSection = memo<ExportSectionProps>(({
   onExportCurrent
 }) => {
   const { state } = useKanban();
+  const [expandedSections, setExpandedSections] = useState({
+    all: false,
+    current: false
+  });
 
   // 全体の統計情報を計算
   const allDataStatistics = useMemo(
@@ -36,8 +41,16 @@ export const ExportSection = memo<ExportSectionProps>(({
 
   const currentBoardName = state.currentBoard?.title || '未選択';
 
+  const toggleSection = useCallback((section: 'all' | 'current') => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
+  }, []);
+
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+      {/* セクション概要 */}
       <Box>
         <Text sx={{ fontWeight: 'bold', mb: 2, display: 'block' }}>
           データのエクスポート
@@ -47,152 +60,81 @@ export const ExportSection = memo<ExportSectionProps>(({
         </Text>
       </Box>
 
-      {/* 全データエクスポートカード */}
-      <Box
-        sx={{
-          p: 3,
-          border: '1px solid',
-          borderColor: 'border.default',
-          borderRadius: 2,
-          bg: 'canvas.default',
-          transition: 'all 0.2s ease',
-          '&:hover': {
-            borderColor: 'accent.emphasis',
-            boxShadow: '0 3px 6px rgba(0, 0, 0, 0.1)'
-          }
-        }}
+      {/* 全データエクスポート - 折りたたみ式 */}
+      <CollapsibleSection
+        icon={DatabaseIcon}
+        title="全データをエクスポート"
+        description="すべてのボード、タスク、ラベルをエクスポート"
+        isExpanded={expandedSections.all}
+        onToggle={() => toggleSection('all')}
+        iconBg="accent.subtle"
+        iconColor="accent.fg"
+        expandedBg="accent.subtle"
+        expandedBorderColor="accent.emphasis"
       >
-        <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2, mb: 3 }}>
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '40px',
-              height: '40px',
-              borderRadius: 2,
-              bg: 'accent.subtle',
-              color: 'accent.fg'
-            }}
-          >
-            <DatabaseIcon size={20} />
-          </Box>
-          <Box sx={{ flex: 1 }}>
-            <Text sx={{ fontSize: 2, fontWeight: 'bold', display: 'block', mb: 1 }}>
-              全データをエクスポート
-            </Text>
-            <Text sx={{ fontSize: 1, color: 'fg.muted', display: 'block' }}>
-              すべてのボード、タスク、ラベルを含む完全なバックアップを作成します
-            </Text>
-          </Box>
-        </Box>
-
-        <Box sx={{ mb: 3 }}>
-          <DataStatistics statistics={allDataStatistics} title="エクスポートされるデータ" />
-        </Box>
-
-        <Button
-          variant="primary"
-          leadingVisual={DownloadIcon}
-          onClick={onExportAll}
-          sx={{
-            width: '100%',
-            justifyContent: 'center',
-            color: 'fg.onEmphasis !important'
-          }}
-        >
-          全データをエクスポート
-        </Button>
-      </Box>
-
-      {/* 現在のボードエクスポートカード */}
-      <Box
-        sx={{
-          p: 3,
-          border: '1px solid',
-          borderColor: 'border.default',
-          borderRadius: 2,
-          bg: 'canvas.default',
-          transition: 'all 0.2s ease',
-          '&:hover': {
-            borderColor: 'accent.emphasis',
-            boxShadow: '0 3px 6px rgba(0, 0, 0, 0.1)'
-          }
-        }}
-      >
-        <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2, mb: 3 }}>
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '40px',
-              height: '40px',
-              borderRadius: 2,
-              bg: 'success.subtle',
-              color: 'success.fg'
-            }}
-          >
-            <ProjectIcon size={20} />
-          </Box>
-          <Box sx={{ flex: 1 }}>
-            <Text sx={{ fontSize: 2, fontWeight: 'bold', display: 'block', mb: 1 }}>
-              現在のボードをエクスポート
-            </Text>
-            <Text sx={{ fontSize: 1, color: 'fg.muted', display: 'block' }}>
-              選択中のボード「{currentBoardName}」のみをエクスポートします
-            </Text>
-          </Box>
-        </Box>
-
-        <Box
-          sx={{
-            mb: 3,
-            p: 2,
-            bg: 'canvas.subtle',
-            borderRadius: 2,
-            border: '1px solid',
-            borderColor: 'border.default'
-          }}
-        >
-          <Text sx={{ fontSize: 1, fontWeight: '600', color: 'fg.muted', display: 'block', mb: 2 }}>
-            エクスポートされるデータ
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+          <Text sx={{ fontSize: 1, color: 'fg.muted' }}>
+            すべてのボード、タスク、ラベルを含む完全なバックアップを作成します。
           </Text>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-              <Text sx={{ fontSize: 1, color: 'fg.muted' }}>タスク</Text>
-              <Text sx={{ fontSize: 1, fontWeight: '600' }}>
-                {currentBoardStatistics.taskCount}個
-              </Text>
-            </Box>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-              <Text sx={{ fontSize: 1, color: 'fg.muted' }}>添付ファイル</Text>
-              <Text sx={{ fontSize: 1, fontWeight: '600' }}>
-                {currentBoardStatistics.attachmentCount}個
-              </Text>
-            </Box>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', pt: 1, borderTop: '1px solid', borderColor: 'border.muted' }}>
-              <Text sx={{ fontSize: 1, color: 'fg.muted' }}>推定サイズ</Text>
-              <Text sx={{ fontSize: 1, fontWeight: 'bold', color: 'success.fg' }}>
-                {formatFileSize(currentBoardStatistics.estimatedSize)}
-              </Text>
-            </Box>
-          </Box>
-        </Box>
 
-        <Button
-          variant="default"
-          leadingVisual={DownloadIcon}
-          onClick={onExportCurrent}
-          disabled={!state.currentBoard}
-          sx={{
-            width: '100%',
-            justifyContent: 'center'
-          }}
-        >
-          このボードをエクスポート
-        </Button>
-      </Box>
+          <DataStatistics
+            statistics={allDataStatistics}
+            title="エクスポートされるデータ"
+            variant="primary"
+          />
+
+          <Button
+            variant="primary"
+            leadingVisual={DownloadIcon}
+            onClick={onExportAll}
+            sx={{
+              width: '100%',
+              justifyContent: 'center',
+              color: 'fg.onEmphasis !important'
+            }}
+          >
+            全データをエクスポート
+          </Button>
+        </Box>
+      </CollapsibleSection>
+
+      {/* 現在のボードエクスポート - 折りたたみ式 */}
+      <CollapsibleSection
+        icon={ProjectIcon}
+        title="現在のボードをエクスポート"
+        description={`ボード「${currentBoardName}」のみをエクスポート`}
+        isExpanded={expandedSections.current}
+        onToggle={() => toggleSection('current')}
+        iconBg="success.subtle"
+        iconColor="success.fg"
+        expandedBg="success.subtle"
+        expandedBorderColor="success.emphasis"
+      >
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+          <Text sx={{ fontSize: 1, color: 'fg.muted' }}>
+            選択中のボード「{currentBoardName}」のタスクと関連データのみをエクスポートします。
+          </Text>
+
+          <DataStatistics
+            statistics={currentBoardStatistics}
+            title="エクスポートされるデータ"
+            variant="success"
+          />
+
+          <Button
+            variant="default"
+            leadingVisual={DownloadIcon}
+            onClick={onExportCurrent}
+            disabled={!state.currentBoard}
+            sx={{
+              width: '100%',
+              justifyContent: 'center'
+            }}
+          >
+            このボードをエクスポート
+          </Button>
+        </Box>
+      </CollapsibleSection>
     </Box>
   );
 });

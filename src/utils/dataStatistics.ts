@@ -51,10 +51,12 @@ export const calculateDataStatistics = (
  */
 export const calculateCurrentBoardStatistics = (
   board: KanbanBoard | null
-): Omit<DataStatistics, 'boardCount' | 'labelCount'> => {
+): DataStatistics => {
   if (!board) {
     return {
+      boardCount: 1,
       taskCount: 0,
+      labelCount: 0,
       attachmentCount: 0,
       estimatedSize: 0
     };
@@ -73,10 +75,22 @@ export const calculateCurrentBoardStatistics = (
     });
   });
 
+  // ボードに関連するラベル数を計算
+  const labelIds = new Set<string>();
+  board.columns.forEach(column => {
+    column.tasks.forEach(task => {
+      task.labels?.forEach(label => {
+        labelIds.add(label.id);
+      });
+    });
+  });
+
   const estimatedSize = new Blob([JSON.stringify(board)]).size;
 
   return {
+    boardCount: 1, // 常に1（現在のボード）
     taskCount,
+    labelCount: labelIds.size,
     attachmentCount,
     estimatedSize
   };

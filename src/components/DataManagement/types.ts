@@ -4,6 +4,8 @@
 
 export type ImportMode = 'merge' | 'replace';
 
+export type DataStatisticsVariant = 'primary' | 'success';
+
 export interface DataStatistics {
   /** ボード総数 */
   boardCount: number;

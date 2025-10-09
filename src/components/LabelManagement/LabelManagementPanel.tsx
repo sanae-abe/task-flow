@@ -162,9 +162,9 @@ const LabelManagementPanel: React.FC = () => {
           {/* テーブルヘッダー */}
           <Box sx={{
             display: 'grid',
-            gridTemplateColumns: '1fr 100px 100px 120px',
+            gridTemplateColumns: '1fr 80px 100px',
             gap: 2,
-            p: 3,
+            p: 2,
             bg: 'canvas.subtle',
             borderBottom: '1px solid',
             borderColor: 'border.default',
@@ -174,7 +174,6 @@ const LabelManagementPanel: React.FC = () => {
           }}>
             <Text>ラベル</Text>
             <Text sx={{ textAlign: 'center' }}>使用数</Text>
-            <Text sx={{ textAlign: 'center' }}>色</Text>
             <Text sx={{ textAlign: 'center' }}>操作</Text>
           </Box>
 
@@ -185,9 +184,9 @@ const LabelManagementPanel: React.FC = () => {
                 key={labelWithUsage.id}
                 sx={{
                   display: 'grid',
-                  gridTemplateColumns: '1fr 100px 100px 120px',
+                  gridTemplateColumns: '1fr 80px 100px',
                   gap: 2,
-                  p: 3,
+                  p: 2,
                   alignItems: 'center',
                   borderBottom: index < labelsWithUsage.length - 1 ? '1px solid' : 'none',
                   borderColor: 'border.muted',
@@ -215,21 +214,6 @@ const LabelManagementPanel: React.FC = () => {
                   >
                     {labelWithUsage.usageCount}
                   </Text>
-                </Box>
-
-                {/* カラープレビュー */}
-                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                  <Box
-                    sx={{
-                      width: '32px',
-                      height: '32px',
-                      borderRadius: '50%',
-                      backgroundColor: labelWithUsage.color,
-                      border: '2px solid',
-                      borderColor: 'border.default',
-                      boxShadow: 'shadow.small'
-                    }}
-                  />
                 </Box>
 
                 {/* アクションボタン */}

@@ -122,19 +122,20 @@ const LabelFormDialog: React.FC<LabelFormDialogProps> = ({
     >
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }} onKeyDown={handleKeyDown}>
         {/* プレビューエリア */}
-        <Box sx={{
-          p: 3,
-          bg: 'canvas.subtle',
-          borderRadius: 2,
-          border: '1px solid',
-          borderColor: 'border.default'
-        }}>
-          <FormControl.Label sx={{ mb: 2, display: 'block' }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+          <FormControl.Label sx={{ display: 'block' }}>
             プレビュー
           </FormControl.Label>
-          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-            <LabelChip label={previewLabel} />
-          </Box>
+          <div style={{
+            borderRadius: '8px',
+            padding: '16px',
+            border: '1px solid',
+            borderColor: 'var(--borderColor-muted)'
+          }}>
+            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+              <LabelChip label={previewLabel} />
+            </Box>
+          </div>
         </Box>
 
         {/* ラベル名入力 */}
@@ -165,18 +166,6 @@ const LabelFormDialog: React.FC<LabelFormDialogProps> = ({
             />
           </Box>
         </FormControl>
-
-        {/* ショートカットヒント */}
-        <Box sx={{
-          fontSize: 0,
-          color: 'fg.muted',
-          textAlign: 'center',
-          pt: 2,
-          borderTop: '1px solid',
-          borderColor: 'border.muted'
-        }}>
-          Ctrl+Enter で保存
-        </Box>
       </Box>
     </UnifiedDialog>
   );
