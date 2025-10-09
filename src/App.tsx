@@ -1,6 +1,6 @@
 import { BaseStyles, ThemeProvider } from '@primer/react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import Header from './components/Header';
 import SubHeader from './components/SubHeader';
@@ -12,6 +12,7 @@ import HelpSidebar from './components/HelpSidebar';
 import TaskDetailSidebar from './components/TaskDetailSidebar';
 import TaskCreateDialog from './components/TaskCreateDialog';
 import FirstTimeUserHint from './components/FirstTimeUserHint';
+import SettingsDialog from './components/SettingsDialog';
 import { useKanban } from './contexts/KanbanContext';
 import AppProviders from './contexts/AppProviders';
 import { useHelp } from './hooks/useHelp';
@@ -19,6 +20,7 @@ import { useDataSync } from './hooks/useDataSync';
 import { useViewRoute } from './hooks/useViewRoute';
 import { useTaskFinder } from './hooks/useTaskFinder';
 import { useFirstTimeUser } from './hooks/useFirstTimeUser';
+import { useSubHeader } from './hooks/useSubHeader';
 
 // 定数定義
 const Z_INDEX = 1000;
@@ -40,6 +42,8 @@ const AppContent: React.FC = () => {
   const { isHelpOpen, openHelp, closeHelp } = useHelp();
   const { findTaskById } = useTaskFinder(state.currentBoard);
   const { shouldShowHint, markAsExistingUser, markHintAsShown } = useFirstTimeUser();
+  const { handlers } = useSubHeader();
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   // データ同期の初期化
   useDataSync();
@@ -63,11 +67,15 @@ const AppContent: React.FC = () => {
     markAsExistingUser();
   };
 
+  // 設定ダイアログの処理
+  const openSettings = () => setIsSettingsOpen(true);
+  const closeSettings = () => setIsSettingsOpen(false);
+
 
   return (
     <div className="app" role="application" aria-label="TaskFlowアプリケーション">
       <div style={styles.fixedHeader}>
-        <Header onHelpClick={openHelp} />
+        <Header onHelpClick={openHelp} onSettingsClick={openSettings} />
         <SubHeader />
       </div>
       <main
@@ -131,6 +139,12 @@ const AppContent: React.FC = () => {
         onClose={closeTaskDetail}
       />
       <TaskCreateDialog />
+      <SettingsDialog
+        isOpen={isSettingsOpen}
+        onClose={closeSettings}
+        onExportData={handlers.exportAllData}
+        onExportBoard={handlers.exportCurrentBoard}
+      />
     </div>
   );
 };

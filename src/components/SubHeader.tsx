@@ -111,9 +111,6 @@ const SubHeader: React.FC = () => {
           onEditBoard={handlers.openEditDialog}
           onDeleteBoard={handlers.openDeleteConfirm}
           onClearCompletedTasks={handlers.openClearCompletedConfirm}
-          onExportData={handlers.exportAllData}
-          onExportBoard={handlers.exportCurrentBoard}
-          onImportData={handlers.openImportDialog}
         />
         
         <Box
