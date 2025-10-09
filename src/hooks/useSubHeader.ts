@@ -12,7 +12,6 @@ type SubHeaderDialogState = {
   readonly showDeleteConfirm: boolean;
   readonly showEditDialog: boolean;
   readonly showClearCompletedConfirm: boolean;
-  readonly showImportDialog: boolean;
 };
 
 type SubHeaderHandlers = {
@@ -33,8 +32,6 @@ type SubHeaderHandlers = {
   readonly closeClearCompletedConfirm: () => void;
   readonly exportAllData: () => void;
   readonly exportCurrentBoard: () => void;
-  readonly openImportDialog: () => void;
-  readonly closeImportDialog: () => void;
 };
 
 type UseSubHeaderReturn = {
@@ -56,7 +53,6 @@ export const useSubHeader = (): UseSubHeaderReturn => {
     showDeleteConfirm: false,
     showEditDialog: false,
     showClearCompletedConfirm: false,
-    showImportDialog: false,
   });
 
   const allTasks = useMemo(() => {
@@ -143,8 +139,6 @@ export const useSubHeader = (): UseSubHeaderReturn => {
         }
       },
       
-      openImportDialog: () => updateDialogState({ showImportDialog: true }),
-      closeImportDialog: () => updateDialogState({ showImportDialog: false }),
     };
   }, [
     state.boards,

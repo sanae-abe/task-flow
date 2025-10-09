@@ -1,5 +1,5 @@
 import { GearIcon, TagIcon, DownloadIcon, UploadIcon, PlusIcon, TrashIcon, PencilIcon } from '@primer/octicons-react';
-import { Box, Button, Text, IconButton, TextInput, FormControl, NavList } from '@primer/react';
+import { Box, Button, Text, IconButton, TextInput, FormControl, SplitPageLayout, NavList } from '@primer/react';
 import React, { useState, useCallback } from 'react';
 
 import { useLabel } from '../contexts/LabelContext';
@@ -8,7 +8,6 @@ import type { Label } from '../types';
 import UnifiedDialog from './shared/Dialog/UnifiedDialog';
 import ColorSelector from './ColorSelector';
 import LabelChip from './LabelChip';
-import { DataImportDialog } from './DataImportDialog';
 import { LabelManagementPanel } from './LabelManagement';
 import { DataManagementPanel } from './DataManagement';
 
@@ -40,7 +39,6 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
   const [activeTab, setActiveTab] = useState<'labels' | 'data'>('labels');
   const [editingLabel, setEditingLabel] = useState<Label | null>(null);
   const [isCreating, setIsCreating] = useState(false);
-  const [showImportDialog, setShowImportDialog] = useState(false);
   const [formData, setFormData] = useState<LabelFormData>({
     name: '',
     color: '#0969da'
@@ -84,13 +82,6 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
     deleteLabel(labelId);
   }, [deleteLabel]);
 
-  const handleImportClick = useCallback(() => {
-    setShowImportDialog(true);
-  }, []);
-
-  const handleCloseImportDialog = useCallback(() => {
-    setShowImportDialog(false);
-  }, []);
 
   const renderLabelsTab = () => (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
@@ -143,72 +134,70 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
       </Box>
 
       {/* ラベル一覧 */}
-      <Box>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-          <Text sx={{ fontWeight: 'bold' }}>ラベル一覧</Text>
-          {!isCreating && !editingLabel && (
-            <Button
-              variant="default"
-              size="small"
-              leadingVisual={PlusIcon}
-              onClick={handleStartCreate}
-            >
-              新規作成
-            </Button>
-          )}
-        </Box>
-
-        {labels.length === 0 ? (
-          <Box sx={{
-            textAlign: 'center',
-            py: 4,
-            color: 'fg.muted',
-            border: '1px solid',
-            borderColor: 'border.default',
-            borderRadius: 2
-          }}>
-            <Text>ラベルがありません</Text>
-          </Box>
-        ) : (
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-            {labels.map((label) => (
-              <Box
-                key={label.id}
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  p: 2,
-                  border: '1px solid',
-                  borderColor: 'border.default',
-                  borderRadius: 2,
-                  '&:hover': {
-                    bg: 'canvas.subtle'
-                  }
-                }}
-              >
-                <LabelChip label={label} />
-                <Box sx={{ display: 'flex', gap: 1 }}>
-                  <IconButton
-                    icon={PencilIcon}
-                    aria-label="編集"
-                    size="small"
-                    variant="invisible"
-                    onClick={() => handleStartEdit(label)}
-                  />
-                  <IconButton
-                    icon={TrashIcon}
-                    aria-label="削除"
-                    size="small"
-                    variant="invisible"
-                    onClick={() => handleDeleteLabel(label.id)}
-                  />
-                </Box>
-              </Box>
-            ))}
-          </Box>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+        <Text sx={{ fontWeight: 'bold' }}>ラベル一覧</Text>
+        {!isCreating && !editingLabel && (
+          <Button
+            variant="default"
+            size="small"
+            leadingVisual={PlusIcon}
+            onClick={handleStartCreate}
+          >
+            新規作成
+          </Button>
         )}
       </Box>
+
+      {labels.length === 0 ? (
+        <Box sx={{
+          textAlign: 'center',
+          py: 4,
+          color: 'fg.muted',
+          border: '1px solid',
+          borderColor: 'border.default',
+          borderRadius: 2
+        }}>
+          <Text>ラベルがありません</Text>
+        </Box>
+      ) : (
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+          {labels.map((label) => (
+            <Box
+              key={label.id}
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                p: 2,
+                border: '1px solid',
+                borderColor: 'border.default',
+                borderRadius: 2,
+                '&:hover': {
+                  bg: 'canvas.subtle'
+                }
+              }}
+            >
+              <LabelChip label={label} />
+              <Box sx={{ display: 'flex', gap: 1 }}>
+                <IconButton
+                  icon={PencilIcon}
+                  aria-label="編集"
+                  size="small"
+                  variant="invisible"
+                  onClick={() => handleStartEdit(label)}
+                />
+                <IconButton
+                  icon={TrashIcon}
+                  aria-label="削除"
+                  size="small"
+                  variant="invisible"
+                  onClick={() => handleDeleteLabel(label.id)}
+                />
+              </Box>
+            </Box>
+          ))}
+        </Box>
+      )}
     </Box>
   );
 
@@ -245,10 +234,11 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
         <Button
           variant="default"
           leadingVisual={UploadIcon}
-          onClick={handleImportClick}
+          onClick={() => {/* 新しいDataManagementPanelで処理 */}}
           sx={{ justifyContent: 'flex-start' }}
+          disabled
         >
-          データをインポート
+          データをインポート（設定で利用可能）
         </Button>
       </Box>
     </Box>
@@ -263,65 +253,61 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
         variant="modal"
         size="xl"
       >
-        <Box sx={{ display: 'flex', height: '500px' }}>
-          {/* 左サイドメニュー */}
-          <Box sx={{
-            width: '150px',
-            borderRight: '1px solid',
-            borderColor: 'border.default',
-            pr: 3
-          }}>
-            <NavList>
-              <NavList.Item
-                aria-current={activeTab === 'labels' ? 'page' : undefined}
-                onClick={() => setActiveTab('labels')}
-              >
-                <NavList.LeadingVisual>
-                  <TagIcon />
-                </NavList.LeadingVisual>
-                ラベル管理
-              </NavList.Item>
-              <NavList.Item
-                aria-current={activeTab === 'data' ? 'page' : undefined}
-                onClick={() => setActiveTab('data')}
-              >
-                <NavList.LeadingVisual>
-                  <GearIcon />
-                </NavList.LeadingVisual>
-                データ管理
-              </NavList.Item>
-            </NavList>
-          </Box>
+        <Box sx={{ height: '500px' }}>
+          <SplitPageLayout>
+            {/* サイドバー（ナビゲーション） */}
+            <SplitPageLayout.Pane
+              position="start"
+              width={{ min: '150px', max: '150px', default: '150px' }}
+              padding="none"
+            >
+              <NavList>
+                <NavList.Item
+                  aria-current={activeTab === 'labels' ? 'page' : undefined}
+                  onClick={() => setActiveTab('labels')}
+                >
+                  <NavList.LeadingVisual>
+                    <TagIcon />
+                  </NavList.LeadingVisual>
+                  ラベル管理
+                </NavList.Item>
+                <NavList.Item
+                  aria-current={activeTab === 'data' ? 'page' : undefined}
+                  onClick={() => setActiveTab('data')}
+                >
+                  <NavList.LeadingVisual>
+                    <GearIcon />
+                  </NavList.LeadingVisual>
+                  データ管理
+                </NavList.Item>
+              </NavList>
+            </SplitPageLayout.Pane>
 
-          {/* メインコンテンツ */}
-          <Box sx={{ flex: 1, pl: 3, overflow: 'auto' }}>
-            {activeTab === 'labels' ? (
-              USE_NEW_LABEL_MANAGEMENT ? (
-                <LabelManagementPanel />
-              ) : (
-                renderLabelsTab()
-              )
-            ) : (
-              USE_NEW_DATA_MANAGEMENT ? (
-                <DataManagementPanel
-                  onExportAll={onExportData}
-                  onExportCurrent={onExportBoard}
-                />
-              ) : (
-                renderDataTab()
-              )
-            )}
-          </Box>
+            {/* メインコンテンツエリア */}
+            <SplitPageLayout.Content>
+              <Box sx={{ height: '100%', overflow: 'auto' }}>
+                {activeTab === 'labels' ? (
+                  USE_NEW_LABEL_MANAGEMENT ? (
+                    <LabelManagementPanel />
+                  ) : (
+                    renderLabelsTab()
+                  )
+                ) : (
+                  USE_NEW_DATA_MANAGEMENT ? (
+                    <DataManagementPanel
+                      onExportAll={onExportData}
+                      onExportCurrent={onExportBoard}
+                    />
+                  ) : (
+                    renderDataTab()
+                  )
+                )}
+              </Box>
+            </SplitPageLayout.Content>
+          </SplitPageLayout>
         </Box>
       </UnifiedDialog>
 
-      {/* インポートダイアログ（旧UIのみで使用） */}
-      {!USE_NEW_DATA_MANAGEMENT && (
-        <DataImportDialog
-          isOpen={showImportDialog}
-          onClose={handleCloseImportDialog}
-        />
-      )}
     </>
   );
 };

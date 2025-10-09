@@ -11,7 +11,6 @@ import BoardCreateDialog from './BoardCreateDialog';
 import BoardEditDialog from './BoardEditDialog';
 import ColumnCreateDialog from './ColumnCreateDialog';
 import ConfirmDialog from './ConfirmDialog';
-import { DataImportDialog } from './DataImportDialog';
 import FilterSelector from './FilterSelector';
 import SubHeaderButton from './SubHeaderButton';
 import TaskSortSelector from './TaskSortSelector';
@@ -204,10 +203,6 @@ const SubHeader: React.FC = () => {
         columns={currentColumns}
       />
 
-      <DataImportDialog
-        isOpen={dialogState.showImportDialog}
-        onClose={handlers.closeImportDialog}
-      />
 
       <BoardCreateDialog
         isOpen={dialogState.isCreatingBoard}
