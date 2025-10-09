@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import {
   Text,
   Box,
@@ -8,13 +8,15 @@ import {
   Button,
   FormControl,
   TextInput,
-  Dialog
+  Dialog,
+  Select
 } from '@primer/react';
 import {
   GearIcon,
   TrashIcon,
   GrabberIcon,
-  CheckIcon
+  CheckIcon,
+  PlusIcon
 } from '@primer/octicons-react';
 
 import { useTableColumns } from '../contexts/TableColumnsContext';
@@ -28,12 +30,16 @@ const TableColumnManager: React.FC = () => {
     updateColumnWidth,
     reorderColumns,
     removeColumn,
+    addColumn,
     resetToDefaults
   } = useTableColumns();
 
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [draggedColumnId, setDraggedColumnId] = useState<string | null>(null);
+  const [isAddColumnOpen, setIsAddColumnOpen] = useState(false);
+  const [newColumnName, setNewColumnName] = useState('');
+  const [insertPosition, setInsertPosition] = useState<string>('last');
 
 
   const handleWidthChange = useCallback((columnId: string, newWidth: string) => {
@@ -105,6 +111,61 @@ const TableColumnManager: React.FC = () => {
     setDraggedColumnId(null);
   }, []);
 
+  // カラム追加ダイアログを開く
+  const handleOpenAddColumn = useCallback(() => {
+    setIsAddColumnOpen(true);
+    setNewColumnName('');
+    setInsertPosition('last');
+  }, []);
+
+  // カラム追加ダイアログを閉じる
+  const handleCloseAddColumn = useCallback(() => {
+    setIsAddColumnOpen(false);
+    setNewColumnName('');
+    setInsertPosition('last');
+  }, []);
+
+  // カラム追加を実行
+  const handleAddColumn = useCallback(() => {
+    const trimmedName = newColumnName.trim();
+    if (!trimmedName) {
+      return;
+    }
+
+    // 挿入位置を計算
+    let insertIndex: number | undefined;
+    if (insertPosition === 'first') {
+      insertIndex = 0;
+    } else if (insertPosition === 'last') {
+      insertIndex = undefined; // 最後に追加
+    } else if (insertPosition.startsWith('after-')) {
+      const afterColumnId = insertPosition.replace('after-', '');
+      const afterIndex = columnOrder.indexOf(afterColumnId);
+      if (afterIndex !== -1) {
+        insertIndex = afterIndex + 1;
+      }
+    }
+
+    addColumn(trimmedName, insertIndex);
+    handleCloseAddColumn();
+  }, [newColumnName, insertPosition, columnOrder, addColumn, handleCloseAddColumn]);
+
+  // 挿入位置の選択肢を生成
+  const insertPositionOptions = useMemo(() => {
+    const options = [
+      { value: 'first', label: '最初' },
+      ...columnOrder.map((columnId) => {
+        const column = columns.find(col => col.id === columnId);
+        return {
+          value: `after-${columnId}`,
+          label: `「${column?.label || columnId}」の後`
+        };
+      }),
+      { value: 'last', label: '最後' }
+    ];
+    return options;
+  }, [columnOrder, columns]);
+
   return (
     <>
       <ActionMenu>
@@ -137,6 +198,13 @@ const TableColumnManager: React.FC = () => {
                 </ActionList.Item>
               ))}
             </ActionList.Group>
+            <ActionList.Divider />
+            <ActionList.Item onSelect={handleOpenAddColumn}>
+              <ActionList.LeadingVisual>
+                <PlusIcon />
+              </ActionList.LeadingVisual>
+              カラムを追加
+            </ActionList.Item>
             <ActionList.Divider />
             <ActionList.Item onSelect={() => setIsSettingsOpen(true)}>
               <ActionList.LeadingVisual>
@@ -248,6 +316,65 @@ const TableColumnManager: React.FC = () => {
             >
               閉じる
             </Button>
+          </Box>
+        </Dialog>
+      )}
+
+      {/* カラム追加ダイアログ */}
+      {isAddColumnOpen && (
+        <Dialog
+          title="カラムを追加"
+          onClose={handleCloseAddColumn}
+          aria-labelledby="add-column-title"
+        >
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+            <FormControl>
+              <FormControl.Label>カラム名</FormControl.Label>
+              <TextInput
+                value={newColumnName}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setNewColumnName(e.target.value)
+                }
+                placeholder="カラム名を入力してください"
+                autoFocus
+                onKeyDown={(e: React.KeyboardEvent) => {
+                  if (e.key === 'Enter' && newColumnName.trim()) {
+                    handleAddColumn();
+                  }
+                }}
+              />
+            </FormControl>
+
+            <FormControl>
+              <FormControl.Label>挿入位置</FormControl.Label>
+              <Select
+                value={insertPosition}
+                onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                  setInsertPosition(e.target.value)
+                }
+              >
+                {insertPositionOptions.map((option) => (
+                  <Select.Option key={option.value} value={option.value}>
+                    {option.label}
+                  </Select.Option>
+                ))}
+              </Select>
+            </FormControl>
+
+            <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end', mt: 2 }}>
+              <Button
+                onClick={handleCloseAddColumn}
+              >
+                キャンセル
+              </Button>
+              <Button
+                variant="primary"
+                onClick={handleAddColumn}
+                disabled={!newColumnName.trim()}
+              >
+                追加
+              </Button>
+            </Box>
           </Box>
         </Dialog>
       )}

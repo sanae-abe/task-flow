@@ -12,6 +12,7 @@ interface TableColumnsContextType {
   updateColumnWidth: (columnId: string, width: string) => void;
   reorderColumns: (newOrder: string[]) => void;
   removeColumn: (columnId: string) => void;
+  addColumn: (label: string, insertIndex?: number) => void;
   resetToDefaults: () => void;
   forceRender: number;
 }
@@ -158,6 +159,49 @@ export const TableColumnsProvider: React.FC<{ children: React.ReactNode }> = ({ 
     });
   }, []);
 
+  // カラムを追加
+  const addColumn = useCallback((label: string, insertIndex?: number) => {
+    const columnId = `custom-${Date.now()}`;
+    const newColumn: TableColumn = {
+      id: columnId,
+      label: label.trim(),
+      width: '150px',
+      visible: true,
+      sortable: false,
+      type: 'text',
+      accessor: 'description' // カスタムカラムのデフォルト
+    };
+
+    setSettings(currentSettings => {
+      const newColumns = [...currentSettings.columns, newColumn];
+
+      // 挿入位置を決定
+      const newOrder = [...currentSettings.columnOrder];
+      const targetIndex = insertIndex !== undefined
+        ? Math.max(0, Math.min(insertIndex, newOrder.length))
+        : newOrder.length;
+
+      newOrder.splice(targetIndex, 0, columnId);
+
+      const newSettings = {
+        columns: newColumns,
+        columnOrder: newOrder
+      };
+
+      // localStorageに保存
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(newSettings));
+      } catch (error) {
+        console.error('Failed to save settings:', error);
+      }
+
+      return newSettings;
+    });
+
+    // 強制再レンダリングを発生させる
+    setForceRender(prev => prev + 1);
+  }, []);
+
   // 設定をリセット
   const resetToDefaults = useCallback(() => {
     // localStorageもクリア
@@ -193,6 +237,7 @@ export const TableColumnsProvider: React.FC<{ children: React.ReactNode }> = ({ 
     updateColumnWidth,
     reorderColumns,
     removeColumn,
+    addColumn,
     resetToDefaults,
     forceRender
   }), [
@@ -204,6 +249,7 @@ export const TableColumnsProvider: React.FC<{ children: React.ReactNode }> = ({ 
     updateColumnWidth,
     reorderColumns,
     removeColumn,
+    addColumn,
     resetToDefaults,
     forceRender
   ]);
