@@ -1,4 +1,4 @@
-import { DndContext, DragOverlay, closestCenter, pointerWithin, rectIntersection, type CollisionDetection } from '@dnd-kit/core';
+import { DndContext, DragOverlay, pointerWithin, type CollisionDetection } from '@dnd-kit/core';
 import { Text, Box } from '@primer/react';
 import React from 'react';
 
@@ -42,36 +42,28 @@ const KanbanBoard: React.FC = () => {
     openTaskDetail(task.id);
   };
 
-  // カスタム衝突検出アルゴリズム
+  // 厳密な衝突検出 - pointerWithinのみ使用で範囲外ドロップを正確に検出
   const collisionDetectionStrategy: CollisionDetection = (args) => {
-    // まずpointerWithinで正確な位置を検出
+    // pointerWithinのみを使用して最も厳密な検出
     const pointerIntersections = pointerWithin(args);
-    
-    if (pointerIntersections.length > 0) {
-      return pointerIntersections;
-    }
 
-    // フォールバックとしてrectIntersectionを使用
-    const rectIntersections = rectIntersection(args);
-    
-    if (rectIntersections.length > 0) {
+    if (pointerIntersections.length > 0) {
       // タスクとカラムが重なっている場合、タスクを優先
-      const taskIntersections = rectIntersections.filter(intersection =>
+      const taskIntersections = pointerIntersections.filter(intersection =>
         currentBoard?.columns.some(column =>
           column.tasks.some(task => task.id === intersection.id)
         )
       );
-      
+
       if (taskIntersections.length > 0) {
         return taskIntersections.slice(0, 1); // 最初のタスクを返す
       }
-      
-      return rectIntersections.slice(0, 1); // カラムを返す
+
+      return pointerIntersections.slice(0, 1); // カラムを返す
     }
 
-    // 最後の手段としてclosestCenterを使用
-    const closestIntersections = closestCenter(args);
-    return closestIntersections || [];
+    // 範囲外ドロップの場合は空配列を返す
+    return [];
   };
   
   return (
