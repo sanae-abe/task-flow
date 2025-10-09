@@ -7,6 +7,7 @@ import { useNotify } from './NotificationContext';
 interface LabelContextType {
   labels: Label[];
   getAllLabels: () => Label[];
+  getLabelUsageCount: (labelId: string) => number;
   createLabel: (name: string, color: string) => void;
   updateLabel: (labelId: string, updates: Partial<Label>) => void;
   deleteLabel: (labelId: string) => void;
@@ -51,6 +52,24 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
 
     return Array.from(labelMap.values());
   }, [boardState.boards]);
+
+  // ラベルの使用数を取得
+  const getLabelUsageCount = useCallback((labelId: string): number => {
+    if (!boardState.currentBoard) {
+      return 0;
+    }
+
+    let count = 0;
+    boardState.currentBoard.columns.forEach(column => {
+      column.tasks.forEach(task => {
+        if (task.labels?.some(label => label.id === labelId)) {
+          count++;
+        }
+      });
+    });
+
+    return count;
+  }, [boardState.currentBoard]);
 
   // ラベル作成
   const createLabel = useCallback((name: string, color: string) => {
@@ -168,12 +187,14 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
   const contextValue = useMemo(() => ({
     labels,
     getAllLabels,
+    getLabelUsageCount,
     createLabel,
     updateLabel,
     deleteLabel,
   }), [
     labels,
     getAllLabels,
+    getLabelUsageCount,
     createLabel,
     updateLabel,
     deleteLabel,

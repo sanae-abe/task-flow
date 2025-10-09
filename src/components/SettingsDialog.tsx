@@ -9,6 +9,7 @@ import UnifiedDialog from './shared/Dialog/UnifiedDialog';
 import ColorSelector from './ColorSelector';
 import LabelChip from './LabelChip';
 import { DataImportDialog } from './DataImportDialog';
+import { LabelManagementPanel } from './LabelManagement';
 
 interface SettingsDialogProps {
   isOpen: boolean;
@@ -21,6 +22,9 @@ interface LabelFormData {
   name: string;
   color: string;
 }
+
+// フィーチャーフラグ - 新しいラベル管理UIの使用
+const USE_NEW_LABEL_MANAGEMENT = true;
 
 const SettingsDialog: React.FC<SettingsDialogProps> = ({
   isOpen,
@@ -287,7 +291,15 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
 
           {/* メインコンテンツ */}
           <Box sx={{ flex: 1, pl: 3, overflow: 'auto' }}>
-            {activeTab === 'labels' ? renderLabelsTab() : renderDataTab()}
+            {activeTab === 'labels' ? (
+              USE_NEW_LABEL_MANAGEMENT ? (
+                <LabelManagementPanel />
+              ) : (
+                renderLabelsTab()
+              )
+            ) : (
+              renderDataTab()
+            )}
           </Box>
         </Box>
       </UnifiedDialog>
