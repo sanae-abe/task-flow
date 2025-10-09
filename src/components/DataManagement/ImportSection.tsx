@@ -154,11 +154,11 @@ export const ImportSection = memo<ImportSectionProps>(({ onImportSuccess }) => {
         <Box sx={{ display: 'flex', gap: 2 }}>
           {!state.selectedFile ? (
             <Button
-              variant="default"
+              variant="primary"
               onClick={dropZoneProps.handleFileSelect}
               disabled={state.isLoading}
               leadingVisual={FileIcon}
-              sx={{ flex: 1, justifyContent: 'center' }}
+              sx={{ width: '100%', backgroundColor: 'attention.emphasis' }}
             >
               JSONファイルを選択
             </Button>
@@ -180,7 +180,7 @@ export const ImportSection = memo<ImportSectionProps>(({ onImportSuccess }) => {
                 sx={{
                   flex: 1,
                   justifyContent: 'center',
-                  color: 'fg.onEmphasis !important'
+                  backgroundColor: 'attention.emphasis'
                 }}
               >
                 {state.isLoading ? 'インポート中...' : 'インポート実行'}

@@ -31,12 +31,10 @@ interface CollapsibleSectionProps {
 export const CollapsibleSection = memo<CollapsibleSectionProps>(({
   icon: Icon,
   title,
-  description,
   isExpanded,
   onToggle,
   iconBg = 'accent.subtle',
   iconColor = 'accent.fg',
-  expandedBg = 'accent.subtle',
   expandedBorderColor = 'accent.emphasis',
   children
 }) => (
@@ -48,13 +46,9 @@ export const CollapsibleSection = memo<CollapsibleSectionProps>(({
         border: '1px solid',
         borderColor: isExpanded ? expandedBorderColor : 'border.default',
         borderRadius: 2,
-        bg: isExpanded ? expandedBg : 'canvas.subtle',
+        bg: 'canvas.default',
         cursor: 'pointer',
-        transition: 'all 0.2s ease',
-        '&:hover': {
-          borderColor: expandedBorderColor,
-          bg: expandedBg
-        }
+        transition: 'all 0.2s ease'
       }}
       onClick={onToggle}
     >
@@ -65,23 +59,18 @@ export const CollapsibleSection = memo<CollapsibleSectionProps>(({
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              width: '32px',
-              height: '32px',
+              width: '36px',
+              height: '36px',
               borderRadius: 2,
-              bg: isExpanded ? iconColor : iconBg,
-              color: isExpanded ? 'fg.onEmphasis' : iconColor
+              bg: iconBg,
+              color: iconColor
             }}
           >
             <Icon size={16} />
           </Box>
-          <Box>
-            <Text sx={{ fontSize: 2, fontWeight: 'bold', mb: 1 }}>
-              {title}
-            </Text>
-            <Text sx={{ fontSize: 1, color: 'fg.muted' }}>
-              {isExpanded ? 'クリックして閉じる' : description}
-            </Text>
-          </Box>
+          <Text sx={{ fontSize: 2, fontWeight: 'bold' }}>
+            {title}
+          </Text>
         </Box>
         {isExpanded ? (
           <ChevronUpIcon size={20} />
@@ -89,22 +78,18 @@ export const CollapsibleSection = memo<CollapsibleSectionProps>(({
           <ChevronDownIcon size={20} />
         )}
       </Box>
+      {/* 展開時のコンテンツ */}
+      {isExpanded && (
+        <Box
+          sx={{
+            p: 3,
+            bg: 'canvas.default'
+          }}
+        >
+          {children}
+        </Box>
+      )}
     </Box>
-
-    {/* 展開時のコンテンツ */}
-    {isExpanded && (
-      <Box
-        sx={{
-          p: 3,
-          border: '1px solid',
-          borderColor: 'border.default',
-          borderRadius: 2,
-          bg: 'canvas.default'
-        }}
-      >
-        {children}
-      </Box>
-    )}
   </Box>
 ));
 

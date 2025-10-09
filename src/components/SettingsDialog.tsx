@@ -1,4 +1,4 @@
-import { GearIcon, TagIcon, DownloadIcon, UploadIcon, PlusIcon, TrashIcon, PencilIcon } from '@primer/octicons-react';
+import { DatabaseIcon, TagIcon, DownloadIcon, UploadIcon, PlusIcon, TrashIcon, PencilIcon } from '@primer/octicons-react';
 import { Box, Button, Text, IconButton, TextInput, FormControl, SplitPageLayout, NavList } from '@primer/react';
 import React, { useState, useCallback } from 'react';
 
@@ -260,6 +260,8 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
               position="start"
               width={{ min: '150px', max: '150px', default: '150px' }}
               padding="none"
+              divider="none"
+              sx={{ height: '100%' }}
             >
               <NavList>
                 <NavList.Item
@@ -276,7 +278,7 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
                   onClick={() => setActiveTab('data')}
                 >
                   <NavList.LeadingVisual>
-                    <GearIcon />
+                    <DatabaseIcon />
                   </NavList.LeadingVisual>
                   データ管理
                 </NavList.Item>

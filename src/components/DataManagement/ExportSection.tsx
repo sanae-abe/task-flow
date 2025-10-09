@@ -51,11 +51,18 @@ export const ExportSection = memo<ExportSectionProps>(({
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
       {/* セクション概要 */}
-      <Box>
-        <Text sx={{ fontWeight: 'bold', mb: 2, display: 'block' }}>
-          データのエクスポート
-        </Text>
-        <Text sx={{ fontSize: 1, color: 'fg.muted', mb: 3, display: 'block' }}>
+      <Box sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 2
+      }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <DatabaseIcon size={20} />
+          <Text sx={{ fontSize: 2, fontWeight: 'bold' }}>
+            データ管理
+          </Text>
+        </Box>
+        <Text sx={{ fontSize: 1, color: 'fg.muted', pb: 2 }}>
           タスク管理データをJSON形式でエクスポートできます。バックアップや他の環境への移行にご利用ください。
         </Text>
       </Box>
@@ -88,9 +95,7 @@ export const ExportSection = memo<ExportSectionProps>(({
             leadingVisual={DownloadIcon}
             onClick={onExportAll}
             sx={{
-              width: '100%',
-              justifyContent: 'center',
-              color: 'fg.onEmphasis !important'
+              backgroundColor: 'accent.fg',
             }}
           >
             全データをエクスポート
@@ -122,14 +127,10 @@ export const ExportSection = memo<ExportSectionProps>(({
           />
 
           <Button
-            variant="default"
+            variant="primary"
             leadingVisual={DownloadIcon}
             onClick={onExportCurrent}
             disabled={!state.currentBoard}
-            sx={{
-              width: '100%',
-              justifyContent: 'center'
-            }}
           >
             このボードをエクスポート
           </Button>

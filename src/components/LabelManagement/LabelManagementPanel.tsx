@@ -98,9 +98,7 @@ const LabelManagementPanel: React.FC = () => {
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        pb: 2,
-        borderBottom: '1px solid',
-        borderColor: 'border.default'
+        pb: 2
       }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           <TagIcon size={20} />
