@@ -181,8 +181,7 @@ const DialogFooter = memo<{
     display: 'flex',
     justifyContent: 'flex-end',
     gap: 2,
-    px: 3,
-    pb: 3
+    p: 3
   }}>
     {children}
   </Box>
@@ -203,6 +202,7 @@ const UnifiedDialog = memo<UnifiedDialogProps>(({
   size = 'medium',
   children,
   actions,
+  actionsLayout = 'standard',
   hideFooter = false,
   hideHeader = false,
   ariaLabelledBy,
@@ -289,7 +289,7 @@ const UnifiedDialog = memo<UnifiedDialogProps>(({
 
             {!hideFooter && actions && actions.length > 0 && (
               <DialogFooter>
-                <DialogActions actions={actions} />
+                <DialogActions actions={actions} layout={actionsLayout} />
               </DialogFooter>
             )}
           </Box>

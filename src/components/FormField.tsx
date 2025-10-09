@@ -4,9 +4,6 @@ import React, { memo } from 'react';
 import type { FormFieldProps, TextareaFieldProps, DateFieldProps, DateTimeFieldProps } from '../types/dialog';
 
 const FORM_STYLES = {
-  container: {
-    mb: 4
-  },
   input: {
     width: '100%'
   }
@@ -29,7 +26,7 @@ const FormField = memo<FormFieldProps>(({
   };
 
   return (
-    <FormControl id={id} sx={sx ? { ...FORM_STYLES.container, ...sx } : FORM_STYLES.container}>
+    <FormControl id={id} sx={sx}>
       {!hideLabel && (
         <FormControl.Label>
           {label}
@@ -64,7 +61,7 @@ export const TextareaField = memo<TextareaFieldProps>(({
   };
 
   return (
-    <FormControl id={id} sx={FORM_STYLES.container}>
+    <FormControl id={id}>
       <FormControl.Label>
         {label}
       </FormControl.Label>
@@ -97,7 +94,7 @@ export const DateField = memo<DateFieldProps>(({
   };
 
   return (
-    <FormControl id={id} sx={FORM_STYLES.container}>
+    <FormControl id={id}>
       <FormControl.Label>
         {label}
       </FormControl.Label>
@@ -126,7 +123,7 @@ export const DateTimeField = memo<DateTimeFieldProps>(({
   };
 
   return (
-    <FormControl id={id} sx={FORM_STYLES.container}>
+    <FormControl id={id}>
       <FormControl.Label>
         {label}
       </FormControl.Label>

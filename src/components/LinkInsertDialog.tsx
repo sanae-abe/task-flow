@@ -48,7 +48,7 @@ const LinkInsertDialog: React.FC<LinkInsertDialogProps> = ({
   }, [onCancel]);
 
   const handleKeyPress = useCallback((e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && isValidUrl) {
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey) && isValidUrl) {
       e.preventDefault();
       handleInsert();
     }

@@ -36,6 +36,8 @@ export interface DialogAction {
   loading?: boolean;
   /** アイコン（オプション） */
   icon?: React.ComponentType<{ size: number }>;
+  /** ボタンの位置（splitレイアウト用） */
+  position?: 'left' | 'right';
 }
 
 // 確認ダイアログ
@@ -110,6 +112,8 @@ export interface UnifiedDialogProps extends BaseUnifiedDialogProps {
   children?: React.ReactNode;
   /** アクション定義 */
   actions?: DialogAction[];
+  /** アクションレイアウト */
+  actionsLayout?: 'standard' | 'split';
   /** フッターを非表示にするか */
   hideFooter?: boolean;
   /** ヘッダーを非表示にするか */

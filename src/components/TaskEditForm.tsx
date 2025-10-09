@@ -1,4 +1,4 @@
-import { Box, Text, TextInput, Select } from '@primer/react';
+import { Text, TextInput, Select } from '@primer/react';
 import React, { memo, useCallback } from 'react';
 
 import type { Label, FileAttachment, RecurrenceConfig } from '../types';
@@ -61,7 +61,7 @@ const TaskEditForm = memo<TaskEditFormProps>(({
   }, [setHasTime, setDueTime]);
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', gap: 0 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', gap: 0 }}>
       <FormField
         id="task-title"
         label="タイトル"
@@ -73,7 +73,7 @@ const TaskEditForm = memo<TaskEditFormProps>(({
         required
       />
 
-      <Box sx={{ mb: 4 }}>
+      <div style={{ marginBottom: '16px' }}>
         <Text sx={{ fontSize: 1, mb: 2, display: 'block', fontWeight: '700' }}>
           説明（任意）
         </Text>
@@ -82,10 +82,10 @@ const TaskEditForm = memo<TaskEditFormProps>(({
           onChange={setDescription}
           placeholder="タスクの説明を入力"
         />
-      </Box>
+      </div>
 
-      <Box sx={{ mb: 4 }}>
-        <Box sx={{ mb: 2 }}>
+      <div style={{ marginBottom: '16px' }}>
+        <div style={{ marginBottom: '8px' }}>
           <Text sx={{ fontSize: 1, mb: 1, display: 'block', fontWeight: '700' }}>
             期限（任意）
           </Text>
@@ -97,8 +97,8 @@ const TaskEditForm = memo<TaskEditFormProps>(({
             sx={{ width: '100%' }}
             step="1"
           />
-        </Box>
-        <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+        </div>
+        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
           <TimeSelector
             hasTime={hasTime}
             dueTime={dueTime}
@@ -111,16 +111,16 @@ const TaskEditForm = memo<TaskEditFormProps>(({
             onRecurrenceChange={setRecurrence}
             disabled={!dueDate}
           />
-        </Box>
+        </div>
 
         {!dueDate && (
-          <Box sx={{ mt: 2, fontSize: 0, color: 'fg.muted' }}>
+          <div style={{ marginTop: '8px', fontSize: '12px', color: 'fg.muted' }}>
             ※期限を設定すると時刻設定と繰り返し設定が有効になります
-          </Box>
+          </div>
         )}
-      </Box>
+      </div>
 
-      <Box sx={{ mb: 4 }}>
+      <div style={{ marginBottom: '16px' }}>
         <Text sx={{ fontSize: 1, mb: 1, display: 'block', fontWeight: '700' }}>
           ステータス
         </Text>
@@ -135,9 +135,9 @@ const TaskEditForm = memo<TaskEditFormProps>(({
             </Select.Option>
           ))}
         </Select>
-      </Box>
+      </div>
 
-      <Box sx={{ mb: 4 }}>
+      <div style={{ marginBottom: '16px' }}>
         <Text sx={{ fontSize: 1, mb: 1, display: 'block', fontWeight: '700' }}>
           ラベル（任意）
         </Text>
@@ -145,9 +145,9 @@ const TaskEditForm = memo<TaskEditFormProps>(({
           selectedLabels={labels}
           onLabelsChange={setLabels}
         />
-      </Box>
+      </div>
 
-      <Box sx={{ mb: 4 }}>
+      <div>
         <Text sx={{ fontSize: 1, mb: 1, display: 'block', fontWeight: '700' }}>
           ファイル添付（任意）
         </Text>
@@ -156,8 +156,8 @@ const TaskEditForm = memo<TaskEditFormProps>(({
           onAttachmentsChange={setAttachments}
           showModeSelector={false}
         />
-      </Box>
-    </Box>
+      </div>
+    </div>
   );
 });
 

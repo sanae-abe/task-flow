@@ -1,11 +1,12 @@
-import { memo } from 'react';
+import { TrashIcon } from '@primer/octicons-react';
+import { memo, useMemo } from 'react';
 
 import { useTaskEdit } from '../hooks/useTaskEdit';
 import type { Task } from '../types';
+import type { DialogAction } from '../types/unified-dialog';
 
 import UnifiedDialog from './shared/Dialog/UnifiedDialog';
 import ConfirmDialog from './ConfirmDialog';
-import TaskEditActions from './TaskEditActions';
 import TaskEditForm from './TaskEditForm';
 
 interface TaskEditDialogProps {
@@ -58,6 +59,28 @@ const TaskEditDialog = memo<TaskEditDialogProps>(({
     onCancel
   });
 
+  const actions = useMemo<DialogAction[]>(() => [
+    {
+      label: '削除',
+      onClick: handleDelete,
+      variant: 'danger' as const,
+      icon: TrashIcon,
+      position: 'left'
+    },
+    {
+      label: 'キャンセル',
+      onClick: onCancel,
+      variant: 'default' as const,
+      position: 'right'
+    },
+    {
+      label: '保存',
+      onClick: handleSave,
+      variant: 'primary' as const,
+      disabled: !isValid,
+      position: 'right'
+    }
+  ], [handleDelete, onCancel, handleSave, isValid]);
 
   if (!isOpen || !task) {
     return null;
@@ -67,12 +90,13 @@ const TaskEditDialog = memo<TaskEditDialogProps>(({
     <>
       <UnifiedDialog
         variant="modal"
-        hideFooter
         isOpen={isOpen}
         title="タスクを編集"
         onClose={onCancel}
         size="xl"
         ariaLabelledBy="task-edit-dialog-title"
+        actions={actions}
+        actionsLayout="split"
       >
         <TaskEditForm
           title={title}
@@ -95,13 +119,6 @@ const TaskEditDialog = memo<TaskEditDialogProps>(({
           recurrence={recurrence}
           setRecurrence={setRecurrence}
           onKeyPress={handleKeyPress}
-        />
-        
-        <TaskEditActions
-          onSave={handleSave}
-          onDelete={handleDelete}
-          onCancel={onCancel}
-          isValid={isValid}
         />
       </UnifiedDialog>
 
