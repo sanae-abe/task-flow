@@ -3,7 +3,6 @@ import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import { useState } from 'react';
 
 import type { Task, KanbanBoard } from '../types';
-import { logger } from '../utils/logger';
 
 import { useTaskFinder } from './useTaskFinder';
 
@@ -39,39 +38,25 @@ export const useDragAndDrop = ({ board, onMoveTask, onSortToManual }: UseDragAnd
   const handleDragStart = (event: DragStartEvent): void => {
     const { active } = event;
     const task = findTaskById(active.id as string);
-    logger.debug('🎯 Drag Start:', { taskId: active.id, taskTitle: task?.title });
     setActiveTask(task);
   };
 
-  const handleDragOver = (event: DragOverEvent): void => {
-    const { active, over } = event;
-    logger.debug('👀 Drag Over:', {
-      activeId: active.id,
-      overId: over?.id,
-      overType: over ? (board?.columns.find(col => col.id === over.id) ? 'column' : 'task') : 'none'
-    });
+  const handleDragOver = (_event: DragOverEvent): void => {
+    // ドラッグオーバー処理（ログなし）
   };
 
   const handleDragEnd = (event: DragEndEvent): void => {
     const { active, over } = event;
+    
+    // ドラッグ終了時は常にactiveTaskをクリア
     setActiveTask(null);
 
-    logger.debug('🔄 Drag End Event:', { 
-      activeId: active.id, 
-      overId: over?.id,
-      overData: over?.data,
-      overRect: over?.rect
-    });
-
+    // 有効なドロップターゲットがない場合は@dnd-kitのデフォルト動作に任せる
     if (!over) {
-// eslint-disable-next-line no-console
-      logger.debug('❌ Early return: no over target detected');
       return;
     }
 
     if (!board) {
-// eslint-disable-next-line no-console
-      logger.debug('❌ Early return: no board available');
       return;
     }
 
@@ -79,11 +64,8 @@ export const useDragAndDrop = ({ board, onMoveTask, onSortToManual }: UseDragAnd
     const overId = over.id as string;
 
     const sourceColumnId = findTaskColumnId(activeTaskId);
-    logger.debug('📍 Source column found:', sourceColumnId);
     
     if (!sourceColumnId) {
-// eslint-disable-next-line no-console
-      logger.debug('❌ Source column not found');
       return;
     }
 
@@ -94,77 +76,45 @@ export const useDragAndDrop = ({ board, onMoveTask, onSortToManual }: UseDragAnd
     // カラムにドロップした場合
     const targetColumn = board.columns.find((col) => col.id === overId);
     if (targetColumn) {
-// eslint-disable-next-line no-console
-      logger.debug('📂 Dropped on column:', overId);
       targetColumnId = overId;
       targetIndex = targetColumn.tasks.length; // カラムの最後に追加
     } else {
       // タスクにドロップした場合、そのタスクの位置を特定
-// eslint-disable-next-line no-console
-      logger.debug('📋 Dropped on task:', overId);
       targetColumnId = findTaskColumnId(overId) ?? '';
       const targetCol = board.columns.find((col) => col.id === targetColumnId);
       
-// eslint-disable-next-line no-console
-      logger.debug('📍 Target column found:', targetColumnId);
-      
       if (!targetCol) {
-// eslint-disable-next-line no-console
-        logger.debug('❌ Target column not found');
         return;
       }
       
       const targetTaskIndex = targetCol.tasks.findIndex((task: Task) => task.id === overId);
-// eslint-disable-next-line no-console
-      logger.debug('📋 Target task index:', targetTaskIndex);
       
       if (targetTaskIndex === -1) {
-// eslint-disable-next-line no-console
-        logger.debug('❌ Target task not found');
         return;
       }
       
       // 同じカラム内でドラッグした場合の位置調整
       if (sourceColumnId === targetColumnId) {
-// eslint-disable-next-line no-console
-        logger.debug('🔄 Same column reorder');
         const sourceCol = board.columns.find((col) => col.id === sourceColumnId);
         if (!sourceCol) {
-// eslint-disable-next-line no-console
-          logger.debug('❌ Source column not found for reorder');
           return;
         }
         
         const oldIndex = sourceCol.tasks.findIndex((task: Task) => task.id === activeTaskId);
-// eslint-disable-next-line no-console
-        logger.debug('📋 Old index:', oldIndex, 'Target index:', targetTaskIndex);
         
         if (oldIndex === targetTaskIndex) {
-// eslint-disable-next-line no-console
-          logger.debug('↔️ Same position, no move needed');
           return;
         }
         
         targetIndex = targetTaskIndex;
       } else {
-// eslint-disable-next-line no-console
-        logger.debug('🔄 Cross-column move');
         targetIndex = targetTaskIndex;
       }
     }
 
     if (!targetColumnId) {
-// eslint-disable-next-line no-console
-      logger.debug('❌ No target column ID');
       return;
     }
-
-    logger.debug('✅ Moving task:', {
-      taskId: activeTaskId,
-      from: sourceColumnId,
-      to: targetColumnId,
-      index: targetIndex
-    });
 
     // ドラッグ&ドロップ時は手動ソートに切り替え
     if (onSortToManual) {
