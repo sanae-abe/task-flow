@@ -17,6 +17,10 @@ interface LabelContextType {
   createLabel: (name: string, color: string) => void;
   updateLabel: (labelId: string, updates: Partial<Label>) => void;
   deleteLabel: (labelId: string) => void;
+  
+  // ラベル共通化機能
+  copyLabelToCurrentBoard: (label: Label) => void;
+  isLabelInCurrentBoard: (labelId: string) => boolean;
 }
 
 const LabelContext = createContext<LabelContextType | undefined>(undefined);
@@ -261,6 +265,63 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
     }
   }, [boardState.currentBoard, boardDispatch, notify, getCurrentBoardLabelUsageCount]);
 
+  // ラベルが現在のボードにあるかチェック
+  const isLabelInCurrentBoard = useCallback((labelId: string): boolean => {
+    if (!boardState.currentBoard) {
+      return false;
+    }
+
+    return (boardState.currentBoard.labels || []).some(label => label.id === labelId);
+  }, [boardState.currentBoard]);
+
+  // 他のボードのラベルを現在のボードにコピー
+  const copyLabelToCurrentBoard = useCallback((label: Label) => {
+    if (!boardState.currentBoard) {
+      notify.error('ボードが選択されていません');
+      return;
+    }
+
+    // 既に現在のボードに存在するかチェック
+    if (isLabelInCurrentBoard(label.id)) {
+      notify.info(`ラベル「${label.name}」は既に現在のボードに存在します`);
+      return;
+    }
+
+    // 同じ名前のラベルが現在のボードに存在するかチェック
+    const existingLabels = boardState.currentBoard.labels || [];
+    const isDuplicate = existingLabels.some(existingLabel =>
+      existingLabel.name.toLowerCase() === label.name.toLowerCase()
+    );
+
+    if (isDuplicate) {
+      notify.error(`同じ名前のラベル「${label.name}」が既に現在のボードに存在します`);
+      return;
+    }
+
+    try {
+      // 新しいIDでラベルをコピー
+      const newLabel: Label = {
+        id: generateId(),
+        name: label.name,
+        color: label.color,
+      };
+
+      const updatedLabels = [...existingLabels, newLabel];
+
+      boardDispatch({
+        type: 'UPDATE_BOARD',
+        payload: {
+          boardId: boardState.currentBoard.id,
+          updates: { labels: updatedLabels }
+        }
+      });
+
+      notify.success(`ラベル「${label.name}」を現在のボードにコピーしました`);
+    } catch (error) {
+      notify.error('ラベルのコピーに失敗しました');
+    }
+  }, [boardState.currentBoard, boardDispatch, notify, isLabelInCurrentBoard]);
+
   // メモ化されたコンテキスト値
   const contextValue = useMemo(() => ({
     // 現在のボード対象
@@ -275,6 +336,10 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
     createLabel,
     updateLabel,
     deleteLabel,
+
+    // ラベル共通化機能
+    copyLabelToCurrentBoard,
+    isLabelInCurrentBoard,
   }), [
     labels,
     getCurrentBoardLabels,
@@ -283,6 +348,8 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
     createLabel,
     updateLabel,
     deleteLabel,
+    copyLabelToCurrentBoard,
+    isLabelInCurrentBoard,
   ]);
 
   return (

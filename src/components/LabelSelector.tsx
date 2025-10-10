@@ -1,4 +1,4 @@
-import { PlusIcon, TagIcon, CheckIcon } from '@primer/octicons-react';
+import { PlusIcon, TagIcon, CheckIcon, CopyIcon } from '@primer/octicons-react';
 import {
   Button,
   Box,
@@ -31,7 +31,7 @@ const LabelSelector = memo<LabelSelectorProps>(({
   selectedLabels,
   onLabelsChange
 }) => {
-  const { getAllLabels, createLabel } = useLabel();
+  const { getAllLabels, createLabel, isLabelInCurrentBoard, copyLabelToCurrentBoard } = useLabel();
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [pendingAutoSelect, setPendingAutoSelect] = useState<{ name: string; color: string } | null>(null);
 
@@ -44,6 +44,25 @@ const LabelSelector = memo<LabelSelectorProps>(({
     new Set(selectedLabels.map(label => label.id)),
     [selectedLabels]
   );
+
+  // ラベルを現在のボードとその他に分類
+  const { currentBoardLabels, otherBoardLabels } = useMemo(() => {
+    const current: Label[] = [];
+    const other: Label[] = [];
+
+    allLabels.forEach(label => {
+      if (isLabelInCurrentBoard(label.id)) {
+        current.push(label);
+      } else {
+        other.push(label);
+      }
+    });
+
+    return {
+      currentBoardLabels: current,
+      otherBoardLabels: other
+    };
+  }, [allLabels, isLabelInCurrentBoard]);
 
   // refを常に最新の値で更新
   useEffect(() => {
@@ -111,6 +130,14 @@ const LabelSelector = memo<LabelSelectorProps>(({
     setPendingAutoSelect(labelData);
   }, [createLabel]);
 
+  // 他のボードのラベルをコピーして選択
+  const handleCopyAndSelectLabel = useCallback((label: Label) => {
+    copyLabelToCurrentBoard(label);
+
+    // コピー後に自動選択（少し遅延させて新しいラベルが作成されるのを待つ）
+    setPendingAutoSelect({ name: label.name, color: label.color });
+  }, [copyLabelToCurrentBoard]);
+
   // スタイルオブジェクトをメモ化
   const selectedLabelsContainerStyles = useMemo(() => ({
     mb: 2,
@@ -167,36 +194,79 @@ const LabelSelector = memo<LabelSelectorProps>(({
           </ActionMenu.Button>
           <ActionMenu.Overlay>
             <ActionList>
-              {allLabels.map(label => {
-                const colors = getLabelColors(label.color);
-                const isSelected = selectedLabelIds.has(label.id);
-                return (
-                  <ActionList.Item
-                    key={label.id}
-                    onSelect={() => toggleLabel(label)}
-                  >
-                    <ActionList.LeadingVisual>
-                      <Box
-                        sx={{
-                          width: `${LABEL_CIRCLE_SIZE}px`,
-                          height: `${LABEL_CIRCLE_SIZE}px`,
-                          borderRadius: '50%',
-                          bg: colors.bg,
-                          border: '1px solid',
-                          borderColor: colors.color
-                        }}
-                        aria-label={`ラベル色: ${label.color}`}
-                      />
-                    </ActionList.LeadingVisual>
-                    {label.name}
-                    {isSelected && (
-                      <ActionList.TrailingVisual>
-                        <CheckIcon size={16} />
-                      </ActionList.TrailingVisual>
-                    )}
-                  </ActionList.Item>
-                );
-              })}
+              {/* 現在のボードのラベル */}
+              {currentBoardLabels.length > 0 && (
+                <>
+                  <ActionList.Group title="現在のボード">
+                    {currentBoardLabels.map(label => {
+                      const colors = getLabelColors(label.color);
+                      const isSelected = selectedLabelIds.has(label.id);
+                      return (
+                        <ActionList.Item
+                          key={label.id}
+                          onSelect={() => toggleLabel(label)}
+                        >
+                          <ActionList.LeadingVisual>
+                            <Box
+                              sx={{
+                                width: `${LABEL_CIRCLE_SIZE}px`,
+                                height: `${LABEL_CIRCLE_SIZE}px`,
+                                borderRadius: '50%',
+                                bg: colors.bg,
+                                border: '1px solid',
+                                borderColor: colors.color
+                              }}
+                              aria-label={`ラベル色: ${label.color}`}
+                            />
+                          </ActionList.LeadingVisual>
+                          {label.name}
+                          {isSelected && (
+                            <ActionList.TrailingVisual>
+                              <CheckIcon size={16} />
+                            </ActionList.TrailingVisual>
+                          )}
+                        </ActionList.Item>
+                      );
+                    })}
+                  </ActionList.Group>
+                </>
+              )}
+
+              {/* 他のボードのラベル */}
+              {otherBoardLabels.length > 0 && (
+                <>
+                  <ActionList.Divider />
+                  <ActionList.Group title="他のボード">
+                    {otherBoardLabels.map(label => {
+                      const colors = getLabelColors(label.color);
+                      return (
+                        <ActionList.Item
+                          key={label.id}
+                          onSelect={() => handleCopyAndSelectLabel(label)}
+                        >
+                          <ActionList.LeadingVisual>
+                            <Box
+                              sx={{
+                                width: `${LABEL_CIRCLE_SIZE}px`,
+                                height: `${LABEL_CIRCLE_SIZE}px`,
+                                borderRadius: '50%',
+                                bg: colors.bg,
+                                border: '1px solid',
+                                borderColor: colors.color
+                              }}
+                              aria-label={`ラベル色: ${label.color}`}
+                            />
+                          </ActionList.LeadingVisual>
+                          {label.name}
+                          <ActionList.TrailingVisual>
+                            <CopyIcon size={16} />
+                          </ActionList.TrailingVisual>
+                        </ActionList.Item>
+                      );
+                    })}
+                  </ActionList.Group>
+                </>
+              )}
 
               {allLabels.length === 0 && (
                 <ActionList.Item disabled>
