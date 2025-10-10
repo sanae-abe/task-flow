@@ -26,6 +26,7 @@ interface TaskContextType {
   toggleSubTask: (taskId: string, subTaskId: string) => void;
   updateSubTask: (taskId: string, subTaskId: string, title: string) => void;
   deleteSubTask: (taskId: string, subTaskId: string) => void;
+  reorderSubTasks: (taskId: string, oldIndex: number, newIndex: number) => void;
   checkOverdueRecurringTasks: () => void;
   findTaskById: (taskId: string) => Task | null;
   findTaskColumnId: (taskId: string) => string | null;
@@ -387,6 +388,24 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     updateTask(taskId, { subTasks: updatedSubTasks });
   }, [findTaskById, updateTask, notify]);
 
+  // サブタスクの順序変更
+  const reorderSubTasks = useCallback((taskId: string, oldIndex: number, newIndex: number) => {
+    const task = findTaskById(taskId);
+    if (!task || !task.subTasks) {
+      notify.error('タスクまたはサブタスクが見つかりません');
+      return;
+    }
+
+    // 配列の順序変更
+    const updatedSubTasks = [...task.subTasks];
+    const removed = updatedSubTasks.splice(oldIndex, 1)[0];
+    if (removed) {
+      updatedSubTasks.splice(newIndex, 0, removed);
+    }
+
+    updateTask(taskId, { subTasks: updatedSubTasks });
+  }, [findTaskById, updateTask, notify]);
+
   // 期限切れ繰り返しタスクのチェック
   const checkOverdueRecurringTasks = useCallback(() => {
     if (!boardState.currentBoard) {
@@ -468,6 +487,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     toggleSubTask,
     updateSubTask,
     deleteSubTask,
+    reorderSubTasks,
     checkOverdueRecurringTasks,
     findTaskById,
     findTaskColumnId,
@@ -482,6 +502,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     toggleSubTask,
     updateSubTask,
     deleteSubTask,
+    reorderSubTasks,
     checkOverdueRecurringTasks,
     findTaskById,
     findTaskColumnId,

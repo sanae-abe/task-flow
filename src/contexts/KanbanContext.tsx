@@ -38,6 +38,7 @@ interface KanbanContextType {
   toggleSubTask: (taskId: string, subTaskId: string) => void;
   updateSubTask: (taskId: string, subTaskId: string, title: string) => void;
   deleteSubTask: (taskId: string, subTaskId: string) => void;
+  reorderSubTasks: (taskId: string, oldIndex: number, newIndex: number) => void;
   // Column関連のメソッド
   createColumn: (title: string, insertIndex?: number) => void;
   updateColumn: (columnId: string, updates: Partial<Column>) => void;
@@ -100,6 +101,7 @@ export const KanbanProvider: React.FC<KanbanProviderProps> = ({ children }) => {
     toggleSubTask: task.toggleSubTask,
     updateSubTask: task.updateSubTask,
     deleteSubTask: task.deleteSubTask,
+    reorderSubTasks: task.reorderSubTasks,
     // Column関連のメソッド
     createColumn: board.createColumn,
     updateColumn: board.updateColumn,

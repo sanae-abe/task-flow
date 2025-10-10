@@ -33,7 +33,8 @@ const TaskDetailSidebar = memo<TaskDetailSidebarProps>(({ task, isOpen, onClose 
     handleAddSubTask,
     handleToggleSubTask,
     handleEditSubTask,
-    handleDeleteSubTask
+    handleDeleteSubTask,
+    handleReorderSubTasks
   } = useTaskActions(task, onClose);
 
   // スクロール位置をリセットするためのref
@@ -167,6 +168,7 @@ const TaskDetailSidebar = memo<TaskDetailSidebarProps>(({ task, isOpen, onClose 
             onToggleSubTask={handleToggleSubTask}
             onEditSubTask={handleEditSubTask}
             onDeleteSubTask={handleDeleteSubTask}
+            onReorderSubTasks={handleReorderSubTasks}
           />
           <TaskMetadata task={task} />
         </Box>

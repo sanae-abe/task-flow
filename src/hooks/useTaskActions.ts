@@ -19,13 +19,14 @@ interface UseTaskActionsReturn {
   readonly handleToggleSubTask: (subTaskId: string) => void;
   readonly handleEditSubTask: (subTaskId: string, newTitle: string) => void;
   readonly handleDeleteSubTask: (subTaskId: string) => void;
+  readonly handleReorderSubTasks: (oldIndex: number, newIndex: number) => void;
 }
 
 /**
  * タスクアクション（編集・削除）を管理するカスタムフック
  */
 export const useTaskActions = (task: Task | null, onClose?: () => void): UseTaskActionsReturn => {
-  const { deleteTask, updateTask, moveTask, addSubTask, toggleSubTask, updateSubTask, deleteSubTask, state } = useKanban();
+  const { deleteTask, updateTask, moveTask, addSubTask, toggleSubTask, updateSubTask, deleteSubTask, reorderSubTasks, state } = useKanban();
   const { column } = useTaskColumn(task);
   
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -93,6 +94,11 @@ export const useTaskActions = (task: Task | null, onClose?: () => void): UseTask
     deleteSubTask(task.id, subTaskId);
   }, [task, deleteSubTask]);
 
+  const handleReorderSubTasks = useCallback((oldIndex: number, newIndex: number) => {
+    if (!task) {return;}
+    reorderSubTasks(task.id, oldIndex, newIndex);
+  }, [task, reorderSubTasks]);
+
   return {
     showDeleteConfirm,
     showEditDialog,
@@ -106,6 +112,7 @@ export const useTaskActions = (task: Task | null, onClose?: () => void): UseTask
     handleAddSubTask,
     handleToggleSubTask,
     handleEditSubTask,
-    handleDeleteSubTask
+    handleDeleteSubTask,
+    handleReorderSubTasks
   };
 };

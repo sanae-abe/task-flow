@@ -1,6 +1,8 @@
-import { TrashIcon, CheckCircleIcon, CheckCircleFillIcon, PencilIcon, CheckIcon, XIcon } from '@primer/octicons-react';
+import { TrashIcon, CheckCircleIcon, CheckCircleFillIcon, PencilIcon, CheckIcon, XIcon, GrabberIcon } from '@primer/octicons-react';
 import { Box, Text, TextInput } from '@primer/react';
 import React, { useState, useRef, useEffect } from 'react';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 import type { SubTask } from '../types';
 import IconButton from './shared/IconButton';
@@ -21,6 +23,15 @@ const SubTaskItem: React.FC<SubTaskItemProps> = ({
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(subTask.title);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: subTask.id });
   const handleToggle = (event: React.MouseEvent) => {
     event.stopPropagation();
     onToggle(subTask.id);
@@ -68,8 +79,16 @@ const SubTaskItem: React.FC<SubTaskItemProps> = ({
     }
   }, [isEditing]);
 
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
   return (
     <Box
+      ref={setNodeRef}
+      style={style}
       sx={{
         display: 'flex',
         alignItems: 'center',
@@ -83,9 +102,41 @@ const SubTaskItem: React.FC<SubTaskItemProps> = ({
         },
         '&:hover .action-buttons': {
           opacity: '1 !important'
+        },
+        '&:hover .drag-handle': {
+          opacity: '1 !important'
         }
       }}
     >
+      {/* ドラッグハンドル */}
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+      <Box
+        {...attributes}
+        {...listeners}
+        className="drag-handle"
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: 24,
+          height: 24,
+          color: 'fg.muted',
+          opacity: 0,
+          transition: 'opacity 0.2s ease',
+          cursor: 'grab',
+          borderRadius: 1,
+          '&:active': {
+            cursor: 'grabbing'
+          },
+          '&:hover': {
+            bg: 'neutral.muted',
+            color: 'accent.fg'
+          }
+        }}
+      >
+        <GrabberIcon size={16} />
+      </Box>
+
       <IconButton
         icon={subTask.completed ? CheckCircleFillIcon : CheckCircleIcon}
         onClick={handleToggle}
@@ -99,6 +150,7 @@ const SubTaskItem: React.FC<SubTaskItemProps> = ({
           }
         }}
       />
+      </div>
 
       {isEditing ? (
         <>
