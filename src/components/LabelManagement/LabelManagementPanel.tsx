@@ -281,7 +281,7 @@ const LabelManagementPanel: React.FC = () => {
           {/* テーブルヘッダー */}
           <Box sx={{
             display: 'grid',
-            gridTemplateColumns: '1fr 150px 60px 50px',
+            gridTemplateColumns: '1fr 200px 60px 50px',
             gap: 2,
             p: 2,
             bg: 'canvas.subtle',
@@ -326,7 +326,7 @@ const LabelManagementPanel: React.FC = () => {
                 key={label.id}
                 sx={{
                   display: 'grid',
-                  gridTemplateColumns: '1fr 150px 60px 50px',
+                  gridTemplateColumns: '1fr 200px 60px 50px',
                   gap: 2,
                   p: 2,
                   alignItems: 'center',
@@ -352,7 +352,6 @@ const LabelManagementPanel: React.FC = () => {
                   whiteSpace: 'nowrap'
                 }}>
                   <Text sx={{
-                    fontSize: 0,
                     color: 'fg.muted',
                   }}>
                     {label.boardName}

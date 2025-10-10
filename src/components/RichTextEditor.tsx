@@ -28,6 +28,39 @@ interface RichTextEditorProps {
   minHeight?: string;
 }
 
+// スタイル定数の定義
+const EDITOR_STYLES = {
+  code: {
+    backgroundColor: '#f6f8fa',
+    color: '#e01e5a',
+    padding: '2px 4px',
+    borderRadius: '4px',
+    fontFamily: "'Monaco', 'Menlo', 'Consolas', monospace",
+    fontSize: '0.875em',
+    border: '1px solid #d0d7de',
+  },
+  codeBlock: {
+    margin: '0 0 8px',
+    border: '1px solid #d0d7de',
+    borderRadius: '6px',
+    padding: '8px',
+    fontFamily: "'SFMono-Regular', 'Consolas', 'Liberation Mono', 'Menlo', monospace",
+    fontSize: '13px',
+    lineHeight: '1.45',
+    overflowX: 'auto',
+    color: '#24292f',
+    backgroundColor: '#f6f8fa',
+  },
+} as const;
+
+// スタイル文字列生成関数
+const createInlineStyleString = (styles: Record<string, string | number>) => Object.entries(styles)
+    .map(([key, value]) => {
+      const cssKey = key.replace(/([A-Z])/g, '-$1').toLowerCase();
+      return `${cssKey}: ${value}`;
+    })
+    .join('; ');
+
 /**
  * シンプルなリッチテキストエディタコンポーネント
  * contentEditableベースで基本的なリッチテキスト機能を提供
@@ -57,8 +90,9 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
     }
   }, [value]);
 
-  // 外部クリック時に絵文字ピッカーを閉じる
+  // 統合されたグローバルイベントハンドラー
   useEffect(() => {
+    // 外部クリック時に絵文字ピッカーを閉じる
     const handleClickOutside = (event: MouseEvent) => {
       if (
         showEmojiPicker &&
@@ -70,22 +104,20 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [showEmojiPicker]);
-
-  // ESCキーで絵文字ピッカーを閉じる
-  useEffect(() => {
+    // ESCキーで絵文字ピッカーを閉じる
     const handleKeyDown = (event: KeyboardEvent) => {
       if (showEmojiPicker && event.key === 'Escape') {
         setShowEmojiPicker(false);
       }
     };
 
-    document.addEventListener('keydown', handleKeyDown);
+    if (showEmojiPicker) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('keydown', handleKeyDown);
+    }
+
     return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
       document.removeEventListener('keydown', handleKeyDown);
     };
   }, [showEmojiPicker]);
@@ -96,15 +128,92 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
     }
   }, [onChange]);
 
+  // モダンなHTML挿入関数
+  const insertHtmlAtCursor = useCallback((html: string) => {
+    const selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0) {
+      return;
+    }
+
+    try {
+      const range = selection.getRangeAt(0);
+      range.deleteContents();
+
+      // HTMLを解析してDOM要素として挿入
+      const div = document.createElement('div');
+      div.innerHTML = html;
+      const fragment = document.createDocumentFragment();
+
+      while (div.firstChild) {
+        fragment.appendChild(div.firstChild);
+      }
+
+      range.insertNode(fragment);
+      range.collapse(false);
+      selection.removeAllRanges();
+      selection.addRange(range);
+    } catch (error) {
+      console.warn('HTML挿入に失敗しました、フォールバックを使用:', error);
+      // フォールバック: document.execCommand
+      try {
+        document.execCommand('insertHTML', false, html);
+      } catch (fallbackError) {
+        console.error('フォールバック挿入も失敗しました:', fallbackError);
+      }
+    }
+  }, []);
+
+  // モダンなSelection APIベースのコマンド実行
   const executeCommand = useCallback((command: string, value?: string) => {
     if (editorRef.current) {
       editorRef.current.focus();
-      if (value) {
-        document.execCommand(command, false, value);
-      } else {
-        document.execCommand(command);
+
+      const selection = window.getSelection();
+      if (!selection) {return;}
+
+      try {
+        switch (command) {
+          case 'bold':
+            document.execCommand('bold', false);
+            break;
+          case 'italic':
+            document.execCommand('italic', false);
+            break;
+          case 'underline':
+            document.execCommand('underline', false);
+            break;
+          case 'strikeThrough':
+            document.execCommand('strikeThrough', false);
+            break;
+          case 'insertUnorderedList':
+            document.execCommand('insertUnorderedList', false);
+            break;
+          case 'insertOrderedList':
+            document.execCommand('insertOrderedList', false);
+            break;
+          default:
+            // フォールバック: 従来のdocument.execCommand
+            if (value) {
+              document.execCommand(command, false, value);
+            } else {
+              document.execCommand(command);
+            }
+        }
+        handleInput();
+      } catch (error) {
+        console.warn(`コマンド ${command} の実行に失敗しました:`, error);
+        // フォールバック処理
+        try {
+          if (value) {
+            document.execCommand(command, false, value);
+          } else {
+            document.execCommand(command);
+          }
+          handleInput();
+        } catch (fallbackError) {
+          console.error(`フォールバックコマンドも失敗しました:`, fallbackError);
+        }
       }
-      handleInput();
     }
   }, [handleInput]);
 
@@ -134,17 +243,19 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
       if (selection && selection.toString()) {
         // 選択されたテキストをインラインコードで囲む
         const selectedText = selection.toString();
-        const codeHtml = `<code style="background-color: #f6f8fa; color: #e01e5a; padding: 2px 4px; border-radius: 4px; font-family: 'Monaco', 'Menlo', 'Consolas', monospace; font-size: 0.875em; border: 1px solid #d0d7de;">${selectedText}</code>`;
-        document.execCommand('insertHTML', false, codeHtml);
+        const codeStyle = createInlineStyleString(EDITOR_STYLES.code);
+        const codeHtml = `<code style="${codeStyle}">${selectedText}</code>`;
+        insertHtmlAtCursor(codeHtml);
       } else {
         // 選択がない場合は空のインラインコードを挿入してカーソルを中に配置
-        const codeHtml = `<code style="background-color: #f6f8fa; color: #e01e5a; padding: 2px 4px; border-radius: 4px; font-family: 'Monaco', 'Menlo', 'Consolas', monospace; font-size: 0.875em; border: 1px solid #d0d7de;">コードを入力</code>`;
-        document.execCommand('insertHTML', false, codeHtml);
+        const codeStyle = createInlineStyleString(EDITOR_STYLES.code);
+        const codeHtml = `<code style="${codeStyle}">コードを入力</code>`;
+        insertHtmlAtCursor(codeHtml);
       }
 
       handleInput();
     }
-  }, [handleInput]);
+  }, [handleInput, insertHtmlAtCursor]);
 
   const insertCodeBlock = useCallback(() => {
     if (editorRef.current) {
@@ -157,12 +268,25 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
       }
 
       // コードブロックを挿入（GitHub風）
-      const codeBlockHtml = `<div style="margin: 0 0 8px; border: 1px solid #d0d7de !important; border-radius: 6px; padding: 8px; font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', 'Menlo', monospace; font-size: 13px; line-height: 1.45; overflow-x: auto; color: #24292f; background-color: #f6f8fa;"><pre style="margin: 0 !important; white-space: pre; overflow-wrap: normal; color: inherit; background: transparent; border: none; padding: 0;" contenteditable="true" spellcheck="false">${initialCode}</pre></div>`;
-      document.execCommand('insertHTML', false, codeBlockHtml);
+      const blockStyle = createInlineStyleString({
+        ...EDITOR_STYLES.codeBlock,
+        border: '1px solid #d0d7de !important'
+      });
+      const preStyle = createInlineStyleString({
+        margin: '0 !important',
+        whiteSpace: 'pre',
+        overflowWrap: 'normal',
+        color: 'inherit',
+        background: 'transparent',
+        border: 'none',
+        padding: '0'
+      });
+      const codeBlockHtml = `<div style="${blockStyle}"><pre style="${preStyle}" contenteditable="true" spellcheck="false">${initialCode}</pre></div>`;
+      insertHtmlAtCursor(codeBlockHtml);
 
       handleInput();
     }
-  }, [handleInput]);
+  }, [handleInput, insertHtmlAtCursor]);
 
   const handleEmojiPickerToggle = useCallback(() => {
     if (!showEmojiPicker) {
@@ -192,13 +316,13 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
       }
 
       // 絵文字を挿入
-      document.execCommand('insertHTML', false, emojiData.emoji);
+      insertHtmlAtCursor(emojiData.emoji);
 
       handleInput();
       setShowEmojiPicker(false);
       setSavedEmojiRange(null);
     }
-  }, [handleInput, savedEmojiRange]);
+  }, [handleInput, savedEmojiRange, insertHtmlAtCursor]);
 
   const handleLinkInsert = useCallback((url: string, linkText?: string) => {
     if (editorRef.current) {
@@ -216,11 +340,11 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
       if (selectedText) {
         // 選択されたテキストがある場合はそれをリンクに変換
         const linkHtml = `<a href="${url}" target="_blank" rel="noopener noreferrer">${linkText || selectedText}</a>`;
-        document.execCommand('insertHTML', false, linkHtml);
+        insertHtmlAtCursor(linkHtml);
       } else {
         // 選択がない場合は新しいリンクを挿入
         const linkHtml = `<a href="${url}" target="_blank" rel="noopener noreferrer">${linkText || url}</a>`;
-        document.execCommand('insertHTML', false, linkHtml);
+        insertHtmlAtCursor(linkHtml);
       }
 
       handleInput();
@@ -228,7 +352,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
     setShowLinkDialog(false);
     setSelectedText('');
     setSavedRange(null);
-  }, [selectedText, savedRange, handleInput]);
+  }, [selectedText, savedRange, handleInput, insertHtmlAtCursor]);
 
   // リンク編集用の関数
   const handleLinkEdit = useCallback((url: string, linkText?: string) => {
@@ -287,16 +411,56 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
         const escapedText = escapeHtml(plainText);
 
         // プレーンテキストとして挿入
-        document.execCommand('insertHTML', false, escapedText);
+        insertHtmlAtCursor(escapedText);
         handleInput();
       }
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error('ペースト操作でエラーが発生しました:', error);
-      // エラーが発生した場合は通常のペースト動作にフォールバック
-      // この場合はpreventDefaultを無効化できないため、ログのみ出力
+
+      // フォールバック: 基本的なテキスト挿入を試行
+      try {
+        const plainText = e.clipboardData.getData('text/plain');
+        if (plainText && plainText.trim() !== '') {
+          const selection = window.getSelection();
+          if (selection && selection.rangeCount > 0) {
+            const range = selection.getRangeAt(0);
+            range.deleteContents();
+
+            // プレーンテキストとして安全に挿入
+            const textNode = document.createTextNode(plainText);
+            range.insertNode(textNode);
+            range.setStartAfter(textNode);
+            range.collapse(true);
+
+            selection.removeAllRanges();
+            selection.addRange(range);
+
+            handleInput();
+          }
+        }
+      } catch (fallbackError) {
+        // eslint-disable-next-line no-console
+        console.error('フォールバックペーストも失敗しました:', fallbackError);
+
+        // 最終フォールバック: ユーザーにエラーを通知
+        if (editorRef.current) {
+          // エラー時は最低限のテキスト挿入を試行
+          try {
+            const textToInsert = e.clipboardData.getData('text/plain') || 'ペーストに失敗しました';
+            const tempDiv = document.createElement('div');
+            tempDiv.textContent = textToInsert;
+            editorRef.current.focus();
+            document.execCommand('insertHTML', false, tempDiv.innerHTML);
+            handleInput();
+          } catch (finalError) {
+            // eslint-disable-next-line no-console
+            console.error('最終フォールバックも失敗:', finalError);
+          }
+        }
+      }
     }
-  }, [escapeHtml, handleInput]);
+  }, [escapeHtml, handleInput, insertHtmlAtCursor]);
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     // コードブロック内でのEnterキーの処理
@@ -502,15 +666,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
             '& li': {
               margin: '4px 0',
             },
-            '& code': {
-              backgroundColor: '#f6f8fa',
-              color: '#e01e5a',
-              padding: '2px 4px',
-              borderRadius: '4px',
-              fontFamily: "'Monaco', 'Menlo', 'Consolas', monospace",
-              fontSize: '0.875em',
-              border: '1px solid #d0d7de',
-            },
+            '& code': EDITOR_STYLES.code,
             '& a': {
               color: 'accent.fg',
               textDecoration: 'none',
