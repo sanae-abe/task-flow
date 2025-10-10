@@ -20,6 +20,7 @@ type BoardAction =
   | { type: 'CREATE_COLUMN'; payload: { boardId: string; title: string; insertIndex?: number } }
   | { type: 'DELETE_COLUMN'; payload: { columnId: string } }
   | { type: 'UPDATE_COLUMN'; payload: { columnId: string; updates: Partial<Column> } }
+  | { type: 'MOVE_COLUMN'; payload: { columnId: string; direction: 'left' | 'right' } }
   | { type: 'IMPORT_BOARDS'; payload: { boards: KanbanBoard[]; replaceAll?: boolean } }
   | { type: 'REORDER_BOARDS'; payload: { boards: KanbanBoard[] } };
 
@@ -34,6 +35,7 @@ interface BoardContextType {
   createColumn: (title: string, insertIndex?: number) => void;
   deleteColumn: (columnId: string) => void;
   updateColumn: (columnId: string, updates: Partial<Column>) => void;
+  moveColumn: (columnId: string, direction: 'left' | 'right') => void;
   importBoards: (boards: KanbanBoard[], replaceAll?: boolean) => void;
   reorderBoards: (boards: KanbanBoard[]) => void;
 }
@@ -226,6 +228,52 @@ const boardReducer = (state: BoardState, action: BoardAction): BoardState => {
             ? { ...column, ...action.payload.updates }
             : column
         ),
+      });
+
+      return {
+        ...state,
+        boards: state.boards.map(board =>
+          board.id === updatedBoard.id ? updatedBoard : board
+        ),
+        currentBoard: updatedBoard,
+      };
+    }
+
+    case 'MOVE_COLUMN': {
+      if (!state.currentBoard) {
+        return state;
+      }
+
+      const columns = [...state.currentBoard.columns];
+      const currentIndex = columns.findIndex(column => column.id === action.payload.columnId);
+
+      if (currentIndex === -1) {
+        return state;
+      }
+
+      const direction = action.payload.direction;
+      let newIndex: number;
+
+      if (direction === 'left') {
+        newIndex = Math.max(0, currentIndex - 1);
+      } else {
+        newIndex = Math.min(columns.length - 1, currentIndex + 1);
+      }
+
+      // インデックスが同じ場合は移動しない
+      if (currentIndex === newIndex) {
+        return state;
+      }
+
+      // カラムを移動
+      const [movedColumn] = columns.splice(currentIndex, 1);
+      if (movedColumn) {
+        columns.splice(newIndex, 0, movedColumn);
+      }
+
+      const updatedBoard = updateBoardTimestamp({
+        ...state.currentBoard,
+        columns,
       });
 
       return {
@@ -583,6 +631,34 @@ const authenticateUser = async (email, password) => {
     notify.success('カラムを更新しました');
   }, [notify]);
 
+  const moveColumn = useCallback((columnId: string, direction: 'left' | 'right') => {
+    if (!state.currentBoard) {
+      notify.error('ボードが選択されていません');
+      return;
+    }
+
+    const columns = state.currentBoard.columns;
+    const currentIndex = columns.findIndex(column => column.id === columnId);
+
+    if (currentIndex === -1) {
+      notify.error('カラムが見つかりません');
+      return;
+    }
+
+    const isFirstColumn = currentIndex === 0;
+    const isLastColumn = currentIndex === columns.length - 1;
+
+    if ((direction === 'left' && isFirstColumn) || (direction === 'right' && isLastColumn)) {
+      const directionText = direction === 'left' ? '左' : '右';
+      notify.error(`これ以上${directionText}に移動できません`);
+      return;
+    }
+
+    dispatch({ type: 'MOVE_COLUMN', payload: { columnId, direction } });
+    const directionText = direction === 'left' ? '左' : '右';
+    notify.success(`カラムを${directionText}に移動しました`);
+  }, [state.currentBoard, notify]);
+
   const importBoards = useCallback((boards: KanbanBoard[], replaceAll = false) => {
     dispatch({ type: 'IMPORT_BOARDS', payload: { boards, replaceAll } });
     const message = replaceAll
@@ -612,10 +688,11 @@ const authenticateUser = async (email, password) => {
     createColumn,
     deleteColumn,
     updateColumn,
+    moveColumn,
     importBoards,
     reorderBoards,
     exportData
-  }), [state, dispatch, createBoard, setCurrentBoard, updateBoard, deleteBoard, createColumn, deleteColumn, updateColumn, importBoards, reorderBoards, exportData]);
+  }), [state, dispatch, createBoard, setCurrentBoard, updateBoard, deleteBoard, createColumn, deleteColumn, updateColumn, moveColumn, importBoards, reorderBoards, exportData]);
 
   return (
     <BoardContext.Provider value={value}>

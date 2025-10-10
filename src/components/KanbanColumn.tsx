@@ -4,6 +4,7 @@ import { Box } from '@primer/react';
 import React, { useMemo, useCallback } from 'react';
 
 import { useUI } from '../contexts/UIContext';
+import { useBoard } from '../contexts/BoardContext';
 import { useColumnState } from '../hooks/useColumnState';
 import type { Column, Task } from '../types';
 import { sortTasks } from '../utils/taskSort';
@@ -47,6 +48,8 @@ const COLUMN_STYLES = {
 
 interface KanbanColumnProps {
   readonly column: Column;
+  readonly columnIndex: number;
+  readonly totalColumns: number;
   readonly onTaskClick?: (task: Task) => void;
   readonly keyboardDragAndDrop?: {
     selectedTaskId: string | null;
@@ -92,8 +95,15 @@ const ColumnDialogs: React.FC<ColumnDialogsProps> = ({
   </>
 );
 
-const KanbanColumn: React.FC<KanbanColumnProps> = React.memo(({ column, onTaskClick, keyboardDragAndDrop }) => {
+const KanbanColumn: React.FC<KanbanColumnProps> = React.memo(({
+  column,
+  columnIndex,
+  totalColumns,
+  onTaskClick,
+  keyboardDragAndDrop
+}) => {
   const { taskFilter, sortOption, openTaskForm } = useUI();
+  const { moveColumn } = useBoard();
   const {
     showEditDialog,
     showDeleteConfirm,
@@ -120,6 +130,19 @@ const KanbanColumn: React.FC<KanbanColumnProps> = React.memo(({ column, onTaskCl
   const handleAddTaskClick = useCallback(() => {
     openTaskForm(undefined, column.id);
   }, [openTaskForm, column.id]);
+
+  // カラム移動のハンドラー
+  const handleMoveLeft = useCallback(() => {
+    moveColumn(column.id, 'left');
+  }, [moveColumn, column.id]);
+
+  const handleMoveRight = useCallback(() => {
+    moveColumn(column.id, 'right');
+  }, [moveColumn, column.id]);
+
+  // 移動可能かどうかの判定
+  const canMoveLeft = columnIndex > 0;
+  const canMoveRight = columnIndex < totalColumns - 1;
   
   return (
     <Box sx={COLUMN_STYLES.container}>
@@ -128,6 +151,10 @@ const KanbanColumn: React.FC<KanbanColumnProps> = React.memo(({ column, onTaskCl
         onTitleEdit={handleTitleEdit}
         onDeleteColumn={handleDeleteColumn}
         onAddTask={handleAddTaskClick}
+        onMoveLeft={handleMoveLeft}
+        onMoveRight={handleMoveRight}
+        canMoveLeft={canMoveLeft}
+        canMoveRight={canMoveRight}
       />
       
       <Box ref={setNodeRef} sx={COLUMN_STYLES.taskList}>
