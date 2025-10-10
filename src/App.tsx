@@ -14,8 +14,8 @@ import TaskCreateDialog from './components/TaskCreateDialog';
 import FirstTimeUserHint from './components/FirstTimeUserHint';
 import SettingsDialog from './components/SettingsDialog';
 import { useKanban } from './contexts/KanbanContext';
+import { useUI } from './contexts/UIContext';
 import AppProviders from './contexts/AppProviders';
-import { useHelp } from './hooks/useHelp';
 import { useDataSync } from './hooks/useDataSync';
 import { useViewRoute } from './hooks/useViewRoute';
 import { useTaskFinder } from './hooks/useTaskFinder';
@@ -38,8 +38,8 @@ const styles = {
 } as const;
 
 const AppContent: React.FC = () => {
-  const { state, closeTaskDetail } = useKanban();
-  const { isHelpOpen, openHelp, closeHelp } = useHelp();
+  const { state } = useKanban();
+  const { openHelp, closeHelp, closeTaskDetail, state: uiState } = useUI();
   const { findTaskById } = useTaskFinder(state.currentBoard);
   const { shouldShowHint, markAsExistingUser, markHintAsShown } = useFirstTimeUser();
   const { handlers } = useSubHeader();
@@ -52,14 +52,15 @@ const AppContent: React.FC = () => {
   useViewRoute();
 
   // 選択されたタスクを取得
-  const selectedTask = state.selectedTaskId ? findTaskById(state.selectedTaskId) : null;
+  const selectedTask = uiState.selectedTaskId ? findTaskById(uiState.selectedTaskId) : null;
 
   // 選択されたタスクが削除された場合の処理
   useEffect(() => {
-    if (state.selectedTaskId && !selectedTask && state.isTaskDetailOpen) {
+    if (uiState.selectedTaskId && !selectedTask && uiState.isTaskDetailOpen) {
       closeTaskDetail();
     }
-  }, [state.selectedTaskId, selectedTask, state.isTaskDetailOpen, closeTaskDetail]);
+  }, [uiState.selectedTaskId, selectedTask, uiState.isTaskDetailOpen, closeTaskDetail]);
+
 
   // ヒント表示時の処理
   const handleDismissHint = () => {
@@ -71,17 +72,23 @@ const AppContent: React.FC = () => {
   const openSettings = () => setIsSettingsOpen(true);
   const closeSettings = () => setIsSettingsOpen(false);
 
+  // 排他制御はUIContext内で処理されるため、シンプルに呼び出すだけ
+  const handleOpenHelp = () => {
+    openHelp();
+  };
+
+
 
   return (
     <div className="app" role="application" aria-label="TaskFlowアプリケーション">
       <div style={styles.fixedHeader}>
-        <Header onHelpClick={openHelp} onSettingsClick={openSettings} />
+        <Header onHelpClick={handleOpenHelp} onSettingsClick={openSettings} />
         <SubHeader />
       </div>
       <main
         aria-label={
-          state.viewMode === 'kanban' ? 'カンバンボード' :
-          state.viewMode === 'calendar' ? 'カレンダービュー' :
+          uiState.viewMode === 'kanban' ? 'カンバンボード' :
+          uiState.viewMode === 'calendar' ? 'カレンダービュー' :
           'テーブルビュー'
         }
         style={{
@@ -132,10 +139,10 @@ const AppContent: React.FC = () => {
         </>
       )}
       <NotificationContainer />
-      <HelpSidebar isOpen={isHelpOpen} onClose={closeHelp} />
+      <HelpSidebar isOpen={uiState.isHelpOpen} onClose={closeHelp} />
       <TaskDetailSidebar
         task={selectedTask}
-        isOpen={state.isTaskDetailOpen}
+        isOpen={uiState.isTaskDetailOpen}
         onClose={closeTaskDetail}
       />
       <TaskCreateDialog />

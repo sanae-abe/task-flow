@@ -10,6 +10,7 @@ interface UIState {
   selectedTaskId: string | null;
   isTaskDetailOpen: boolean;
   isTaskFormOpen: boolean;
+  isHelpOpen: boolean;
   taskFormDefaultDate?: Date;
   taskFormDefaultStatus?: string;
 }
@@ -22,6 +23,8 @@ type UIAction =
   | { type: 'CLOSE_TASK_DETAIL' }
   | { type: 'OPEN_TASK_FORM'; payload?: { defaultDate?: Date; defaultStatus?: string } }
   | { type: 'CLOSE_TASK_FORM' }
+  | { type: 'OPEN_HELP' }
+  | { type: 'CLOSE_HELP' }
   | { type: 'LOAD_SORT_OPTION'; payload: SortOption };
 
 interface UIContextType {
@@ -36,6 +39,8 @@ interface UIContextType {
   closeTaskDetail: () => void;
   openTaskForm: (defaultDate?: Date, defaultStatus?: string) => void;
   closeTaskForm: () => void;
+  openHelp: () => void;
+  closeHelp: () => void;
 }
 
 const UIContext = createContext<UIContextType | undefined>(undefined);
@@ -129,6 +134,7 @@ const uiReducer = (state: UIState, action: UIAction): UIState => {
         ...state,
         selectedTaskId: action.payload.taskId,
         isTaskDetailOpen: true,
+        isHelpOpen: false, // タスク詳細を開くときにヘルプを閉じる
       };
 
     case 'CLOSE_TASK_DETAIL':
@@ -136,6 +142,20 @@ const uiReducer = (state: UIState, action: UIAction): UIState => {
         ...state,
         selectedTaskId: null,
         isTaskDetailOpen: false,
+      };
+
+    case 'OPEN_HELP':
+      return {
+        ...state,
+        isHelpOpen: true,
+        isTaskDetailOpen: false, // ヘルプを開くときにタスク詳細を閉じる
+        selectedTaskId: null,
+      };
+
+    case 'CLOSE_HELP':
+      return {
+        ...state,
+        isHelpOpen: false,
       };
 
     case 'OPEN_TASK_FORM':
@@ -171,6 +191,7 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
     selectedTaskId: null,
     isTaskDetailOpen: false,
     isTaskFormOpen: false,
+    isHelpOpen: false,
   });
 
   // 初期データの読み込み
@@ -221,6 +242,14 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
     dispatch({ type: 'CLOSE_TASK_FORM' });
   }, []);
 
+  const openHelp = useCallback(() => {
+    dispatch({ type: 'OPEN_HELP' });
+  }, []);
+
+  const closeHelp = useCallback(() => {
+    dispatch({ type: 'CLOSE_HELP' });
+  }, []);
+
   // メモ化されたコンテキスト値
   const contextValue = useMemo(() => ({
     state,
@@ -234,6 +263,8 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
     closeTaskDetail,
     openTaskForm,
     closeTaskForm,
+    openHelp,
+    closeHelp,
   }), [
     state,
     setSortOption,
@@ -243,6 +274,8 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
     closeTaskDetail,
     openTaskForm,
     closeTaskForm,
+    openHelp,
+    closeHelp,
   ]);
 
   return (

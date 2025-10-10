@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useKanban } from '../contexts/KanbanContext';
 
 interface UseHelpReturn {
   isHelpOpen: boolean;
@@ -8,8 +9,13 @@ interface UseHelpReturn {
 
 export const useHelp = (): UseHelpReturn => {
   const [isHelpOpen, setIsHelpOpen] = useState(false);
+  const { state, closeTaskDetail } = useKanban();
 
   const openHelp = () => {
+    // ヘルプを開く前にタスク詳細が開いていたら閉じる
+    if (state.isTaskDetailOpen) {
+      closeTaskDetail();
+    }
     setIsHelpOpen(true);
   };
 
