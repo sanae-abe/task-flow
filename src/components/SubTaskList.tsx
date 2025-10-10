@@ -13,6 +13,7 @@ interface SubTaskListProps {
   subTasks: SubTask[];
   onAddSubTask: (title: string) => void;
   onToggleSubTask: (subTaskId: string) => void;
+  onEditSubTask: (subTaskId: string, newTitle: string) => void;
   onDeleteSubTask: (subTaskId: string) => void;
 }
 
@@ -20,6 +21,7 @@ const SubTaskList: React.FC<SubTaskListProps> = ({
   subTasks,
   onAddSubTask,
   onToggleSubTask,
+  onEditSubTask,
   onDeleteSubTask
 }) => {
   const { 
@@ -62,6 +64,7 @@ const SubTaskList: React.FC<SubTaskListProps> = ({
             key={subTask.id}
             subTask={subTask}
             onToggle={onToggleSubTask}
+            onEdit={onEditSubTask}
             onDelete={onDeleteSubTask}
           />
         ))}

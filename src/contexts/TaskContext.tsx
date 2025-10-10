@@ -24,6 +24,7 @@ interface TaskContextType {
   clearCompletedTasks: () => void;
   addSubTask: (taskId: string, title: string) => void;
   toggleSubTask: (taskId: string, subTaskId: string) => void;
+  updateSubTask: (taskId: string, subTaskId: string, title: string) => void;
   deleteSubTask: (taskId: string, subTaskId: string) => void;
   checkOverdueRecurringTasks: () => void;
   findTaskById: (taskId: string) => Task | null;
@@ -373,6 +374,18 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     const updatedSubTasks = task.subTasks.filter(subTask => subTask.id !== subTaskId);
     updateTask(taskId, { subTasks: updatedSubTasks });
   }, [findTaskById, updateTask, notify]);
+  const updateSubTask = useCallback((taskId: string, subTaskId: string, title: string) => {
+    const task = findTaskById(taskId);
+    if (!task || !task.subTasks) {
+      notify.error('タスクまたはサブタスクが見つかりません');
+      return;
+    }
+
+    const updatedSubTasks = task.subTasks.map(subTask =>
+      subTask.id === subTaskId ? { ...subTask, title: title.trim() } : subTask
+    );
+    updateTask(taskId, { subTasks: updatedSubTasks });
+  }, [findTaskById, updateTask, notify]);
 
   // 期限切れ繰り返しタスクのチェック
   const checkOverdueRecurringTasks = useCallback(() => {
@@ -453,6 +466,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     clearCompletedTasks,
     addSubTask,
     toggleSubTask,
+    updateSubTask,
     deleteSubTask,
     checkOverdueRecurringTasks,
     findTaskById,
@@ -466,6 +480,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     clearCompletedTasks,
     addSubTask,
     toggleSubTask,
+    updateSubTask,
     deleteSubTask,
     checkOverdueRecurringTasks,
     findTaskById,
