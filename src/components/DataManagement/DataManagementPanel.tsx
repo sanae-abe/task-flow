@@ -40,7 +40,7 @@ export const DataManagementPanel = memo<DataManagementPanelProps>(({
     <Box
       sx={{
         height: '1px',
-        bg: 'border.default',
+        bg: 'border.default'
       }}
     />
 

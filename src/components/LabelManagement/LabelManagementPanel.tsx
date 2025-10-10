@@ -316,7 +316,7 @@ const LabelManagementPanel: React.FC = () => {
             >
               使用数
             </SortableHeader>
-            <Text sx={{ textAlign: 'center', fontSize: 0  }}>操作</Text>
+            <Text sx={{ textAlign: 'center', fontSize: 0 }}>操作</Text>
           </Box>
 
           {/* テーブルボディ */}
@@ -370,7 +370,7 @@ const LabelManagementPanel: React.FC = () => {
                   sx={{
                     display: 'flex',
                     justifyContent: 'center',
-                    gap: 1,
+                    gap: 1
                   }}
                 >
                   <IconButton
