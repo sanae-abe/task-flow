@@ -37,6 +37,7 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
             width={{ min: '150px', max: '150px', default: '150px' }}
             padding="none"
             divider="none"
+            sx={{ pr: '8px' }}
           >
             <NavList>
               <NavList.Item
@@ -61,7 +62,7 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
           </SplitPageLayout.Pane>
 
           {/* メインコンテンツエリア */}
-          <SplitPageLayout.Content>
+          <SplitPageLayout.Content padding='none' sx={{ py: '8px', pr: '8px' }}>
             <Box sx={{ height: '100%', overflow: 'auto' }}>
               {activeTab === 'labels' ? (
                 <LabelManagementPanel />

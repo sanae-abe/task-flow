@@ -240,6 +240,7 @@ const LabelManagementPanel: React.FC = () => {
           variant="primary"
           leadingVisual={PlusIcon}
           onClick={handleCreate}
+          size="small"
           sx={{
             backgroundColor: 'accent.fg',
             transition: 'background-color 0.2s ease',
