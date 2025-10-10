@@ -5,12 +5,13 @@ import React, { useState } from 'react';
 import UnifiedDialog from './shared/Dialog/UnifiedDialog';
 import { LabelManagementPanel } from './LabelManagement';
 import { DataManagementPanel } from './DataManagement';
+import type { KanbanBoard } from '../types';
 
 interface SettingsDialogProps {
   isOpen: boolean;
   onClose: () => void;
   onExportData?: () => void;
-  onExportBoard?: () => void;
+  onExportBoard?: (board?: KanbanBoard) => void;
 }
 
 const SettingsDialog: React.FC<SettingsDialogProps> = ({

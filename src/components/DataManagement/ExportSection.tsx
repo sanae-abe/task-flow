@@ -1,9 +1,10 @@
-import { memo, useMemo } from 'react';
-import { Box, Text, Button } from '@primer/react';
+import { memo, useMemo, useState, useCallback } from 'react';
+import { Box, Text, Button, FormControl, Select } from '@primer/react';
 import { DownloadIcon, DatabaseIcon, ProjectIcon } from '@primer/octicons-react';
 
 import { useKanban } from '../../contexts/KanbanContext';
 import { calculateDataStatistics, calculateCurrentBoardStatistics } from '../../utils/dataStatistics';
+import type { KanbanBoard } from '../../types';
 import { DataStatistics } from './DataStatistics';
 import { CollapsibleSection } from './CollapsibleSection';
 
@@ -13,8 +14,8 @@ import { CollapsibleSection } from './CollapsibleSection';
 interface ExportSectionProps {
   /** 全データエクスポート時のコールバック */
   onExportAll?: () => void;
-  /** 現在のボードエクスポート時のコールバック */
-  onExportCurrent?: () => void;
+  /** ボード選択エクスポート時のコールバック */
+  onExportCurrent?: (board?: KanbanBoard) => void;
 }
 
 export const ExportSection = memo<ExportSectionProps>(({
@@ -22,6 +23,7 @@ export const ExportSection = memo<ExportSectionProps>(({
   onExportCurrent
 }) => {
   const { state } = useKanban();
+  const [selectedBoardId, setSelectedBoardId] = useState<string>('');
 
   // 全体の統計情報を計算
   const allDataStatistics = useMemo(
@@ -29,13 +31,23 @@ export const ExportSection = memo<ExportSectionProps>(({
     [state.boards, state.labels]
   );
 
-  // 現在のボードの統計情報を計算
-  const currentBoardStatistics = useMemo(
-    () => calculateCurrentBoardStatistics(state.currentBoard),
-    [state.currentBoard]
+  // 選択されたボードの統計情報を計算
+  const selectedBoard = useMemo(
+    () => state.boards.find(board => board.id === selectedBoardId),
+    [state.boards, selectedBoardId]
   );
 
-  const currentBoardName = state.currentBoard?.title || '未選択';
+  const selectedBoardStatistics = useMemo(
+    () => selectedBoard ? calculateCurrentBoardStatistics(selectedBoard) : null,
+    [selectedBoard]
+  );
+
+  // ボード選択時のエクスポート処理
+  const handleExportSelectedBoard = useCallback(() => {
+    if (selectedBoard && onExportCurrent) {
+      onExportCurrent(selectedBoard);
+    }
+  }, [selectedBoard, onExportCurrent]);
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
@@ -91,31 +103,51 @@ export const ExportSection = memo<ExportSectionProps>(({
         </Box>
       </CollapsibleSection>
 
-      {/* 現在のボードエクスポート - 折りたたみ式 */}
+      {/* ボード選択エクスポート - 折りたたみ式 */}
       <CollapsibleSection
         icon={ProjectIcon}
-        title="現在のボードをエクスポート"
+        title="ボードを選択してエクスポート"
         iconBg="var(--bgColor-success-muted)"
         iconColor="var(--fgColor-success)"
       >
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
           <Text sx={{ fontSize: 1, color: 'fg.muted' }}>
-            選択中のボード「{currentBoardName}」のタスクと関連データのみをエクスポートします。
+            エクスポートするボードを選択して、そのボードのタスクと関連データをエクスポートします。
           </Text>
 
-          <DataStatistics
-            statistics={currentBoardStatistics}
-            title="エクスポートされるデータ"
-            variant="success"
-          />
+          {/* ボード選択 */}
+          <FormControl>
+            <FormControl.Label>エクスポートするボード</FormControl.Label>
+            <Select
+              value={selectedBoardId}
+              onChange={(e) => setSelectedBoardId(e.target.value)}
+              sx={{ width: '100%' }}
+              placeholder="ボードを選択してください"
+            >
+              {state.boards.map(board => (
+                <Select.Option key={board.id} value={board.id}>
+                  {board.title}
+                </Select.Option>
+              ))}
+            </Select>
+          </FormControl>
+
+          {/* 選択されたボードの統計情報 */}
+          {selectedBoardStatistics && selectedBoard && (
+            <DataStatistics
+              statistics={selectedBoardStatistics}
+              title={`「${selectedBoard.title}」のデータ`}
+              variant="success"
+            />
+          )}
 
           <Button
             variant="primary"
             leadingVisual={DownloadIcon}
-            onClick={onExportCurrent}
-            disabled={!state.currentBoard}
+            onClick={handleExportSelectedBoard}
+            disabled={!selectedBoard}
           >
-            このボードをエクスポート
+            選択したボードをエクスポート
           </Button>
         </Box>
       </CollapsibleSection>
