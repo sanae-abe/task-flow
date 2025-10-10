@@ -273,7 +273,7 @@ const LabelManagementPanel: React.FC = () => {
           {/* テーブルヘッダー */}
           <Box sx={{
             display: 'grid',
-            gridTemplateColumns: '1fr 150px 50px 50px',
+            gridTemplateColumns: '1fr 150px 60px 50px',
             gap: 2,
             p: 2,
             bg: 'canvas.subtle',
@@ -308,7 +308,7 @@ const LabelManagementPanel: React.FC = () => {
             >
               使用数
             </SortableHeader>
-            <Text sx={{ textAlign: 'center' }}>操作</Text>
+            <Text sx={{ textAlign: 'center', fontSize: 0  }}>操作</Text>
           </Box>
 
           {/* テーブルボディ */}
@@ -318,7 +318,7 @@ const LabelManagementPanel: React.FC = () => {
                 key={label.id}
                 sx={{
                   display: 'grid',
-                  gridTemplateColumns: '1fr 150px 50px 50px',
+                  gridTemplateColumns: '1fr 150px 60px 50px',
                   gap: 2,
                   p: 2,
                   alignItems: 'center',
@@ -363,8 +363,6 @@ const LabelManagementPanel: React.FC = () => {
                     display: 'flex',
                     justifyContent: 'center',
                     gap: 1,
-                    opacity: 0,
-                    transition: 'opacity 0.2s ease'
                   }}
                 >
                   <IconButton
