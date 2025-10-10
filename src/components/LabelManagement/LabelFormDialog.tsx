@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Box, TextInput, FormControl } from '@primer/react';
+import { Box, TextInput, FormControl, Select } from '@primer/react';
 
 import type { Label } from '../../types';
 import { useLabel } from '../../contexts/LabelContext';
+import { useBoard } from '../../contexts/BoardContext';
 import UnifiedDialog from '../shared/Dialog/UnifiedDialog';
 import ColorSelector from '../ColorSelector';
 import LabelChip from '../LabelChip';
@@ -10,15 +11,17 @@ import LabelChip from '../LabelChip';
 interface LabelFormDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave?: (labelData: { name: string; color: string }) => void;
+  onSave?: (labelData: { name: string; color: string; boardId?: string }) => void;
   onLabelCreated?: (label: Label) => void;
   label?: Label | null;
   mode: 'create' | 'edit';
+  enableBoardSelection?: boolean; // 全ボード管理モードでのみtrue
 }
 
 interface LabelFormData {
   name: string;
   color: string;
+  boardId?: string;
 }
 
 const LabelFormDialog: React.FC<LabelFormDialogProps> = ({
@@ -26,12 +29,15 @@ const LabelFormDialog: React.FC<LabelFormDialogProps> = ({
   onClose,
   onSave,
   label,
-  mode
+  mode,
+  enableBoardSelection = false
 }) => {
   const { getAllLabels } = useLabel();
+  const { state: boardState } = useBoard();
   const [formData, setFormData] = useState<LabelFormData>({
     name: '',
-    color: '#0969da'
+    color: '#0969da',
+    boardId: undefined
   });
   const [errors, setErrors] = useState<{ name?: string }>({});
   const [isLoading, setIsLoading] = useState(false);
@@ -42,18 +48,20 @@ const LabelFormDialog: React.FC<LabelFormDialogProps> = ({
       if (mode === 'edit' && label) {
         setFormData({
           name: label.name,
-          color: label.color
+          color: label.color,
+          boardId: undefined // 編集時はボード選択不要
         });
       } else {
         setFormData({
           name: '',
-          color: '#0969da'
+          color: '#0969da',
+          boardId: enableBoardSelection && boardState.boards.length > 0 ? boardState.boards[0]?.id : undefined
         });
       }
       setErrors({});
       setIsLoading(false);
     }
-  }, [isOpen, mode, label]);
+  }, [isOpen, mode, label, enableBoardSelection, boardState.boards]);
 
   // バリデーション（統合版）
   const validateForm = useCallback(() => {
@@ -96,7 +104,8 @@ const LabelFormDialog: React.FC<LabelFormDialogProps> = ({
     try {
       const labelData = {
         name: formData.name.trim(),
-        color: formData.color
+        color: formData.color,
+        boardId: formData.boardId
       };
 
       // create/edit両方でonSaveを使用
@@ -199,6 +208,25 @@ const LabelFormDialog: React.FC<LabelFormDialogProps> = ({
             </FormControl.Validation>
           )}
         </FormControl>
+
+        {/* ボード選択 */}
+        {enableBoardSelection && mode === 'create' && (
+          <FormControl>
+            <FormControl.Label>作成先ボード</FormControl.Label>
+            <Select
+              value={formData.boardId || ''}
+              onChange={(e) => setFormData(prev => ({ ...prev, boardId: e.target.value }))}
+              sx={{ width: '100%' }}
+              disabled={isLoading}
+            >
+              {boardState.boards.map(board => (
+                <Select.Option key={board.id} value={board.id}>
+                  {board.title}
+                </Select.Option>
+              ))}
+            </Select>
+          </FormControl>
+        )}
 
         {/* カラーセレクター */}
         <FormControl>

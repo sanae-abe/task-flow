@@ -72,6 +72,7 @@ const LabelManagementPanel: React.FC = () => {
     getAllLabelsWithBoardInfo,
     getAllLabelUsageCount,
     createLabel,
+    createLabelInBoard,
     updateLabel,
     deleteLabelFromAllBoards
   } = useLabel();
@@ -197,14 +198,20 @@ const LabelManagementPanel: React.FC = () => {
   }, []);
 
   // ラベル保存（作成・編集）
-  const handleSave = useCallback((labelData: { name: string; color: string }) => {
+  const handleSave = useCallback((labelData: { name: string; color: string; boardId?: string }) => {
     if (editDialog.mode === 'create') {
-      createLabel(labelData.name, labelData.color);
+      if (labelData.boardId) {
+        // 指定されたボードに作成
+        createLabelInBoard(labelData.name, labelData.color, labelData.boardId);
+      } else {
+        // 現在のボードに作成（従来通り）
+        createLabel(labelData.name, labelData.color);
+      }
     } else if (editDialog.label) {
       updateLabel(editDialog.label.id, labelData);
     }
     handleCloseEditDialog();
-  }, [editDialog.mode, editDialog.label, createLabel, updateLabel, handleCloseEditDialog]);
+  }, [editDialog.mode, editDialog.label, createLabel, createLabelInBoard, updateLabel, handleCloseEditDialog]);
 
   // ラベル削除確認（全ボードから削除）
   const handleConfirmDelete = useCallback(() => {
@@ -394,6 +401,7 @@ const LabelManagementPanel: React.FC = () => {
         onSave={handleSave}
         label={editDialog.label}
         mode={editDialog.mode}
+        enableBoardSelection
       />
 
       {/* 削除確認ダイアログ */}

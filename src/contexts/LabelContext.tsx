@@ -18,6 +18,7 @@ interface LabelContextType {
 
   // ラベル操作
   createLabel: (name: string, color: string) => void;
+  createLabelInBoard: (name: string, color: string, boardId: string) => void;
   updateLabel: (labelId: string, updates: Partial<Label>) => void;
   deleteLabel: (labelId: string) => void;
   deleteLabelFromAllBoards: (labelId: string) => void;
@@ -151,6 +152,60 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
       notify.error('ラベルの作成に失敗しました');
     }
   }, [boardState.currentBoard, boardDispatch, notify]);
+
+  // 指定されたボードにラベルを作成
+  const createLabelInBoard = useCallback((name: string, color: string, boardId: string) => {
+    // 指定されたボードを取得
+    const targetBoard = boardState.boards.find(board => board.id === boardId);
+    if (!targetBoard) {
+      notify.error('指定されたボードが見つかりません');
+      return;
+    }
+
+    const trimmedName = name.trim();
+    if (!trimmedName) {
+      notify.error('ラベル名が空です');
+      return;
+    }
+
+    if (trimmedName.length > 50) {
+      notify.error('ラベル名は50文字以下で入力してください');
+      return;
+    }
+
+    // 指定されたボードでの重複チェック
+    const existingLabels = targetBoard.labels || [];
+    const isDuplicate = existingLabels.some(label =>
+      label.name.toLowerCase() === trimmedName.toLowerCase()
+    );
+
+    if (isDuplicate) {
+      notify.error(`ボード「${targetBoard.title}」に同じ名前のラベルが既に存在します`);
+      return;
+    }
+
+    try {
+      const newLabel: Label = {
+        id: generateId(),
+        name: trimmedName,
+        color,
+      };
+
+      const updatedLabels = [...existingLabels, newLabel];
+
+      boardDispatch({
+        type: 'UPDATE_BOARD',
+        payload: {
+          boardId: targetBoard.id,
+          updates: { labels: updatedLabels }
+        }
+      });
+
+      notify.success(`ボード「${targetBoard.title}」にラベル「${trimmedName}」を作成しました`);
+    } catch (error) {
+      notify.error('ラベルの作成に失敗しました');
+    }
+  }, [boardState.boards, boardDispatch, notify]);
 
   // ラベル更新（原子性を考慮した統合更新）
   const updateLabel = useCallback((labelId: string, updates: Partial<Label>) => {
@@ -451,6 +506,7 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
 
     // ラベル操作
     createLabel,
+    createLabelInBoard,
     updateLabel,
     deleteLabel,
     deleteLabelFromAllBoards,
@@ -467,6 +523,7 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
     getLabelUsageCountInBoard,
     getAllLabelUsageCount,
     createLabel,
+    createLabelInBoard,
     updateLabel,
     deleteLabel,
     deleteLabelFromAllBoards,
