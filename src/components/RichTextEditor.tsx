@@ -82,6 +82,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const emojiButtonRef = useRef<HTMLButtonElement>(null);
   const [savedEmojiRange, setSavedEmojiRange] = useState<Range | null>(null);
+  const [isToolbarInteraction, setIsToolbarInteraction] = useState(false);
 
   // 値が変更されたときにエディタの内容を更新
   useEffect(() => {
@@ -389,7 +390,6 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
     }
   }, []);
 
-
   // HTMLエスケープ処理を行う関数
   const escapeHtml = useCallback((text: string): string => text
     .replace(/&/g, '&amp;')
@@ -523,13 +523,35 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
 
   const handleFocus = useCallback(() => {
     setIsEditorFocused(true);
+    setIsToolbarInteraction(false);
   }, []);
 
   const handleBlur = useCallback(() => {
-    setIsEditorFocused(false);
+    // ツールバーとの相互作用中でなければフォーカスを解除
+    setTimeout(() => {
+      if (!isToolbarInteraction) {
+        setIsEditorFocused(false);
+      }
+    }, 100);
+  }, [isToolbarInteraction]);
+
+  // ツールバーボタンクリック時のハンドラー
+  const handleToolbarButtonClick = useCallback((action: () => void) => {
+    setIsToolbarInteraction(true);
+    action();
+    // エディタにフォーカスを戻す
+    setTimeout(() => {
+      if (editorRef.current) {
+        editorRef.current.focus();
+      }
+      setIsToolbarInteraction(false);
+    }, 50);
   }, []);
 
   const showPlaceholder = !value || value.trim() === '';
+  
+  // ツールバー表示条件を改善
+  const shouldShowToolbar = !disabled && (isEditorFocused || value.trim() !== '' || isToolbarInteraction);
 
   return (
     <Box
@@ -547,7 +569,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
       }}
     >
       {/* ツールバー */}
-      {!disabled && (isEditorFocused || value) && (
+      {shouldShowToolbar && (
         <Box
           sx={{
             p: 2,
@@ -561,28 +583,28 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
               size="small"
               variant="invisible"
               icon={BoldIcon}
-              onClick={() => executeCommand('bold')}
+              onClick={() => handleToolbarButtonClick(() => executeCommand('bold'))}
               aria-label="太字 (Ctrl+B)"
             />
             <IconButton
               size="small"
               variant="invisible"
               icon={ItalicIcon}
-              onClick={() => executeCommand('italic')}
+              onClick={() => handleToolbarButtonClick(() => executeCommand('italic'))}
               aria-label="斜体 (Ctrl+I)"
             />
             <IconButton
               size="small"
               variant="invisible"
               icon={UnderlineIcon}
-              onClick={() => executeCommand('underline')}
+              onClick={() => handleToolbarButtonClick(() => executeCommand('underline'))}
               aria-label="下線 (Ctrl+U)"
             />
             <IconButton
               size="small"
               variant="invisible"
               icon={StrikethroughIcon}
-              onClick={() => executeCommand('strikeThrough')}
+              onClick={() => handleToolbarButtonClick(() => executeCommand('strikeThrough'))}
               aria-label="取り消し線 (Ctrl+Shift+X)"
             />
             <Box sx={{ width: '1px', bg: 'border.default', mx: 1 }} />
@@ -590,21 +612,21 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
               size="small"
               variant="invisible"
               icon={LinkIcon}
-              onClick={insertLink}
+              onClick={() => handleToolbarButtonClick(insertLink)}
               aria-label="リンク (Ctrl+K)"
             />
             <IconButton
               size="small"
               variant="invisible"
               icon={CodeIcon}
-              onClick={insertCode}
+              onClick={() => handleToolbarButtonClick(insertCode)}
               aria-label="インラインコード (Ctrl+`)"
             />
             <IconButton
               size="small"
               variant="invisible"
               icon={FileCodeIcon}
-              onClick={insertCodeBlock}
+              onClick={() => handleToolbarButtonClick(insertCodeBlock)}
               aria-label="コードブロック (Ctrl+Shift+`)"
             />
             <Box sx={{ width: '1px', bg: 'border.default', mx: 1 }} />
@@ -612,14 +634,14 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
               size="small"
               variant="invisible"
               icon={ListUnorderedIcon}
-              onClick={() => executeCommand('insertUnorderedList')}
+              onClick={() => handleToolbarButtonClick(() => executeCommand('insertUnorderedList'))}
               aria-label="箇条書きリスト"
             />
             <IconButton
               size="small"
               variant="invisible"
               icon={ListOrderedIcon}
-              onClick={() => executeCommand('insertOrderedList')}
+              onClick={() => handleToolbarButtonClick(() => executeCommand('insertOrderedList'))}
               aria-label="番号付きリスト"
             />
             <Box sx={{ width: '1px', bg: 'border.default', mx: 1 }} />
@@ -628,7 +650,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
               size="small"
               variant="invisible"
               icon={SmileyIcon}
-              onClick={handleEmojiPickerToggle}
+              onClick={() => handleToolbarButtonClick(handleEmojiPickerToggle)}
               aria-label="絵文字を挿入"
             />
           </Box>
