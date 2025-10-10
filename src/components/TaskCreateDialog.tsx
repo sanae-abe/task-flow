@@ -160,7 +160,7 @@ const TaskCreateDialog = memo(() => {
 
         <div style={{ width: '100%', marginBottom: '24px' }}>
           <FormControl>
-            <FormControl.Label>説明</FormControl.Label>
+            <FormControl.Label>説明（任意）</FormControl.Label>
             <RichTextEditor
               value={description}
               onChange={setDescription}
@@ -171,7 +171,7 @@ const TaskCreateDialog = memo(() => {
 
         <div style={{ marginBottom: '24px' }}>
           <FormControl>
-            <FormControl.Label>期限</FormControl.Label>
+            <FormControl.Label>期限（任意）</FormControl.Label>
             <div style={{ width: '100%' }}>
               <TextInput
                 type="date"
@@ -204,7 +204,7 @@ const TaskCreateDialog = memo(() => {
 
         <div style={{ marginBottom: '24px' }}>
           <FormControl>
-            <FormControl.Label>ラベル</FormControl.Label>
+            <FormControl.Label>ラベル（任意）</FormControl.Label>
             <LabelSelector
               selectedLabels={labels}
               onLabelsChange={setLabels}
@@ -214,7 +214,7 @@ const TaskCreateDialog = memo(() => {
 
         <div>
           <FormControl>
-            <FormControl.Label>ファイル添付</FormControl.Label>
+            <FormControl.Label>ファイル添付（任意）</FormControl.Label>
             <FileUploader
               attachments={attachments}
               onAttachmentsChange={setAttachments}
