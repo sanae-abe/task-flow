@@ -125,6 +125,7 @@ const LabelManagementPanel: React.FC = () => {
           variant="primary"
           leadingVisual={PlusIcon}
           onClick={handleCreate}
+          sx={{ backgroundColor: 'accent.fg' }}
         >
           ラベルを作成
         </Button>

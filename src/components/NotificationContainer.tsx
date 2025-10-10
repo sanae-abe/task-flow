@@ -11,7 +11,7 @@ const containerStyles: React.CSSProperties = {
   top: '20px',
   left: '50%',
   transform: 'translateX(-50%)',
-  zIndex: 1100,
+  zIndex: 15000, // ダイアログ（z-index: 9999/10000）より高く設定
   pointerEvents: 'none',
   display: 'flex',
   flexDirection: 'column',

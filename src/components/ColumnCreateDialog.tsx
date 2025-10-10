@@ -67,15 +67,17 @@ const ColumnCreateDialog = memo<ColumnCreateDialogProps>(({
       closeOnBackdropClick
     >
       <div>
-        <FormField
-          id="column-title-input"
-          label="カラム名"
-          value={title}
-          placeholder="カラム名を入力"
-          onChange={setTitle}
-          autoFocus
-          required
-        />
+        <div style={{ marginBottom: '24px' }}>
+          <FormField
+            id="column-title-input"
+            label="カラム名"
+            value={title}
+            placeholder="カラム名を入力"
+            onChange={setTitle}
+            autoFocus
+            required
+          />
+        </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
           <FormControl.Label htmlFor="insert-position-select">
             挿入位置

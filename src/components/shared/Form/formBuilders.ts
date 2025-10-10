@@ -91,7 +91,7 @@ export const createTaskFormFields = (
       type: 'text',
       label: 'タイトル',
       value: values.title,
-      placeholder: 'タスクタイトルを入力',
+      placeholder: 'タスクのタイトルを入力',
       onChange: handlers.setTitle as (value: unknown) => void,
       onKeyDown: options.onKeyPress,
       autoFocus: true,

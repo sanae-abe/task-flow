@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback, memo, useMemo } from 'react';
 import type { Label as LabelType, FileAttachment, RecurrenceConfig } from '../types';
 import type { DialogAction } from '../types/unified-dialog';
 import { useKanban } from '../contexts/KanbanContext';
+import { useNotify } from '../contexts/NotificationContext';
 
 import UnifiedDialog from './shared/Dialog/UnifiedDialog';
 import FileUploader from './FileUploader';
@@ -19,6 +20,7 @@ const TaskCreateDialog = memo(() => {
     closeTaskForm,
     createTask,
   } = useKanban();
+  const notify = useNotify();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [dueDate, setDueDate] = useState('');
@@ -90,8 +92,11 @@ const TaskCreateDialog = memo(() => {
         recurrence
       );
       closeTaskForm();
+    } else {
+      // カラムが存在しない場合のエラーハンドリング
+      notify.error('タスクを作成するためのカラムが存在しません。最初にカラムを作成してください。');
     }
-  }, [title, description, dueDate, dueTime, hasTime, labels, attachments, recurrence, createTask, closeTaskForm, state.currentBoard, state.taskFormDefaultStatus]);
+  }, [title, description, dueDate, dueTime, hasTime, labels, attachments, recurrence, createTask, closeTaskForm, state.currentBoard, state.taskFormDefaultStatus, notify]);
 
   const handleKeyPress = useCallback((event: React.KeyboardEvent) => {
     if (event.key === 'Escape') {
@@ -140,31 +145,33 @@ const TaskCreateDialog = memo(() => {
         }}
         onKeyDown={handleKeyPress}
       >
-        <FormField
-          id="task-title"
-          label="タイトル"
-          value={title}
-          placeholder="タスクのタイトルを入力..."
-          onChange={setTitle}
-          onKeyDown={handleKeyPress}
-          autoFocus
-          required
-        />
+        <div style={{ width: '100%', marginBottom: '24px' }}>
+          <FormField
+            id="task-title"
+            label="タイトル"
+            value={title}
+            placeholder="タスクのタイトルを入力"
+            onChange={setTitle}
+            onKeyDown={handleKeyPress}
+            autoFocus
+            required
+          />
+        </div>
 
-        <div style={{ width: '100%', marginBottom: '16px' }}>
+        <div style={{ width: '100%', marginBottom: '24px' }}>
           <FormControl>
             <FormControl.Label>説明</FormControl.Label>
             <RichTextEditor
               value={description}
               onChange={setDescription}
-              placeholder="タスクの詳細を入力..."
+              placeholder="タスクの説明を入力"
             />
           </FormControl>
         </div>
 
-        <div style={{ marginTop: '8px', marginBottom: '16px' }}>
+        <div style={{ marginBottom: '24px' }}>
           <FormControl>
-            <FormControl.Label>期限日</FormControl.Label>
+            <FormControl.Label>期限</FormControl.Label>
             <div style={{ width: '100%' }}>
               <TextInput
                 type="date"
@@ -195,7 +202,7 @@ const TaskCreateDialog = memo(() => {
           </FormControl>
         </div>
 
-        <div style={{ marginTop: '8px', marginBottom: '16px' }}>
+        <div style={{ marginBottom: '24px' }}>
           <FormControl>
             <FormControl.Label>ラベル</FormControl.Label>
             <LabelSelector
@@ -205,7 +212,7 @@ const TaskCreateDialog = memo(() => {
           </FormControl>
         </div>
 
-        <div style={{ marginTop: '8px' }}>
+        <div>
           <FormControl>
             <FormControl.Label>ファイル添付</FormControl.Label>
             <FileUploader
