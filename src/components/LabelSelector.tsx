@@ -5,9 +5,8 @@ import {
   ActionMenu,
   ActionList
 } from '@primer/react';
-import { useState, useCallback, useMemo, memo } from 'react';
+import { useState, useCallback, useMemo, memo, useRef, useEffect } from 'react';
 
-import { useKanban } from '../contexts/KanbanContext';
 import { useLabel } from '../contexts/LabelContext';
 import type { Label } from '../types';
 import { getLabelColors } from '../utils/labelHelpers';
@@ -32,15 +31,24 @@ const LabelSelector = memo<LabelSelectorProps>(({
   selectedLabels,
   onLabelsChange
 }) => {
-  const { getAllLabels } = useKanban();
-  const { createLabel } = useLabel();
+  const { getAllLabels, createLabel } = useLabel();
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+
+  // selectedLabelsの最新値を追跡するref
+  const selectedLabelsRef = useRef<Label[]>(selectedLabels);
+  const onLabelsChangeRef = useRef<(labels: Label[]) => void>(onLabelsChange);
 
   const allLabels = useMemo(() => getAllLabels(), [getAllLabels]);
   const selectedLabelIds = useMemo(() =>
     new Set(selectedLabels.map(label => label.id)),
     [selectedLabels]
   );
+
+  // refを常に最新の値で更新
+  useEffect(() => {
+    selectedLabelsRef.current = selectedLabels;
+    onLabelsChangeRef.current = onLabelsChange;
+  });
 
   // ダイアログ操作
   const handleAddDialogClose = useCallback(() => {
@@ -75,17 +83,23 @@ const LabelSelector = memo<LabelSelectorProps>(({
     // ダイアログを閉じる
     setIsAddDialogOpen(false);
 
-    // 新しく作成されたラベルを選択状態に追加するため、少し遅延後に処理
+    // 非同期でラベルが作成されるのを待って自動選択
     setTimeout(() => {
-      const updatedLabels = getAllLabels();
-      const createdLabel = updatedLabels.find(label =>
+      const allCurrentLabels = getAllLabels();
+      const createdLabel = allCurrentLabels.find((label: Label) =>
         label.name === labelData.name && label.color === labelData.color
       );
-      if (createdLabel && !selectedLabels.some(selected => selected.id === createdLabel.id)) {
-        onLabelsChange([...selectedLabels, createdLabel]);
+
+      if (createdLabel) {
+        const currentSelectedLabels = selectedLabelsRef.current;
+        const isAlreadySelected = currentSelectedLabels.some((selected: Label) => selected.id === createdLabel.id);
+
+        if (!isAlreadySelected) {
+          onLabelsChangeRef.current([...currentSelectedLabels, createdLabel]);
+        }
       }
-    }, 100);
-  }, [createLabel, getAllLabels, selectedLabels, onLabelsChange]);
+    }, 100); // 100ms後に実行
+  }, [createLabel, getAllLabels]);
 
   // スタイルオブジェクトをメモ化
   const selectedLabelsContainerStyles = useMemo(() => ({

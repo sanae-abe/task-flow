@@ -71,7 +71,7 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
     });
 
     return Array.from(labelMap.values());
-  }, [boardState.boards]);
+  }, [boardState.boards, boardState.currentBoard]); // currentBoardも依存配列に追加
 
   // 現在のボードでのラベル使用数を取得
   const getCurrentBoardLabelUsageCount = useCallback((labelId: string): number => {
