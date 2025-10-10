@@ -175,7 +175,6 @@ export const ImportSection = memo<ImportSectionProps>(({ onImportSuccess }) => {
                 sx={{
                   flex: 1,
                   justifyContent: 'center',
-                  backgroundColor: 'attention.emphasis'
                 }}
               >
                 {state.isLoading ? 'インポート中...' : 'インポート実行'}

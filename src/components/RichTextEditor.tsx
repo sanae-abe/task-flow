@@ -36,6 +36,8 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
   const [showLinkDialog, setShowLinkDialog] = useState(false);
   const [selectedText, setSelectedText] = useState('');
   const [savedRange, setSavedRange] = useState<Range | null>(null);
+  const [editingLink, setEditingLink] = useState<HTMLAnchorElement | null>(null);
+  const [showLinkEditDialog, setShowLinkEditDialog] = useState(false);
 
   // 値が変更されたときにエディタの内容を更新
   useEffect(() => {
@@ -147,6 +149,41 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
     setSelectedText('');
     setSavedRange(null);
   }, [selectedText, savedRange, handleInput]);
+
+  // リンク編集用の関数
+  const handleLinkEdit = useCallback((url: string, linkText?: string) => {
+    if (editingLink && editorRef.current) {
+      editorRef.current.focus();
+
+      // リンクの内容を更新
+      editingLink.href = url.startsWith('http') ? url : `https://${url}`;
+      editingLink.textContent = linkText || url;
+
+      handleInput();
+    }
+    setShowLinkEditDialog(false);
+    setEditingLink(null);
+  }, [editingLink, handleInput]);
+
+  // リンククリックハンドラ
+  const handleLinkClick = useCallback((e: React.MouseEvent) => {
+    const target = e.target as HTMLElement;
+
+    // aタグかその子要素がクリックされた場合
+    const linkElement = target.closest('a');
+    if (linkElement) {
+      e.preventDefault();
+
+      // Ctrl/Cmd キーが押されている場合は新しいタブで開く
+      if (e.ctrlKey || e.metaKey) {
+        window.open(linkElement.href, '_blank', 'noopener,noreferrer');
+      } else {
+        // 通常クリックの場合は編集モードに切り替え
+        setEditingLink(linkElement);
+        setShowLinkEditDialog(true);
+      }
+    }
+  }, []);
 
 
   // HTMLエスケープ処理を行う関数
@@ -347,6 +384,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           onPaste={handlePaste}
           onFocus={handleFocus}
           onBlur={handleBlur}
+          onClick={handleLinkClick}
           suppressContentEditableWarning
           sx={{
             minHeight: 'inherit',
@@ -374,6 +412,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
             '& a': {
               color: 'accent.fg',
               textDecoration: 'none',
+              cursor: 'pointer',
               '&:hover': {
                 color: 'accent.emphasis',
                 textDecoration: 'underline',
@@ -435,7 +474,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
               overflow: 'hidden',
             }}
           >
-            リッチテキストエディタ。Ctrl+Bで太字、Ctrl+Iで斜体、Ctrl+Uで下線、Ctrl+Kでリンク、Ctrl+`でコード、Ctrl+Shift+`でコードブロックを挿入できます。ペーストはプレーンテキストとして貼り付けられます。
+            リッチテキストエディタ。Ctrl+Bで太字、Ctrl+Iで斜体、Ctrl+Uで下線、Ctrl+Kでリンク、Ctrl+`でコード、Ctrl+Shift+`でコードブロックを挿入できます。リンクをクリックで編集、Ctrl+クリックで新しいタブで開きます。ペーストはプレーンテキストとして貼り付けられます。
           </Text>
         )}
       </Box>
@@ -449,6 +488,19 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           setSelectedText('');
           setSavedRange(null);
         }}
+      />
+
+      {/* リンク編集ダイアログ */}
+      <LinkInsertDialog
+        isOpen={showLinkEditDialog}
+        onInsert={handleLinkEdit}
+        onCancel={() => {
+          setShowLinkEditDialog(false);
+          setEditingLink(null);
+        }}
+        initialUrl={editingLink?.href || ''}
+        initialText={editingLink?.textContent || ''}
+        title="リンクを編集"
       />
 
     </Box>
