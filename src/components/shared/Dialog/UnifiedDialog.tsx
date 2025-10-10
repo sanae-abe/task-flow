@@ -32,8 +32,7 @@ const getDialogStyles = (variant: DialogVariant, size: DialogSize) => {
         flexDirection: 'column' as const,
         bg: 'canvas.default',
         boxShadow: 'shadow.large',
-        minWidth: '400px',
-        maxWidth: '640px',
+        width: '90vw',
         maxHeight: '90vh',
         borderRadius: 'var(--borderRadius-large, var(--borderRadius-large, .75rem))',
         animation: 'dialog-scale-fade-in 200ms cubic-bezier(0.33, 1, 0.68, 1)'
@@ -66,8 +65,6 @@ const getDialogStyles = (variant: DialogVariant, size: DialogSize) => {
         bg: 'canvas.default',
         boxShadow: 'shadow.large',
         padding: '0.5rem',
-        minWidth: '400px',
-        maxWidth: '640px',
         maxHeight: '90vh',
         overflowY: 'auto',
         borderRadius: 'var(--borderRadius-large, var(--borderRadius-large, .75rem))',
@@ -96,8 +93,7 @@ const getDialogStyles = (variant: DialogVariant, size: DialogSize) => {
         bg: 'canvas.default',
         boxShadow: 'shadow.large',
         padding: '0.5rem',
-        minWidth: '400px',
-        maxWidth: '640px',
+        width: '90vw',
         maxHeight: '90vh',
         overflowY: 'auto',
         borderRadius: 'var(--borderRadius-large)',
@@ -120,7 +116,10 @@ const getDialogStyles = (variant: DialogVariant, size: DialogSize) => {
 
   return {
     backdrop: variantStyles[variant].backdrop,
-    container: variantStyles[variant].container,
+    container: {
+      ...variantStyles[variant].container,
+      ...sizeStyles[size]
+    },
     content: {
       ...variantStyles[variant].content,
       ...sizeStyles[size]
