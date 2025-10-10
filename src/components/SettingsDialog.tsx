@@ -35,10 +35,10 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
           {/* サイドバー（ナビゲーション） */}
           <SplitPageLayout.Pane
             position="start"
-            width={{ min: '150px', max: '150px', default: '150px' }}
+            width={{ min: '150px', max: '200px', default: '200px' }}
             padding="none"
             divider="none"
-            sx={{ pr: '8px' }}
+            sx={{ pr: '16px' }}
           >
             <NavList>
               <NavList.Item
