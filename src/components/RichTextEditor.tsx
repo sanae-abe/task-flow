@@ -1,6 +1,7 @@
 import { Box, Text, IconButton } from '@primer/react';
-import { BoldIcon, ItalicIcon, ListUnorderedIcon, ListOrderedIcon, LinkIcon, CodeIcon, FileCodeIcon } from '@primer/octicons-react';
+import { BoldIcon, ItalicIcon, ListUnorderedIcon, ListOrderedIcon, LinkIcon, CodeIcon, FileCodeIcon, SmileyIcon } from '@primer/octicons-react';
 import React, { useRef, useCallback, useEffect, useState } from 'react';
+import EmojiPicker, { EmojiClickData, EmojiStyle } from 'emoji-picker-react';
 
 import LinkInsertDialog from './LinkInsertDialog';
 
@@ -38,6 +39,9 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
   const [savedRange, setSavedRange] = useState<Range | null>(null);
   const [editingLink, setEditingLink] = useState<HTMLAnchorElement | null>(null);
   const [showLinkEditDialog, setShowLinkEditDialog] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const emojiButtonRef = useRef<HTMLButtonElement>(null);
+  const [savedEmojiRange, setSavedEmojiRange] = useState<Range | null>(null);
 
   // 値が変更されたときにエディタの内容を更新
   useEffect(() => {
@@ -45,6 +49,39 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
       editorRef.current.innerHTML = value;
     }
   }, [value]);
+
+  // 外部クリック時に絵文字ピッカーを閉じる
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        showEmojiPicker &&
+        emojiButtonRef.current &&
+        !emojiButtonRef.current.contains(event.target as Node) &&
+        !(event.target as Element).closest('[data-emoji-picker]')
+      ) {
+        setShowEmojiPicker(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showEmojiPicker]);
+
+  // ESCキーで絵文字ピッカーを閉じる
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (showEmojiPicker && event.key === 'Escape') {
+        setShowEmojiPicker(false);
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [showEmojiPicker]);
 
   const handleInput = useCallback(() => {
     if (editorRef.current && onChange) {
@@ -119,6 +156,42 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
       handleInput();
     }
   }, [handleInput]);
+
+  const handleEmojiPickerToggle = useCallback(() => {
+    if (!showEmojiPicker) {
+      // 絵文字ピッカーを開く前にカーソル位置を保存
+      const selection = window.getSelection();
+      if (selection && selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0);
+        setSavedEmojiRange(range.cloneRange());
+      } else {
+        setSavedEmojiRange(null);
+      }
+    }
+    setShowEmojiPicker(!showEmojiPicker);
+  }, [showEmojiPicker]);
+
+  const handleEmojiClick = useCallback((emojiData: EmojiClickData) => {
+    if (editorRef.current) {
+      editorRef.current.focus();
+
+      // 保存されたカーソル位置を復元
+      if (savedEmojiRange) {
+        const selection = window.getSelection();
+        if (selection) {
+          selection.removeAllRanges();
+          selection.addRange(savedEmojiRange);
+        }
+      }
+
+      // 絵文字を挿入
+      document.execCommand('insertHTML', false, emojiData.emoji);
+
+      handleInput();
+      setShowEmojiPicker(false);
+      setSavedEmojiRange(null);
+    }
+  }, [handleInput, savedEmojiRange]);
 
   const handleLinkInsert = useCallback((url: string, linkText?: string) => {
     if (editorRef.current) {
@@ -285,6 +358,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
   return (
     <Box
       sx={{
+        position: 'relative',
         border: '1px solid',
         borderColor: 'border.default',
         borderRadius: 2,
@@ -364,6 +438,15 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
               icon={ListOrderedIcon}
               onClick={() => executeCommand('insertOrderedList')}
               aria-label="番号付きリスト"
+            />
+            <Box sx={{ width: '1px', bg: 'border.default', mx: 1 }} />
+            <IconButton
+              ref={emojiButtonRef}
+              size="small"
+              variant="invisible"
+              icon={SmileyIcon}
+              onClick={handleEmojiPickerToggle}
+              aria-label="絵文字を挿入"
             />
           </Box>
         </Box>
@@ -478,6 +561,61 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           </Text>
         )}
       </Box>
+
+      {/* 絵文字ピッカー */}
+      {showEmojiPicker && (
+        <>
+          {/* 絵文字ピッカー本体 */}
+          <Box
+            data-emoji-picker
+            sx={{
+              position: 'fixed',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              zIndex: 9999,
+              border: '1px solid',
+              borderColor: 'border.default',
+              borderRadius: 3,
+              backgroundColor: 'canvas.default',
+              boxShadow: '0 20px 80px rgba(0, 0, 0, 0.2), 0 10px 40px rgba(0, 0, 0, 0.15), 0 5px 20px rgba(0, 0, 0, 0.1)',
+              '& h2': {
+                fontSize: '14px'
+              },
+              '& .epr-category-nav': {
+                py: '4px'
+              },
+              // アニメーション効果
+              animation: 'fadeIn 0.2s ease-out',
+              '@keyframes fadeIn': {
+                from: {
+                  opacity: 0,
+                  transform: 'translate(-50%, -50%) scale(0.95)',
+                },
+                to: {
+                  opacity: 1,
+                  transform: 'translate(-50%, -50%) scale(1)',
+                },
+              },
+            }}
+          >
+            <EmojiPicker
+              onEmojiClick={handleEmojiClick}
+              emojiStyle={EmojiStyle.NATIVE}
+              height={400}
+              width={350}
+              skinTonesDisabled
+              previewConfig={{
+                showPreview: false
+              }}
+              style={{
+                '--epr-category-navigation-button-size': '22px',
+                '--epr-emoji-size': '22px'
+              } as React.CSSProperties}
+            />
+          </Box>
+        </>
+      )}
 
       {/* ダイアログ */}
       <LinkInsertDialog
