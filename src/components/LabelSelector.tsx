@@ -39,12 +39,7 @@ const LabelSelector = memo<LabelSelectorProps>(({
   const selectedLabelsRef = useRef<Label[]>(selectedLabels);
   const onLabelsChangeRef = useRef<(labels: Label[]) => void>(onLabelsChange);
 
-  const allLabels = useMemo(() => {
-    console.log('🏷️ [LabelSelector] useMemo getAllLabels実行');
-    const result = getAllLabels();
-    console.log('🏷️ [LabelSelector] useMemo結果:', result.length, 'labels');
-    return result;
-  }, [getAllLabels]);
+  const allLabels = useMemo(() => getAllLabels(), [getAllLabels]);
   const selectedLabelIds = useMemo(() =>
     new Set(selectedLabels.map(label => label.id)),
     [selectedLabels]
@@ -52,41 +47,25 @@ const LabelSelector = memo<LabelSelectorProps>(({
 
   // refを常に最新の値で更新
   useEffect(() => {
-    console.log('🔄 LabelSelector ref更新:', {
-      selectedLabels,
-      onLabelsChange: onLabelsChange.name || 'anonymous function',
-      onLabelsChangeRef: onLabelsChangeRef.current?.name || 'anonymous function'
-    });
     selectedLabelsRef.current = selectedLabels;
     onLabelsChangeRef.current = onLabelsChange;
-  });
+  }, [selectedLabels, onLabelsChange]);
 
   // allLabelsの変化を監視して自動選択を実行
   useEffect(() => {
     if (pendingAutoSelect) {
-      console.log('🏷️ useEffect: allLabels変化監視 - 自動選択実行');
-      console.log('🏷️ useEffect: 検索対象:', pendingAutoSelect);
-      console.log('🏷️ useEffect: 現在のallLabels:', allLabels.length, 'labels');
-
       // 作成されたラベルを名前と色で検索
       const createdLabel = allLabels.find(label =>
         label.name === pendingAutoSelect.name && label.color === pendingAutoSelect.color
       );
-      console.log('🏷️ useEffect: 検索結果:', createdLabel);
 
       if (createdLabel) {
         const currentSelectedLabels = selectedLabelsRef.current;
         const isAlreadySelected = currentSelectedLabels.some(selected => selected.id === createdLabel.id);
-        console.log('🏷️ useEffect: 既に選択済みかチェック:', isAlreadySelected);
 
         if (!isAlreadySelected) {
           const newSelectedLabels = [...currentSelectedLabels, createdLabel];
-          console.log('🏷️ useEffect: 新しい選択ラベル配列:', newSelectedLabels);
-
           onLabelsChangeRef.current(newSelectedLabels);
-          console.log('🏷️ ✅ useEffect: 自動選択完了');
-        } else {
-          console.log('🏷️ ⚠️ useEffect: ラベルは既に選択済み');
         }
 
         // pendingAutoSelectをクリア
@@ -122,9 +101,6 @@ const LabelSelector = memo<LabelSelectorProps>(({
 
   // 新しいラベル作成後の処理
   const handleLabelCreated = useCallback((labelData: { name: string; color: string }) => {
-    console.log('🏷️ handleLabelCreated開始:', labelData);
-    console.log('🏷️ 現在の選択されたラベル:', selectedLabelsRef.current);
-
     // LabelContextのcreateLabelでボード状態に保存
     createLabel(labelData.name, labelData.color);
 
@@ -132,7 +108,6 @@ const LabelSelector = memo<LabelSelectorProps>(({
     setIsAddDialogOpen(false);
 
     // 自動選択用の状態を設定（useEffectで監視される）
-    console.log('🏷️ pendingAutoSelectを設定:', labelData);
     setPendingAutoSelect(labelData);
   }, [createLabel]);
 
