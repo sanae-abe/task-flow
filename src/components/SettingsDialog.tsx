@@ -1,10 +1,11 @@
-import { DatabaseIcon, TagIcon } from '@primer/octicons-react';
+import { DatabaseIcon, TagIcon, ProjectIcon } from '@primer/octicons-react';
 import { Box, SplitPageLayout, NavList } from '@primer/react';
 import React, { useState } from 'react';
 
 import UnifiedDialog from './shared/Dialog/UnifiedDialog';
 import { LabelManagementPanel } from './LabelManagement';
 import { DataManagementPanel } from './DataManagement';
+import { BoardSettingsPanel } from './BoardSettings';
 import type { KanbanBoard } from '../types';
 
 interface SettingsDialogProps {
@@ -20,7 +21,7 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
   onExportData,
   onExportBoard
 }) => {
-  const [activeTab, setActiveTab] = useState<'labels' | 'data'>('labels');
+  const [activeTab, setActiveTab] = useState<'labels' | 'data' | 'board'>('labels');
 
   return (
     <UnifiedDialog
@@ -41,6 +42,15 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
             sx={{ pr: '16px' }}
           >
             <NavList>
+              <NavList.Item
+                aria-current={activeTab === 'board' ? 'page' : undefined}
+                onClick={() => setActiveTab('board')}
+              >
+                <NavList.LeadingVisual>
+                  <ProjectIcon />
+                </NavList.LeadingVisual>
+                カンバン設定
+              </NavList.Item>
               <NavList.Item
                 aria-current={activeTab === 'labels' ? 'page' : undefined}
                 onClick={() => setActiveTab('labels')}
@@ -65,7 +75,9 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
           {/* メインコンテンツエリア */}
           <SplitPageLayout.Content padding='none' sx={{ py: '8px', pr: '8px' }}>
             <Box sx={{ height: '100%', overflow: 'auto' }}>
-              {activeTab === 'labels' ? (
+              {activeTab === 'board' ? (
+                <BoardSettingsPanel />
+              ) : activeTab === 'labels' ? (
                 <LabelManagementPanel />
               ) : (
                 <DataManagementPanel
