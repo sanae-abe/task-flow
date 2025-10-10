@@ -350,17 +350,7 @@ export const BoardProvider: React.FC<BoardProviderProps> = ({ children }) => {
                   {
                     id: uuidv4(),
                     title: 'TaskFlow リッチテキスト機能の実装',
-                    description: `<p>TaskFlowアプリにリッチテキスト編集機能を追加する。</p><p><strong>要件：</strong></p><ul><li>太字、斜体、下線のサポート</li><li>リンク挿入機能</li><li>コードブロック対応</li><li>HTML出力とMarkdown変換</li></ul><p><strong>技術調査：</strong></p><ul><li><a href="https://lexical.dev/" target="_blank" rel="noopener noreferrer">Lexical Editor</a> - Meta製の高性能エディタ</li><li><a href="https://quilljs.com/" target="_blank" rel="noopener noreferrer">React Quill</a> - 軽量なリッチテキストエディタ</li></ul><p><code style="background-color: #e8f5e8; color: #e01e5a; padding: 2px 4px; border-radius: 4px; font-family: 'Monaco', 'Menlo', 'Consolas', monospace; font-size: 0.875em; border: 1px solid #d1d9e0;">npm install @lexical/react lexical</code></p><div style="margin: 0 0 8px; border: 1px solid #d0d7de !important; border-radius: 6px; padding: 8px; font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', 'Menlo', monospace; font-size: 13px; line-height: 1.45; overflow-x: auto; color: #24292f; background-color: #f6f8fa;"><pre style="margin: 0 !important; white-space: pre; overflow-wrap: normal; color: inherit; background: transparent; border: none; padding: 0;" contenteditable="true" spellcheck="false">// エディタコンポーネントの基本実装
-import { LexicalComposer } from '@lexical/react/LexicalComposer';
-import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
-
-const RichTextEditor = () => {
-  return (
-    <LexicalComposer initialConfig={config}>
-      <RichTextPlugin />
-    </LexicalComposer>
-  );
-};</pre></div>`,
+                    description: `<p>TaskFlowアプリにリッチテキスト編集機能を追加する。</p><p><strong>要件：</strong></p><ul><li>太字、斜体、下線のサポート</li><li>リンク挿入機能</li><li>コードブロック対応</li><li>HTML出力とMarkdown変換</li></ul><p><strong>技術調査：</strong></p><ul><li><a href=\"https://lexical.dev/\" target=\"_blank\" rel=\"noopener noreferrer\">Lexical Editor</a> - Meta製の高性能エディタ</li><li><a href=\"https://quilljs.com/\" target=\"_blank\" rel=\"noopener noreferrer\">React Quill</a> - 軽量なリッチテキストエディタ</li></ul><p><code style=\"background-color: #f6f8fa; color: #e01e5a; padding: 2px 4px; border-radius: 4px; font-family: 'Monaco', 'Menlo', 'Consolas', monospace; font-size: 0.875em; border: 1px solid #d0d7de;\">npm install @lexical/react lexical</code></p><div style=\"margin: 0 0 8px; border: 1px solid #d0d7de !important; border-radius: 6px; padding: 8px; font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', 'Menlo', monospace; font-size: 13px; line-height: 1.45; overflow-x: auto; color: #24292f; background-color: #f6f8fa;\"><pre style=\"margin: 0 !important; white-space: pre; overflow-wrap: normal; color: inherit; background: transparent; border: none; padding: 0;\" contenteditable=\"true\" spellcheck=\"false\">// エディタコンポーネントの基本実装<br>import { LexicalComposer } from '@lexical/react/LexicalComposer';<br>import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';<br><br>const RichTextEditor = () =&gt; {<br>  return (<br>    &lt;LexicalComposer initialConfig={config}&gt;<br>      &lt;RichTextPlugin /&gt;<br>    &lt;/LexicalComposer&gt;<br>  );<br>};</pre></div>`,
                     createdAt: new Date().toISOString(),
                     updatedAt: new Date().toISOString(),
                     dueDate: yesterday.toISOString(), // 昨日の17:00(期限切れ)
@@ -388,8 +378,7 @@ const generateWeeklyReport = () => {
     upcoming: upcomingTasks,
     issues: getIssues()
   };
-};</pre></div>`,
-                    createdAt: new Date().toISOString(),
+};</pre></div>`,                    createdAt: new Date().toISOString(),
                     updatedAt: new Date().toISOString(),
                     dueDate: todayEvening.toISOString(), // 今日の18:00
                     priority: 'medium' as Priority,
@@ -417,7 +406,7 @@ const generateWeeklyReport = () => {
                   {
                     id: uuidv4(),
                     title: 'UI/UXデザイン改善',
-                    description: `<p>ユーザビリティテストの結果を基にインターフェースを改善。</p><p><strong>改善対象：</strong></p><ul><li>タスク作成フローの簡素化</li><li>ナビゲーションの直感性向上</li><li>レスポンシブデザインの最適化</li></ul><p><strong>参考：</strong></p><ul><li><a href="https://material.io/design" target="_blank" rel="noopener noreferrer">Material Design</a></li><li><a href="https://primer.style/" target="_blank" rel="noopener noreferrer">Primer Design System</a></li></ul>`,
+                    description: `<p>ユーザビリティテストの結果を基にインターフェースを改善。</p><p><strong>改善対象：</strong></p><ul><li>タスク作成フローの簡素化</li><li>ナビゲーションの直感性向上</li><li>レスポンシブデザインの最適化</li></ul><p><strong>参考：</strong></p><ul><li><a href=\"https://material.io/design\" target=\"_blank\" rel=\"noopener noreferrer\">Material Design</a></li><li><a href=\"https://primer.style/\" target=\"_blank\" rel=\"noopener noreferrer\">Primer Design System</a></li></ul>`,
                     createdAt: new Date().toISOString(),
                     updatedAt: new Date().toISOString(),
                     dueDate: tomorrowMorning.toISOString(), // 明日の10:00

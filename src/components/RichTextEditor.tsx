@@ -134,11 +134,11 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
       if (selection && selection.toString()) {
         // 選択されたテキストをインラインコードで囲む
         const selectedText = selection.toString();
-        const codeHtml = `<code style="background-color: #e8f5e8; color: #e01e5a; padding: 2px 4px; border-radius: 4px; font-family: 'Monaco', 'Menlo', 'Consolas', monospace; font-size: 0.875em; border: 1px solid #d1d9e0;">${selectedText}</code>`;
+        const codeHtml = `<code style="background-color: #f6f8fa; color: #e01e5a; padding: 2px 4px; border-radius: 4px; font-family: 'Monaco', 'Menlo', 'Consolas', monospace; font-size: 0.875em; border: 1px solid #d0d7de;">${selectedText}</code>`;
         document.execCommand('insertHTML', false, codeHtml);
       } else {
         // 選択がない場合は空のインラインコードを挿入してカーソルを中に配置
-        const codeHtml = `<code style="background-color: #e8f5e8; color: #e01e5a; padding: 2px 4px; border-radius: 4px; font-family: 'Monaco', 'Menlo', 'Consolas', monospace; font-size: 0.875em; border: 1px solid #d1d9e0;">コードを入力</code>`;
+        const codeHtml = `<code style="background-color: #f6f8fa; color: #e01e5a; padding: 2px 4px; border-radius: 4px; font-family: 'Monaco', 'Menlo', 'Consolas', monospace; font-size: 0.875em; border: 1px solid #d0d7de;">コードを入力</code>`;
         document.execCommand('insertHTML', false, codeHtml);
       }
 
@@ -503,13 +503,13 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
               margin: '4px 0',
             },
             '& code': {
-              backgroundColor: '#e8f5e8',
+              backgroundColor: '#f6f8fa',
               color: '#e01e5a',
               padding: '2px 4px',
               borderRadius: '4px',
               fontFamily: "'Monaco', 'Menlo', 'Consolas', monospace",
               fontSize: '0.875em',
-              border: '1px solid #d1d9e0',
+              border: '1px solid #d0d7de',
             },
             '& a': {
               color: 'accent.fg',

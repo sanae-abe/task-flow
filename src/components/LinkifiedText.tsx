@@ -265,14 +265,14 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({ children, sx }) => {
           },
         },
         '& code': {
-          backgroundColor: 'canvas.subtle',
-          color: 'accent.fg',
+          backgroundColor: '#f6f8fa',
+          color: '#e01e5a',
           padding: '2px 4px',
           borderRadius: '4px',
           fontFamily: 'mono',
           fontSize: '0.875em',
           border: '1px solid',
-          borderColor: 'border.default',
+          borderColor: '#d0d7de',
         },
         '& ul, & ol': {
           margin: '8px 0',
