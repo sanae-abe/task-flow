@@ -1,6 +1,6 @@
 import { PlusIcon, TagIcon, CheckIcon } from '@primer/octicons-react';
-import { 
-  Button, 
+import {
+  Button,
   Box,
   ActionMenu,
   ActionList
@@ -8,6 +8,7 @@ import {
 import { useState, useCallback, useMemo, memo } from 'react';
 
 import { useKanban } from '../contexts/KanbanContext';
+import { useLabel } from '../contexts/LabelContext';
 import type { Label } from '../types';
 import { getLabelColors } from '../utils/labelHelpers';
 
@@ -32,11 +33,12 @@ const LabelSelector = memo<LabelSelectorProps>(({
   onLabelsChange
 }) => {
   const { getAllLabels } = useKanban();
+  const { createLabel } = useLabel();
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
 
   const allLabels = useMemo(() => getAllLabels(), [getAllLabels]);
-  const selectedLabelIds = useMemo(() => 
-    new Set(selectedLabels.map(label => label.id)), 
+  const selectedLabelIds = useMemo(() =>
+    new Set(selectedLabels.map(label => label.id)),
     [selectedLabels]
   );
 
@@ -66,10 +68,24 @@ const LabelSelector = memo<LabelSelectorProps>(({
   }, [selectedLabels, onLabelsChange]);
 
   // 新しいラベル作成後の処理
-  const handleLabelCreated = useCallback((newLabel: Label) => {
-    onLabelsChange([...selectedLabels, newLabel]);
+  const handleLabelCreated = useCallback((labelData: { name: string; color: string }) => {
+    // LabelContextのcreateLabelでボード状態に保存
+    createLabel(labelData.name, labelData.color);
+
+    // ダイアログを閉じる
     setIsAddDialogOpen(false);
-  }, [selectedLabels, onLabelsChange]);
+
+    // 新しく作成されたラベルを選択状態に追加するため、少し遅延後に処理
+    setTimeout(() => {
+      const updatedLabels = getAllLabels();
+      const createdLabel = updatedLabels.find(label =>
+        label.name === labelData.name && label.color === labelData.color
+      );
+      if (createdLabel && !selectedLabels.some(selected => selected.id === createdLabel.id)) {
+        onLabelsChange([...selectedLabels, createdLabel]);
+      }
+    }, 100);
+  }, [createLabel, getAllLabels, selectedLabels, onLabelsChange]);
 
   // スタイルオブジェクトをメモ化
   const selectedLabelsContainerStyles = useMemo(() => ({
@@ -101,7 +117,6 @@ const LabelSelector = memo<LabelSelectorProps>(({
   return (
     <Box sx={{ mt: 2 }}>
       {/* 選択されたラベルを表示 */}
-      {/* & button のセレクタのスタイルは保持 */}
       {selectedLabels.length > 0 && (
         <Box sx={selectedLabelsContainerStyles}>
           {selectedLabels.map(label => (
@@ -158,6 +173,7 @@ const LabelSelector = memo<LabelSelectorProps>(({
                   </ActionList.Item>
                 );
               })}
+
               {allLabels.length === 0 && (
                 <ActionList.Item disabled>
                   {EMPTY_LABELS_MESSAGE}
@@ -183,7 +199,7 @@ const LabelSelector = memo<LabelSelectorProps>(({
         mode="create"
         isOpen={isAddDialogOpen}
         onClose={handleAddDialogClose}
-        onLabelCreated={handleLabelCreated}
+        onSave={handleLabelCreated}
       />
     </Box>
   );
