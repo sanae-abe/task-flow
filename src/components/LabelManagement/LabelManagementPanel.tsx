@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { Button, Box, Text, IconButton } from '@primer/react';
-import { PencilIcon, TrashIcon, TagIcon, PlusIcon } from '@primer/octicons-react';
+import { PencilIcon, TrashIcon, TagIcon, PlusIcon, ChevronUpIcon, ChevronDownIcon } from '@primer/octicons-react';
 
 import type { Label } from '../../types';
 import { useLabel } from '../../contexts/LabelContext';
@@ -20,14 +20,65 @@ const CounterLabel: React.FC<{ count: number }> = ({ count }) => (
   </Text>
 );
 
+type SortField = 'name' | 'boardName' | 'usageCount';
+type SortDirection = 'asc' | 'desc';
+
+// ソート可能なヘッダーコンポーネント
+const SortableHeader: React.FC<{
+  field: SortField;
+  currentSortField: SortField;
+  sortDirection: SortDirection;
+  onSort: (field: SortField) => void;
+  children: React.ReactNode;
+  align?: 'left' | 'center';
+}> = ({ field, currentSortField, sortDirection, onSort, children, align = 'left' }) => {
+  const isActive = currentSortField === field;
+
+  return (
+    <button
+      type="button"
+      onClick={() => onSort(field)}
+      style={{
+        background: 'none',
+        border: 'none',
+        cursor: 'pointer',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '4px',
+        justifyContent: align === 'center' ? 'center' : 'flex-start',
+        width: '100%',
+        padding: 0,
+        color: 'var(--fgColor-muted)',
+        fontSize: '12px',
+        fontWeight: 'bold',
+        fontFamily: 'inherit'
+      }}
+      aria-label={`${children}でソート`}
+    >
+      <span>{children}</span>
+      <span style={{ opacity: isActive ? 1 : 0.3, fontSize: '10px' }}>
+        {isActive && sortDirection === 'asc' ? (
+          <ChevronUpIcon size={12} />
+        ) : (
+          <ChevronDownIcon size={12} />
+        )}
+      </span>
+    </button>
+  );
+};
+
 const LabelManagementPanel: React.FC = () => {
-  const { 
-    getAllLabelsWithBoardInfo, 
-    getAllLabelUsageCount, 
-    createLabel, 
-    updateLabel, 
-    deleteLabelFromAllBoards 
+  const {
+    getAllLabelsWithBoardInfo,
+    getAllLabelUsageCount,
+    createLabel,
+    updateLabel,
+    deleteLabelFromAllBoards
   } = useLabel();
+
+  // ソート状態
+  const [sortField, setSortField] = useState<SortField>('name');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
   
   const [editDialog, setEditDialog] = useState<{
     isOpen: boolean;
@@ -47,14 +98,26 @@ const LabelManagementPanel: React.FC = () => {
     label: null
   });
 
-  // 全ボードのラベルデータを取得してusageCountを追加
+  // ソートハンドラー
+  const handleSort = useCallback((field: SortField) => {
+    if (sortField === field) {
+      // 同じフィールドをクリックした場合は方向を反転
+      setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc');
+    } else {
+      // 異なるフィールドをクリックした場合は昇順で開始
+      setSortField(field);
+      setSortDirection('asc');
+    }
+  }, [sortField]);
+
+  // 全ボードのラベルデータを取得してusageCountを追加、ソート適用
   const allLabelsWithInfo = useMemo(() => {
     const labelsMap = new Map<string, Label & { boardName: string; boardId: string; usageCount: number }>();
-    
+
     // 全ボードのラベルを収集
     getAllLabelsWithBoardInfo().forEach(labelWithBoard => {
       const existingLabel = labelsMap.get(labelWithBoard.id);
-      
+
       if (existingLabel) {
         // 既に存在する場合、ボード名を結合
         existingLabel.boardName = `${existingLabel.boardName}, ${labelWithBoard.boardName}`;
@@ -66,9 +129,30 @@ const LabelManagementPanel: React.FC = () => {
         });
       }
     });
-    
-    return Array.from(labelsMap.values()).sort((a, b) => a.name.localeCompare(b.name));
-  }, [getAllLabelsWithBoardInfo, getAllLabelUsageCount]);
+
+    // ソート処理
+    const sortedLabels = Array.from(labelsMap.values()).sort((a, b) => {
+      let comparison = 0;
+
+      switch (sortField) {
+        case 'name':
+          comparison = a.name.localeCompare(b.name);
+          break;
+        case 'boardName':
+          comparison = a.boardName.localeCompare(b.boardName);
+          break;
+        case 'usageCount':
+          comparison = a.usageCount - b.usageCount;
+          break;
+        default:
+          comparison = a.name.localeCompare(b.name);
+      }
+
+      return sortDirection === 'asc' ? comparison : -comparison;
+    });
+
+    return sortedLabels;
+  }, [getAllLabelsWithBoardInfo, getAllLabelUsageCount, sortField, sortDirection]);
 
   // 編集ダイアログを開く
   const handleEdit = useCallback((label: Label & { boardName: string; boardId: string; usageCount: number }) => {
@@ -189,7 +273,7 @@ const LabelManagementPanel: React.FC = () => {
           {/* テーブルヘッダー */}
           <Box sx={{
             display: 'grid',
-            gridTemplateColumns: '1fr 200px 80px 80px',
+            gridTemplateColumns: '1fr 150px 50px 50px',
             gap: 2,
             p: 2,
             bg: 'canvas.subtle',
@@ -199,9 +283,31 @@ const LabelManagementPanel: React.FC = () => {
             fontWeight: 'bold',
             color: 'fg.muted'
           }}>
-            <Text>ラベル</Text>
-            <Text>所属ボード</Text>
-            <Text sx={{ textAlign: 'center' }}>使用数</Text>
+            <SortableHeader
+              field="name"
+              currentSortField={sortField}
+              sortDirection={sortDirection}
+              onSort={handleSort}
+            >
+              ラベル
+            </SortableHeader>
+            <SortableHeader
+              field="boardName"
+              currentSortField={sortField}
+              sortDirection={sortDirection}
+              onSort={handleSort}
+            >
+              所属ボード
+            </SortableHeader>
+            <SortableHeader
+              field="usageCount"
+              currentSortField={sortField}
+              sortDirection={sortDirection}
+              onSort={handleSort}
+              align="center"
+            >
+              使用数
+            </SortableHeader>
             <Text sx={{ textAlign: 'center' }}>操作</Text>
           </Box>
 
@@ -212,7 +318,7 @@ const LabelManagementPanel: React.FC = () => {
                 key={label.id}
                 sx={{
                   display: 'grid',
-                  gridTemplateColumns: '1fr 200px 80px 80px',
+                  gridTemplateColumns: '1fr 150px 50px 50px',
                   gap: 2,
                   p: 2,
                   alignItems: 'center',
@@ -238,7 +344,7 @@ const LabelManagementPanel: React.FC = () => {
                   whiteSpace: 'nowrap'
                 }}>
                   <Text sx={{
-                    fontSize: 1,
+                    fontSize: 0,
                     color: 'fg.muted',
                   }}>
                     {label.boardName}
