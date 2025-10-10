@@ -36,6 +36,7 @@ interface KanbanContextType {
   clearCompletedTasks: () => void;
   addSubTask: (taskId: string, title: string) => void;
   toggleSubTask: (taskId: string, subTaskId: string) => void;
+  updateSubTask: (taskId: string, subTaskId: string, title: string) => void;
   deleteSubTask: (taskId: string, subTaskId: string) => void;
   // Column関連のメソッド
   createColumn: (title: string, insertIndex?: number) => void;
@@ -97,6 +98,7 @@ export const KanbanProvider: React.FC<KanbanProviderProps> = ({ children }) => {
     clearCompletedTasks: task.clearCompletedTasks,
     addSubTask: task.addSubTask,
     toggleSubTask: task.toggleSubTask,
+    updateSubTask: task.updateSubTask,
     deleteSubTask: task.deleteSubTask,
     // Column関連のメソッド
     createColumn: board.createColumn,

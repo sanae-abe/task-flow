@@ -18,6 +18,7 @@ import TaskCard from './TaskCard';
 const COLUMN_CONFIG = {
   WIDTH: '320px',
   MIN_HEIGHT: 'calc(100vh - 112px - 48px)', // ヘッダーとフッターの高さとpaddingBlockを考慮
+  PADDING_BOTTOM: '100px', // 下に100pxの余白を追加
   TASK_LIST_MIN_HEIGHT: '320px',
   HORIZONTAL_PADDING: 2,
   TASK_GAP: 3
@@ -31,7 +32,8 @@ const COLUMN_STYLES = {
     flexShrink: 0,
     minHeight: COLUMN_CONFIG.MIN_HEIGHT,
     backgroundColor: 'transparent',
-    py: 0,
+    pt: 0,
+    pb: COLUMN_CONFIG.PADDING_BOTTOM,
     px: COLUMN_CONFIG.HORIZONTAL_PADDING,
     overflow: 'hidden'
   },

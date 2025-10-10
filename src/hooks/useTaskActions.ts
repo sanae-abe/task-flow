@@ -17,6 +17,7 @@ interface UseTaskActionsReturn {
   readonly handleDeleteFromDialog: (taskId: string) => void;
   readonly handleAddSubTask: (title: string) => void;
   readonly handleToggleSubTask: (subTaskId: string) => void;
+  readonly handleEditSubTask: (subTaskId: string, newTitle: string) => void;
   readonly handleDeleteSubTask: (subTaskId: string) => void;
 }
 
@@ -24,7 +25,7 @@ interface UseTaskActionsReturn {
  * タスクアクション（編集・削除）を管理するカスタムフック
  */
 export const useTaskActions = (task: Task | null, onClose?: () => void): UseTaskActionsReturn => {
-  const { deleteTask, updateTask, moveTask, addSubTask, toggleSubTask, deleteSubTask, state } = useKanban();
+  const { deleteTask, updateTask, moveTask, addSubTask, toggleSubTask, updateSubTask, deleteSubTask, state } = useKanban();
   const { column } = useTaskColumn(task);
   
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -82,6 +83,11 @@ export const useTaskActions = (task: Task | null, onClose?: () => void): UseTask
     toggleSubTask(task.id, subTaskId);
   }, [task, toggleSubTask]);
 
+  const handleEditSubTask = useCallback((subTaskId: string, newTitle: string) => {
+    if (!task) {return;}
+    updateSubTask(task.id, subTaskId, newTitle);
+  }, [task, updateSubTask]);
+
   const handleDeleteSubTask = useCallback((subTaskId: string) => {
     if (!task) {return;}
     deleteSubTask(task.id, subTaskId);
@@ -99,6 +105,7 @@ export const useTaskActions = (task: Task | null, onClose?: () => void): UseTask
     handleDeleteFromDialog: handleDeleteEdit,
     handleAddSubTask,
     handleToggleSubTask,
+    handleEditSubTask,
     handleDeleteSubTask
   };
 };

@@ -32,6 +32,7 @@ const TaskDetailSidebar = memo<TaskDetailSidebarProps>(({ task, isOpen, onClose 
     handleDeleteFromDialog,
     handleAddSubTask,
     handleToggleSubTask,
+    handleEditSubTask,
     handleDeleteSubTask
   } = useTaskActions(task, onClose);
 
@@ -164,6 +165,7 @@ const TaskDetailSidebar = memo<TaskDetailSidebarProps>(({ task, isOpen, onClose 
             subTasks={task.subTasks ?? []}
             onAddSubTask={handleAddSubTask}
             onToggleSubTask={handleToggleSubTask}
+            onEditSubTask={handleEditSubTask}
             onDeleteSubTask={handleDeleteSubTask}
           />
           <TaskMetadata task={task} />
