@@ -37,9 +37,7 @@ export const useSubTaskEdit = (): UseSubTaskEditReturn => {
     setEditingTitle('');
   }, []);
 
-  const isEditing = useCallback((subTaskId: string) => {
-    return editingId === subTaskId;
-  }, [editingId]);
+  const isEditing = useCallback((subTaskId: string) => editingId === subTaskId, [editingId]);
 
   return {
     editingId,
