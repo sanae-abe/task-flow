@@ -5,12 +5,13 @@ import React, { useState } from 'react';
 import UnifiedDialog from './shared/Dialog/UnifiedDialog';
 import { LabelManagementPanel } from './LabelManagement';
 import { DataManagementPanel } from './DataManagement';
+import type { KanbanBoard } from '../types';
 
 interface SettingsDialogProps {
   isOpen: boolean;
   onClose: () => void;
   onExportData?: () => void;
-  onExportBoard?: () => void;
+  onExportBoard?: (board?: KanbanBoard) => void;
 }
 
 const SettingsDialog: React.FC<SettingsDialogProps> = ({
@@ -37,6 +38,7 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
             width={{ min: '150px', max: '150px', default: '150px' }}
             padding="none"
             divider="none"
+            sx={{ pr: '8px' }}
           >
             <NavList>
               <NavList.Item
@@ -61,7 +63,7 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
           </SplitPageLayout.Pane>
 
           {/* メインコンテンツエリア */}
-          <SplitPageLayout.Content>
+          <SplitPageLayout.Content padding='none' sx={{ py: '8px', pr: '8px' }}>
             <Box sx={{ height: '100%', overflow: 'auto' }}>
               {activeTab === 'labels' ? (
                 <LabelManagementPanel />
