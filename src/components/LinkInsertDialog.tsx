@@ -63,8 +63,8 @@ const LinkInsertDialog: React.FC<LinkInsertDialogProps> = ({
       size="large"
       hideFooter
     >
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mb: 3 }}>
-        <Box>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mb: 4 }}>
+        <Box sx={{ mb: 2 }}>
           <Text sx={{ fontSize: 1, mb: 2, display: 'block', fontWeight: '700' }}>
             URL <span style={{ color: '#d1242f' }}>*</span>
           </Text>

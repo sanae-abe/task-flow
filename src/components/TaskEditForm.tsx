@@ -62,18 +62,20 @@ const TaskEditForm = memo<TaskEditFormProps>(({
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', gap: 0 }}>
-      <FormField
-        id="task-title"
-        label="タイトル"
-        value={title}
-        placeholder="タスクタイトルを入力"
-        onChange={setTitle}
-        onKeyDown={onKeyPress}
-        autoFocus
-        required
-      />
+      <div style={{ marginBottom: '24px' }}>
+        <FormField
+          id="task-title"
+          label="タイトル"
+          value={title}
+          placeholder="タスクタイトルを入力"
+          onChange={setTitle}
+          onKeyDown={onKeyPress}
+          autoFocus
+          required
+        />
+      </div>
 
-      <div style={{ marginBottom: '16px' }}>
+      <div style={{ marginBottom: '24px' }}>
         <Text sx={{ fontSize: 1, mb: 2, display: 'block', fontWeight: '700' }}>
           説明（任意）
         </Text>
@@ -84,7 +86,7 @@ const TaskEditForm = memo<TaskEditFormProps>(({
         />
       </div>
 
-      <div style={{ marginBottom: '16px' }}>
+      <div style={{ marginBottom: '24px' }}>
         <div style={{ marginBottom: '8px' }}>
           <Text sx={{ fontSize: 1, mb: 1, display: 'block', fontWeight: '700' }}>
             期限（任意）
@@ -120,7 +122,7 @@ const TaskEditForm = memo<TaskEditFormProps>(({
         )}
       </div>
 
-      <div style={{ marginBottom: '16px' }}>
+      <div style={{ marginBottom: '24px' }}>
         <Text sx={{ fontSize: 1, mb: 1, display: 'block', fontWeight: '700' }}>
           ステータス
         </Text>
@@ -137,7 +139,7 @@ const TaskEditForm = memo<TaskEditFormProps>(({
         </Select>
       </div>
 
-      <div style={{ marginBottom: '16px' }}>
+      <div style={{ marginBottom: '24px' }}>
         <Text sx={{ fontSize: 1, mb: 1, display: 'block', fontWeight: '700' }}>
           ラベル（任意）
         </Text>
