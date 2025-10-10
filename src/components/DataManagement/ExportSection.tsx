@@ -1,5 +1,5 @@
 import { memo, useMemo, useState, useCallback } from 'react';
-import { Box, Text, Button, FormControl, Select } from '@primer/react';
+import { Box, Text, Heading, Button, FormControl, Select } from '@primer/react';
 import { DownloadIcon, DatabaseIcon, ProjectIcon } from '@primer/octicons-react';
 
 import { useKanban } from '../../contexts/KanbanContext';
@@ -57,12 +57,9 @@ export const ExportSection = memo<ExportSectionProps>(({
         flexDirection: 'column',
         gap: '8px'
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <DatabaseIcon size={20} />
-          <Text sx={{ fontSize: 2, fontWeight: 'bold' }}>
-            データ管理
-          </Text>
-        </div>
+        <Heading sx={{ fontSize: 2, fontWeight: 'bold' }}>
+          データ管理
+        </Heading>
         <Text sx={{ fontSize: 1, color: 'fg.muted', pb: 2 }}>
           タスク管理データをJSON形式でエクスポートできます。バックアップや他の環境への移行にご利用ください。
         </Text>

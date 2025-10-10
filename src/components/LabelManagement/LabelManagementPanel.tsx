@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useMemo } from 'react';
-import { Button, Box, Text, IconButton } from '@primer/react';
-import { PencilIcon, TrashIcon, TagIcon, PlusIcon, ChevronUpIcon, ChevronDownIcon } from '@primer/octicons-react';
+import { Button, Box, Heading, Text, IconButton } from '@primer/react';
+import { PencilIcon, TrashIcon, PlusIcon, ChevronUpIcon, ChevronDownIcon } from '@primer/octicons-react';
 
 import type { Label } from '../../types';
 import { useLabel } from '../../contexts/LabelContext';
@@ -231,23 +231,15 @@ const LabelManagementPanel: React.FC = () => {
         gap: '8px'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <TagIcon size={20} />
-          <Text sx={{ fontSize: 2, fontWeight: 'bold' }}>
+          <Heading sx={{ fontSize: 2, fontWeight: 'bold' }}>
             ラベル管理
-          </Text>
+          </Heading>
         </div>
         <Button
           variant="primary"
           leadingVisual={PlusIcon}
           onClick={handleCreate}
           size="small"
-          sx={{
-            backgroundColor: 'accent.fg',
-            transition: 'background-color 0.2s ease',
-            '&:hover': {
-              backgroundColor: 'var(--button-outline-bgColor-active)'
-            }
-          }}
         >
           ラベルを作成
         </Button>

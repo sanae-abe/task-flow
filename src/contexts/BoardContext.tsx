@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import type { KanbanBoard, Column, Priority } from '../types';
 import { saveBoards, loadBoards } from '../utils/storage';
+import { loadSettings } from '../utils/settingsStorage';
 import { useNotify } from './NotificationContext';
 import { logger } from '../utils/logger';
 
@@ -94,16 +95,20 @@ const boardReducer = (state: BoardState, action: BoardAction): BoardState => {
     }
 
     case 'CREATE_BOARD': {
+      // デフォルトカラム設定を読み込み
+      const settings = loadSettings();
+      const defaultColumns = settings.defaultColumns.map(columnConfig => ({
+        id: uuidv4(),
+        title: columnConfig.name,
+        tasks: [],
+      }));
+
       const newBoard: KanbanBoard = {
         id: uuidv4(),
         title: action.payload.title,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-        columns: [
-          { id: uuidv4(), title: 'To Do', tasks: [] },
-          { id: uuidv4(), title: 'In Progress', tasks: [] },
-          { id: uuidv4(), title: 'Done', tasks: [] },
-        ],
+        columns: defaultColumns,
         labels: [],
       };
 
