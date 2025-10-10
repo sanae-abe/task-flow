@@ -1,4 +1,4 @@
-import { TrashIcon, XIcon, PencilIcon } from '@primer/octicons-react';
+import { TrashIcon, XIcon, PencilIcon, CopyIcon } from '@primer/octicons-react';
 import { Button, Box, Heading } from '@primer/react';
 import { useEffect, useCallback, useMemo, memo, useRef } from 'react';
 
@@ -27,6 +27,7 @@ const TaskDetailSidebar = memo<TaskDetailSidebarProps>(({ task, isOpen, onClose 
     setShowEditDialog,
     handleEdit,
     handleDelete,
+    handleDuplicate,
     handleConfirmDelete,
     handleSaveEdit,
     handleDeleteFromDialog,
@@ -184,6 +185,15 @@ const TaskDetailSidebar = memo<TaskDetailSidebarProps>(({ task, isOpen, onClose 
               sx={buttonStyles}
             >
               編集
+            </Button>
+            <Button
+              onClick={handleDuplicate}
+              variant="default"
+              size="medium"
+              leadingVisual={CopyIcon}
+              sx={buttonStyles}
+            >
+              複製
             </Button>
             <Button
               onClick={handleDelete}

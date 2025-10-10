@@ -32,6 +32,7 @@ interface KanbanContextType {
   createTask: (columnId: string, title: string, description: string, dueDate?: Date, labels?: Label[], attachments?: FileAttachment[], recurrence?: RecurrenceConfig) => void;
   updateTask: (taskId: string, updates: Partial<Task>) => void;
   deleteTask: (taskId: string, columnId: string) => void;
+  duplicateTask: (taskId: string) => void;
   moveTask: (taskId: string, sourceColumnId: string, targetColumnId: string, targetIndex: number) => void;
   clearCompletedTasks: () => void;
   addSubTask: (taskId: string, title: string) => void;
@@ -95,6 +96,7 @@ export const KanbanProvider: React.FC<KanbanProviderProps> = ({ children }) => {
     createTask: task.createTask,
     updateTask: task.updateTask,
     deleteTask: task.deleteTask,
+    duplicateTask: task.duplicateTask,
     moveTask: task.moveTask,
     clearCompletedTasks: task.clearCompletedTasks,
     addSubTask: task.addSubTask,

@@ -21,6 +21,7 @@ interface TaskContextType {
   moveTask: (taskId: string, sourceColumnId: string, targetColumnId: string, targetIndex: number) => void;
   updateTask: (taskId: string, updates: Partial<Task>) => void;
   deleteTask: (taskId: string, columnId: string) => void;
+  duplicateTask: (taskId: string) => void;
   clearCompletedTasks: () => void;
   addSubTask: (taskId: string, title: string) => void;
   toggleSubTask: (taskId: string, subTaskId: string) => void;
@@ -296,6 +297,62 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
 
     notify.success('タスクを削除しました');
   }, [boardState.currentBoard, boardDispatch, notify]);
+  // タスク複製
+  const duplicateTask = useCallback((taskId: string) => {
+    if (!boardState.currentBoard) {
+      notify.error('ボードが選択されていません');
+      return;
+    }
+
+    const originalTask = findTaskById(taskId);
+    if (!originalTask) {
+      notify.error('複製するタスクが見つかりません');
+      return;
+    }
+
+    const sourceColumnId = findTaskColumnId(taskId);
+    if (!sourceColumnId) {
+      notify.error('タスクのカラムが見つかりません');
+      return;
+    }
+
+    // 新しいタスクを作成（IDとタイムスタンプを新規生成）
+    const duplicatedTask: Task = {
+      ...originalTask,
+      id: uuidv4(),
+      title: `${originalTask.title} (コピー)`,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      completedAt: null, // 複製時は未完了状態にリセット
+      recurrenceId: originalTask.recurrence ? uuidv4() : undefined, // 繰り返しIDも新規生成
+      occurrenceCount: originalTask.recurrence ? 1 : undefined, // 繰り返し回数をリセット
+      // サブタスクも新しいIDで複製
+      subTasks: originalTask.subTasks?.map(subTask => ({
+        ...subTask,
+        id: uuidv4(),
+        completed: false, // サブタスクも未完了状態にリセット
+        createdAt: new Date().toISOString(),
+      })) || [],
+    };
+
+    // 元のタスクと同じカラムに追加
+    const updatedBoard = {
+      ...boardState.currentBoard,
+      columns: boardState.currentBoard.columns.map(column =>
+        column.id === sourceColumnId
+          ? { ...column, tasks: [...column.tasks, duplicatedTask] }
+          : column
+      ),
+      updatedAt: new Date().toISOString(),
+    };
+
+    boardDispatch({
+      type: 'UPDATE_BOARD',
+      payload: { boardId: boardState.currentBoard.id, updates: updatedBoard }
+    });
+
+    notify.success(`タスク「${originalTask.title}」を複製しました`);
+  }, [boardState.currentBoard, findTaskById, findTaskColumnId, boardDispatch, notify]);
 
   // 完了済みタスクのクリア
   const clearCompletedTasks = useCallback(() => {
@@ -482,6 +539,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     moveTask,
     updateTask,
     deleteTask,
+    duplicateTask,
     clearCompletedTasks,
     addSubTask,
     toggleSubTask,
@@ -497,6 +555,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     moveTask,
     updateTask,
     deleteTask,
+    duplicateTask,
     clearCompletedTasks,
     addSubTask,
     toggleSubTask,

@@ -12,6 +12,7 @@ interface UseTaskActionsReturn {
   readonly setShowEditDialog: (show: boolean) => void;
   readonly handleEdit: () => void;
   readonly handleDelete: () => void;
+  readonly handleDuplicate: () => void;
   readonly handleConfirmDelete: () => void;
   readonly handleSaveEdit: (updatedTask: Task, targetColumnId?: string) => void;
   readonly handleDeleteFromDialog: (taskId: string) => void;
@@ -26,7 +27,7 @@ interface UseTaskActionsReturn {
  * タスクアクション（編集・削除）を管理するカスタムフック
  */
 export const useTaskActions = (task: Task | null, onClose?: () => void): UseTaskActionsReturn => {
-  const { deleteTask, updateTask, moveTask, addSubTask, toggleSubTask, updateSubTask, deleteSubTask, reorderSubTasks, state } = useKanban();
+  const { deleteTask, updateTask, moveTask, duplicateTask, addSubTask, toggleSubTask, updateSubTask, deleteSubTask, reorderSubTasks, state } = useKanban();
   const { column } = useTaskColumn(task);
   
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -39,6 +40,13 @@ export const useTaskActions = (task: Task | null, onClose?: () => void): UseTask
   const handleDelete = useCallback(() => {
     setShowDeleteConfirm(true);
   }, []);
+
+  const handleDuplicate = useCallback(() => {
+    if (!task) {
+      return;
+    }
+    duplicateTask(task.id);
+  }, [task, duplicateTask]);
 
   const handleConfirmDelete = useCallback(() => {
     if (!task || !column) {
@@ -106,6 +114,7 @@ export const useTaskActions = (task: Task | null, onClose?: () => void): UseTask
     setShowEditDialog,
     handleEdit,
     handleDelete,
+    handleDuplicate,
     handleConfirmDelete,
     handleSaveEdit,
     handleDeleteFromDialog: handleDeleteEdit,
