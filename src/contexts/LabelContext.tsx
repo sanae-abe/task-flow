@@ -48,10 +48,15 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
 
   // 全ボードからすべてのラベルを取得
   const getAllLabels = useCallback((): Label[] => {
+    console.log('🏷️ [LabelContext] getAllLabels実行開始');
+    console.log('🏷️ [LabelContext] boardState.boards.length:', boardState.boards.length);
+    console.log('🏷️ [LabelContext] currentBoard labels:', boardState.currentBoard?.labels?.length || 0);
+
     const labelMap = new Map<string, Label>();
 
     // すべてのボードからラベルを収集
     boardState.boards.forEach(board => {
+      console.log('🏷️ [LabelContext] processing board:', board.id, 'labels:', board.labels?.length || 0);
       board.labels?.forEach(label => {
         if (!labelMap.has(label.id)) {
           labelMap.set(label.id, label);
@@ -70,8 +75,11 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
       });
     });
 
-    return Array.from(labelMap.values());
-  }, [boardState.boards, boardState.currentBoard]); // currentBoardも依存配列に追加
+    const result = Array.from(labelMap.values());
+    console.log('🏷️ [LabelContext] getAllLabels結果:', result.length, 'labels');
+    console.log('🏷️ [LabelContext] ラベル名一覧:', result.map(l => l.name));
+    return result;
+  }, [boardState.boards]); // currentBoardを依存配列から削除
 
   // 現在のボードでのラベル使用数を取得
   const getCurrentBoardLabelUsageCount = useCallback((labelId: string): number => {

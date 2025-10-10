@@ -38,7 +38,12 @@ const LabelSelector = memo<LabelSelectorProps>(({
   const selectedLabelsRef = useRef<Label[]>(selectedLabels);
   const onLabelsChangeRef = useRef<(labels: Label[]) => void>(onLabelsChange);
 
-  const allLabels = useMemo(() => getAllLabels(), [getAllLabels]);
+  const allLabels = useMemo(() => {
+    console.log('🏷️ [LabelSelector] useMemo getAllLabels実行');
+    const result = getAllLabels();
+    console.log('🏷️ [LabelSelector] useMemo結果:', result.length, 'labels');
+    return result;
+  }, [getAllLabels]);
   const selectedLabelIds = useMemo(() =>
     new Set(selectedLabels.map(label => label.id)),
     [selectedLabels]
@@ -99,9 +104,11 @@ const LabelSelector = memo<LabelSelectorProps>(({
     // 非同期でラベルが作成されるのを待って自動選択
     setTimeout(() => {
       console.log('🏷️ setTimeout実行開始');
+      console.log('🏷️ setTimeout内でgetAllLabels()を直接呼び出し');
       const allCurrentLabels = getAllLabels();
       console.log('🏷️ 全ラベル取得:', allCurrentLabels);
       console.log('🏷️ 作成後のラベル数:', allCurrentLabels.length);
+      console.log('🏷️ ラベル名一覧:', allCurrentLabels.map(l => l.name));
 
       // ラベルが実際に増加したかチェック
       if (allCurrentLabels.length > beforeCount) {
