@@ -233,7 +233,7 @@ const LabelManagementPanel: React.FC = () => {
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <TagIcon size={20} />
           <Text sx={{ fontSize: 2, fontWeight: 'bold' }}>
-            全ボードのラベル管理
+            ラベル管理
           </Text>
         </div>
         <Button
