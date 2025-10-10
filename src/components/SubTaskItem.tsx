@@ -1,4 +1,4 @@
-import { XIcon, CheckCircleIcon, CheckCircleFillIcon } from '@primer/octicons-react';
+import { TrashIcon, CheckCircleIcon, CheckCircleFillIcon } from '@primer/octicons-react';
 import { Box, Text } from '@primer/react';
 import React from 'react';
 
@@ -75,7 +75,7 @@ const SubTaskItem: React.FC<SubTaskItemProps> = ({
         }}
       >
         <IconButton
-          icon={XIcon}
+          icon={TrashIcon}
           onClick={handleDelete}
           ariaLabel={`${subTask.title}を削除`}
           size="small"

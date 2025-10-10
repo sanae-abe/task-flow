@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Box, TextInput, FormControl } from '@primer/react';
 
 import type { Label } from '../../types';
-import { useKanban } from '../../contexts/KanbanContext';
+import { useLabel } from '../../contexts/LabelContext';
 import UnifiedDialog from '../shared/Dialog/UnifiedDialog';
 import ColorSelector from '../ColorSelector';
 import LabelChip from '../LabelChip';
@@ -28,7 +28,7 @@ const LabelFormDialog: React.FC<LabelFormDialogProps> = ({
   label,
   mode
 }) => {
-  const { getAllLabels } = useKanban();
+  const { getAllLabels } = useLabel();
   const [formData, setFormData] = useState<LabelFormData>({
     name: '',
     color: '#0969da'

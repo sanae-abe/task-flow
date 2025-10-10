@@ -147,7 +147,13 @@ export const ImportSection = memo<ImportSectionProps>(({ onImportSuccess }) => {
               onClick={dropZoneProps.handleFileSelect}
               disabled={state.isLoading}
               leadingVisual={FileIcon}
-              sx={{ width: '100%', backgroundColor: 'attention.emphasis' }}
+              sx={{
+                  width: '100%',
+                  backgroundColor: 'attention.emphasis',
+                  transition: 'background-color 0.2s ease',
+                  '&:hover': {
+                    backgroundColor: '#8C5B00'
+                  } }}
             >
               JSONファイルを選択
             </Button>
