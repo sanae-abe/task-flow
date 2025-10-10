@@ -3,6 +3,7 @@ import { useState, useMemo, useCallback } from 'react';
 import { useKanban } from '../contexts/KanbanContext';
 import { useNotify } from '../contexts/NotificationContext';
 import { exportData, exportBoard } from '../utils/dataExport';
+import type { KanbanBoard } from '../types';
 
 import { useTaskStats } from './useTaskStats';
 
@@ -31,7 +32,7 @@ type SubHeaderHandlers = {
   readonly openClearCompletedConfirm: () => void;
   readonly closeClearCompletedConfirm: () => void;
   readonly exportAllData: () => void;
-  readonly exportCurrentBoard: () => void;
+  readonly exportCurrentBoard: (board?: KanbanBoard) => void;
 };
 
 type UseSubHeaderReturn = {
@@ -132,10 +133,14 @@ export const useSubHeader = (): UseSubHeaderReturn => {
         notify.success('全データをエクスポートしました');
       },
       
-      exportCurrentBoard: () => {
-        if (state.currentBoard) {
-          exportBoard(state.currentBoard);
-          notify.success(`「${state.currentBoard.title}」をエクスポートしました`);
+      exportCurrentBoard: (board?: KanbanBoard) => {
+        // ボードが指定されている場合はそのボードを、指定されていない場合は現在のボードをエクスポート
+        const targetBoard = board || state.currentBoard;
+        if (targetBoard) {
+          exportBoard(targetBoard);
+          notify.success(`「${targetBoard.title}」をエクスポートしました`);
+        } else {
+          notify.error('エクスポートするボードが選択されていません');
         }
       },
       

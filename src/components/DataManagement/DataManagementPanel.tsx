@@ -3,6 +3,7 @@ import { Box } from '@primer/react';
 
 import { ExportSection } from './ExportSection';
 import { ImportSection } from './ImportSection';
+import type { KanbanBoard } from '../../types';
 
 /**
  * データ管理パネル - エクスポート/インポート機能を統合
@@ -10,8 +11,8 @@ import { ImportSection } from './ImportSection';
 interface DataManagementPanelProps {
   /** 全データエクスポート時のコールバック */
   onExportAll?: () => void;
-  /** 現在のボードエクスポート時のコールバック */
-  onExportCurrent?: () => void;
+  /** ボード選択エクスポート時のコールバック */
+  onExportCurrent?: (board?: KanbanBoard) => void;
   /** インポート成功時のコールバック */
   onImportSuccess?: () => void;
 }
