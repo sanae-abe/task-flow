@@ -93,30 +93,38 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
 
   // ラベル作成
   const createLabel = useCallback((name: string, color: string) => {
+    console.log('🏷️ [LabelContext] createLabel開始:', { name, color });
     // バリデーション
     if (!boardState.currentBoard) {
+      console.log('🏷️ [LabelContext] エラー: ボードが選択されていません');
       notify.error('ボードが選択されていません');
       return;
     }
 
     const trimmedName = name.trim();
+    console.log('🏷️ [LabelContext] trimmedName:', trimmedName);
     if (!trimmedName) {
+      console.log('🏷️ [LabelContext] エラー: ラベル名が空です');
       notify.error('ラベル名が空です');
       return;
     }
 
     if (trimmedName.length > 50) {
+      console.log('🏷️ [LabelContext] エラー: ラベル名が長すぎます');
       notify.error('ラベル名は50文字以下で入力してください');
       return;
     }
 
     // 重複チェック
     const existingLabels = boardState.currentBoard.labels || [];
+    console.log('🏷️ [LabelContext] 既存ラベル:', existingLabels.map(l => l.name));
     const isDuplicate = existingLabels.some(label =>
       label.name.toLowerCase() === trimmedName.toLowerCase()
     );
+    console.log('🏷️ [LabelContext] 重複チェック結果:', isDuplicate);
 
     if (isDuplicate) {
+      console.log('🏷️ [LabelContext] エラー: 同じ名前のラベルが既に存在します');
       notify.error('同じ名前のラベルが既に存在します');
       return;
     }
@@ -127,9 +135,12 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
         name: trimmedName,
         color,
       };
+      console.log('🏷️ [LabelContext] 新しいラベル:', newLabel);
 
       const updatedLabels = [...existingLabels, newLabel];
+      console.log('🏷️ [LabelContext] 更新後のラベル配列:', updatedLabels);
 
+      console.log('🏷️ [LabelContext] boardDispatch実行中...');
       boardDispatch({
         type: 'UPDATE_BOARD',
         payload: {
@@ -137,10 +148,12 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
           updates: { labels: updatedLabels }
         }
       });
+      console.log('🏷️ [LabelContext] boardDispatch完了');
 
       notify.success(`ラベル「${trimmedName}」を作成しました`);
+      console.log('🏷️ [LabelContext] ✅ ラベル作成完了');
     } catch (error) {
-      console.error('ラベル作成エラー:', error);
+      console.error('🏷️ [LabelContext] ラベル作成エラー:', error);
       notify.error('ラベルの作成に失敗しました');
     }
   }, [boardState.currentBoard, boardDispatch, notify]);

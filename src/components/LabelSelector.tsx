@@ -46,6 +46,11 @@ const LabelSelector = memo<LabelSelectorProps>(({
 
   // refを常に最新の値で更新
   useEffect(() => {
+    console.log('🔄 LabelSelector ref更新:', {
+      selectedLabels,
+      onLabelsChange: onLabelsChange.name || 'anonymous function',
+      onLabelsChangeRef: onLabelsChangeRef.current?.name || 'anonymous function'
+    });
     selectedLabelsRef.current = selectedLabels;
     onLabelsChangeRef.current = onLabelsChange;
   });
@@ -77,6 +82,14 @@ const LabelSelector = memo<LabelSelectorProps>(({
 
   // 新しいラベル作成後の処理
   const handleLabelCreated = useCallback((labelData: { name: string; color: string }) => {
+    console.log('🏷️ handleLabelCreated開始:', labelData);
+    console.log('🏷️ 現在の選択されたラベル:', selectedLabelsRef.current);
+
+    // 作成前のラベル数を保存
+    const beforeLabels = getAllLabels();
+    const beforeCount = beforeLabels.length;
+    console.log('🏷️ 作成前のラベル数:', beforeCount);
+
     // LabelContextのcreateLabelでボード状態に保存
     createLabel(labelData.name, labelData.color);
 
@@ -85,18 +98,39 @@ const LabelSelector = memo<LabelSelectorProps>(({
 
     // 非同期でラベルが作成されるのを待って自動選択
     setTimeout(() => {
+      console.log('🏷️ setTimeout実行開始');
       const allCurrentLabels = getAllLabels();
-      const createdLabel = allCurrentLabels.find((label: Label) =>
-        label.name === labelData.name && label.color === labelData.color
-      );
+      console.log('🏷️ 全ラベル取得:', allCurrentLabels);
+      console.log('🏷️ 作成後のラベル数:', allCurrentLabels.length);
 
-      if (createdLabel) {
-        const currentSelectedLabels = selectedLabelsRef.current;
-        const isAlreadySelected = currentSelectedLabels.some((selected: Label) => selected.id === createdLabel.id);
+      // ラベルが実際に増加したかチェック
+      if (allCurrentLabels.length > beforeCount) {
+        // 最新のラベル（配列の最後の要素）を取得
+        const createdLabel = allCurrentLabels[allCurrentLabels.length - 1];
+        console.log('🏷️ 最新のラベル（自動選択対象）:', createdLabel);
 
-        if (!isAlreadySelected) {
-          onLabelsChangeRef.current([...currentSelectedLabels, createdLabel]);
+        // createdLabelが存在するかチェック
+        if (createdLabel) {
+          const currentSelectedLabels = selectedLabelsRef.current;
+          console.log('🏷️ ref経由で取得した現在の選択ラベル:', currentSelectedLabels);
+
+          const isAlreadySelected = currentSelectedLabels.some((selected: Label) => selected.id === createdLabel.id);
+          console.log('🏷️ 既に選択済みかチェック:', isAlreadySelected);
+
+          if (!isAlreadySelected) {
+            const newSelectedLabels = [...currentSelectedLabels, createdLabel];
+            console.log('🏷️ 新しい選択ラベル配列:', newSelectedLabels);
+
+            onLabelsChangeRef.current(newSelectedLabels);
+            console.log('🏷️ ✅ 最新ラベルの自動選択完了');
+          } else {
+            console.log('🏷️ ⚠️ 最新ラベルは既に選択済み');
+          }
+        } else {
+          console.log('🏷️ ❌ 最新ラベルが見つかりません');
         }
+      } else {
+        console.log('🏷️ ❌ ラベル数が増加していません - 作成に失敗した可能性');
       }
     }, 100); // 100ms後に実行
   }, [createLabel, getAllLabels]);
