@@ -15,6 +15,7 @@ import StatusBadge from './shared/StatusBadge';
 import SubTaskProgressBar from './SubTaskProgressBar';
 import TableColumnManager from './TableColumnManager';
 import DeleteConfirmDialog from './DeleteConfirmDialog';
+import { logger } from '../utils/logger';
 
 // 型ガード関数
 const isTaskWithColumn = (task: Task): task is TaskWithColumn => 'columnId' in task && 'columnTitle' in task && 'status' in task;
@@ -445,7 +446,7 @@ const TableView: React.FC = () => {
         {/* データ行 */}
         {filteredAndSortedTasks.map((task, index) => {
           if (!isTaskWithColumn(task)) {
-            console.warn('Task is missing required column properties:', task);
+            logger.warn('Task is missing required column properties:', task);
             return null;
           }
 

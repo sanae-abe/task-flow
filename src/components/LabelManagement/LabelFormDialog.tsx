@@ -106,9 +106,6 @@ const LabelFormDialog: React.FC<LabelFormDialogProps> = ({
 
       onClose();
     } catch (error) {
-      if (process.env.NODE_ENV === 'development') {
-        console.error('ラベル保存エラー:', error);
-      }
       setErrors({ name: 'ラベルの保存に失敗しました' });
     } finally {
       setIsLoading(false);

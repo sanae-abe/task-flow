@@ -37,8 +37,6 @@ export const saveBoards = (boards: KanbanBoard[], currentBoardId?: string): void
     logger.debug('💾 Saving boards to localStorage:', boards.length, 'boards');
     localStorage.setItem(STORAGE_KEY, JSON.stringify(boards));
     if (currentBoardId) {
-      // eslint-disable-next-line no-console
-      console.log('💾 Saving current board ID:', currentBoardId);
       localStorage.setItem('current-board-id', currentBoardId);
     }
   } catch (error) {
@@ -56,8 +54,7 @@ export const loadBoards = (): KanbanBoard[] => {
     
     const boards = JSON.parse(stored);
     if (!Array.isArray(boards)) {
-      // eslint-disable-next-line no-console
-      console.warn('Invalid boards data in localStorage');
+      logger.warn('Invalid boards data in localStorage');
       return [];
     }
     logger.debug('📖 Loaded', boards.length, 'boards from localStorage');

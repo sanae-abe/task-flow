@@ -202,7 +202,6 @@ export const useTableColumns = (): TableColumnsHookReturn => {
       .map(id => settings.columns.find(col => col.id === id))
       .filter((col): col is TableColumn => col !== undefined && col.visible);
 
-    console.log('📊 visibleColumns recalculated:', result.map(c => ({id: c.id, label: c.label})), 'forceRender:', forceRender);
     return [...result];
   }, [settings.columns, settings.columnOrder, forceRender]);
 
@@ -228,7 +227,6 @@ export const useTableColumns = (): TableColumnsHookReturn => {
     _timestamp: Date.now()
   };
 
-  console.log('🔄 useTableColumns returning new object with visibleColumns:', returnValue.visibleColumns.map(c => c.id), 'forceRender:', forceRender);
   return returnValue;
 };
 
