@@ -2,8 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Box, TextInput, FormControl } from '@primer/react';
 
 import type { Label } from '../../types';
-import { useKanban } from '../../contexts/KanbanContext';
-import { createLabel } from '../../utils/labels';
+import { useLabel } from '../../contexts/LabelContext';
 import UnifiedDialog from '../shared/Dialog/UnifiedDialog';
 import ColorSelector from '../ColorSelector';
 import LabelChip from '../LabelChip';
@@ -26,11 +25,10 @@ const LabelFormDialog: React.FC<LabelFormDialogProps> = ({
   isOpen,
   onClose,
   onSave,
-  onLabelCreated,
   label,
   mode
 }) => {
-  const { getAllLabels } = useKanban();
+  const { getAllLabels } = useLabel();
   const [formData, setFormData] = useState<LabelFormData>({
     name: '',
     color: '#0969da'
@@ -101,31 +99,18 @@ const LabelFormDialog: React.FC<LabelFormDialogProps> = ({
         color: formData.color
       };
 
-      if (mode === 'create') {
-        // 新規作成の場合
-        if (onLabelCreated) {
-          const newLabel = createLabel(labelData.name, labelData.color);
-          onLabelCreated(newLabel);
-        } else if (onSave) {
-          onSave(labelData);
-        }
-      } else {
-        // 編集の場合
-        if (onSave) {
-          onSave(labelData);
-        }
+      // create/edit両方でonSaveを使用
+      if (onSave) {
+        onSave(labelData);
       }
 
       onClose();
     } catch (error) {
-      if (process.env.NODE_ENV === 'development') {
-        console.error('ラベル保存エラー:', error);
-      }
       setErrors({ name: 'ラベルの保存に失敗しました' });
     } finally {
       setIsLoading(false);
     }
-  }, [formData, validateForm, mode, onSave, onLabelCreated, onClose]);
+  }, [formData, validateForm, onSave, onClose]);
 
   // キャンセル処理
   const handleCancel = useCallback(() => {

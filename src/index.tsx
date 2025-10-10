@@ -16,8 +16,6 @@ const shouldForwardProp = (prop: string) =>
   !['sx', 'bg', 'p', 'px', 'py', 'm', 'mx', 'my'].includes(prop);
 
 // HashRouter使用（S3環境での確実なルーティング）
-console.log('NODE_ENV:', process.env.NODE_ENV);
-console.log('Using HashRouter for S3 compatibility');
 
 root.render(
   <React.StrictMode>

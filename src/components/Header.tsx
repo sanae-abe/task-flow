@@ -55,7 +55,11 @@ const headerStyles = {
     backgroundColor: 'accent.emphasis',
     color: '#ffffff',
     border: 'none',
-    borderRadius: 2
+    borderRadius: 2,
+    transition: 'background-color 0.2s ease',
+    '&:hover': {
+      backgroundColor: 'var(--button-outline-bgColor-active)'
+    }
   }
 };
 

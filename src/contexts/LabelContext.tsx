@@ -140,7 +140,6 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
 
       notify.success(`ラベル「${trimmedName}」を作成しました`);
     } catch (error) {
-      console.error('ラベル作成エラー:', error);
       notify.error('ラベルの作成に失敗しました');
     }
   }, [boardState.currentBoard, boardDispatch, notify]);
@@ -207,7 +206,6 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
 
       notify.success('ラベルを更新しました');
     } catch (error) {
-      console.error('ラベル更新エラー:', error);
       notify.error('ラベルの更新に失敗しました');
     }
   }, [boardState.currentBoard, boardDispatch, notify]);
@@ -259,7 +257,6 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
 
       notify.success(message);
     } catch (error) {
-      console.error('ラベル削除エラー:', error);
       notify.error('ラベルの削除に失敗しました');
     }
   }, [boardState.currentBoard, boardDispatch, notify, getCurrentBoardLabelUsageCount]);

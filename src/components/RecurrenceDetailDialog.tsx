@@ -298,7 +298,7 @@ const RecurrenceDetailDialog: React.FC<RecurrenceDetailDialogProps> = ({
           </Box>
         </Box>
 
-        <div style={{ paddingBottom: '16px' }}>
+        <div>
           {config && (
             <Box sx={{ p: 2, bg: 'canvas.subtle', borderRadius: 2, mb: 2 }}>
               <Text sx={{ fontSize: 0, color: 'fg.muted' }}>

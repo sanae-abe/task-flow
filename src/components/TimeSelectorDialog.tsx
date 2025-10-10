@@ -46,12 +46,14 @@ const TimeSelectorDialog: React.FC<TimeSelectorDialogProps> = ({
       {
         label: 'キャンセル',
         onClick: handleCancel,
-        variant: 'default'
+        variant: 'default',
+        position: 'right'
       },
       {
         label: '保存',
         onClick: handleSave,
-        variant: 'primary'
+        variant: 'primary',
+        position: 'right'
       }
     ];
 
@@ -60,7 +62,8 @@ const TimeSelectorDialog: React.FC<TimeSelectorDialogProps> = ({
       actionList.splice(1, 0, {
         label: '時刻設定を削除',
         onClick: handleRemove,
-        variant: 'danger'
+        variant: 'danger',
+        position: 'left'
       });
     }
 
@@ -74,8 +77,9 @@ const TimeSelectorDialog: React.FC<TimeSelectorDialogProps> = ({
       title="時刻設定"
       onClose={handleCancel}
       actions={actions}
+      actionsLayout="split"
     >
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mb: 4 }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
         <Text sx={{ fontSize: 1, display: 'block', fontWeight: '700' }}>
           時刻
         </Text>

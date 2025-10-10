@@ -97,7 +97,6 @@ export const useTaskEdit = ({
         : '';
       setCompletedAt(completedAtValue);
 
-      setLabels(task.labels ?? []);
       setAttachments(task.files ?? []);
 
       // 繰り返し設定の初期化
@@ -122,6 +121,13 @@ export const useTaskEdit = ({
       setColumnId('');
     }
   }, [isOpen, task, state.currentBoard]);
+
+  // ラベルの初期化は別のuseEffectで処理（一度だけ実行）
+  useEffect(() => {
+    if (isOpen && task) {
+      setLabels(task.labels ?? []);
+    }
+  }, [isOpen, task?.id]); // task?.idをキーにして、同じタスクでは一度だけ実行
 
   // ステータス変更時の完了日時の自動更新
   useEffect(() => {

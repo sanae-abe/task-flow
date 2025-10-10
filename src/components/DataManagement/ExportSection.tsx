@@ -80,6 +80,10 @@ export const ExportSection = memo<ExportSectionProps>(({
             onClick={onExportAll}
             sx={{
               backgroundColor: 'accent.fg',
+              transition: 'background-color 0.2s ease',
+              '&:hover': {
+                backgroundColor: 'var(--button-outline-bgColor-active)'
+              }
             }}
           >
             全データをエクスポート

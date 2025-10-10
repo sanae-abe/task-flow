@@ -46,7 +46,7 @@ export const TableColumnsProvider: React.FC<{ children: React.ReactNode }> = ({ 
           try {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(result));
           } catch (error) {
-            console.error('Failed to update localStorage:', error);
+            // Failed to update localStorage, continue silently
           }
         }
 
@@ -79,7 +79,7 @@ export const TableColumnsProvider: React.FC<{ children: React.ReactNode }> = ({ 
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(newSettings));
       } catch (error) {
-        console.error('Failed to save settings:', error);
+        // Failed to save settings, continue silently
       }
 
       return newSettings;
@@ -104,7 +104,7 @@ export const TableColumnsProvider: React.FC<{ children: React.ReactNode }> = ({ 
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(newSettings));
       } catch (error) {
-        console.error('Failed to save settings:', error);
+        // Failed to save settings, continue silently
       }
 
       return newSettings;
@@ -123,7 +123,7 @@ export const TableColumnsProvider: React.FC<{ children: React.ReactNode }> = ({ 
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(newSettings));
       } catch (error) {
-        console.error('Failed to save settings:', error);
+        // Failed to save settings, continue silently
       }
 
       return newSettings;
@@ -151,7 +151,7 @@ export const TableColumnsProvider: React.FC<{ children: React.ReactNode }> = ({ 
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(newSettings));
       } catch (error) {
-        console.error('Failed to save settings:', error);
+        // Failed to save settings, continue silently
       }
 
       return newSettings;

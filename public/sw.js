@@ -19,15 +19,12 @@ const API_CACHE_DURATION = 5 * 60 * 1000; // 5分
 
 // Service Worker のインストール
 self.addEventListener('install', (event) => {
-  console.log('[SW] Installing Service Worker');
   event.waitUntil(
     caches.open(STATIC_CACHE_NAME)
       .then((cache) => {
-        console.log('[SW] Precaching static assets');
         return cache.addAll(urlsToCache);
       })
       .then(() => {
-        console.log('[SW] Skip waiting');
         return self.skipWaiting();
       })
   );
@@ -35,7 +32,6 @@ self.addEventListener('install', (event) => {
 
 // Service Worker のアクティベート
 self.addEventListener('activate', (event) => {
-  console.log('[SW] Activating Service Worker');
   const expectedCaches = [STATIC_CACHE_NAME, DYNAMIC_CACHE_NAME];
 
   event.waitUntil(
@@ -43,13 +39,11 @@ self.addEventListener('activate', (event) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
           if (!expectedCaches.includes(cacheName)) {
-            console.log('[SW] Deleting old cache:', cacheName);
             return caches.delete(cacheName);
           }
         })
       );
     }).then(() => {
-      console.log('[SW] Claiming clients');
       return self.clients.claim();
     })
   );
@@ -105,7 +99,6 @@ async function cacheFirstStrategy(request) {
     }
     return response;
   } catch (error) {
-    console.log('[SW] Network failed for', request.url);
     throw error;
   }
 }
@@ -122,7 +115,6 @@ async function networkFirstStrategy(request) {
 
     return response;
   } catch (error) {
-    console.log('[SW] Network failed, trying cache for', request.url);
     const cache = await caches.open(DYNAMIC_CACHE_NAME);
     const cached = await cache.match(request);
 
@@ -192,8 +184,6 @@ async function updateCacheInBackground(request, cache) {
 
 // メッセージハンドラー
 self.addEventListener('message', (event) => {
-  console.log('[SW] Received message:', event.data);
-
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
     return;
@@ -215,23 +205,20 @@ async function cacheNewRoute(url) {
   try {
     const cache = await caches.open(DYNAMIC_CACHE_NAME);
     await cache.add(url);
-    console.log('[SW] Cached new route:', url);
+    // Route cached successfully
   } catch (error) {
-    console.log('[SW] Failed to cache new route:', url, error);
+    // Failed to cache new route, continue silently
   }
 }
 
 // Background sync for offline actions
 self.addEventListener('sync', (event) => {
-  console.log('[SW] Background sync:', event.tag);
-
   if (event.tag === 'background-sync') {
     event.waitUntil(doBackgroundSync());
   }
 });
 
 async function doBackgroundSync() {
-  console.log('[SW] Performing background sync');
   // ここでオフライン時のアクションを処理
   // 例: ローカルストレージの変更をサーバーに同期
 }

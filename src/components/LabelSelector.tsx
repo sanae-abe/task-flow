@@ -1,13 +1,13 @@
 import { PlusIcon, TagIcon, CheckIcon } from '@primer/octicons-react';
-import { 
-  Button, 
+import {
+  Button,
   Box,
   ActionMenu,
   ActionList
 } from '@primer/react';
-import { useState, useCallback, useMemo, memo } from 'react';
+import { useState, useCallback, useMemo, memo, useRef, useEffect } from 'react';
 
-import { useKanban } from '../contexts/KanbanContext';
+import { useLabel } from '../contexts/LabelContext';
 import type { Label } from '../types';
 import { getLabelColors } from '../utils/labelHelpers';
 
@@ -31,14 +31,48 @@ const LabelSelector = memo<LabelSelectorProps>(({
   selectedLabels,
   onLabelsChange
 }) => {
-  const { getAllLabels } = useKanban();
+  const { getAllLabels, createLabel } = useLabel();
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [pendingAutoSelect, setPendingAutoSelect] = useState<{ name: string; color: string } | null>(null);
+
+  // selectedLabelsの最新値を追跡するref
+  const selectedLabelsRef = useRef<Label[]>(selectedLabels);
+  const onLabelsChangeRef = useRef<(labels: Label[]) => void>(onLabelsChange);
 
   const allLabels = useMemo(() => getAllLabels(), [getAllLabels]);
-  const selectedLabelIds = useMemo(() => 
-    new Set(selectedLabels.map(label => label.id)), 
+  const selectedLabelIds = useMemo(() =>
+    new Set(selectedLabels.map(label => label.id)),
     [selectedLabels]
   );
+
+  // refを常に最新の値で更新
+  useEffect(() => {
+    selectedLabelsRef.current = selectedLabels;
+    onLabelsChangeRef.current = onLabelsChange;
+  }, [selectedLabels, onLabelsChange]);
+
+  // allLabelsの変化を監視して自動選択を実行
+  useEffect(() => {
+    if (pendingAutoSelect) {
+      // 作成されたラベルを名前と色で検索
+      const createdLabel = allLabels.find(label =>
+        label.name === pendingAutoSelect.name && label.color === pendingAutoSelect.color
+      );
+
+      if (createdLabel) {
+        const currentSelectedLabels = selectedLabelsRef.current;
+        const isAlreadySelected = currentSelectedLabels.some(selected => selected.id === createdLabel.id);
+
+        if (!isAlreadySelected) {
+          const newSelectedLabels = [...currentSelectedLabels, createdLabel];
+          onLabelsChangeRef.current(newSelectedLabels);
+        }
+
+        // pendingAutoSelectをクリア
+        setPendingAutoSelect(null);
+      }
+    }
+  }, [allLabels, pendingAutoSelect]);
 
   // ダイアログ操作
   const handleAddDialogClose = useCallback(() => {
@@ -66,10 +100,16 @@ const LabelSelector = memo<LabelSelectorProps>(({
   }, [selectedLabels, onLabelsChange]);
 
   // 新しいラベル作成後の処理
-  const handleLabelCreated = useCallback((newLabel: Label) => {
-    onLabelsChange([...selectedLabels, newLabel]);
+  const handleLabelCreated = useCallback((labelData: { name: string; color: string }) => {
+    // LabelContextのcreateLabelでボード状態に保存
+    createLabel(labelData.name, labelData.color);
+
+    // ダイアログを閉じる
     setIsAddDialogOpen(false);
-  }, [selectedLabels, onLabelsChange]);
+
+    // 自動選択用の状態を設定（useEffectで監視される）
+    setPendingAutoSelect(labelData);
+  }, [createLabel]);
 
   // スタイルオブジェクトをメモ化
   const selectedLabelsContainerStyles = useMemo(() => ({
@@ -101,7 +141,6 @@ const LabelSelector = memo<LabelSelectorProps>(({
   return (
     <Box sx={{ mt: 2 }}>
       {/* 選択されたラベルを表示 */}
-      {/* & button のセレクタのスタイルは保持 */}
       {selectedLabels.length > 0 && (
         <Box sx={selectedLabelsContainerStyles}>
           {selectedLabels.map(label => (
@@ -158,6 +197,7 @@ const LabelSelector = memo<LabelSelectorProps>(({
                   </ActionList.Item>
                 );
               })}
+
               {allLabels.length === 0 && (
                 <ActionList.Item disabled>
                   {EMPTY_LABELS_MESSAGE}
@@ -183,7 +223,7 @@ const LabelSelector = memo<LabelSelectorProps>(({
         mode="create"
         isOpen={isAddDialogOpen}
         onClose={handleAddDialogClose}
-        onLabelCreated={handleLabelCreated}
+        onSave={handleLabelCreated}
       />
     </Box>
   );

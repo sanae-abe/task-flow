@@ -11,9 +11,8 @@ export const useDataSync = () => {
   const initializeData = useCallback(async () => {
     try {
       await indexedDBManager.init();
-      console.log('IndexedDB initialized successfully');
     } catch (error) {
-      console.error('データの初期化に失敗しました:', error);
+      // データの初期化に失敗 (silent fail)
     }
   }, []);
 
@@ -22,7 +21,6 @@ export const useDataSync = () => {
     try {
       // IndexedDBが初期化されているかチェック
       if (!indexedDBManager.isInitialized()) {
-        console.log('IndexedDBが初期化されていません。初期化を実行します...');
         await indexedDBManager.init();
       }
 
@@ -40,7 +38,7 @@ export const useDataSync = () => {
 
       await indexedDBManager.saveAllData(dataToSave);
     } catch (error) {
-      console.error('データの保存に失敗しました:', error);
+      // データの保存に失敗 (silent fail)
     }
   }, [state.boards, state.labels]);
 
@@ -49,15 +47,12 @@ export const useDataSync = () => {
     if (isOnline && wasOffline) {
       try {
         // ここで将来的にサーバーとの同期処理を実装
-        console.log('オンライン復帰: データ同期開始');
-        
         // 現在はローカルデータの保存のみ
         await saveToIndexedDB();
-        
+
         resetWasOffline();
-        console.log('データ同期完了');
       } catch (error) {
-        console.error('オンライン同期に失敗しました:', error);
+        // オンライン同期に失敗 (silent fail)
       }
     }
   }, [isOnline, wasOffline, saveToIndexedDB, resetWasOffline]);
