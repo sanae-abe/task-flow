@@ -33,6 +33,7 @@ const LabelSelector = memo<LabelSelectorProps>(({
 }) => {
   const { getAllLabels, createLabel } = useLabel();
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [pendingAutoSelect, setPendingAutoSelect] = useState<{ name: string; color: string } | null>(null);
 
   // selectedLabelsの最新値を追跡するref
   const selectedLabelsRef = useRef<Label[]>(selectedLabels);
@@ -59,6 +60,40 @@ const LabelSelector = memo<LabelSelectorProps>(({
     selectedLabelsRef.current = selectedLabels;
     onLabelsChangeRef.current = onLabelsChange;
   });
+
+  // allLabelsの変化を監視して自動選択を実行
+  useEffect(() => {
+    if (pendingAutoSelect) {
+      console.log('🏷️ useEffect: allLabels変化監視 - 自動選択実行');
+      console.log('🏷️ useEffect: 検索対象:', pendingAutoSelect);
+      console.log('🏷️ useEffect: 現在のallLabels:', allLabels.length, 'labels');
+
+      // 作成されたラベルを名前と色で検索
+      const createdLabel = allLabels.find(label =>
+        label.name === pendingAutoSelect.name && label.color === pendingAutoSelect.color
+      );
+      console.log('🏷️ useEffect: 検索結果:', createdLabel);
+
+      if (createdLabel) {
+        const currentSelectedLabels = selectedLabelsRef.current;
+        const isAlreadySelected = currentSelectedLabels.some(selected => selected.id === createdLabel.id);
+        console.log('🏷️ useEffect: 既に選択済みかチェック:', isAlreadySelected);
+
+        if (!isAlreadySelected) {
+          const newSelectedLabels = [...currentSelectedLabels, createdLabel];
+          console.log('🏷️ useEffect: 新しい選択ラベル配列:', newSelectedLabels);
+
+          onLabelsChangeRef.current(newSelectedLabels);
+          console.log('🏷️ ✅ useEffect: 自動選択完了');
+        } else {
+          console.log('🏷️ ⚠️ useEffect: ラベルは既に選択済み');
+        }
+
+        // pendingAutoSelectをクリア
+        setPendingAutoSelect(null);
+      }
+    }
+  }, [allLabels, pendingAutoSelect]);
 
   // ダイアログ操作
   const handleAddDialogClose = useCallback(() => {
@@ -90,57 +125,16 @@ const LabelSelector = memo<LabelSelectorProps>(({
     console.log('🏷️ handleLabelCreated開始:', labelData);
     console.log('🏷️ 現在の選択されたラベル:', selectedLabelsRef.current);
 
-    // 作成前のラベル数を保存
-    const beforeLabels = getAllLabels();
-    const beforeCount = beforeLabels.length;
-    console.log('🏷️ 作成前のラベル数:', beforeCount);
-
     // LabelContextのcreateLabelでボード状態に保存
     createLabel(labelData.name, labelData.color);
 
     // ダイアログを閉じる
     setIsAddDialogOpen(false);
 
-    // 非同期でラベルが作成されるのを待って自動選択
-    setTimeout(() => {
-      console.log('🏷️ setTimeout実行開始');
-      console.log('🏷️ setTimeout内でgetAllLabels()を直接呼び出し');
-      const allCurrentLabels = getAllLabels();
-      console.log('🏷️ 全ラベル取得:', allCurrentLabels);
-      console.log('🏷️ 作成後のラベル数:', allCurrentLabels.length);
-      console.log('🏷️ ラベル名一覧:', allCurrentLabels.map(l => l.name));
-
-      // ラベルが実際に増加したかチェック
-      if (allCurrentLabels.length > beforeCount) {
-        // 最新のラベル（配列の最後の要素）を取得
-        const createdLabel = allCurrentLabels[allCurrentLabels.length - 1];
-        console.log('🏷️ 最新のラベル（自動選択対象）:', createdLabel);
-
-        // createdLabelが存在するかチェック
-        if (createdLabel) {
-          const currentSelectedLabels = selectedLabelsRef.current;
-          console.log('🏷️ ref経由で取得した現在の選択ラベル:', currentSelectedLabels);
-
-          const isAlreadySelected = currentSelectedLabels.some((selected: Label) => selected.id === createdLabel.id);
-          console.log('🏷️ 既に選択済みかチェック:', isAlreadySelected);
-
-          if (!isAlreadySelected) {
-            const newSelectedLabels = [...currentSelectedLabels, createdLabel];
-            console.log('🏷️ 新しい選択ラベル配列:', newSelectedLabels);
-
-            onLabelsChangeRef.current(newSelectedLabels);
-            console.log('🏷️ ✅ 最新ラベルの自動選択完了');
-          } else {
-            console.log('🏷️ ⚠️ 最新ラベルは既に選択済み');
-          }
-        } else {
-          console.log('🏷️ ❌ 最新ラベルが見つかりません');
-        }
-      } else {
-        console.log('🏷️ ❌ ラベル数が増加していません - 作成に失敗した可能性');
-      }
-    }, 100); // 100ms後に実行
-  }, [createLabel, getAllLabels]);
+    // 自動選択用の状態を設定（useEffectで監視される）
+    console.log('🏷️ pendingAutoSelectを設定:', labelData);
+    setPendingAutoSelect(labelData);
+  }, [createLabel]);
 
   // スタイルオブジェクトをメモ化
   const selectedLabelsContainerStyles = useMemo(() => ({
