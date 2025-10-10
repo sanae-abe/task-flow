@@ -1,5 +1,5 @@
 import { Box, Button, Text, TextInput } from '@primer/react';
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 
 import UnifiedDialog from './shared/Dialog/UnifiedDialog';
 
@@ -7,6 +7,9 @@ interface LinkInsertDialogProps {
   isOpen: boolean;
   onInsert: (url: string, text?: string) => void;
   onCancel: () => void;
+  initialUrl?: string;
+  initialText?: string;
+  title?: string;
 }
 
 // URL検証ヘルパー関数
@@ -26,9 +29,20 @@ const LinkInsertDialog: React.FC<LinkInsertDialogProps> = ({
   isOpen,
   onInsert,
   onCancel,
+  initialUrl = '',
+  initialText = '',
+  title = 'リンクを挿入',
 }) => {
   const [url, setUrl] = useState('');
   const [linkText, setLinkText] = useState('');
+
+  // ダイアログが開かれた時に初期値を設定
+  useEffect(() => {
+    if (isOpen) {
+      setUrl(initialUrl);
+      setLinkText(initialText);
+    }
+  }, [isOpen, initialUrl, initialText]);
 
   // URL検証結果をメモ化
   const isValidUrl = useMemo(() => validateUrl(url), [url]);
@@ -56,7 +70,7 @@ const LinkInsertDialog: React.FC<LinkInsertDialogProps> = ({
 
   return (
     <UnifiedDialog
-      title="リンクを挿入"
+      title={title}
       isOpen={isOpen}
       onClose={handleCancel}
       variant="modal"
