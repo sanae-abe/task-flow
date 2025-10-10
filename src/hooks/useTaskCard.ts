@@ -75,19 +75,20 @@ export const useTaskCard = (task: Task, columnId: string): UseTaskCardReturn => 
 
   const handleComplete = useCallback(() => {
     if (!state.currentBoard?.columns.length) {return;}
-    
+
     const { columns } = state.currentBoard;
     const currentIndex = columns.findIndex(col => col.id === columnId);
-    
+
     if (currentIndex === -1) {return;}
-    
+
     const isLastColumn = currentIndex === columns.length - 1;
-    const targetColumn = isLastColumn 
+    const targetColumn = isLastColumn
       ? columns[currentIndex - 1] // 左に戻る
       : columns[columns.length - 1]; // 最後のカラムに移動
-    
+
     if (targetColumn) {
-      moveTask(task.id, columnId, targetColumn.id, targetColumn.tasks.length);
+      // 完了カラムの一番上に配置
+      moveTask(task.id, columnId, targetColumn.id, 0);
     }
   }, [task.id, columnId, moveTask, state.currentBoard]);
 
