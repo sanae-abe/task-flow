@@ -12,11 +12,15 @@ interface LabelContextType {
 
   // 全ボード対象
   getAllLabels: () => Label[];
+  getAllLabelsWithBoardInfo: () => Array<Label & { boardName: string; boardId: string }>;
+  getLabelUsageCountInBoard: (labelId: string, boardId: string) => number;
+  getAllLabelUsageCount: (labelId: string) => number;
 
   // ラベル操作
   createLabel: (name: string, color: string) => void;
   updateLabel: (labelId: string, updates: Partial<Label>) => void;
   deleteLabel: (labelId: string) => void;
+  deleteLabelFromAllBoards: (labelId: string) => void;
   
   // ラベル共通化機能
   copyLabelToCurrentBoard: (label: Label) => void;
@@ -322,6 +326,116 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
     }
   }, [boardState.currentBoard, boardDispatch, notify, isLabelInCurrentBoard]);
 
+  // 全ボードのラベル情報をボード名付きで取得
+  const getAllLabelsWithBoardInfo = useCallback((): Array<Label & { boardName: string; boardId: string }> => {
+    const labelsWithBoardInfo: Array<Label & { boardName: string; boardId: string }> = [];
+
+    // すべてのボードからラベルを収集
+    boardState.boards.forEach(board => {
+      board.labels?.forEach(label => {
+        labelsWithBoardInfo.push({
+          ...label,
+          boardName: board.title,
+          boardId: board.id,
+        });
+      });
+    });
+
+    return labelsWithBoardInfo;
+  }, [boardState.boards]);
+
+  // 指定されたボードでのラベル使用数を取得
+  const getLabelUsageCountInBoard = useCallback((labelId: string, boardId: string): number => {
+    const board = boardState.boards.find(b => b.id === boardId);
+    if (!board) {
+      return 0;
+    }
+
+    let count = 0;
+    board.columns.forEach(column => {
+      column.tasks.forEach(task => {
+        if (task.labels?.some(label => label.id === labelId)) {
+          count++;
+        }
+      });
+    });
+
+    return count;
+  }, [boardState.boards]);
+
+  // 全ボードでのラベル使用数を取得
+  const getAllLabelUsageCount = useCallback((labelId: string): number => {
+    let totalCount = 0;
+
+    boardState.boards.forEach(board => {
+      board.columns.forEach(column => {
+        column.tasks.forEach(task => {
+          if (task.labels?.some(label => label.id === labelId)) {
+            totalCount++;
+          }
+        });
+      });
+    });
+
+    return totalCount;
+  }, [boardState.boards]);
+
+  // 全ボードからラベルを削除
+  const deleteLabelFromAllBoards = useCallback((labelId: string) => {
+    // まず、削除対象のラベル情報を取得
+    const labelToDelete = getAllLabels().find(label => label.id === labelId);
+    if (!labelToDelete) {
+      notify.error('削除対象のラベルが見つかりません');
+      return;
+    }
+
+    // 全ボードでの使用数を確認
+    const totalUsageCount = getAllLabelUsageCount(labelId);
+
+    try {
+      // すべてのボードを個別に更新
+      boardState.boards.forEach(board => {
+        const hasLabel = (board.labels || []).some(label => label.id === labelId);
+
+        if (!hasLabel) {
+          return; // このボードにはラベルがないのでスキップ
+        }
+
+        // ボードからラベルを削除
+        const updatedLabels = (board.labels || []).filter(label => label.id !== labelId);
+
+        // タスクからもラベルを削除
+        const updatedColumns = board.columns.map(column => ({
+          ...column,
+          tasks: column.tasks.map(task => ({
+            ...task,
+            labels: (task.labels || []).filter(label => label.id !== labelId),
+          })),
+        }));
+
+        // 個別のボードを更新
+        boardDispatch({
+          type: 'UPDATE_BOARD',
+          payload: {
+            boardId: board.id,
+            updates: {
+              labels: updatedLabels,
+              columns: updatedColumns
+            }
+          }
+        });
+      });
+
+      const message = totalUsageCount > 0
+        ? `ラベル「${labelToDelete.name}」を全ボードから削除しました（${totalUsageCount}個のタスクから削除）`
+        : `ラベル「${labelToDelete.name}」を全ボードから削除しました`;
+
+      notify.success(message);
+    } catch (error) {
+      notify.error('ラベルの削除に失敗しました');
+    }
+  }, [boardState.boards, boardDispatch, notify, getAllLabels, getAllLabelUsageCount]);
+
   // メモ化されたコンテキスト値
   const contextValue = useMemo(() => ({
     // 現在のボード対象
@@ -331,11 +445,15 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
 
     // 全ボード対象
     getAllLabels,
+    getAllLabelsWithBoardInfo,
+    getLabelUsageCountInBoard,
+    getAllLabelUsageCount,
 
     // ラベル操作
     createLabel,
     updateLabel,
     deleteLabel,
+    deleteLabelFromAllBoards,
 
     // ラベル共通化機能
     copyLabelToCurrentBoard,
@@ -345,9 +463,13 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
     getCurrentBoardLabels,
     getCurrentBoardLabelUsageCount,
     getAllLabels,
+    getAllLabelsWithBoardInfo,
+    getLabelUsageCountInBoard,
+    getAllLabelUsageCount,
     createLabel,
     updateLabel,
     deleteLabel,
+    deleteLabelFromAllBoards,
     copyLabelToCurrentBoard,
     isLabelInCurrentBoard,
   ]);

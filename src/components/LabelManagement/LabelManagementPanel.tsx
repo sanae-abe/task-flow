@@ -21,10 +21,17 @@ const CounterLabel: React.FC<{ count: number }> = ({ count }) => (
 );
 
 const LabelManagementPanel: React.FC = () => {
-  const { labels, createLabel, updateLabel, deleteLabel, getCurrentBoardLabelUsageCount } = useLabel();
+  const { 
+    getAllLabelsWithBoardInfo, 
+    getAllLabelUsageCount, 
+    createLabel, 
+    updateLabel, 
+    deleteLabelFromAllBoards 
+  } = useLabel();
+  
   const [editDialog, setEditDialog] = useState<{
     isOpen: boolean;
-    label: Label | null;
+    label: (Label & { boardName: string; boardId: string }) | null;
     mode: 'create' | 'edit';
   }>({
     isOpen: false,
@@ -34,20 +41,37 @@ const LabelManagementPanel: React.FC = () => {
 
   const [deleteDialog, setDeleteDialog] = useState<{
     isOpen: boolean;
-    label: Label | null;
+    label: (Label & { boardName: string; boardId: string }) | null;
   }>({
     isOpen: false,
     label: null
   });
 
-  // ラベルデータにusageCountを追加
-  const labelsWithUsage = useMemo(() => labels.map(label => ({
-    ...label,
-    usageCount: getCurrentBoardLabelUsageCount(label.id)
-  })), [labels, getCurrentBoardLabelUsageCount]);
+  // 全ボードのラベルデータを取得してusageCountを追加
+  const allLabelsWithInfo = useMemo(() => {
+    const labelsMap = new Map<string, Label & { boardName: string; boardId: string; usageCount: number }>();
+    
+    // 全ボードのラベルを収集
+    getAllLabelsWithBoardInfo().forEach(labelWithBoard => {
+      const existingLabel = labelsMap.get(labelWithBoard.id);
+      
+      if (existingLabel) {
+        // 既に存在する場合、ボード名を結合
+        existingLabel.boardName = `${existingLabel.boardName}, ${labelWithBoard.boardName}`;
+      } else {
+        // 新しいラベルの場合、使用数を計算して追加
+        labelsMap.set(labelWithBoard.id, {
+          ...labelWithBoard,
+          usageCount: getAllLabelUsageCount(labelWithBoard.id)
+        });
+      }
+    });
+    
+    return Array.from(labelsMap.values()).sort((a, b) => a.name.localeCompare(b.name));
+  }, [getAllLabelsWithBoardInfo, getAllLabelUsageCount]);
 
   // 編集ダイアログを開く
-  const handleEdit = useCallback((label: Label) => {
+  const handleEdit = useCallback((label: Label & { boardName: string; boardId: string; usageCount: number }) => {
     setEditDialog({
       isOpen: true,
       label,
@@ -65,7 +89,7 @@ const LabelManagementPanel: React.FC = () => {
   }, []);
 
   // 削除ダイアログを開く
-  const handleDelete = useCallback((label: Label) => {
+  const handleDelete = useCallback((label: Label & { boardName: string; boardId: string; usageCount: number }) => {
     setDeleteDialog({
       isOpen: true,
       label
@@ -98,13 +122,13 @@ const LabelManagementPanel: React.FC = () => {
     handleCloseEditDialog();
   }, [editDialog.mode, editDialog.label, createLabel, updateLabel, handleCloseEditDialog]);
 
-  // ラベル削除確認
+  // ラベル削除確認（全ボードから削除）
   const handleConfirmDelete = useCallback(() => {
     if (deleteDialog.label) {
-      deleteLabel(deleteDialog.label.id);
+      deleteLabelFromAllBoards(deleteDialog.label.id);
       handleCloseDeleteDialog();
     }
-  }, [deleteDialog.label, deleteLabel, handleCloseDeleteDialog]);
+  }, [deleteDialog.label, deleteLabelFromAllBoards, handleCloseDeleteDialog]);
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
@@ -118,7 +142,7 @@ const LabelManagementPanel: React.FC = () => {
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <TagIcon size={20} />
           <Text sx={{ fontSize: 2, fontWeight: 'bold' }}>
-            ラベル管理
+            全ボードのラベル管理
           </Text>
         </div>
         <Button
@@ -138,7 +162,7 @@ const LabelManagementPanel: React.FC = () => {
       </div>
 
       {/* ラベル一覧 */}
-      {labelsWithUsage.length === 0 ? (
+      {allLabelsWithInfo.length === 0 ? (
         <Box sx={{
           textAlign: 'center',
           py: 6,
@@ -165,7 +189,7 @@ const LabelManagementPanel: React.FC = () => {
           {/* テーブルヘッダー */}
           <Box sx={{
             display: 'grid',
-            gridTemplateColumns: '1fr 80px 80px',
+            gridTemplateColumns: '1fr 200px 80px 80px',
             gap: 2,
             p: 2,
             bg: 'canvas.subtle',
@@ -174,24 +198,25 @@ const LabelManagementPanel: React.FC = () => {
             fontSize: 1,
             fontWeight: 'bold',
             color: 'fg.muted'
-          }}> 
+          }}>
             <Text>ラベル</Text>
+            <Text>所属ボード</Text>
             <Text sx={{ textAlign: 'center' }}>使用数</Text>
             <Text sx={{ textAlign: 'center' }}>操作</Text>
           </Box>
 
           {/* テーブルボディ */}
           <Box sx={{ maxHeight: '400px', overflow: 'auto' }}>
-            {labelsWithUsage.map((label, index) => (
+            {allLabelsWithInfo.map((label, index) => (
               <Box
                 key={label.id}
                 sx={{
                   display: 'grid',
-                  gridTemplateColumns: '1fr 80px 80px',
+                  gridTemplateColumns: '1fr 200px 80px 80px',
                   gap: 2,
                   p: 2,
                   alignItems: 'center',
-                  borderBottom: index < labelsWithUsage.length - 1 ? '1px solid' : 'none',
+                  borderBottom: index < allLabelsWithInfo.length - 1 ? '1px solid' : 'none',
                   borderColor: 'border.muted',
                   '&:hover': {
                     bg: 'canvas.subtle',
@@ -206,12 +231,26 @@ const LabelManagementPanel: React.FC = () => {
                   <LabelChip label={label} />
                 </Box>
 
+                {/* 所属ボード */}
+                <Box sx={{
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap'
+                }}>
+                  <Text sx={{
+                    fontSize: 1,
+                    color: 'fg.muted',
+                  }}>
+                    {label.boardName}
+                  </Text>
+                </Box>
+
                 {/* 使用数 */}
                 <Box sx={{ textAlign: 'center' }}>
                   <CounterLabel count={label.usageCount} />
                 </Box>
 
-                {/* 編集ボタン */}
+                {/* アクションボタン */}
                 <Box
                   className="label-actions"
                   sx={{
@@ -229,10 +268,9 @@ const LabelManagementPanel: React.FC = () => {
                     variant="invisible"
                     onClick={() => handleEdit(label)}
                   />
-                  {/* 削除ボタン */}
                   <IconButton
                     icon={TrashIcon}
-                    aria-label={`ラベル「${label.name}」を削除`}
+                    aria-label={`ラベル「${label.name}」を全ボードから削除`}
                     size="small"
                     variant="invisible"
                     onClick={() => handleDelete(label)}
@@ -259,7 +297,7 @@ const LabelManagementPanel: React.FC = () => {
         title="ラベルの削除"
         message={
           deleteDialog.label
-            ? `ラベル「${deleteDialog.label.name}」を削除しますか？この操作は元に戻せません。`
+            ? `ラベル「${deleteDialog.label.name}」を全ボードから削除しますか？この操作は元に戻せません。${('usageCount' in deleteDialog.label && typeof deleteDialog.label.usageCount === 'number' && deleteDialog.label.usageCount > 0) ? `\n\n${deleteDialog.label.usageCount}個のタスクからも削除されます。` : ''}`
             : ''
         }
         onClose={handleCloseDeleteDialog}
