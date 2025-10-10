@@ -10,6 +10,10 @@ interface ColumnHeaderProps {
   onTitleEdit: () => void;
   onDeleteColumn: () => void;
   onAddTask: () => void;
+  onMoveLeft?: () => void;
+  onMoveRight?: () => void;
+  canMoveLeft?: boolean;
+  canMoveRight?: boolean;
 }
 
 const headerStyles: React.CSSProperties = {
@@ -25,7 +29,11 @@ const ColumnHeader: React.FC<ColumnHeaderProps> = ({
   column,
   onTitleEdit,
   onDeleteColumn,
-  onAddTask
+  onAddTask,
+  onMoveLeft,
+  onMoveRight,
+  canMoveLeft,
+  canMoveRight
 }) => (
     <div style={headerStyles}>
       <ColumnTitle column={column} />
@@ -33,6 +41,10 @@ const ColumnHeader: React.FC<ColumnHeaderProps> = ({
         onAddTask={onAddTask}
         onTitleEdit={onTitleEdit}
         onDeleteColumn={onDeleteColumn}
+        onMoveLeft={onMoveLeft}
+        onMoveRight={onMoveRight}
+        canMoveLeft={canMoveLeft}
+        canMoveRight={canMoveRight}
       />
     </div>
   );

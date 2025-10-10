@@ -77,10 +77,12 @@ const KanbanBoard: React.FC = () => {
         onDragEnd={handleDragEnd}
       >
         <Box sx={KANBAN_BOARD_STYLES.columnsContainer}>
-          {currentBoard.columns.map((column) => (
+          {currentBoard.columns.map((column, index) => (
             <KanbanColumn
               key={column.id}
               column={column}
+              columnIndex={index}
+              totalColumns={currentBoard.columns.length}
               onTaskClick={handleTaskClick}
               keyboardDragAndDrop={keyboardDragAndDrop}
             />
