@@ -212,6 +212,10 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
               description="タスクカードをクリックして詳細表示・編集"
             />
             <HelpItem
+              title="タスク複製"
+              description="タスク詳細サイドバーの複製ボタンで既存タスクを同じカラムに複製。タイトルに「(コピー)」が付与され、サブタスクも未完了状態で複製される"
+            />
+            <HelpItem
               title={
                 <>
                   リッチテキスト<br />
