@@ -203,60 +203,100 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       }
     }
 
-    // カラムを更新
-    const updatedColumns = boardState.currentBoard.columns.map(column => {
-      if (column.id === sourceColumnId) {
-        // ソースカラムからタスクを削除
-        return {
-          ...column,
-          tasks: column.tasks.filter(task => task.id !== taskId),
-        };
-      } else if (column.id === targetColumnId) {
-        // ターゲットカラムにタスクを追加
-        const newTasks = [...column.tasks];
-        
-        // 同じカラム内での移動の場合は、特別な処理は不要
-        // sourceColumnで既にタスクが削除されているため、通常の挿入を行う
-        const safeTargetIndex = Math.max(0, Math.min(targetIndex, newTasks.length));
-        newTasks.splice(safeTargetIndex, 0, updatedTask);
-
-        // 繰り返しタスクがある場合は追加（完了カラムに移動していない場合）
-        if (recurringTask && !isMovingToCompleted) {
-          newTasks.push(recurringTask);
+    // 同じカラム内での移動の場合は、特別な処理を行う
+    if (sourceColumnId === targetColumnId) {
+      const newTasks = [...sourceColumn.tasks];
+      const oldIndex = newTasks.findIndex(task => task.id === taskId);
+      
+      if (oldIndex === -1) {
+        logger.warn('Task not found in source column for same-column move:', taskId);
+        return;
+      }
+      
+      // タスクを削除
+      newTasks.splice(oldIndex, 1);
+      
+      // 安全なターゲットインデックスを計算
+      const safeTargetIndex = Math.max(0, Math.min(targetIndex, newTasks.length));
+      
+      // 新しい位置に挿入
+      newTasks.splice(safeTargetIndex, 0, updatedTask);
+      
+      const updatedColumns = boardState.currentBoard.columns.map(column => {
+        if (column.id === sourceColumnId) {
+          return {
+            ...column,
+            tasks: newTasks,
+          };
         }
+        return column;
+      });
+      
+      const updatedBoard = {
+        ...boardState.currentBoard,
+        columns: updatedColumns,
+        updatedAt: new Date().toISOString(),
+      };
 
-        return {
-          ...column,
-          tasks: newTasks,
-        };
-      }
-      return column;
-    });
+      boardDispatch({
+        type: 'UPDATE_BOARD',
+        payload: { boardId: boardState.currentBoard.id, updates: updatedBoard }
+      });
+      
+    } else {
+      // 異なるカラム間での移動
+      const updatedColumns = boardState.currentBoard.columns.map(column => {
+        if (column.id === sourceColumnId) {
+          // ソースカラムからタスクを削除
+          return {
+            ...column,
+            tasks: column.tasks.filter(task => task.id !== taskId),
+          };
+        } else if (column.id === targetColumnId) {
+          // ターゲットカラムにタスクを追加
+          const newTasks = [...column.tasks];
+          const safeTargetIndex = Math.max(0, Math.min(targetIndex, newTasks.length));
+          
+          newTasks.splice(safeTargetIndex, 0, updatedTask);
 
-    // 繰り返しタスクを最初のカラムに追加（完了カラムに移動した場合）
-    if (recurringTask && isMovingToCompleted && updatedColumns.length > 0) {
-      const firstColumn = updatedColumns[0];
-      if (firstColumn) {
-        updatedColumns[0] = {
-          ...firstColumn,
-          tasks: [...firstColumn.tasks, recurringTask],
-        };
+          // 繰り返しタスクがある場合は追加（完了カラムに移動していない場合）
+          if (recurringTask && !isMovingToCompleted) {
+            newTasks.push(recurringTask);
+          }
+
+          return {
+            ...column,
+            tasks: newTasks,
+          };
+        }
+        return column;
+      });
+
+      // 繰り返しタスクを最初のカラムに追加（完了カラムに移動した場合）
+      if (recurringTask && isMovingToCompleted && updatedColumns.length > 0) {
+        const firstColumn = updatedColumns[0];
+        if (firstColumn) {
+          updatedColumns[0] = {
+            ...firstColumn,
+            tasks: [...firstColumn.tasks, recurringTask],
+          };
+        }
       }
+
+      const updatedBoard = {
+        ...boardState.currentBoard,
+        columns: updatedColumns,
+        updatedAt: new Date().toISOString(),
+      };
+
+      boardDispatch({
+        type: 'UPDATE_BOARD',
+        payload: { boardId: boardState.currentBoard.id, updates: updatedBoard }
+      });
     }
 
-    const updatedBoard = {
-      ...boardState.currentBoard,
-      columns: updatedColumns,
-      updatedAt: new Date().toISOString(),
-    };
-
-    boardDispatch({
-      type: 'UPDATE_BOARD',
-      payload: { boardId: boardState.currentBoard.id, updates: updatedBoard }
-    });
-
     logger.debug('Task moved successfully:', { taskId, sourceColumnId, targetColumnId, targetIndex });
-  }, [boardState.currentBoard, findTaskById, boardDispatch, notify]);;;
+  }, [boardState.currentBoard, findTaskById, boardDispatch, notify]);;;;;;
 
   // タスク更新
   const updateTask = useCallback((taskId: string, updates: Partial<Task>) => {
