@@ -41,7 +41,9 @@ export const isValidCategory = (category: string): category is TemplateCategory 
 const VALID_PRIORITIES: Priority[] = ['low', 'medium', 'high', 'critical'];
 
 export const isValidPriority = (priority: string | undefined): boolean => {
-  if (!priority) return false;
+  if (!priority) {
+    return false;
+  }
   return VALID_PRIORITIES.includes(priority as Priority);
 };
 

@@ -64,6 +64,16 @@ export const filterTasks = (tasks: Task[], filter: TaskFilter): Task[] => {
       );
     }
 
+    case 'priority': {
+      if (filter.selectedPriorities && filter.selectedPriorities.length > 0) {
+        return tasks.filter(task =>
+          // 優先度が未設定のタスクを除外し、選択された優先度のみを表示
+          task.priority && filter.selectedPriorities?.includes(task.priority)
+        );
+      }
+      return tasks;
+    }
+
     default:
       return tasks;
   }
@@ -81,6 +91,9 @@ export const isFilterActive = (filter: TaskFilter): boolean => {
   if (filter.type === 'all') {return false;}
   if (filter.type === 'label') {
     return (filter.selectedLabelNames?.length ?? 0) > 0 || (filter.selectedLabels?.length ?? 0) > 0;
+  }
+  if (filter.type === 'priority') {
+    return (filter.selectedPriorities?.length ?? 0) > 0;
   }
   return true;
 };

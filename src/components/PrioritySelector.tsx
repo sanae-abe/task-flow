@@ -1,4 +1,4 @@
-import { Box, FormControl, Radio, Text } from '@primer/react';
+import { Box, FormControl, Text } from '@primer/react';
 import React from 'react';
 
 import type { Priority } from '../types';
@@ -17,11 +17,11 @@ const PrioritySelector: React.FC<PrioritySelectorProps> = ({
   disabled = false,
   variant = 'full',
 }) => {
-  const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    // 'none'の場合はundefined、それ以外はPriorityとして設定
-    const newPriority = value === 'none' ? undefined : (value as Priority);
-    onPriorityChange(newPriority);
+  const handleClick = (value: Priority | undefined) => {
+    if (disabled) {
+      return;
+    }
+    onPriorityChange(value);
   };
 
   return (
@@ -31,16 +31,14 @@ const PrioritySelector: React.FC<PrioritySelectorProps> = ({
           優先度（任意）
         </FormControl.Label>
       )}
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
         {prioritySelectorOptions.map((option) => {
           const Icon = option.icon;
-          const value = option.value === undefined ? 'none' : String(option.value);
-          const currentValue = priority === undefined ? 'none' : String(priority);
-          const isSelected = currentValue === value;
+          const isSelected = priority === option.value;
 
           return (
             <Box
-              key={value}
+              key={option.value || 'none'}
               sx={{
                 display: 'flex',
                 alignItems: 'center',
@@ -51,75 +49,46 @@ const PrioritySelector: React.FC<PrioritySelectorProps> = ({
                 borderRadius: 2,
                 backgroundColor: isSelected ? 'accent.subtle' : 'canvas.default',
                 cursor: disabled ? 'not-allowed' : 'pointer',
-                '&:hover:not(:has(input:disabled))': {
+                '&:hover:not(:disabled)': {
                   backgroundColor: isSelected ? 'accent.subtle' : 'canvas.subtle',
                   borderColor: isSelected ? 'accent.fg' : 'border.default',
                 },
               }}
-              onClick={() => !disabled && handleRadioChange({ target: { value } } as React.ChangeEvent<HTMLInputElement>)}
+              onClick={() => handleClick(option.value)}
             >
-              <Radio
-                name="priority-selector"
-                value={value}
-                checked={isSelected}
-                onChange={handleRadioChange}
-                disabled={disabled}
-                sx={{ mr: 1 }}
-              />
-              <Box
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 2,
-                  flex: 1,
-                }}
-              >
-                {Icon ? (
-                  <Icon
-                    size={16}
-                    aria-hidden
-                  />
-                ) : (
+              {Icon ? (
+                <Icon
+                  size={16}
+                  aria-hidden
+                />
+              ) : (
+                <Box
+                  sx={{
+                    width: '16px',
+                    height: '16px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
                   <Box
                     sx={{
-                      width: '16px',
-                      height: '16px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
+                      width: '8px',
+                      height: '8px',
+                      borderRadius: '50%',
+                      backgroundColor: 'border.muted',
                     }}
-                  >
-                    <Box
-                      sx={{
-                        width: '8px',
-                        height: '8px',
-                        borderRadius: '50%',
-                        backgroundColor: 'border.muted',
-                      }}
-                    />
-                  </Box>
-                )}
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
-                  <Text
-                    sx={{
-                      fontSize: 1,
-                      fontWeight: '600',
-                      color: 'fg.default',
-                    }}
-                  >
-                    {option.label}
-                  </Text>
-                  <Text
-                    sx={{
-                      fontSize: 0,
-                      color: 'fg.muted',
-                      lineHeight: '16px',
-                    }}
-                  >
-                    {option.description}
-                  </Text>
+                  />
                 </Box>
-              </Box>
+              )}
+              <Text
+                sx={{
+                  fontSize: 1,
+                  color: 'fg.default',
+                }}
+              >
+                {option.label}
+              </Text>
             </Box>
           );
         })}
