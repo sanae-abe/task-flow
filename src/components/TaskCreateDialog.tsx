@@ -1,5 +1,5 @@
 import { TextInput, FormControl, UnderlineNav, Flash } from '@primer/react';
-import { InfoIcon } from '@primer/octicons-react';
+import { InfoIcon, StarFillIcon } from '@primer/octicons-react';
 import React, { useState, useEffect, useCallback, memo, useMemo } from 'react';
 
 import type { Label as LabelType, FileAttachment, RecurrenceConfig, Priority } from '../types';
@@ -67,7 +67,7 @@ const TemplateSelector: React.FC<{
                 alignItems: 'center',
                 gap: '6px'
               }}>
-                ⭐ お気に入りテンプレート
+                <StarFillIcon size={16} /> お気に入りテンプレート
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '12px' }}>
                 {favoriteTemplates.map((template) => (

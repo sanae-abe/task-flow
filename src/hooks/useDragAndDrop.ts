@@ -98,7 +98,7 @@ export const useDragAndDrop = ({ board, onMoveTask, onSortToManual }: UseDragAnd
         return;
       }
       
-      // 同じカラム内でドラッグした場合の位置調整
+      // 同じカラム内でドラッグした場合
       if (sourceColumnId === targetColumnId) {
         const sourceCol = board.columns.find((col) => col.id === sourceColumnId);
         if (!sourceCol) {
@@ -116,9 +116,10 @@ export const useDragAndDrop = ({ board, onMoveTask, onSortToManual }: UseDragAnd
           return;
         }
         
-        // 下から上に移動する場合は、targetIndexをそのまま使用
-        // 上から下に移動する場合は、targetIndex + 1 を使用（元のタスクが削除されるため）
-        targetIndex = oldIndex < targetTaskIndex ? targetTaskIndex : targetTaskIndex;
+        // 同じカラム内移動：
+        // oldIndex < targetTaskIndex の場合: targetTaskIndex - 1 (元のタスクが削除されるため)
+        // oldIndex > targetTaskIndex の場合: targetTaskIndex (そのまま)
+        targetIndex = oldIndex < targetTaskIndex ? targetTaskIndex - 1 : targetTaskIndex;
       } else {
         // 異なるカラム間での移動の場合は、targetTaskIndexをそのまま使用
         targetIndex = targetTaskIndex;
@@ -144,4 +145,4 @@ export const useDragAndDrop = ({ board, onMoveTask, onSortToManual }: UseDragAnd
     handleDragOver,
     handleDragEnd,
   };
-};;
+};;;
