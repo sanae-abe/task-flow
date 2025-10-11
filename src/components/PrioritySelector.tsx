@@ -1,4 +1,4 @@
-import { ActionList, ActionMenu, Box, FormControl, Text } from '@primer/react';
+import { Box, FormControl, Radio, Text } from '@primer/react';
 import React from 'react';
 
 import type { Priority } from '../types';
@@ -17,171 +17,113 @@ const PrioritySelector: React.FC<PrioritySelectorProps> = ({
   disabled = false,
   variant = 'full',
 }) => {
-  const selectedOption = prioritySelectorOptions.find(opt => opt.value === priority);
-  const SelectedIcon = selectedOption?.icon;
+  const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    // 'none'の場合はundefined、それ以外はPriorityとして設定
+    const newPriority = value === 'none' ? undefined : (value as Priority);
+    onPriorityChange(newPriority);
+  };
 
   return (
     <FormControl>
       {variant === 'full' && (
         <FormControl.Label>
-          優先度（任意）</FormControl.Label>
+          優先度（任意）
+        </FormControl.Label>
       )}
-      <ActionMenu>
-        <ActionMenu.Anchor>
-          <Box
-            as="button"
-            type="button"
-            disabled={disabled}
-            sx={{
-              width: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              padding: '5px 12px',
-              border: '1px solid',
-              borderColor: 'border.default',
-              borderRadius: 2,
-              backgroundColor: disabled ? 'canvas.subtle' : 'canvas.default',
-              color: 'fg.default',
-              fontSize: 1,
-              lineHeight: '20px',
-              cursor: disabled ? 'not-allowed' : 'pointer',
-              transition: 'all 0.2s ease-in-out',
-              '&:hover:not(:disabled)': {
-                backgroundColor: 'canvas.subtle',
-                borderColor: 'border.default',
-              },
-              '&:focus:not(:disabled)': {
-                outline: 'none',
-                borderColor: 'accent.fg',
-                boxShadow: '0 0 0 3px rgba(9, 105, 218, 0.3)',
-              },
-              '&:active:not(:disabled)': {
-                backgroundColor: 'canvas.inset',
-              },
-            }}
-            aria-label="優先度を選択"
-          >
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+        {prioritySelectorOptions.map((option) => {
+          const Icon = option.icon;
+          const value = option.value === undefined ? 'none' : String(option.value);
+          const currentValue = priority === undefined ? 'none' : String(priority);
+          const isSelected = currentValue === value;
+
+          return (
             <Box
+              key={value}
               sx={{
                 display: 'flex',
                 alignItems: 'center',
                 gap: 2,
+                padding: '8px 12px',
+                border: '1px solid',
+                borderColor: isSelected ? 'accent.fg' : 'border.muted',
+                borderRadius: 2,
+                backgroundColor: isSelected ? 'accent.subtle' : 'canvas.default',
+                cursor: disabled ? 'not-allowed' : 'pointer',
+                '&:hover:not(:has(input:disabled))': {
+                  backgroundColor: isSelected ? 'accent.subtle' : 'canvas.subtle',
+                  borderColor: isSelected ? 'accent.fg' : 'border.default',
+                },
               }}
+              onClick={() => !disabled && handleRadioChange({ target: { value } } as React.ChangeEvent<HTMLInputElement>)}
             >
-              {SelectedIcon ? (
-                <SelectedIcon
-                  size={16}
-                  aria-hidden
-                />
-              ) : (
-                <Box
-                  sx={{
-                    width: '16px',
-                    height: '16px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <Box
-                    sx={{
-                      width: '8px',
-                      height: '8px',
-                      borderRadius: '50%',
-                      backgroundColor: 'border.muted',
-                    }}
-                  />
-                </Box>
-              )}
-              <Text
+              <Radio
+                name="priority-selector"
+                value={value}
+                checked={isSelected}
+                onChange={handleRadioChange}
+                disabled={disabled}
+                sx={{ mr: 1 }}
+              />
+              <Box
                 sx={{
-                  fontSize: 1,
-                  color: priority ? 'fg.default' : 'fg.muted',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 2,
+                  flex: 1,
                 }}
               >
-                {selectedOption?.label || '選択なし'}
-              </Text>
-            </Box>
-            <Box
-              as="span"
-              sx={{
-                ml: 2,
-                color: 'fg.muted',
-                fontSize: 0,
-              }}
-            >
-              ▼
-            </Box>
-          </Box>
-        </ActionMenu.Anchor>
-
-        <ActionMenu.Overlay width="medium">
-          <ActionList selectionVariant="single">
-            {prioritySelectorOptions.map((option) => {
-              const Icon = option.icon;
-              const isSelected = option.value === priority;
-
-              return (
-                <ActionList.Item
-                  key={option.value || 'none'}
-                  selected={isSelected}
-                  onSelect={() => onPriorityChange(option.value)}
-                  sx={{
-                    '&:hover': {
-                      backgroundColor: 'canvas.subtle',
-                    },
-                    '&:focus': {
-                      outline: 'none',
-                      backgroundColor: 'accent.subtle',
-                    },
-                  }}
-                  aria-label={`${option.label} - ${option.description}`}
-                >
-                  <ActionList.LeadingVisual>
-                    {Icon ? (
-                      <Icon
-                        size={16}
-                        aria-hidden
-                      />
-                    ) : (
-                      <Box
-                        sx={{
-                          width: '16px',
-                          height: '16px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                        }}
-                      >
-                        <Box
-                          sx={{
-                            width: '8px',
-                            height: '8px',
-                            borderRadius: '50%',
-                            backgroundColor: 'border.muted',
-                          }}
-                        />
-                      </Box>
-                    )}
-                  </ActionList.LeadingVisual>
-                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
-                    <Text
+                {Icon ? (
+                  <Icon
+                    size={16}
+                    aria-hidden
+                  />
+                ) : (
+                  <Box
+                    sx={{
+                      width: '16px',
+                      height: '16px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <Box
                       sx={{
-                        fontSize: 1,
-                        fontWeight: isSelected ? '600' : '400',
-                        color: 'fg.default',
+                        width: '8px',
+                        height: '8px',
+                        borderRadius: '50%',
+                        backgroundColor: 'border.muted',
                       }}
-                    >
-                      {option.label}
-                    </Text>
+                    />
                   </Box>
-                </ActionList.Item>
-              );
-            })}
-          </ActionList>
-        </ActionMenu.Overlay>
-      </ActionMenu>
+                )}
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+                  <Text
+                    sx={{
+                      fontSize: 1,
+                      fontWeight: '600',
+                      color: 'fg.default',
+                    }}
+                  >
+                    {option.label}
+                  </Text>
+                  <Text
+                    sx={{
+                      fontSize: 0,
+                      color: 'fg.muted',
+                      lineHeight: '16px',
+                    }}
+                  >
+                    {option.description}
+                  </Text>
+                </Box>
+              </Box>
+            </Box>
+          );
+        })}
+      </Box>
     </FormControl>
   );
 };
