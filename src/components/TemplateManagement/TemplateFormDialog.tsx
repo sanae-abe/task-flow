@@ -302,7 +302,7 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
           />
 
           {/* ラベル */}
-          <FormControl>
+          <FormControl sx={{ mt: 3 }}>
             <FormControl.Label>ラベル</FormControl.Label>
             <LabelSelector
               selectedLabels={formData.labels}
