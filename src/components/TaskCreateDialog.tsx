@@ -1,7 +1,7 @@
 import { TextInput, FormControl, Button } from '@primer/react';
 import React, { useState, useEffect, useCallback, memo, useMemo } from 'react';
 
-import type { Label as LabelType, FileAttachment, RecurrenceConfig } from '../types';
+import type { Label as LabelType, FileAttachment, RecurrenceConfig, Priority } from '../types';
 import type { TaskTemplate } from '../types/template';
 import type { DialogAction } from '../types/unified-dialog';
 import { useKanban } from '../contexts/KanbanContext';
@@ -12,6 +12,7 @@ import UnifiedDialog from './shared/Dialog/UnifiedDialog';
 import FileUploader from './FileUploader';
 import FormField from './FormField';
 import LabelSelector from './LabelSelector';
+import PrioritySelector from './PrioritySelector';
 import RecurrenceSelector from './RecurrenceSelector';
 import RichTextEditor from './RichTextEditor';
 import TimeSelector from './TimeSelector';
@@ -25,7 +26,7 @@ const fallbackTemplates: TaskTemplate[] = [
     category: 'meeting',
     taskTitle: 'ミーティング議事録作成',
     taskDescription: '今日の定例ミーティングの議事録を作成します。\n\n## アジェンダ\n- \n\n## 議題\n- \n\n## アクションアイテム\n- ',
-    priority: 'medium',
+    priority: undefined,
     labels: [],
     dueDate: null,
     createdAt: new Date().toISOString(),
@@ -40,7 +41,7 @@ const fallbackTemplates: TaskTemplate[] = [
     category: 'work',
     taskTitle: 'コードレビュー',
     taskDescription: 'プルリクエストのコードレビューを実施します。\n\n## チェックポイント\n- コードの可読性\n- パフォーマンス\n- セキュリティ\n- テストの充実度',
-    priority: 'medium',
+    priority: undefined,
     labels: [],
     dueDate: null,
     createdAt: new Date().toISOString(),
@@ -55,7 +56,7 @@ const fallbackTemplates: TaskTemplate[] = [
     category: 'personal',
     taskTitle: 'ブログ記事執筆',
     taskDescription: '技術ブログ記事を執筆します。\n\n## テーマ\n\n## アウトライン\n1. \n2. \n3. ',
-    priority: 'medium',
+    priority: undefined,
     labels: [],
     dueDate: null,
     createdAt: new Date().toISOString(),
@@ -146,6 +147,7 @@ const TaskCreateDialog = memo(() => {
   const [labels, setLabels] = useState<LabelType[]>([]);
   const [attachments, setAttachments] = useState<FileAttachment[]>([]);
   const [recurrence, setRecurrence] = useState<RecurrenceConfig | undefined>();
+  const [priority, setPriority] = useState<Priority | undefined>();
 
   // テンプレート関連
   const [templates, setTemplates] = useState<TaskTemplate[]>([]);
@@ -194,6 +196,7 @@ const TaskCreateDialog = memo(() => {
       setLabels([]);
       setAttachments([]);
       setRecurrence(undefined);
+      setPriority(undefined);
       setCreateMode('normal');
       setSelectedTemplate(undefined);
       setIsDialogFirstOpen(true);
@@ -209,10 +212,12 @@ const TaskCreateDialog = memo(() => {
     setTitle(template.taskTitle);
     setDescription(template.taskDescription);
 
-    // ラベルも設定
+    // ラベルと優先度も設定
     if (template.labels && template.labels.length > 0) {
       setLabels(template.labels);
     }
+    // 優先度は常に設定（undefinedを含む）
+    setPriority(template.priority);
 
     // テンプレート使用回数をインクリメント
     try {
@@ -260,7 +265,8 @@ const TaskCreateDialog = memo(() => {
         dueDateObj,
         labels,
         attachments,
-        recurrence
+        recurrence,
+        priority
       );
 
       // テンプレートから作成した場合の通知
@@ -273,7 +279,7 @@ const TaskCreateDialog = memo(() => {
       // カラムが存在しない場合のエラーハンドリング
       notify.error('タスクを作成するためのカラムが存在しません。最初にカラムを作成してください。');
     }
-  }, [title, description, dueDate, dueTime, hasTime, labels, attachments, recurrence, createTask, closeTaskForm, state.currentBoard, state.taskFormDefaultStatus, notify, selectedTemplate]);
+  }, [title, description, dueDate, dueTime, hasTime, labels, attachments, recurrence, priority, createTask, closeTaskForm, state.currentBoard, state.taskFormDefaultStatus, notify, selectedTemplate]);
 
   const handleKeyPress = useCallback((event: React.KeyboardEvent) => {
     if (event.key === 'Escape') {
@@ -443,6 +449,13 @@ const TaskCreateDialog = memo(() => {
                   onLabelsChange={setLabels}
                 />
               </FormControl>
+            </div>
+
+            <div style={{ marginBottom: '24px' }}>
+              <PrioritySelector
+                priority={priority}
+                onPriorityChange={setPriority}
+              />
             </div>
 
             <div>

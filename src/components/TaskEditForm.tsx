@@ -1,11 +1,12 @@
 import { Text, TextInput, Select } from '@primer/react';
 import React, { memo, useCallback } from 'react';
 
-import type { Label, FileAttachment, RecurrenceConfig } from '../types';
+import type { Label, FileAttachment, RecurrenceConfig, Priority } from '../types';
 
 import FileUploader from './FileUploader';
 import FormField from './FormField';
 import LabelSelector from './LabelSelector';
+import PrioritySelector from './PrioritySelector';
 import RecurrenceSelector from './RecurrenceSelector';
 import RichTextEditor from './RichTextEditor';
 import TimeSelector from './TimeSelector';
@@ -30,6 +31,8 @@ interface TaskEditFormProps {
   statusOptions: Array<{ value: string; label: string }>;
   recurrence: RecurrenceConfig | undefined;
   setRecurrence: (recurrence: RecurrenceConfig | undefined) => void;
+  priority: Priority | undefined;
+  setPriority: (priority: Priority | undefined) => void;
   onKeyPress: (event: React.KeyboardEvent) => void;
 }
 
@@ -53,6 +56,8 @@ const TaskEditForm = memo<TaskEditFormProps>(({
   statusOptions,
   recurrence,
   setRecurrence,
+  priority,
+  setPriority,
   onKeyPress
 }) => {
   const handleTimeChange = useCallback((newHasTime: boolean, newTime: string) => {
@@ -146,6 +151,13 @@ const TaskEditForm = memo<TaskEditFormProps>(({
         <LabelSelector
           selectedLabels={labels}
           onLabelsChange={setLabels}
+        />
+      </div>
+
+      <div style={{ marginBottom: '24px' }}>
+        <PrioritySelector
+          priority={priority}
+          onPriorityChange={setPriority}
         />
       </div>
 

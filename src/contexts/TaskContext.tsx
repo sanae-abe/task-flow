@@ -17,7 +17,7 @@ type TaskAction =
 
 interface TaskContextType {
   state: TaskState;
-  createTask: (columnId: string, title: string, description: string, dueDate?: Date, labels?: Label[], attachments?: FileAttachment[], recurrence?: RecurrenceConfig) => void;
+  createTask: (columnId: string, title: string, description: string, dueDate?: Date, labels?: Label[], attachments?: FileAttachment[], recurrence?: RecurrenceConfig, priority?: Priority) => void;
   moveTask: (taskId: string, sourceColumnId: string, targetColumnId: string, targetIndex: number) => void;
   updateTask: (taskId: string, updates: Partial<Task>) => void;
   deleteTask: (taskId: string, columnId: string) => void;
@@ -96,7 +96,8 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     dueDate?: Date,
     labels?: Label[],
     attachments?: FileAttachment[],
-    recurrence?: RecurrenceConfig
+    recurrence?: RecurrenceConfig,
+    priority?: Priority
   ) => {
     if (!boardState.currentBoard) {
       notify.error('ボードが選択されていません');
@@ -110,7 +111,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       dueDate: dueDate?.toISOString() ?? null,
-      priority: 'medium' as Priority,
+      priority: priority || 'medium' as Priority,
       labels: labels ?? [],
       files: attachments ?? [],
       subTasks: [],

@@ -4,7 +4,7 @@ import { useBoard } from './BoardContext';
 import { useTask } from './TaskContext';
 import { useLabel } from './LabelContext';
 import { useUI } from './UIContext';
-import type { KanbanBoard, Task, Column, Label, FileAttachment, RecurrenceConfig, ViewMode, SortOption, TaskFilter } from '../types';
+import type { KanbanBoard, Task, Column, Label, FileAttachment, RecurrenceConfig, ViewMode, SortOption, TaskFilter, Priority } from '../types';
 
 // KanbanContextのレガシー互換性を保つためのブリッジ
 interface KanbanContextType {
@@ -29,7 +29,7 @@ interface KanbanContextType {
   setCurrentBoard: (boardId: string) => void;
   importBoards: (boards: KanbanBoard[], replaceAll?: boolean) => void;
   // Task関連のメソッド
-  createTask: (columnId: string, title: string, description: string, dueDate?: Date, labels?: Label[], attachments?: FileAttachment[], recurrence?: RecurrenceConfig) => void;
+  createTask: (columnId: string, title: string, description: string, dueDate?: Date, labels?: Label[], attachments?: FileAttachment[], recurrence?: RecurrenceConfig, priority?: Priority) => void;
   updateTask: (taskId: string, updates: Partial<Task>) => void;
   deleteTask: (taskId: string, columnId: string) => void;
   duplicateTask: (taskId: string) => void;

@@ -33,20 +33,28 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
   const categoryInfo = TEMPLATE_CATEGORIES.find((cat) => cat.id === template.category);
 
   // 優先度表示
-  const getPriorityLabel = (priority: string) => {
+  const getPriorityLabel = (priority: string | undefined) => {
+    if (!priority) {
+      return '選択なし';
+    }
     const labels: Record<string, string> = {
       low: '低',
       medium: '中',
-      high: '高'
+      high: '高',
+      critical: '緊急'
     };
     return labels[priority] || priority;
   };
 
-  const getPriorityColor = (priority: string) => {
+  const getPriorityColor = (priority: string | undefined) => {
+    if (!priority) {
+      return 'fg.muted';
+    }
     const colors: Record<string, string> = {
       low: 'fg.muted',
       medium: 'attention.fg',
-      high: 'danger.fg'
+      high: 'danger.fg',
+      critical: 'danger.fg'
     };
     return colors[priority] || 'fg.default';
   };

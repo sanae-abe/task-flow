@@ -44,6 +44,8 @@ const TaskEditDialog = memo<TaskEditDialogProps>(({
     statusOptions,
     recurrence,
     setRecurrence,
+    priority,
+    setPriority,
     showDeleteConfirm,
     setShowDeleteConfirm,
     handleSave,
@@ -118,6 +120,8 @@ const TaskEditDialog = memo<TaskEditDialogProps>(({
           statusOptions={statusOptions}
           recurrence={recurrence}
           setRecurrence={setRecurrence}
+          priority={priority}
+          setPriority={setPriority}
           onKeyPress={handleKeyPress}
         />
       </UnifiedDialog>
