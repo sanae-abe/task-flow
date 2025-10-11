@@ -1,5 +1,5 @@
-import { memo } from 'react';
-import { Box } from '@primer/react';
+import { memo, useState } from 'react';
+import { Box, UnderlineNav } from '@primer/react';
 
 import { ExportSection } from './ExportSection';
 import { ImportSection } from './ImportSection';
@@ -21,34 +21,42 @@ export const DataManagementPanel = memo<DataManagementPanelProps>(({
   onExportAll,
   onExportCurrent,
   onImportSuccess
-}) => (
-  <Box
-    sx={{
-      display: 'flex',
-      flexDirection: 'column',
-      gap: 4,
-      pb: 3
-    }}
-  >
-    {/* エクスポートセクション */}
-    <ExportSection
-      onExportAll={onExportAll}
-      onExportCurrent={onExportCurrent}
-    />
+}) => {
+  const [activeTab, setActiveTab] = useState<'export' | 'import'>('export');
 
-    {/* 区切り線 */}
-    <Box
-      sx={{
-        height: '1px',
-        bg: 'border.default'
-      }}
-    />
+  return (
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+      {/* タブナビゲーション */}
+      <UnderlineNav aria-label="データ管理" sx={{ px: 0, transform: 'translateY(-8px)' }}>
+        <UnderlineNav.Item
+          aria-current={activeTab === 'export' ? 'page' : undefined}
+          onSelect={() => setActiveTab('export')}
+        >
+          エクスポート
+        </UnderlineNav.Item>
+        <UnderlineNav.Item
+          aria-current={activeTab === 'import' ? 'page' : undefined}
+          onSelect={() => setActiveTab('import')}
+        >
+          インポート
+        </UnderlineNav.Item>
+      </UnderlineNav>
 
-    {/* インポートセクション */}
-    <ImportSection
-      onImportSuccess={onImportSuccess}
-    />
-  </Box>
-));
+      {/* タブコンテンツ */}
+      <Box>
+        {activeTab === 'export' ? (
+          <ExportSection
+            onExportAll={onExportAll}
+            onExportCurrent={onExportCurrent}
+          />
+        ) : (
+          <ImportSection
+            onImportSuccess={onImportSuccess}
+          />
+        )}
+      </Box>
+    </Box>
+  );
+});
 
 DataManagementPanel.displayName = 'DataManagementPanel';

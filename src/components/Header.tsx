@@ -48,7 +48,6 @@ const headerStyles = {
   rightSection: {
     display: 'flex',
     alignItems: 'center',
-    gap: 2,
     flexShrink: 0
   },
   createButton: {
@@ -101,6 +100,7 @@ const RightSection: React.FC<RightSectionProps> = ({ onCreateClick, onHelpClick,
       variant="invisible"
       aria-label="設定を開く"
       leadingVisual={GearIcon}
+      sx={{ ml: 2 }}
     >
       設定
     </Button>

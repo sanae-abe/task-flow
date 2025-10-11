@@ -296,7 +296,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     }
 
     logger.debug('Task moved successfully:', { taskId, sourceColumnId, targetColumnId, targetIndex });
-  }, [boardState.currentBoard, findTaskById, boardDispatch, notify]);;;;;;
+  }, [boardState.currentBoard, findTaskById, boardDispatch, notify]);
 
   // タスク更新
   const updateTask = useCallback((taskId: string, updates: Partial<Task>) => {
