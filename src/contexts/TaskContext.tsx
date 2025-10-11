@@ -111,7 +111,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       dueDate: dueDate?.toISOString() ?? null,
-      priority: priority || 'medium' as Priority,
+      priority, // undefinedの場合はundefinedのまま保持
       labels: labels ?? [],
       files: attachments ?? [],
       subTasks: [],
