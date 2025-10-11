@@ -15,6 +15,7 @@ import StatusBadge from './shared/StatusBadge';
 import SubTaskProgressBar from './SubTaskProgressBar';
 import TableColumnManager from './TableColumnManager';
 import DeleteConfirmDialog from './DeleteConfirmDialog';
+import PriorityBadge from './PriorityBadge';
 import { logger } from '../utils/logger';
 
 // 型ガード関数
@@ -161,6 +162,19 @@ const TableView: React.FC = () => {
                 </ActionList>
               </ActionMenu.Overlay>
             </ActionMenu>
+          </Box>
+        );
+
+      case 'priority':
+        return (
+          <Box>
+            {task.priority ? (
+              <PriorityBadge priority={task.priority} />
+            ) : (
+              <Text sx={{ color: 'fg.default', fontSize: 1 }}>
+                -
+              </Text>
+            )}
           </Box>
         );
 

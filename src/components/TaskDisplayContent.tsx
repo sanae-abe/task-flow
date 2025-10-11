@@ -9,6 +9,7 @@ import ContentBox from './ContentBox';
 import DueDateDisplay from './DueDateDisplay';
 import FileList from './FileList';
 import LinkifiedText from './LinkifiedText';
+import PriorityBadge from './PriorityBadge';
 import TaskDisplaySection from './TaskDisplaySection';
 import TaskLabels from './TaskLabels';
 
@@ -54,6 +55,14 @@ const TaskDisplayContent = React.memo<TaskDisplayContentProps>(({ task, columnNa
         <TaskDisplaySection title="ステータス">
           <ContentBox>
             <Text sx={{ fontSize: 1 }}>{columnName}</Text>
+          </ContentBox>
+        </TaskDisplaySection>
+      )}
+
+      {task.priority && (
+        <TaskDisplaySection title="優先度">
+          <ContentBox>
+            <PriorityBadge priority={task.priority} />
           </ContentBox>
         </TaskDisplaySection>
       )}
