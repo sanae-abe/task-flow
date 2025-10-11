@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
-import { Button, Box, Heading, Text, IconButton, TextInput } from '@primer/react';
+import { Button, Box, Heading, Text, IconButton, TextInput, Select } from '@primer/react';
 import {
   PencilIcon,
   TrashIcon,
@@ -353,26 +353,17 @@ const TemplateManagementPanel: React.FC = () => {
 
         {/* カテゴリーフィルター */}
         <Box>
-          <select
+          <Select
             value={filterCategory}
             onChange={(e) => setFilterCategory(e.target.value as TemplateCategory | 'all')}
-            style={{
-              padding: '6px 12px',
-              borderRadius: '6px',
-              border: '1px solid var(--borderColor-default)',
-              backgroundColor: 'var(--bgColor-default)',
-              color: 'var(--fgColor-default)',
-              fontFamily: 'inherit',
-              fontSize: '14px'
-            }}
           >
-            <option value="all">すべてのカテゴリー</option>
+            <Select.Option value="all">すべてのカテゴリー</Select.Option>
             {TEMPLATE_CATEGORIES.map((cat) => (
-              <option key={cat.id} value={cat.id}>
+              <Select.Option key={cat.id} value={cat.id}>
                 {cat.label}
-              </option>
+              </Select.Option>
             ))}
-          </select>
+          </Select>
         </Box>
 
         {/* お気に入りフィルター */}
@@ -380,7 +371,6 @@ const TemplateManagementPanel: React.FC = () => {
           variant={filterFavorite ? 'primary' : 'default'}
           leadingVisual={filterFavorite ? StarFillIcon : StarIcon}
           onClick={() => setFilterFavorite(!filterFavorite)}
-          size="small"
         >
           お気に入り
         </Button>

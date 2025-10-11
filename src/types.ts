@@ -76,7 +76,7 @@ export interface Column {
   color?: string;
 }
 
-export type SortOption = 'manual' | 'dueDate' | 'createdAt' | 'updatedAt' | 'title';
+export type SortOption = 'manual' | 'dueDate' | 'createdAt' | 'updatedAt' | 'title' | 'priority';
 
 export interface SortConfig {
   option: SortOption;
