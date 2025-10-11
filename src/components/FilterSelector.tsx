@@ -1,8 +1,9 @@
 import { ActionList, ActionMenu, Button } from '@primer/react';
-import { AlertIcon, ClockIcon, XCircleIcon, TagIcon, FilterIcon as DefaultFilterIcon } from '@primer/octicons-react';
+import { AlertIcon, ClockIcon, XCircleIcon, TagIcon, StarIcon, FilterIcon as DefaultFilterIcon } from '@primer/octicons-react';
 import { memo, useMemo } from 'react';
 
-import type { TaskFilter, FilterConfig, Label } from '../types';
+import type { TaskFilter, FilterConfig, Label, Priority } from '../types';
+import { priorityConfig } from '../utils/priorityConfig';
 
 interface FilterSelectorProps {
   currentFilter: TaskFilter;
@@ -44,6 +45,11 @@ const FilterSelector = memo<FilterSelectorProps>(({
       type: 'label',
       label: 'ラベルで絞り込み',
       icon: 'tag',
+    },
+    {
+      type: 'priority',
+      label: '優先度で絞り込み',
+      icon: 'star',
     }
   ], []);
 
@@ -57,6 +63,8 @@ const FilterSelector = memo<FilterSelectorProps>(({
         return XCircleIcon;
       case 'tag':
         return TagIcon;
+      case 'star':
+        return StarIcon;
       default:
         return DefaultFilterIcon;
     }
@@ -67,6 +75,12 @@ const FilterSelector = memo<FilterSelectorProps>(({
       const selectedCount = currentFilter.selectedLabelNames?.length ?? currentFilter.selectedLabels?.length ?? 0;
       if (selectedCount > 0) {
         return `ラベル: ${selectedCount}個選択`;
+      }
+    }
+    if (currentFilter.type === 'priority') {
+      const selectedCount = currentFilter.selectedPriorities?.length ?? 0;
+      if (selectedCount > 0) {
+        return `優先度: ${selectedCount}個選択`;
       }
     }
     if (currentFilter.type === 'has-labels') {
@@ -82,6 +96,13 @@ const FilterSelector = memo<FilterSelectorProps>(({
       onFilterChange({
         type: 'has-labels',
         label: 'ラベル付きタスク'
+      });
+    } else if (filterType === 'priority') {
+      // 優先度フィルターを開く時は空の状態でスタート
+      onFilterChange({
+        type: 'priority',
+        label: '優先度で絞り込み',
+        selectedPriorities: []
       });
     } else {
       const config = filterConfigs.find(f => f.type === filterType);
@@ -107,6 +128,21 @@ const FilterSelector = memo<FilterSelectorProps>(({
       type: 'label',
       label: 'ラベルで絞り込み',
       selectedLabelNames: newLabelNames
+    });
+  };
+
+  const handlePriorityToggle = (priority: Priority) => {
+    const currentPriorities = currentFilter.type === 'priority' ? (currentFilter.selectedPriorities ?? []) : [];
+    const isSelected = currentPriorities.includes(priority);
+    
+    const newPriorities = isSelected
+      ? currentPriorities.filter(p => p !== priority)
+      : [...currentPriorities, priority];
+    
+    onFilterChange({
+      type: 'priority',
+      label: '優先度で絞り込み',
+      selectedPriorities: newPriorities
     });
   };
 
@@ -196,6 +232,41 @@ const FilterSelector = memo<FilterSelectorProps>(({
               </ActionMenu>
             </ActionList.Group>
           )}
+
+          <ActionList.Group title="優先度でフィルター" selectionVariant="single">
+            <ActionMenu>
+              <ActionMenu.Anchor>
+                <ActionList.Item
+                  selected={currentFilter.type === 'priority'}
+                >
+                  <ActionList.LeadingVisual>
+                    <StarIcon />
+                  </ActionList.LeadingVisual>
+                  優先度で絞り込み
+                </ActionList.Item>
+              </ActionMenu.Anchor>
+              <ActionMenu.Overlay style={{ zIndex: 200 }}>
+                <ActionList selectionVariant="multiple">
+                  {(['critical', 'high', 'medium', 'low'] as Priority[]).map((priority) => {
+                    const config = priorityConfig[priority];
+                    const IconComponent = config.icon;
+                    return (
+                      <ActionList.Item
+                        key={priority}
+                        onSelect={() => handlePriorityToggle(priority)}
+                        selected={currentFilter.selectedPriorities?.includes(priority)}
+                      >
+                        <ActionList.LeadingVisual>
+                          <IconComponent size={16} />
+                        </ActionList.LeadingVisual>
+                        {config.label}
+                      </ActionList.Item>
+                    );
+                  })}
+                </ActionList>
+              </ActionMenu.Overlay>
+            </ActionMenu>
+          </ActionList.Group>
         </ActionList>
       </ActionMenu.Overlay>
     </ActionMenu>

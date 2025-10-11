@@ -84,13 +84,14 @@ export interface SortConfig {
   icon?: string;
 }
 
-export type FilterType = 'all' | 'due-within-3-days' | 'due-today' | 'overdue' | 'label' | 'has-labels';
+export type FilterType = 'all' | 'due-within-3-days' | 'due-today' | 'overdue' | 'label' | 'has-labels' | 'priority';
 
 export interface TaskFilter {
   type: FilterType;
   label: string;
   selectedLabels?: string[]; // ラベルIDフィルターの場合に使用（後方互換性のため保持）
   selectedLabelNames?: string[]; // ラベル名フィルターの場合に使用
+  selectedPriorities?: Priority[]; // 優先度フィルターの場合に使用
 }
 
 export interface FilterConfig {

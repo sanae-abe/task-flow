@@ -51,7 +51,7 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
                 <NavList.LeadingVisual>
                   <ProjectIcon />
                 </NavList.LeadingVisual>
-                カンバン設定
+                カラム設定
               </NavList.Item>
               <NavList.Item
                 aria-current={activeTab === 'templates' ? 'page' : undefined}
