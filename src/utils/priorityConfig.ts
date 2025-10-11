@@ -1,5 +1,5 @@
 import React from 'react';
-import { AlertOctagon, Triangle, Circle } from 'react-feather';
+import { Zap, ChevronDown, ChevronUp, Minus } from 'react-feather';
 
 import type { Priority } from '../types';
 
@@ -38,7 +38,7 @@ export const priorityConfig: Record<Priority, PriorityConfig> = {
     label: '緊急',
     labelEn: 'Critical',
     description: '今すぐ対応が必要',
-    icon: AlertOctagon,
+    icon: Zap,
     variant: 'danger',
     colors: {
       filled: {
@@ -62,7 +62,7 @@ export const priorityConfig: Record<Priority, PriorityConfig> = {
     label: '高',
     labelEn: 'High',
     description: '近日中に対応が必要',
-    icon: Triangle,
+    icon: ChevronUp,
     variant: 'attention',
     colors: {
       filled: {
@@ -86,7 +86,7 @@ export const priorityConfig: Record<Priority, PriorityConfig> = {
     label: '中',
     labelEn: 'Medium',
     description: '通常の優先度',
-    icon: Circle,
+    icon: Minus,
     variant: 'accent',
     colors: {
       filled: {
@@ -110,7 +110,7 @@ export const priorityConfig: Record<Priority, PriorityConfig> = {
     label: '低',
     labelEn: 'Low',
     description: '時間があるときに対応',
-    icon: Circle,
+    icon: ChevronDown,
     variant: 'secondary',
     colors: {
       filled: {
