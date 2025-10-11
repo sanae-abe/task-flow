@@ -428,7 +428,7 @@ const TemplateManagementPanel: React.FC = () => {
               sortDirection={sortDirection}
               onSort={handleSort}
             >
-              ⭐ おすすめ順
+              おすすめ順
             </SortableHeader>
             <SortableHeader
               field="category"

@@ -1,5 +1,5 @@
 import { TextInput, FormControl, UnderlineNav, Flash } from '@primer/react';
-import { InfoIcon } from '@primer/octicons-react';
+import { InfoIcon, StarFillIcon } from '@primer/octicons-react';
 import React, { useState, useEffect, useCallback, memo, useMemo } from 'react';
 
 import type { Label as LabelType, FileAttachment, RecurrenceConfig, Priority } from '../types';
@@ -40,9 +40,6 @@ const TemplateSelector: React.FC<{
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-      <div style={{ fontSize: '14px', fontWeight: '600', marginBottom: '8px' }}>
-        テンプレートを選択してください
-      </div>
       {templates.length === 0 ? (
         <div style={{
           padding: '32px',
@@ -59,40 +56,46 @@ const TemplateSelector: React.FC<{
           {favoriteTemplates.length > 0 && (
             <div>
               <div style={{ 
+                display: 'flex',
+                gap: '6px',
                 fontSize: '14px', 
                 fontWeight: '600', 
                 marginBottom: '12px',
                 color: 'var(--color-attention-fg)',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px'
+                alignItems: 'center'
               }}>
-                ⭐ お気に入りテンプレート
+                <span style={{ color: 'var(--fgColor-attention)' }}>
+                  <StarFillIcon size={16} /> 
+                </span>
+                <span>お気に入りテンプレート</span>
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '12px' }}>
                 {favoriteTemplates.map((template) => (
                   <div
                     key={template.id}
                     style={{
-                      border: '2px solid var(--color-attention-emphasis)',
+                      border: '1px solid var(--borderColor-default)',
                       borderRadius: '6px',
                       padding: '16px',
                       cursor: 'pointer',
                       transition: 'all 0.2s ease',
-                      backgroundColor: 'var(--color-attention-subtle)',
+                      backgroundColor: 'var(--bgColor-default)',
                     }}
                     onClick={() => onSelect(template)}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = 'var(--color-attention-muted)';
-                      e.currentTarget.style.transform = 'translateY(-2px)';
+                      e.currentTarget.style.borderColor = 'var(--borderColor-default)';
+                      e.currentTarget.style.backgroundColor = 'var(--control-transparent-bgColor-hover)';
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = 'var(--color-attention-subtle)';
-                      e.currentTarget.style.transform = 'translateY(0px)';
+                      e.currentTarget.style.borderColor = 'var(--borderColor-default)';
+                      e.currentTarget.style.backgroundColor = 'var(--color-accent-subtle)';
                     }}
                   >
                     <div style={{ fontSize: '16px', fontWeight: '600', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      ⭐ {template.name}
+                      <span style={{ color: 'var(--fgColor-attention)' }}>
+                        <StarFillIcon size={16} /> 
+                      </span>
+                      <span>{template.name}</span>
                     </div>
                     <div style={{ fontSize: '14px', color: 'var(--fgColor-muted)', marginBottom: '8px' }}>
                       {template.description || template.taskDescription.slice(0, 100)}...
@@ -133,12 +136,12 @@ const TemplateSelector: React.FC<{
                     }}
                     onClick={() => onSelect(template)}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.borderColor = 'var(--color-accent-emphasis)';
-                      e.currentTarget.style.backgroundColor = 'var(--color-accent-subtle)';
+                      e.currentTarget.style.borderColor = 'var(--borderColor-default)';
+                      e.currentTarget.style.backgroundColor = 'var(--control-transparent-bgColor-hover)';
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.borderColor = 'var(--borderColor-default)';
-                      e.currentTarget.style.backgroundColor = 'var(--bgColor-default)';
+                      e.currentTarget.style.backgroundColor = 'var(--color-accent-subtle)';
                     }}
                   >
                     <div style={{ fontSize: '16px', fontWeight: '600', marginBottom: '8px' }}>

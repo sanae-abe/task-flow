@@ -63,6 +63,11 @@ export const useDragAndDrop = ({ board, onMoveTask, onSortToManual }: UseDragAnd
     const activeTaskId = active.id as string;
     const overId = over.id as string;
 
+    // 同じタスクの場合は何もしない
+    if (activeTaskId === overId) {
+      return;
+    }
+
     const sourceColumnId = findTaskColumnId(activeTaskId);
     
     if (!sourceColumnId) {
@@ -93,7 +98,7 @@ export const useDragAndDrop = ({ board, onMoveTask, onSortToManual }: UseDragAnd
         return;
       }
       
-      // 同じカラム内でドラッグした場合の位置調整
+      // 同じカラム内でドラッグした場合
       if (sourceColumnId === targetColumnId) {
         const sourceCol = board.columns.find((col) => col.id === sourceColumnId);
         if (!sourceCol) {
@@ -102,12 +107,21 @@ export const useDragAndDrop = ({ board, onMoveTask, onSortToManual }: UseDragAnd
         
         const oldIndex = sourceCol.tasks.findIndex((task: Task) => task.id === activeTaskId);
         
+        if (oldIndex === -1) {
+          return;
+        }
+        
+        // 同じ位置の場合は何もしない
         if (oldIndex === targetTaskIndex) {
           return;
         }
         
-        targetIndex = targetTaskIndex;
+        // 同じカラム内移動：
+        // oldIndex < targetTaskIndex の場合: targetTaskIndex - 1 (元のタスクが削除されるため)
+        // oldIndex > targetTaskIndex の場合: targetTaskIndex (そのまま)
+        targetIndex = oldIndex < targetTaskIndex ? targetTaskIndex - 1 : targetTaskIndex;
       } else {
+        // 異なるカラム間での移動の場合は、targetTaskIndexをそのまま使用
         targetIndex = targetTaskIndex;
       }
     }
@@ -131,4 +145,4 @@ export const useDragAndDrop = ({ board, onMoveTask, onSortToManual }: UseDragAnd
     handleDragOver,
     handleDragEnd,
   };
-};
+};;;;;
