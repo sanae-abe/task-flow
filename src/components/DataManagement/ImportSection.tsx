@@ -1,9 +1,11 @@
 import { memo } from 'react';
-import { Box, Text, Button, Flash, Spinner, RadioGroup, Radio, FormControl, Link } from '@primer/react';
-import { UploadIcon, FileIcon, AlertIcon } from '@primer/octicons-react';
+import { Box, Text, Button, Flash, Spinner, RadioGroup, Radio, FormControl } from '@primer/react';
+import { UploadIcon, FileIcon, XIcon, AlertIcon } from '@primer/octicons-react';
 
 import { useDataImport } from '../../hooks/useDataImport';
 import { useDataImportDropZone } from '../../hooks/useDataImportDropZone';
+import UniversalDropZone from '../UniversalDropZone';
+import ErrorMessage from '../ErrorMessage';
 
 /**
  * データインポート機能を提供するセクション
@@ -38,8 +40,8 @@ export const ImportSection = memo<ImportSectionProps>(({ onImportSuccess }) => {
   });
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-      {/* インポートモード選択 */}
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, width: '100%' }}>
+      {/* インポートモード選択 - 元のRadioGroup維持 */}
       <FormControl>
         <FormControl.Label sx={{ fontSize: 1, fontWeight: '600' }}>
           インポートモード
@@ -77,74 +79,97 @@ export const ImportSection = memo<ImportSectionProps>(({ onImportSuccess }) => {
         </Flash>
       )}
 
-      {/* ドラッグ&ドロップエリア */}
+      {/* ドラッグ&ドロップエリア - UniversalDropZone使用 */}
       {!state.selectedFile && (
-        <Box
+        <UniversalDropZone
+          isDragOver={dropZoneProps.isDragOver}
+          isLoading={state.isLoading}
+          maxFileSize={maxFileSize}
+          allowedTypes={['.json', 'application/json']}
+          multiple={false}
           onDragOver={dropZoneProps.handleDragOver}
           onDragEnter={dropZoneProps.handleDragEnter}
           onDragLeave={dropZoneProps.handleDragLeave}
           onDrop={dropZoneProps.handleDrop}
-          sx={{
-            border: '2px dashed',
-            borderColor: dropZoneProps.isDragOver ? 'accent.emphasis' : 'border.default',
-            borderRadius: 2,
-            p: 5,
-            textAlign: 'center',
-            bg: dropZoneProps.isDragOver ? 'accent.subtle' : 'canvas.subtle',
-            cursor: 'pointer',
-            transition: 'all 0.2s ease',
-            '&:hover': {
-              borderColor: 'accent.emphasis',
-              bg: 'accent.subtle'
-            }
-          }}
           onClick={dropZoneProps.handleFileSelect}
-        >
-          <UploadIcon size={32} />
-          <Text sx={{ mt: 2, fontWeight: 'semibold', display: 'block' }}>
-            JSONファイルをドラッグ&ドロップ
-          </Text>
-          <Text sx={{ fontSize: 1, color: 'fg.muted' }}>
-            または{' '}
-            <Link
-              sx={{ cursor: 'pointer' }}
-              onClick={(e: React.MouseEvent) => {
-                e.stopPropagation();
-                dropZoneProps.handleFileSelect();
-              }}
-            >
-              ファイルを選択
-            </Link>
-          </Text>
-        </Box>
+          fileInputRef={dropZoneProps.fileInputRef}
+          onFileInputChange={dropZoneProps.handleFileInputChange}
+          importMode="both"
+          title="JSONファイルをドラッグ&ドロップ"
+          subtitle="または クリックしてファイルを選択"
+          ariaLabel="JSONファイルを選択してデータをインポート"
+        />
       )}
 
-      {/* 選択されたファイル表示 */}
+      {/* 選択されたファイル表示 - AttachmentList風スタイル */}
       {state.selectedFile && (
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 2,
-            p: 3,
-            bg: 'canvas.subtle',
-            borderRadius: 2,
-            border: '1px solid',
-            borderColor: 'border.default'
-          }}
-        >
-          <FileIcon size={24} />
-          <Box sx={{ flex: 1 }}>
-            <Text sx={{ fontWeight: 'semibold', display: 'block' }}>
-              {state.selectedFile.name}
-            </Text>
-            <Text sx={{ fontSize: 1, color: 'fg.muted' }}>
-              {(state.selectedFile.size / 1024).toFixed(1)} KB
-            </Text>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <Text sx={{ fontSize: 1, fontWeight: "700" }}>
+            選択されたファイル
+          </Text>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              p: 2,
+              bg: 'canvas.subtle',
+              borderRadius: 2,
+              border: '1px solid',
+              borderColor: 'border.default'
+            }}
+          >
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 2,
+                flex: 1,
+                minWidth: 0,
+              }}
+            >
+              <FileIcon size={24} />
+              <Box
+                sx={{
+                  minWidth: 0,
+                  flex: 1,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 1,
+                }}
+              >
+                <Text
+                  sx={{
+                    fontSize: 1,
+                    fontWeight: '600',
+                    wordBreak: 'break-word',
+                    lineHeight: 1.2,
+                  }}
+                >
+                  {state.selectedFile.name}
+                </Text>
+                <Text sx={{ fontSize: 0, color: 'fg.muted' }}>
+                  {(state.selectedFile.size / 1024).toFixed(1)} KB
+                </Text>
+              </Box>
+            </Box>
+            <Button
+              variant="invisible"
+              size="small"
+              onClick={clearSelection}
+              disabled={state.isLoading}
+              sx={{
+                p: 1,
+                color: 'danger.fg',
+                '&:hover': {
+                  color: 'danger.emphasis',
+                },
+              }}
+              aria-label="ファイルを削除"
+            >
+              <XIcon size={16} />
+            </Button>
           </Box>
-          <Button size="small" onClick={clearSelection} disabled={state.isLoading}>
-            削除
-          </Button>
         </Box>
       )}
 
@@ -156,11 +181,12 @@ export const ImportSection = memo<ImportSectionProps>(({ onImportSuccess }) => {
         </Box>
       )}
 
-      {/* メッセージ表示 */}
-      {state.message && (
-        <Flash variant={state.message.type === 'error' ? 'danger' : 'success'}>
-          {state.message.text}
-        </Flash>
+      {/* エラー表示 - ErrorMessage使用 */}
+      <ErrorMessage error={state.message?.type  === 'error' ? state.message.text : null} />
+
+      {/* 成功メッセージ */}
+      {state.message?.type === 'success' && (
+      <FormControl.Validation variant="success">{state.message.text}</FormControl.Validation>
       )}
 
       {/* インポート実行ボタン */}
@@ -175,16 +201,6 @@ export const ImportSection = memo<ImportSectionProps>(({ onImportSuccess }) => {
           {state.isLoading ? 'インポート中...' : 'インポート実行'}
         </Button>
       )}
-
-      {/* 隠しファイル入力 */}
-      <input
-        ref={dropZoneProps.fileInputRef}
-        type="file"
-        accept=".json,application/json"
-        onChange={dropZoneProps.handleFileInputChange}
-        style={{ display: 'none' }}
-        disabled={state.isLoading}
-      />
     </Box>
   );
 });
