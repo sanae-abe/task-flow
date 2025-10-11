@@ -185,18 +185,21 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
       size="large"
       actions={actions}
     >
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }} onKeyDown={handleKeyDown}>
+      <Box sx={{ display: 'flex', flexDirection: 'column' }} onKeyDown={handleKeyDown}>
+        <Box sx={{
+          mt: 2,
+          mb: 3,
+          fontWeight: 'bold',
+          fontSize: 2
+        }}>
+          テンプレート情報
+        </Box>
         {/* テンプレート基本情報 */}
         <Box sx={{
           p: 3,
-          bg: 'canvas.subtle',
           borderRadius: 2,
-          border: '1px solid',
-          borderColor: 'border.default'
+          bg: 'canvas.subtle'
         }}>
-          <Box sx={{ mb: 3, fontWeight: 'bold', fontSize: 1 }}>
-            テンプレート情報
-          </Box>
 
           {/* テンプレート名 */}
           <FormControl sx={{ mb: 3 }}>
@@ -222,7 +225,7 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
 
           {/* テンプレート説明 */}
           <FormControl sx={{ mb: 3 }}>
-            <FormControl.Label>説明</FormControl.Label>
+            <FormControl.Label>説明（任意）</FormControl.Label>
             <Textarea
               value={formData.description}
               onChange={(e) =>
@@ -240,22 +243,23 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
             value={formData.category}
             onChange={(category) => setFormData((prev) => ({ ...prev, category }))}
             disabled={isLoading}
-            showDescription
           />
         </Box>
 
         {/* タスク情報 */}
         <Box sx={{
+          mt: 5,
+          mb: 3,
+          fontWeight: 'bold',
+          fontSize: 2,
+        }}>
+            作成されるタスク
+        </Box>
+        <Box sx={{
           p: 3,
           bg: 'canvas.subtle',
-          borderRadius: 2,
-          border: '1px solid',
-          borderColor: 'border.default'
+          borderRadius: 2
         }}>
-          <Box sx={{ mb: 3, fontWeight: 'bold', fontSize: 1 }}>
-            作成されるタスク
-          </Box>
-
           {/* タスクタイトル */}
           <FormControl sx={{ mb: 3 }}>
             <FormControl.Label>タスクタイトル</FormControl.Label>
@@ -281,7 +285,7 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
 
           {/* タスク説明 */}
           <FormControl sx={{ mb: 3 }}>
-            <FormControl.Label>タスク説明</FormControl.Label>
+            <FormControl.Label>タスク説明（任意）</FormControl.Label>
             <RichTextEditor
               value={formData.taskDescription}
               onChange={(value) =>
@@ -294,16 +298,18 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
           </FormControl>
 
           {/* 優先度 */}
-          <PrioritySelector
-            priority={formData.priority}
-            onPriorityChange={handlePriorityChange}
-            disabled={isLoading}
-            variant="full"
-          />
+          <div style={{ marginBottom: '16px' }}>
+            <PrioritySelector
+              priority={formData.priority}
+              onPriorityChange={handlePriorityChange}
+              disabled={isLoading}
+              variant="full"
+            />
+          </div>
 
           {/* ラベル */}
-          <FormControl sx={{ mt: 3 }}>
-            <FormControl.Label>ラベル</FormControl.Label>
+          <FormControl>
+            <FormControl.Label>ラベル（任意）</FormControl.Label>
             <LabelSelector
               selectedLabels={formData.labels}
               onLabelsChange={handleLabelsChange}

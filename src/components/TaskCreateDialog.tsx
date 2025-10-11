@@ -18,62 +18,27 @@ import RecurrenceSelector from './RecurrenceSelector';
 import RichTextEditor from './RichTextEditor';
 import TimeSelector from './TimeSelector';
 
-// サンプルテンプレートデータ（LocalStorageが空の場合のフォールバック）
-const fallbackTemplates: TaskTemplate[] = [
-  {
-    id: 'sample-1',
-    name: 'ミーティング議事録作成',
-    description: '定例ミーティング用の議事録テンプレート',
-    category: 'meeting',
-    taskTitle: 'ミーティング議事録作成',
-    taskDescription: '今日の定例ミーティングの議事録を作成します。\n\n## アジェンダ\n- \n\n## 議題\n- \n\n## アクションアイテム\n- ',
-    priority: undefined,
-    labels: [],
-    dueDate: null,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    usageCount: 0,
-    isFavorite: false
-  },
-  {
-    id: 'sample-2',
-    name: 'コードレビュー',
-    description: 'プルリクエストレビュー用テンプレート',
-    category: 'work',
-    taskTitle: 'コードレビュー',
-    taskDescription: 'プルリクエストのコードレビューを実施します。\n\n## チェックポイント\n- コードの可読性\n- パフォーマンス\n- セキュリティ\n- テストの充実度',
-    priority: undefined,
-    labels: [],
-    dueDate: null,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    usageCount: 0,
-    isFavorite: false
-  },
-  {
-    id: 'sample-3',
-    name: 'ブログ記事執筆',
-    description: '技術ブログ記事執筆用テンプレート',
-    category: 'personal',
-    taskTitle: 'ブログ記事執筆',
-    taskDescription: '技術ブログ記事を執筆します。\n\n## テーマ\n\n## アウトライン\n1. \n2. \n3. ',
-    priority: undefined,
-    labels: [],
-    dueDate: null,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    usageCount: 0,
-    isFavorite: false
-  }
-];
-
 type CreateMode = 'normal' | 'template';
 
 // テンプレート選択コンポーネント
 const TemplateSelector: React.FC<{
   templates: TaskTemplate[];
   onSelect: (template: TaskTemplate) => void;
-}> = ({ templates, onSelect }) => (
+}> = ({ templates, onSelect }) => {
+  // お気に入りテンプレートを優先して、その後使用回数順でソート
+  const sortedTemplates = useMemo(() => [...templates].sort((a, b) => {
+      // お気に入りを最初に表示
+      if (a.isFavorite && !b.isFavorite) {return -1;}
+      if (!a.isFavorite && b.isFavorite) {return 1;}
+      // その後は使用回数順（多い順）
+      return b.usageCount - a.usageCount;
+    }), [templates]);
+
+  // お気に入りとその他を分離
+  const favoriteTemplates = sortedTemplates.filter(template => template.isFavorite);
+  const otherTemplates = sortedTemplates.filter(template => !template.isFavorite);
+
+  return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
       <div style={{ fontSize: '14px', fontWeight: '600', marginBottom: '8px' }}>
         テンプレートを選択してください
@@ -89,44 +54,112 @@ const TemplateSelector: React.FC<{
           設定画面からテンプレートを作成してください。
         </div>
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '12px' }}>
-          {templates.map((template) => (
-            <div
-              key={template.id}
-              style={{
-                border: '1px solid var(--borderColor-default)',
-                borderRadius: '6px',
-                padding: '16px',
-                cursor: 'pointer',
-                transition: 'all 0.2s ease',
-                backgroundColor: 'var(--bgColor-default)',
-              }}
-              onClick={() => onSelect(template)}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = 'var(--color-accent-emphasis)';
-                e.currentTarget.style.backgroundColor = 'var(--color-accent-subtle)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = 'var(--borderColor-default)';
-                e.currentTarget.style.backgroundColor = 'var(--bgColor-default)';
-              }}
-            >
-              <div style={{ fontSize: '16px', fontWeight: '600', marginBottom: '8px' }}>
-                {template.name}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          {/* お気に入りテンプレート */}
+          {favoriteTemplates.length > 0 && (
+            <div>
+              <div style={{ 
+                fontSize: '14px', 
+                fontWeight: '600', 
+                marginBottom: '12px',
+                color: 'var(--color-attention-fg)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px'
+              }}>
+                ⭐ お気に入りテンプレート
               </div>
-              <div style={{ fontSize: '14px', color: 'var(--fgColor-muted)', marginBottom: '8px' }}>
-                {template.description || template.taskDescription.slice(0, 100)}...
-              </div>
-              <div style={{ fontSize: '12px', color: 'var(--fgColor-muted)' }}>
-                カテゴリー: {template.category} | 使用回数: {template.usageCount}回
-                {template.isFavorite && ' ⭐'}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '12px' }}>
+                {favoriteTemplates.map((template) => (
+                  <div
+                    key={template.id}
+                    style={{
+                      border: '2px solid var(--color-attention-emphasis)',
+                      borderRadius: '6px',
+                      padding: '16px',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                      backgroundColor: 'var(--color-attention-subtle)',
+                    }}
+                    onClick={() => onSelect(template)}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = 'var(--color-attention-muted)';
+                      e.currentTarget.style.transform = 'translateY(-2px)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = 'var(--color-attention-subtle)';
+                      e.currentTarget.style.transform = 'translateY(0px)';
+                    }}
+                  >
+                    <div style={{ fontSize: '16px', fontWeight: '600', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      ⭐ {template.name}
+                    </div>
+                    <div style={{ fontSize: '14px', color: 'var(--fgColor-muted)', marginBottom: '8px' }}>
+                      {template.description || template.taskDescription.slice(0, 100)}...
+                    </div>
+                    <div style={{ fontSize: '12px', color: 'var(--fgColor-muted)' }}>
+                      カテゴリー: {template.category} | 使用回数: {template.usageCount}回
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
-          ))}
+          )}
+
+          {/* その他のテンプレート */}
+          {otherTemplates.length > 0 && (
+            <div>
+              {favoriteTemplates.length > 0 && (
+                <div style={{ 
+                  fontSize: '14px', 
+                  fontWeight: '600', 
+                  marginBottom: '12px',
+                  color: 'var(--fgColor-default)'
+                }}>
+                  その他のテンプレート
+                </div>
+              )}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '12px' }}>
+                {otherTemplates.map((template) => (
+                  <div
+                    key={template.id}
+                    style={{
+                      border: '1px solid var(--borderColor-default)',
+                      borderRadius: '6px',
+                      padding: '16px',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                      backgroundColor: 'var(--bgColor-default)',
+                    }}
+                    onClick={() => onSelect(template)}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = 'var(--color-accent-emphasis)';
+                      e.currentTarget.style.backgroundColor = 'var(--color-accent-subtle)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = 'var(--borderColor-default)';
+                      e.currentTarget.style.backgroundColor = 'var(--bgColor-default)';
+                    }}
+                  >
+                    <div style={{ fontSize: '16px', fontWeight: '600', marginBottom: '8px' }}>
+                      {template.name}
+                    </div>
+                    <div style={{ fontSize: '14px', color: 'var(--fgColor-muted)', marginBottom: '8px' }}>
+                      {template.description || template.taskDescription.slice(0, 100)}...
+                    </div>
+                    <div style={{ fontSize: '12px', color: 'var(--fgColor-muted)' }}>
+                      カテゴリー: {template.category} | 使用回数: {template.usageCount}回
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>
   );
+};
 
 const TaskCreateDialog = memo(() => {
   const {
@@ -162,12 +195,9 @@ const TaskCreateDialog = memo(() => {
 
         if (loadedTemplates.length > 0) {
           setTemplates(loadedTemplates);
-        } else {
-          setTemplates(fallbackTemplates);
         }
       } catch (error) {
         console.warn('Failed to load templates:', error);
-        setTemplates(fallbackTemplates);
       }
     }
   }, [state.isTaskFormOpen]);

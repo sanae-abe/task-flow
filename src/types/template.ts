@@ -80,7 +80,7 @@ export interface TemplateFilter {
 /**
  * テンプレートソートオプション
  */
-export type TemplateSortField = 'name' | 'category' | 'usageCount' | 'createdAt' | 'updatedAt';
+export type TemplateSortField = 'name' | 'category' | 'usageCount' | 'createdAt' | 'updatedAt' | 'favorite';
 export type TemplateSortDirection = 'asc' | 'desc';
 
 export interface TemplateSortConfig {
