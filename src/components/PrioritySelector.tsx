@@ -1,21 +1,21 @@
-import { FormControl, RadioGroup, Radio } from '@primer/react';
-import React from 'react';
+import { FormControl, RadioGroup, Radio } from "@primer/react";
+import React from "react";
 
-import type { Priority } from '../types';
-import { prioritySelectorOptions } from '../utils/priorityConfig';
+import type { Priority } from "../types";
+import { prioritySelectorOptions } from "../utils/priorityConfig";
 
 interface PrioritySelectorProps {
   priority?: Priority;
   onPriorityChange: (priority: Priority | undefined) => void;
   disabled?: boolean;
-  variant?: 'compact' | 'full';
+  variant?: "compact" | "full";
 }
 
 const PrioritySelector: React.FC<PrioritySelectorProps> = ({
   priority,
   onPriorityChange,
   disabled = false,
-  variant = 'full',
+  variant = "full",
 }) => {
   const handleClick = (value: Priority | undefined) => {
     if (disabled) {
@@ -26,17 +26,22 @@ const PrioritySelector: React.FC<PrioritySelectorProps> = ({
 
   return (
     <FormControl>
-      {variant === 'full' && (
-        <FormControl.Label>
-          優先度（任意）
-        </FormControl.Label>
+      {variant === "full" && (
+        <FormControl.Label>優先度（任意）</FormControl.Label>
       )}
-      <RadioGroup name="priority" sx={{ '& > div': { flexDirection: 'row', gap: 3, alignItems: 'center', mt: 2 } }}>
-        {prioritySelectorOptions.map((option) => 
-          <FormControl
-            key={option.value || 'none'}
-            sx={{ mt: 0}}
-          >
+      <RadioGroup
+        name="priority"
+        sx={{
+          "& > div": {
+            flexDirection: "row",
+            gap: 3,
+            alignItems: "center",
+            mt: 2,
+          },
+        }}
+      >
+        {prioritySelectorOptions.map((option) => (
+          <FormControl key={option.value || "none"} sx={{ mt: 0 }}>
             <Radio
               value={option.label}
               onClick={() => handleClick(option.value)}
@@ -44,7 +49,7 @@ const PrioritySelector: React.FC<PrioritySelectorProps> = ({
             />
             <FormControl.Label>{option.label}</FormControl.Label>
           </FormControl>
-        )}
+        ))}
       </RadioGroup>
     </FormControl>
   );

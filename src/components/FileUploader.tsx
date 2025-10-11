@@ -1,13 +1,17 @@
-import { Box } from '@primer/react';
-import React, { useCallback, useState } from 'react';
+import { Box } from "@primer/react";
+import React, { useCallback, useState } from "react";
 
-import { useFileUpload, DEFAULT_MAX_FILE_SIZE, DEFAULT_ALLOWED_TYPES } from '../hooks/useFileUpload';
-import type { FileAttachment, ImportMode } from '../types';
+import {
+  useFileUpload,
+  DEFAULT_MAX_FILE_SIZE,
+  DEFAULT_ALLOWED_TYPES,
+} from "../hooks/useFileUpload";
+import type { FileAttachment, ImportMode } from "../types";
 
-import AttachmentList from './AttachmentList';
-import ErrorMessage from './ErrorMessage';
-import UniversalDropZone from './UniversalDropZone';
-import ImportModeSelector from './ImportModeSelector';
+import AttachmentList from "./AttachmentList";
+import ErrorMessage from "./ErrorMessage";
+import UniversalDropZone from "./UniversalDropZone";
+import ImportModeSelector from "./ImportModeSelector";
 
 interface FileUploaderProps {
   attachments: FileAttachment[];
@@ -24,7 +28,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({
   maxFileSize = DEFAULT_MAX_FILE_SIZE,
   allowedTypes = DEFAULT_ALLOWED_TYPES,
   showModeSelector = true,
-  defaultImportMode = 'both'
+  defaultImportMode = "both",
 }) => {
   const [importMode, setImportMode] = useState<ImportMode>(defaultImportMode);
   const {
@@ -35,15 +39,23 @@ const FileUploader: React.FC<FileUploaderProps> = ({
     handleDragLeave,
     handleDrop,
     handleFileSelect,
-    handleFileInputChange
-  } = useFileUpload(attachments, onAttachmentsChange, { maxFileSize, allowedTypes });
+    handleFileInputChange,
+  } = useFileUpload(attachments, onAttachmentsChange, {
+    maxFileSize,
+    allowedTypes,
+  });
 
-  const handleRemoveAttachment = useCallback((attachmentId: string) => {
-    onAttachmentsChange(attachments.filter(att => att.id !== attachmentId));
-  }, [attachments, onAttachmentsChange]);
+  const handleRemoveAttachment = useCallback(
+    (attachmentId: string) => {
+      onAttachmentsChange(attachments.filter((att) => att.id !== attachmentId));
+    },
+    [attachments, onAttachmentsChange],
+  );
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, width: '100%' }}>
+    <Box
+      sx={{ display: "flex", flexDirection: "column", gap: 3, width: "100%" }}
+    >
       {showModeSelector && (
         <ImportModeSelector
           selectedMode={importMode}

@@ -1,39 +1,52 @@
-import { DndContext, DragOverlay, pointerWithin, type CollisionDetection } from '@dnd-kit/core';
-import { Text, Box } from '@primer/react';
-import React from 'react';
+import {
+  DndContext,
+  DragOverlay,
+  pointerWithin,
+  type CollisionDetection,
+} from "@dnd-kit/core";
+import { Text, Box } from "@primer/react";
+import React from "react";
 
-import { useBoard } from '../contexts/BoardContext';
-import { useTask } from '../contexts/TaskContext';
-import { useUI } from '../contexts/UIContext';
-import { useDragAndDrop } from '../hooks/useDragAndDrop';
-import { useKeyboardDragAndDrop } from '../hooks/useKeyboardDragAndDrop';
-import { KANBAN_BOARD_STYLES } from '../styles/kanbanBoardStyles';
-import type { Task } from '../types';
+import { useBoard } from "../contexts/BoardContext";
+import { useTask } from "../contexts/TaskContext";
+import { useUI } from "../contexts/UIContext";
+import { useDragAndDrop } from "../hooks/useDragAndDrop";
+import { useKeyboardDragAndDrop } from "../hooks/useKeyboardDragAndDrop";
+import { KANBAN_BOARD_STYLES } from "../styles/kanbanBoardStyles";
+import type { Task } from "../types";
 
-import KanbanColumn from './KanbanColumn';
-import TaskCard from './TaskCard';
+import KanbanColumn from "./KanbanColumn";
+import TaskCard from "./TaskCard";
 
 const KanbanBoard: React.FC = () => {
   const { currentBoard } = useBoard();
   const { moveTask } = useTask();
   const { setSortOption, openTaskDetail } = useUI();
-  
-  const { activeTask, sensors, handleDragStart, handleDragOver, handleDragEnd } = useDragAndDrop({
+
+  const {
+    activeTask,
+    sensors,
+    handleDragStart,
+    handleDragOver,
+    handleDragEnd,
+  } = useDragAndDrop({
     board: currentBoard,
     onMoveTask: moveTask,
-    onSortToManual: () => setSortOption('manual'),
+    onSortToManual: () => setSortOption("manual"),
   });
 
   const keyboardDragAndDrop = useKeyboardDragAndDrop({
     board: currentBoard,
     onMoveTask: moveTask,
-    onSortToManual: () => setSortOption('manual'),
+    onSortToManual: () => setSortOption("manual"),
   });
-  
+
   if (!currentBoard) {
     return (
       <Box sx={KANBAN_BOARD_STYLES.emptyState}>
-        <Text sx={KANBAN_BOARD_STYLES.emptyStateText}>Please select a board</Text>
+        <Text sx={KANBAN_BOARD_STYLES.emptyStateText}>
+          Please select a board
+        </Text>
       </Box>
     );
   }
@@ -49,10 +62,10 @@ const KanbanBoard: React.FC = () => {
 
     if (pointerIntersections.length > 0) {
       // タスクとカラムが重なっている場合、タスクを優先
-      const taskIntersections = pointerIntersections.filter(intersection =>
-        currentBoard?.columns.some(column =>
-          column.tasks.some(task => task.id === intersection.id)
-        )
+      const taskIntersections = pointerIntersections.filter((intersection) =>
+        currentBoard?.columns.some((column) =>
+          column.tasks.some((task) => task.id === intersection.id),
+        ),
       );
 
       if (taskIntersections.length > 0) {
@@ -65,10 +78,9 @@ const KanbanBoard: React.FC = () => {
     // 範囲外ドロップの場合は空配列を返す
     return [];
   };
-  
+
   return (
     <Box sx={KANBAN_BOARD_STYLES.container}>
-      
       <DndContext
         sensors={sensors}
         collisionDetection={collisionDetectionStrategy}
@@ -88,11 +100,9 @@ const KanbanBoard: React.FC = () => {
             />
           ))}
         </Box>
-        
+
         <DragOverlay>
-          {activeTask ? (
-            <TaskCard task={activeTask} columnId="" />
-          ) : null}
+          {activeTask ? <TaskCard task={activeTask} columnId="" /> : null}
         </DragOverlay>
       </DndContext>
     </Box>

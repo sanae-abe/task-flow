@@ -1,5 +1,5 @@
-import { Box, Text } from '@primer/react';
-import React, { memo } from 'react';
+import { Box, Text } from "@primer/react";
+import React, { memo } from "react";
 
 interface ContentBoxProps {
   children: React.ReactNode;
@@ -8,12 +8,8 @@ interface ContentBoxProps {
   isEmpty?: boolean;
 }
 
-const ContentBox = memo<ContentBoxProps>(({ 
-  children, 
-  bg = 'canvas.subtle',
-  emptyText,
-  isEmpty = false
-}) => (
+const ContentBox = memo<ContentBoxProps>(
+  ({ children, bg = "canvas.subtle", emptyText, isEmpty = false }) => (
     <Box
       sx={{
         p: 3,
@@ -22,15 +18,16 @@ const ContentBox = memo<ContentBoxProps>(({
       }}
     >
       {isEmpty && emptyText ? (
-        <Text sx={{ fontSize: 1, color: 'fg.muted', fontStyle: 'italic' }}>
+        <Text sx={{ fontSize: 1, color: "fg.muted", fontStyle: "italic" }}>
           {emptyText}
         </Text>
       ) : (
         children
       )}
     </Box>
-  ));
+  ),
+);
 
-ContentBox.displayName = 'ContentBox';
+ContentBox.displayName = "ContentBox";
 
 export default ContentBox;

@@ -1,19 +1,16 @@
-import {
-  Button,
-} from '@primer/react';
-import { SyncIcon } from '@primer/octicons-react';
-import React, { useState, useCallback } from 'react';
+import { Button } from "@primer/react";
+import { SyncIcon } from "@primer/octicons-react";
+import React, { useState, useCallback } from "react";
 
-import type { RecurrenceConfig } from '../types';
-import { getRecurrenceDescription } from '../utils/recurrence';
-import RecurrenceDetailDialog from './RecurrenceDetailDialog';
+import type { RecurrenceConfig } from "../types";
+import { getRecurrenceDescription } from "../utils/recurrence";
+import RecurrenceDetailDialog from "./RecurrenceDetailDialog";
 
 interface RecurrenceSelectorProps {
   recurrence?: RecurrenceConfig;
   onRecurrenceChange: (recurrence: RecurrenceConfig | undefined) => void;
   disabled?: boolean;
 }
-
 
 const RecurrenceSelector: React.FC<RecurrenceSelectorProps> = ({
   recurrence,
@@ -22,9 +19,12 @@ const RecurrenceSelector: React.FC<RecurrenceSelectorProps> = ({
 }) => {
   const [isDetailDialogOpen, setIsDetailDialogOpen] = useState(false);
 
-  const handleDetailDialogSave = useCallback((newRecurrence: RecurrenceConfig | undefined) => {
-    onRecurrenceChange(newRecurrence);
-  }, [onRecurrenceChange]);
+  const handleDetailDialogSave = useCallback(
+    (newRecurrence: RecurrenceConfig | undefined) => {
+      onRecurrenceChange(newRecurrence);
+    },
+    [onRecurrenceChange],
+  );
 
   const handleDetailDialogClose = useCallback(() => {
     setIsDetailDialogOpen(false);
@@ -40,7 +40,7 @@ const RecurrenceSelector: React.FC<RecurrenceSelectorProps> = ({
     if (recurrence?.enabled) {
       return getRecurrenceDescription(recurrence);
     }
-    return '繰り返し設定';
+    return "繰り返し設定";
   };
 
   return (
@@ -49,12 +49,12 @@ const RecurrenceSelector: React.FC<RecurrenceSelectorProps> = ({
         onClick={handleButtonClick}
         disabled={disabled}
         sx={{
-          color: disabled ? 'fg.disabled' : 'fg.default',
-          '& span': {
-            display: 'flex',
-            alignItems: 'center',
-            gap: 1
-          }
+          color: disabled ? "fg.disabled" : "fg.default",
+          "& span": {
+            display: "flex",
+            alignItems: "center",
+            gap: 1,
+          },
         }}
       >
         <SyncIcon size={16} />

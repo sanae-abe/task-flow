@@ -1,5 +1,5 @@
-import { FormControl } from '@primer/react';
-import React from 'react';
+import { FormControl } from "@primer/react";
+import React from "react";
 
 interface ErrorMessageProps {
   error: string | null;
@@ -11,9 +11,7 @@ const ErrorMessage: React.FC<ErrorMessageProps> = ({ error }) => {
   }
 
   return (
-    <FormControl.Validation variant="error">
-      {error}
-    </FormControl.Validation>
+    <FormControl.Validation variant="error">{error}</FormControl.Validation>
   );
 };
 

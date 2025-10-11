@@ -1,29 +1,28 @@
-import { useCallback, useReducer, useEffect, useRef } from 'react';
-import type { 
-  FormState, 
-  FormAction, 
-  FormFieldConfig, 
-  UseFormReturn, 
+import { useCallback, useReducer, useEffect, useRef } from "react";
+import type {
+  FormState,
+  FormAction,
+  FormFieldConfig,
+  UseFormReturn,
   FormError,
-  ValidationRule 
-} from '../types/unified-form';
+  ValidationRule,
+} from "../types/unified-form";
 
 // フォーム初期状態
 const createInitialState = (
   fields: FormFieldConfig[],
-  initialValues?: Record<string, unknown>
+  initialValues?: Record<string, unknown>,
 ): FormState => {
   const values = fields.reduce((acc, field) => {
     // initialValuesに値があるかチェック（undefinedも含む）
     const hasInitialValue = initialValues && field.name in initialValues;
     const value = hasInitialValue
       ? initialValues[field.name]
-      : field.value ?? '';
-
+      : (field.value ?? "");
 
     return {
       ...acc,
-      [field.name]: value
+      [field.name]: value,
     };
   }, {});
 
@@ -33,102 +32,119 @@ const createInitialState = (
     touched: {},
     isSubmitting: false,
     isDirty: false,
-    isValid: true
+    isValid: true,
   };
 };
 
 // フォームレデューサー
 const formReducer = (state: FormState, action: FormAction): FormState => {
   switch (action.type) {
-    case 'SET_FIELD_VALUE': {
+    case "SET_FIELD_VALUE": {
       const newValues = { ...state.values, [action.fieldId]: action.value };
-      const isDirty = Object.keys(newValues).some(key => 
-        newValues[key] !== state.values[key]
+      const isDirty = Object.keys(newValues).some(
+        (key) => newValues[key] !== state.values[key],
       );
-      
+
       return {
         ...state,
         values: newValues,
-        isDirty
+        isDirty,
       };
     }
-    
-    case 'SET_FIELD_ERROR': {
-      const newErrors = state.errors.filter(error => error.fieldId !== action.fieldId);
+
+    case "SET_FIELD_ERROR": {
+      const newErrors = state.errors.filter(
+        (error) => error.fieldId !== action.fieldId,
+      );
       if (action.error) {
         newErrors.push({ fieldId: action.fieldId, message: action.error });
       }
-      
+
       return {
         ...state,
         errors: newErrors,
-        isValid: newErrors.length === 0
+        isValid: newErrors.length === 0,
       };
     }
-    
-    case 'SET_FIELD_TOUCHED': {
+
+    case "SET_FIELD_TOUCHED": {
       return {
         ...state,
-        touched: { ...state.touched, [action.fieldId]: action.touched }
+        touched: { ...state.touched, [action.fieldId]: action.touched },
       };
     }
-    
-    case 'SET_SUBMITTING': {
+
+    case "SET_SUBMITTING": {
       return {
         ...state,
-        isSubmitting: action.isSubmitting
+        isSubmitting: action.isSubmitting,
       };
     }
-    
-    case 'SET_ERRORS': {
+
+    case "SET_ERRORS": {
       return {
         ...state,
         errors: action.errors,
-        isValid: action.errors.length === 0
+        isValid: action.errors.length === 0,
       };
     }
-    
-    case 'RESET_FORM': {
+
+    case "RESET_FORM": {
       // fieldsを参照するため、reducerの外で処理する必要がある
       return action.newState;
     }
-    
-    case 'VALIDATE_FORM': {
+
+    case "VALIDATE_FORM": {
       // バリデーションロジックは別途実装
       return state;
     }
-    
+
     default:
       return state;
   }
 };
 
 // バリデーション関数
-const validateField = (value: unknown, validation?: ValidationRule): string | null => {
+const validateField = (
+  value: unknown,
+  validation?: ValidationRule,
+): string | null => {
   if (!validation) {
     return null;
   }
-  
+
   // 必須チェック
-  if (validation.required && (!value || value.toString().trim() === '')) {
-    return '必須項目です';
+  if (validation.required && (!value || value.toString().trim() === "")) {
+    return "必須項目です";
   }
-  
+
   // 最小長チェック
-  if (validation.minLength && value && value.toString().length < validation.minLength) {
+  if (
+    validation.minLength &&
+    value &&
+    value.toString().length < validation.minLength
+  ) {
     return `${validation.minLength}文字以上入力してください`;
   }
-  
+
   // 最大長チェック
-  if (validation.maxLength && value && value.toString().length > validation.maxLength) {
+  if (
+    validation.maxLength &&
+    value &&
+    value.toString().length > validation.maxLength
+  ) {
     return `${validation.maxLength}文字以下で入力してください`;
   }
-  
+
   // パターンチェック
-  if (validation.pattern && value && !validation.pattern.test(value.toString())) {
-    return '入力形式が正しくありません';
+  if (
+    validation.pattern &&
+    value &&
+    !validation.pattern.test(value.toString())
+  ) {
+    return "入力形式が正しくありません";
   }
-  
+
   // カスタムバリデーション
   if (validation.custom && value) {
     const customError = validation.custom(value);
@@ -136,72 +152,78 @@ const validateField = (value: unknown, validation?: ValidationRule): string | nu
       return customError;
     }
   }
-  
+
   return null;
 };
 
 /**
  * 統合フォーム管理フック
- * 
+ *
  * @param fields - フォームフィールド設定配列
  * @param initialValues - 初期値（オプション）
  * @returns フォーム状態と操作関数
  */
 export const useUnifiedForm = (
   fields: FormFieldConfig[],
-  initialValues?: Record<string, unknown>
+  initialValues?: Record<string, unknown>,
 ): UseFormReturn => {
   const [state, dispatch] = useReducer(
     formReducer,
-    createInitialState(fields, initialValues)
+    createInitialState(fields, initialValues),
   );
 
   // 前回のinitialValuesを追跡するためのref
   const prevInitialValuesRef = useRef<string | null>(null);
-  
+
   // フィールド値設定
-  const setValue = useCallback((fieldId: string, value: unknown) => {
-    dispatch({ type: 'SET_FIELD_VALUE', fieldId, value });
-    
-    // リアルタイムバリデーション（フィールドがtouchedの場合のみ）
-    if (state.touched[fieldId]) {
-      const field = fields.find(f => f.name === fieldId);
-      if (field?.validation) {
-        const error = validateField(value, field.validation);
-        dispatch({ type: 'SET_FIELD_ERROR', fieldId, error });
+  const setValue = useCallback(
+    (fieldId: string, value: unknown) => {
+      dispatch({ type: "SET_FIELD_VALUE", fieldId, value });
+
+      // リアルタイムバリデーション（フィールドがtouchedの場合のみ）
+      if (state.touched[fieldId]) {
+        const field = fields.find((f) => f.name === fieldId);
+        if (field?.validation) {
+          const error = validateField(value, field.validation);
+          dispatch({ type: "SET_FIELD_ERROR", fieldId, error });
+        }
       }
-    }
-  }, [fields, state.touched]);
-  
+    },
+    [fields, state.touched],
+  );
+
   // エラー設定
   const setError = useCallback((fieldId: string, error: string | null) => {
-    dispatch({ type: 'SET_FIELD_ERROR', fieldId, error });
+    dispatch({ type: "SET_FIELD_ERROR", fieldId, error });
   }, []);
-  
+
   // タッチ状態設定
   const setTouched = useCallback((fieldId: string, touched: boolean) => {
-    dispatch({ type: 'SET_FIELD_TOUCHED', fieldId, touched });
+    dispatch({ type: "SET_FIELD_TOUCHED", fieldId, touched });
   }, []);
-  
+
   // 個別フィールドバリデーション
-  const validateFieldCallback = useCallback((fieldId: string): boolean => {
-    const field = fields.find(f => f.name === fieldId);
-    if (!field?.validation) {
-      return true;
-    }
-    
-    const value = state.values[fieldId];
-    const error = validateField(value, field.validation);
-    dispatch({ type: 'SET_FIELD_ERROR', fieldId, error });
-    
-    return !error;
-  }, [fields, state.values]);
-  
+  const validateFieldCallback = useCallback(
+    (fieldId: string): boolean => {
+      const field = fields.find((f) => f.name === fieldId);
+      if (!field?.validation) {
+        return true;
+      }
+
+      const value = state.values[fieldId];
+      const error = validateField(value, field.validation);
+      dispatch({ type: "SET_FIELD_ERROR", fieldId, error });
+
+      return !error;
+    },
+    [fields, state.values],
+  );
+
   // フォーム全体バリデーション
   const validateForm = useCallback((): boolean => {
     const errors: FormError[] = [];
-    
-    fields.forEach(field => {
+
+    fields.forEach((field) => {
       if (field.validation) {
         const value = state.values[field.name];
         const error = validateField(value, field.validation);
@@ -210,52 +232,63 @@ export const useUnifiedForm = (
         }
       }
     });
-    
-    dispatch({ type: 'SET_ERRORS', errors });
+
+    dispatch({ type: "SET_ERRORS", errors });
     return errors.length === 0;
   }, [fields, state.values]);
-  
+
   // フォームリセット
-  const resetForm = useCallback((newInitialValues?: Record<string, unknown>) => {
-    const newState = createInitialState(fields, newInitialValues);
-    dispatch({ type: 'RESET_FORM', newState });
-  }, [fields]);
-  
+  const resetForm = useCallback(
+    (newInitialValues?: Record<string, unknown>) => {
+      const newState = createInitialState(fields, newInitialValues);
+      dispatch({ type: "RESET_FORM", newState });
+    },
+    [fields],
+  );
+
   // フォーム送信ハンドラー
-  const handleSubmit = useCallback((
-    onSubmit: (values: Record<string, unknown>) => void | Promise<void>
-  ) => async (e?: React.FormEvent) => {
-      if (e) {
-        e.preventDefault();
-      }
-      
-      dispatch({ type: 'SET_SUBMITTING', isSubmitting: true });
-      
-      try {
-        // 送信前バリデーション
-        if (!validateForm()) {
-          return;
+  const handleSubmit = useCallback(
+    (onSubmit: (values: Record<string, unknown>) => void | Promise<void>) =>
+      async (e?: React.FormEvent) => {
+        if (e) {
+          e.preventDefault();
         }
-        
-        await onSubmit(state.values);
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error('Form submission error:', error);
-      } finally {
-        dispatch({ type: 'SET_SUBMITTING', isSubmitting: false });
-      }
-    }, [state.values, validateForm]);
-  
+
+        dispatch({ type: "SET_SUBMITTING", isSubmitting: true });
+
+        try {
+          // 送信前バリデーション
+          if (!validateForm()) {
+            return;
+          }
+
+          await onSubmit(state.values);
+        } catch (error) {
+          // eslint-disable-next-line no-console
+          console.error("Form submission error:", error);
+        } finally {
+          dispatch({ type: "SET_SUBMITTING", isSubmitting: false });
+        }
+      },
+    [state.values, validateForm],
+  );
+
   // フィールドの有効性チェック
-  const isFieldValid = useCallback((fieldId: string): boolean => 
-    !state.errors.some(error => error.fieldId === fieldId), [state.errors]);
-  
+  const isFieldValid = useCallback(
+    (fieldId: string): boolean =>
+      !state.errors.some((error) => error.fieldId === fieldId),
+    [state.errors],
+  );
+
   // フィールドエラー取得
-  const getFieldError = useCallback((fieldId: string): string | null => {
-    const error = state.errors.find(error => error.fieldId === fieldId);
-    return error?.message ?? null;
-  }, [state.errors]);
-  
+  const getFieldError = useCallback(
+    (fieldId: string): string | null => {
+      const error = state.errors.find((error) => error.fieldId === fieldId);
+      return error?.message ?? null;
+    },
+    [state.errors],
+  );
+
   // 初期値変更時の状態更新
   useEffect(() => {
     if (initialValues) {
@@ -268,7 +301,7 @@ export const useUnifiedForm = (
       }
     }
   }, [initialValues, resetForm]);
-  
+
   return {
     state,
     setValue,
@@ -279,6 +312,6 @@ export const useUnifiedForm = (
     resetForm,
     handleSubmit,
     isFieldValid,
-    getFieldError
+    getFieldError,
   };
 };

@@ -1,15 +1,15 @@
-import type { Label, Priority, RecurrenceConfig } from '../types';
+import type { Label, Priority, RecurrenceConfig } from "../types";
 
 /**
  * テンプレートカテゴリー
  */
 export type TemplateCategory =
-  | 'work' // 仕事
-  | 'personal' // 個人
-  | 'project' // プロジェクト
-  | 'meeting' // 会議
-  | 'routine' // ルーティン
-  | 'other'; // その他
+  | "work" // 仕事
+  | "personal" // 個人
+  | "project" // プロジェクト
+  | "meeting" // 会議
+  | "routine" // ルーティン
+  | "other"; // その他
 
 /**
  * テンプレートカテゴリー情報
@@ -80,8 +80,14 @@ export interface TemplateFilter {
 /**
  * テンプレートソートオプション
  */
-export type TemplateSortField = 'name' | 'category' | 'usageCount' | 'createdAt' | 'updatedAt' | 'favorite';
-export type TemplateSortDirection = 'asc' | 'desc';
+export type TemplateSortField =
+  | "name"
+  | "category"
+  | "usageCount"
+  | "createdAt"
+  | "updatedAt"
+  | "favorite";
+export type TemplateSortDirection = "asc" | "desc";
 
 export interface TemplateSortConfig {
   field: TemplateSortField;

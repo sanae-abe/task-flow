@@ -1,8 +1,8 @@
-import { SyncIcon } from '@primer/octicons-react';
-import React from 'react';
+import { SyncIcon } from "@primer/octicons-react";
+import React from "react";
 
-import type { DueDateBadgeProps } from '../types/date';
-import StatusBadge from './shared/StatusBadge';
+import type { DueDateBadgeProps } from "../types/date";
+import StatusBadge from "./shared/StatusBadge";
 
 const DueDateBadge: React.FC<DueDateBadgeProps> = ({
   dueDate,
@@ -10,26 +10,26 @@ const DueDateBadge: React.FC<DueDateBadgeProps> = ({
   isDueToday,
   isDueTomorrow,
   formatDueDate,
-  isRecurrence = false
+  isRecurrence = false,
 }) => {
   const getVariant = () => {
     if (isOverdue()) {
-      return 'danger';
+      return "danger";
     }
     if (isDueToday()) {
-      return 'warning';
+      return "warning";
     }
     if (isDueTomorrow()) {
-      return 'info';
+      return "info";
     }
-    return 'neutral';
+    return "neutral";
   };
 
   return (
     <StatusBadge
       variant={getVariant()}
       size="small"
-      sx={{ border: 'none', bg: 'transparent' }}
+      sx={{ border: "none", bg: "transparent" }}
     >
       期限: {formatDueDate(dueDate)} {isRecurrence && <SyncIcon size={12} />}
     </StatusBadge>

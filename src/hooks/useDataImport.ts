@@ -1,8 +1,11 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback } from "react";
 
-import { useKanban } from '../contexts/KanbanContext';
-import { validateImportData, readFileAsText } from '../utils/dataExport';
-import type { ImportMode, ImportState } from '../components/DataManagement/types';
+import { useKanban } from "../contexts/KanbanContext";
+import { validateImportData, readFileAsText } from "../utils/dataExport";
+import type {
+  ImportMode,
+  ImportState,
+} from "../components/DataManagement/types";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
@@ -21,8 +24,8 @@ export const useDataImport = (options?: UseDataImportOptions) => {
   const [state, setState] = useState<ImportState>({
     isLoading: false,
     selectedFile: null,
-    mode: 'merge',
-    message: null
+    mode: "merge",
+    message: null,
   });
 
   /**
@@ -31,32 +34,32 @@ export const useDataImport = (options?: UseDataImportOptions) => {
   const selectFile = useCallback((file: File) => {
     // ファイルサイズチェック
     if (file.size > MAX_FILE_SIZE) {
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
         message: {
-          type: 'error',
-          text: `ファイルサイズが大きすぎます（最大: ${MAX_FILE_SIZE / 1024 / 1024}MB）`
-        }
+          type: "error",
+          text: `ファイルサイズが大きすぎます（最大: ${MAX_FILE_SIZE / 1024 / 1024}MB）`,
+        },
       }));
       return;
     }
 
     // ファイルタイプチェック
-    if (!file.type.includes('json') && !file.name.endsWith('.json')) {
-      setState(prev => ({
+    if (!file.type.includes("json") && !file.name.endsWith(".json")) {
+      setState((prev) => ({
         ...prev,
         message: {
-          type: 'error',
-          text: 'JSONファイルを選択してください'
-        }
+          type: "error",
+          text: "JSONファイルを選択してください",
+        },
       }));
       return;
     }
 
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
       selectedFile: file,
-      message: null
+      message: null,
     }));
   }, []);
 
@@ -64,9 +67,9 @@ export const useDataImport = (options?: UseDataImportOptions) => {
    * インポートモードを変更
    */
   const setImportMode = useCallback((mode: ImportMode) => {
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
-      mode
+      mode,
     }));
   }, []);
 
@@ -74,9 +77,9 @@ export const useDataImport = (options?: UseDataImportOptions) => {
    * メッセージをクリア
    */
   const clearMessage = useCallback(() => {
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
-      message: null
+      message: null,
     }));
   }, []);
 
@@ -87,8 +90,8 @@ export const useDataImport = (options?: UseDataImportOptions) => {
     setState({
       isLoading: false,
       selectedFile: null,
-      mode: 'merge',
-      message: null
+      mode: "merge",
+      message: null,
     });
   }, []);
 
@@ -100,10 +103,10 @@ export const useDataImport = (options?: UseDataImportOptions) => {
       return;
     }
 
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
       isLoading: true,
-      message: null
+      message: null,
     }));
 
     try {
@@ -111,41 +114,42 @@ export const useDataImport = (options?: UseDataImportOptions) => {
       const parsedData = JSON.parse(fileContent);
       const validatedData = validateImportData(parsedData);
 
-      const replaceAll = state.mode === 'replace';
+      const replaceAll = state.mode === "replace";
       importBoards(validatedData.boards, replaceAll);
 
       const importedCount = validatedData.boards.length;
-      const modeText = replaceAll ? '置換' : '追加';
+      const modeText = replaceAll ? "置換" : "追加";
 
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
         isLoading: false,
         message: {
-          type: 'success',
-          text: `${importedCount}個のボードを${modeText}しました`
-        }
+          type: "success",
+          text: `${importedCount}個のボードを${modeText}しました`,
+        },
       }));
 
       options?.onSuccess?.(importedCount);
-
     } catch (error) {
-      let errorMessage = 'インポートに失敗しました';
+      let errorMessage = "インポートに失敗しました";
       if (error instanceof SyntaxError) {
-        errorMessage = 'JSONファイルの形式が正しくありません';
+        errorMessage = "JSONファイルの形式が正しくありません";
       } else if (error instanceof Error) {
         errorMessage = error.message;
       }
 
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
         isLoading: false,
         message: {
-          type: 'error',
-          text: errorMessage
-        }
+          type: "error",
+          text: errorMessage,
+        },
       }));
 
-      options?.onError?.(error instanceof Error ? error : new Error(errorMessage));
+      options?.onError?.(
+        error instanceof Error ? error : new Error(errorMessage),
+      );
     }
   }, [state.selectedFile, state.mode, importBoards, options]);
 
@@ -156,6 +160,6 @@ export const useDataImport = (options?: UseDataImportOptions) => {
     clearMessage,
     clearSelection,
     executeImport,
-    maxFileSize: MAX_FILE_SIZE
+    maxFileSize: MAX_FILE_SIZE,
   };
 };

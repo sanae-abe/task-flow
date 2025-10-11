@@ -1,6 +1,6 @@
-import React, { useMemo } from 'react';
+import React, { useMemo } from "react";
 
-import { UnifiedForm, createSubTaskFormFields } from './shared/Form';
+import { UnifiedForm, createSubTaskFormFields } from "./shared/Form";
 
 interface SubTaskFormProps {
   title: string;
@@ -15,29 +15,33 @@ const SubTaskForm: React.FC<SubTaskFormProps> = ({
   onTitleChange,
   onSubmit,
   onCancel,
-  onKeyDown
+  onKeyDown,
 }) => {
   // フォームフィールド設定を生成
-  const formFields = useMemo(() => createSubTaskFormFields(
-    {
-      title
-    },
-    {
-      setTitle: onTitleChange
-    },
-    {
-      onKeyDown
-    }
-  ), [title, onTitleChange, onKeyDown]);
+  const formFields = useMemo(
+    () =>
+      createSubTaskFormFields(
+        {
+          title,
+        },
+        {
+          setTitle: onTitleChange,
+        },
+        {
+          onKeyDown,
+        },
+      ),
+    [title, onTitleChange, onKeyDown],
+  );
 
   return (
     <div
       style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: 'var(--primer-control-small-gap, 0.5rem)',
-        borderRadius: 'var(--primer-borderRadius-medium, 6px)',
-        backgroundColor: 'var(--primer-canvas-default)'
+        display: "flex",
+        alignItems: "center",
+        gap: "var(--primer-control-small-gap, 0.5rem)",
+        borderRadius: "var(--primer-borderRadius-medium, 6px)",
+        backgroundColor: "var(--primer-canvas-default)",
       }}
     >
       <UnifiedForm
@@ -48,10 +52,10 @@ const SubTaskForm: React.FC<SubTaskFormProps> = ({
         cancelText="キャンセル"
         validateOnChange={false}
         validateOnBlur={false}
-        sx={{ 
+        sx={{
           flex: 1,
-          '& > div > div': { mb: 0 }, // フォームコンテナの下マージン削除
-          '& form': { display: 'flex', alignItems: 'center', gap: 2 }
+          "& > div > div": { mb: 0 }, // フォームコンテナの下マージン削除
+          "& form": { display: "flex", alignItems: "center", gap: 2 },
         }}
       />
     </div>

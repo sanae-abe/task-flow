@@ -1,30 +1,30 @@
-import { Text } from '@primer/react';
-import React from 'react';
+import { Text } from "@primer/react";
+import React from "react";
 
-import type { Task, Priority } from '../types';
+import type { Task, Priority } from "../types";
 
-import { formatDateTime } from '../utils/dateHelpers';
-import { getRecurrenceDescription } from '../utils/recurrence';
-import ContentBox from './ContentBox';
-import DueDateDisplay from './DueDateDisplay';
-import FileList from './FileList';
-import LinkifiedText from './LinkifiedText';
-import TaskDisplaySection from './TaskDisplaySection';
-import TaskLabels from './TaskLabels';
+import { formatDateTime } from "../utils/dateHelpers";
+import { getRecurrenceDescription } from "../utils/recurrence";
+import ContentBox from "./ContentBox";
+import DueDateDisplay from "./DueDateDisplay";
+import FileList from "./FileList";
+import LinkifiedText from "./LinkifiedText";
+import TaskDisplaySection from "./TaskDisplaySection";
+import TaskLabels from "./TaskLabels";
 
 // 優先度を日本語テキストに変換
 const getPriorityText = (priority: Priority): string => {
   switch (priority) {
-    case 'low':
-      return '低';
-    case 'medium':
-      return '中';
-    case 'high':
-      return '高';
-    case 'critical':
-      return '緊急';
+    case "low":
+      return "低";
+    case "medium":
+      return "中";
+    case "high":
+      return "高";
+    case "critical":
+      return "緊急";
     default:
-      return '';
+      return "";
   }
 };
 
@@ -33,15 +33,22 @@ interface TaskDisplayContentProps {
   columnName?: string;
 }
 
-const TaskDisplayContent = React.memo<TaskDisplayContentProps>(({ task, columnName }) => (
+const TaskDisplayContent = React.memo<TaskDisplayContentProps>(
+  ({ task, columnName }) => (
     <>
       <TaskDisplaySection title="説明">
-        <ContentBox 
+        <ContentBox
           isEmpty={!task.description}
           emptyText="説明が設定されていません"
         >
           {task.description && (
-            <LinkifiedText sx={{ fontSize: 1, whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}>
+            <LinkifiedText
+              sx={{
+                fontSize: 1,
+                whiteSpace: "pre-wrap",
+                overflowWrap: "anywhere",
+              }}
+            >
               {task.description}
             </LinkifiedText>
           )}
@@ -77,9 +84,7 @@ const TaskDisplayContent = React.memo<TaskDisplayContentProps>(({ task, columnNa
       {task.priority && (
         <TaskDisplaySection title="優先度">
           <ContentBox>
-            <Text sx={{ fontSize: 1 }}>
-              {getPriorityText(task.priority)}
-            </Text>
+            <Text sx={{ fontSize: 1 }}>{getPriorityText(task.priority)}</Text>
           </ContentBox>
         </TaskDisplaySection>
       )}
@@ -87,9 +92,7 @@ const TaskDisplayContent = React.memo<TaskDisplayContentProps>(({ task, columnNa
       {task.completedAt && (
         <TaskDisplaySection title="完了日時">
           <ContentBox>
-            <Text sx={{ fontSize: 1 }}>
-              {formatDateTime(task.completedAt)}
-            </Text>
+            <Text sx={{ fontSize: 1 }}>{formatDateTime(task.completedAt)}</Text>
           </ContentBox>
         </TaskDisplaySection>
       )}
@@ -106,6 +109,7 @@ const TaskDisplayContent = React.memo<TaskDisplayContentProps>(({ task, columnNa
         </TaskDisplaySection>
       )}
     </>
-  ));
+  ),
+);
 
 export default TaskDisplayContent;

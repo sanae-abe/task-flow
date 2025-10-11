@@ -1,8 +1,8 @@
-import { Box, Text, TextInput } from '@primer/react';
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { Box, Text, TextInput } from "@primer/react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 
-import UnifiedDialog from './shared/Dialog/UnifiedDialog';
-import type { DialogAction } from '../types/unified-dialog';
+import UnifiedDialog from "./shared/Dialog/UnifiedDialog";
+import type { DialogAction } from "../types/unified-dialog";
 
 interface TimeSelectorDialogProps {
   isOpen: boolean;
@@ -19,11 +19,11 @@ const TimeSelectorDialog: React.FC<TimeSelectorDialogProps> = ({
   onSave,
   onClose,
 }) => {
-  const [localDueTime, setLocalDueTime] = useState(dueTime || '23:59');
+  const [localDueTime, setLocalDueTime] = useState(dueTime || "23:59");
 
   useEffect(() => {
     if (isOpen) {
-      setLocalDueTime(dueTime || '23:59');
+      setLocalDueTime(dueTime || "23:59");
     }
   }, [isOpen, dueTime]);
 
@@ -37,33 +37,33 @@ const TimeSelectorDialog: React.FC<TimeSelectorDialogProps> = ({
   }, [onClose]);
 
   const handleRemove = useCallback(() => {
-    onSave(false, '');
+    onSave(false, "");
     onClose();
   }, [onSave, onClose]);
 
   const actions: DialogAction[] = useMemo(() => {
     const actionList: DialogAction[] = [
       {
-        label: 'キャンセル',
+        label: "キャンセル",
         onClick: handleCancel,
-        variant: 'default',
-        position: 'right'
+        variant: "default",
+        position: "right",
       },
       {
-        label: '保存',
+        label: "保存",
         onClick: handleSave,
-        variant: 'primary',
-        position: 'right'
-      }
+        variant: "primary",
+        position: "right",
+      },
     ];
 
     // hasTimeがtrueの場合は削除ボタンを追加
     if (hasTime) {
       actionList.splice(1, 0, {
-        label: '時刻設定を削除',
+        label: "時刻設定を削除",
         onClick: handleRemove,
-        variant: 'danger',
-        position: 'left'
+        variant: "danger",
+        position: "left",
       });
     }
 
@@ -79,15 +79,15 @@ const TimeSelectorDialog: React.FC<TimeSelectorDialogProps> = ({
       actions={actions}
       actionsLayout="split"
     >
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-        <Text sx={{ fontSize: 1, display: 'block', fontWeight: '700' }}>
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+        <Text sx={{ fontSize: 1, display: "block", fontWeight: "700" }}>
           時刻
         </Text>
         <TextInput
           type="time"
           value={localDueTime}
           onChange={(e) => setLocalDueTime(e.target.value)}
-          sx={{ width: '100%' }}
+          sx={{ width: "100%" }}
           step="300"
         />
       </Box>

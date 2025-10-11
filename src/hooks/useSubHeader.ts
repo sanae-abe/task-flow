@@ -1,11 +1,11 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback } from "react";
 
-import { useKanban } from '../contexts/KanbanContext';
-import { useNotify } from '../contexts/NotificationContext';
-import { exportData, exportBoard } from '../utils/dataExport';
-import type { KanbanBoard } from '../types';
+import { useKanban } from "../contexts/KanbanContext";
+import { useNotify } from "../contexts/NotificationContext";
+import { exportData, exportBoard } from "../utils/dataExport";
+import type { KanbanBoard } from "../types";
 
-import { useTaskStats } from './useTaskStats';
+import { useTaskStats } from "./useTaskStats";
 
 type SubHeaderDialogState = {
   readonly isCreatingColumn: boolean;
@@ -36,7 +36,7 @@ type SubHeaderHandlers = {
 };
 
 type UseSubHeaderReturn = {
-  readonly state: ReturnType<typeof useKanban>['state'];
+  readonly state: ReturnType<typeof useKanban>["state"];
   readonly dialogState: SubHeaderDialogState;
   readonly taskStats: ReturnType<typeof useTaskStats>;
   readonly hasCompletedTasks: boolean;
@@ -45,9 +45,16 @@ type UseSubHeaderReturn = {
 };
 
 export const useSubHeader = (): UseSubHeaderReturn => {
-  const { state, updateBoard, createColumn, createBoard, deleteBoard, clearCompletedTasks } = useKanban();
+  const {
+    state,
+    updateBoard,
+    createColumn,
+    createBoard,
+    deleteBoard,
+    clearCompletedTasks,
+  } = useKanban();
   const notify = useNotify();
-  
+
   const [dialogState, setDialogState] = useState<SubHeaderDialogState>({
     isCreatingColumn: false,
     isCreatingBoard: false,
@@ -62,7 +69,7 @@ export const useSubHeader = (): UseSubHeaderReturn => {
     }
     return state.currentBoard.columns
       .slice(0, -1)
-      .flatMap(column => column.tasks);
+      .flatMap((column) => column.tasks);
   }, [state.currentBoard?.columns]);
 
   const taskStats = useTaskStats(allTasks);
@@ -72,67 +79,75 @@ export const useSubHeader = (): UseSubHeaderReturn => {
     if (!columns?.length) {
       return false;
     }
-    
+
     const rightmostColumn = columns[columns.length - 1];
     return (rightmostColumn?.tasks?.length ?? 0) > 0;
   }, [state.currentBoard?.columns]);
 
-  const canDeleteBoard = useMemo(() => state.boards.length > 1, [state.boards.length]);
+  const canDeleteBoard = useMemo(
+    () => state.boards.length > 1,
+    [state.boards.length],
+  );
 
-  const updateDialogState = useCallback((updates: Partial<SubHeaderDialogState>): void => {
-    setDialogState(prev => ({ ...prev, ...updates }));
-  }, []);
+  const updateDialogState = useCallback(
+    (updates: Partial<SubHeaderDialogState>): void => {
+      setDialogState((prev) => ({ ...prev, ...updates }));
+    },
+    [],
+  );
   const handlers = useMemo((): SubHeaderHandlers => {
     const currentBoardId = state.currentBoard?.id;
-    
+
     return {
       startCreateColumn: () => updateDialogState({ isCreatingColumn: true }),
       startCreateBoard: () => updateDialogState({ isCreatingBoard: true }),
-      
+
       editBoardTitle: (newTitle: string) => {
         if (currentBoardId) {
           updateBoard(currentBoardId, { title: newTitle });
           updateDialogState({ showEditDialog: false });
         }
       },
-      
+
       createColumn: (title: string, insertIndex?: number) => {
         createColumn(title, insertIndex);
         updateDialogState({ isCreatingColumn: false });
       },
-      
+
       createBoard: (title: string) => {
         createBoard(title);
         updateDialogState({ isCreatingBoard: false });
       },
-      
+
       cancelCreateColumn: () => updateDialogState({ isCreatingColumn: false }),
       cancelCreateBoard: () => updateDialogState({ isCreatingBoard: false }),
-      
+
       deleteBoard: () => {
         if (currentBoardId && canDeleteBoard) {
           deleteBoard(currentBoardId);
           updateDialogState({ showDeleteConfirm: false });
         }
       },
-      
+
       clearCompletedTasks: () => {
         clearCompletedTasks();
         updateDialogState({ showClearCompletedConfirm: false });
       },
-      
+
       openEditDialog: () => updateDialogState({ showEditDialog: true }),
       closeEditDialog: () => updateDialogState({ showEditDialog: false }),
       openDeleteConfirm: () => updateDialogState({ showDeleteConfirm: true }),
       closeDeleteConfirm: () => updateDialogState({ showDeleteConfirm: false }),
-      openClearCompletedConfirm: () => updateDialogState({ showClearCompletedConfirm: true }),
-      closeClearCompletedConfirm: () => updateDialogState({ showClearCompletedConfirm: false }),
-      
+      openClearCompletedConfirm: () =>
+        updateDialogState({ showClearCompletedConfirm: true }),
+      closeClearCompletedConfirm: () =>
+        updateDialogState({ showClearCompletedConfirm: false }),
+
       exportAllData: () => {
         exportData(state.boards);
-        notify.success('全データをエクスポートしました');
+        notify.success("全データをエクスポートしました");
       },
-      
+
       exportCurrentBoard: (board?: KanbanBoard) => {
         // ボードが指定されている場合はそのボードを、指定されていない場合は現在のボードをエクスポート
         const targetBoard = board || state.currentBoard;
@@ -140,10 +155,9 @@ export const useSubHeader = (): UseSubHeaderReturn => {
           exportBoard(targetBoard);
           notify.success(`「${targetBoard.title}」をエクスポートしました`);
         } else {
-          notify.error('エクスポートするボードが選択されていません');
+          notify.error("エクスポートするボードが選択されていません");
         }
       },
-      
     };
   }, [
     state.boards,

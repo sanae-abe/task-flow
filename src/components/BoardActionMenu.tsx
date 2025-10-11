@@ -1,8 +1,13 @@
-import { PencilIcon, TrashIcon, KebabHorizontalIcon, CheckCircleIcon } from '@primer/octicons-react';
-import { ActionMenu, ActionList } from '@primer/react';
-import { memo } from 'react';
+import {
+  PencilIcon,
+  TrashIcon,
+  KebabHorizontalIcon,
+  CheckCircleIcon,
+} from "@primer/octicons-react";
+import { ActionMenu, ActionList } from "@primer/react";
+import { memo } from "react";
 
-import SubHeaderButton from './SubHeaderButton';
+import SubHeaderButton from "./SubHeaderButton";
 
 /**
  * ボード設定用のアクションメニューコンポーネント
@@ -23,17 +28,18 @@ interface BoardActionMenuProps {
   onClearCompletedTasks: () => void;
 }
 
-const BoardActionMenu = memo<BoardActionMenuProps>(({
-  hasCompletedTasks,
-  canDeleteBoard,
-  onCreateBoard,
-  onEditBoard,
-  onDeleteBoard,
-  onClearCompletedTasks,
-}) => (
+const BoardActionMenu = memo<BoardActionMenuProps>(
+  ({
+    hasCompletedTasks,
+    canDeleteBoard,
+    onCreateBoard,
+    onEditBoard,
+    onDeleteBoard,
+    onClearCompletedTasks,
+  }) => (
     <ActionMenu>
       <ActionMenu.Anchor>
-        <SubHeaderButton 
+        <SubHeaderButton
           icon={KebabHorizontalIcon}
           aria-label="ボード設定メニューを開く"
         >
@@ -49,7 +55,7 @@ const BoardActionMenu = memo<BoardActionMenuProps>(({
             </ActionList.LeadingVisual>
             ボード作成
           </ActionList.Item>
-          
+
           {/* ボード管理アクション */}
           <ActionList.Item onSelect={onEditBoard}>
             <ActionList.LeadingVisual>
@@ -75,10 +81,7 @@ const BoardActionMenu = memo<BoardActionMenuProps>(({
           {canDeleteBoard && (
             <>
               <ActionList.Divider />
-              <ActionList.Item
-                variant="danger"
-                onSelect={onDeleteBoard}
-              >
+              <ActionList.Item variant="danger" onSelect={onDeleteBoard}>
                 <ActionList.LeadingVisual>
                   <TrashIcon />
                 </ActionList.LeadingVisual>
@@ -89,8 +92,9 @@ const BoardActionMenu = memo<BoardActionMenuProps>(({
         </ActionList>
       </ActionMenu.Overlay>
     </ActionMenu>
-  ));
+  ),
+);
 
-BoardActionMenu.displayName = 'BoardActionMenu';
+BoardActionMenu.displayName = "BoardActionMenu";
 
 export default BoardActionMenu;

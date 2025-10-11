@@ -1,9 +1,9 @@
-import { Box } from '@primer/react';
-import { memo } from 'react';
+import { Box } from "@primer/react";
+import { memo } from "react";
 
-import type { Label } from '../types';
+import type { Label } from "../types";
 
-import LabelChip from './LabelChip';
+import LabelChip from "./LabelChip";
 
 interface TaskLabelsProps {
   labels?: Label[];
@@ -15,13 +15,11 @@ const TaskLabels = memo<TaskLabelsProps>(({ labels }) => {
   }
 
   return (
-    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, alignItems: 'center' }}>
+    <Box
+      sx={{ display: "flex", flexWrap: "wrap", gap: 2, alignItems: "center" }}
+    >
       {labels.map((label) => (
-        <LabelChip
-          key={label.id}
-          label={label}
-          showRemove={false}
-        />
+        <LabelChip key={label.id} label={label} showRemove={false} />
       ))}
     </Box>
   );

@@ -1,14 +1,10 @@
-import { memo } from 'react';
+import { memo } from "react";
 
-import type { BoardEditDialogProps } from '../types/dialog';
-import { SimpleFormDialog } from './shared/Dialog';
+import type { BoardEditDialogProps } from "../types/dialog";
+import { SimpleFormDialog } from "./shared/Dialog";
 
-const BoardEditDialog = memo<BoardEditDialogProps>(({ 
-  isOpen, 
-  currentTitle, 
-  onSave, 
-  onCancel 
-}) => (
+const BoardEditDialog = memo<BoardEditDialogProps>(
+  ({ isOpen, currentTitle, onSave, onCancel }) => (
     <SimpleFormDialog
       isOpen={isOpen}
       title="ボード名を編集"
@@ -20,6 +16,7 @@ const BoardEditDialog = memo<BoardEditDialogProps>(({
       onCancel={onCancel}
       onClose={onCancel}
     />
-  ));
+  ),
+);
 
 export default BoardEditDialog;

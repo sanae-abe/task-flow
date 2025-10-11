@@ -1,7 +1,7 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback } from "react";
 
-import { useKanban } from '../contexts/KanbanContext';
-import type { Column, Label, FileAttachment } from '../types';
+import { useKanban } from "../contexts/KanbanContext";
+import type { Column, Label, FileAttachment } from "../types";
 
 interface UseColumnStateReturn {
   showCreateDialog: boolean;
@@ -14,7 +14,13 @@ interface UseColumnStateReturn {
   handleDeleteColumn: () => void;
   handleConfirmDeleteColumn: () => void;
   handleCancelDeleteColumn: () => void;
-  handleAddTask: (title: string, description: string, dueDate?: Date, labels?: Label[], attachments?: FileAttachment[]) => void;
+  handleAddTask: (
+    title: string,
+    description: string,
+    dueDate?: Date,
+    labels?: Label[],
+    attachments?: FileAttachment[],
+  ) => void;
   handleCancelCreateTask: () => void;
 }
 
@@ -28,13 +34,16 @@ export const useColumnState = (column: Column): UseColumnStateReturn => {
     setShowEditDialog(true);
   }, []);
 
-  const handleTitleSave = useCallback((newTitle: string) => {
-    const trimmedTitle = newTitle.trim();
-    if (trimmedTitle && trimmedTitle !== column.title) {
-      updateColumn(column.id, { title: trimmedTitle });
-    }
-    setShowEditDialog(false);
-  }, [column.title, column.id, updateColumn]);
+  const handleTitleSave = useCallback(
+    (newTitle: string) => {
+      const trimmedTitle = newTitle.trim();
+      if (trimmedTitle && trimmedTitle !== column.title) {
+        updateColumn(column.id, { title: trimmedTitle });
+      }
+      setShowEditDialog(false);
+    },
+    [column.title, column.id, updateColumn],
+  );
 
   const handleTitleCancel = useCallback(() => {
     setShowEditDialog(false);
@@ -53,12 +62,28 @@ export const useColumnState = (column: Column): UseColumnStateReturn => {
     setShowDeleteConfirm(false);
   }, []);
 
-  const handleAddTask = useCallback((title: string, description: string, dueDate?: Date, labels?: Label[], attachments?: FileAttachment[]) => {
-    if (title.trim()) {
-      createTask(column.id, title.trim(), description.trim(), dueDate, labels, attachments);
-      setShowCreateDialog(false);
-    }
-  }, [column.id, createTask]);
+  const handleAddTask = useCallback(
+    (
+      title: string,
+      description: string,
+      dueDate?: Date,
+      labels?: Label[],
+      attachments?: FileAttachment[],
+    ) => {
+      if (title.trim()) {
+        createTask(
+          column.id,
+          title.trim(),
+          description.trim(),
+          dueDate,
+          labels,
+          attachments,
+        );
+        setShowCreateDialog(false);
+      }
+    },
+    [column.id, createTask],
+  );
 
   const handleCancelCreateTask = useCallback(() => {
     setShowCreateDialog(false);
@@ -76,6 +101,6 @@ export const useColumnState = (column: Column): UseColumnStateReturn => {
     handleConfirmDeleteColumn,
     handleCancelDeleteColumn,
     handleAddTask,
-    handleCancelCreateTask
+    handleCancelCreateTask,
   };
 };

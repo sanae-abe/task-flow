@@ -1,11 +1,19 @@
-import { TrashIcon, CheckCircleIcon, CheckCircleFillIcon, PencilIcon, CheckIcon, XIcon, GrabberIcon } from '@primer/octicons-react';
-import { Box, Text, TextInput } from '@primer/react';
-import React, { useState, useRef, useEffect } from 'react';
-import { useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
+import {
+  TrashIcon,
+  CheckCircleIcon,
+  CheckCircleFillIcon,
+  PencilIcon,
+  CheckIcon,
+  XIcon,
+  GrabberIcon,
+} from "@primer/octicons-react";
+import { Box, Text, TextInput } from "@primer/react";
+import React, { useState, useRef, useEffect } from "react";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
-import type { SubTask } from '../types';
-import IconButton from './shared/IconButton';
+import type { SubTask } from "../types";
+import IconButton from "./shared/IconButton";
 
 interface SubTaskItemProps {
   subTask: SubTask;
@@ -18,7 +26,7 @@ const SubTaskItem: React.FC<SubTaskItemProps> = ({
   subTask,
   onToggle,
   onEdit,
-  onDelete
+  onDelete,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(subTask.title);
@@ -62,10 +70,10 @@ const SubTaskItem: React.FC<SubTaskItemProps> = ({
   };
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key === 'Enter') {
+    if (event.key === "Enter") {
       event.preventDefault();
       handleSaveEdit();
-    } else if (event.key === 'Escape') {
+    } else if (event.key === "Escape") {
       event.preventDefault();
       handleCancelEdit();
     }
@@ -90,66 +98,66 @@ const SubTaskItem: React.FC<SubTaskItemProps> = ({
       ref={setNodeRef}
       style={style}
       sx={{
-        display: 'flex',
-        alignItems: 'center',
+        display: "flex",
+        alignItems: "center",
         gap: 2,
         borderRadius: 2,
-        bg: 'canvas.default',
-        cursor: 'pointer',
-        position: 'relative',
-        '&:hover': {
-          bg: 'canvas.subtle'
+        bg: "canvas.default",
+        cursor: "pointer",
+        position: "relative",
+        "&:hover": {
+          bg: "canvas.subtle",
         },
-        '&:hover .action-buttons': {
-          opacity: '1 !important'
+        "&:hover .action-buttons": {
+          opacity: "1 !important",
         },
-        '&:hover .drag-handle': {
-          opacity: '1 !important'
-        }
+        "&:hover .drag-handle": {
+          opacity: "1 !important",
+        },
       }}
     >
       {/* ドラッグハンドル */}
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-      <Box
-        {...attributes}
-        {...listeners}
-        className="drag-handle"
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          width: 24,
-          height: 24,
-          color: 'fg.muted',
-          opacity: 0,
-          transition: 'opacity 0.2s ease',
-          cursor: 'grab',
-          borderRadius: 1,
-          '&:active': {
-            cursor: 'grabbing'
-          },
-          '&:hover': {
-            bg: 'neutral.muted',
-            color: 'accent.fg'
-          }
-        }}
-      >
-        <GrabberIcon size={16} />
-      </Box>
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <Box
+          {...attributes}
+          {...listeners}
+          className="drag-handle"
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: 24,
+            height: 24,
+            color: "fg.muted",
+            opacity: 0,
+            transition: "opacity 0.2s ease",
+            cursor: "grab",
+            borderRadius: 1,
+            "&:active": {
+              cursor: "grabbing",
+            },
+            "&:hover": {
+              bg: "neutral.muted",
+              color: "accent.fg",
+            },
+          }}
+        >
+          <GrabberIcon size={16} />
+        </Box>
 
-      <IconButton
-        icon={subTask.completed ? CheckCircleFillIcon : CheckCircleIcon}
-        onClick={handleToggle}
-        ariaLabel={`${subTask.title}を${subTask.completed ? '未完了' : '完了'}にする`}
-        variant="success"
-        size="small"
-        stopPropagation
-        sx={{
-          '&:hover': {
-            bg: 'transparent',
-          }
-        }}
-      />
+        <IconButton
+          icon={subTask.completed ? CheckCircleFillIcon : CheckCircleIcon}
+          onClick={handleToggle}
+          ariaLabel={`${subTask.title}を${subTask.completed ? "未完了" : "完了"}にする`}
+          variant="success"
+          size="small"
+          stopPropagation
+          sx={{
+            "&:hover": {
+              bg: "transparent",
+            },
+          }}
+        />
       </div>
 
       {isEditing ? (
@@ -163,15 +171,15 @@ const SubTaskItem: React.FC<SubTaskItemProps> = ({
               flex: 1,
               fontSize: 1,
               px: 2,
-              py: 1
+              py: 1,
             }}
             size="small"
           />
           <Box
             sx={{
-              display: 'flex',
+              display: "flex",
               gap: 1,
-              opacity: 1
+              opacity: 1,
             }}
           >
             <IconButton
@@ -181,11 +189,11 @@ const SubTaskItem: React.FC<SubTaskItemProps> = ({
               size="small"
               stopPropagation
               sx={{
-                color: 'success.fg',
-                '&:hover': {
-                  bg: 'transparent',
-                  color: 'success.emphasis'
-                }
+                color: "success.fg",
+                "&:hover": {
+                  bg: "transparent",
+                  color: "success.emphasis",
+                },
               }}
             />
             <IconButton
@@ -195,11 +203,11 @@ const SubTaskItem: React.FC<SubTaskItemProps> = ({
               size="small"
               stopPropagation
               sx={{
-                color: 'fg.muted',
-                '&:hover': {
-                  bg: 'transparent',
-                  color: 'danger.fg'
-                }
+                color: "fg.muted",
+                "&:hover": {
+                  bg: "transparent",
+                  color: "danger.fg",
+                },
               }}
             />
           </Box>
@@ -209,9 +217,9 @@ const SubTaskItem: React.FC<SubTaskItemProps> = ({
           <Text
             sx={{
               flex: 1,
-              textDecoration: 'none',
+              textDecoration: "none",
               opacity: subTask.completed ? 0.6 : 1,
-              fontSize: 1
+              fontSize: 1,
             }}
           >
             {subTask.title}
@@ -219,10 +227,10 @@ const SubTaskItem: React.FC<SubTaskItemProps> = ({
           <Box
             className="action-buttons"
             sx={{
-              display: 'flex',
+              display: "flex",
               gap: 1,
               opacity: 0,
-              transition: 'opacity 0.2s ease'
+              transition: "opacity 0.2s ease",
             }}
           >
             <IconButton
@@ -232,11 +240,11 @@ const SubTaskItem: React.FC<SubTaskItemProps> = ({
               size="small"
               stopPropagation
               sx={{
-                color: 'fg.muted',
-                '&:hover': {
-                  bg: 'transparent',
-                  color: 'accent.fg'
-                }
+                color: "fg.muted",
+                "&:hover": {
+                  bg: "transparent",
+                  color: "accent.fg",
+                },
               }}
             />
             <IconButton
@@ -246,11 +254,11 @@ const SubTaskItem: React.FC<SubTaskItemProps> = ({
               size="small"
               stopPropagation
               sx={{
-                color: 'fg.muted',
-                '&:hover': {
-                  bg: 'transparent',
-                  color: 'danger.fg'
-                }
+                color: "fg.muted",
+                "&:hover": {
+                  bg: "transparent",
+                  color: "danger.fg",
+                },
               }}
             />
           </Box>

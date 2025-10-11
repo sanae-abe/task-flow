@@ -4,35 +4,36 @@
 
 // Branded Types for Domain Safety
 // Import/Export type namespace
-import type { Task, Label, Column, KanbanBoard } from '../types';
+import type { Task, Label, Column, KanbanBoard } from "../types";
 
-export type TaskId = string & { readonly __brand: 'TaskId' };
-export type ColumnId = string & { readonly __brand: 'ColumnId' };
-export type LabelId = string & { readonly __brand: 'LabelId' };
-export type BoardId = string & { readonly __brand: 'BoardId' };
+export type TaskId = string & { readonly __brand: "TaskId" };
+export type ColumnId = string & { readonly __brand: "ColumnId" };
+export type LabelId = string & { readonly __brand: "LabelId" };
+export type BoardId = string & { readonly __brand: "BoardId" };
 
 // Type Predicates for Runtime Type Safety
-export const isTaskId = (value: string): value is TaskId => typeof value === 'string' && value.length > 0;
+export const isTaskId = (value: string): value is TaskId =>
+  typeof value === "string" && value.length > 0;
 
-export const isValidTask = (obj: unknown): obj is Task => (
-  typeof obj === 'object' &&
+export const isValidTask = (obj: unknown): obj is Task =>
+  typeof obj === "object" &&
   obj !== null &&
-  'id' in obj &&
-  'title' in obj &&
-  'createdAt' in obj &&
-  typeof (obj as Record<string, unknown>)['id'] === 'string' &&
-  typeof (obj as Record<string, unknown>)['title'] === 'string'
-);
+  "id" in obj &&
+  "title" in obj &&
+  "createdAt" in obj &&
+  typeof (obj as Record<string, unknown>)["id"] === "string" &&
+  typeof (obj as Record<string, unknown>)["title"] === "string";
 
 // Conditional Types for Enhanced Type Safety
 export type TaskWithStatus<T extends Task> = T extends { completedAt: string }
-  ? T & { status: 'completed' }
-  : T & { status: 'active' };
+  ? T & { status: "completed" }
+  : T & { status: "active" };
 
 export type RequiredFields<T, K extends keyof T> = T & Required<Pick<T, K>>;
 
 // Template Literal Types for Enhanced String Safety
-export type DateTimeFormat = `${number}-${number}-${number}T${number}:${number}:${number}.${number}Z`;
+export type DateTimeFormat =
+  `${number}-${number}-${number}T${number}:${number}:${number}.${number}Z`;
 export type ColorHex = `#${string}`;
 export type FileType = `${string}/${string}`;
 
@@ -46,7 +47,7 @@ export type DeepReadonly<T> = {
 };
 
 // Result Type for Error Handling
-export type Result<T, E = Error> = 
+export type Result<T, E = Error> =
   | { success: true; data: T }
   | { success: false; error: E };
 
@@ -54,7 +55,7 @@ export type Result<T, E = Error> =
 export type TaskEventHandler<T = void> = (taskId: TaskId) => T;
 export type TaskUpdateHandler<T extends Partial<Task> = Partial<Task>> = (
   taskId: TaskId,
-  updates: T
+  updates: T,
 ) => void;
 
 // Enhanced Form Types with Runtime Validation
@@ -71,14 +72,14 @@ export type FormValidationState<T extends Record<string, unknown>> = {
 
 // Type-safe Event System
 export interface TypedEventMap {
-  'task:created': { task: Task };
-  'task:updated': { taskId: TaskId; updates: Partial<Task> };
-  'task:deleted': { taskId: TaskId };
-  'board:switched': { boardId: BoardId };
+  "task:created": { task: Task };
+  "task:updated": { taskId: TaskId; updates: Partial<Task> };
+  "task:deleted": { taskId: TaskId };
+  "board:switched": { boardId: BoardId };
 }
 
 export type TypedEventListener<K extends keyof TypedEventMap> = (
-  event: TypedEventMap[K]
+  event: TypedEventMap[K],
 ) => void;
 
 // Enhanced Context Types with State Management
@@ -99,22 +100,21 @@ export interface TypedStorage {
 }
 
 // Performance Optimization Types
-export type LazyComponent<T> = React.LazyExoticComponent<React.ComponentType<T>>;
-export type MemoizedComponent<T> = React.MemoExoticComponent<React.ComponentType<T>>;
+export type LazyComponent<T> = React.LazyExoticComponent<
+  React.ComponentType<T>
+>;
+export type MemoizedComponent<T> = React.MemoExoticComponent<
+  React.ComponentType<T>
+>;
 
 // Component Props with Enhanced Type Safety
 export type StrictComponentProps<T> = T & {
-  'data-testid'?: string;
-  'aria-label'?: string;
+  "data-testid"?: string;
+  "aria-label"?: string;
 };
 
 export type ComponentWithRef<T, R = HTMLElement> = T & {
   ref?: React.Ref<R>;
 };
 
-export {
-  Task,
-  Label, 
-  Column,
-  KanbanBoard
-};
+export { Task, Label, Column, KanbanBoard };

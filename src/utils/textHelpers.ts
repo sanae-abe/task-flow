@@ -15,8 +15,8 @@ export const stripHtml = (html: string): string => {
 
   // ブラウザのDOMParserを使用してHTMLを解析し、テキストのみを抽出
   const parser = new DOMParser();
-  const doc = parser.parseFromString(html, 'text/html');
-  return doc.body.textContent || doc.body.innerText || '';
+  const doc = parser.parseFromString(html, "text/html");
+  return doc.body.textContent || doc.body.innerText || "";
 };
 
 /**
@@ -29,5 +29,5 @@ export const truncateText = (text: string, maxLength: number): string => {
   if (text.length <= maxLength) {
     return text;
   }
-  return `${text.substring(0, maxLength)  }...`;
+  return `${text.substring(0, maxLength)}...`;
 };

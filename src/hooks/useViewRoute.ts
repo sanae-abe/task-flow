@@ -1,12 +1,12 @@
-import { useEffect, useRef, useCallback } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useEffect, useRef, useCallback } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 
-import { useKanban } from '../contexts/KanbanContext';
-import type { ViewMode } from '../types';
+import { useKanban } from "../contexts/KanbanContext";
+import type { ViewMode } from "../types";
 
 /**
  * URLとビューモードを同期させるカスタムフック
- * 
+ *
  * - URLの変更に応じてビューモードを更新
  * - ビューモードの変更に応じてURLを更新
  * - ブラウザの戻る/進むボタンに対応
@@ -16,7 +16,7 @@ export const useViewRoute = () => {
   const { state, setViewMode } = useKanban();
   const navigate = useNavigate();
   const location = useLocation();
-  
+
   // 同期を制御するためのフラグ
   const isNavigatingRef = useRef(false);
   const isUpdatingViewModeRef = useRef(false);
@@ -24,29 +24,29 @@ export const useViewRoute = () => {
   // URLパスからビューモードを取得
   const getViewModeFromPath = useCallback((pathname: string): ViewMode => {
     switch (pathname) {
-      case '/kanban':
-        return 'kanban';
-      case '/calendar':
-        return 'calendar';
-      case '/table':
-        return 'table';
-      case '/':
+      case "/kanban":
+        return "kanban";
+      case "/calendar":
+        return "calendar";
+      case "/table":
+        return "table";
+      case "/":
       default:
-        return 'kanban'; // デフォルトはカンバンビュー
+        return "kanban"; // デフォルトはカンバンビュー
     }
   }, []);
 
   // ビューモードからURLパスを取得
   const getPathFromViewMode = useCallback((viewMode: ViewMode): string => {
     switch (viewMode) {
-      case 'kanban':
-        return '/kanban';
-      case 'calendar':
-        return '/calendar';
-      case 'table':
-        return '/table';
+      case "kanban":
+        return "/kanban";
+      case "calendar":
+        return "/calendar";
+      case "table":
+        return "/table";
       default:
-        return '/kanban';
+        return "/kanban";
     }
   }, []);
 
@@ -73,18 +73,25 @@ export const useViewRoute = () => {
   }, [location.pathname, state.viewMode, setViewMode, getViewModeFromPath]);
 
   // プログラマティックナビゲーション用の関数
-  const navigateToView = useCallback((viewMode: ViewMode) => {
-    if (state.viewMode === viewMode) {return;}
-    
-    const path = getPathFromViewMode(viewMode);
-    if (location.pathname === path) {return;}
-    
-    isNavigatingRef.current = true;
-    navigate(path);
-  }, [state.viewMode, location.pathname, navigate, getPathFromViewMode]);
+  const navigateToView = useCallback(
+    (viewMode: ViewMode) => {
+      if (state.viewMode === viewMode) {
+        return;
+      }
+
+      const path = getPathFromViewMode(viewMode);
+      if (location.pathname === path) {
+        return;
+      }
+
+      isNavigatingRef.current = true;
+      navigate(path);
+    },
+    [state.viewMode, location.pathname, navigate, getPathFromViewMode],
+  );
 
   return {
     currentView: state.viewMode,
-    navigateToView
+    navigateToView,
   };
 };

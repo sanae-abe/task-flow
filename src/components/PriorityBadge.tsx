@@ -1,7 +1,7 @@
-import React from 'react';
+import React from "react";
 
-import type { Priority } from '../types';
-import { priorityConfig } from '../utils/priorityConfig';
+import type { Priority } from "../types";
+import { priorityConfig } from "../utils/priorityConfig";
 
 interface PriorityBadgeProps {
   priority?: Priority;
@@ -34,27 +34,22 @@ const PriorityBadge: React.FC<PriorityBadgeProps> = ({
   return (
     <div
       style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '4px',
-        fontSize: '12px',
-        fontWeight: showLabel ? '500' : '400',
-        lineHeight: '1.5',
-        padding: '3px 8px',
-        borderRadius: '3px',
+        display: "inline-flex",
+        alignItems: "center",
+        gap: "4px",
+        fontSize: "12px",
+        fontWeight: showLabel ? "500" : "400",
+        lineHeight: "1.5",
+        padding: "3px 8px",
+        borderRadius: "3px",
         color: colors.text,
         backgroundColor: colors.bg,
-        cursor: 'default',
+        cursor: "default",
       }}
       aria-label={`優先度: ${displayLabel} - ${config.description}`}
       role="status"
     >
-      {showIcon && (
-        <Icon
-          aria-hidden
-          size={14}
-        />
-      )}
+      {showIcon && <Icon aria-hidden size={14} />}
       {showLabel && <span>{displayLabel}</span>}
     </div>
   );

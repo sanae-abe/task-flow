@@ -1,20 +1,26 @@
-import { PlusIcon, CalendarIcon, ProjectIcon, TriangleDownIcon, TableIcon } from '@primer/octicons-react';
-import { Box, ActionMenu, ActionList, Button } from '@primer/react';
-import React from 'react';
+import {
+  PlusIcon,
+  CalendarIcon,
+  ProjectIcon,
+  TriangleDownIcon,
+  TableIcon,
+} from "@primer/octicons-react";
+import { Box, ActionMenu, ActionList, Button } from "@primer/react";
+import React from "react";
 
-import { useKanban } from '../contexts/KanbanContext';
-import { useSubHeader } from '../hooks/useSubHeader';
-import { useViewRoute } from '../hooks/useViewRoute';
+import { useKanban } from "../contexts/KanbanContext";
+import { useSubHeader } from "../hooks/useSubHeader";
+import { useViewRoute } from "../hooks/useViewRoute";
 
-import BoardActionMenu from './BoardActionMenu';
-import BoardCreateDialog from './BoardCreateDialog';
-import BoardEditDialog from './BoardEditDialog';
-import ColumnCreateDialog from './ColumnCreateDialog';
-import ConfirmDialog from './ConfirmDialog';
-import FilterSelector from './FilterSelector';
-import SubHeaderButton from './SubHeaderButton';
-import TaskSortSelector from './TaskSortSelector';
-import TaskStatsDisplay from './TaskStatsDisplay';
+import BoardActionMenu from "./BoardActionMenu";
+import BoardCreateDialog from "./BoardCreateDialog";
+import BoardEditDialog from "./BoardEditDialog";
+import ColumnCreateDialog from "./ColumnCreateDialog";
+import ConfirmDialog from "./ConfirmDialog";
+import FilterSelector from "./FilterSelector";
+import SubHeaderButton from "./SubHeaderButton";
+import TaskSortSelector from "./TaskSortSelector";
+import TaskStatsDisplay from "./TaskStatsDisplay";
 
 const SubHeader: React.FC = () => {
   const { setSortOption, setTaskFilter } = useKanban();
@@ -30,11 +36,13 @@ const SubHeader: React.FC = () => {
 
   // 利用可能なラベル一覧を取得（名前で重複除去）
   const availableLabels = React.useMemo(() => {
-    if (!state.currentBoard) {return [];}
+    if (!state.currentBoard) {
+      return [];
+    }
     const labelMap = new Map();
-    state.currentBoard.columns.forEach(column => {
-      column.tasks.forEach(task => {
-        task.labels?.forEach(label => {
+    state.currentBoard.columns.forEach((column) => {
+      column.tasks.forEach((task) => {
+        task.labels?.forEach((label) => {
           // ラベル名で重複を除去し、同じ名前のラベルは1つだけ表示
           if (!labelMap.has(label.name)) {
             labelMap.set(label.name, label);
@@ -47,10 +55,12 @@ const SubHeader: React.FC = () => {
 
   // カラム情報を位置指定のために準備
   const currentColumns = React.useMemo(() => {
-    if (!state.currentBoard) {return [];}
-    return state.currentBoard.columns.map(column => ({
+    if (!state.currentBoard) {
+      return [];
+    }
+    return state.currentBoard.columns.map((column) => ({
       id: column.id,
-      title: column.title
+      title: column.title,
     }));
   }, [state.currentBoard]);
 
@@ -58,26 +68,25 @@ const SubHeader: React.FC = () => {
     return null;
   }
 
-
   return (
     <Box
       sx={{
-        bg: 'canvas.default',
-        borderBottom: '1px solid',
-        borderColor: 'border.default',
+        bg: "canvas.default",
+        borderBottom: "1px solid",
+        borderColor: "border.default",
         px: 5,
         py: 2,
         zIndex: 999,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        width: '100%',
-        overflow: 'hidden'
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        width: "100%",
+        overflow: "hidden",
       }}
     >
       <TaskStatsDisplay stats={taskStats} />
 
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
         <FilterSelector
           currentFilter={state.taskFilter}
           onFilterChange={setTaskFilter}
@@ -89,20 +98,17 @@ const SubHeader: React.FC = () => {
         />
         <Box
           sx={{
-            width: '1px',
-            height: '24px',
-            bg: 'border.default',
+            width: "1px",
+            height: "24px",
+            bg: "border.default",
           }}
         />
-        {state.viewMode === 'kanban' && (
-          <SubHeaderButton
-            icon={PlusIcon}
-            onClick={handlers.startCreateColumn}
-          >
+        {state.viewMode === "kanban" && (
+          <SubHeaderButton icon={PlusIcon} onClick={handlers.startCreateColumn}>
             カラム追加
           </SubHeaderButton>
         )}
-        
+
         <BoardActionMenu
           hasCompletedTasks={hasCompletedTasks}
           canDeleteBoard={canDeleteBoard}
@@ -111,15 +117,15 @@ const SubHeader: React.FC = () => {
           onDeleteBoard={handlers.openDeleteConfirm}
           onClearCompletedTasks={handlers.openClearCompletedConfirm}
         />
-        
+
         <Box
           sx={{
-            width: '1px',
-            height: '24px',
-            bg: 'border.default',
+            width: "1px",
+            height: "24px",
+            bg: "border.default",
           }}
         />
-        
+
         {/* View Mode ActionMenu */}
         <ActionMenu>
           <ActionMenu.Anchor>
@@ -127,23 +133,27 @@ const SubHeader: React.FC = () => {
               variant="invisible"
               size="small"
               leadingVisual={
-                state.viewMode === 'kanban' ? ProjectIcon : 
-                state.viewMode === 'calendar' ? CalendarIcon : 
-                TableIcon
+                state.viewMode === "kanban"
+                  ? ProjectIcon
+                  : state.viewMode === "calendar"
+                    ? CalendarIcon
+                    : TableIcon
               }
               trailingVisual={TriangleDownIcon}
               aria-label="ビューモードを選択"
             >
-              {state.viewMode === 'kanban' ? 'カンバン' : 
-               state.viewMode === 'calendar' ? 'カレンダー' : 
-               'テーブル'}
+              {state.viewMode === "kanban"
+                ? "カンバン"
+                : state.viewMode === "calendar"
+                  ? "カレンダー"
+                  : "テーブル"}
             </Button>
           </ActionMenu.Anchor>
           <ActionMenu.Overlay>
             <ActionList selectionVariant="single">
               <ActionList.Item
-                selected={state.viewMode === 'kanban'}
-                onSelect={() => navigateToView('kanban')}
+                selected={state.viewMode === "kanban"}
+                onSelect={() => navigateToView("kanban")}
               >
                 <ActionList.LeadingVisual>
                   <ProjectIcon />
@@ -151,8 +161,8 @@ const SubHeader: React.FC = () => {
                 カンバン
               </ActionList.Item>
               <ActionList.Item
-                selected={state.viewMode === 'calendar'}
-                onSelect={() => navigateToView('calendar')}
+                selected={state.viewMode === "calendar"}
+                onSelect={() => navigateToView("calendar")}
               >
                 <ActionList.LeadingVisual>
                   <CalendarIcon />
@@ -160,8 +170,8 @@ const SubHeader: React.FC = () => {
                 カレンダー
               </ActionList.Item>
               <ActionList.Item
-                selected={state.viewMode === 'table'}
-                onSelect={() => navigateToView('table')}
+                selected={state.viewMode === "table"}
+                onSelect={() => navigateToView("table")}
               >
                 <ActionList.LeadingVisual>
                   <TableIcon />
@@ -203,13 +213,11 @@ const SubHeader: React.FC = () => {
         columns={currentColumns}
       />
 
-
       <BoardCreateDialog
         isOpen={dialogState.isCreatingBoard}
         onSave={handlers.createBoard}
         onCancel={handlers.cancelCreateBoard}
       />
-
     </Box>
   );
 };

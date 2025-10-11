@@ -1,10 +1,21 @@
-import React, { createContext, useContext, useMemo } from 'react';
+import React, { createContext, useContext, useMemo } from "react";
 
-import { useBoard } from './BoardContext';
-import { useTask } from './TaskContext';
-import { useLabel } from './LabelContext';
-import { useUI } from './UIContext';
-import type { KanbanBoard, Task, Column, Label, FileAttachment, RecurrenceConfig, ViewMode, SortOption, TaskFilter, Priority } from '../types';
+import { useBoard } from "./BoardContext";
+import { useTask } from "./TaskContext";
+import { useLabel } from "./LabelContext";
+import { useUI } from "./UIContext";
+import type {
+  KanbanBoard,
+  Task,
+  Column,
+  Label,
+  FileAttachment,
+  RecurrenceConfig,
+  ViewMode,
+  SortOption,
+  TaskFilter,
+  Priority,
+} from "../types";
 
 // KanbanContextのレガシー互換性を保つためのブリッジ
 interface KanbanContextType {
@@ -29,11 +40,25 @@ interface KanbanContextType {
   setCurrentBoard: (boardId: string) => void;
   importBoards: (boards: KanbanBoard[], replaceAll?: boolean) => void;
   // Task関連のメソッド
-  createTask: (columnId: string, title: string, description: string, dueDate?: Date, labels?: Label[], attachments?: FileAttachment[], recurrence?: RecurrenceConfig, priority?: Priority) => void;
+  createTask: (
+    columnId: string,
+    title: string,
+    description: string,
+    dueDate?: Date,
+    labels?: Label[],
+    attachments?: FileAttachment[],
+    recurrence?: RecurrenceConfig,
+    priority?: Priority,
+  ) => void;
   updateTask: (taskId: string, updates: Partial<Task>) => void;
   deleteTask: (taskId: string, columnId: string) => void;
   duplicateTask: (taskId: string) => void;
-  moveTask: (taskId: string, sourceColumnId: string, targetColumnId: string, targetIndex: number) => void;
+  moveTask: (
+    taskId: string,
+    sourceColumnId: string,
+    targetColumnId: string,
+    targetIndex: number,
+  ) => void;
   clearCompletedTasks: () => void;
   addSubTask: (taskId: string, title: string) => void;
   toggleSubTask: (taskId: string, subTaskId: string) => void;
@@ -45,7 +70,7 @@ interface KanbanContextType {
   updateColumn: (columnId: string, updates: Partial<Column>) => void;
   deleteColumn: (columnId: string) => void;
   // Label関連のメソッド
-  createLabel: (label: Omit<Label, 'id'>) => void;
+  createLabel: (label: Omit<Label, "id">) => void;
   updateLabel: (labelId: string, updates: Partial<Label>) => void;
   deleteLabel: (labelId: string) => void;
   getAllLabels: () => Label[];
@@ -71,69 +96,71 @@ export const KanbanProvider: React.FC<KanbanProviderProps> = ({ children }) => {
   const label = useLabel();
   const ui = useUI();
 
-  const value = useMemo<KanbanContextType>(() => ({
-    state: {
-      boards: board.state.boards,
-      currentBoard: board.currentBoard,
-      labels: label.labels,
-      isLoading: false,
-      viewMode: ui.state.viewMode || 'kanban',
-      taskFilter: ui.taskFilter,
-      sortOption: ui.sortOption,
-      isTaskDetailOpen: ui.state.isTaskDetailOpen || false,
-      selectedTaskId: ui.state.selectedTaskId || null,
-      isTaskFormOpen: ui.state.isTaskFormOpen || false,
-      taskFormDefaultDate: ui.state.taskFormDefaultDate || null,
-      taskFormDefaultStatus: ui.state.taskFormDefaultStatus,
-    },
-    // Board関連のメソッド
-    createBoard: board.createBoard,
-    updateBoard: board.updateBoard,
-    deleteBoard: board.deleteBoard,
-    setCurrentBoard: board.setCurrentBoard,
-    importBoards: board.importBoards,
-    // Task関連のメソッド
-    createTask: task.createTask,
-    updateTask: task.updateTask,
-    deleteTask: task.deleteTask,
-    duplicateTask: task.duplicateTask,
-    moveTask: task.moveTask,
-    clearCompletedTasks: task.clearCompletedTasks,
-    addSubTask: task.addSubTask,
-    toggleSubTask: task.toggleSubTask,
-    updateSubTask: task.updateSubTask,
-    deleteSubTask: task.deleteSubTask,
-    reorderSubTasks: task.reorderSubTasks,
-    // Column関連のメソッド
-    createColumn: board.createColumn,
-    updateColumn: board.updateColumn,
-    deleteColumn: board.deleteColumn,
-    // Label関連のメソッド
-    createLabel: (labelData: Omit<Label, 'id'>) => label.createLabel(labelData.name, labelData.color),
-    updateLabel: label.updateLabel,
-    deleteLabel: label.deleteLabel,
-    getAllLabels: label.getAllLabels,
-    // UI関連のメソッド
-    setViewMode: ui.setViewMode,
-    setSortOption: ui.setSortOption,
-    setTaskFilter: ui.setTaskFilter,
-    openTaskDetail: ui.openTaskDetail,
-    closeTaskDetail: ui.closeTaskDetail,
-    openTaskForm: ui.openTaskForm,
-    closeTaskForm: ui.closeTaskForm,
-  }), [board, task, label, ui]);
+  const value = useMemo<KanbanContextType>(
+    () => ({
+      state: {
+        boards: board.state.boards,
+        currentBoard: board.currentBoard,
+        labels: label.labels,
+        isLoading: false,
+        viewMode: ui.state.viewMode || "kanban",
+        taskFilter: ui.taskFilter,
+        sortOption: ui.sortOption,
+        isTaskDetailOpen: ui.state.isTaskDetailOpen || false,
+        selectedTaskId: ui.state.selectedTaskId || null,
+        isTaskFormOpen: ui.state.isTaskFormOpen || false,
+        taskFormDefaultDate: ui.state.taskFormDefaultDate || null,
+        taskFormDefaultStatus: ui.state.taskFormDefaultStatus,
+      },
+      // Board関連のメソッド
+      createBoard: board.createBoard,
+      updateBoard: board.updateBoard,
+      deleteBoard: board.deleteBoard,
+      setCurrentBoard: board.setCurrentBoard,
+      importBoards: board.importBoards,
+      // Task関連のメソッド
+      createTask: task.createTask,
+      updateTask: task.updateTask,
+      deleteTask: task.deleteTask,
+      duplicateTask: task.duplicateTask,
+      moveTask: task.moveTask,
+      clearCompletedTasks: task.clearCompletedTasks,
+      addSubTask: task.addSubTask,
+      toggleSubTask: task.toggleSubTask,
+      updateSubTask: task.updateSubTask,
+      deleteSubTask: task.deleteSubTask,
+      reorderSubTasks: task.reorderSubTasks,
+      // Column関連のメソッド
+      createColumn: board.createColumn,
+      updateColumn: board.updateColumn,
+      deleteColumn: board.deleteColumn,
+      // Label関連のメソッド
+      createLabel: (labelData: Omit<Label, "id">) =>
+        label.createLabel(labelData.name, labelData.color),
+      updateLabel: label.updateLabel,
+      deleteLabel: label.deleteLabel,
+      getAllLabels: label.getAllLabels,
+      // UI関連のメソッド
+      setViewMode: ui.setViewMode,
+      setSortOption: ui.setSortOption,
+      setTaskFilter: ui.setTaskFilter,
+      openTaskDetail: ui.openTaskDetail,
+      closeTaskDetail: ui.closeTaskDetail,
+      openTaskForm: ui.openTaskForm,
+      closeTaskForm: ui.closeTaskForm,
+    }),
+    [board, task, label, ui],
+  );
 
   return (
-    <KanbanContext.Provider value={value}>
-      {children}
-    </KanbanContext.Provider>
+    <KanbanContext.Provider value={value}>{children}</KanbanContext.Provider>
   );
 };
 
 export const useKanban = (): KanbanContextType => {
   const context = useContext(KanbanContext);
   if (!context) {
-    throw new Error('useKanban must be used within a KanbanProvider');
+    throw new Error("useKanban must be used within a KanbanProvider");
   }
   return context;
 };

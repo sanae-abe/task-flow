@@ -1,6 +1,6 @@
-import { Task, Column, KanbanBoard, Label } from '../types';
+import { Task, Column, KanbanBoard, Label } from "../types";
 
-const DB_NAME = 'TodoAppDB';
+const DB_NAME = "TodoAppDB";
 const DB_VERSION = 1;
 
 interface TodoAppDB {
@@ -22,7 +22,7 @@ class IndexedDBManager {
       const request = indexedDB.open(DB_NAME, DB_VERSION);
 
       request.onerror = () => {
-        reject(new Error('IndexedDB を開けませんでした'));
+        reject(new Error("IndexedDB を開けませんでした"));
       };
 
       request.onsuccess = () => {
@@ -34,38 +34,43 @@ class IndexedDBManager {
         const db = (event.target as IDBOpenDBRequest).result;
 
         // Tasks store
-        if (!db.objectStoreNames.contains('tasks')) {
-          const taskStore = db.createObjectStore('tasks', { keyPath: 'id' });
-          taskStore.createIndex('columnId', 'columnId', { unique: false });
-          taskStore.createIndex('createdAt', 'createdAt', { unique: false });
+        if (!db.objectStoreNames.contains("tasks")) {
+          const taskStore = db.createObjectStore("tasks", { keyPath: "id" });
+          taskStore.createIndex("columnId", "columnId", { unique: false });
+          taskStore.createIndex("createdAt", "createdAt", { unique: false });
         }
 
         // Columns store
-        if (!db.objectStoreNames.contains('columns')) {
-          const columnStore = db.createObjectStore('columns', { keyPath: 'id' });
-          columnStore.createIndex('boardId', 'boardId', { unique: false });
-          columnStore.createIndex('position', 'position', { unique: false });
+        if (!db.objectStoreNames.contains("columns")) {
+          const columnStore = db.createObjectStore("columns", {
+            keyPath: "id",
+          });
+          columnStore.createIndex("boardId", "boardId", { unique: false });
+          columnStore.createIndex("position", "position", { unique: false });
         }
 
         // Boards store
-        if (!db.objectStoreNames.contains('boards')) {
-          const boardStore = db.createObjectStore('boards', { keyPath: 'id' });
-          boardStore.createIndex('name', 'name', { unique: false });
-          boardStore.createIndex('createdAt', 'createdAt', { unique: false });
+        if (!db.objectStoreNames.contains("boards")) {
+          const boardStore = db.createObjectStore("boards", { keyPath: "id" });
+          boardStore.createIndex("name", "name", { unique: false });
+          boardStore.createIndex("createdAt", "createdAt", { unique: false });
         }
 
         // Labels store
-        if (!db.objectStoreNames.contains('labels')) {
-          const labelStore = db.createObjectStore('labels', { keyPath: 'id' });
-          labelStore.createIndex('name', 'name', { unique: false });
+        if (!db.objectStoreNames.contains("labels")) {
+          const labelStore = db.createObjectStore("labels", { keyPath: "id" });
+          labelStore.createIndex("name", "name", { unique: false });
         }
       };
     });
   }
 
-  private getStore(storeName: keyof TodoAppDB, mode: IDBTransactionMode = 'readonly'): IDBObjectStore {
+  private getStore(
+    storeName: keyof TodoAppDB,
+    mode: IDBTransactionMode = "readonly",
+  ): IDBObjectStore {
     if (!this.db) {
-      throw new Error('Database not initialized');
+      throw new Error("Database not initialized");
     }
     const transaction = this.db.transaction([storeName], mode);
     return transaction.objectStore(storeName);
@@ -73,7 +78,7 @@ class IndexedDBManager {
 
   // Tasks CRUD operations
   async getAllTasks(): Promise<Task[]> {
-    const store = this.getStore('tasks');
+    const store = this.getStore("tasks");
     return new Promise((resolve, reject) => {
       const request = store.getAll();
       request.onsuccess = () => resolve(request.result);
@@ -82,7 +87,7 @@ class IndexedDBManager {
   }
 
   async getTask(id: string): Promise<Task | undefined> {
-    const store = this.getStore('tasks');
+    const store = this.getStore("tasks");
     return new Promise((resolve, reject) => {
       const request = store.get(id);
       request.onsuccess = () => resolve(request.result);
@@ -91,7 +96,7 @@ class IndexedDBManager {
   }
 
   async saveTask(task: Task): Promise<void> {
-    const store = this.getStore('tasks', 'readwrite');
+    const store = this.getStore("tasks", "readwrite");
     return new Promise((resolve, reject) => {
       const request = store.put(task);
       request.onsuccess = () => resolve();
@@ -100,7 +105,7 @@ class IndexedDBManager {
   }
 
   async deleteTask(id: string): Promise<void> {
-    const store = this.getStore('tasks', 'readwrite');
+    const store = this.getStore("tasks", "readwrite");
     return new Promise((resolve, reject) => {
       const request = store.delete(id);
       request.onsuccess = () => resolve();
@@ -110,7 +115,7 @@ class IndexedDBManager {
 
   // Columns CRUD operations
   async getAllColumns(): Promise<Column[]> {
-    const store = this.getStore('columns');
+    const store = this.getStore("columns");
     return new Promise((resolve, reject) => {
       const request = store.getAll();
       request.onsuccess = () => resolve(request.result);
@@ -119,7 +124,7 @@ class IndexedDBManager {
   }
 
   async saveColumn(column: Column): Promise<void> {
-    const store = this.getStore('columns', 'readwrite');
+    const store = this.getStore("columns", "readwrite");
     return new Promise((resolve, reject) => {
       const request = store.put(column);
       request.onsuccess = () => resolve();
@@ -128,7 +133,7 @@ class IndexedDBManager {
   }
 
   async deleteColumn(id: string): Promise<void> {
-    const store = this.getStore('columns', 'readwrite');
+    const store = this.getStore("columns", "readwrite");
     return new Promise((resolve, reject) => {
       const request = store.delete(id);
       request.onsuccess = () => resolve();
@@ -138,7 +143,7 @@ class IndexedDBManager {
 
   // Boards CRUD operations
   async getAllBoards(): Promise<KanbanBoard[]> {
-    const store = this.getStore('boards');
+    const store = this.getStore("boards");
     return new Promise((resolve, reject) => {
       const request = store.getAll();
       request.onsuccess = () => resolve(request.result);
@@ -147,7 +152,7 @@ class IndexedDBManager {
   }
 
   async saveBoard(board: KanbanBoard): Promise<void> {
-    const store = this.getStore('boards', 'readwrite');
+    const store = this.getStore("boards", "readwrite");
     return new Promise((resolve, reject) => {
       const request = store.put(board);
       request.onsuccess = () => resolve();
@@ -156,7 +161,7 @@ class IndexedDBManager {
   }
 
   async deleteBoard(id: string): Promise<void> {
-    const store = this.getStore('boards', 'readwrite');
+    const store = this.getStore("boards", "readwrite");
     return new Promise((resolve, reject) => {
       const request = store.delete(id);
       request.onsuccess = () => resolve();
@@ -166,7 +171,7 @@ class IndexedDBManager {
 
   // Labels CRUD operations
   async getAllLabels(): Promise<Label[]> {
-    const store = this.getStore('labels');
+    const store = this.getStore("labels");
     return new Promise((resolve, reject) => {
       const request = store.getAll();
       request.onsuccess = () => resolve(request.result);
@@ -175,7 +180,7 @@ class IndexedDBManager {
   }
 
   async saveLabel(label: Label): Promise<void> {
-    const store = this.getStore('labels', 'readwrite');
+    const store = this.getStore("labels", "readwrite");
     return new Promise((resolve, reject) => {
       const request = store.put(label);
       request.onsuccess = () => resolve();
@@ -184,7 +189,7 @@ class IndexedDBManager {
   }
 
   async deleteLabel(id: string): Promise<void> {
-    const store = this.getStore('labels', 'readwrite');
+    const store = this.getStore("labels", "readwrite");
     return new Promise((resolve, reject) => {
       const request = store.delete(id);
       request.onsuccess = () => resolve();
@@ -200,26 +205,35 @@ class IndexedDBManager {
     labels: Label[];
   }): Promise<void> {
     if (!this.db) {
-      throw new Error('Database not initialized');
+      throw new Error("Database not initialized");
     }
 
-    const transaction = this.db.transaction(['tasks', 'columns', 'boards', 'labels'], 'readwrite');
+    const transaction = this.db.transaction(
+      ["tasks", "columns", "boards", "labels"],
+      "readwrite",
+    );
 
     return new Promise((resolve, reject) => {
       transaction.oncomplete = () => resolve();
       transaction.onerror = () => reject(transaction.error);
 
       // Clear existing data
-      transaction.objectStore('tasks').clear();
-      transaction.objectStore('columns').clear();
-      transaction.objectStore('boards').clear();
-      transaction.objectStore('labels').clear();
+      transaction.objectStore("tasks").clear();
+      transaction.objectStore("columns").clear();
+      transaction.objectStore("boards").clear();
+      transaction.objectStore("labels").clear();
 
       // Save new data
-      data.tasks.forEach(task => transaction.objectStore('tasks').add(task));
-      data.columns.forEach(column => transaction.objectStore('columns').add(column));
-      data.boards.forEach(board => transaction.objectStore('boards').add(board));
-      data.labels.forEach(label => transaction.objectStore('labels').add(label));
+      data.tasks.forEach((task) => transaction.objectStore("tasks").add(task));
+      data.columns.forEach((column) =>
+        transaction.objectStore("columns").add(column),
+      );
+      data.boards.forEach((board) =>
+        transaction.objectStore("boards").add(board),
+      );
+      data.labels.forEach((label) =>
+        transaction.objectStore("labels").add(label),
+      );
     });
   }
 
@@ -233,7 +247,7 @@ class IndexedDBManager {
       this.getAllTasks(),
       this.getAllColumns(),
       this.getAllBoards(),
-      this.getAllLabels()
+      this.getAllLabels(),
     ]);
 
     return { tasks, columns, boards, labels };
@@ -241,19 +255,22 @@ class IndexedDBManager {
 
   async clearAllData(): Promise<void> {
     if (!this.db) {
-      throw new Error('Database not initialized');
+      throw new Error("Database not initialized");
     }
 
-    const transaction = this.db.transaction(['tasks', 'columns', 'boards', 'labels'], 'readwrite');
+    const transaction = this.db.transaction(
+      ["tasks", "columns", "boards", "labels"],
+      "readwrite",
+    );
 
     return new Promise((resolve, reject) => {
       transaction.oncomplete = () => resolve();
       transaction.onerror = () => reject(transaction.error);
 
-      transaction.objectStore('tasks').clear();
-      transaction.objectStore('columns').clear();
-      transaction.objectStore('boards').clear();
-      transaction.objectStore('labels').clear();
+      transaction.objectStore("tasks").clear();
+      transaction.objectStore("columns").clear();
+      transaction.objectStore("boards").clear();
+      transaction.objectStore("labels").clear();
     });
   }
 }

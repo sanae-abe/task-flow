@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useKanban } from '../contexts/KanbanContext';
+import { useState } from "react";
+import { useKanban } from "../contexts/KanbanContext";
 
 interface UseHelpReturn {
   isHelpOpen: boolean;
@@ -26,6 +26,6 @@ export const useHelp = (): UseHelpReturn => {
   return {
     isHelpOpen,
     openHelp,
-    closeHelp
+    closeHelp,
   };
 };

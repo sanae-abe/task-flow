@@ -1,15 +1,11 @@
-import { memo } from 'react';
+import { memo } from "react";
 
-import type { ColumnEditDialogProps } from '../types/dialog';
+import type { ColumnEditDialogProps } from "../types/dialog";
 
-import { SimpleFormDialog } from './shared/Dialog';
+import { SimpleFormDialog } from "./shared/Dialog";
 
-const ColumnEditDialog = memo<ColumnEditDialogProps>(({ 
-  isOpen, 
-  currentTitle, 
-  onSave, 
-  onCancel 
-}) => (
+const ColumnEditDialog = memo<ColumnEditDialogProps>(
+  ({ isOpen, currentTitle, onSave, onCancel }) => (
     <SimpleFormDialog
       isOpen={isOpen}
       title="カラム名を編集"
@@ -21,6 +17,7 @@ const ColumnEditDialog = memo<ColumnEditDialogProps>(({
       onCancel={onCancel}
       onClose={onCancel}
     />
-  ));
+  ),
+);
 
 export default ColumnEditDialog;

@@ -1,13 +1,10 @@
-import { memo } from 'react';
+import { memo } from "react";
 
-import type { BoardCreateDialogProps } from '../types/dialog';
-import { SimpleFormDialog } from './shared/Dialog';
+import type { BoardCreateDialogProps } from "../types/dialog";
+import { SimpleFormDialog } from "./shared/Dialog";
 
-const BoardCreateDialog = memo<BoardCreateDialogProps>(({ 
-  isOpen, 
-  onSave, 
-  onCancel 
-}) => (
+const BoardCreateDialog = memo<BoardCreateDialogProps>(
+  ({ isOpen, onSave, onCancel }) => (
     <SimpleFormDialog
       isOpen={isOpen}
       title="新しいボードを作成"
@@ -18,6 +15,7 @@ const BoardCreateDialog = memo<BoardCreateDialogProps>(({
       onCancel={onCancel}
       onClose={onCancel}
     />
-  ));
+  ),
+);
 
 export default BoardCreateDialog;

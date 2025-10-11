@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 /**
  * ドラッグ&ドロップ時の挿入位置を示すインジケーターコンポーネント
@@ -22,12 +22,12 @@ const DropIndicator: React.FC<DropIndicatorProps> = ({ isVisible }) => {
       role="separator"
       aria-label="ドロップ位置インジケーター"
       style={{
-        height: '2px',
-        backgroundColor: 'var(--color-accent-emphasis)',
-        borderRadius: '1px',
-        margin: '4px 8px',
-        transition: 'all 0.2s ease',
-        position: 'relative',
+        height: "2px",
+        backgroundColor: "var(--color-accent-emphasis)",
+        borderRadius: "1px",
+        margin: "4px 8px",
+        transition: "all 0.2s ease",
+        position: "relative",
         zIndex: 10,
       }}
     >
@@ -52,15 +52,15 @@ const DropIndicator: React.FC<DropIndicatorProps> = ({ isVisible }) => {
       <div
         style={{
           content: '""',
-          position: 'absolute',
-          top: '-1px',
-          left: '-4px',
-          right: '-4px',
-          bottom: '-1px',
-          backgroundColor: 'var(--color-accent-subtle)',
-          borderRadius: '2px',
+          position: "absolute",
+          top: "-1px",
+          left: "-4px",
+          right: "-4px",
+          bottom: "-1px",
+          backgroundColor: "var(--color-accent-subtle)",
+          borderRadius: "2px",
           opacity: 0.3,
-          animation: 'drop-indicator-pulse 1.2s ease-in-out infinite'
+          animation: "drop-indicator-pulse 1.2s ease-in-out infinite",
         }}
       />
     </div>

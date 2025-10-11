@@ -1,7 +1,7 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo } from "react";
 
-import { useKanban } from '../contexts/KanbanContext';
-import type { Task } from '../types';
+import { useKanban } from "../contexts/KanbanContext";
+import type { Task } from "../types";
 
 // 日付を正規化するヘルパー関数
 const normalizeDate = (date: Date): Date => {
@@ -27,7 +27,10 @@ interface UseTaskCardReturn {
   isRightmostColumn: boolean;
 }
 
-export const useTaskCard = (task: Task, columnId: string): UseTaskCardReturn => {
+export const useTaskCard = (
+  task: Task,
+  columnId: string,
+): UseTaskCardReturn => {
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const { updateTask, deleteTask, moveTask, state } = useKanban();
@@ -36,19 +39,29 @@ export const useTaskCard = (task: Task, columnId: string): UseTaskCardReturn => 
     setShowEditDialog(true);
   }, []);
 
-  const handleSave = useCallback((updatedTask: Task, targetColumnId?: string) => {
-    updateTask(task.id, updatedTask);
-    
-    // カラム移動が必要な場合
-    if (targetColumnId && targetColumnId !== columnId) {
-      const targetColumn = state.currentBoard?.columns.find(col => col.id === targetColumnId);
-      if (targetColumn) {
-        moveTask(task.id, columnId, targetColumnId, targetColumn.tasks.length);
+  const handleSave = useCallback(
+    (updatedTask: Task, targetColumnId?: string) => {
+      updateTask(task.id, updatedTask);
+
+      // カラム移動が必要な場合
+      if (targetColumnId && targetColumnId !== columnId) {
+        const targetColumn = state.currentBoard?.columns.find(
+          (col) => col.id === targetColumnId,
+        );
+        if (targetColumn) {
+          moveTask(
+            task.id,
+            columnId,
+            targetColumnId,
+            targetColumn.tasks.length,
+          );
+        }
       }
-    }
-    
-    setShowEditDialog(false);
-  }, [task.id, columnId, updateTask, moveTask, state.currentBoard]);
+
+      setShowEditDialog(false);
+    },
+    [task.id, columnId, updateTask, moveTask, state.currentBoard],
+  );
 
   const handleCancel = useCallback(() => {
     setShowEditDialog(false);
@@ -64,22 +77,29 @@ export const useTaskCard = (task: Task, columnId: string): UseTaskCardReturn => 
     setShowEditDialog(false);
   }, [task.id, columnId, deleteTask]);
 
-  const handleDeleteFromDialog = useCallback((taskId: string) => {
-    deleteTask(taskId, columnId);
-    setShowEditDialog(false);
-  }, [columnId, deleteTask]);
+  const handleDeleteFromDialog = useCallback(
+    (taskId: string) => {
+      deleteTask(taskId, columnId);
+      setShowEditDialog(false);
+    },
+    [columnId, deleteTask],
+  );
 
   const handleCancelDelete = useCallback(() => {
     setShowDeleteConfirm(false);
   }, []);
 
   const handleComplete = useCallback(() => {
-    if (!state.currentBoard?.columns.length) {return;}
+    if (!state.currentBoard?.columns.length) {
+      return;
+    }
 
     const { columns } = state.currentBoard;
-    const currentIndex = columns.findIndex(col => col.id === columnId);
+    const currentIndex = columns.findIndex((col) => col.id === columnId);
 
-    if (currentIndex === -1) {return;}
+    if (currentIndex === -1) {
+      return;
+    }
 
     const isLastColumn = currentIndex === columns.length - 1;
     const targetColumn = isLastColumn
@@ -98,7 +118,7 @@ export const useTaskCard = (task: Task, columnId: string): UseTaskCardReturn => 
       return {
         isOverdue: false,
         isDueToday: false,
-        isDueTomorrow: false
+        isDueTomorrow: false,
       };
     }
 
@@ -110,7 +130,7 @@ export const useTaskCard = (task: Task, columnId: string): UseTaskCardReturn => 
     return {
       isOverdue: dueDate < today,
       isDueToday: dueDate.getTime() === today.getTime(),
-      isDueTomorrow: dueDate.getTime() === tomorrow.getTime()
+      isDueTomorrow: dueDate.getTime() === tomorrow.getTime(),
     };
   }, [task.dueDate]);
 
@@ -122,7 +142,8 @@ export const useTaskCard = (task: Task, columnId: string): UseTaskCardReturn => 
     if (!state.currentBoard?.columns.length) {
       return false;
     }
-    const rightmostColumn = state.currentBoard.columns[state.currentBoard.columns.length - 1];
+    const rightmostColumn =
+      state.currentBoard.columns[state.currentBoard.columns.length - 1];
     return rightmostColumn ? columnId === rightmostColumn.id : false;
   }, [columnId, state.currentBoard]);
 
@@ -140,6 +161,6 @@ export const useTaskCard = (task: Task, columnId: string): UseTaskCardReturn => 
     isOverdue,
     isDueToday,
     isDueTomorrow,
-    isRightmostColumn
+    isRightmostColumn,
   };
 };
