@@ -6,6 +6,7 @@ import type { Label, Priority } from '../../types';
 import UnifiedDialog from '../shared/Dialog/UnifiedDialog';
 import TemplateCategorySelector from './TemplateCategorySelector';
 import LabelSelector from '../LabelSelector';
+import RichTextEditor from '../RichTextEditor';
 
 interface TemplateFormDialogProps {
   isOpen: boolean;
@@ -280,15 +281,14 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
           {/* タスク説明 */}
           <FormControl sx={{ mb: 3 }}>
             <FormControl.Label>タスク説明</FormControl.Label>
-            <Textarea
+            <RichTextEditor
               value={formData.taskDescription}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, taskDescription: e.target.value }))
+              onChange={(value) =>
+                setFormData((prev) => ({ ...prev, taskDescription: value }))
               }
               placeholder="タスクの詳細を入力"
-              sx={{ width: '100%' }}
-              rows={3}
               disabled={isLoading}
+              minHeight="120px"
             />
           </FormControl>
 
