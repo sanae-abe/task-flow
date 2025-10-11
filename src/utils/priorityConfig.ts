@@ -1,5 +1,5 @@
 import React from "react";
-import { Zap, ChevronUp, Minus, ChevronDown } from "react-feather";
+import { Zap, ChevronsUp, Minus, ChevronsDown } from "react-feather";
 
 import type { Priority } from "../types";
 
@@ -66,7 +66,7 @@ export const priorityConfig: Record<Priority, PriorityConfig> = {
     label: "高",
     labelEn: "High",
     description: "近日中に対応が必要",
-    icon: ChevronUp,
+    icon: ChevronsUp,
     variant: "attention",
     colors: {
       filled: {
@@ -114,7 +114,7 @@ export const priorityConfig: Record<Priority, PriorityConfig> = {
     label: "低",
     labelEn: "Low",
     description: "時間があるときに対応",
-    icon: ChevronDown,
+    icon: ChevronsDown,
     variant: "secondary",
     colors: {
       filled: {
