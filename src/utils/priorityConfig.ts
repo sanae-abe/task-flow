@@ -21,6 +21,7 @@ export interface PriorityColors {
 
 export interface PriorityConfig {
   label: string;
+  labelEn: string;
   description: string;
   icon: Icon;
   variant: 'danger' | 'attention' | 'accent' | 'secondary';
@@ -34,6 +35,7 @@ export interface PriorityConfig {
 export const priorityConfig: Record<Priority, PriorityConfig> = {
   critical: {
     label: '緊急',
+    labelEn: 'Critical',
     description: '今すぐ対応が必要',
     icon: AlertIcon,
     variant: 'danger',
@@ -57,6 +59,7 @@ export const priorityConfig: Record<Priority, PriorityConfig> = {
   },
   high: {
     label: '高',
+    labelEn: 'High',
     description: '近日中に対応が必要',
     icon: TriangleUpIcon,
     variant: 'attention',
@@ -80,6 +83,7 @@ export const priorityConfig: Record<Priority, PriorityConfig> = {
   },
   medium: {
     label: '中',
+    labelEn: 'Medium',
     description: '通常の優先度',
     icon: DotIcon,
     variant: 'accent',
@@ -103,6 +107,7 @@ export const priorityConfig: Record<Priority, PriorityConfig> = {
   },
   low: {
     label: '低',
+    labelEn: 'Low',
     description: '時間があるときに対応',
     icon: TriangleDownIcon,
     variant: 'secondary',

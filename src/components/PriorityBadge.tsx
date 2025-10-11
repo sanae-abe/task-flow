@@ -7,9 +7,10 @@ import { priorityConfig } from '../utils/priorityConfig';
 interface PriorityBadgeProps {
   priority: Priority;
   size?: 'small' | 'medium' | 'large';
-  variant?: 'filled' | 'outlined' | 'subtle';
+  variant?: 'filled' | 'outlined' | 'subtle' | 'minimal';
   showIcon?: boolean;
   showLabel?: boolean;
+  useEnglishLabel?: boolean;
 }
 
 
@@ -38,9 +39,10 @@ const sizeConfig = {
 const PriorityBadge: React.FC<PriorityBadgeProps> = ({
   priority,
   size = 'small',
-  variant = 'filled',
+  variant = 'minimal',
   showIcon = true,
-  showLabel = true,
+  showLabel = false,
+  useEnglishLabel = true,
 }) => {
   const config = priorityConfig[priority];
   const sizeStyle = sizeConfig[size];
@@ -50,41 +52,62 @@ const PriorityBadge: React.FC<PriorityBadgeProps> = ({
   }
 
   const Icon = config.icon;
-  const colors = config.colors[variant];
+  const colors = config.colors[variant === 'minimal' ? 'outlined' : variant];
+  const displayLabel = useEnglishLabel ? config.labelEn : config.label;
+
+  // ミニマルバリアント用のスタイル
+  const isMinimal = variant === 'minimal';
+  const minimalStyles = isMinimal ? {
+    backgroundColor: 'transparent',
+    border: 'none',
+    padding: showLabel ? `2px 6px` : '2px',
+    borderRadius: showLabel ? '6px' : '0',
+    '&:hover': {
+      transform: 'none',
+      boxShadow: 'none',
+      backgroundColor: showLabel ? `${colors.border}15` : 'transparent',
+    },
+  } : {};
 
   return (
     <Label
-      variant={config.variant}
+      variant={isMinimal ? 'secondary' : config.variant}
       size={size === 'small' ? 'small' : 'large'}
       sx={{
         display: 'inline-flex',
         alignItems: 'center',
         gap: `${sizeStyle.gap}px`,
         fontSize: sizeStyle.fontSize,
-        fontWeight: '600',
+        fontWeight: showLabel ? '500' : '400',
         lineHeight: 1,
-        padding: sizeStyle.padding,
-        borderRadius: '12px',
-        border: variant === 'outlined' ? `1px solid ${colors.border}` : 'none',
-        color: colors.text,
-        backgroundColor: colors.bg,
+        padding: isMinimal ? (showLabel ? `2px 6px` : '2px') : sizeStyle.padding,
+        borderRadius: isMinimal ? (showLabel ? '6px' : '0') : '12px',
+        border: (variant === 'outlined' || isMinimal) ? `1px solid ${colors.border}` : 'none',
+        color: isMinimal ? colors.border : colors.text,
+        backgroundColor: isMinimal ? 'transparent' : colors.bg,
         transition: 'all 0.2s ease-in-out',
         cursor: 'default',
-        '&:hover': {
+        '&:hover': isMinimal ? {
+          transform: 'none',
+          boxShadow: 'none',
+          backgroundColor: showLabel ? `${colors.border}15` : 'transparent',
+        } : {
           transform: 'scale(1.05)',
           boxShadow: variant === 'filled' ? '0 2px 8px rgba(0, 0, 0, 0.15)' : 'none',
         },
+        ...minimalStyles,
       }}
-      aria-label={`優先度: ${config.label} - ${config.description}`}
+      aria-label={`優先度: ${displayLabel} - ${config.description}`}
       role="status"
     >
       {showIcon && (
         <Icon
           size={sizeStyle.iconSize}
+          fill={isMinimal ? colors.border : undefined}
           aria-hidden="true"
         />
       )}
-      {showLabel && <span>{config.label}</span>}
+      {showLabel && <span>{displayLabel}</span>}
     </Label>
   );
 };
