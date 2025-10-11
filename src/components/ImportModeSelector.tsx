@@ -1,6 +1,6 @@
-import { Box, Text } from "@primer/react";
+import { Box, Text, Button } from "@primer/react";
 import { UploadIcon, FileIcon, PackageIcon } from "@primer/octicons-react";
-import React, { useMemo, useCallback } from "react";
+import React, { useMemo } from "react";
 
 import type { ImportMode, ImportModeConfig } from "../types";
 
@@ -53,13 +53,6 @@ const ImportModeSelector: React.FC<ImportModeSelectorProps> = ({
     [selectedMode],
   );
 
-  const handleModeChange = useCallback(
-    (mode: ImportMode) => {
-      onModeChange(mode);
-    },
-    [onModeChange],
-  );
-
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
       {showModeIndicator && (
@@ -91,47 +84,38 @@ const ImportModeSelector: React.FC<ImportModeSelectorProps> = ({
         <Text sx={{ fontWeight: "600", fontSize: 1 }}>
           インポートモードを選択
         </Text>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "8px",
-            flexWrap: "wrap",
-          }}
-        >
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
           {IMPORT_MODES.map((modeConfig) => (
-            <button
+            <Button
               key={modeConfig.mode}
-              style={{
-                padding: "16px",
-                border:
-                  selectedMode === modeConfig.mode
-                    ? "2px solid #0969da"
-                    : "1px solid #d1d9e0",
-                borderRadius: "6px",
-                background:
-                  selectedMode === modeConfig.mode ? "#f6f8fa" : "white",
-                cursor: "pointer",
-                width: "100%",
-                textAlign: "left",
-              }}
-              onClick={() => handleModeChange(modeConfig.mode)}
+              variant={selectedMode === modeConfig.mode ? "primary" : "default"}
+              leadingVisual={getModeIcon(modeConfig.mode)}
+              onClick={() => onModeChange(modeConfig.mode)}
               aria-label={`インポートモードを${modeConfig.label}に変更`}
+              sx={{
+                width: "100%",
+                justifyContent: "flex-start",
+                textAlign: "left",
+                p: 3,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "flex-start",
+                gap: 1
+              }}
             >
-              <div
-                style={{ display: "flex", alignItems: "center", gap: "8px" }}
-              >
-                {getModeIcon(modeConfig.mode)}
-                <div>
-                  <div style={{ fontWeight: "bold" }}>{modeConfig.label}</div>
-                  <div style={{ fontSize: "12px", color: "#656d76" }}>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 2, width: "100%" }}>
+                <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
+                  <Text sx={{ fontWeight: "bold", fontSize: 1 }}>
+                    {modeConfig.label}
+                  </Text>
+                  <Text sx={{ fontSize: 0, color: "fg.muted" }}>
                     {modeConfig.description}
-                  </div>
-                </div>
-              </div>
-            </button>
+                  </Text>
+                </Box>
+              </Box>
+            </Button>
           ))}
-        </div>
+        </Box>
       </Box>
     </Box>
   );

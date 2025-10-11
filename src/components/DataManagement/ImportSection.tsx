@@ -6,6 +6,7 @@ import { useDataImport } from '../../hooks/useDataImport';
 import { useDataImportDropZone } from '../../hooks/useDataImportDropZone';
 import UniversalDropZone from '../UniversalDropZone';
 import ErrorMessage from '../ErrorMessage';
+import SuccessMessage from "../SuccessMessage";
 
 /**
  * データインポート機能を提供するセクション
@@ -185,9 +186,7 @@ export const ImportSection = memo<ImportSectionProps>(({ onImportSuccess }) => {
       <ErrorMessage error={state.message?.type  === 'error' ? state.message.text : null} />
 
       {/* 成功メッセージ */}
-      {state.message?.type === 'success' && (
-      <FormControl.Validation variant="success">{state.message.text}</FormControl.Validation>
-      )}
+      <SuccessMessage success={state.message?.type  === 'success' ? state.message.text : null} />
 
       {/* インポート実行ボタン */}
       {state.selectedFile && (
