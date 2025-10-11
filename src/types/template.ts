@@ -33,7 +33,7 @@ export interface TaskTemplate {
   // タスクデータ
   taskTitle: string;
   taskDescription: string;
-  priority: Priority;
+  priority?: Priority;
   labels: Label[];
   dueDate: string | null; // 相対的な期限（例："+1d", "+1w", "+1m"）
   recurrence?: RecurrenceConfig;
@@ -58,7 +58,7 @@ export interface TemplateFormData {
   category: TemplateCategory;
   taskTitle: string;
   taskDescription: string;
-  priority: Priority;
+  priority?: Priority;
   labels: Label[];
   dueDate: string | null;
   recurrence?: RecurrenceConfig;

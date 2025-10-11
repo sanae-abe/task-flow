@@ -224,7 +224,7 @@ export const useTaskEdit = ({
         description: description.trim() || '',
         dueDate: dueDateObj?.toISOString() || null,
         completedAt: completedAtObj?.toISOString() || null,
-        priority: priority || 'medium',
+        priority,
         labels,
         files: attachments,
         recurrence: recurrence?.enabled && dueDateObj ? recurrence : undefined,
@@ -314,4 +314,4 @@ export const useTaskEdit = ({
     handleKeyPress,
     isValid
   };
-};
+};;

@@ -63,13 +63,11 @@ const TaskCardContent: React.FC<TaskDisplayProps> = ({
         gap: 2,
         flexWrap: 'wrap'
       }}>
-        {task.priority && (
-          <PriorityBadge
-            priority={task.priority}
-            showIcon
-            showLabel
-          />
-        )}
+        <PriorityBadge
+          priority={task.priority}
+          showIcon
+          showLabel
+        />
         <TaskLabels labels={task.labels} />
       </Box>
     )}

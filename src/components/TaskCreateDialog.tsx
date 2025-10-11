@@ -26,7 +26,7 @@ const fallbackTemplates: TaskTemplate[] = [
     category: 'meeting',
     taskTitle: 'ミーティング議事録作成',
     taskDescription: '今日の定例ミーティングの議事録を作成します。\n\n## アジェンダ\n- \n\n## 議題\n- \n\n## アクションアイテム\n- ',
-    priority: 'medium',
+    priority: undefined,
     labels: [],
     dueDate: null,
     createdAt: new Date().toISOString(),
@@ -41,7 +41,7 @@ const fallbackTemplates: TaskTemplate[] = [
     category: 'work',
     taskTitle: 'コードレビュー',
     taskDescription: 'プルリクエストのコードレビューを実施します。\n\n## チェックポイント\n- コードの可読性\n- パフォーマンス\n- セキュリティ\n- テストの充実度',
-    priority: 'medium',
+    priority: undefined,
     labels: [],
     dueDate: null,
     createdAt: new Date().toISOString(),
@@ -56,7 +56,7 @@ const fallbackTemplates: TaskTemplate[] = [
     category: 'personal',
     taskTitle: 'ブログ記事執筆',
     taskDescription: '技術ブログ記事を執筆します。\n\n## テーマ\n\n## アウトライン\n1. \n2. \n3. ',
-    priority: 'medium',
+    priority: undefined,
     labels: [],
     dueDate: null,
     createdAt: new Date().toISOString(),
@@ -216,9 +216,8 @@ const TaskCreateDialog = memo(() => {
     if (template.labels && template.labels.length > 0) {
       setLabels(template.labels);
     }
-    if (template.priority) {
-      setPriority(template.priority);
-    }
+    // 優先度は常に設定（undefinedを含む）
+    setPriority(template.priority);
 
     // テンプレート使用回数をインクリメント
     try {

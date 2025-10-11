@@ -60,7 +60,7 @@ export interface Task {
   updatedAt: string;
   dueDate: string | null;
   completedAt: string | null;
-  priority: Priority;
+  priority?: Priority;
   labels: Label[];
   subTasks: SubTask[];
   files: FileAttachment[];
