@@ -24,19 +24,7 @@ const PrioritySelector: React.FC<PrioritySelectorProps> = ({
     <FormControl>
       {variant === 'full' && (
         <FormControl.Label>
-          優先度
-          <Text
-            as="span"
-            sx={{
-              ml: 1,
-              fontSize: 0,
-              color: 'fg.muted',
-              fontWeight: 'normal',
-            }}
-          >
-            （任意）
-          </Text>
-        </FormControl.Label>
+          優先度（任意）</FormControl.Label>
       )}
       <ActionMenu>
         <ActionMenu.Anchor>
