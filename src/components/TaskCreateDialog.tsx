@@ -18,55 +18,6 @@ import RecurrenceSelector from './RecurrenceSelector';
 import RichTextEditor from './RichTextEditor';
 import TimeSelector from './TimeSelector';
 
-// サンプルテンプレートデータ（LocalStorageが空の場合のフォールバック）
-const fallbackTemplates: TaskTemplate[] = [
-  {
-    id: 'sample-1',
-    name: 'ミーティング議事録作成',
-    description: '定例ミーティング用の議事録テンプレート',
-    category: 'meeting',
-    taskTitle: 'ミーティング議事録作成',
-    taskDescription: '今日の定例ミーティングの議事録を作成します。\n\n## アジェンダ\n- \n\n## 議題\n- \n\n## アクションアイテム\n- ',
-    priority: undefined,
-    labels: [],
-    dueDate: null,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    usageCount: 0,
-    isFavorite: false
-  },
-  {
-    id: 'sample-2',
-    name: 'コードレビュー',
-    description: 'プルリクエストレビュー用テンプレート',
-    category: 'work',
-    taskTitle: 'コードレビュー',
-    taskDescription: 'プルリクエストのコードレビューを実施します。\n\n## チェックポイント\n- コードの可読性\n- パフォーマンス\n- セキュリティ\n- テストの充実度',
-    priority: undefined,
-    labels: [],
-    dueDate: null,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    usageCount: 0,
-    isFavorite: false
-  },
-  {
-    id: 'sample-3',
-    name: 'ブログ記事執筆',
-    description: '技術ブログ記事執筆用テンプレート',
-    category: 'personal',
-    taskTitle: 'ブログ記事執筆',
-    taskDescription: '技術ブログ記事を執筆します。\n\n## テーマ\n\n## アウトライン\n1. \n2. \n3. ',
-    priority: undefined,
-    labels: [],
-    dueDate: null,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    usageCount: 0,
-    isFavorite: false
-  }
-];
-
 type CreateMode = 'normal' | 'template';
 
 // テンプレート選択コンポーネント
@@ -75,15 +26,13 @@ const TemplateSelector: React.FC<{
   onSelect: (template: TaskTemplate) => void;
 }> = ({ templates, onSelect }) => {
   // お気に入りテンプレートを優先して、その後使用回数順でソート
-  const sortedTemplates = useMemo(() => {
-    return [...templates].sort((a, b) => {
+  const sortedTemplates = useMemo(() => [...templates].sort((a, b) => {
       // お気に入りを最初に表示
-      if (a.isFavorite && !b.isFavorite) return -1;
-      if (!a.isFavorite && b.isFavorite) return 1;
+      if (a.isFavorite && !b.isFavorite) {return -1;}
+      if (!a.isFavorite && b.isFavorite) {return 1;}
       // その後は使用回数順（多い順）
       return b.usageCount - a.usageCount;
-    });
-  }, [templates]);
+    }), [templates]);
 
   // お気に入りとその他を分離
   const favoriteTemplates = sortedTemplates.filter(template => template.isFavorite);
@@ -246,12 +195,9 @@ const TaskCreateDialog = memo(() => {
 
         if (loadedTemplates.length > 0) {
           setTemplates(loadedTemplates);
-        } else {
-          setTemplates(fallbackTemplates);
         }
       } catch (error) {
         console.warn('Failed to load templates:', error);
-        setTemplates(fallbackTemplates);
       }
     }
   }, [state.isTaskFormOpen]);
