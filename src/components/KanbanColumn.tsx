@@ -34,15 +34,18 @@ const COLUMN_STYLES = {
     minHeight: COLUMN_CONFIG.MIN_HEIGHT,
     backgroundColor: 'transparent',
     pt: 0,
-    pb: COLUMN_CONFIG.PADDING_BOTTOM,
+    pb: 0, // ドロップエリア拡張のためpadding-bottomを削除
     px: COLUMN_CONFIG.HORIZONTAL_PADDING,
-    overflow: 'hidden'
+    overflow: 'hidden',
+    display: 'flex',
+    flexDirection: 'column'
   },
   taskList: {
     minHeight: COLUMN_CONFIG.TASK_LIST_MIN_HEIGHT,
     display: 'flex',
     flexDirection: 'column',
-    gap: COLUMN_CONFIG.TASK_GAP
+    gap: COLUMN_CONFIG.TASK_GAP,
+    flex: 1 // 残り空間を最大限活用
   }
 } as const;
 
@@ -164,20 +167,31 @@ const KanbanColumn: React.FC<KanbanColumnProps> = React.memo(({
             <DropIndicator isVisible={isOver} />
           )}
           
-          {sortedTasks.map((task, index) => (
-            <React.Fragment key={task.id}>
-              <TaskCard
-                task={task}
-                columnId={column.id}
-                onTaskClick={onTaskClick}
-                keyboardDragAndDrop={keyboardDragAndDrop}
-              />
-              {/* 最後のタスクの後にもドロップインジケーターを表示 */}
-              {index === sortedTasks.length - 1 && (
-                <DropIndicator isVisible={isOver} />
-              )}
-            </React.Fragment>
+          {sortedTasks.map((task) => (
+            <TaskCard
+              key={task.id}
+              task={task}
+              columnId={column.id}
+              onTaskClick={onTaskClick}
+              keyboardDragAndDrop={keyboardDragAndDrop}
+            />
           ))}
+          
+          {/* カラムの一番下のドロップエリア - 残り空間を最大活用 */}
+          {sortedTasks.length > 0 && (
+            <Box
+              sx={{
+                flex: 1, // 残り空間を全て使用
+                minHeight: '200px', // より大きな最小高さを設定
+                height: 'auto', // 自動高さ調整
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: 1,
+                mt: 2, // 上のタスクとの間隔
+                mb: '100px', // 下部マージンを追加
+              }} />
+          )}
         </SortableContext>
       </Box>
 
