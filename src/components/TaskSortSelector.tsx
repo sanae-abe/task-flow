@@ -6,6 +6,7 @@ import type { SortOption, SortConfig } from '../types';
 
 const SORT_OPTIONS: SortConfig[] = [
   { option: 'manual', label: '手動' },
+  { option: 'priority', label: '優先度順' },
   { option: 'createdAt', label: '作成日順' },
   { option: 'updatedAt', label: '更新日順' },
   { option: 'dueDate', label: '期限順' },
