@@ -1,12 +1,11 @@
 import { memo, useMemo, useState, useCallback } from 'react';
-import { Box, Text, Heading, Button, FormControl, Select } from '@primer/react';
-import { DownloadIcon, DatabaseIcon, ProjectIcon } from '@primer/octicons-react';
+import { Box, Text, Button, FormControl, Select, RadioGroup, Radio } from '@primer/react';
+import { DownloadIcon } from '@primer/octicons-react';
 
 import { useKanban } from '../../contexts/KanbanContext';
 import { calculateDataStatistics, calculateCurrentBoardStatistics } from '../../utils/dataStatistics';
 import type { KanbanBoard } from '../../types';
 import { DataStatistics } from './DataStatistics';
-import { CollapsibleSection } from './CollapsibleSection';
 
 /**
  * データエクスポート機能を提供するセクション
@@ -23,6 +22,7 @@ export const ExportSection = memo<ExportSectionProps>(({
   onExportCurrent
 }) => {
   const { state } = useKanban();
+  const [exportType, setExportType] = useState<'all' | 'selected'>('all');
   const [selectedBoardId, setSelectedBoardId] = useState<string>('');
 
   // 全体の統計情報を計算
@@ -42,109 +42,84 @@ export const ExportSection = memo<ExportSectionProps>(({
     [selectedBoard]
   );
 
-  // ボード選択時のエクスポート処理
-  const handleExportSelectedBoard = useCallback(() => {
-    if (selectedBoard && onExportCurrent) {
+  // エクスポート実行処理
+  const handleExport = useCallback(() => {
+    if (exportType === 'all') {
+      onExportAll?.();
+    } else if (selectedBoard && onExportCurrent) {
       onExportCurrent(selectedBoard);
     }
-  }, [selectedBoard, onExportCurrent]);
+  }, [exportType, selectedBoard, onExportAll, onExportCurrent]);
+
+  // 表示する統計情報を決定
+  const currentStatistics = exportType === 'all' ? allDataStatistics : selectedBoardStatistics;
+  const statisticsTitle = exportType === 'all' ? 'エクスポートされるデータ' : `「${selectedBoard?.title}」のデータ`;
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
       {/* セクション概要 */}
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '8px'
-      }}>
-        <Heading sx={{ fontSize: 2, fontWeight: 'bold' }}>
-          データ管理
-        </Heading>
-        <Text sx={{ fontSize: 1, color: 'fg.muted', pb: 2 }}>
-          タスク管理データをJSON形式でエクスポートできます。バックアップや他の環境への移行にご利用ください。
-        </Text>
-      </div>
+      <Text sx={{ fontSize: 1, color: 'fg.muted' }}>
+        タスク管理データをJSON形式でエクスポートします。バックアップや他の環境への移行にご利用ください。
+      </Text>
 
-      {/* 全データエクスポート - 折りたたみ式 */}
-      <CollapsibleSection
-        icon={DatabaseIcon}
-        title="全データをエクスポート"
-        iconBg="var(--bgColor-accent-muted)"
-        iconColor="var(--fgColor-accent)"
-      >
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-          <Text sx={{ fontSize: 1, color: 'fg.muted' }}>
-            すべてのボード、タスク、ラベルを含む完全なバックアップを作成します。
-          </Text>
-
-          <DataStatistics
-            statistics={allDataStatistics}
-            title="エクスポートされるデータ"
-          />
-
-          <Button
-            variant="primary"
-            leadingVisual={DownloadIcon}
-            onClick={onExportAll}
-            sx={{
-              backgroundColor: 'accent.fg',
-              '&:hover': {
-                backgroundColor: 'var(--button-outline-bgColor-active)'
-              }
-            }}
-          >
-            全データをエクスポート
-          </Button>
-        </Box>
-      </CollapsibleSection>
-
-      {/* ボード選択エクスポート - 折りたたみ式 */}
-      <CollapsibleSection
-        icon={ProjectIcon}
-        title="ボードを選択してエクスポート"
-        iconBg="var(--bgColor-success-muted)"
-        iconColor="var(--fgColor-success)"
-      >
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-          <Text sx={{ fontSize: 1, color: 'fg.muted' }}>
-            エクスポートするボードを選択して、そのボードのタスクと関連データをエクスポートします。
-          </Text>
-
-          {/* ボード選択 */}
+      {/* エクスポート範囲選択 */}
+      <FormControl>
+        <FormControl.Label sx={{ fontSize: 1, fontWeight: '600' }}>
+          エクスポート範囲
+        </FormControl.Label>
+        <RadioGroup
+          name="exportType"
+          onChange={(value) => setExportType(value as 'all' | 'selected')}
+          sx={{ mt: 1 }}
+        >
           <FormControl>
-            <FormControl.Label>エクスポートするボード</FormControl.Label>
-            <Select
-              value={selectedBoardId}
-              onChange={(e) => setSelectedBoardId(e.target.value)}
-              sx={{ width: '100%' }}
-              placeholder="ボードを選択してください"
-            >
-              {state.boards.map(board => (
-                <Select.Option key={board.id} value={board.id}>
-                  {board.title}
-                </Select.Option>
-              ))}
-            </Select>
+            <Radio value="all" checked={exportType === 'all'} />
+            <FormControl.Label>全データをエクスポート</FormControl.Label>
           </FormControl>
+          <FormControl>
+            <Radio value="selected" checked={exportType === 'selected'} />
+            <FormControl.Label>選択したボードをエクスポート</FormControl.Label>
+          </FormControl>
+        </RadioGroup>
+      </FormControl>
 
-          {/* 選択されたボードの統計情報 */}
-          {selectedBoardStatistics && selectedBoard && (
-            <DataStatistics
-              statistics={selectedBoardStatistics}
-              title={`「${selectedBoard.title}」のデータ`}
-            />
-          )}
-
-          <Button
-            variant="primary"
-            leadingVisual={DownloadIcon}
-            onClick={handleExportSelectedBoard}
-            disabled={!selectedBoard}
+      {/* ボード選択（特定ボードを選択した場合のみ表示） */}
+      {exportType === 'selected' && (
+        <FormControl>
+          <FormControl.Label>エクスポートするボード</FormControl.Label>
+          <Select
+            value={selectedBoardId}
+            onChange={(e) => setSelectedBoardId(e.target.value)}
+            sx={{ width: '100%' }}
+            placeholder="ボードを選択してください"
           >
-            選択したボードをエクスポート
-          </Button>
-        </Box>
-      </CollapsibleSection>
+            {state.boards.map(board => (
+              <Select.Option key={board.id} value={board.id}>
+                {board.title}
+              </Select.Option>
+            ))}
+          </Select>
+        </FormControl>
+      )}
+
+      {/* 統計情報表示 */}
+      {currentStatistics && (
+        <DataStatistics
+          statistics={currentStatistics}
+          title={statisticsTitle}
+        />
+      )}
+
+      {/* エクスポート実行ボタン */}
+      <Button
+        variant="primary"
+        leadingVisual={DownloadIcon}
+        onClick={handleExport}
+        disabled={exportType === 'selected' && !selectedBoard}
+        sx={{ alignSelf: 'flex-start' }}
+      >
+        エクスポート実行
+      </Button>
     </Box>
   );
 });

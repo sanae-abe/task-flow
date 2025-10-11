@@ -314,4 +314,4 @@ export const useTaskEdit = ({
     handleKeyPress,
     isValid
   };
-};;
+};
