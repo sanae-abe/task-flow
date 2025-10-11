@@ -76,6 +76,15 @@ export const DEFAULT_COLUMNS: TableColumn[] = [
     type: 'status'
   },
   {
+    id: 'priority',
+    label: '優先度',
+    width: '100px',
+    visible: false,
+    sortable: true,
+    type: 'text',
+    accessor: 'priority'
+  },
+  {
     id: 'progress',
     label: '進捗',
     width: '80px',

@@ -68,7 +68,7 @@ export const loadBoards = (): KanbanBoard[] => {
         ...column,
         tasks: column.tasks.map((task: StoredTask) => ({
           ...task,
-          priority: task.priority || 'medium',
+          priority: task.priority,
           files: task.files || [],
           subTasks: task.subTasks || [],
           completedAt: task.completedAt || null,

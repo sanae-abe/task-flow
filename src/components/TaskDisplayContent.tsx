@@ -1,7 +1,7 @@
 import { Text } from '@primer/react';
 import React from 'react';
 
-import type { Task } from '../types';
+import type { Task, Priority } from '../types';
 
 import { formatDateTime } from '../utils/dateHelpers';
 import { getRecurrenceDescription } from '../utils/recurrence';
@@ -11,6 +11,22 @@ import FileList from './FileList';
 import LinkifiedText from './LinkifiedText';
 import TaskDisplaySection from './TaskDisplaySection';
 import TaskLabels from './TaskLabels';
+
+// 優先度を日本語テキストに変換
+const getPriorityText = (priority: Priority): string => {
+  switch (priority) {
+    case 'low':
+      return '低';
+    case 'medium':
+      return '中';
+    case 'high':
+      return '高';
+    case 'critical':
+      return '緊急';
+    default:
+      return '';
+  }
+};
 
 interface TaskDisplayContentProps {
   task: Task;
@@ -54,6 +70,16 @@ const TaskDisplayContent = React.memo<TaskDisplayContentProps>(({ task, columnNa
         <TaskDisplaySection title="ステータス">
           <ContentBox>
             <Text sx={{ fontSize: 1 }}>{columnName}</Text>
+          </ContentBox>
+        </TaskDisplaySection>
+      )}
+
+      {task.priority && (
+        <TaskDisplaySection title="優先度">
+          <ContentBox>
+            <Text sx={{ fontSize: 1 }}>
+              {getPriorityText(task.priority)}
+            </Text>
           </ContentBox>
         </TaskDisplaySection>
       )}

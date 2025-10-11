@@ -194,14 +194,6 @@ const PrioritySelector: React.FC<PrioritySelectorProps> = ({
           </ActionList>
         </ActionMenu.Overlay>
       </ActionMenu>
-
-      {variant === 'full' && priority && selectedOption && (
-        <FormControl.Caption sx={{ mt: 1 }}>
-          <Text sx={{ fontSize: 0, color: 'fg.muted' }}>
-            {selectedOption.description}
-          </Text>
-        </FormControl.Caption>
-      )}
     </FormControl>
   );
 };

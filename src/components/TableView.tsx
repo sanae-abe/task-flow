@@ -4,7 +4,7 @@ import { XIcon, CheckIcon, PaperclipIcon, TriangleDownIcon, SyncIcon } from '@pr
 
 import { useKanban } from '../contexts/KanbanContext';
 import { useTableColumns } from '../contexts/TableColumnsContext';
-import type { Task } from '../types';
+import type { Task, Priority } from '../types';
 import type { TaskWithColumn, TableColumn } from '../types/table';
 import { sortTasks } from '../utils/taskSort';
 import { filterTasks } from '../utils/taskFilter';
@@ -19,6 +19,22 @@ import { logger } from '../utils/logger';
 
 // 型ガード関数
 const isTaskWithColumn = (task: Task): task is TaskWithColumn => 'columnId' in task && 'columnTitle' in task && 'status' in task;
+
+// 優先度を日本語テキストに変換
+const getPriorityText = (priority: Priority): string => {
+  switch (priority) {
+    case 'low':
+      return '低';
+    case 'medium':
+      return '中';
+    case 'high':
+      return '高';
+    case 'critical':
+      return '緊急';
+    default:
+      return '';
+  }
+};
 
 const TableView: React.FC = () => {
   const { state, moveTask, deleteTask, setTaskFilter, openTaskDetail } = useKanban();
@@ -161,6 +177,21 @@ const TableView: React.FC = () => {
                 </ActionList>
               </ActionMenu.Overlay>
             </ActionMenu>
+          </Box>
+        );
+
+      case 'priority':
+        return (
+          <Box>
+            {task.priority ? (
+              <Text sx={{ color: 'fg.default', fontSize: 1 }}>
+                {getPriorityText(task.priority)}
+              </Text>
+            ) : (
+              <Text sx={{ color: 'fg.default', fontSize: 1 }}>
+                -
+              </Text>
+            )}
           </Box>
         );
 

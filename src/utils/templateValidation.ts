@@ -38,7 +38,7 @@ export const isValidCategory = (category: string): category is TemplateCategory 
 /**
  * プライオリティの有効性チェック
  */
-const VALID_PRIORITIES: Priority[] = ['low', 'medium', 'high'];
+const VALID_PRIORITIES: Priority[] = ['low', 'medium', 'high', 'critical'];
 
 export const isValidPriority = (priority: string): priority is Priority => VALID_PRIORITIES.includes(priority as Priority);
 
