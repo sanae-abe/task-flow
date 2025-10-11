@@ -322,7 +322,7 @@ const TaskCreateDialog = memo(() => {
       size="large"
       actions={actions}
     >
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', minHeight: '600px' }}>
         {/* タブナビゲーション */}
         <div style={{ marginBottom: '16px' }}>
           <UnderlineNav aria-label="タスク作成モード選択" sx={{ padding: 0, transform: 'translateY(-8px)' }}>
@@ -343,7 +343,7 @@ const TaskCreateDialog = memo(() => {
 
         {/* テンプレート選択モード */}
         {createMode === 'template' && (
-          <div style={{ marginBottom: '24px' }}>
+          <div style={{ marginBottom: '24px', flex: 1, minHeight: '500px' }}>
             <TemplateSelector
               templates={templates}
               onSelect={handleTemplateSelect}
@@ -353,7 +353,7 @@ const TaskCreateDialog = memo(() => {
 
         {/* 通常作成フォーム */}
         {createMode === 'normal' && (
-          <div onKeyDown={handleKeyPress}>
+          <div onKeyDown={handleKeyPress} style={{ flex: 1, minHeight: '500px' }}>
             {selectedTemplate && (
               <Flash variant="default" sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
                 <InfoIcon size={16} />
