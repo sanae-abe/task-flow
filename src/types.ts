@@ -111,7 +111,7 @@ export interface KanbanBoard {
   updatedAt: string;
 }
 
-export type Priority = 'low' | 'medium' | 'high';
+export type Priority = 'low' | 'medium' | 'high' | 'critical';
 
 export interface KanbanState {
   boards: KanbanBoard[];

@@ -2,56 +2,89 @@ import { Label } from '@primer/react';
 import React from 'react';
 
 import type { Priority } from '../types';
+import { priorityConfig } from '../utils/priorityConfig';
 
 interface PriorityBadgeProps {
   priority: Priority;
-  size?: 'small' | 'large';
+  size?: 'small' | 'medium' | 'large';
+  variant?: 'filled' | 'outlined' | 'subtle';
+  showIcon?: boolean;
+  showLabel?: boolean;
 }
 
-const priorityConfig = {
-  high: {
-    label: '高',
-    variant: 'danger' as const,
-    color: '#cf222e'
+
+// サイズ設定
+const sizeConfig = {
+  small: {
+    fontSize: '11px',
+    padding: '2px 6px',
+    iconSize: 12,
+    gap: 3,
   },
   medium: {
-    label: '中',
-    variant: 'attention' as const,
-    color: '#fb8500'
+    fontSize: '12px',
+    padding: '4px 8px',
+    iconSize: 14,
+    gap: 4,
   },
-  low: {
-    label: '低',
-    variant: 'secondary' as const,
-    color: '#656d76'
-  }
+  large: {
+    fontSize: '14px',
+    padding: '6px 12px',
+    iconSize: 16,
+    gap: 6,
+  },
 };
 
-const PriorityBadge: React.FC<PriorityBadgeProps> = ({ priority, size = 'small' }) => {
+const PriorityBadge: React.FC<PriorityBadgeProps> = ({
+  priority,
+  size = 'small',
+  variant = 'filled',
+  showIcon = true,
+  showLabel = true,
+}) => {
   const config = priorityConfig[priority];
+  const sizeStyle = sizeConfig[size];
 
   if (!config) {
     return null;
   }
 
+  const Icon = config.icon;
+  const colors = config.colors[variant];
+
   return (
     <Label
       variant={config.variant}
-      size={size}
+      size={size === 'small' ? 'small' : 'large'}
       sx={{
-        fontSize: size === 'small' ? '11px' : '12px',
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: `${sizeStyle.gap}px`,
+        fontSize: sizeStyle.fontSize,
         fontWeight: '600',
         lineHeight: 1,
-        padding: size === 'small' ? '2px 6px' : '4px 8px',
+        padding: sizeStyle.padding,
         borderRadius: '12px',
-        border: 'none',
-        color: 'white',
-        backgroundColor: config.color,
+        border: variant === 'outlined' ? `1px solid ${colors.border}` : 'none',
+        color: colors.text,
+        backgroundColor: colors.bg,
+        transition: 'all 0.2s ease-in-out',
+        cursor: 'default',
         '&:hover': {
-          backgroundColor: config.color,
-        }
+          transform: 'scale(1.05)',
+          boxShadow: variant === 'filled' ? '0 2px 8px rgba(0, 0, 0, 0.15)' : 'none',
+        },
       }}
+      aria-label={`優先度: ${config.label} - ${config.description}`}
+      role="status"
     >
-      <span>{config.label}</span>
+      {showIcon && (
+        <Icon
+          size={sizeStyle.iconSize}
+          aria-hidden="true"
+        />
+      )}
+      {showLabel && <span>{config.label}</span>}
     </Label>
   );
 };
