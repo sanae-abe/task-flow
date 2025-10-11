@@ -11,14 +11,13 @@ interface PrioritySelectorProps {
   variant?: 'compact' | 'full';
 }
 
-
 const PrioritySelector: React.FC<PrioritySelectorProps> = ({
   priority,
   onPriorityChange,
   disabled = false,
   variant = 'full',
 }) => {
-  const selectedOption = prioritySelectorOptions.find(opt => opt.value === priority) || prioritySelectorOptions[0];
+  const selectedOption = prioritySelectorOptions.find(opt => opt.value === priority);
   const SelectedIcon = selectedOption?.icon;
 
   return (
@@ -85,7 +84,6 @@ const PrioritySelector: React.FC<PrioritySelectorProps> = ({
               {SelectedIcon ? (
                 <SelectedIcon
                   size={16}
-                  fill={selectedOption?.color}
                   aria-hidden
                 />
               ) : (
@@ -114,7 +112,7 @@ const PrioritySelector: React.FC<PrioritySelectorProps> = ({
                   color: priority ? 'fg.default' : 'fg.muted',
                 }}
               >
-                {selectedOption?.label}
+                {selectedOption?.label || '選択なし'}
               </Text>
             </Box>
             <Box
@@ -132,7 +130,7 @@ const PrioritySelector: React.FC<PrioritySelectorProps> = ({
 
         <ActionMenu.Overlay width="medium">
           <ActionList selectionVariant="single">
-            {prioritySelectorOptions.map((option, index) => {
+            {prioritySelectorOptions.map((option) => {
               const Icon = option.icon;
               const isSelected = option.value === priority;
 
@@ -156,7 +154,6 @@ const PrioritySelector: React.FC<PrioritySelectorProps> = ({
                     {Icon ? (
                       <Icon
                         size={16}
-                        fill={option.color}
                         aria-hidden
                       />
                     ) : (
@@ -190,29 +187,7 @@ const PrioritySelector: React.FC<PrioritySelectorProps> = ({
                     >
                       {option.label}
                     </Text>
-                    <Text
-                      sx={{
-                        fontSize: 0,
-                        color: 'fg.muted',
-                        mt: 0,
-                      }}
-                    >
-                      {option.description}
-                    </Text>
                   </Box>
-                  {variant === 'full' && (
-                    <ActionList.TrailingVisual>
-                      <Text
-                        sx={{
-                          fontSize: 0,
-                          color: 'fg.muted',
-                          fontFamily: 'mono',
-                        }}
-                      >
-                        {index === 0 ? '' : index}
-                      </Text>
-                    </ActionList.TrailingVisual>
-                  )}
                 </ActionList.Item>
               );
             })}
