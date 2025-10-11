@@ -324,7 +324,7 @@ const TaskCreateDialog = memo(() => {
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         {/* タブナビゲーション */}
         <div style={{ marginBottom: '24px' }}>
-          <UnderlineNav>
+          <UnderlineNav aria-label="タスク作成モード選択">
             <UnderlineNav.Item
               aria-current={createMode === 'normal' ? 'page' : undefined}
               onSelect={() => setCreateMode('normal')}
