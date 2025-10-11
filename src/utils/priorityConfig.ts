@@ -85,6 +85,29 @@ export const priorityConfig: Record<Priority, PriorityConfig> = {
     variant: 'accent',
     colors: {
       filled: {
+        bg: '#2da44e',
+        text: '#ffffff',
+        border: '#1a7f37',
+      },
+      outlined: {
+        bg: 'transparent',
+        text: '#2da44e',
+        border: '#1a7f37',
+      },
+      subtle: {
+        bg: '#dcfce7',
+        text: '#1a7f37',
+        border: 'transparent',
+      },
+    },
+  },
+  low: {
+    label: '低',
+    description: '時間があるときに対応',
+    icon: TriangleDownIcon,
+    variant: 'secondary',
+    colors: {
+      filled: {
         bg: '#0969da',
         text: '#ffffff',
         border: '#0550ae',
@@ -97,29 +120,6 @@ export const priorityConfig: Record<Priority, PriorityConfig> = {
       subtle: {
         bg: '#ddf4ff',
         text: '#0550ae',
-        border: 'transparent',
-      },
-    },
-  },
-  low: {
-    label: '低',
-    description: '時間があるときに対応',
-    icon: TriangleDownIcon,
-    variant: 'secondary',
-    colors: {
-      filled: {
-        bg: '#656d76',
-        text: '#ffffff',
-        border: '#57606a',
-      },
-      outlined: {
-        bg: 'transparent',
-        text: '#656d76',
-        border: '#57606a',
-      },
-      subtle: {
-        bg: '#f6f8fa',
-        text: '#57606a',
         border: 'transparent',
       },
     },
