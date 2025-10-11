@@ -1,4 +1,4 @@
-import { DatabaseIcon, TagIcon, ProjectIcon } from '@primer/octicons-react';
+import { DatabaseIcon, TagIcon, ProjectIcon, BookIcon } from '@primer/octicons-react';
 import { Box, SplitPageLayout, NavList } from '@primer/react';
 import React, { useState } from 'react';
 
@@ -6,6 +6,7 @@ import UnifiedDialog from './shared/Dialog/UnifiedDialog';
 import { LabelManagementPanel } from './LabelManagement';
 import { DataManagementPanel } from './DataManagement';
 import { BoardSettingsPanel } from './BoardSettings';
+import { TemplateManagementPanel } from './TemplateManagement';
 import type { KanbanBoard } from '../types';
 
 interface SettingsDialogProps {
@@ -21,7 +22,7 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
   onExportData,
   onExportBoard
 }) => {
-  const [activeTab, setActiveTab] = useState<'labels' | 'data' | 'board'>('labels');
+  const [activeTab, setActiveTab] = useState<'labels' | 'data' | 'board' | 'templates'>('labels');
 
   return (
     <UnifiedDialog
@@ -52,6 +53,15 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
                 カンバン設定
               </NavList.Item>
               <NavList.Item
+                aria-current={activeTab === 'templates' ? 'page' : undefined}
+                onClick={() => setActiveTab('templates')}
+              >
+                <NavList.LeadingVisual>
+                  <BookIcon />
+                </NavList.LeadingVisual>
+                テンプレート管理
+              </NavList.Item>
+              <NavList.Item
                 aria-current={activeTab === 'labels' ? 'page' : undefined}
                 onClick={() => setActiveTab('labels')}
               >
@@ -77,6 +87,8 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
             <Box sx={{ height: '100%', overflow: 'auto' }}>
               {activeTab === 'board' ? (
                 <BoardSettingsPanel />
+              ) : activeTab === 'templates' ? (
+                <TemplateManagementPanel />
               ) : activeTab === 'labels' ? (
                 <LabelManagementPanel />
               ) : (

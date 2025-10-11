@@ -6,6 +6,7 @@ export * from './date';
 export * from './shared';
 export * from './table';
 export * from './task';
+export * from './template';
 export * from './unified-dialog';
 export * from './unified-form';
 export * from './unified-menu';
