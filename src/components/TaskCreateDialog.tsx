@@ -1,4 +1,4 @@
-import { TextInput, FormControl, Button } from '@primer/react';
+import { TextInput, FormControl, UnderlineNav } from '@primer/react';
 import React, { useState, useEffect, useCallback, memo, useMemo } from 'react';
 
 import type { Label as LabelType, FileAttachment, RecurrenceConfig, Priority } from '../types';
@@ -323,26 +323,21 @@ const TaskCreateDialog = memo(() => {
     >
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         {/* タブナビゲーション */}
-        <div style={{
-          borderBottom: '1px solid var(--borderColor-default)',
-          marginBottom: '24px',
-          display: 'flex',
-          gap: '8px'
-        }}>
-          <Button
-            variant={createMode === 'normal' ? 'primary' : 'default'}
-            size="small"
-            onClick={() => setCreateMode('normal')}
-          >
-            通常作成
-          </Button>
-          <Button
-            variant={createMode === 'template' ? 'primary' : 'default'}
-            size="small"
-            onClick={() => setCreateMode('template')}
-          >
-            テンプレートから作成
-          </Button>
+        <div style={{ marginBottom: '24px' }}>
+          <UnderlineNav aria-label="タスク作成モード選択">
+            <UnderlineNav.Item
+              aria-current={createMode === 'normal' ? 'page' : undefined}
+              onSelect={() => setCreateMode('normal')}
+            >
+              通常作成
+            </UnderlineNav.Item>
+            <UnderlineNav.Item
+              aria-current={createMode === 'template' ? 'page' : undefined}
+              onSelect={() => setCreateMode('template')}
+            >
+              テンプレートから作成
+            </UnderlineNav.Item>
+          </UnderlineNav>
         </div>
 
         {/* テンプレート選択モード */}
