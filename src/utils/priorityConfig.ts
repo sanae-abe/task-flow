@@ -1,5 +1,5 @@
 import React from 'react';
-import { Zap, ChevronDown, ChevronUp, Minus } from 'react-feather';
+import { Zap, ChevronUp, Minus, ChevronDown } from 'react-feather';
 
 import type { Priority } from '../types';
 

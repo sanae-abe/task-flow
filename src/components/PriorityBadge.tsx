@@ -4,7 +4,7 @@ import type { Priority } from '../types';
 import { priorityConfig } from '../utils/priorityConfig';
 
 interface PriorityBadgeProps {
-  priority: Priority;
+  priority?: Priority;
   showIcon?: boolean;
   showLabel?: boolean;
   useEnglishLabel?: boolean;
@@ -16,8 +16,13 @@ const PriorityBadge: React.FC<PriorityBadgeProps> = ({
   showLabel = true,
   useEnglishLabel = false,
 }) => {
+  // 優先度が設定されていない場合は何も表示しない
+  if (!priority) {
+    return null;
+  }
+
   const config = priorityConfig[priority];
-  
+
   if (!config) {
     return null;
   }
