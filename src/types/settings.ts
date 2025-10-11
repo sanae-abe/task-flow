@@ -11,8 +11,8 @@ export interface AppSettings {
 // デフォルト設定
 export const DEFAULT_SETTINGS: AppSettings = {
   defaultColumns: [
-    { id: 'todo', name: 'To Do' },
-    { id: 'inprogress', name: 'In Progress' },
-    { id: 'done', name: 'Done' }
-  ]
+    { id: "todo", name: "To Do" },
+    { id: "inprogress", name: "In Progress" },
+    { id: "done", name: "Done" },
+  ],
 };

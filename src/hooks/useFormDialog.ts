@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo } from "react";
 
 interface UseFormDialogProps {
   isOpen: boolean;
@@ -20,11 +20,11 @@ interface UseFormDialogReturn {
 
 export const useFormDialog = ({
   isOpen,
-  initialValue = '',
+  initialValue = "",
   onSave,
   onCancel,
   required = true,
-  minLength = 1
+  minLength = 1,
 }: UseFormDialogProps): UseFormDialogReturn => {
   const [value, setValue] = useState(initialValue);
 
@@ -40,25 +40,28 @@ export const useFormDialog = ({
 
   const handleSave = useCallback(() => {
     const trimmedValue = value.trim();
-    if (!required || (trimmedValue.length >= minLength)) {
+    if (!required || trimmedValue.length >= minLength) {
       try {
         onSave(trimmedValue);
       } catch (error) {
         // eslint-disable-next-line no-console
-        console.error('Error saving form data:', error);
+        console.error("Error saving form data:", error);
       }
     }
   }, [value, onSave, required, minLength]);
 
-  const handleKeyPress = useCallback((event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
-      event.preventDefault();
-      // Enterキーでの自動保存を無効化
-    } else if (event.key === 'Escape') {
-      event.preventDefault();
-      onCancel();
-    }
-  }, [onCancel]);
+  const handleKeyPress = useCallback(
+    (event: React.KeyboardEvent<HTMLInputElement>) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        // Enterキーでの自動保存を無効化
+      } else if (event.key === "Escape") {
+        event.preventDefault();
+        onCancel();
+      }
+    },
+    [onCancel],
+  );
 
   const isValid = useMemo(() => {
     if (!required) {
@@ -74,6 +77,6 @@ export const useFormDialog = ({
     handleSave,
     handleKeyPress,
     isValid,
-    reset
+    reset,
   };
 };

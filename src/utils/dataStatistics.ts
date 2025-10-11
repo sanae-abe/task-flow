@@ -1,5 +1,5 @@
-import type { KanbanBoard } from '../types';
-import type { DataStatistics } from '../components/DataManagement/types';
+import type { KanbanBoard } from "../types";
+import type { DataStatistics } from "../components/DataManagement/types";
 
 /**
  * データ統計情報を計算するユーティリティ
@@ -13,17 +13,17 @@ import type { DataStatistics } from '../components/DataManagement/types';
  */
 export const calculateDataStatistics = (
   boards: KanbanBoard[],
-  labels: Array<{ id: string; name: string; color: string }>
+  labels: Array<{ id: string; name: string; color: string }>,
 ): DataStatistics => {
   let taskCount = 0;
   let attachmentCount = 0;
 
   // 各ボードのタスクと添付ファイルをカウント
-  boards.forEach(board => {
-    board.columns.forEach(column => {
+  boards.forEach((board) => {
+    board.columns.forEach((column) => {
       taskCount += column.tasks.length;
 
-      column.tasks.forEach(task => {
+      column.tasks.forEach((task) => {
         if (task.files) {
           attachmentCount += task.files.length;
         }
@@ -40,7 +40,7 @@ export const calculateDataStatistics = (
     taskCount,
     labelCount: labels.length,
     attachmentCount,
-    estimatedSize
+    estimatedSize,
   };
 };
 
@@ -50,7 +50,7 @@ export const calculateDataStatistics = (
  * @returns データ統計情報
  */
 export const calculateCurrentBoardStatistics = (
-  board: KanbanBoard | null
+  board: KanbanBoard | null,
 ): DataStatistics => {
   if (!board) {
     return {
@@ -58,17 +58,17 @@ export const calculateCurrentBoardStatistics = (
       taskCount: 0,
       labelCount: 0,
       attachmentCount: 0,
-      estimatedSize: 0
+      estimatedSize: 0,
     };
   }
 
   let taskCount = 0;
   let attachmentCount = 0;
 
-  board.columns.forEach(column => {
+  board.columns.forEach((column) => {
     taskCount += column.tasks.length;
 
-    column.tasks.forEach(task => {
+    column.tasks.forEach((task) => {
       if (task.files) {
         attachmentCount += task.files.length;
       }
@@ -77,9 +77,9 @@ export const calculateCurrentBoardStatistics = (
 
   // ボードに関連するラベル数を計算
   const labelIds = new Set<string>();
-  board.columns.forEach(column => {
-    column.tasks.forEach(task => {
-      task.labels?.forEach(label => {
+  board.columns.forEach((column) => {
+    column.tasks.forEach((task) => {
+      task.labels?.forEach((label) => {
         labelIds.add(label.id);
       });
     });
@@ -92,7 +92,7 @@ export const calculateCurrentBoardStatistics = (
     taskCount,
     labelCount: labelIds.size,
     attachmentCount,
-    estimatedSize
+    estimatedSize,
   };
 };
 
@@ -103,11 +103,11 @@ export const calculateCurrentBoardStatistics = (
  */
 export const formatFileSize = (bytes: number): string => {
   if (bytes === 0) {
-    return '0 B';
+    return "0 B";
   }
 
   const k = 1024;
-  const sizes = ['B', 'KB', 'MB', 'GB'];
+  const sizes = ["B", "KB", "MB", "GB"];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
 
   return `${(bytes / Math.pow(k, i)).toFixed(1)} ${sizes[i]}`;

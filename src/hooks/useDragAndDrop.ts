@@ -1,14 +1,27 @@
-import { PointerSensor, KeyboardSensor, useSensor, useSensors, type DragEndEvent, type DragStartEvent, type DragOverEvent } from '@dnd-kit/core';
-import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
-import { useState } from 'react';
+import {
+  PointerSensor,
+  KeyboardSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+  type DragStartEvent,
+  type DragOverEvent,
+} from "@dnd-kit/core";
+import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
+import { useState } from "react";
 
-import type { Task, KanbanBoard } from '../types';
+import type { Task, KanbanBoard } from "../types";
 
-import { useTaskFinder } from './useTaskFinder';
+import { useTaskFinder } from "./useTaskFinder";
 
 interface UseDragAndDropProps {
   board: KanbanBoard | null;
-  onMoveTask: (taskId: string, sourceColumnId: string, targetColumnId: string, targetIndex: number) => void;
+  onMoveTask: (
+    taskId: string,
+    sourceColumnId: string,
+    targetColumnId: string,
+    targetIndex: number,
+  ) => void;
   onSortToManual?: () => void;
 }
 
@@ -20,7 +33,11 @@ interface UseDragAndDropReturn {
   handleDragEnd: (event: DragEndEvent) => void;
 }
 
-export const useDragAndDrop = ({ board, onMoveTask, onSortToManual }: UseDragAndDropProps): UseDragAndDropReturn => {
+export const useDragAndDrop = ({
+  board,
+  onMoveTask,
+  onSortToManual,
+}: UseDragAndDropProps): UseDragAndDropReturn => {
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   const { findTaskById, findTaskColumnId } = useTaskFinder(board);
 
@@ -32,7 +49,7 @@ export const useDragAndDrop = ({ board, onMoveTask, onSortToManual }: UseDragAnd
     }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    })
+    }),
   );
 
   const handleDragStart = (event: DragStartEvent): void => {
@@ -47,7 +64,7 @@ export const useDragAndDrop = ({ board, onMoveTask, onSortToManual }: UseDragAnd
 
   const handleDragEnd = (event: DragEndEvent): void => {
     const { active, over } = event;
-    
+
     // ドラッグ終了時は常にactiveTaskをクリア
     setActiveTask(null);
 
@@ -69,7 +86,7 @@ export const useDragAndDrop = ({ board, onMoveTask, onSortToManual }: UseDragAnd
     }
 
     const sourceColumnId = findTaskColumnId(activeTaskId);
-    
+
     if (!sourceColumnId) {
       return;
     }
@@ -85,41 +102,48 @@ export const useDragAndDrop = ({ board, onMoveTask, onSortToManual }: UseDragAnd
       targetIndex = targetColumn.tasks.length; // カラムの最後に追加
     } else {
       // タスクにドロップした場合、そのタスクの位置を特定
-      targetColumnId = findTaskColumnId(overId) ?? '';
+      targetColumnId = findTaskColumnId(overId) ?? "";
       const targetCol = board.columns.find((col) => col.id === targetColumnId);
-      
+
       if (!targetCol) {
         return;
       }
-      
-      const targetTaskIndex = targetCol.tasks.findIndex((task: Task) => task.id === overId);
-      
+
+      const targetTaskIndex = targetCol.tasks.findIndex(
+        (task: Task) => task.id === overId,
+      );
+
       if (targetTaskIndex === -1) {
         return;
       }
-      
+
       // 同じカラム内でドラッグした場合
       if (sourceColumnId === targetColumnId) {
-        const sourceCol = board.columns.find((col) => col.id === sourceColumnId);
+        const sourceCol = board.columns.find(
+          (col) => col.id === sourceColumnId,
+        );
         if (!sourceCol) {
           return;
         }
-        
-        const oldIndex = sourceCol.tasks.findIndex((task: Task) => task.id === activeTaskId);
-        
+
+        const oldIndex = sourceCol.tasks.findIndex(
+          (task: Task) => task.id === activeTaskId,
+        );
+
         if (oldIndex === -1) {
           return;
         }
-        
+
         // 同じ位置の場合は何もしない
         if (oldIndex === targetTaskIndex) {
           return;
         }
-        
+
         // 同じカラム内移動：
         // oldIndex < targetTaskIndex の場合: targetTaskIndex - 1 (元のタスクが削除されるため)
         // oldIndex > targetTaskIndex の場合: targetTaskIndex (そのまま)
-        targetIndex = oldIndex < targetTaskIndex ? targetTaskIndex - 1 : targetTaskIndex;
+        targetIndex =
+          oldIndex < targetTaskIndex ? targetTaskIndex - 1 : targetTaskIndex;
       } else {
         // 異なるカラム間での移動の場合は、targetTaskIndexをそのまま使用
         targetIndex = targetTaskIndex;

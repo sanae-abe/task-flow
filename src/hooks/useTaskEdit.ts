@@ -1,8 +1,17 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo } from "react";
 
-import { useKanban } from '../contexts/KanbanContext';
-import type { Task, Label, FileAttachment, RecurrenceConfig, Priority } from '../types';
-import { toDateTimeLocalString, fromDateTimeLocalString } from '../utils/dateHelpers';
+import { useKanban } from "../contexts/KanbanContext";
+import type {
+  Task,
+  Label,
+  FileAttachment,
+  RecurrenceConfig,
+  Priority,
+} from "../types";
+import {
+  toDateTimeLocalString,
+  fromDateTimeLocalString,
+} from "../utils/dateHelpers";
 
 interface UseTaskEditProps {
   task: Task | null;
@@ -51,53 +60,58 @@ export const useTaskEdit = ({
   isOpen,
   onSave,
   onDelete,
-  onCancel
+  onCancel,
 }: UseTaskEditProps): UseTaskEditReturn => {
   const { state, moveTask } = useKanban();
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [dueDate, setDueDate] = useState('');
-  const [dueTime, setDueTime] = useState('');
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [dueDate, setDueDate] = useState("");
+  const [dueTime, setDueTime] = useState("");
   const [hasTime, setHasTime] = useState(false);
-  const [completedAt, setCompletedAt] = useState('');
+  const [completedAt, setCompletedAt] = useState("");
   const [labels, setLabels] = useState<Label[]>([]);
   const [attachments, setAttachments] = useState<FileAttachment[]>([]);
-  const [columnId, setColumnId] = useState('');
-  const [recurrence, setRecurrence] = useState<RecurrenceConfig | undefined>(undefined);
+  const [columnId, setColumnId] = useState("");
+  const [recurrence, setRecurrence] = useState<RecurrenceConfig | undefined>(
+    undefined,
+  );
   const [priority, setPriority] = useState<Priority | undefined>(undefined);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   useEffect(() => {
     if (isOpen && task) {
       setTitle(task.title);
-      setDescription(task.description ?? '');
+      setDescription(task.description ?? "");
 
       // 期限の処理
       if (task.dueDate) {
         const dueDate = new Date(task.dueDate);
-        const dateStr = dueDate.toISOString().split('T')[0]; // YYYY-MM-DD形式
-        setDueDate(dateStr || '');
+        const dateStr = dueDate.toISOString().split("T")[0]; // YYYY-MM-DD形式
+        setDueDate(dateStr || "");
 
         // 時刻チェック（23:59:59以外の場合は時刻を設定）
-        const is23_59_59 = dueDate.getHours() === 23 && dueDate.getMinutes() === 59 && dueDate.getSeconds() === 59;
+        const is23_59_59 =
+          dueDate.getHours() === 23 &&
+          dueDate.getMinutes() === 59 &&
+          dueDate.getSeconds() === 59;
         if (!is23_59_59) {
           setHasTime(true);
-          const timeStr = `${String(dueDate.getHours()).padStart(2, '0')}:${String(dueDate.getMinutes()).padStart(2, '0')}`;
+          const timeStr = `${String(dueDate.getHours()).padStart(2, "0")}:${String(dueDate.getMinutes()).padStart(2, "0")}`;
           setDueTime(timeStr);
         } else {
           setHasTime(false);
-          setDueTime('');
+          setDueTime("");
         }
       } else {
-        setDueDate('');
-        setDueTime('');
+        setDueDate("");
+        setDueTime("");
         setHasTime(false);
       }
 
       // completedAtをdatetime-local形式（YYYY-MM-DDTHH:mm）にフォーマット
       const completedAtValue = task.completedAt
         ? toDateTimeLocalString(new Date(task.completedAt))
-        : '';
+        : "";
       setCompletedAt(completedAtValue);
 
       setAttachments(task.files ?? []);
@@ -109,23 +123,23 @@ export const useTaskEdit = ({
       setPriority(task.priority);
 
       // 現在のタスクがどのカラムにあるかを特定
-      const currentColumn = state.currentBoard?.columns.find(column =>
-        column.tasks.some(t => t.id === task.id)
+      const currentColumn = state.currentBoard?.columns.find((column) =>
+        column.tasks.some((t) => t.id === task.id),
       );
-      setColumnId(currentColumn?.id ?? '');
+      setColumnId(currentColumn?.id ?? "");
     } else if (!isOpen) {
       // ダイアログが閉じられた時にフォームをリセット
-      setTitle('');
-      setDescription('');
-      setDueDate('');
-      setDueTime('');
+      setTitle("");
+      setDescription("");
+      setDueDate("");
+      setDueTime("");
       setHasTime(false);
-      setCompletedAt('');
+      setCompletedAt("");
       setLabels([]);
       setAttachments([]);
       setRecurrence(undefined);
       setPriority(undefined);
-      setColumnId('');
+      setColumnId("");
     }
   }, [isOpen, task, state.currentBoard]);
 
@@ -134,14 +148,18 @@ export const useTaskEdit = ({
     if (isOpen && task) {
       setLabels(task.labels ?? []);
     }
-  }, [isOpen, task?.id]); // task?.idをキーにして、同じタスクでは一度だけ実行
+  }, [isOpen, task]); // taskの変更時にラベルを更新
 
   // ステータス変更時の完了日時の自動更新
   useEffect(() => {
     if (state.currentBoard?.columns && columnId) {
-      const targetColumn = state.currentBoard.columns.find(col => col.id === columnId);
-      const isLastColumn = targetColumn &&
-        state.currentBoard.columns.indexOf(targetColumn) === state.currentBoard.columns.length - 1;
+      const targetColumn = state.currentBoard.columns.find(
+        (col) => col.id === columnId,
+      );
+      const isLastColumn =
+        targetColumn &&
+        state.currentBoard.columns.indexOf(targetColumn) ===
+          state.currentBoard.columns.length - 1;
 
       // 完了カラムに移動した場合で、現在完了日時が空の場合
       if (isLastColumn && !completedAt) {
@@ -152,7 +170,7 @@ export const useTaskEdit = ({
       }
       // 完了カラム以外に移動した場合で、完了日時が設定されている場合
       else if (!isLastColumn && completedAt) {
-        setCompletedAt('');
+        setCompletedAt("");
       }
     }
   }, [columnId, state.currentBoard, completedAt]);
@@ -162,7 +180,7 @@ export const useTaskEdit = ({
     if (!dueDate && recurrence && recurrence.enabled) {
       setRecurrence({
         ...recurrence,
-        enabled: false
+        enabled: false,
       });
     }
   }, [dueDate, recurrence]);
@@ -170,7 +188,7 @@ export const useTaskEdit = ({
   // 時刻設定がオフになった場合、時刻をクリア
   useEffect(() => {
     if (!hasTime) {
-      setDueTime('');
+      setDueTime("");
     }
   }, [hasTime]);
 
@@ -190,20 +208,26 @@ export const useTaskEdit = ({
         }
       }
 
-      let completedAtObj = completedAt ? fromDateTimeLocalString(completedAt) || undefined : undefined;
-      
+      let completedAtObj = completedAt
+        ? fromDateTimeLocalString(completedAt) || undefined
+        : undefined;
+
       // カラムの変更があった場合は移動処理を実行
-      const currentColumn = state.currentBoard?.columns.find(column =>
-        column.tasks.some(t => t.id === task.id)
+      const currentColumn = state.currentBoard?.columns.find((column) =>
+        column.tasks.some((t) => t.id === task.id),
       );
-      
+
       if (currentColumn && columnId && currentColumn.id !== columnId) {
         // 最後のカラム（完了カラム）への移動かどうかを判定
-        const targetColumn = state.currentBoard?.columns.find(col => col.id === columnId);
-        const isLastColumn = state.currentBoard?.columns && 
-          targetColumn && 
-          state.currentBoard.columns.indexOf(targetColumn) === state.currentBoard.columns.length - 1;
-        
+        const targetColumn = state.currentBoard?.columns.find(
+          (col) => col.id === columnId,
+        );
+        const isLastColumn =
+          state.currentBoard?.columns &&
+          targetColumn &&
+          state.currentBoard.columns.indexOf(targetColumn) ===
+            state.currentBoard.columns.length - 1;
+
         // 完了カラムに移動する場合は完了日時を23:59に設定
         if (isLastColumn && !task.completedAt) {
           completedAtObj = new Date();
@@ -213,27 +237,43 @@ export const useTaskEdit = ({
         else if (!isLastColumn && task.completedAt) {
           completedAtObj = undefined;
         }
-        
+
         // タスクを移動
         moveTask(task.id, currentColumn.id, columnId, 0);
       }
-      
+
       const updatedTask: Task = {
         ...task,
         title: title.trim(),
-        description: description.trim() || '',
+        description: description.trim() || "",
         dueDate: dueDateObj?.toISOString() || null,
         completedAt: completedAtObj?.toISOString() || null,
         priority,
         labels,
         files: attachments,
         recurrence: recurrence?.enabled && dueDateObj ? recurrence : undefined,
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString(),
       };
-      
+
       onSave(updatedTask);
     }
-  }, [task, title, description, dueDate, dueTime, hasTime, completedAt, labels, attachments, recurrence, priority, columnId, state.currentBoard, moveTask, onSave]);
+  }, [
+    task,
+    title,
+    description,
+    dueDate,
+    dueTime,
+    hasTime,
+    completedAt,
+    labels,
+    attachments,
+    recurrence,
+    priority,
+    columnId,
+    state.currentBoard,
+    moveTask,
+    onSave,
+  ]);
 
   const handleDelete = useCallback(() => {
     setShowDeleteConfirm(true);
@@ -246,11 +286,14 @@ export const useTaskEdit = ({
     setShowDeleteConfirm(false);
   }, [task, onDelete]);
 
-  const handleKeyPress = useCallback((event: React.KeyboardEvent) => {
-    if (event.key === 'Escape') {
-      onCancel();
-    }
-  }, [onCancel]);
+  const handleKeyPress = useCallback(
+    (event: React.KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onCancel();
+      }
+    },
+    [onCancel],
+  );
 
   const isValid = useMemo(() => title.trim().length > 0, [title]);
 
@@ -259,13 +302,14 @@ export const useTaskEdit = ({
     if (!task || !state.currentBoard?.columns.length) {
       return false;
     }
-    
-    const rightmostColumn = state.currentBoard.columns[state.currentBoard.columns.length - 1];
+
+    const rightmostColumn =
+      state.currentBoard.columns[state.currentBoard.columns.length - 1];
     if (!rightmostColumn) {
       return false;
     }
-    
-    return rightmostColumn.tasks.some(t => t.id === task.id);
+
+    return rightmostColumn.tasks.some((t) => t.id === task.id);
   }, [task, state.currentBoard]);
 
   // ステータス選択肢を生成
@@ -273,13 +317,12 @@ export const useTaskEdit = ({
     if (!state.currentBoard?.columns.length) {
       return [];
     }
-    
-    return state.currentBoard.columns.map(column => ({
+
+    return state.currentBoard.columns.map((column) => ({
       value: column.id,
-      label: column.title
+      label: column.title,
     }));
   }, [state.currentBoard]);
-
 
   return {
     title,
@@ -312,6 +355,6 @@ export const useTaskEdit = ({
     handleDelete,
     handleConfirmDelete,
     handleKeyPress,
-    isValid
+    isValid,
   };
 };

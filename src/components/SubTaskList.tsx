@@ -1,5 +1,5 @@
-import { Box } from '@primer/react';
-import React, { useMemo, useCallback } from 'react';
+import { Box } from "@primer/react";
+import React, { useMemo, useCallback } from "react";
 import {
   DndContext,
   closestCenter,
@@ -8,20 +8,20 @@ import {
   useSensor,
   useSensors,
   type DragEndEvent,
-} from '@dnd-kit/core';
+} from "@dnd-kit/core";
 import {
   SortableContext,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
+} from "@dnd-kit/sortable";
 
-import { useSubTaskForm } from '../hooks/useSubTaskForm';
-import type { SubTask } from '../types';
+import { useSubTaskForm } from "../hooks/useSubTaskForm";
+import type { SubTask } from "../types";
 
-import SubTaskForm from './SubTaskForm';
-import SubTaskHeader from './SubTaskHeader';
-import SubTaskItem from './SubTaskItem';
-import SubTaskProgressBar from './SubTaskProgressBar';
+import SubTaskForm from "./SubTaskForm";
+import SubTaskHeader from "./SubTaskHeader";
+import SubTaskItem from "./SubTaskItem";
+import SubTaskProgressBar from "./SubTaskProgressBar";
 
 interface SubTaskListProps {
   subTasks: SubTask[];
@@ -38,22 +38,25 @@ const SubTaskList: React.FC<SubTaskListProps> = ({
   onToggleSubTask,
   onEditSubTask,
   onDeleteSubTask,
-  onReorderSubTasks
+  onReorderSubTasks,
 }) => {
-  const { 
-    isAdding, 
-    title, 
-    setIsAdding, 
-    setTitle, 
-    handleSubmit, 
-    resetForm, 
-    handleKeyPress 
+  const {
+    isAdding,
+    title,
+    setIsAdding,
+    setTitle,
+    handleSubmit,
+    resetForm,
+    handleKeyPress,
   } = useSubTaskForm();
 
-  const { completedCount, totalCount } = useMemo(() => ({
-    completedCount: subTasks.filter(task => task.completed).length,
-    totalCount: subTasks.length
-  }), [subTasks]);
+  const { completedCount, totalCount } = useMemo(
+    () => ({
+      completedCount: subTasks.filter((task) => task.completed).length,
+      totalCount: subTasks.length,
+    }),
+    [subTasks],
+  );
 
   const handleFormSubmit = () => handleSubmit(onAddSubTask);
 
@@ -65,22 +68,25 @@ const SubTaskList: React.FC<SubTaskListProps> = ({
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    })
+    }),
   );
 
   // ドラッグエンドハンドラー
-  const handleDragEnd = useCallback((event: DragEndEvent) => {
-    const { active, over } = event;
+  const handleDragEnd = useCallback(
+    (event: DragEndEvent) => {
+      const { active, over } = event;
 
-    if (active.id !== over?.id) {
-      const oldIndex = subTasks.findIndex((item) => item.id === active.id);
-      const newIndex = subTasks.findIndex((item) => item.id === over?.id);
+      if (active.id !== over?.id) {
+        const oldIndex = subTasks.findIndex((item) => item.id === active.id);
+        const newIndex = subTasks.findIndex((item) => item.id === over?.id);
 
-      if (oldIndex !== -1 && newIndex !== -1) {
-        onReorderSubTasks(oldIndex, newIndex);
+        if (oldIndex !== -1 && newIndex !== -1) {
+          onReorderSubTasks(oldIndex, newIndex);
+        }
       }
-    }
-  }, [subTasks, onReorderSubTasks]);
+    },
+    [subTasks, onReorderSubTasks],
+  );
 
   return (
     <Box sx={{ mb: 4 }}>
@@ -102,10 +108,10 @@ const SubTaskList: React.FC<SubTaskListProps> = ({
         onDragEnd={handleDragEnd}
       >
         <SortableContext
-          items={subTasks.map(item => item.id)}
+          items={subTasks.map((item) => item.id)}
           strategy={verticalListSortingStrategy}
         >
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
             {subTasks.map((subTask) => (
               <SubTaskItem
                 key={subTask.id}

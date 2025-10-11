@@ -1,115 +1,114 @@
-import { Button, Box, Text } from '@primer/react';
-import React, { memo } from 'react';
+import { Button, Box, Text } from "@primer/react";
+import React, { memo } from "react";
 import {
   DndContext,
   DragOverlay,
   closestCenter,
   defaultDropAnimationSideEffects,
-} from '@dnd-kit/core';
+} from "@dnd-kit/core";
 import {
   SortableContext,
   horizontalListSortingStrategy,
   useSortable,
-} from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
-import { useBoard } from '../contexts/BoardContext';
-import { useBoardDragAndDrop } from '../hooks/useBoardDragAndDrop';
-import type { KanbanBoard } from '../types';
+import { useBoard } from "../contexts/BoardContext";
+import { useBoardDragAndDrop } from "../hooks/useBoardDragAndDrop";
+import type { KanbanBoard } from "../types";
 
 // スタイル定義
 const styles = {
   container: {
-    display: 'flex',
-    alignItems: 'center',
+    display: "flex",
+    alignItems: "center",
     gap: 4,
     flex: 1,
     minWidth: 0,
-    overflowX: 'auto',
-    scrollbarWidth: 'none',
-    '&::-webkit-scrollbar': {
-      display: 'none'
+    overflowX: "auto",
+    scrollbarWidth: "none",
+    "&::-webkit-scrollbar": {
+      display: "none",
     },
-    maskImage: 'linear-gradient(to right, black 0%, black calc(100% - 12px), transparent 100%)',
-    paddingRight: '4px'
+    maskImage:
+      "linear-gradient(to right, black 0%, black calc(100% - 12px), transparent 100%)",
+    paddingRight: "4px",
   },
   emptyState: {
-    display: 'flex',
-    alignItems: 'center'
+    display: "flex",
+    alignItems: "center",
   },
   emptyText: {
-    color: 'fg.muted',
-    fontSize: 1
+    color: "fg.muted",
+    fontSize: 1,
   },
   tabContainer: {
-    height: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    transition: 'transform 200ms ease'
+    height: "100%",
+    display: "flex",
+    alignItems: "center",
+    transition: "transform 200ms ease",
   },
   draggingTab: {
     opacity: 0.5,
-    transform: 'rotate(5deg)',
-    zIndex: 1000
+    transform: "rotate(5deg)",
+    zIndex: 1000,
   },
   selectedTab: {
     px: 0,
     py: 3,
-    borderBottom: '2px solid',
-    borderBottomColor: 'accent.emphasis'
+    borderBottom: "2px solid",
+    borderBottomColor: "accent.emphasis",
   },
   unselectedTab: {
     px: 0,
     py: 3,
-    borderBottom: 'none'
+    borderBottom: "none",
   },
   tabButton: {
     fontSize: 1,
-    borderRadius: '6px',
+    borderRadius: "6px",
     px: 1,
     py: 0,
-    whiteSpace: 'nowrap',
-    translate: '0 2px',
+    whiteSpace: "nowrap",
+    translate: "0 2px",
     flexShrink: 0,
-    cursor: 'grab',
-    '&:hover': {
-      backgroundColor: 'canvas.subtle',
-      color: 'fg.default'
+    cursor: "grab",
+    "&:hover": {
+      backgroundColor: "canvas.subtle",
+      color: "fg.default",
     },
-    '&:active': {
-      cursor: 'grabbing'
-    }
+    "&:active": {
+      cursor: "grabbing",
+    },
   },
   selectedButton: {
-    fontWeight: '600',
-    color: 'fg.default'
+    fontWeight: "600",
+    color: "fg.default",
   },
   unselectedButton: {
-    fontWeight: '400',
-    color: 'fg.muted'
+    fontWeight: "400",
+    color: "fg.muted",
   },
   overlayButton: {
     fontSize: 1,
-    borderRadius: '6px',
+    borderRadius: "6px",
     px: 1,
     py: 0,
-    whiteSpace: 'nowrap',
+    whiteSpace: "nowrap",
     flexShrink: 0,
-    fontWeight: '600',
-    color: 'fg.default',
-    backgroundColor: 'canvas.default',
-    border: '1px solid',
-    borderColor: 'border.default',
-    boxShadow: 'shadow.medium'
-  }
+    fontWeight: "600",
+    color: "fg.default",
+    backgroundColor: "canvas.default",
+    border: "1px solid",
+    borderColor: "border.default",
+    boxShadow: "shadow.medium",
+  },
 } as const;
 
 // 空状態表示コンポーネント
 const EmptyBoardsMessage: React.FC = memo(() => (
   <Box sx={styles.emptyState}>
-    <Text sx={styles.emptyText}>
-      利用可能なボードがありません
-    </Text>
+    <Text sx={styles.emptyText}>利用可能なボードがありません</Text>
   </Box>
 ));
 
@@ -120,82 +119,85 @@ interface SortableBoardTabProps {
   onSelect: (boardId: string) => void;
 }
 
-const SortableBoardTab: React.FC<SortableBoardTabProps> = memo(({ board, isSelected, onSelect }) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: board.id });
+const SortableBoardTab: React.FC<SortableBoardTabProps> = memo(
+  ({ board, isSelected, onSelect }) => {
+    const {
+      attributes,
+      listeners,
+      setNodeRef,
+      transform,
+      transition,
+      isDragging,
+    } = useSortable({ id: board.id });
 
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
+    const style = {
+      transform: CSS.Transform.toString(transform),
+      transition,
+    };
 
-  const tabStyles = {
-    ...styles.tabContainer,
-    ...(isSelected ? styles.selectedTab : styles.unselectedTab),
-    ...(isDragging ? styles.draggingTab : {})
-  };
+    const tabStyles = {
+      ...styles.tabContainer,
+      ...(isSelected ? styles.selectedTab : styles.unselectedTab),
+      ...(isDragging ? styles.draggingTab : {}),
+    };
 
-  const buttonStyles = {
-    ...styles.tabButton,
-    ...(isSelected ? styles.selectedButton : styles.unselectedButton)
-  };
+    const buttonStyles = {
+      ...styles.tabButton,
+      ...(isSelected ? styles.selectedButton : styles.unselectedButton),
+    };
 
-  return (
-    <Box
-      ref={setNodeRef}
-      style={style}
-      sx={tabStyles}
-      aria-selected={isSelected}
-      {...attributes}
-      {...listeners}
-    >
-      <Button
-        variant="invisible"
-        size="medium"
-        onClick={() => onSelect(board.id)}
-        sx={buttonStyles}
-        aria-label={`${board.title}ボードを選択`}
+    return (
+      <Box
+        ref={setNodeRef}
+        style={style}
+        sx={tabStyles}
+        aria-selected={isSelected}
+        {...attributes}
+        {...listeners}
       >
-        {board.title}
-      </Button>
-    </Box>
-  );
-});
+        <Button
+          variant="invisible"
+          size="medium"
+          onClick={() => onSelect(board.id)}
+          sx={buttonStyles}
+          aria-label={`${board.title}ボードを選択`}
+        >
+          {board.title}
+        </Button>
+      </Box>
+    );
+  },
+);
 
 // ドラッグオーバーレイ用ボードタブ
 interface DragOverlayBoardTabProps {
   board: KanbanBoard;
 }
 
-const DragOverlayBoardTab: React.FC<DragOverlayBoardTabProps> = memo(({ board }) => (
-  <Box sx={{
-    ...styles.tabContainer,
-    ...styles.selectedTab
-  }}>
-    <Button
-      variant="invisible"
-      size="medium"
-      sx={styles.overlayButton}
+const DragOverlayBoardTab: React.FC<DragOverlayBoardTabProps> = memo(
+  ({ board }) => (
+    <Box
+      sx={{
+        ...styles.tabContainer,
+        ...styles.selectedTab,
+      }}
     >
-      {board.title}
-    </Button>
-  </Box>
-));
+      <Button variant="invisible" size="medium" sx={styles.overlayButton}>
+        {board.title}
+      </Button>
+    </Box>
+  ),
+);
 
 // メインコンポーネント
 const BoardSelector: React.FC = () => {
   const { state, setCurrentBoard, reorderBoards } = useBoard();
 
-  const { sensors, activeBoard, handleDragStart, handleDragEnd } = useBoardDragAndDrop({
-    boards: state.boards,
-    onReorderBoards: reorderBoards,
-  });
+  const { sensors, activeBoard, handleDragStart, handleDragEnd } =
+    useBoardDragAndDrop({
+      boards: state.boards,
+      onReorderBoards: reorderBoards,
+    });
 
   if (state.boards.length === 0) {
     return <EmptyBoardsMessage />;
@@ -209,7 +211,7 @@ const BoardSelector: React.FC = () => {
       onDragEnd={handleDragEnd}
     >
       <SortableContext
-        items={state.boards.map(board => board.id)}
+        items={state.boards.map((board) => board.id)}
         strategy={horizontalListSortingStrategy}
       >
         <Box sx={styles.container} role="tablist" aria-label="ボード選択">
@@ -229,15 +231,13 @@ const BoardSelector: React.FC = () => {
           sideEffects: defaultDropAnimationSideEffects({
             styles: {
               active: {
-                opacity: '0.5',
+                opacity: "0.5",
               },
             },
           }),
         }}
       >
-        {activeBoard ? (
-          <DragOverlayBoardTab board={activeBoard} />
-        ) : null}
+        {activeBoard ? <DragOverlayBoardTab board={activeBoard} /> : null}
       </DragOverlay>
     </DndContext>
   );

@@ -1,30 +1,36 @@
-import { CheckCircleIcon, InfoIcon, AlertIcon, XIcon, StopIcon } from '@primer/octicons-react';
-import { Text, IconButton, Flash } from '@primer/react';
-import React, { useMemo, useCallback, useEffect } from 'react';
+import {
+  CheckCircleIcon,
+  InfoIcon,
+  AlertIcon,
+  XIcon,
+  StopIcon,
+} from "@primer/octicons-react";
+import { Text, IconButton, Flash } from "@primer/react";
+import React, { useMemo, useCallback, useEffect } from "react";
 
-import { useNotifications } from '../contexts/NotificationContext';
-import type { Notification, NotificationType } from '../types';
+import { useNotifications } from "../contexts/NotificationContext";
+import type { Notification, NotificationType } from "../types";
 
 // CSS-in-JSスタイル定義
 const containerStyles: React.CSSProperties = {
-  position: 'fixed',
-  top: '20px',
-  left: '50%',
-  transform: 'translateX(-50%)',
+  position: "fixed",
+  top: "20px",
+  left: "50%",
+  transform: "translateX(-50%)",
   zIndex: 15000, // ダイアログ（z-index: 9999/10000）より高く設定
-  pointerEvents: 'none',
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  gap: '8px'
+  pointerEvents: "none",
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  gap: "8px",
 };
 
 const wrapperStyles: React.CSSProperties = {
-  pointerEvents: 'auto',
-  animation: 'slideInFromTop 0.3s ease-out',
-  width: '100%',
-  maxWidth: '600px',
-  minWidth: '320px'
+  pointerEvents: "auto",
+  animation: "slideInFromTop 0.3s ease-out",
+  width: "100%",
+  maxWidth: "600px",
+  minWidth: "320px",
 };
 
 // レスポンシブ用のメディアクエリチェック
@@ -37,8 +43,8 @@ const useMediaQuery = (query: string): boolean => {
       setMatches(media.matches);
     }
     const listener = () => setMatches(media.matches);
-    media.addEventListener('change', listener);
-    return () => media.removeEventListener('change', listener);
+    media.addEventListener("change", listener);
+    return () => media.removeEventListener("change", listener);
   }, [matches, query]);
 
   return matches;
@@ -46,30 +52,32 @@ const useMediaQuery = (query: string): boolean => {
 
 const getNotificationIcon = (type: NotificationType): React.ReactElement => {
   switch (type) {
-    case 'success':
+    case "success":
       return <CheckCircleIcon size={16} aria-hidden="true" />;
-    case 'info':
+    case "info":
       return <InfoIcon size={16} aria-hidden="true" />;
-    case 'warning':
+    case "warning":
       return <AlertIcon size={16} aria-hidden="true" />;
-    case 'error':
+    case "error":
       return <StopIcon size={16} aria-hidden="true" />;
     default:
       return <InfoIcon size={16} aria-hidden="true" />;
   }
 };
 
-const getFlashVariant = (type: NotificationType): 'default' | 'warning' | 'danger' | 'success' => {
+const getFlashVariant = (
+  type: NotificationType,
+): "default" | "warning" | "danger" | "success" => {
   switch (type) {
-    case 'success':
-      return 'success';
-    case 'warning':
-      return 'warning';
-    case 'error':
-      return 'danger';
-    case 'info':
+    case "success":
+      return "success";
+    case "warning":
+      return "warning";
+    case "error":
+      return "danger";
+    case "info":
     default:
-      return 'default';
+      return "default";
   }
 };
 
@@ -78,86 +86,98 @@ interface NotificationItemProps {
   onClose: (id: string) => void;
 }
 
-const NotificationItem: React.FC<NotificationItemProps> = React.memo(({ notification, onClose }) => {
-  const handleClose = useCallback(() => {
-    onClose(notification.id);
-  }, [notification.id, onClose]);
+const NotificationItem: React.FC<NotificationItemProps> = React.memo(
+  ({ notification, onClose }) => {
+    const handleClose = useCallback(() => {
+      onClose(notification.id);
+    }, [notification.id, onClose]);
 
-  const handleKeyDown = useCallback((event: React.KeyboardEvent) => {
-    if (event.key === 'Escape') {
-      handleClose();
-    }
-  }, [handleClose]);
+    const handleKeyDown = useCallback(
+      (event: React.KeyboardEvent) => {
+        if (event.key === "Escape") {
+          handleClose();
+        }
+      },
+      [handleClose],
+    );
 
-  const variant = useMemo(() => getFlashVariant(notification.type), [notification.type]);
-  const icon = useMemo(() => getNotificationIcon(notification.type), [notification.type]);
+    const variant = useMemo(
+      () => getFlashVariant(notification.type),
+      [notification.type],
+    );
+    const icon = useMemo(
+      () => getNotificationIcon(notification.type),
+      [notification.type],
+    );
 
-  return (
-    <Flash
-      variant={variant}
-      role="alert"
-      aria-live="polite"
-      onKeyDown={handleKeyDown}
-      tabIndex={0}
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '8px',
-        padding: '10px 16px',
-        position: 'relative',
-        width: '100%',
-        boxSizing: 'border-box'
-      }}
-    >
-      <div style={{ flexShrink: 0, marginTop: '2px' }}>
-        {icon}
-      </div>
-
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <Text
-          style={{
-            display: 'block',
-            wordBreak: 'break-word'
-          }}
-        >
-          {notification.message}
-        </Text>
-      </div>
-
-      <IconButton
-        variant="invisible"
-        size="small"
-        onClick={handleClose}
-        aria-label="通知を閉じる"
+    return (
+      <Flash
+        variant={variant}
+        role="alert"
+        aria-live="polite"
+        onKeyDown={handleKeyDown}
+        tabIndex={0}
         style={{
-          flexShrink: 0,
-          opacity: 0.7
+          display: "flex",
+          alignItems: "center",
+          gap: "8px",
+          padding: "10px 16px",
+          position: "relative",
+          width: "100%",
+          boxSizing: "border-box",
         }}
-        onMouseEnter={(e) => {
-          (e.target as HTMLElement).style.opacity = '1';
-        }}
-        onMouseLeave={(e) => {
-          (e.target as HTMLElement).style.opacity = '0.7';
-        }}
-        icon={XIcon}
-      />
-    </Flash>
-  );
-});
+      >
+        <div style={{ flexShrink: 0, marginTop: "2px" }}>{icon}</div>
+
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <Text
+            style={{
+              display: "block",
+              wordBreak: "break-word",
+            }}
+          >
+            {notification.message}
+          </Text>
+        </div>
+
+        <IconButton
+          variant="invisible"
+          size="small"
+          onClick={handleClose}
+          aria-label="通知を閉じる"
+          style={{
+            flexShrink: 0,
+            opacity: 0.7,
+          }}
+          onMouseEnter={(e) => {
+            (e.target as HTMLElement).style.opacity = "1";
+          }}
+          onMouseLeave={(e) => {
+            (e.target as HTMLElement).style.opacity = "0.7";
+          }}
+          icon={XIcon}
+        />
+      </Flash>
+    );
+  },
+);
 
 const NotificationContainerComponent: React.FC = () => {
   const { notifications, removeNotification } = useNotifications();
-  const isMobile = useMediaQuery('(max-width: 768px)');
+  const isMobile = useMediaQuery("(max-width: 768px)");
 
   // メモ化されたコールバック
-  const handleRemoveNotification = useCallback((id: string) => {
-    removeNotification(id);
-  }, [removeNotification]);
+  const handleRemoveNotification = useCallback(
+    (id: string) => {
+      removeNotification(id);
+    },
+    [removeNotification],
+  );
 
   // ESCキーでの全体閉じる機能
   useEffect(() => {
     const handleGlobalKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && notifications.length > 0) {
+      if (event.key === "Escape" && notifications.length > 0) {
         // 最新の通知を閉じる
         const latestNotification = notifications[0];
         if (latestNotification) {
@@ -166,9 +186,9 @@ const NotificationContainerComponent: React.FC = () => {
       }
     };
 
-    document.addEventListener('keydown', handleGlobalKeyDown);
+    document.addEventListener("keydown", handleGlobalKeyDown);
     return () => {
-      document.removeEventListener('keydown', handleGlobalKeyDown);
+      document.removeEventListener("keydown", handleGlobalKeyDown);
     };
   }, [notifications, removeNotification]);
 
@@ -176,20 +196,23 @@ const NotificationContainerComponent: React.FC = () => {
   const responsiveContainerStyles: React.CSSProperties = {
     ...containerStyles,
     ...(isMobile && {
-      top: '10px',
-      left: '10px',
-      right: '10px',
-      transform: 'none',
-      width: 'auto'
-    })
+      top: "10px",
+      left: "10px",
+      right: "10px",
+      transform: "none",
+      width: "auto",
+    }),
   };
 
-  const responsiveWrapperStyles: React.CSSProperties = useMemo(() => ({
-    ...wrapperStyles,
-    ...(!isMobile && {
-      minWidth: '50vw'
-    })
-  }), [isMobile]);
+  const responsiveWrapperStyles: React.CSSProperties = useMemo(
+    () => ({
+      ...wrapperStyles,
+      ...(!isMobile && {
+        minWidth: "50vw",
+      }),
+    }),
+    [isMobile],
+  );
 
   if (notifications.length === 0) {
     return null;
@@ -231,7 +254,7 @@ const NotificationContainerComponent: React.FC = () => {
 };
 
 // displayNameを設定（デバッグ用）
-NotificationItem.displayName = 'NotificationItem';
-NotificationContainerComponent.displayName = 'NotificationContainer';
+NotificationItem.displayName = "NotificationItem";
+NotificationContainerComponent.displayName = "NotificationContainer";
 
 export default NotificationContainerComponent;

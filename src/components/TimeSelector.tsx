@@ -1,10 +1,8 @@
-import {
-  Button,
-} from '@primer/react';
-import { ClockIcon } from '@primer/octicons-react';
-import React, { useState, useCallback } from 'react';
+import { Button } from "@primer/react";
+import { ClockIcon } from "@primer/octicons-react";
+import React, { useState, useCallback } from "react";
 
-import TimeSelectorDialog from './TimeSelectorDialog';
+import TimeSelectorDialog from "./TimeSelectorDialog";
 
 interface TimeSelectorProps {
   hasTime: boolean;
@@ -21,9 +19,12 @@ const TimeSelector: React.FC<TimeSelectorProps> = ({
 }) => {
   const [isDetailDialogOpen, setIsDetailDialogOpen] = useState(false);
 
-  const handleDetailDialogSave = useCallback((newHasTime: boolean, newTime: string) => {
-    onTimeChange(newHasTime, newTime);
-  }, [onTimeChange]);
+  const handleDetailDialogSave = useCallback(
+    (newHasTime: boolean, newTime: string) => {
+      onTimeChange(newHasTime, newTime);
+    },
+    [onTimeChange],
+  );
 
   const handleDetailDialogClose = useCallback(() => {
     setIsDetailDialogOpen(false);
@@ -39,7 +40,7 @@ const TimeSelector: React.FC<TimeSelectorProps> = ({
     if (hasTime && dueTime) {
       return `${dueTime} まで`;
     }
-    return '時刻を設定';
+    return "時刻を設定";
   };
 
   return (
@@ -48,12 +49,12 @@ const TimeSelector: React.FC<TimeSelectorProps> = ({
         onClick={handleButtonClick}
         disabled={disabled}
         sx={{
-          color: disabled ? 'fg.disabled' : 'fg.default',
-          '& span': {
-            display: 'flex',
-            alignItems: 'center',
-            gap: 1
-          }
+          color: disabled ? "fg.disabled" : "fg.default",
+          "& span": {
+            display: "flex",
+            alignItems: "center",
+            gap: 1,
+          },
         }}
       >
         <ClockIcon size={16} />

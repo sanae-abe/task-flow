@@ -1,6 +1,8 @@
-@import '@primer/css/dist/primer.css';
+@import "@primer/css/dist/primer.css";
 
-html, body, #root {
+html,
+body,
+#root {
   overflow-x: hidden;
   max-width: 100vw;
   min-height: 100vh;
@@ -10,7 +12,19 @@ html, body, #root {
 .app {
   min-height: 100vh;
   background-color: #f6f8fa;
-  font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Meiryo", "Yu Gothic", -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+  font-family:
+    "Noto Sans JP",
+    "Hiragino Kaku Gothic ProN",
+    "Hiragino Sans",
+    "Meiryo",
+    "Yu Gothic",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    "Noto Sans",
+    Helvetica,
+    Arial,
+    sans-serif;
   padding-top: 112px; /* ヘッダー(50px) + サブヘッダー(45px) の高さ分 */
 }
 

@@ -1,65 +1,64 @@
-import { PlusIcon, QuestionIcon, GearIcon } from '@primer/octicons-react';
-import { Box, Button } from '@primer/react';
-import React from 'react';
+import { PlusIcon, QuestionIcon, GearIcon } from "@primer/octicons-react";
+import { Box, Button } from "@primer/react";
+import React from "react";
 
-import { useKanban } from '../contexts/KanbanContext';
+import { useKanban } from "../contexts/KanbanContext";
 
-import OfflineIndicator from './OfflineIndicator';
-import BoardSelector from './BoardSelector';
-import Logo from './Logo';
-
+import OfflineIndicator from "./OfflineIndicator";
+import BoardSelector from "./BoardSelector";
+import Logo from "./Logo";
 
 // 定数定義
-const HEADER_HEIGHT = '67px';
-const MAX_CONTENT_WIDTH = '100%';
-const DIVIDER_HEIGHT = '24px';
+const HEADER_HEIGHT = "67px";
+const MAX_CONTENT_WIDTH = "100%";
+const DIVIDER_HEIGHT = "24px";
 
 // スタイル定義オブジェクト
 const headerStyles = {
   container: {
     px: 6,
     py: 0,
-    bg: 'canvas.default',
-    borderBottom: '1px solid',
-    borderColor: 'border.default',
-    height: HEADER_HEIGHT
+    bg: "canvas.default",
+    borderBottom: "1px solid",
+    borderColor: "border.default",
+    height: HEADER_HEIGHT,
   },
   content: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
     maxWidth: MAX_CONTENT_WIDTH,
-    mx: 'auto',
-    height: '100%'
+    mx: "auto",
+    height: "100%",
   },
   leftSection: {
-    display: 'flex',
-    alignItems: 'center',
+    display: "flex",
+    alignItems: "center",
     gap: 4,
     flex: 1,
     minWidth: 0,
-    paddingRight: 4
+    paddingRight: 4,
   },
   divider: {
     height: DIVIDER_HEIGHT,
-    width: '1px',
-    backgroundColor: 'border.muted'
+    width: "1px",
+    backgroundColor: "border.muted",
   },
   rightSection: {
-    display: 'flex',
-    alignItems: 'center',
-    flexShrink: 0
+    display: "flex",
+    alignItems: "center",
+    flexShrink: 0,
   },
   createButton: {
-    backgroundColor: 'accent.emphasis',
-    color: '#ffffff',
-    border: 'none',
+    backgroundColor: "accent.emphasis",
+    color: "#ffffff",
+    border: "none",
     borderRadius: 2,
-    transition: 'background-color 0.2s ease',
-    '&:hover': {
-      backgroundColor: 'var(--button-outline-bgColor-active)'
-    }
-  }
+    transition: "background-color 0.2s ease",
+    "&:hover": {
+      backgroundColor: "var(--button-outline-bgColor-active)",
+    },
+  },
 };
 
 // 区切り線コンポーネント
@@ -83,7 +82,11 @@ interface RightSectionProps {
   onSettingsClick: () => void;
 }
 
-const RightSection: React.FC<RightSectionProps> = ({ onCreateClick, onHelpClick, onSettingsClick }) => (
+const RightSection: React.FC<RightSectionProps> = ({
+  onCreateClick,
+  onHelpClick,
+  onSettingsClick,
+}) => (
   <Box sx={headerStyles.rightSection}>
     <OfflineIndicator />
     <Button

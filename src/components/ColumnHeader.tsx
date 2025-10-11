@@ -1,9 +1,9 @@
-import React from 'react';
+import React from "react";
 
-import type { Column } from '../types';
+import type { Column } from "../types";
 
-import ColumnActions from './ColumnActions';
-import ColumnTitle from './ColumnTitle';
+import ColumnActions from "./ColumnActions";
+import ColumnTitle from "./ColumnTitle";
 
 interface ColumnHeaderProps {
   column: Column;
@@ -17,12 +17,12 @@ interface ColumnHeaderProps {
 }
 
 const headerStyles: React.CSSProperties = {
-  display: 'flex',
-  paddingBottom: '12px',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  width: '100%',
-  overflow: 'hidden'
+  display: "flex",
+  paddingBottom: "12px",
+  justifyContent: "space-between",
+  alignItems: "center",
+  width: "100%",
+  overflow: "hidden",
 };
 
 const ColumnHeader: React.FC<ColumnHeaderProps> = ({
@@ -33,20 +33,20 @@ const ColumnHeader: React.FC<ColumnHeaderProps> = ({
   onMoveLeft,
   onMoveRight,
   canMoveLeft,
-  canMoveRight
+  canMoveRight,
 }) => (
-    <div style={headerStyles}>
-      <ColumnTitle column={column} />
-      <ColumnActions
-        onAddTask={onAddTask}
-        onTitleEdit={onTitleEdit}
-        onDeleteColumn={onDeleteColumn}
-        onMoveLeft={onMoveLeft}
-        onMoveRight={onMoveRight}
-        canMoveLeft={canMoveLeft}
-        canMoveRight={canMoveRight}
-      />
-    </div>
-  );
+  <div style={headerStyles}>
+    <ColumnTitle column={column} />
+    <ColumnActions
+      onAddTask={onAddTask}
+      onTitleEdit={onTitleEdit}
+      onDeleteColumn={onDeleteColumn}
+      onMoveLeft={onMoveLeft}
+      onMoveRight={onMoveRight}
+      canMoveLeft={canMoveLeft}
+      canMoveRight={canMoveRight}
+    />
+  </div>
+);
 
 export default ColumnHeader;

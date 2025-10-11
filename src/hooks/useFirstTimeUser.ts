@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
-const FIRST_TIME_USER_KEY = 'taskflow-first-time-user';
+const FIRST_TIME_USER_KEY = "taskflow-first-time-user";
 
 interface FirstTimeUserState {
   isFirstTimeUser: boolean;
@@ -37,8 +37,8 @@ export const useFirstTimeUser = () => {
 
   const markAsExistingUser = () => {
     try {
-      localStorage.setItem(FIRST_TIME_USER_KEY, 'false');
-      setState(prev => ({
+      localStorage.setItem(FIRST_TIME_USER_KEY, "false");
+      setState((prev) => ({
         ...prev,
         isFirstTimeUser: false,
       }));
@@ -48,13 +48,14 @@ export const useFirstTimeUser = () => {
   };
 
   const markHintAsShown = () => {
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
       hasShownHint: true,
     }));
   };
 
-  const shouldShowHint = state.isFirstTimeUser && !state.hasShownHint && !state.isLoading;
+  const shouldShowHint =
+    state.isFirstTimeUser && !state.hasShownHint && !state.isLoading;
 
   return {
     isFirstTimeUser: state.isFirstTimeUser,

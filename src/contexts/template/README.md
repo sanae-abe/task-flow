@@ -79,14 +79,14 @@ function MyComponent() {
 
 ```typescript
 const template = await createTemplate({
-  name: 'テンプレート名',
-  description: '説明',
-  category: 'work',
-  taskTitle: 'タスクタイトル',
-  taskDescription: 'タスクの説明',
-  priority: 'medium',
+  name: "テンプレート名",
+  description: "説明",
+  category: "work",
+  taskTitle: "タスクタイトル",
+  taskDescription: "タスクの説明",
+  priority: "medium",
   labels: [],
-  dueDate: '+1w',
+  dueDate: "+1w",
   isFavorite: false,
 });
 ```
@@ -97,8 +97,8 @@ const template = await createTemplate({
 
 ```typescript
 const updated = await updateTemplate(templateId, {
-  name: '新しい名前',
-  priority: 'high',
+  name: "新しい名前",
+  priority: "high",
 });
 ```
 
@@ -132,9 +132,9 @@ toggleFavorite(templateId);
 
 ```typescript
 setFilter({
-  category: 'work',
+  category: "work",
   isFavorite: true,
-  searchQuery: '検索ワード',
+  searchQuery: "検索ワード",
 });
 ```
 
@@ -144,8 +144,8 @@ setFilter({
 
 ```typescript
 setSort({
-  field: 'usageCount',
-  direction: 'desc',
+  field: "usageCount",
+  direction: "desc",
 });
 ```
 
@@ -223,12 +223,12 @@ interface TaskTemplate {
 
 ```typescript
 type TemplateCategory =
-  | 'work'
-  | 'personal'
-  | 'project'
-  | 'meeting'
-  | 'routine'
-  | 'other';
+  | "work"
+  | "personal"
+  | "project"
+  | "meeting"
+  | "routine"
+  | "other";
 ```
 
 ### TemplateFilter
@@ -246,8 +246,8 @@ interface TemplateFilter {
 
 ```typescript
 interface TemplateSortConfig {
-  field: 'name' | 'category' | 'usageCount' | 'createdAt' | 'updatedAt';
-  direction: 'asc' | 'desc';
+  field: "name" | "category" | "usageCount" | "createdAt" | "updatedAt";
+  direction: "asc" | "desc";
 }
 ```
 
@@ -275,9 +275,9 @@ interface TemplateSortConfig {
 ### プリセット
 
 ```typescript
-import { RELATIVE_DATE_PRESETS } from './utils/templateToTask';
+import { RELATIVE_DATE_PRESETS } from "./utils/templateToTask";
 
-RELATIVE_DATE_PRESETS.forEach(preset => {
+RELATIVE_DATE_PRESETS.forEach((preset) => {
   console.log(`${preset.label}: ${preset.value}`);
 });
 ```
@@ -358,8 +358,8 @@ function CreateTaskFromTemplate({ templateId, columnId }) {
 ## エラーハンドリング
 
 ```typescript
-import { useTemplate } from './contexts/TemplateContext';
-import { TemplateStorageError } from './utils/templateStorage';
+import { useTemplate } from "./contexts/TemplateContext";
+import { TemplateStorageError } from "./utils/templateStorage";
 
 function MyComponent() {
   const { createTemplate } = useTemplate();
@@ -370,14 +370,14 @@ function MyComponent() {
     } catch (error) {
       if (error instanceof TemplateStorageError) {
         switch (error.type) {
-          case 'QUOTA_EXCEEDED':
-            alert('ストレージの容量が不足しています');
+          case "QUOTA_EXCEEDED":
+            alert("ストレージの容量が不足しています");
             break;
-          case 'VALIDATION_ERROR':
-            alert('入力内容に誤りがあります');
+          case "VALIDATION_ERROR":
+            alert("入力内容に誤りがあります");
             break;
           default:
-            alert('エラーが発生しました');
+            alert("エラーが発生しました");
         }
       }
     }
@@ -395,22 +395,22 @@ function MyComponent() {
 ## テスト
 
 ```typescript
-import { renderHook, act } from '@testing-library/react-hooks';
-import { TemplateProvider, useTemplate } from './TemplateContext';
+import { renderHook, act } from "@testing-library/react-hooks";
+import { TemplateProvider, useTemplate } from "./TemplateContext";
 
-describe('TemplateContext', () => {
-  it('should create template', async () => {
+describe("TemplateContext", () => {
+  it("should create template", async () => {
     const { result } = renderHook(() => useTemplate(), {
       wrapper: TemplateProvider,
     });
 
     await act(async () => {
       const template = await result.current.createTemplate({
-        name: 'Test Template',
+        name: "Test Template",
         // ... other fields
       });
 
-      expect(template.name).toBe('Test Template');
+      expect(template.name).toBe("Test Template");
     });
   });
 });

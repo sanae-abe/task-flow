@@ -17,7 +17,7 @@ DataManagement/
 ## 使用例
 
 ```tsx
-import { DataManagementPanel } from './components/DataManagement';
+import { DataManagementPanel } from "./components/DataManagement";
 
 function SettingsDialog() {
   const handleExportAll = () => {
@@ -33,7 +33,7 @@ function SettingsDialog() {
       onExportAll={handleExportAll}
       onExportCurrent={handleExportCurrent}
       onImportSuccess={() => {
-        console.log('インポート成功');
+        console.log("インポート成功");
       }}
     />
   );
@@ -47,6 +47,7 @@ function SettingsDialog() {
 データ管理機能を統合するメインパネル。
 
 **Props:**
+
 - `onExportAll?: () => void` - 全データエクスポート時のコールバック
 - `onExportCurrent?: () => void` - 現在のボードエクスポート時のコールバック
 - `onImportSuccess?: () => void` - インポート成功時のコールバック
@@ -56,12 +57,14 @@ function SettingsDialog() {
 エクスポート機能を提供するセクション。
 
 **機能:**
+
 - 全データエクスポート（カード型UI）
 - 現在のボードエクスポート（カード型UI）
 - データ統計の表示
 - ホバー時のインタラクション
 
 **内部で使用:**
+
 - `useKanban` - ボード/ラベルデータの取得
 - `calculateDataStatistics` - 統計情報の計算
 - `DataStatistics` - 統計情報の表示
@@ -71,6 +74,7 @@ function SettingsDialog() {
 インポート機能を提供するセクション（折りたたみ可能）。
 
 **機能:**
+
 - JSONファイルのインポート
 - インポートモード選択（追加/置換）
 - ファイル選択UI
@@ -78,10 +82,12 @@ function SettingsDialog() {
 - 進捗状態の表示
 
 **内部で使用:**
+
 - `useDataImport` - インポートロジック
 - `useDataImportDropZone` - ファイル選択UI
 
 **状態:**
+
 - `isExpanded` - 展開/折りたたみ状態
 
 ### DataStatistics
@@ -89,10 +95,12 @@ function SettingsDialog() {
 データ統計情報を表示するコンポーネント。
 
 **Props:**
+
 - `statistics: DataStatisticsType` - 統計データ
 - `title?: string` - タイトル（デフォルト: "データ概要"）
 
 **表示項目:**
+
 - ボード数
 - タスク数
 - ラベル数
@@ -128,6 +136,7 @@ function ImportComponent() {
 ```
 
 **返り値:**
+
 ```typescript
 {
   state: {
@@ -152,7 +161,7 @@ function ImportComponent() {
 全体のデータ統計を計算。
 
 ```tsx
-import { calculateDataStatistics } from '../../utils/dataStatistics';
+import { calculateDataStatistics } from "../../utils/dataStatistics";
 
 const stats = calculateDataStatistics(boards, labels);
 // => {
@@ -169,7 +178,7 @@ const stats = calculateDataStatistics(boards, labels);
 現在のボードのデータ統計を計算。
 
 ```tsx
-import { calculateCurrentBoardStatistics } from '../../utils/dataStatistics';
+import { calculateCurrentBoardStatistics } from "../../utils/dataStatistics";
 
 const stats = calculateCurrentBoardStatistics(currentBoard);
 // => {
@@ -184,11 +193,11 @@ const stats = calculateCurrentBoardStatistics(currentBoard);
 バイトサイズを人間が読みやすい形式に変換。
 
 ```tsx
-import { formatFileSize } from '../../utils/dataStatistics';
+import { formatFileSize } from "../../utils/dataStatistics";
 
-formatFileSize(1024);       // "1.0 KB"
-formatFileSize(1536);       // "1.5 KB"
-formatFileSize(1048576);    // "1.0 MB"
+formatFileSize(1024); // "1.0 KB"
+formatFileSize(1536); // "1.5 KB"
+formatFileSize(1048576); // "1.0 MB"
 formatFileSize(1610612736); // "1.5 GB"
 ```
 
@@ -197,7 +206,7 @@ formatFileSize(1610612736); // "1.5 GB"
 ### ImportMode
 
 ```typescript
-type ImportMode = 'merge' | 'replace';
+type ImportMode = "merge" | "replace";
 ```
 
 ### DataStatistics
@@ -220,7 +229,7 @@ interface ImportState {
   selectedFile: File | null;
   mode: ImportMode;
   message: {
-    type: 'success' | 'error';
+    type: "success" | "error";
     text: string;
   } | null;
 }
@@ -229,20 +238,23 @@ interface ImportState {
 ## パフォーマンス最適化
 
 ### メモ化
+
 - 全コンポーネントで`React.memo`を使用
 - データ統計計算は`useMemo`でキャッシュ
 - 依存配列を適切に設定して不要な再計算を防止
 
 ### 計算量
+
 - `calculateDataStatistics`: O(n) - ボード×カラム×タスク数に比例
 - `formatFileSize`: O(1) - 定数時間
 
 ### 推奨される使用パターン
+
 ```tsx
 // Good: useMemoで統計計算をキャッシュ
 const stats = useMemo(
   () => calculateDataStatistics(boards, labels),
-  [boards, labels]
+  [boards, labels],
 );
 
 // Bad: 毎回計算される
@@ -252,11 +264,13 @@ const stats = calculateDataStatistics(boards, labels);
 ## エラーハンドリング
 
 ### ファイル選択時
+
 - ファイルサイズチェック（最大10MB）
 - ファイルタイプチェック（JSONのみ）
 - エラー時はメッセージを表示
 
 ### インポート時
+
 - JSON構文エラー
 - バリデーションエラー
 - その他のランタイムエラー
@@ -276,12 +290,14 @@ const stats = calculateDataStatistics(boards, labels);
 Primer Reactの`sx` propを使用してスタイリング。
 
 **主要な色:**
+
 - `accent.subtle` - エクスポート機能（青）
 - `success.subtle` - 現在のボード（緑）
 - `attention.subtle` - インポート機能（オレンジ）
 - `danger.emphasis` - 置換モード（赤）
 
 **インタラクション:**
+
 - ホバー時のボーダー色変更
 - ホバー時のシャドウ追加
 - スムーズなトランジション
@@ -292,8 +308,8 @@ Primer Reactの`sx` propを使用してスタイリング。
 
 ```tsx
 // ユニットテスト例
-describe('calculateDataStatistics', () => {
-  it('正確な統計を計算する', () => {
+describe("calculateDataStatistics", () => {
+  it("正確な統計を計算する", () => {
     const stats = calculateDataStatistics(mockBoards, mockLabels);
     expect(stats.boardCount).toBe(2);
     expect(stats.taskCount).toBe(10);
@@ -301,12 +317,12 @@ describe('calculateDataStatistics', () => {
 });
 
 // 統合テスト例
-describe('DataManagementPanel', () => {
-  it('エクスポートボタンが動作する', () => {
+describe("DataManagementPanel", () => {
+  it("エクスポートボタンが動作する", () => {
     const onExportAll = jest.fn();
     render(<DataManagementPanel onExportAll={onExportAll} />);
 
-    fireEvent.click(screen.getByText('全データをエクスポート'));
+    fireEvent.click(screen.getByText("全データをエクスポート"));
     expect(onExportAll).toHaveBeenCalled();
   });
 });
@@ -315,15 +331,18 @@ describe('DataManagementPanel', () => {
 ## トラブルシューティング
 
 ### データ統計が更新されない
+
 - `useMemo`の依存配列を確認
 - ボード/ラベルの参照が変わっているか確認
 
 ### インポートが失敗する
+
 - ファイルサイズが10MB以下か確認
 - JSONフォーマットが正しいか確認
 - ブラウザコンソールでエラーを確認
 
 ### スタイルが適用されない
+
 - Primer Reactのテーマが正しく設定されているか確認
 - `sx` propの構文が正しいか確認
 

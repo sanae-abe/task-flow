@@ -1,6 +1,6 @@
-import { PlusIcon } from '@primer/octicons-react';
-import { Box, Text, Button } from '@primer/react';
-import React from 'react';
+import { PlusIcon } from "@primer/octicons-react";
+import { Box, Text, Button } from "@primer/react";
+import React from "react";
 
 interface SubTaskHeaderProps {
   completedCount: number;
@@ -13,10 +13,17 @@ const SubTaskHeader: React.FC<SubTaskHeaderProps> = ({
   completedCount,
   totalCount,
   isAdding,
-  onStartAdding
+  onStartAdding,
 }) => (
-  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-    <Text sx={{ fontSize: 1, fontWeight: '700' }}>
+  <Box
+    sx={{
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between",
+      mb: 2,
+    }}
+  >
+    <Text sx={{ fontSize: 1, fontWeight: "700" }}>
       サブタスク {totalCount > 0 && `(${completedCount}/${totalCount})`}
     </Text>
     {!isAdding && (

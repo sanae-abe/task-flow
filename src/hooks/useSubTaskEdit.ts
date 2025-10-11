@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback } from "react";
 
 export interface UseSubTaskEditReturn {
   editingId: string | null;
@@ -12,7 +12,7 @@ export interface UseSubTaskEditReturn {
 
 export const useSubTaskEdit = (): UseSubTaskEditReturn => {
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [editingTitle, setEditingTitle] = useState<string>('');
+  const [editingTitle, setEditingTitle] = useState<string>("");
 
   const startEdit = useCallback((subTaskId: string, currentTitle: string) => {
     setEditingId(subTaskId);
@@ -23,21 +23,27 @@ export const useSubTaskEdit = (): UseSubTaskEditReturn => {
     setEditingTitle(title);
   }, []);
 
-  const saveEdit = useCallback((onSave: (title: string) => void) => {
-    const trimmedTitle = editingTitle.trim();
-    if (trimmedTitle && editingId) {
-      onSave(trimmedTitle);
-      setEditingId(null);
-      setEditingTitle('');
-    }
-  }, [editingId, editingTitle]);
+  const saveEdit = useCallback(
+    (onSave: (title: string) => void) => {
+      const trimmedTitle = editingTitle.trim();
+      if (trimmedTitle && editingId) {
+        onSave(trimmedTitle);
+        setEditingId(null);
+        setEditingTitle("");
+      }
+    },
+    [editingId, editingTitle],
+  );
 
   const cancelEdit = useCallback(() => {
     setEditingId(null);
-    setEditingTitle('');
+    setEditingTitle("");
   }, []);
 
-  const isEditing = useCallback((subTaskId: string) => editingId === subTaskId, [editingId]);
+  const isEditing = useCallback(
+    (subTaskId: string) => editingId === subTaskId,
+    [editingId],
+  );
 
   return {
     editingId,

@@ -1,6 +1,6 @@
-import type { Task } from '../types';
+import type { Task } from "../types";
 
-import type { DateHelpers } from './date';
+import type { DateHelpers } from "./date";
 
 export interface TaskDisplayProps extends DateHelpers {
   task: Task;

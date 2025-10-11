@@ -1,9 +1,9 @@
-import type { TaskTemplate, TemplateFormData } from '../types/template';
-import { logger } from './logger';
-import { v4 as uuidv4 } from 'uuid';
+import type { TaskTemplate, TemplateFormData } from "../types/template";
+import { logger } from "./logger";
+import { v4 as uuidv4 } from "uuid";
 
-const STORAGE_KEY = 'taskflow-templates';
-const STORAGE_VERSION = '1.0.0';
+const STORAGE_KEY = "taskflow-templates";
+const STORAGE_VERSION = "1.0.0";
 
 /**
  * ストレージデータのスキーマ
@@ -18,11 +18,11 @@ export interface TemplateStorageSchema {
  * ストレージエラーの種類
  */
 export type TemplateStorageErrorType =
-  | 'STORAGE_UNAVAILABLE'
-  | 'PARSE_ERROR'
-  | 'VALIDATION_ERROR'
-  | 'QUOTA_EXCEEDED'
-  | 'UNKNOWN_ERROR';
+  | "STORAGE_UNAVAILABLE"
+  | "PARSE_ERROR"
+  | "VALIDATION_ERROR"
+  | "QUOTA_EXCEEDED"
+  | "UNKNOWN_ERROR";
 
 /**
  * ストレージエラークラス
@@ -31,10 +31,10 @@ export class TemplateStorageError extends Error {
   constructor(
     public type: TemplateStorageErrorType,
     message: string,
-    public originalError?: unknown
+    public originalError?: unknown,
   ) {
     super(message);
-    this.name = 'TemplateStorageError';
+    this.name = "TemplateStorageError";
   }
 }
 
@@ -43,8 +43,8 @@ export class TemplateStorageError extends Error {
  */
 const isStorageAvailable = (): boolean => {
   try {
-    const testKey = '__storage_test__';
-    localStorage.setItem(testKey, 'test');
+    const testKey = "__storage_test__";
+    localStorage.setItem(testKey, "test");
     localStorage.removeItem(testKey);
     return true;
   } catch {
@@ -56,7 +56,7 @@ const isStorageAvailable = (): boolean => {
  * テンプレートデータのバリデーション
  */
 const validateTemplate = (template: unknown): template is TaskTemplate => {
-  if (!template || typeof template !== 'object') {
+  if (!template || typeof template !== "object") {
     return false;
   }
 
@@ -64,35 +64,49 @@ const validateTemplate = (template: unknown): template is TaskTemplate => {
 
   // 必須フィールドのチェック
   if (
-    typeof t.id !== 'string' ||
-    typeof t.name !== 'string' ||
-    typeof t.description !== 'string' ||
-    typeof t.category !== 'string' ||
-    typeof t.taskTitle !== 'string' ||
-    typeof t.taskDescription !== 'string' ||
+    typeof t.id !== "string" ||
+    typeof t.name !== "string" ||
+    typeof t.description !== "string" ||
+    typeof t.category !== "string" ||
+    typeof t.taskTitle !== "string" ||
+    typeof t.taskDescription !== "string" ||
     !Array.isArray(t.labels) ||
-    typeof t.createdAt !== 'string' ||
-    typeof t.updatedAt !== 'string' ||
-    typeof t.usageCount !== 'number' ||
-    typeof t.isFavorite !== 'boolean'
+    typeof t.createdAt !== "string" ||
+    typeof t.updatedAt !== "string" ||
+    typeof t.usageCount !== "number" ||
+    typeof t.isFavorite !== "boolean"
   ) {
     return false;
   }
 
   // カテゴリーの値チェック
-  const validCategories = ['work', 'personal', 'project', 'meeting', 'routine', 'other'];
+  const validCategories = [
+    "work",
+    "personal",
+    "project",
+    "meeting",
+    "routine",
+    "other",
+  ];
   if (!validCategories.includes(t.category)) {
     return false;
   }
 
   // プライオリティの値チェック（undefinedも許可）
-  const validPriorities = ['low', 'medium', 'high', 'critical'];
-  if (t.priority !== undefined && (typeof t.priority !== 'string' || !validPriorities.includes(t.priority))) {
+  const validPriorities = ["low", "medium", "high", "critical"];
+  if (
+    t.priority !== undefined &&
+    (typeof t.priority !== "string" || !validPriorities.includes(t.priority))
+  ) {
     return false;
   }
 
   // dueDateの型チェック
-  if (t.dueDate !== null && t.dueDate !== undefined && typeof t.dueDate !== 'string') {
+  if (
+    t.dueDate !== null &&
+    t.dueDate !== undefined &&
+    typeof t.dueDate !== "string"
+  ) {
     return false;
   }
 
@@ -103,16 +117,16 @@ const validateTemplate = (template: unknown): template is TaskTemplate => {
  * ストレージデータのバリデーション
  */
 const validateStorageData = (data: unknown): data is TemplateStorageSchema => {
-  if (!data || typeof data !== 'object') {
+  if (!data || typeof data !== "object") {
     return false;
   }
 
   const d = data as Partial<TemplateStorageSchema>;
 
   if (
-    typeof d.version !== 'string' ||
+    typeof d.version !== "string" ||
     !Array.isArray(d.templates) ||
-    typeof d.updatedAt !== 'string'
+    typeof d.updatedAt !== "string"
   ) {
     return false;
   }
@@ -130,16 +144,19 @@ export class TemplateStorage {
    */
   static load(): TaskTemplate[] {
     if (!isStorageAvailable()) {
-      logger.warn('LocalStorage is not available');
+      logger.warn("LocalStorage is not available");
       throw new TemplateStorageError(
-        'STORAGE_UNAVAILABLE',
-        'LocalStorageが利用できません'
+        "STORAGE_UNAVAILABLE",
+        "LocalStorageが利用できません",
       );
     }
 
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
-      logger.debug('📖 Loading templates from localStorage:', stored ? 'found data' : 'no data');
+      logger.debug(
+        "📖 Loading templates from localStorage:",
+        stored ? "found data" : "no data",
+      );
 
       if (!stored) {
         return [];
@@ -149,34 +166,40 @@ export class TemplateStorage {
 
       // データバリデーション
       if (!validateStorageData(data)) {
-        logger.warn('Invalid template storage data, resetting to empty');
+        logger.warn("Invalid template storage data, resetting to empty");
         this.save([]);
         return [];
       }
 
       // バージョンマイグレーション
       if (data.version !== STORAGE_VERSION) {
-        logger.info(`Migrating template data from ${data.version} to ${STORAGE_VERSION}`);
+        logger.info(
+          `Migrating template data from ${data.version} to ${STORAGE_VERSION}`,
+        );
         const migrated = this.migrate(data);
         this.save(migrated.templates);
         return migrated.templates;
       }
 
-      logger.debug('📖 Loaded', data.templates.length, 'templates from localStorage');
+      logger.debug(
+        "📖 Loaded",
+        data.templates.length,
+        "templates from localStorage",
+      );
       return data.templates;
     } catch (error) {
       if (error instanceof SyntaxError) {
-        logger.error('Failed to parse template data:', error);
+        logger.error("Failed to parse template data:", error);
         throw new TemplateStorageError(
-          'PARSE_ERROR',
-          'テンプレートデータの解析に失敗しました',
-          error
+          "PARSE_ERROR",
+          "テンプレートデータの解析に失敗しました",
+          error,
         );
       }
       throw new TemplateStorageError(
-        'UNKNOWN_ERROR',
-        'テンプレートの読み込み中にエラーが発生しました',
-        error
+        "UNKNOWN_ERROR",
+        "テンプレートの読み込み中にエラーが発生しました",
+        error,
       );
     }
   }
@@ -187,18 +210,18 @@ export class TemplateStorage {
   static save(templates: TaskTemplate[]): void {
     if (!isStorageAvailable()) {
       throw new TemplateStorageError(
-        'STORAGE_UNAVAILABLE',
-        'LocalStorageが利用できません'
+        "STORAGE_UNAVAILABLE",
+        "LocalStorageが利用できません",
       );
     }
 
     // 各テンプレートをバリデート
-    const invalidTemplates = templates.filter(t => !validateTemplate(t));
+    const invalidTemplates = templates.filter((t) => !validateTemplate(t));
     if (invalidTemplates.length > 0) {
-      logger.error('Invalid templates found:', invalidTemplates);
+      logger.error("Invalid templates found:", invalidTemplates);
       throw new TemplateStorageError(
-        'VALIDATION_ERROR',
-        `${invalidTemplates.length}個の無効なテンプレートが見つかりました`
+        "VALIDATION_ERROR",
+        `${invalidTemplates.length}個の無効なテンプレートが見つかりました`,
       );
     }
 
@@ -209,21 +232,25 @@ export class TemplateStorage {
     };
 
     try {
-      logger.debug('💾 Saving templates to localStorage:', templates.length, 'templates');
+      logger.debug(
+        "💾 Saving templates to localStorage:",
+        templates.length,
+        "templates",
+      );
       localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
     } catch (error) {
-      if (error instanceof Error && error.name === 'QuotaExceededError') {
-        logger.error('LocalStorage quota exceeded:', error);
+      if (error instanceof Error && error.name === "QuotaExceededError") {
+        logger.error("LocalStorage quota exceeded:", error);
         throw new TemplateStorageError(
-          'QUOTA_EXCEEDED',
-          'ストレージの容量制限を超えました',
-          error
+          "QUOTA_EXCEEDED",
+          "ストレージの容量制限を超えました",
+          error,
         );
       }
       throw new TemplateStorageError(
-        'UNKNOWN_ERROR',
-        'テンプレートの保存中にエラーが発生しました',
-        error
+        "UNKNOWN_ERROR",
+        "テンプレートの保存中にエラーが発生しました",
+        error,
       );
     }
   }
@@ -245,24 +272,33 @@ export class TemplateStorage {
     templates.push(template);
     this.save(templates);
 
-    logger.info('Template created:', template.name);
+    logger.info("Template created:", template.name);
     return template;
   }
 
   /**
    * テンプレートを更新する
    */
-  static update(id: string, updates: Partial<TemplateFormData>): TaskTemplate | null {
+  static update(
+    id: string,
+    updates: Partial<TemplateFormData>,
+  ): TaskTemplate | null {
     const templates = this.load();
-    const index = templates.findIndex(t => t.id === id);
+    const index = templates.findIndex((t) => t.id === id);
 
     if (index === -1) {
-      logger.warn('Template not found:', id);
+      logger.warn("Template not found:", id);
+      return null;
+    }
+
+    const existingTemplate = templates[index];
+    if (!existingTemplate) {
+      logger.warn("Template not found at index:", index);
       return null;
     }
 
     const updatedTemplate: TaskTemplate = {
-      ...templates[index]!,
+      ...existingTemplate,
       ...updates,
       updatedAt: new Date().toISOString(),
     };
@@ -270,7 +306,7 @@ export class TemplateStorage {
     templates[index] = updatedTemplate;
     this.save(templates);
 
-    logger.info('Template updated:', updatedTemplate.name);
+    logger.info("Template updated:", updatedTemplate.name);
     return updatedTemplate;
   }
 
@@ -279,15 +315,15 @@ export class TemplateStorage {
    */
   static delete(id: string): boolean {
     const templates = this.load();
-    const filtered = templates.filter(t => t.id !== id);
+    const filtered = templates.filter((t) => t.id !== id);
 
     if (filtered.length === templates.length) {
-      logger.warn('Template not found:', id);
+      logger.warn("Template not found:", id);
       return false;
     }
 
     this.save(filtered);
-    logger.info('Template deleted:', id);
+    logger.info("Template deleted:", id);
     return true;
   }
 
@@ -296,10 +332,10 @@ export class TemplateStorage {
    */
   static incrementUsage(id: string): void {
     const templates = this.load();
-    const template = templates.find(t => t.id === id);
+    const template = templates.find((t) => t.id === id);
 
     if (!template) {
-      logger.warn('Template not found:', id);
+      logger.warn("Template not found:", id);
       return;
     }
 
@@ -307,7 +343,11 @@ export class TemplateStorage {
     template.updatedAt = new Date().toISOString();
     this.save(templates);
 
-    logger.debug('Template usage incremented:', template.name, template.usageCount);
+    logger.debug(
+      "Template usage incremented:",
+      template.name,
+      template.usageCount,
+    );
   }
 
   /**
@@ -315,10 +355,10 @@ export class TemplateStorage {
    */
   static toggleFavorite(id: string): boolean {
     const templates = this.load();
-    const template = templates.find(t => t.id === id);
+    const template = templates.find((t) => t.id === id);
 
     if (!template) {
-      logger.warn('Template not found:', id);
+      logger.warn("Template not found:", id);
       return false;
     }
 
@@ -326,7 +366,11 @@ export class TemplateStorage {
     template.updatedAt = new Date().toISOString();
     this.save(templates);
 
-    logger.info('Template favorite toggled:', template.name, template.isFavorite);
+    logger.info(
+      "Template favorite toggled:",
+      template.name,
+      template.isFavorite,
+    );
     return template.isFavorite;
   }
 
@@ -336,19 +380,19 @@ export class TemplateStorage {
   static clear(): void {
     if (!isStorageAvailable()) {
       throw new TemplateStorageError(
-        'STORAGE_UNAVAILABLE',
-        'LocalStorageが利用できません'
+        "STORAGE_UNAVAILABLE",
+        "LocalStorageが利用できません",
       );
     }
 
     try {
       localStorage.removeItem(STORAGE_KEY);
-      logger.info('Template storage cleared');
+      logger.info("Template storage cleared");
     } catch (error) {
       throw new TemplateStorageError(
-        'UNKNOWN_ERROR',
-        'ストレージのクリア中にエラーが発生しました',
-        error
+        "UNKNOWN_ERROR",
+        "ストレージのクリア中にエラーが発生しました",
+        error,
       );
     }
   }
@@ -368,14 +412,17 @@ export class TemplateStorage {
   /**
    * データをインポート
    */
-  static import(data: unknown, options: { merge?: boolean; replaceAll?: boolean } = {}): void {
+  static import(
+    data: unknown,
+    options: { merge?: boolean; replaceAll?: boolean } = {},
+  ): void {
     const { merge = false, replaceAll = false } = options;
 
     // データバリデーション
     if (!validateStorageData(data)) {
       throw new TemplateStorageError(
-        'VALIDATION_ERROR',
-        'インポートデータが無効です'
+        "VALIDATION_ERROR",
+        "インポートデータが無効です",
       );
     }
 
@@ -383,7 +430,9 @@ export class TemplateStorage {
 
     // マイグレーション
     if (data.version !== STORAGE_VERSION) {
-      logger.info(`Migrating imported data from ${data.version} to ${STORAGE_VERSION}`);
+      logger.info(
+        `Migrating imported data from ${data.version} to ${STORAGE_VERSION}`,
+      );
       const migrated = this.migrate(data);
       templates = migrated.templates;
     }
@@ -391,14 +440,14 @@ export class TemplateStorage {
     if (replaceAll) {
       // 既存データを完全に置き換え
       this.save(templates);
-      logger.info('Templates replaced with imported data:', templates.length);
+      logger.info("Templates replaced with imported data:", templates.length);
     } else if (merge) {
       // 既存データとマージ
       const existing = this.load();
-      const existingIds = new Set(existing.map(t => t.id));
+      const existingIds = new Set(existing.map((t) => t.id));
 
       // IDが重複する場合は新しいIDを生成
-      const newTemplates = templates.map(template => {
+      const newTemplates = templates.map((template) => {
         if (existingIds.has(template.id)) {
           return {
             ...template,
@@ -411,11 +460,11 @@ export class TemplateStorage {
       });
 
       this.save([...existing, ...newTemplates]);
-      logger.info('Templates merged with imported data:', newTemplates.length);
+      logger.info("Templates merged with imported data:", newTemplates.length);
     } else {
       // 新しいIDで追加
       const existing = this.load();
-      const newTemplates = templates.map(template => ({
+      const newTemplates = templates.map((template) => ({
         ...template,
         id: uuidv4(),
         createdAt: new Date().toISOString(),
@@ -423,7 +472,7 @@ export class TemplateStorage {
       }));
 
       this.save([...existing, ...newTemplates]);
-      logger.info('Templates imported:', newTemplates.length);
+      logger.info("Templates imported:", newTemplates.length);
     }
   }
 
@@ -432,7 +481,7 @@ export class TemplateStorage {
    */
   private static migrate(data: TemplateStorageSchema): TemplateStorageSchema {
     // 現在はバージョン1.0.0のみなので、将来の拡張用
-    logger.info('No migration needed for version:', data.version);
+    logger.info("No migration needed for version:", data.version);
     return {
       ...data,
       version: STORAGE_VERSION,

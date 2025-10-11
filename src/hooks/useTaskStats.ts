@@ -1,7 +1,7 @@
-import { useMemo } from 'react';
+import { useMemo } from "react";
 
-import type { Task } from '../types';
-import { getDateStatus } from '../utils/dateHelpers';
+import type { Task } from "../types";
+import { getDateStatus } from "../utils/dateHelpers";
 
 export interface TaskStats {
   totalTasks: number;
@@ -11,7 +11,8 @@ export interface TaskStats {
   hasUrgentTasks: boolean;
 }
 
-export const useTaskStats = (tasks: Task[]): TaskStats => useMemo(() => {
+export const useTaskStats = (tasks: Task[]): TaskStats =>
+  useMemo(() => {
     const initialStats = {
       totalTasks: 0,
       overdueTasks: 0,
@@ -22,13 +23,15 @@ export const useTaskStats = (tasks: Task[]): TaskStats => useMemo(() => {
 
     return tasks.reduce((acc, task) => {
       acc.totalTasks++;
-      
-      if (!task.dueDate) {return acc;}
-      
+
+      if (!task.dueDate) {
+        return acc;
+      }
+
       try {
         const dueDate = new Date(task.dueDate);
         const { isOverdue, isDueToday, isDueTomorrow } = getDateStatus(dueDate);
-        
+
         if (isOverdue) {
           acc.overdueTasks++;
           acc.hasUrgentTasks = true;
@@ -42,7 +45,7 @@ export const useTaskStats = (tasks: Task[]): TaskStats => useMemo(() => {
       } catch {
         // 無効な日付の場合は無視
       }
-      
+
       return acc;
     }, initialStats);
   }, [tasks]);

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 import {
   useSensors,
   useSensor,
@@ -6,9 +6,9 @@ import {
   KeyboardSensor,
   DragStartEvent,
   DragEndEvent,
-} from '@dnd-kit/core';
-import { sortableKeyboardCoordinates, arrayMove } from '@dnd-kit/sortable';
-import type { KanbanBoard } from '../types';
+} from "@dnd-kit/core";
+import { sortableKeyboardCoordinates, arrayMove } from "@dnd-kit/sortable";
+import type { KanbanBoard } from "../types";
 
 interface UseBoardDragAndDropProps {
   boards: KanbanBoard[];
@@ -36,7 +36,7 @@ export const useBoardDragAndDrop = ({
     }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    })
+    }),
   );
 
   const handleDragStart = (event: DragStartEvent): void => {

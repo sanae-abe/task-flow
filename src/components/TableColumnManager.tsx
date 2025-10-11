@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback } from "react";
 import {
   Text,
   Box,
@@ -8,17 +8,16 @@ import {
   Button,
   FormControl,
   TextInput,
-  Dialog
-} from '@primer/react';
+  Dialog,
+} from "@primer/react";
 import {
   GearIcon,
   TrashIcon,
   GrabberIcon,
-  CheckIcon
-} from '@primer/octicons-react';
+  CheckIcon,
+} from "@primer/octicons-react";
 
-import { useTableColumns } from '../contexts/TableColumnsContext';
-
+import { useTableColumns } from "../contexts/TableColumnsContext";
 
 const TableColumnManager: React.FC = () => {
   const {
@@ -28,75 +27,87 @@ const TableColumnManager: React.FC = () => {
     updateColumnWidth,
     reorderColumns,
     removeColumn,
-    resetToDefaults
+    resetToDefaults,
   } = useTableColumns();
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [draggedColumnId, setDraggedColumnId] = useState<string | null>(null);
 
-  const handleWidthChange = useCallback((columnId: string, newWidth: string) => {
-    // 空文字列は許可
-    if (newWidth === '') {
-      updateColumnWidth(columnId, newWidth);
-      return;
-    }
+  const handleWidthChange = useCallback(
+    (columnId: string, newWidth: string) => {
+      // 空文字列は許可
+      if (newWidth === "") {
+        updateColumnWidth(columnId, newWidth);
+        return;
+      }
 
-    // pxを削除して数値のみを取得
-    const numericValue = parseInt(newWidth.replace(/px$/, ''), 10);
+      // pxを削除して数値のみを取得
+      const numericValue = parseInt(newWidth.replace(/px$/, ""), 10);
 
-    // 50px～1000pxの範囲内かチェック
-    if (!isNaN(numericValue) && numericValue >= 50 && numericValue <= 1000) {
-      // px単位で保存
-      const formattedWidth = `${numericValue}px`;
-      updateColumnWidth(columnId, formattedWidth);
-    } else if (!isNaN(numericValue)) {
-      // 範囲外の場合は最小値/最大値に調整
-      const clampedValue = Math.max(50, Math.min(1000, numericValue));
-      const formattedWidth = `${clampedValue}px`;
-      updateColumnWidth(columnId, formattedWidth);
-    }
-  }, [updateColumnWidth]);
+      // 50px～1000pxの範囲内かチェック
+      if (!isNaN(numericValue) && numericValue >= 50 && numericValue <= 1000) {
+        // px単位で保存
+        const formattedWidth = `${numericValue}px`;
+        updateColumnWidth(columnId, formattedWidth);
+      } else if (!isNaN(numericValue)) {
+        // 範囲外の場合は最小値/最大値に調整
+        const clampedValue = Math.max(50, Math.min(1000, numericValue));
+        const formattedWidth = `${clampedValue}px`;
+        updateColumnWidth(columnId, formattedWidth);
+      }
+    },
+    [updateColumnWidth],
+  );
 
-  const isCustomColumn = useCallback((columnId: string) => columnId.startsWith('custom-'), []);
+  const isCustomColumn = useCallback(
+    (columnId: string) => columnId.startsWith("custom-"),
+    [],
+  );
 
   // ドラッグ開始
-  const handleDragStart = useCallback((e: React.DragEvent, columnId: string) => {
-    setDraggedColumnId(columnId);
-    e.dataTransfer.effectAllowed = 'move';
-    e.dataTransfer.setData('text/plain', columnId);
-  }, []);
+  const handleDragStart = useCallback(
+    (e: React.DragEvent, columnId: string) => {
+      setDraggedColumnId(columnId);
+      e.dataTransfer.effectAllowed = "move";
+      e.dataTransfer.setData("text/plain", columnId);
+    },
+    [],
+  );
 
   // ドラッグオーバー
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
+    e.dataTransfer.dropEffect = "move";
   }, []);
 
   // ドロップ
-  const handleDrop = useCallback((e: React.DragEvent, targetColumnId: string) => {
-    e.preventDefault();
+  const handleDrop = useCallback(
+    (e: React.DragEvent, targetColumnId: string) => {
+      e.preventDefault();
 
-    if (!draggedColumnId || draggedColumnId === targetColumnId) {
+      if (!draggedColumnId || draggedColumnId === targetColumnId) {
+        setDraggedColumnId(null);
+        return;
+      }
+
+      const currentOrder = [...columnOrder];
+      const draggedIndex = currentOrder.indexOf(draggedColumnId);
+      const targetIndex = currentOrder.indexOf(targetColumnId);
+
+      if (draggedIndex === -1 || targetIndex === -1) {
+        setDraggedColumnId(null);
+        return;
+      }
+
+      // 配列の要素を移動
+      currentOrder.splice(draggedIndex, 1);
+      currentOrder.splice(targetIndex, 0, draggedColumnId);
+
+      reorderColumns(currentOrder);
       setDraggedColumnId(null);
-      return;
-    }
-
-    const currentOrder = [...columnOrder];
-    const draggedIndex = currentOrder.indexOf(draggedColumnId);
-    const targetIndex = currentOrder.indexOf(targetColumnId);
-
-    if (draggedIndex === -1 || targetIndex === -1) {
-      setDraggedColumnId(null);
-      return;
-    }
-
-    // 配列の要素を移動
-    currentOrder.splice(draggedIndex, 1);
-    currentOrder.splice(targetIndex, 0, draggedColumnId);
-
-    reorderColumns(currentOrder);
-    setDraggedColumnId(null);
-  }, [draggedColumnId, columnOrder, reorderColumns]);
+    },
+    [draggedColumnId, columnOrder, reorderColumns],
+  );
 
   // ドラッグ終了
   const handleDragEnd = useCallback(() => {
@@ -125,7 +136,7 @@ const TableColumnManager: React.FC = () => {
                   <ActionList.LeadingVisual>
                     <Box
                       sx={{
-                        color: column.visible ? 'inherit' : 'white'
+                        color: column.visible ? "inherit" : "white",
                       }}
                     >
                       <CheckIcon />
@@ -157,13 +168,13 @@ const TableColumnManager: React.FC = () => {
           onClose={() => setIsSettingsOpen(false)}
           aria-labelledby="column-settings-title"
         >
-          <div style={{ marginBottom: '20px', color: 'fg.muted' }}>
+          <div style={{ marginBottom: "20px", color: "fg.muted" }}>
             カラムをドラッグして並び替え、幅の調整ができます。幅は50px〜1000pxの範囲で入力してください。
           </div>
 
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             {columnOrder.map((columnId) => {
-              const column = columns.find(col => col.id === columnId);
+              const column = columns.find((col) => col.id === columnId);
               if (!column) {
                 return null;
               }
@@ -174,21 +185,25 @@ const TableColumnManager: React.FC = () => {
                 <Box
                   key={column.id}
                   draggable
-                  onDragStart={(e: React.DragEvent) => handleDragStart(e, column.id)}
+                  onDragStart={(e: React.DragEvent) =>
+                    handleDragStart(e, column.id)
+                  }
                   onDragOver={handleDragOver}
                   onDrop={(e: React.DragEvent) => handleDrop(e, column.id)}
                   onDragEnd={handleDragEnd}
                   sx={{
-                    display: 'flex',
+                    display: "flex",
                     py: 1,
-                    alignItems: 'center',
-                    border: '1px solid',
-                    borderColor: isDragging ? 'accent.emphasis' : 'border.default',
+                    alignItems: "center",
+                    border: "1px solid",
+                    borderColor: isDragging
+                      ? "accent.emphasis"
+                      : "border.default",
                     borderRadius: 2,
-                    bg: column.visible ? 'canvas.default' : 'canvas.subtle',
+                    bg: column.visible ? "canvas.default" : "canvas.subtle",
                     opacity: isDragging ? 0.5 : 1,
-                    cursor: 'move',
-                    transition: 'all 0.2s ease'
+                    cursor: "move",
+                    transition: "all 0.2s ease",
                   }}
                 >
                   <IconButton
@@ -197,15 +212,13 @@ const TableColumnManager: React.FC = () => {
                     variant="invisible"
                     size="small"
                     sx={{
-                      cursor: 'grab',
-                      '&:active': { cursor: 'grabbing' }
+                      cursor: "grab",
+                      "&:active": { cursor: "grabbing" },
                     }}
                   />
 
                   <Box sx={{ flex: 1 }}>
-                    <Text sx={{ fontWeight: 'semibold' }}>
-                      {column.label}
-                    </Text>
+                    <Text sx={{ fontWeight: "semibold" }}>{column.label}</Text>
                   </Box>
 
                   <FormControl>
@@ -219,7 +232,7 @@ const TableColumnManager: React.FC = () => {
                       }
                       placeholder="幅 (50px〜1000px)"
                       size="small"
-                      sx={{ width: '120px', mr: 1 }}
+                      sx={{ width: "120px", mr: 1 }}
                       aria-describedby={`width-help-${column.id}`}
                     />
                   </FormControl>
@@ -231,7 +244,7 @@ const TableColumnManager: React.FC = () => {
                       variant="invisible"
                       size="small"
                       onClick={() => removeColumn(column.id)}
-                      sx={{ color: 'danger.emphasis' }}
+                      sx={{ color: "danger.emphasis" }}
                     />
                   )}
                 </Box>
@@ -239,12 +252,10 @@ const TableColumnManager: React.FC = () => {
             })}
           </Box>
 
-          <Box sx={{ display: 'flex', gap: 2, mt: 4, justifyContent: 'flex-end' }}>
-            <Button
-              onClick={() => setIsSettingsOpen(false)}
-            >
-              閉じる
-            </Button>
+          <Box
+            sx={{ display: "flex", gap: 2, mt: 4, justifyContent: "flex-end" }}
+          >
+            <Button onClick={() => setIsSettingsOpen(false)}>閉じる</Button>
           </Box>
         </Dialog>
       )}
