@@ -383,7 +383,7 @@ export const BoardProvider: React.FC<BoardProviderProps> = ({ children }) => {
 
           // デモ用ラベル
           const labels = [
-            { id: uuidv4(), name: '緊急', color: '#d1242f' },
+            { id: uuidv4(), name: 'セキュリティ', color: '#d1242f' },
             { id: uuidv4(), name: '機能改善', color: '#1a7f37' },
             { id: uuidv4(), name: 'バグ修正', color: '#656d76' },
             { id: uuidv4(), name: 'ドキュメント', color: '#0969da' }
@@ -524,7 +524,7 @@ const authenticateUser = async (email, password) => {
                     updatedAt: new Date(today.getTime() - 86400000 * 2).toISOString(), // 2日前
                     dueDate: new Date(today.getTime() - 86400000 * 3).toISOString(),
                     priority: 'high' as Priority,
-                    labels: [labels[0]!], // 緊急
+                    labels: [labels[0]!], // セキュリティ
                     files: [],
                     subTasks: [
                       { id: uuidv4(), title: 'JWT ライブラリ選定', completed: true, createdAt: new Date().toISOString() },
