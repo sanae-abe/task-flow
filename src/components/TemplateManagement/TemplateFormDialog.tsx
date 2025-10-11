@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Box, TextInput, FormControl, Textarea } from '@primer/react';
-import { InfoIcon, PencilIcon } from '@primer/octicons-react';
 
 import type { TaskTemplate, TemplateFormData } from '../../types/template';
 import type { Label, Priority } from '../../types';
@@ -191,12 +190,8 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
           mt: 2,
           mb: 3,
           fontWeight: 'bold',
-          fontSize: 1,
-          display: 'flex',
-          alignItems: 'center',
-          gap: 2
+          fontSize: 2
         }}>
-          <InfoIcon size={16} />
           テンプレート情報
         </Box>
         {/* テンプレート基本情報 */}
@@ -207,7 +202,7 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
         }}>
 
           {/* テンプレート名 */}
-          <FormControl sx={{ mb: 4 }}>
+          <FormControl sx={{ mb: 3 }}>
             <FormControl.Label>テンプレート名</FormControl.Label>
             <TextInput
               value={formData.name}
@@ -229,7 +224,7 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
           </FormControl>
 
           {/* テンプレート説明 */}
-          <FormControl sx={{ mb: 4 }}>
+          <FormControl sx={{ mb: 3 }}>
             <FormControl.Label>説明（任意）</FormControl.Label>
             <Textarea
               value={formData.description}
@@ -256,12 +251,8 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
           mt: 5,
           mb: 3,
           fontWeight: 'bold',
-          fontSize: 1,
-          display: 'flex',
-          alignItems: 'center',
-          gap: 2
+          fontSize: 2,
         }}>
-            <PencilIcon size={16} />
             作成されるタスク
         </Box>
         <Box sx={{
@@ -270,7 +261,7 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
           borderRadius: 2
         }}>
           {/* タスクタイトル */}
-          <FormControl sx={{ mb: 4 }}>
+          <FormControl sx={{ mb: 3 }}>
             <FormControl.Label>タスクタイトル</FormControl.Label>
             <TextInput
               value={formData.taskTitle}
@@ -293,7 +284,7 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
           </FormControl>
 
           {/* タスク説明 */}
-          <FormControl sx={{ mb: 4 }}>
+          <FormControl sx={{ mb: 3 }}>
             <FormControl.Label>タスク説明（任意）</FormControl.Label>
             <RichTextEditor
               value={formData.taskDescription}
@@ -307,7 +298,7 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
           </FormControl>
 
           {/* 優先度 */}
-          <div style={{ marginBottom: '24px' }}>
+          <div style={{ marginBottom: '16px' }}>
             <PrioritySelector
               priority={formData.priority}
               onPriorityChange={handlePriorityChange}
