@@ -70,7 +70,6 @@ const validateTemplate = (template: unknown): template is TaskTemplate => {
     typeof t.category !== 'string' ||
     typeof t.taskTitle !== 'string' ||
     typeof t.taskDescription !== 'string' ||
-    typeof t.priority !== 'string' ||
     !Array.isArray(t.labels) ||
     typeof t.createdAt !== 'string' ||
     typeof t.updatedAt !== 'string' ||
@@ -86,9 +85,9 @@ const validateTemplate = (template: unknown): template is TaskTemplate => {
     return false;
   }
 
-  // プライオリティの値チェック
-  const validPriorities = ['low', 'medium', 'high'];
-  if (!validPriorities.includes(t.priority)) {
+  // プライオリティの値チェック（undefinedも許可）
+  const validPriorities = ['low', 'medium', 'high', 'critical'];
+  if (t.priority !== undefined && (typeof t.priority !== 'string' || !validPriorities.includes(t.priority))) {
     return false;
   }
 
