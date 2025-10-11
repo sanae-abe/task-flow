@@ -27,7 +27,7 @@ const PriorityBadge: React.FC<PriorityBadgeProps> = ({
   const displayLabel = useEnglishLabel ? config.labelEn : config.label;
 
   return (
-    <span
+    <div
       style={{
         display: 'inline-flex',
         alignItems: 'center',
@@ -51,7 +51,7 @@ const PriorityBadge: React.FC<PriorityBadgeProps> = ({
         />
       )}
       {showLabel && <span>{displayLabel}</span>}
-    </span>
+    </div>
   );
 };
 
