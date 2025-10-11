@@ -7,6 +7,7 @@ import { stripHtml } from '../utils/textHelpers';
 import IconButton from './shared/IconButton';
 
 import DueDateBadge from './DueDateBadge';
+import PriorityBadge from './PriorityBadge';
 import TaskIndicators from './TaskIndicators';
 import TaskLabels from './TaskLabels';
 
@@ -40,18 +41,30 @@ const TaskCardContent: React.FC<TaskDisplayProps> = ({
             }}
           />
         )}
-        <Heading sx={{
-          fontSize: 1,
-          margin: 0,
-          fontWeight: '500',
-          color: 'fg.default',
-          lineHeight: '1.4',
+        <Box sx={{
           flex: 1,
           display: 'flex',
+          flexDirection: 'column',
           gap: 1
         }}>
-          {task.title}
-        </Heading>
+          <Box sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 2
+          }}>
+            <Heading sx={{
+              fontSize: 1,
+              margin: 0,
+              fontWeight: '500',
+              color: 'fg.default',
+              lineHeight: '1.4',
+              flex: 1
+            }}>
+              {task.title}
+            </Heading>
+            {task.priority && <PriorityBadge priority={task.priority} size="small" />}
+          </Box>
+        </Box>
       </Box>
 
       {task.description && (

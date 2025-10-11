@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 
 import { useKanban } from '../contexts/KanbanContext';
-import type { Task, Label, FileAttachment, RecurrenceConfig } from '../types';
+import type { Task, Label, FileAttachment, RecurrenceConfig, Priority } from '../types';
 import { toDateTimeLocalString, fromDateTimeLocalString } from '../utils/dateHelpers';
 
 interface UseTaskEditProps {
@@ -35,6 +35,8 @@ interface UseTaskEditReturn {
   statusOptions: Array<{ value: string; label: string }>;
   recurrence: RecurrenceConfig | undefined;
   setRecurrence: (recurrence: RecurrenceConfig | undefined) => void;
+  priority: Priority | undefined;
+  setPriority: (priority: Priority | undefined) => void;
   showDeleteConfirm: boolean;
   setShowDeleteConfirm: (show: boolean) => void;
   handleSave: () => void;
@@ -62,6 +64,7 @@ export const useTaskEdit = ({
   const [attachments, setAttachments] = useState<FileAttachment[]>([]);
   const [columnId, setColumnId] = useState('');
   const [recurrence, setRecurrence] = useState<RecurrenceConfig | undefined>(undefined);
+  const [priority, setPriority] = useState<Priority | undefined>(undefined);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   useEffect(() => {
@@ -102,6 +105,9 @@ export const useTaskEdit = ({
       // 繰り返し設定の初期化
       setRecurrence(task.recurrence);
 
+      // 優先度の初期化
+      setPriority(task.priority);
+
       // 現在のタスクがどのカラムにあるかを特定
       const currentColumn = state.currentBoard?.columns.find(column =>
         column.tasks.some(t => t.id === task.id)
@@ -118,6 +124,7 @@ export const useTaskEdit = ({
       setLabels([]);
       setAttachments([]);
       setRecurrence(undefined);
+      setPriority(undefined);
       setColumnId('');
     }
   }, [isOpen, task, state.currentBoard]);
@@ -217,6 +224,7 @@ export const useTaskEdit = ({
         description: description.trim() || '',
         dueDate: dueDateObj?.toISOString() || null,
         completedAt: completedAtObj?.toISOString() || null,
+        priority: priority || 'medium',
         labels,
         files: attachments,
         recurrence: recurrence?.enabled && dueDateObj ? recurrence : undefined,
@@ -225,7 +233,7 @@ export const useTaskEdit = ({
       
       onSave(updatedTask);
     }
-  }, [task, title, description, dueDate, dueTime, hasTime, completedAt, labels, attachments, recurrence, columnId, state.currentBoard, moveTask, onSave]);
+  }, [task, title, description, dueDate, dueTime, hasTime, completedAt, labels, attachments, recurrence, priority, columnId, state.currentBoard, moveTask, onSave]);
 
   const handleDelete = useCallback(() => {
     setShowDeleteConfirm(true);
@@ -296,6 +304,8 @@ export const useTaskEdit = ({
     statusOptions,
     recurrence,
     setRecurrence,
+    priority,
+    setPriority,
     showDeleteConfirm,
     setShowDeleteConfirm,
     handleSave,
