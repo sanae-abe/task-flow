@@ -185,13 +185,18 @@ export const prioritySelectorOptions: PrioritySelectorOption[] = [
  * 優先度の並び順を取得（緊急→高→中→低）
  */
 export const getPriorityOrder = (priority: Priority): number => {
-  const order: Record<Priority, number> = {
-    critical: 1,
-    high: 2,
-    medium: 3,
-    low: 4,
-  };
-  return order[priority];
+  switch (priority) {
+    case 'critical':
+      return 1;
+    case 'high':
+      return 2;
+    case 'medium':
+      return 3;
+    case 'low':
+      return 4;
+    default:
+      return 5;
+  }
 };
 
 /**
@@ -205,17 +210,30 @@ export const getPriorityWeight = (priority: Priority | undefined): number => {
 /**
  * 優先度をラベルに変換
  */
-export const getPriorityLabel = (priority: Priority): string => priorityConfig[priority].label;
+export const getPriorityLabel = (priority: Priority | undefined): string => {
+  if (!priority) {
+    return '未設定';
+  }
+  return priorityConfig[priority].label;
+};
 
 /**
  * 優先度の説明を取得
  */
-export const getPriorityDescription = (priority: Priority): string => priorityConfig[priority].description;
+export const getPriorityDescription = (priority: Priority | undefined): string => {
+  if (!priority) {
+    return '優先度を設定しない';
+  }
+  return priorityConfig[priority].description;
+};
 
 /**
  * アクセシビリティ用のaria-label生成
  */
-export const getPriorityAriaLabel = (priority: Priority): string => {
+export const getPriorityAriaLabel = (priority: Priority | undefined): string => {
+  if (!priority) {
+    return '優先度: 未設定';
+  }
   const config = priorityConfig[priority];
   return `優先度: ${config.label} - ${config.description}`;
 };

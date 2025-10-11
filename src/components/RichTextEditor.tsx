@@ -681,6 +681,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
             fontSize: '14px',
             lineHeight: 1.5,
             fontFamily: 'inherit',
+            backgroundColor: 'white',
             '& ul, & ol': {
               paddingLeft: '24px',
               margin: '8px 0',

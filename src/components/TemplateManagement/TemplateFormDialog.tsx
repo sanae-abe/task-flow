@@ -6,6 +6,8 @@ import type { Label, Priority } from '../../types';
 import UnifiedDialog from '../shared/Dialog/UnifiedDialog';
 import TemplateCategorySelector from './TemplateCategorySelector';
 import LabelSelector from '../LabelSelector';
+import RichTextEditor from '../RichTextEditor';
+import PrioritySelector from '../PrioritySelector';
 
 interface TemplateFormDialogProps {
   isOpen: boolean;
@@ -280,87 +282,24 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
           {/* タスク説明 */}
           <FormControl sx={{ mb: 3 }}>
             <FormControl.Label>タスク説明</FormControl.Label>
-            <Textarea
+            <RichTextEditor
               value={formData.taskDescription}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, taskDescription: e.target.value }))
+              onChange={(value) =>
+                setFormData((prev) => ({ ...prev, taskDescription: value }))
               }
               placeholder="タスクの詳細を入力"
-              sx={{ width: '100%' }}
-              rows={3}
               disabled={isLoading}
+              minHeight="120px"
             />
           </FormControl>
 
           {/* 優先度 */}
-          <FormControl sx={{ mb: 3 }}>
-            <FormControl.Label>優先度</FormControl.Label>
-            <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-              {/* 選択なしオプション */}
-              <button
-                type="button"
-                onClick={() => handlePriorityChange(undefined)}
-                disabled={isLoading}
-                style={{
-                  padding: '8px 16px',
-                  border: '1px solid',
-                  borderColor:
-                    formData.priority === undefined
-                      ? 'var(--borderColor-accent-emphasis)'
-                      : 'var(--borderColor-default)',
-                  borderRadius: '6px',
-                  backgroundColor:
-                    formData.priority === undefined
-                      ? 'var(--bgColor-accent-muted)'
-                      : 'transparent',
-                  color:
-                    formData.priority === undefined
-                      ? 'var(--fgColor-accent)'
-                      : 'var(--fgColor-default)',
-                  cursor: isLoading ? 'not-allowed' : 'pointer',
-                  fontFamily: 'inherit',
-                  fontSize: '14px',
-                  fontWeight: formData.priority === undefined ? 'bold' : 'normal'
-                }}
-              >
-                選択なし
-              </button>
-              {(['low', 'medium', 'high', 'critical'] as Priority[]).map((priority) => (
-                <button
-                  key={priority}
-                  type="button"
-                  onClick={() => handlePriorityChange(priority)}
-                  disabled={isLoading}
-                  style={{
-                    padding: '8px 16px',
-                    border: '1px solid',
-                    borderColor:
-                      formData.priority === priority
-                        ? 'var(--borderColor-accent-emphasis)'
-                        : 'var(--borderColor-default)',
-                    borderRadius: '6px',
-                    backgroundColor:
-                      formData.priority === priority
-                        ? 'var(--bgColor-accent-muted)'
-                        : 'transparent',
-                    color:
-                      formData.priority === priority
-                        ? 'var(--fgColor-accent)'
-                        : 'var(--fgColor-default)',
-                    cursor: isLoading ? 'not-allowed' : 'pointer',
-                    fontFamily: 'inherit',
-                    fontSize: '14px',
-                    fontWeight: formData.priority === priority ? 'bold' : 'normal'
-                  }}
-                >
-                  {priority === 'low' && '低'}
-                  {priority === 'medium' && '中'}
-                  {priority === 'high' && '高'}
-                  {priority === 'critical' && '緊急'}
-                </button>
-              ))}
-            </Box>
-          </FormControl>
+          <PrioritySelector
+            priority={formData.priority}
+            onPriorityChange={handlePriorityChange}
+            disabled={isLoading}
+            variant="full"
+          />
 
           {/* ラベル */}
           <FormControl>

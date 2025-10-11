@@ -40,7 +40,10 @@ export const isValidCategory = (category: string): category is TemplateCategory 
  */
 const VALID_PRIORITIES: Priority[] = ['low', 'medium', 'high', 'critical'];
 
-export const isValidPriority = (priority: string): priority is Priority => VALID_PRIORITIES.includes(priority as Priority);
+export const isValidPriority = (priority: string | undefined): boolean => {
+  if (!priority) return false;
+  return VALID_PRIORITIES.includes(priority as Priority);
+};
 
 /**
  * 相対日付の有効性チェック
@@ -156,12 +159,10 @@ export const validateCategory = (category: string): ValidationError | null => {
 /**
  * プライオリティのバリデーション
  */
-export const validatePriority = (priority: string): ValidationError | null => {
+export const validatePriority = (priority: string | undefined): ValidationError | null => {
+  // 優先度は任意なので未設定を許可
   if (!priority) {
-    return {
-      field: 'priority',
-      message: '優先度は必須です',
-    };
+    return null;
   }
 
   if (!isValidPriority(priority)) {
@@ -219,7 +220,7 @@ export const validateTemplateFormData = (formData: Partial<TemplateFormData>): V
   if (taskDescriptionError) {errors.push(taskDescriptionError);}
 
   // プライオリティ
-  const priorityError = validatePriority(formData.priority || '');
+  const priorityError = validatePriority(formData.priority);
   if (priorityError) {errors.push(priorityError);}
 
   // 期限
@@ -315,7 +316,7 @@ export const sanitizeTemplateFormData = (formData: Partial<TemplateFormData>): T
     category: isValidCategory(formData.category || '') ? formData.category! : 'other',
     taskTitle: (formData.taskTitle || '').trim().substring(0, 200),
     taskDescription: (formData.taskDescription || '').substring(0, 10000),
-    priority: isValidPriority(formData.priority || '') ? formData.priority! : 'medium',
+    priority: formData.priority && isValidPriority(formData.priority) ? formData.priority : undefined,
     labels: Array.isArray(formData.labels) ? formData.labels : [],
     dueDate: formData.dueDate || null,
     recurrence: formData.recurrence,

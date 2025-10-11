@@ -79,7 +79,7 @@ export const DEFAULT_COLUMNS: TableColumn[] = [
     id: 'priority',
     label: '優先度',
     width: '100px',
-    visible: false,
+    visible: true,
     sortable: true,
     type: 'text',
     accessor: 'priority'

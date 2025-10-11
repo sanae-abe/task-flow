@@ -1,4 +1,5 @@
-import { TextInput, FormControl, UnderlineNav } from '@primer/react';
+import { TextInput, FormControl, UnderlineNav, Flash } from '@primer/react';
+import { InfoIcon } from '@primer/octicons-react';
 import React, { useState, useEffect, useCallback, memo, useMemo } from 'react';
 
 import type { Label as LabelType, FileAttachment, RecurrenceConfig, Priority } from '../types';
@@ -321,9 +322,9 @@ const TaskCreateDialog = memo(() => {
       size="large"
       actions={actions}
     >
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', minHeight: '600px' }}>
         {/* タブナビゲーション */}
-        <div style={{ marginBottom: '24px' }}>
+        <div style={{ marginBottom: '16px' }}>
           <UnderlineNav aria-label="タスク作成モード選択" sx={{ padding: 0, transform: 'translateY(-8px)' }}>
             <UnderlineNav.Item
               aria-current={createMode === 'normal' ? 'page' : undefined}
@@ -342,41 +343,22 @@ const TaskCreateDialog = memo(() => {
 
         {/* テンプレート選択モード */}
         {createMode === 'template' && (
-          <div style={{ marginBottom: '24px' }}>
+          <div style={{ marginBottom: '24px', flex: 1, minHeight: '500px' }}>
             <TemplateSelector
               templates={templates}
               onSelect={handleTemplateSelect}
             />
-            {selectedTemplate && (
-              <div style={{
-                marginTop: '16px',
-                padding: '12px',
-                backgroundColor: 'var(--color-success-subtle)',
-                borderRadius: '6px'
-              }}>
-                <div style={{ fontSize: '14px', color: 'var(--fgColor-success)' }}>
-                  ✅ テンプレート「{selectedTemplate.name}」を選択しました。
-                  上記の「通常作成」ボタンで詳細を編集できます。
-                </div>
-              </div>
-            )}
           </div>
         )}
 
         {/* 通常作成フォーム */}
         {createMode === 'normal' && (
-          <div onKeyDown={handleKeyPress}>
+          <div onKeyDown={handleKeyPress} style={{ flex: 1, minHeight: '500px' }}>
             {selectedTemplate && (
-              <div style={{
-                marginBottom: '24px',
-                padding: '12px',
-                backgroundColor: 'var(--color-success-subtle)',
-                borderRadius: '6px'
-              }}>
-                <div style={{ fontSize: '14px', color: 'var(--fgColor-success)' }}>
-                  📋 テンプレート「{selectedTemplate.name}」から作成中
-                </div>
-              </div>
+              <Flash variant="default" sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
+                <InfoIcon size={16} />
+                <span>テンプレート「{selectedTemplate.name}」から作成中</span>
+              </Flash>
             )}
 
             <div style={{ width: '100%', marginBottom: '24px' }}>
@@ -411,7 +393,7 @@ const TaskCreateDialog = memo(() => {
                     type="date"
                     value={dueDate}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDueDate(e.target.value)}
-                    style={{ width: '100%' }}
+                    sx={{ width: '100%' }}
                   />
                 </div>
                 <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '8px' }}>

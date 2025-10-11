@@ -1,6 +1,7 @@
-import { DatabaseIcon, TagIcon, ProjectIcon, BookIcon } from '@primer/octicons-react';
+import { DatabaseIcon, TagIcon, ProjectIcon } from '@primer/octicons-react';
 import { Box, SplitPageLayout, NavList } from '@primer/react';
 import React, { useState } from 'react';
+import { FileText } from 'react-feather';
 
 import UnifiedDialog from './shared/Dialog/UnifiedDialog';
 import { LabelManagementPanel } from './LabelManagement';
@@ -57,7 +58,7 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
                 onClick={() => setActiveTab('templates')}
               >
                 <NavList.LeadingVisual>
-                  <BookIcon />
+                  <FileText size={16} />
                 </NavList.LeadingVisual>
                 テンプレート管理
               </NavList.Item>
