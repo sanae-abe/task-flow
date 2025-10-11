@@ -8,7 +8,8 @@ import {
   ChevronDownIcon,
   StarIcon,
   StarFillIcon,
-  SearchIcon
+  SearchIcon,
+  ThumbsupIcon
 } from '@primer/octicons-react';
 
 import type {
@@ -428,7 +429,10 @@ const TemplateManagementPanel: React.FC = () => {
               sortDirection={sortDirection}
               onSort={handleSort}
             >
-              おすすめ順
+              <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <span><ThumbsupIcon size={12} /></span>
+                <span>おすすめ順</span>
+              </span>
             </SortableHeader>
             <SortableHeader
               field="category"
