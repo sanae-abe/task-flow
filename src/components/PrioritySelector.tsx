@@ -56,30 +56,11 @@ const PrioritySelector: React.FC<PrioritySelectorProps> = ({
               }}
               onClick={() => handleClick(option.value)}
             >
-              {Icon ? (
+              {Icon && (
                 <Icon
                   size={16}
                   aria-hidden
                 />
-              ) : (
-                <Box
-                  sx={{
-                    width: '16px',
-                    height: '16px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <Box
-                    sx={{
-                      width: '8px',
-                      height: '8px',
-                      borderRadius: '50%',
-                      backgroundColor: 'border.muted',
-                    }}
-                  />
-                </Box>
               )}
               <Text
                 sx={{
