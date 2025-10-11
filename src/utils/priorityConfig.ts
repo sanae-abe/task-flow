@@ -42,9 +42,9 @@ export const priorityConfig: Record<Priority, PriorityConfig> = {
     variant: 'danger',
     colors: {
       filled: {
-        bg: '#d1242f',
+        bg: '#cf222e',
         text: '#ffffff',
-        border: '#cf222e',
+        border: 'transparent',
       },
       outlined: {
         bg: 'transparent',
@@ -66,9 +66,9 @@ export const priorityConfig: Record<Priority, PriorityConfig> = {
     variant: 'attention',
     colors: {
       filled: {
-        bg: '#fb8500',
+        bg: '#9a6700',
         text: '#ffffff',
-        border: '#9a6700',
+        border: 'transparent',
       },
       outlined: {
         bg: 'transparent',
@@ -90,9 +90,9 @@ export const priorityConfig: Record<Priority, PriorityConfig> = {
     variant: 'accent',
     colors: {
       filled: {
-        bg: '#2da44e',
+        bg: '#1a7f37',
         text: '#ffffff',
-        border: '#1a7f37',
+        border: 'transparent',
       },
       outlined: {
         bg: 'transparent',
@@ -114,9 +114,9 @@ export const priorityConfig: Record<Priority, PriorityConfig> = {
     variant: 'secondary',
     colors: {
       filled: {
-        bg: '#0969da',
+        bg: '#0550ae',
         text: '#ffffff',
-        border: '#0550ae',
+        border: 'transparent',
       },
       outlined: {
         bg: 'transparent',
