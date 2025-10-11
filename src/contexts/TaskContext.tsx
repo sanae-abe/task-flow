@@ -158,6 +158,15 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       return;
     }
 
+    // ソースカラムとターゲットカラムの存在確認
+    const sourceColumn = boardState.currentBoard.columns.find(col => col.id === sourceColumnId);
+    const targetColumn = boardState.currentBoard.columns.find(col => col.id === targetColumnId);
+    
+    if (!sourceColumn || !targetColumn) {
+      logger.warn('Source or target column not found:', { sourceColumnId, targetColumnId });
+      return;
+    }
+
     // 最右のカラム（完了カラム）への移動をチェック
     const rightmostColumnIndex = boardState.currentBoard.columns.length - 1;
     const targetColumnIndex = boardState.currentBoard.columns.findIndex(col => col.id === targetColumnId);
@@ -205,10 +214,29 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       } else if (column.id === targetColumnId) {
         // ターゲットカラムにタスクを追加
         const newTasks = [...column.tasks];
+        // targetIndexを安全な範囲に制限
         const safeTargetIndex = Math.max(0, Math.min(targetIndex, newTasks.length));
-        newTasks.splice(safeTargetIndex, 0, updatedTask);
+        
+        // 同じカラム内での移動の場合、ソースタスクが既に削除されているかどうかをチェック
+        if (sourceColumnId === targetColumnId) {
+          // 同じカラム内では、元のタスクがまだ存在している状態で挿入する必要がある
+          const currentTaskIndex = newTasks.findIndex(task => task.id === taskId);
+          if (currentTaskIndex !== -1) {
+            // 元のタスクを削除
+            newTasks.splice(currentTaskIndex, 1);
+            // 削除によってインデックスが変わる可能性があるため、再計算
+            const adjustedIndex = currentTaskIndex < safeTargetIndex ? safeTargetIndex - 1 : safeTargetIndex;
+            newTasks.splice(adjustedIndex, 0, updatedTask);
+          } else {
+            // 通常の挿入
+            newTasks.splice(safeTargetIndex, 0, updatedTask);
+          }
+        } else {
+          // 異なるカラム間の移動の場合は通常の挿入
+          newTasks.splice(safeTargetIndex, 0, updatedTask);
+        }
 
-        // 繰り返しタスクがある場合は追加
+        // 繰り返しタスクがある場合は追加（完了カラムに移動していない場合）
         if (recurringTask && !isMovingToCompleted) {
           newTasks.push(recurringTask);
         }
@@ -244,7 +272,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     });
 
     logger.debug('Task moved successfully:', { taskId, sourceColumnId, targetColumnId, targetIndex });
-  }, [boardState.currentBoard, findTaskById, boardDispatch, notify]);
+  }, [boardState.currentBoard, findTaskById, boardDispatch, notify]);;
 
   // タスク更新
   const updateTask = useCallback((taskId: string, updates: Partial<Task>) => {

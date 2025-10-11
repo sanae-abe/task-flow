@@ -63,6 +63,11 @@ export const useDragAndDrop = ({ board, onMoveTask, onSortToManual }: UseDragAnd
     const activeTaskId = active.id as string;
     const overId = over.id as string;
 
+    // 同じタスクの場合は何もしない
+    if (activeTaskId === overId) {
+      return;
+    }
+
     const sourceColumnId = findTaskColumnId(activeTaskId);
     
     if (!sourceColumnId) {
@@ -102,12 +107,20 @@ export const useDragAndDrop = ({ board, onMoveTask, onSortToManual }: UseDragAnd
         
         const oldIndex = sourceCol.tasks.findIndex((task: Task) => task.id === activeTaskId);
         
+        if (oldIndex === -1) {
+          return;
+        }
+        
+        // 同じ位置の場合は何もしない
         if (oldIndex === targetTaskIndex) {
           return;
         }
         
-        targetIndex = targetTaskIndex;
+        // 下から上に移動する場合は、targetIndexをそのまま使用
+        // 上から下に移動する場合は、targetIndex + 1 を使用（元のタスクが削除されるため）
+        targetIndex = oldIndex < targetTaskIndex ? targetTaskIndex : targetTaskIndex;
       } else {
+        // 異なるカラム間での移動の場合は、targetTaskIndexをそのまま使用
         targetIndex = targetTaskIndex;
       }
     }
@@ -131,4 +144,4 @@ export const useDragAndDrop = ({ board, onMoveTask, onSortToManual }: UseDragAnd
     handleDragOver,
     handleDragEnd,
   };
-};
+};;
