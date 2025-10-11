@@ -325,46 +325,6 @@ const TemplateManagementPanel: React.FC = () => {
         </Button>
       </Box>
 
-      {/* 使用統計 */}
-      {templates.length > 0 && (
-        <Box
-          sx={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
-            gap: 3,
-            p: 3,
-            bg: 'canvas.subtle',
-            borderRadius: 2,
-            border: '1px solid',
-            borderColor: 'border.default'
-          }}
-        >
-          <Box sx={{ textAlign: 'center' }}>
-            <Text sx={{ fontSize: 2, fontWeight: 'bold', color: 'fg.default' }}>
-              {templates.length}
-            </Text>
-            <Text sx={{ fontSize: 0, color: 'fg.muted' }}>総テンプレート数</Text>
-          </Box>
-          <Box sx={{ textAlign: 'center' }}>
-            <Text sx={{ fontSize: 2, fontWeight: 'bold', color: 'attention.fg' }}>
-              {templates.filter(t => t.isFavorite).length}
-            </Text>
-            <Text sx={{ fontSize: 0, color: 'fg.muted' }}>お気に入り</Text>
-          </Box>
-          <Box sx={{ textAlign: 'center' }}>
-            <Text sx={{ fontSize: 2, fontWeight: 'bold', color: 'success.fg' }}>
-              {templates.reduce((sum, t) => sum + t.usageCount, 0)}
-            </Text>
-            <Text sx={{ fontSize: 0, color: 'fg.muted' }}>総使用回数</Text>
-          </Box>
-          <Box sx={{ textAlign: 'center' }}>
-            <Text sx={{ fontSize: 2, fontWeight: 'bold', color: 'accent.fg' }}>
-              {templates.filter(t => t.usageCount > 0).length}
-            </Text>
-            <Text sx={{ fontSize: 0, color: 'fg.muted' }}>使用済みテンプレート</Text>
-          </Box>
-        </Box>
-      )}
 
       {/* 検索・フィルターエリア */}
       <Box
