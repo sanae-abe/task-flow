@@ -13,8 +13,8 @@ interface PriorityBadgeProps {
 const PriorityBadge: React.FC<PriorityBadgeProps> = ({
   priority,
   showIcon = true,
-  showLabel = false,
-  useEnglishLabel = true,
+  showLabel = true,
+  useEnglishLabel = false,
 }) => {
   const config = priorityConfig[priority];
   

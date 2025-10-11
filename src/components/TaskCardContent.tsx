@@ -68,7 +68,6 @@ const TaskCardContent: React.FC<TaskDisplayProps> = ({
             priority={task.priority}
             showIcon
             showLabel
-            useEnglishLabel
           />
         )}
         <TaskLabels labels={task.labels} />
