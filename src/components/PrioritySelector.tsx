@@ -86,7 +86,7 @@ const PrioritySelector: React.FC<PrioritySelectorProps> = ({
                 <SelectedIcon
                   size={16}
                   fill={selectedOption?.color}
-                  aria-hidden="true"
+                  aria-hidden
                 />
               ) : (
                 <Box
@@ -157,7 +157,7 @@ const PrioritySelector: React.FC<PrioritySelectorProps> = ({
                       <Icon
                         size={16}
                         fill={option.color}
-                        aria-hidden="true"
+                        aria-hidden
                       />
                     ) : (
                       <Box

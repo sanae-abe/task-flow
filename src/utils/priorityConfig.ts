@@ -1,4 +1,5 @@
-import { AlertIcon, TriangleUpIcon, DotIcon, TriangleDownIcon, type Icon } from '@primer/octicons-react';
+import React from 'react';
+import { AlertOctagon, Triangle, Circle } from 'react-feather';
 
 import type { Priority } from '../types';
 
@@ -23,7 +24,7 @@ export interface PriorityConfig {
   label: string;
   labelEn: string;
   description: string;
-  icon: Icon;
+  icon: React.ComponentType<{ size?: number; fill?: string; 'aria-hidden'?: boolean }>;
   variant: 'danger' | 'attention' | 'accent' | 'secondary';
   colors: PriorityColors;
 }
@@ -37,7 +38,7 @@ export const priorityConfig: Record<Priority, PriorityConfig> = {
     label: '緊急',
     labelEn: 'Critical',
     description: '今すぐ対応が必要',
-    icon: AlertIcon,
+    icon: AlertOctagon,
     variant: 'danger',
     colors: {
       filled: {
@@ -61,7 +62,7 @@ export const priorityConfig: Record<Priority, PriorityConfig> = {
     label: '高',
     labelEn: 'High',
     description: '近日中に対応が必要',
-    icon: TriangleUpIcon,
+    icon: Triangle,
     variant: 'attention',
     colors: {
       filled: {
@@ -85,7 +86,7 @@ export const priorityConfig: Record<Priority, PriorityConfig> = {
     label: '中',
     labelEn: 'Medium',
     description: '通常の優先度',
-    icon: DotIcon,
+    icon: Circle,
     variant: 'accent',
     colors: {
       filled: {
@@ -109,7 +110,7 @@ export const priorityConfig: Record<Priority, PriorityConfig> = {
     label: '低',
     labelEn: 'Low',
     description: '時間があるときに対応',
-    icon: TriangleDownIcon,
+    icon: Circle,
     variant: 'secondary',
     colors: {
       filled: {
@@ -138,7 +139,7 @@ export interface PrioritySelectorOption {
   value: Priority | undefined;
   label: string;
   description: string;
-  icon: Icon | null;
+  icon: React.ComponentType<{ size?: number; fill?: string; 'aria-hidden'?: boolean }> | null;
   color: string;
 }
 
