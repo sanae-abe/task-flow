@@ -1,10 +1,10 @@
-import { useState, useCallback } from 'react';
-import type { TaskTemplate } from '../types/template';
+import { useState, useCallback } from "react";
+import type { TaskTemplate } from "../types/template";
 
 interface EditDialogState {
   isOpen: boolean;
   template: TaskTemplate | null;
-  mode: 'create' | 'edit';
+  mode: "create" | "edit";
 }
 
 interface DeleteDialogState {
@@ -35,13 +35,13 @@ export const useTemplateDialogs = (): UseTemplateDialogsReturn => {
   const [editDialog, setEditDialog] = useState<EditDialogState>({
     isOpen: false,
     template: null,
-    mode: 'create'
+    mode: "create",
   });
 
   // 削除ダイアログ状態
   const [deleteDialog, setDeleteDialog] = useState<DeleteDialogState>({
     isOpen: false,
-    template: null
+    template: null,
   });
 
   // 作成ダイアログを開く
@@ -49,7 +49,7 @@ export const useTemplateDialogs = (): UseTemplateDialogsReturn => {
     setEditDialog({
       isOpen: true,
       template: null,
-      mode: 'create'
+      mode: "create",
     });
   }, []);
 
@@ -58,7 +58,7 @@ export const useTemplateDialogs = (): UseTemplateDialogsReturn => {
     setEditDialog({
       isOpen: true,
       template,
-      mode: 'edit'
+      mode: "edit",
     });
   }, []);
 
@@ -67,7 +67,7 @@ export const useTemplateDialogs = (): UseTemplateDialogsReturn => {
     setEditDialog({
       isOpen: false,
       template: null,
-      mode: 'create'
+      mode: "create",
     });
   }, []);
 
@@ -75,7 +75,7 @@ export const useTemplateDialogs = (): UseTemplateDialogsReturn => {
   const openDeleteDialog = useCallback((template: TaskTemplate) => {
     setDeleteDialog({
       isOpen: true,
-      template
+      template,
     });
   }, []);
 
@@ -83,7 +83,7 @@ export const useTemplateDialogs = (): UseTemplateDialogsReturn => {
   const closeDeleteDialog = useCallback(() => {
     setDeleteDialog({
       isOpen: false,
-      template: null
+      template: null,
     });
   }, []);
 
@@ -94,6 +94,6 @@ export const useTemplateDialogs = (): UseTemplateDialogsReturn => {
     openEditDialog,
     closeEditDialog,
     openDeleteDialog,
-    closeDeleteDialog
+    closeDeleteDialog,
   };
 };

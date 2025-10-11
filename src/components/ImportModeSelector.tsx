@@ -100,11 +100,24 @@ const ImportModeSelector: React.FC<ImportModeSelectorProps> = ({
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "flex-start",
-                gap: 1
+                gap: 1,
               }}
             >
-              <Box sx={{ display: "flex", alignItems: "center", gap: 2, width: "100%" }}>
-                <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 2,
+                  width: "100%",
+                }}
+              >
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "flex-start",
+                  }}
+                >
                   <Text sx={{ fontWeight: "bold", fontSize: 1 }}>
                     {modeConfig.label}
                   </Text>

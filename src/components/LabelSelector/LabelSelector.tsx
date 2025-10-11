@@ -2,19 +2,19 @@ import { PlusIcon, TagIcon } from "@primer/octicons-react";
 import { Button, Box, ActionMenu, ActionList } from "@primer/react";
 import { memo } from "react";
 
-import type { Label } from "../types";
-import { LabelFormDialog } from "./LabelManagement";
+import type { Label } from "../../types";
+import { LabelFormDialog } from "../LabelManagement";
 
 import {
   EMPTY_LABELS_MESSAGE,
   SELECT_LABEL_TEXT,
   ADD_LABEL_TEXT,
   LABEL_SELECTOR_STYLES,
-} from "./LabelSelector/constants";
-import { CurrentBoardLabelSection } from "./LabelSelector/CurrentBoardLabelSection";
-import { OtherBoardLabelSection } from "./LabelSelector/OtherBoardLabelSection";
-import { SelectedLabelsDisplay } from "./LabelSelector/SelectedLabelsDisplay";
-import { useLabelManagement } from "./LabelSelector/useLabelManagement";
+} from "./constants";
+import { CurrentBoardLabelSection } from "./CurrentBoardLabelSection";
+import { OtherBoardLabelSection } from "./OtherBoardLabelSection";
+import { SelectedLabelsDisplay } from "./SelectedLabelsDisplay";
+import { useLabelManagement } from "./useLabelManagement";
 
 interface LabelSelectorProps {
   selectedLabels: Label[];

@@ -1,11 +1,16 @@
-import { useState, useMemo, useCallback } from 'react';
-import type { TaskTemplate, TemplateSortField, TemplateSortDirection, TemplateCategory } from '../types/template';
-import { TEMPLATE_CATEGORIES } from '../components/TemplateManagement/TemplateCategorySelector';
+import { useState, useMemo, useCallback } from "react";
+import type {
+  TaskTemplate,
+  TemplateSortField,
+  TemplateSortDirection,
+  TemplateCategory,
+} from "../types/template";
+import { TEMPLATE_CATEGORIES } from "../components/TemplateManagement/TemplateCategorySelector";
 
 interface UseTemplateFilteringReturn {
   // フィルター状態
   searchQuery: string;
-  filterCategory: TemplateCategory | 'all';
+  filterCategory: TemplateCategory | "all";
   filterFavorite: boolean;
   sortField: TemplateSortField;
   sortDirection: TemplateSortDirection;
@@ -15,7 +20,7 @@ interface UseTemplateFilteringReturn {
 
   // フィルター制御
   setSearchQuery: (query: string) => void;
-  setFilterCategory: (category: TemplateCategory | 'all') => void;
+  setFilterCategory: (category: TemplateCategory | "all") => void;
   setFilterFavorite: (favorite: boolean) => void;
   setSortField: (field: TemplateSortField) => void;
   setSortDirection: (direction: TemplateSortDirection) => void;
@@ -26,34 +31,39 @@ interface UseTemplateFilteringReturn {
 /**
  * テンプレートの検索・フィルター・ソート機能を提供するカスタムフック
  */
-export const useTemplateFiltering = (templates: TaskTemplate[]): UseTemplateFilteringReturn => {
+export const useTemplateFiltering = (
+  templates: TaskTemplate[],
+): UseTemplateFilteringReturn => {
   // フィルター状態
-  const [searchQuery, setSearchQuery] = useState('');
-  const [filterCategory, setFilterCategory] = useState<TemplateCategory | 'all'>('all');
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterCategory, setFilterCategory] = useState<
+    TemplateCategory | "all"
+  >("all");
   const [filterFavorite, setFilterFavorite] = useState(false);
-  const [sortField, setSortField] = useState<TemplateSortField>('favorite');
-  const [sortDirection, setSortDirection] = useState<TemplateSortDirection>('asc');
+  const [sortField, setSortField] = useState<TemplateSortField>("favorite");
+  const [sortDirection, setSortDirection] =
+    useState<TemplateSortDirection>("asc");
 
   // ソートハンドラー
   const handleSort = useCallback(
     (field: TemplateSortField) => {
       if (sortField === field) {
-        setSortDirection((prev) => (prev === 'asc' ? 'desc' : 'asc'));
+        setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
       } else {
         setSortField(field);
-        setSortDirection('asc');
+        setSortDirection("asc");
       }
     },
-    [sortField]
+    [sortField],
   );
 
   // フィルターリセット
   const clearFilters = useCallback(() => {
-    setSearchQuery('');
-    setFilterCategory('all');
+    setSearchQuery("");
+    setFilterCategory("all");
     setFilterFavorite(false);
-    setSortField('favorite');
-    setSortDirection('asc');
+    setSortField("favorite");
+    setSortDirection("asc");
   }, []);
 
   // フィルタリング・ソートされたテンプレート
@@ -67,13 +77,15 @@ export const useTemplateFiltering = (templates: TaskTemplate[]): UseTemplateFilt
         (template) =>
           template.name.toLowerCase().includes(query) ||
           template.description.toLowerCase().includes(query) ||
-          template.taskTitle.toLowerCase().includes(query)
+          template.taskTitle.toLowerCase().includes(query),
       );
     }
 
     // カテゴリーフィルター
-    if (filterCategory !== 'all') {
-      filtered = filtered.filter((template) => template.category === filterCategory);
+    if (filterCategory !== "all") {
+      filtered = filtered.filter(
+        (template) => template.category === filterCategory,
+      );
     }
 
     // お気に入りフィルター
@@ -86,27 +98,31 @@ export const useTemplateFiltering = (templates: TaskTemplate[]): UseTemplateFilt
       let comparison = 0;
 
       switch (sortField) {
-        case 'name':
+        case "name":
           comparison = a.name.localeCompare(b.name);
           break;
-        case 'category': {
+        case "category": {
           const catA =
-            TEMPLATE_CATEGORIES.find((cat) => cat.id === a.category)?.label || a.category;
+            TEMPLATE_CATEGORIES.find((cat) => cat.id === a.category)?.label ||
+            a.category;
           const catB =
-            TEMPLATE_CATEGORIES.find((cat) => cat.id === b.category)?.label || b.category;
+            TEMPLATE_CATEGORIES.find((cat) => cat.id === b.category)?.label ||
+            b.category;
           comparison = catA.localeCompare(catB);
           break;
         }
-        case 'usageCount':
+        case "usageCount":
           comparison = a.usageCount - b.usageCount;
           break;
-        case 'createdAt':
-          comparison = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+        case "createdAt":
+          comparison =
+            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
           break;
-        case 'updatedAt':
-          comparison = new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime();
+        case "updatedAt":
+          comparison =
+            new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime();
           break;
-        case 'favorite':
+        case "favorite":
           // お気に入り優先ソート: お気に入り → 使用回数順
           if (a.isFavorite && !b.isFavorite) {
             comparison = -1;
@@ -120,11 +136,18 @@ export const useTemplateFiltering = (templates: TaskTemplate[]): UseTemplateFilt
           comparison = a.name.localeCompare(b.name);
       }
 
-      return sortDirection === 'asc' ? comparison : -comparison;
+      return sortDirection === "asc" ? comparison : -comparison;
     });
 
     return filtered;
-  }, [templates, searchQuery, filterCategory, filterFavorite, sortField, sortDirection]);
+  }, [
+    templates,
+    searchQuery,
+    filterCategory,
+    filterFavorite,
+    sortField,
+    sortDirection,
+  ]);
 
   return {
     searchQuery,
@@ -139,6 +162,6 @@ export const useTemplateFiltering = (templates: TaskTemplate[]): UseTemplateFilt
     setSortField,
     setSortDirection,
     handleSort,
-    clearFilters
+    clearFilters,
   };
 };

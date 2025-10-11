@@ -1,7 +1,7 @@
-import type { Label } from './index';
+import type { Label } from "./index";
 
-export type SortField = 'name' | 'boardName' | 'usageCount';
-export type SortDirection = 'asc' | 'desc';
+export type SortField = "name" | "boardName" | "usageCount";
+export type SortDirection = "asc" | "desc";
 
 export interface LabelWithInfo extends Label {
   boardName: string;
@@ -12,7 +12,7 @@ export interface LabelWithInfo extends Label {
 export interface EditDialogState {
   isOpen: boolean;
   label: (Label & { boardName: string; boardId: string }) | null;
-  mode: 'create' | 'edit';
+  mode: "create" | "edit";
 }
 
 export interface DeleteDialogState {
