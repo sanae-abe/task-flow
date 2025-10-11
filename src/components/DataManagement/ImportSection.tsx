@@ -46,26 +46,22 @@ export const ImportSection = memo<ImportSectionProps>(({ onImportSuccess }) => {
       iconColor="var(--fgColor-attention)"
     >
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-        {/* 警告メッセージ */}
-        <Flash variant="warning">
-          <Box sx={{ display: 'flex', gap: 2 }}>
-            <AlertIcon size={16} />
-            <Box>
-              <Text sx={{ fontWeight: 'bold', display: 'block', mb: 1 }}>
-                データのインポートには注意が必要です
-              </Text>
-              <Text sx={{ fontSize: 1 }}>
-                {state.mode === 'replace' ? (
-                  <Text sx={{ color: 'danger.fg', fontWeight: 'bold' }}>
-                    「既存データを置換」モードでは、現在のすべてのデータが削除されます。
-                  </Text>
-                ) : (
-                  '「既存データに追加」モードでは、現在のデータに新しいデータが追加されます。'
-                )}
-              </Text>
+        {/* 警告メッセージ - 置換モード時のみ表示 */}
+        {state.mode === 'replace' && (
+          <Flash variant="warning">
+            <Box sx={{ display: 'flex', gap: 2 }}>
+              <AlertIcon size={16} />
+              <Box>
+                <Text sx={{ fontWeight: 'bold', display: 'block', mb: 1 }}>
+                  危険: データの置換操作
+                </Text>
+                <Text sx={{ fontSize: 1, color: 'danger.fg', fontWeight: 'bold' }}>
+                  現在のすべてのデータが削除されます。この操作は元に戻せません。
+                </Text>
+              </Box>
             </Box>
-          </Box>
-        </Flash>
+          </Flash>
+        )}
 
         {/* インポートモード選択 */}
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>

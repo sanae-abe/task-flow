@@ -54,14 +54,14 @@ export const CollapsibleSection = memo<CollapsibleSectionProps>(({
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              width: '36px',
-              height: '36px',
-              borderRadius: '6px',
+              width: '24px',
+              height: '24px',
+              borderRadius: '4px',
               backgroundColor: iconBg,
               color: iconColor
             }}
           >
-            <Icon size={16} />
+            <Icon size={14} />
           </div>
           <span style={{ fontSize: '16px', fontWeight: 'bold' }}>
             {title}

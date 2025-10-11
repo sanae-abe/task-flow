@@ -80,7 +80,6 @@ export const ExportSection = memo<ExportSectionProps>(({
           <DataStatistics
             statistics={allDataStatistics}
             title="エクスポートされるデータ"
-            variant="primary"
           />
 
           <Button
@@ -133,7 +132,6 @@ export const ExportSection = memo<ExportSectionProps>(({
             <DataStatistics
               statistics={selectedBoardStatistics}
               title={`「${selectedBoard.title}」のデータ`}
-              variant="success"
             />
           )}
 
