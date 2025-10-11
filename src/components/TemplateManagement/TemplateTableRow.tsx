@@ -70,15 +70,11 @@ const TemplateTableRow: React.FC<TemplateTableRowProps> = ({
       </Box>
 
       {/* カテゴリー */}
-      <Box>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
         <Text
           sx={{
             fontSize: 0,
             color: 'fg.muted',
-            px: 2,
-            py: 1,
-            bg: 'neutral.muted',
-            borderRadius: 2,
             display: 'inline-block'
           }}
         >

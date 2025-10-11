@@ -1,6 +1,6 @@
 import React from 'react';
-import { Box, Text, Button } from '@primer/react';
-import { ChevronUpIcon, ChevronDownIcon, ThumbsupIcon } from '@primer/octicons-react';
+import { Box, Text } from '@primer/react';
+import { ChevronUpIcon, ChevronDownIcon, StarFillIcon } from '@primer/octicons-react';
 import type { TemplateSortField, TemplateSortDirection } from '../../types/template';
 
 interface SortableHeaderProps {
@@ -26,20 +26,20 @@ const SortableHeader: React.FC<SortableHeaderProps> = ({
   const isActive = currentSortField === field;
 
   return (
-    <Button
-      variant="invisible"
+    <button
       onClick={() => onSort(field)}
       aria-label={`${children}でソート`}
-      sx={{
+      className="TableSortButton"
+      style={{
         width: '100%',
         justifyContent: align === 'center' ? 'center' : 'flex-start',
-        p: 0,
-        color: 'fg.muted',
-        fontSize: 0,
         fontWeight: 'bold',
-        '&:hover': {
-          color: 'fg.default'
-        }
+        border: 0,
+        padding: '8px',
+        color: 'var(--color-fg-muted)',
+        fontSize: 0,
+        background: 'none',
+        appearance: 'none'
       }}
     >
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -54,7 +54,7 @@ const SortableHeader: React.FC<SortableHeaderProps> = ({
           )}
         </Box>
       </Box>
-    </Button>
+    </button>
   );
 };
 
@@ -71,56 +71,53 @@ const TemplateTableHeader: React.FC<TemplateTableHeaderProps> = ({
   sortField,
   sortDirection,
   onSort
-}) => {
-  return (
-    <Box
-      sx={{
-        display: 'grid',
-        gridTemplateColumns: '1fr 120px 80px 100px',
-        gap: 2,
-        p: 2,
-        bg: 'canvas.subtle',
-        borderBottom: '1px solid',
-        borderColor: 'border.default',
-        fontSize: 1,
-        fontWeight: 'bold',
-        color: 'fg.muted'
-      }}
+}) => (
+  <Box
+    sx={{
+      display: 'grid',
+      gridTemplateColumns: '1fr 120px 80px 100px',
+      gap: 2,
+      bg: 'canvas.subtle',
+      borderBottom: '1px solid',
+      borderColor: 'border.default',
+      fontSize: 1,
+      fontWeight: 'bold',
+      color: 'fg.muted'
+    }}
+  >
+    <SortableHeader
+      field="favorite"
+      currentSortField={sortField}
+      sortDirection={sortDirection}
+      onSort={onSort}
     >
-      <SortableHeader
-        field="favorite"
-        currentSortField={sortField}
-        sortDirection={sortDirection}
-        onSort={onSort}
-      >
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <ThumbsupIcon size={12} />
-          <Text sx={{ fontSize: 0 }}>おすすめ順</Text>
-        </Box>
-      </SortableHeader>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <StarFillIcon size={12} />
+        <Text sx={{ fontSize: 0 }}>おすすめ順</Text>
+      </Box>
+    </SortableHeader>
 
-      <SortableHeader
-        field="category"
-        currentSortField={sortField}
-        sortDirection={sortDirection}
-        onSort={onSort}
-      >
-        カテゴリー
-      </SortableHeader>
+    <SortableHeader
+      field="category"
+      currentSortField={sortField}
+      sortDirection={sortDirection}
+      onSort={onSort}
+    >
+      カテゴリー
+    </SortableHeader>
 
-      <SortableHeader
-        field="usageCount"
-        currentSortField={sortField}
-        sortDirection={sortDirection}
-        onSort={onSort}
-        align="center"
-      >
-        使用数
-      </SortableHeader>
+    <SortableHeader
+      field="usageCount"
+      currentSortField={sortField}
+      sortDirection={sortDirection}
+      onSort={onSort}
+      align="center"
+    >
+      使用数
+    </SortableHeader>
 
-      <Text sx={{ textAlign: 'center', fontSize: 0 }}>操作</Text>
-    </Box>
-  );
-};
+    <Text sx={{ textAlign: 'center', fontSize: 0, p: 2 }}>操作</Text>
+  </Box>
+);
 
 export default TemplateTableHeader;

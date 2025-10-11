@@ -1,13 +1,12 @@
 import React from 'react';
-import { Button, Box, Heading } from '@primer/react';
+import { Button, Box, Heading, Text } from '@primer/react';
 import { PlusIcon } from '@primer/octicons-react';
 
-import type { TemplateFormData } from '../../types/template';
+import type { TemplateFormData, TaskTemplate } from '../../types/template';
 import TemplateFormDialog from './TemplateFormDialog';
 import ConfirmDialog from '../shared/Dialog/ConfirmDialog';
 import TemplateSearchFilter from './TemplateSearchFilter';
 import TemplateTable from './TemplateTable';
-import TemplateStats from './TemplateStats';
 
 // カスタムフック
 import { useTemplateManagement } from '../../hooks/useTemplateManagement';
@@ -83,6 +82,11 @@ const TemplateManagementPanel: React.FC = () => {
   // アクティブなフィルターの有無
   const hasActiveFilters = searchQuery.trim() !== '' || filterCategory !== 'all' || filterFavorite;
 
+  // お気に入りトグルハンドラー（型適合用ラッパー）
+  const handleToggleFavorite = (template: TaskTemplate) => {
+    toggleFavorite(template.id);
+  };
+
   // ローディングやエラー状態の表示
   if (loading) {
     return (
@@ -123,13 +127,6 @@ const TemplateManagementPanel: React.FC = () => {
         </Button>
       </Box>
 
-      {/* 統計情報 */}
-      <TemplateStats
-        templates={templates}
-        filteredTemplates={filteredTemplates}
-        hasActiveFilters={hasActiveFilters}
-      />
-
       {/* 検索・フィルターエリア */}
       <TemplateSearchFilter
         searchQuery={searchQuery}
@@ -149,7 +146,7 @@ const TemplateManagementPanel: React.FC = () => {
         onSort={handleSort}
         onEdit={openEditDialog}
         onDelete={openDeleteDialog}
-        onToggleFavorite={toggleFavorite}
+        onToggleFavorite={handleToggleFavorite}
         hasActiveFilters={hasActiveFilters}
       />
 
