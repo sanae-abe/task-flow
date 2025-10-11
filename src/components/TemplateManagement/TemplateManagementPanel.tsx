@@ -92,13 +92,14 @@ const TemplateManagementPanel: React.FC = () => {
       const loadedTemplates = TemplateStorage.load();
       setTemplates(loadedTemplates);
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.warn('Failed to load templates:', error);
       setTemplates([]);
     }
   }, []);
 
   // ソート状態
-  const [sortField, setSortField] = useState<TemplateSortField>('name');
+  const [sortField, setSortField] = useState<TemplateSortField>('favorite');
   const [sortDirection, setSortDirection] = useState<TemplateSortDirection>('asc');
 
   // 検索・フィルター状態
@@ -188,6 +189,16 @@ const TemplateManagementPanel: React.FC = () => {
         case 'updatedAt':
           comparison = new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime();
           break;
+        case 'favorite':
+          // お気に入り優先ソート: お気に入り → 使用回数順
+          if (a.isFavorite && !b.isFavorite) {
+            comparison = -1;
+          } else if (!a.isFavorite && b.isFavorite) {
+            comparison = 1;
+          } else {
+            comparison = b.usageCount - a.usageCount; // 使用回数の多い順
+          }
+          break;
         default:
           comparison = a.name.localeCompare(b.name);
       }
@@ -232,6 +243,7 @@ const TemplateManagementPanel: React.FC = () => {
         prev.map((t) => (t.id === template.id ? { ...t, isFavorite: newFavoriteState } : t))
       );
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('Failed to toggle favorite:', error);
       // エラーハンドリング - 必要に応じて通知を表示
     }
@@ -270,6 +282,7 @@ const TemplateManagementPanel: React.FC = () => {
         }
         handleCloseEditDialog();
       } catch (error) {
+        // eslint-disable-next-line no-console
         console.error('Failed to save template:', error);
         // エラーハンドリング - 必要に応じて通知を表示
       }
@@ -287,6 +300,7 @@ const TemplateManagementPanel: React.FC = () => {
         }
         handleCloseDeleteDialog();
       } catch (error) {
+        // eslint-disable-next-line no-console
         console.error('Failed to delete template:', error);
         // エラーハンドリング - 必要に応じて通知を表示
       }
@@ -310,6 +324,47 @@ const TemplateManagementPanel: React.FC = () => {
           テンプレートを作成
         </Button>
       </Box>
+
+      {/* 使用統計 */}
+      {templates.length > 0 && (
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+            gap: 3,
+            p: 3,
+            bg: 'canvas.subtle',
+            borderRadius: 2,
+            border: '1px solid',
+            borderColor: 'border.default'
+          }}
+        >
+          <Box sx={{ textAlign: 'center' }}>
+            <Text sx={{ fontSize: 2, fontWeight: 'bold', color: 'fg.default' }}>
+              {templates.length}
+            </Text>
+            <Text sx={{ fontSize: 0, color: 'fg.muted' }}>総テンプレート数</Text>
+          </Box>
+          <Box sx={{ textAlign: 'center' }}>
+            <Text sx={{ fontSize: 2, fontWeight: 'bold', color: 'attention.fg' }}>
+              {templates.filter(t => t.isFavorite).length}
+            </Text>
+            <Text sx={{ fontSize: 0, color: 'fg.muted' }}>お気に入り</Text>
+          </Box>
+          <Box sx={{ textAlign: 'center' }}>
+            <Text sx={{ fontSize: 2, fontWeight: 'bold', color: 'success.fg' }}>
+              {templates.reduce((sum, t) => sum + t.usageCount, 0)}
+            </Text>
+            <Text sx={{ fontSize: 0, color: 'fg.muted' }}>総使用回数</Text>
+          </Box>
+          <Box sx={{ textAlign: 'center' }}>
+            <Text sx={{ fontSize: 2, fontWeight: 'bold', color: 'accent.fg' }}>
+              {templates.filter(t => t.usageCount > 0).length}
+            </Text>
+            <Text sx={{ fontSize: 0, color: 'fg.muted' }}>使用済みテンプレート</Text>
+          </Box>
+        </Box>
+      )}
 
       {/* 検索・フィルターエリア */}
       <Box
@@ -418,12 +473,12 @@ const TemplateManagementPanel: React.FC = () => {
             }}
           >
             <SortableHeader
-              field="name"
+              field="favorite"
               currentSortField={sortField}
               sortDirection={sortDirection}
               onSort={handleSort}
             >
-              テンプレート
+              ⭐ おすすめ順
             </SortableHeader>
             <SortableHeader
               field="category"
