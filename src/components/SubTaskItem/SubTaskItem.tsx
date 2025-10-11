@@ -1,12 +1,12 @@
 import React from "react";
 import { Box } from "@primer/react";
-import type { SubTask } from "../types";
-import { useSubTaskEdit } from "./SubTaskItem/hooks/useSubTaskEdit";
-import { useSubTaskDrag } from "./SubTaskItem/hooks/useSubTaskDrag";
-import { EditingView } from "./SubTaskItem/components/EditingView";
-import { DisplayView } from "./SubTaskItem/components/DisplayView";
-import { DragHandleAndToggle } from "./SubTaskItem/components/DragHandleAndToggle";
-import { subTaskItemStyles } from "./SubTaskItem/styles/subTaskItemStyles";
+import type { SubTask } from "../../types";
+import { useSubTaskEdit } from "./hooks/useSubTaskEdit";
+import { useSubTaskDrag } from "./hooks/useSubTaskDrag";
+import { EditingView } from "./components/EditingView";
+import { DisplayView } from "./components/DisplayView";
+import { DragHandleAndToggle } from "./components/DragHandleAndToggle";
+import { subTaskItemStyles } from "./styles/subTaskItemStyles";
 
 interface SubTaskItemProps {
   subTask: SubTask;
