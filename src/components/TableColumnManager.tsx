@@ -1,7 +1,6 @@
 import React, { useState, useCallback } from "react";
 import {
   Text,
-  Box,
   IconButton,
   ActionMenu,
   ActionList,
@@ -134,13 +133,13 @@ const TableColumnManager: React.FC = () => {
                   onSelect={() => toggleColumnVisibility(column.id)}
                 >
                   <ActionList.LeadingVisual>
-                    <Box
-                      sx={{
+                    <div
+                      style={{
                         color: column.visible ? "inherit" : "white",
                       }}
                     >
                       <CheckIcon />
-                    </Box>
+                    </div>
                   </ActionList.LeadingVisual>
                   {column.label}
                 </ActionList.Item>
@@ -172,7 +171,7 @@ const TableColumnManager: React.FC = () => {
             カラムをドラッグして並び替え、幅の調整ができます。幅は50px〜1000pxの範囲で入力してください。
           </div>
 
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
             {columnOrder.map((columnId) => {
               const column = columns.find((col) => col.id === columnId);
               if (!column) {
@@ -182,7 +181,7 @@ const TableColumnManager: React.FC = () => {
               const isDragging = draggedColumnId === column.id;
 
               return (
-                <Box
+                <div
                   key={column.id}
                   draggable
                   onDragStart={(e: React.DragEvent) =>
@@ -191,16 +190,16 @@ const TableColumnManager: React.FC = () => {
                   onDragOver={handleDragOver}
                   onDrop={(e: React.DragEvent) => handleDrop(e, column.id)}
                   onDragEnd={handleDragEnd}
-                  sx={{
+                  style={{
                     display: "flex",
-                    py: 1,
+                    padding: "4px 0",
                     alignItems: "center",
                     border: "1px solid",
                     borderColor: isDragging
-                      ? "accent.emphasis"
-                      : "border.default",
-                    borderRadius: 2,
-                    bg: column.visible ? "canvas.default" : "canvas.subtle",
+                      ? "var(--borderColor-accent-emphasis)"
+                      : "var(--borderColor-default)",
+                    borderRadius: "var(--borderRadius-medium)",
+                    background: column.visible ? "var(--bgColor-default)" : "var(--bgColor-muted)",
                     opacity: isDragging ? 0.5 : 1,
                     cursor: "move",
                     transition: "all 0.2s ease",
@@ -217,9 +216,9 @@ const TableColumnManager: React.FC = () => {
                     }}
                   />
 
-                  <Box sx={{ flex: 1 }}>
+                  <div style={{ flex: 1 }}>
                     <Text sx={{ fontWeight: "semibold" }}>{column.label}</Text>
-                  </Box>
+                  </div>
 
                   <FormControl>
                     <FormControl.Label visuallyHidden>
@@ -247,16 +246,16 @@ const TableColumnManager: React.FC = () => {
                       sx={{ color: "danger.emphasis" }}
                     />
                   )}
-                </Box>
+                </div>
               );
             })}
-          </Box>
+          </div>
 
-          <Box
-            sx={{ display: "flex", gap: 2, mt: 4, justifyContent: "flex-end" }}
+          <div
+            style={{ display: "flex", gap: "8px", marginTop: "16px", justifyContent: "flex-end" }}
           >
             <Button onClick={() => setIsSettingsOpen(false)}>閉じる</Button>
-          </Box>
+          </div>
         </Dialog>
       )}
     </>

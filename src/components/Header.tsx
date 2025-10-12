@@ -37,6 +37,8 @@ const headerStyles = {
     flex: 1,
     minWidth: 0,
     paddingRight: '16px',
+    width: "100%",
+    height: "100%",
   },
   divider: {
     height: DIVIDER_HEIGHT,
@@ -52,7 +54,7 @@ const headerStyles = {
     backgroundColor: "var(--bgColor-accent-emphasis)",
     color: "#ffffff",
     border: "none",
-    borderRadius: "8px",
+    borderRadius: "var(--borderRadius-medium)",
     transition: "background-color 0.2s ease",
     "&:hover": {
       backgroundColor: "var(--button-outline-bgColor-active)",

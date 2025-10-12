@@ -331,7 +331,7 @@ const RecurrenceDetailDialog: React.FC<RecurrenceDetailDialogProps> = ({
 
         <div>
           {config && (
-            <div style={{ padding: "8px", background: "var(--bgColor-muted)", borderRadius: "8px", marginBottom: "8px" }}>
+            <div style={{ padding: "8px", background: "var(--bgColor-muted)", borderRadius: "var(--borderRadius-medium)", marginBottom: "8px" }}>
               <Text sx={{ fontSize: 0, color: "fg.muted" }}>
                 設定内容: {getRecurrenceDescription(config)}
               </Text>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, Box, IconButton, ActionMenu, ActionList, Button } from '@primer/react';
+import { Text, IconButton, ActionMenu, ActionList, Button } from '@primer/react';
 import { XIcon, CheckIcon, PaperclipIcon, TriangleDownIcon, SyncIcon } from '@primer/octicons-react';
 
 import type { TaskWithColumn } from '../../../types/table';
@@ -18,7 +18,7 @@ export const renderActionsCell = (
   task: TaskWithColumn,
   onDeleteClick: (task: TaskWithColumn) => void
 ) => (
-  <Box onClick={(e: React.MouseEvent) => e.stopPropagation()}>
+  <div onClick={(e: React.MouseEvent) => e.stopPropagation()}>
     <IconButton
       aria-label="タスクを削除"
       variant="invisible"
@@ -32,7 +32,7 @@ export const renderActionsCell = (
         }
       }}
     />
-  </Box>
+  </div>
 );
 
 /**
@@ -63,7 +63,7 @@ export const renderStatusCell = (
   currentBoard: KanbanBoard | null,
   onStatusChange: (task: TaskWithColumn, newColumnId: string) => void
 ) => (
-  <Box onClick={(e: React.MouseEvent) => e.stopPropagation()}>
+  <div onClick={(e: React.MouseEvent) => e.stopPropagation()}>
     <ActionMenu>
       <ActionMenu.Anchor>
         <Button
@@ -100,14 +100,14 @@ export const renderStatusCell = (
         </ActionList>
       </ActionMenu.Overlay>
     </ActionMenu>
-  </Box>
+  </div>
 );
 
 /**
  * 優先度セルの描画
  */
 export const renderPriorityCell = (task: TaskWithColumn) => (
-  <Box>
+  <div>
     {task.priority ? (
       <Text sx={{ color: 'fg.default', fontSize: 1 }}>
         {getPriorityText(task.priority)}
@@ -117,7 +117,7 @@ export const renderPriorityCell = (task: TaskWithColumn) => (
         -
       </Text>
     )}
-  </Box>
+  </div>
 );
 
 /**
@@ -126,11 +126,11 @@ export const renderPriorityCell = (task: TaskWithColumn) => (
 export const renderDueDateCell = (task: TaskWithColumn) => {
   if (!task.dueDate) {
     return (
-      <Box>
+      <div>
         <Text sx={{ color: 'fg.default', fontSize: 1 }}>
           -
         </Text>
-      </Box>
+      </div>
     );
   }
 
@@ -153,7 +153,7 @@ export const renderDueDateCell = (task: TaskWithColumn) => {
  * ラベルセルの描画
  */
 export const renderLabelsCell = (task: TaskWithColumn) => (
-  <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', alignItems: 'center' }}>
+  <div style={{ display: 'flex', gap: "4px", flexWrap: 'wrap', alignItems: 'center' }}>
     {task.labels?.slice(0, 2).map((label) => (
       <LabelChip
         key={label.id}
@@ -175,14 +175,14 @@ export const renderLabelsCell = (task: TaskWithColumn) => (
         +{task.labels.length - 2}
       </Text>
     )}
-  </Box>
+  </div>
 );
 
 /**
  * サブタスクセルの描画
  */
 export const renderSubTasksCell = (task: TaskWithColumn) => (
-  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+  <div style={{ display: 'flex', alignItems: 'center', gap: "4px" }}>
     {task.subTasks && task.subTasks.length > 0 ? (
       <>
         <CheckIcon size={12} />
@@ -195,14 +195,14 @@ export const renderSubTasksCell = (task: TaskWithColumn) => (
         -
       </Text>
     )}
-  </Box>
+  </div>
 );
 
 /**
  * ファイルセルの描画
  */
 export const renderFilesCell = (task: TaskWithColumn) => (
-  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+  <div style={{ display: 'flex', alignItems: 'center', gap: "4px" }}>
     {task.files && task.files.length > 0 ? (
       <>
         <PaperclipIcon size={12} />
@@ -215,16 +215,16 @@ export const renderFilesCell = (task: TaskWithColumn) => (
         -
       </Text>
     )}
-  </Box>
+  </div>
 );
 
 /**
  * 進捗セルの描画
  */
 export const renderProgressCell = (task: TaskWithColumn) => (
-  <Box>
+  <div>
     {task.subTasks && task.subTasks.length > 0 ? (
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: "8px" }}>
         <SubTaskProgressBar
           completedCount={task.subTasks.filter(sub => sub.completed).length}
           totalCount={task.subTasks.length}
@@ -232,13 +232,13 @@ export const renderProgressCell = (task: TaskWithColumn) => (
         <Text sx={{ fontSize: 1, color: 'fg.default' }}>
           {getCompletionRate(task)}%
         </Text>
-      </Box>
+      </div>
     ) : (
       <Text sx={{ color: 'fg.default', fontSize: 1 }}>
         -
       </Text>
     )}
-  </Box>
+  </div>
 );
 
 /**
@@ -263,7 +263,7 @@ export const renderUpdatedAtCell = (task: TaskWithColumn) => (
  * 完了日セルの描画
  */
 export const renderCompletedAtCell = (task: TaskWithColumn) => (
-  <Box>
+  <div>
     {task.completedAt ? (
       <Text sx={{ fontSize: 1, color: 'fg.default' }}>
         {formatDate(task.completedAt, 'MM/dd HH:mm')}
@@ -273,14 +273,14 @@ export const renderCompletedAtCell = (task: TaskWithColumn) => (
         -
       </Text>
     )}
-  </Box>
+  </div>
 );
 
 /**
  * 説明セルの描画
  */
 export const renderDescriptionCell = (task: TaskWithColumn) => (
-  <Box>
+  <div>
     {task.description ? (
       <Text
         sx={{
@@ -301,14 +301,14 @@ export const renderDescriptionCell = (task: TaskWithColumn) => (
         -
       </Text>
     )}
-  </Box>
+  </div>
 );
 
 /**
  * 繰り返しセルの描画
  */
 export const renderRecurrenceCell = (task: TaskWithColumn) => (
-  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: 'fg.default' }}>
+  <div style={{ display: 'flex', alignItems: 'center', gap: "4px", color: 'var(--fgColor-default)' }}>
     {task.recurrence?.enabled ? (
       <>
         <SyncIcon size={12} />
@@ -324,7 +324,7 @@ export const renderRecurrenceCell = (task: TaskWithColumn) => (
         -
       </Text>
     )}
-  </Box>
+  </div>
 );
 
 /**

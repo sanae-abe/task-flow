@@ -1,20 +1,20 @@
-import { Box, Text } from "@primer/react";
+import { Text } from "@primer/react";
 import React, { memo } from "react";
 
 interface ContentBoxProps {
   children: React.ReactNode;
-  bg?: string;
+  background?: string;
   emptyText?: string;
   isEmpty?: boolean;
 }
 
 const ContentBox = memo<ContentBoxProps>(
-  ({ children, bg = "canvas.subtle", emptyText, isEmpty = false }) => (
-    <Box
-      sx={{
-        p: 3,
-        bg,
-        borderRadius: 2,
+  ({ children, background = "var(--bgColor-muted)", emptyText, isEmpty = false }) => (
+    <div
+      style={{
+        padding: "12px",
+        background,
+        borderRadius: "var(--borderRadius-medium)",
       }}
     >
       {isEmpty && emptyText ? (
@@ -24,7 +24,7 @@ const ContentBox = memo<ContentBoxProps>(
       ) : (
         children
       )}
-    </Box>
+    </div>
   ),
 );
 

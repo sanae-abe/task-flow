@@ -1,4 +1,3 @@
-import { Box } from "@primer/react";
 import React, { memo, useMemo } from "react";
 
 import { UnifiedForm, createLabelFormFields } from "./shared/Form";
@@ -45,11 +44,11 @@ const LabelCreateForm = memo<LabelCreateFormProps>(
     );
 
     return (
-      <Box
-        sx={{
-          p: 3,
-          bg: "canvas.subtle",
-          borderRadius: 2,
+      <div
+        style={{
+          padding: "12px",
+          background: "var(--bgColor-muted)",
+          borderRadius: "var(--borderRadius-medium)",
           border: "1px solid",
           borderColor: "border.default",
         }}
@@ -64,7 +63,7 @@ const LabelCreateForm = memo<LabelCreateFormProps>(
           validateOnChange
           validateOnBlur
         />
-      </Box>
+      </div>
     );
   },
 );

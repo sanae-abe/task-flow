@@ -22,9 +22,11 @@ const styles = {
   container: {
     display: "flex",
     alignItems: "center",
-    gap: 4,
-    flex: 1,
+    gap: "16px",
+    fontSize: "14px",
     minWidth: 0,
+    width: "100%",
+    height: "100%",
     overflowX: "auto",
     scrollbarWidth: "none",
     "&::-webkit-scrollbar": {
@@ -40,7 +42,7 @@ const styles = {
   },
   emptyText: {
     color: "fg.muted",
-    fontSize: 1,
+    fontSize: "14px",
   },
   tabContainer: {
     height: "100%",
@@ -54,21 +56,21 @@ const styles = {
     zIndex: 1000,
   },
   selectedTab: {
-    px: 0,
-    py: 3,
+    paddingInline: 0,
+    paddingBlock: "12px",
     borderBottom: "2px solid",
     borderBottomColor: "accent.emphasis",
   },
   unselectedTab: {
-    px: 0,
-    py: 3,
+    paddingInline: 0,
+    paddingBlock: "12px",
     borderBottom: "none",
   },
   tabButton: {
-    fontSize: 1,
+    fontSize: "14px",
     borderRadius: "6px",
-    px: 1,
-    py: 0,
+    paddingInline: "4px",
+    paddingBlock: 0,
     whiteSpace: "nowrap",
     translate: "0 2px",
     flexShrink: 0,
@@ -90,10 +92,10 @@ const styles = {
     color: "fg.muted",
   },
   overlayButton: {
-    fontSize: 1,
+    fontSize: "14px",
     borderRadius: "6px",
-    px: 1,
-    py: 0,
+    paddingInline: "4px",
+    paddingBlock: 0,
     whiteSpace: "nowrap",
     flexShrink: 0,
     fontWeight: "600",
@@ -107,9 +109,9 @@ const styles = {
 
 // 空状態表示コンポーネント
 const EmptyBoardsMessage: React.FC = memo(() => (
-  <Box sx={styles.emptyState}>
+  <div style={styles.emptyState}>
     <Text sx={styles.emptyText}>利用可能なボードがありません</Text>
-  </Box>
+  </div>
 ));
 
 // ソート可能なボードタブコンポーネント
@@ -176,8 +178,8 @@ interface DragOverlayBoardTabProps {
 
 const DragOverlayBoardTab: React.FC<DragOverlayBoardTabProps> = memo(
   ({ board }) => (
-    <Box
-      sx={{
+    <div
+      style={{
         ...styles.tabContainer,
         ...styles.selectedTab,
       }}
@@ -185,7 +187,7 @@ const DragOverlayBoardTab: React.FC<DragOverlayBoardTabProps> = memo(
       <Button variant="invisible" size="medium" sx={styles.overlayButton}>
         {board.title}
       </Button>
-    </Box>
+    </div>
   ),
 );
 
@@ -214,7 +216,7 @@ const BoardSelector: React.FC = () => {
         items={state.boards.map((board) => board.id)}
         strategy={horizontalListSortingStrategy}
       >
-        <Box sx={styles.container} role="tablist" aria-label="ボード選択">
+        <div style={styles.container} role="tablist" aria-label="ボード選択">
           {state.boards.map((board) => (
             <SortableBoardTab
               key={board.id}
@@ -223,7 +225,7 @@ const BoardSelector: React.FC = () => {
               onSelect={setCurrentBoard}
             />
           ))}
-        </Box>
+        </div>
       </SortableContext>
 
       <DragOverlay

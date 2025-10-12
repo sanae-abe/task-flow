@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, TextInput, Select, Button } from '@primer/react';
+import { TextInput, Select, Button } from '@primer/react';
 import { SearchIcon, StarIcon, StarFillIcon } from '@primer/octicons-react';
 import type { TemplateCategory } from '../../types/template';
 import { TEMPLATE_CATEGORIES } from './TemplateCategorySelector';
@@ -26,21 +26,21 @@ const TemplateSearchFilter: React.FC<TemplateSearchFilterProps> = ({
   onFilterCategoryChange,
   onFilterFavoriteChange
 }) =>
-  <Box
-    sx={{
+  <div
+    style={{
       display: 'flex',
-      gap: 2,
+      gap: "8px",
       flexWrap: 'wrap',
       alignItems: 'center',
-      p: 3,
-      bg: 'canvas.subtle',
-      borderRadius: 2,
+      padding: '12px',
+      backgroundColor: 'var(--bgColor-muted)',
+      borderRadius: 'var(--borderRadius-medium)',
       border: '1px solid',
-      borderColor: 'border.default'
+      borderColor: 'var(--borderColor-default)'
     }}
   >
     {/* 検索 */}
-    <Box sx={{ flex: 1, minWidth: '200px' }}>
+    <div style={{ flex: 1, minWidth: '200px' }}>
       <TextInput
         leadingVisual={SearchIcon}
         placeholder="テンプレートを検索..."
@@ -48,10 +48,10 @@ const TemplateSearchFilter: React.FC<TemplateSearchFilterProps> = ({
         onChange={(e) => onSearchQueryChange(e.target.value)}
         sx={{ width: '100%' }}
       />
-    </Box>
+    </div>
 
     {/* カテゴリーフィルター */}
-    <Box>
+    <div>
       <Select
         value={filterCategory}
         onChange={(e) => onFilterCategoryChange(e.target.value as TemplateCategory | 'all')}
@@ -63,7 +63,7 @@ const TemplateSearchFilter: React.FC<TemplateSearchFilterProps> = ({
           </Select.Option>
         ))}
       </Select>
-    </Box>
+    </div>
 
     {/* お気に入りフィルター */}
     <Button
@@ -73,6 +73,6 @@ const TemplateSearchFilter: React.FC<TemplateSearchFilterProps> = ({
     >
       お気に入り
     </Button>
-  </Box>
+  </div>
 
 export default TemplateSearchFilter;

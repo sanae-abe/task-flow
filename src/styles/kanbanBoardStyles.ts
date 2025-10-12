@@ -1,7 +1,7 @@
 export const KANBAN_BOARD_STYLES = {
   container: {
     width: "100vw",
-    bg: "canvas.subtle",
+    bg: "var(--bgColor-muted)",
   },
 
   columnsContainer: {
@@ -13,14 +13,14 @@ export const KANBAN_BOARD_STYLES = {
       height: "8px",
     },
     "&::-webkit-scrollbar-track": {
-      background: "canvas.subtle",
+      background: "var(--bgColor-muted)",
     },
     "&::-webkit-scrollbar-thumb": {
-      background: "border.muted",
-      borderRadius: "4px",
+      background: "var(--borderColor-muted)",
+      borderRadius: "var(--borderRadius-small)",
     },
     "&::-webkit-scrollbar-thumb:hover": {
-      background: "border.default",
+      background: "var(--borderColor-default)",
     },
   },
 
@@ -32,7 +32,7 @@ export const KANBAN_BOARD_STYLES = {
   },
 
   emptyStateText: {
-    fontSize: 2,
-    color: "fg.muted",
+    fontSize: "16px",
+    color: "var(--fgColor-muted)",
   },
 } as const;

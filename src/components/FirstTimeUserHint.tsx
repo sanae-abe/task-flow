@@ -43,18 +43,18 @@ const FirstTimeUserHint: React.FC<FirstTimeUserHintProps> = ({ onDismiss }) => (
       },
     }}
   >
-    <Box sx={{ display: "flex", alignItems: "flex-start", gap: 2 }}>
-      <Box sx={{ color: "accent.fg" }}>
+    <div style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
+      <div style={{ color: "var(---fgColor-accent)" }}>
         <SparklesFillIcon size={16} />
-      </Box>
-      <Box sx={{ flex: 1 }}>
-        <Box sx={{ fontWeight: "bold", mb: 1, fontSize: 1 }}>
+      </div>
+      <div style={{ flex: 1 }}>
+        <div style={{ fontWeight: "bold", marginBottom: "4px", fontSize: "14px" }}>
           TaskFlowアプリへようこそ！
-        </Box>
-        <Box sx={{ fontSize: 0, color: "fg.muted", lineHeight: 1.4 }}>
+        </div>
+        <div style={{ fontSize: "12px", color: "var(--fgColor-muted)", lineHeight: 1.4 }}>
           「ボード設定」メニューから新しいボードを作成して、プロジェクトごとにタスクを管理しましょう
-        </Box>
-      </Box>
+        </div>
+      </div>
       <Button
         variant="invisible"
         size="small"
@@ -71,7 +71,7 @@ const FirstTimeUserHint: React.FC<FirstTimeUserHintProps> = ({ onDismiss }) => (
           },
         }}
       />
-    </Box>
+    </div>
   </Box>
 );
 

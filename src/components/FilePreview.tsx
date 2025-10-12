@@ -122,7 +122,7 @@ const FilePreview: React.FC<FilePreviewProps> = ({
               overflow: "auto",
               background: "var(--bgColor-muted)",
               padding: "12px",
-              borderRadius: "4px",
+              borderRadius: "var(--borderRadius-small)",
               fontFamily: "mono",
             }}
           >
@@ -178,7 +178,7 @@ const FilePreview: React.FC<FilePreviewProps> = ({
               background: "var(--bgColor-default)",
               border: "1px solid",
               borderColor: "var(--borderColor-default)",
-              borderRadius: "4px",
+              borderRadius: "var(--borderRadius-small)",
               boxShadow: "shadow.extra-large",
               maxWidth: "90vw",
               maxHeight: "90vh",

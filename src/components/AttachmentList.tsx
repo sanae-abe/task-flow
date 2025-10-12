@@ -1,5 +1,5 @@
 import { XIcon } from "@primer/octicons-react";
-import { Box, Text, Button } from "@primer/react";
+import { Text, Button } from "@primer/react";
 import React from "react";
 
 import type { FileAttachment } from "../types";
@@ -19,41 +19,41 @@ const AttachmentList: React.FC<AttachmentListProps> = ({
   }
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
       <Text sx={{ fontSize: 1, fontWeight: "700" }}>
         添付ファイル ({attachments.length})
       </Text>
       {attachments.map((attachment) => (
-        <Box
+        <div
           key={attachment.id}
-          sx={{
+          style={{
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            p: 2,
-            bg: "canvas.subtle",
-            borderRadius: 2,
+            padding: "8px",
+            backgroundColor: "var(--bgColor-muted)",
+            borderRadius: "var(--borderRadius-medium)",
             border: "1px solid",
-            borderColor: "border.default",
+            borderColor: "var(--borderColor-default)",
           }}
         >
-          <Box
-            sx={{
+          <div
+            style={{
               display: "flex",
               alignItems: "center",
-              gap: 2,
+              gap: "8px",
               flex: 1,
               minWidth: 0,
             }}
           >
             {getFileIcon(attachment.type)}
-            <Box
-              sx={{
+            <div
+              style={{
                 minWidth: 0,
                 flex: 1,
                 display: "flex",
                 flexDirection: "column",
-                gap: 1,
+                gap: "4px",
               }}
             >
               <Text
@@ -69,8 +69,8 @@ const AttachmentList: React.FC<AttachmentListProps> = ({
               <Text sx={{ fontSize: 0, color: "fg.muted" }}>
                 {formatFileSize(attachment.size)}
               </Text>
-            </Box>
-          </Box>
+            </div>
+          </div>
           <Button
             variant="invisible"
             size="small"
@@ -86,9 +86,9 @@ const AttachmentList: React.FC<AttachmentListProps> = ({
           >
             <XIcon size={16} />
           </Button>
-        </Box>
+        </div>
       ))}
-    </Box>
+    </div>
   );
 };
 

@@ -69,10 +69,10 @@ const TaskDetailSidebar = memo<TaskDetailSidebarProps>(
         right: 0,
         width: "440px",
         height: "100vh",
-        bg: "canvas.default",
+        background: "var(--bgColor-default)",
         boxShadow: "0 16px 32px rgba(0, 0, 0, 0.24)",
         borderLeft: { md: "1px solid" },
-        borderColor: "border.default",
+        borderColor: "var(--borderColor-default)",
         zIndex: 1020,
         overflowY: "auto" as const,
         animation:
@@ -88,7 +88,7 @@ const TaskDetailSidebar = memo<TaskDetailSidebarProps>(
         alignItems: "flex-start",
         justifyContent: "space-between",
         borderBottom: "1px solid",
-        borderColor: "border.default",
+        borderColor: "var(--borderColor-default)",
         flexShrink: 0,
       }),
       [],
@@ -105,9 +105,9 @@ const TaskDetailSidebar = memo<TaskDetailSidebarProps>(
 
     const actionsStyles = useMemo(
       () => ({
-        p: 4,
+        padding: "16px",
         borderTop: "1px solid",
-        borderColor: "border.default",
+        borderColor: "var(--borderColor-default)",
         flexShrink: 0,
       }),
       [],
@@ -116,7 +116,7 @@ const TaskDetailSidebar = memo<TaskDetailSidebarProps>(
     const buttonContainerStyles = useMemo(
       () => ({
         display: "flex",
-        gap: 2,
+        gap: "8px",
       }),
       [],
     );
@@ -127,7 +127,7 @@ const TaskDetailSidebar = memo<TaskDetailSidebarProps>(
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        gap: 2,
+        gap: "8px",
       }),
       [],
     );
@@ -167,7 +167,7 @@ const TaskDetailSidebar = memo<TaskDetailSidebarProps>(
         aria-label="タスク詳細"
         aria-modal="true"
       >
-        <Box sx={{ display: "flex", height: "100%", flexDirection: "column" }}>
+        <div style={{ display: "flex", height: "100%", flexDirection: "column" }}>
           {/* Header */}
           <Box sx={headerStyles}>
             <Heading
@@ -231,7 +231,7 @@ const TaskDetailSidebar = memo<TaskDetailSidebarProps>(
               </Button>
             </Box>
           </Box>
-        </Box>
+        </div>
 
         <TaskEditDialog
           task={task}

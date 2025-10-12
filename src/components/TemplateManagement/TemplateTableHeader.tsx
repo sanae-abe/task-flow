@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Text } from '@primer/react';
+import { Text } from '@primer/react';
 import { ChevronUpIcon, ChevronDownIcon, StarFillIcon } from '@primer/octicons-react';
 import type { TemplateSortField, TemplateSortDirection } from '../../types/template';
 
@@ -42,18 +42,18 @@ const SortableHeader: React.FC<SortableHeaderProps> = ({
         appearance: 'none'
       }}
     >
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
         <Text sx={{ fontSize: 0, fontWeight: 'bold' }}>
           {children}
         </Text>
-        <Box sx={{ opacity: isActive ? 1 : 0.3 }}>
+        <div style={{ opacity: isActive ? 1 : 0.3 }}>
           {isActive && sortDirection === 'asc' ? (
             <ChevronUpIcon size={12} />
           ) : (
             <ChevronDownIcon size={12} />
           )}
-        </Box>
-      </Box>
+        </div>
+      </div>
     </button>
   );
 };
@@ -72,17 +72,17 @@ const TemplateTableHeader: React.FC<TemplateTableHeaderProps> = ({
   sortDirection,
   onSort
 }) => (
-  <Box
-    sx={{
+  <div
+    style={{
       display: 'grid',
       gridTemplateColumns: '1fr 120px 80px 100px',
-      gap: 2,
-      bg: 'canvas.subtle',
+      gap: '8px',
+      background: 'var(--bgColor-muted)',
       borderBottom: '1px solid',
-      borderColor: 'border.default',
-      fontSize: 1,
+      borderColor: 'var(--borderColor-default)',
+      fontSize: '12px',
       fontWeight: 'bold',
-      color: 'fg.muted'
+      color: 'var(--fgColor-muted)'
     }}
   >
     <SortableHeader
@@ -91,10 +91,10 @@ const TemplateTableHeader: React.FC<TemplateTableHeaderProps> = ({
       sortDirection={sortDirection}
       onSort={onSort}
     >
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
         <StarFillIcon size={12} />
         <Text sx={{ fontSize: 0 }}>おすすめ順</Text>
-      </Box>
+      </div>
     </SortableHeader>
 
     <SortableHeader
@@ -117,7 +117,7 @@ const TemplateTableHeader: React.FC<TemplateTableHeaderProps> = ({
     </SortableHeader>
 
     <Text sx={{ textAlign: 'center', fontSize: 0, p: 2 }}>操作</Text>
-  </Box>
+  </div>
 );
 
 export default TemplateTableHeader;

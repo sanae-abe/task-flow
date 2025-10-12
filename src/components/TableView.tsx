@@ -488,7 +488,7 @@ const TableView: React.FC = () => {
       <div
         key={`table-${tableColumnsData.forceRender}`}
         style={{
-          borderRadius: '8px',
+          borderRadius: 'var(--borderRadius-medium)',
           overflow: "auto",
           background: "var(--bgColor-default)",
           boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
@@ -572,7 +572,7 @@ const TableView: React.FC = () => {
               onClick={() => handleTaskClick(task)}
             >
               {tableColumnsData.visibleColumns.map((column: TableColumn) => (
-                <Box key={column.id}>{renderCell(task, column.id)}</Box>
+                <div key={column.id}>{renderCell(task, column.id)}</div>
               ))}
             </Box>
           );

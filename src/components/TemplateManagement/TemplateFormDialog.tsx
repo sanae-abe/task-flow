@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Box, TextInput, FormControl, Textarea } from '@primer/react';
+import { TextInput, FormControl, Textarea } from '@primer/react';
 
 import type { TaskTemplate, TemplateFormData } from '../../types/template';
 import type { Label, Priority } from '../../types';
@@ -185,20 +185,20 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
       size="large"
       actions={actions}
     >
-      <Box sx={{ display: 'flex', flexDirection: 'column' }} onKeyDown={handleKeyDown}>
-        <Box sx={{
-          mt: 2,
-          mb: 3,
+      <div style={{ display: 'flex', flexDirection: 'column' }} onKeyDown={handleKeyDown}>
+        <div style={{
+          marginTop: '8px',
+          marginBottom: '12px',
           fontWeight: 'bold',
-          fontSize: 2
+          fontSize: '16px'
         }}>
           テンプレート情報
-        </Box>
+        </div>
         {/* テンプレート基本情報 */}
-        <Box sx={{
-          p: 3,
-          borderRadius: 2,
-          bg: 'canvas.subtle'
+        <div style={{
+          padding: '12px',
+          borderRadius: 'var(--borderRadius-medium)',
+          background: 'var(--bgColor-muted)'
         }}>
 
           {/* テンプレート名 */}
@@ -244,21 +244,21 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
             onChange={(category) => setFormData((prev) => ({ ...prev, category }))}
             disabled={isLoading}
           />
-        </Box>
+        </div>
 
         {/* タスク情報 */}
-        <Box sx={{
-          mt: 5,
-          mb: 3,
+        <div style={{
+          marginTop: 5,
+          marginBottom: 3,
           fontWeight: 'bold',
-          fontSize: 2,
+          fontSize: '16px',
         }}>
             作成されるタスク
-        </Box>
-        <Box sx={{
-          p: 3,
-          bg: 'canvas.subtle',
-          borderRadius: 2
+        </div>
+        <div style={{
+          padding: '12px',
+          background: 'var(--bgColor-muted)',
+          borderRadius: 'var(--borderRadius-medium)',
         }}>
           {/* タスクタイトル */}
           <FormControl sx={{ mb: 3 }}>
@@ -315,8 +315,8 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
               onLabelsChange={handleLabelsChange}
             />
           </FormControl>
-        </Box>
-      </Box>
+        </div>
+      </div>
     </UnifiedDialog>
   );
 };

@@ -43,17 +43,17 @@ const TemplateTableRow: React.FC<TemplateTableRowProps> = ({
       }}
     >
       {/* テンプレート名 */}
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: "4px" }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: "4px" }}>
           {template.isFavorite && (
-            <Box sx={{ color: 'attention.fg' }}>
+            <div style={{ color: 'var(--fgColor-attention)' }}>
               <StarFillIcon size={14} />
-            </Box>
+            </div>
           )}
           <Text sx={{ fontWeight: 'semibold', fontSize: 1 }}>
             {template.name}
           </Text>
-        </Box>
+        </div>
         {template.description && (
           <Text
             sx={{
@@ -67,10 +67,10 @@ const TemplateTableRow: React.FC<TemplateTableRowProps> = ({
             {template.description}
           </Text>
         )}
-      </Box>
+      </div>
 
       {/* カテゴリー */}
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
         <Text
           sx={{
             fontSize: 0,
@@ -80,10 +80,10 @@ const TemplateTableRow: React.FC<TemplateTableRowProps> = ({
         >
           {categoryInfo?.label || template.category}
         </Text>
-      </Box>
+      </div>
 
       {/* 使用数 */}
-      <Box sx={{ textAlign: 'center' }}>
+      <div style={{ textAlign: 'center' }}>
         <Text
           sx={{
             fontSize: 1,
@@ -93,15 +93,15 @@ const TemplateTableRow: React.FC<TemplateTableRowProps> = ({
         >
           {template.usageCount}
         </Text>
-      </Box>
+      </div>
 
       {/* アクションボタン */}
-      <Box
+      <div
         className="template-actions"
-        sx={{
+        style={{
           display: 'flex',
           justifyContent: 'center',
-          gap: 1,
+          gap: '4px',
           opacity: 0.7,
           transition: 'opacity 0.2s ease'
         }}
@@ -130,7 +130,7 @@ const TemplateTableRow: React.FC<TemplateTableRowProps> = ({
           variant="invisible"
           onClick={() => onDelete(template)}
         />
-      </Box>
+      </div>
     </Box>
   );
 };

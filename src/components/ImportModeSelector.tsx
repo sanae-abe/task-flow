@@ -63,7 +63,7 @@ const ImportModeSelector: React.FC<ImportModeSelectorProps> = ({
             gap: "8px",
             padding: "8px",
             backgroundColor: "var(--bgColor-muted)",
-            borderRadius: "8px",
+            borderRadius: "var(--borderRadius-medium)",
             border: "1px solid",
             borderColor: "var(--borderColor-default)",
           }}

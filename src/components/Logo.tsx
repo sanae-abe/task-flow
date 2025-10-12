@@ -1,4 +1,3 @@
-import { Box } from "@primer/react";
 import React from "react";
 
 interface LogoProps {
@@ -42,36 +41,34 @@ const CustomLogo: React.FC<{ size: number }> = ({ size }) => (
 
 const Logo: React.FC<LogoProps> = ({ size = "medium" }) => {
   const sizeConfig = {
-    small: { iconSize: 24, fontSize: "18px", gap: 0.5 },
-    medium: { iconSize: 28, fontSize: "22px", gap: 1 },
-    large: { iconSize: 32, fontSize: "24px", gap: 2 },
+    small: { iconSize: 24, fontSize: "18px", gap: "2px" },
+    medium: { iconSize: 28, fontSize: "22px", gap: "4px" },
+    large: { iconSize: 32, fontSize: "24px", gap: "8px" },
   };
 
   const { iconSize, fontSize, gap } = sizeConfig[size];
 
   return (
-    <Box
-      as="div"
+    <div
       role="banner"
       aria-label="TaskFlowアプリケーションロゴ"
-      sx={{
+      style={{
         display: "flex",
         alignItems: "flex-end",
         gap,
         userSelect: "none",
       }}
     >
-      <Box
-        sx={{
+      <div
+        style={{
           display: "flex",
           alignItems: "center",
         }}
       >
         <CustomLogo size={iconSize} />
-      </Box>
-      <Box
-        as="h1"
-        sx={{
+      </div>
+      <h1
+        style={{
           fontSize,
           margin: 0,
           color: "var(--fgColor-default)",
@@ -83,8 +80,8 @@ const Logo: React.FC<LogoProps> = ({ size = "medium" }) => {
         }}
       >
         Task<span style={{ color: "var(--fgColor-accent)" }}>Flow</span>
-      </Box>
-    </Box>
+      </h1>
+    </div>
   );
 };
 

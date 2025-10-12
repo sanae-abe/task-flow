@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Text } from '@primer/react';
+import { Text } from '@primer/react';
 import type { TaskTemplate, TemplateSortField, TemplateSortDirection } from '../../types/template';
 import TemplateTableHeader from './TemplateTableHeader';
 import TemplateTableRow from './TemplateTableRow';
@@ -32,16 +32,16 @@ const TemplateTable: React.FC<TemplateTableProps> = ({
   // 空状態の表示
   if (templates.length === 0) {
     return (
-      <Box
-        sx={{
+      <div
+        style={{
           textAlign: 'center',
-          py: 6,
+          padding: '24px',
           border: '1px dashed',
-          borderColor: 'border.muted',
-          borderRadius: 2,
+          borderColor: 'var(--borderColor-muted)',
+          borderRadius: 'var(--borderRadius-medium)',
           display: 'flex',
           flexDirection: 'column',
-          gap: 2,
+          gap: "8px",
           justifyContent: 'center',
           alignItems: 'center'
         }}
@@ -56,16 +56,16 @@ const TemplateTable: React.FC<TemplateTableProps> = ({
             フィルター条件を変更して再度お試しください
           </Text>
         )}
-      </Box>
+      </div>
     );
   }
 
   return (
-    <Box
-      sx={{
+    <div
+      style={{
         border: '1px solid',
-        borderColor: 'border.default',
-        borderRadius: 2,
+        borderColor: "var(--borderColor-default)",
+        borderRadius: "var(--borderRadius-medium)",
         overflow: 'hidden'
       }}
     >
@@ -77,7 +77,7 @@ const TemplateTable: React.FC<TemplateTableProps> = ({
       />
 
       {/* テーブルボディ */}
-      <Box sx={{ maxHeight: '500px', overflow: 'auto' }}>
+      <div style={{ maxHeight: '500px', overflow: 'auto' }}>
         {templates.map((template, index) => (
           <TemplateTableRow
             key={template.id}
@@ -88,8 +88,8 @@ const TemplateTable: React.FC<TemplateTableProps> = ({
             onToggleFavorite={onToggleFavorite}
           />
         ))}
-      </Box>
-    </Box>
+      </div>
+    </div>
   );
 };
 

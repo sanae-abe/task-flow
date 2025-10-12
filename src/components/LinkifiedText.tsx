@@ -325,7 +325,7 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({ children, sx }) => {
           backgroundColor: "#f6f8fa",
           color: "#e01e5a",
           padding: "2px 4px",
-          borderRadius: "4px",
+          borderRadius: "var(--borderRadius-small)",
           fontFamily: "mono",
           fontSize: "0.875em",
           border: "1px solid",

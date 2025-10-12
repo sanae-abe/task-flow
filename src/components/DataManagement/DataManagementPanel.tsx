@@ -43,7 +43,7 @@ export const DataManagementPanel = memo<DataManagementPanelProps>(({
       </UnderlineNav>
 
       {/* タブコンテンツ */}
-      <Box>
+      <div>
         {activeTab === 'export' ? (
           <ExportSection
             onExportAll={onExportAll}
@@ -54,7 +54,7 @@ export const DataManagementPanel = memo<DataManagementPanelProps>(({
             onImportSuccess={onImportSuccess}
           />
         )}
-      </Box>
+      </div>
     </Box>
   );
 });

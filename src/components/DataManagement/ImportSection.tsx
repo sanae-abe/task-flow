@@ -41,7 +41,7 @@ export const ImportSection = memo<ImportSectionProps>(({ onImportSuccess }) => {
   });
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, width: '100%' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: "12px", width: '100%' }}>
       {/* インポートモード選択 - 元のRadioGroup維持 */}
       <FormControl>
         <FormControl.Label sx={{ fontSize: 1, fontWeight: '600' }}>
@@ -66,17 +66,17 @@ export const ImportSection = memo<ImportSectionProps>(({ onImportSuccess }) => {
       {/* 警告メッセージ - 置換モード時のみ表示 */}
       {state.mode === 'replace' && (
         <Flash variant="warning">
-          <Box sx={{ display: 'flex', gap: 2 }}>
+          <div style={{ display: 'flex', gap: "8px" }}>
             <AlertIcon size={16} />
-            <Box>
+            <div>
               <Text sx={{ fontWeight: 'bold', display: 'block', mb: 1 }}>
                 危険: データの置換操作
               </Text>
               <Text sx={{ fontSize: 1, color: 'danger.fg', fontWeight: 'bold' }}>
                 現在のすべてのデータが削除されます。この操作は元に戻せません。
               </Text>
-            </Box>
-          </Box>
+            </div>
+          </div>
         </Flash>
       )}
 
@@ -104,39 +104,39 @@ export const ImportSection = memo<ImportSectionProps>(({ onImportSuccess }) => {
 
       {/* 選択されたファイル表示 - AttachmentList風スタイル */}
       {state.selectedFile && (
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: "8px" }}>
           <Text sx={{ fontSize: 1, fontWeight: "700" }}>
             選択されたファイル
           </Text>
-          <Box
-            sx={{
+          <div
+            style={{
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              p: 2,
-              bg: 'canvas.subtle',
-              borderRadius: 2,
+              padding: '8px',
+              backgroundColor: 'var(--bgColor-muted)',
+              borderRadius: 'var(--borderRadius-medium)',
               border: '1px solid',
-              borderColor: 'border.default'
+              borderColor: 'var(--borderColor-default)'
             }}
           >
-            <Box
-              sx={{
+            <div
+              style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: 2,
+                gap: "8px",
                 flex: 1,
                 minWidth: 0,
               }}
             >
               <FileIcon size={24} />
-              <Box
-                sx={{
+              <div
+                style={{
                   minWidth: 0,
                   flex: 1,
                   display: 'flex',
                   flexDirection: 'column',
-                  gap: 1,
+                  gap: "4px",
                 }}
               >
                 <Text
@@ -152,8 +152,8 @@ export const ImportSection = memo<ImportSectionProps>(({ onImportSuccess }) => {
                 <Text sx={{ fontSize: 0, color: 'fg.muted' }}>
                   {(state.selectedFile.size / 1024).toFixed(1)} KB
                 </Text>
-              </Box>
-            </Box>
+              </div>
+            </div>
             <Button
               variant="invisible"
               size="small"
@@ -170,8 +170,8 @@ export const ImportSection = memo<ImportSectionProps>(({ onImportSuccess }) => {
             >
               <XIcon size={16} />
             </Button>
-          </Box>
-        </Box>
+          </div>
+        </div>
       )}
 
       {/* ローディング表示 */}
@@ -200,7 +200,7 @@ export const ImportSection = memo<ImportSectionProps>(({ onImportSuccess }) => {
           {state.isLoading ? 'インポート中...' : 'インポート実行'}
         </Button>
       )}
-    </Box>
+    </div>
   );
 });
 

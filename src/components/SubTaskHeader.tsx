@@ -1,5 +1,5 @@
 import { PlusIcon } from "@primer/octicons-react";
-import { Box, Text, Button } from "@primer/react";
+import { Text, Button } from "@primer/react";
 import React from "react";
 
 interface SubTaskHeaderProps {
@@ -15,12 +15,12 @@ const SubTaskHeader: React.FC<SubTaskHeaderProps> = ({
   isAdding,
   onStartAdding,
 }) => (
-  <Box
-    sx={{
+  <div
+    style={{
       display: "flex",
       alignItems: "center",
       justifyContent: "space-between",
-      mb: 2,
+      marginBottom: "8px",
     }}
   >
     <Text sx={{ fontSize: 1, fontWeight: "700" }}>
@@ -37,7 +37,7 @@ const SubTaskHeader: React.FC<SubTaskHeaderProps> = ({
         追加
       </Button>
     )}
-  </Box>
+  </div>
 );
 
 export default SubTaskHeader;

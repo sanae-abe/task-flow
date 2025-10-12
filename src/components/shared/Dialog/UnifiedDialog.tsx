@@ -20,7 +20,7 @@ const getDialogStyles = (variant: DialogVariant, size: DialogSize) => {
         left: 0,
         right: 0,
         bottom: 0,
-        bg: 'primer.canvas.backdrop',
+        backgroundColor: 'var(--overlay-backdrop-bgColor)',
         zIndex: 9999,
         display: 'flex',
         alignItems: 'center',
@@ -30,7 +30,7 @@ const getDialogStyles = (variant: DialogVariant, size: DialogSize) => {
       container: {
         display: 'flex',
         flexDirection: 'column' as const,
-        bg: 'canvas.default',
+        backgroundColor: 'var(--bgColor-default)',
         boxShadow: 'shadow.large',
         width: '90vw',
         maxHeight: '90vh',
@@ -38,8 +38,8 @@ const getDialogStyles = (variant: DialogVariant, size: DialogSize) => {
         animation: 'dialog-scale-fade-in 200ms cubic-bezier(0.33, 1, 0.68, 1)'
       },
       content: {
-        p: '16px',
-        bg: 'canvas.default',
+        padding: '16px',
+        backgroundColor: 'var(--bgColor-default)',
         borderRadius: 'var(--borderRadius-large, var(--borderRadius-large, .75rem))',
         overflowY: 'auto'
       }
@@ -51,18 +51,18 @@ const getDialogStyles = (variant: DialogVariant, size: DialogSize) => {
         left: 0,
         right: 0,
         bottom: 0,
-        bg: 'primer.canvas.backdrop',
+        backgroundColor: 'var(--overlay-backdrop-bgColor)',
         zIndex: 10000,
         display: 'flex',
         alignItems: 'flex-start',
         justifyContent: 'center',
-        pt: 0,
+        paddingTop: 0,
         animation: 'dialog-backdrop-fade-in 200ms cubic-bezier(0.33, 1, 0.68, 1)'
       },
       container: {
         display: 'flex',
         flexDirection: 'column' as const,
-        bg: 'canvas.default',
+        backgroundColor: 'var(--bgColor-default)',
         boxShadow: 'shadow.large',
         padding: '0.5rem',
         maxHeight: '90vh',
@@ -71,26 +71,26 @@ const getDialogStyles = (variant: DialogVariant, size: DialogSize) => {
         animation: 'dialog-scale-fade-in 200ms cubic-bezier(0.33, 1, 0.68, 1)'
       },
       content: {
-        bg: 'canvas.default',
+        backgroundColor: 'var(--bgColor-default)',
         width: '100%',
         minHeight: '112px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        py: 4
+        paddingBlock: '4px'
       }
     },
     inline: {
       backdrop: {
         position: 'relative' as const,
-        bg: 'transparent',
+        backgroundColor: 'transparent',
         zIndex: 1,
         display: 'block'
       },
       container: {
         display: 'flex',
         flexDirection: 'column' as const,
-        bg: 'canvas.default',
+        backgroundColor: 'var(--bgColor-default)',
         boxShadow: 'shadow.large',
         padding: '0.5rem',
         width: '90vw',
@@ -99,9 +99,9 @@ const getDialogStyles = (variant: DialogVariant, size: DialogSize) => {
         borderRadius: 'var(--borderRadius-large)',
       },
       content: {
-        bg: 'canvas.subtle',
-        borderRadius: 2,
-        p: 3
+        backgroundColor: 'var(--bgColor-muted)',
+        borderRadius: 'var(--borderRadius-medium)',
+        padding: '12px'
       }
     }
   };
@@ -136,13 +136,13 @@ const DialogHeader = memo<{
   titleId?: string;
   hideCloseButton?: boolean;
 }>(({ title, onClose, titleId, hideCloseButton = false }) => (
-  <Box sx={{
+  <div style={{
     position: 'relative',
-    p: '0.5rem',
+    padding: '0.5rem',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    bg: 'canvas.default',
+    backgroundColor: 'var(--bgColor-default)',
     borderRadius: 'var(--borderRadius-large) var(--borderRadius-large) 0 0',
     boxShadow: '0 1px 0 var(--borderColor-default,var(--color-border-default))'
   }}>
@@ -167,7 +167,7 @@ const DialogHeader = memo<{
         size="medium"
       />
     )}
-  </Box>
+  </div>
 ));
 
 /**
@@ -176,14 +176,14 @@ const DialogHeader = memo<{
 const DialogFooter = memo<{
   children: React.ReactNode;
 }>(({ children }) => (
-  <Box sx={{
+  <div style={{
     display: 'flex',
     justifyContent: 'flex-end',
-    gap: 2,
-    p: 3
+    gap: "8px",
+    padding: "12px"
   }}>
     {children}
-  </Box>
+  </div>
 ));
 
 /**
@@ -261,8 +261,8 @@ const UnifiedDialog = memo<UnifiedDialogProps>(({
   const dialogContent = (
     <ThemeProvider>
       <BaseStyles>
-        <Box
-          sx={styles.backdrop}
+        <div
+          style={styles.backdrop}
           onMouseDown={handleBackdropMouseDown}
           onClick={handleBackdropClick}
           onMouseUp={handleBackdropMouseUp}
@@ -282,7 +282,7 @@ const UnifiedDialog = memo<UnifiedDialogProps>(({
                 hideCloseButton={variant === 'overlay'}
               />
             )}
-            <Box sx={styles.content}>
+            <Box style={styles.content}>
               {children}
             </Box>
 
@@ -292,7 +292,7 @@ const UnifiedDialog = memo<UnifiedDialogProps>(({
               </DialogFooter>
             )}
           </Box>
-        </Box>
+        </div>
       </BaseStyles>
     </ThemeProvider>
   );

@@ -326,18 +326,18 @@ export const BoardSettingsPanel: React.FC = () => {
 
   return (
     <div>
-      <Box sx={{ mb: 4 }}>
+      <div style={{ marginBottom: "16px" }}>
         <Heading sx={{ fontSize: 2, mb: 2 }}>デフォルトカラム設定</Heading>
-        <Box sx={{ color: 'fg.muted', fontSize: 1 }}>
+        <div style={{ color: 'var(--fgColor-muted)', fontSize: "14px" }}>
           新しいボード作成時に使用されるデフォルトカラムを設定できます。<br />
           既存のボードには影響しません。
-        </Box>
-      </Box>
+        </div>
+      </div>
 
-      <Box sx={{ mb: 4 }}>
+      <div style={{ marginBottom: "16px" }}>
 
         {/* 現在のカラム一覧 */}
-        <Box sx={{ mb: 3 }}>
+        <div style={{ marginBottom: "12px" }}>
           <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}
@@ -357,12 +357,12 @@ export const BoardSettingsPanel: React.FC = () => {
               ))}
             </SortableContext>
           </DndContext>
-        </Box>
+        </div>
 
         {/* 新しいカラム追加 */}
-        <Box sx={{ mb: 3 }}>
-          <Box sx={{ mb: 2, fontSize: 1, fontWeight: 'bold' }}>新しいカラムを追加</Box>
-          <Box sx={{ display: 'flex', gap: 2 }}>
+        <div style={{ marginBottom: "12px" }}>
+          <div style={{ marginBottom: "8px", fontSize: "14px", fontWeight: "bold" }}>新しいカラムを追加</div>
+          <div style={{ display: "flex", gap: "8px" }}>
             <TextInput
               value={newColumnName}
               onChange={(e) => setNewColumnName(e.target.value)}
@@ -384,23 +384,23 @@ export const BoardSettingsPanel: React.FC = () => {
             >
               追加
             </Button>
-          </Box>
-        </Box>
-      </Box>
+          </div>
+        </div>
+      </div>
 
       {/* 保存ボタン */}
-      <Box sx={{ pt: 3, borderTop: '1px solid', borderColor: 'border.default' }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+      <div style={{ paddingTop: "12px", borderTop: "1px solid", borderColor: "var(--borderColor-default)" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
           <Button variant="primary" onClick={handleSave}>
             設定を保存
           </Button>
           {hasUnsavedChanges && (
-            <Box sx={{ fontSize: 1, color: 'attention.fg' }}>
+            <div style={{ fontSize: "14px", color: "var(--fgColor-attention)" }}>
               • 未保存の変更があります（1秒後に自動保存されます）
-            </Box>
+            </div>
           )}
-        </Box>
-      </Box>
+        </div>
+      </div>
     </div>
   );
 };

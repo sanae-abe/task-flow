@@ -4,7 +4,7 @@ import {
   pointerWithin,
   type CollisionDetection,
 } from "@dnd-kit/core";
-import { Text, Box } from "@primer/react";
+import { Text } from "@primer/react";
 import React from "react";
 
 import { useBoard } from "../contexts/BoardContext";
@@ -43,11 +43,11 @@ const KanbanBoard: React.FC = () => {
 
   if (!currentBoard) {
     return (
-      <Box sx={KANBAN_BOARD_STYLES.emptyState}>
+      <div style={KANBAN_BOARD_STYLES.emptyState}>
         <Text sx={KANBAN_BOARD_STYLES.emptyStateText}>
           Please select a board
         </Text>
-      </Box>
+      </div>
     );
   }
 
@@ -80,7 +80,7 @@ const KanbanBoard: React.FC = () => {
   };
 
   return (
-    <Box sx={KANBAN_BOARD_STYLES.container}>
+    <div style={KANBAN_BOARD_STYLES.container}>
       <DndContext
         sensors={sensors}
         collisionDetection={collisionDetectionStrategy}
@@ -88,7 +88,7 @@ const KanbanBoard: React.FC = () => {
         onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
       >
-        <Box sx={KANBAN_BOARD_STYLES.columnsContainer}>
+        <div style={KANBAN_BOARD_STYLES.columnsContainer}>
           {currentBoard.columns.map((column, index) => (
             <KanbanColumn
               key={column.id}
@@ -99,13 +99,13 @@ const KanbanBoard: React.FC = () => {
               keyboardDragAndDrop={keyboardDragAndDrop}
             />
           ))}
-        </Box>
+        </div>
 
         <DragOverlay>
           {activeTask ? <TaskCard task={activeTask} columnId="" /> : null}
         </DragOverlay>
       </DndContext>
-    </Box>
+    </div>
   );
 };
 
