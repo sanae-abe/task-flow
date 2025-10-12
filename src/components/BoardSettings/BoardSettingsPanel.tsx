@@ -337,7 +337,7 @@ export const BoardSettingsPanel: React.FC = () => {
       <div style={{ marginBottom: "16px" }}>
 
         {/* 現在のカラム一覧 */}
-        <div style={{ marginBottom: "12px" }}>
+        <div style={{ marginBottom: "20px" }}>
           <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}

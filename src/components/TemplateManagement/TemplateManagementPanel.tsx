@@ -110,7 +110,7 @@ const TemplateManagementPanel: React.FC = () => {
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: "12px" }}>
       {/* ヘッダー */}
       <div
         style={{
