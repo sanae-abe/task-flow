@@ -248,7 +248,7 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
 
         {/* タスク情報 */}
         <div style={{
-          marginTop: "20px",
+          marginTop: "24px",
           marginBottom: "12px",
           fontWeight: 'bold',
           fontSize: '16px',
