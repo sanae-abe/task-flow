@@ -1,5 +1,5 @@
 import { memo, useState } from 'react';
-import { Box, UnderlineNav } from '@primer/react';
+import { UnderlineNav } from '@primer/react';
 
 import { ExportSection } from './ExportSection';
 import { ImportSection } from './ImportSection';
@@ -25,7 +25,7 @@ export const DataManagementPanel = memo<DataManagementPanelProps>(({
   const [activeTab, setActiveTab] = useState<'export' | 'import'>('export');
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: "12px" }}>
       {/* タブナビゲーション */}
       <UnderlineNav aria-label="データ管理" sx={{ px: 0, transform: 'translateY(-8px)' }}>
         <UnderlineNav.Item
@@ -43,7 +43,7 @@ export const DataManagementPanel = memo<DataManagementPanelProps>(({
       </UnderlineNav>
 
       {/* タブコンテンツ */}
-      <Box>
+      <div>
         {activeTab === 'export' ? (
           <ExportSection
             onExportAll={onExportAll}
@@ -54,8 +54,8 @@ export const DataManagementPanel = memo<DataManagementPanelProps>(({
             onImportSuccess={onImportSuccess}
           />
         )}
-      </Box>
-    </Box>
+      </div>
+    </div>
   );
 });
 

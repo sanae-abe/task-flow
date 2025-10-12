@@ -6,7 +6,7 @@ export const EDITOR_STYLES = {
     backgroundColor: '#f6f8fa',
     color: '#e01e5a',
     padding: '2px 4px',
-    borderRadius: '4px',
+    borderRadius: 'var(--borderRadius-small)',
     fontFamily: "'Monaco', 'Menlo', 'Consolas', monospace",
     fontSize: '0.875em',
     border: '1px solid #d0d7de',
@@ -14,7 +14,7 @@ export const EDITOR_STYLES = {
   codeBlock: {
     margin: '0 0 8px',
     border: '1px solid #d0d7de',
-    borderRadius: '6px',
+    borderRadius: 'var(--borderRadius-medium)',
     padding: '8px',
     fontFamily: "'SFMono-Regular', 'Consolas', 'Liberation Mono', 'Menlo', monospace",
     fontSize: '13px',

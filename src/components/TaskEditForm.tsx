@@ -9,7 +9,7 @@ import type {
 } from "../types";
 
 import FileUploader from "./FileUploader";
-import FormField from "./FormField";
+import { UnifiedFormField } from "./shared/Form";
 import LabelSelector from "./LabelSelector";
 import PrioritySelector from "./PrioritySelector";
 import RecurrenceSelector from "./RecurrenceSelector";
@@ -83,18 +83,18 @@ const TaskEditForm = memo<TaskEditFormProps>(
           gap: 0,
         }}
       >
-        <div style={{ marginBottom: "24px" }}>
-          <FormField
-            id="task-title"
-            label="タイトル"
-            value={title}
-            placeholder="タスクタイトルを入力"
-            onChange={setTitle}
-            onKeyDown={onKeyPress}
-            autoFocus
-            required
-          />
-        </div>
+        <UnifiedFormField
+          id="task-title"
+          name="task-title"
+          type="text"
+          label="タイトル"
+          value={title}
+          placeholder="タスクタイトルを入力"
+          onChange={(value) => setTitle(value as string)}
+          onKeyDown={onKeyPress}
+          autoFocus
+          validation={{ required: true }}
+        />
 
         <div style={{ marginBottom: "24px" }}>
           <Text
@@ -184,7 +184,7 @@ const TaskEditForm = memo<TaskEditFormProps>(
           />
         </div>
 
-        <div>
+        <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
           <Text
             sx={{ fontSize: 1, mb: 1, display: "block", fontWeight: "700" }}
           >

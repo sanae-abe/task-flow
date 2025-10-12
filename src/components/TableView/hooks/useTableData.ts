@@ -1,9 +1,9 @@
-import { useMemo } from 'react';
-import type { TaskWithColumn } from '../../../types/table';
-import type { KanbanBoard, TaskFilter, SortOption } from '../../../types';
-import { sortTasks } from '../../../utils/taskSort';
-import { filterTasks } from '../../../utils/taskFilter';
-import type { TableDataState } from '../types';
+import { useMemo } from "react";
+import type { TaskWithColumn } from "../../../types/table";
+import type { KanbanBoard, TaskFilter, SortOption } from "../../../types";
+import { sortTasks } from "../../../utils/taskSort";
+import { filterTasks } from "../../../utils/taskFilter";
+import type { TableDataState } from "../types";
 
 /**
  * テーブルデータ管理カスタムフック
@@ -14,7 +14,7 @@ import type { TableDataState } from '../types';
 export const useTableData = (
   currentBoard: KanbanBoard | null,
   taskFilter: TaskFilter,
-  sortOption: SortOption
+  sortOption: SortOption,
 ): TableDataState => {
   // 全タスクを TaskWithColumn 形式に変換
   const allTasks = useMemo(() => {
@@ -22,13 +22,16 @@ export const useTableData = (
       return [];
     }
 
-    return currentBoard.columns.flatMap(column =>
-      column.tasks.map(task => ({
-        ...task,
-        columnId: column.id,
-        columnTitle: column.title,
-        status: column.title,
-      } as TaskWithColumn))
+    return currentBoard.columns.flatMap((column) =>
+      column.tasks.map(
+        (task) =>
+          ({
+            ...task,
+            columnId: column.id,
+            columnTitle: column.title,
+            status: column.title,
+          }) as TaskWithColumn,
+      ),
     );
   }, [currentBoard]);
 
@@ -41,6 +44,6 @@ export const useTableData = (
 
   return {
     allTasks,
-    filteredAndSortedTasks
+    filteredAndSortedTasks,
   };
 };

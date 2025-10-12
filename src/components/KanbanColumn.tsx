@@ -3,7 +3,6 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { Box } from "@primer/react";
 import React, { useMemo, useCallback } from "react";
 
 import { useUI } from "../contexts/UIContext";
@@ -24,8 +23,8 @@ const COLUMN_CONFIG = {
   MIN_HEIGHT: "calc(100vh - 112px - 48px)", // ヘッダーとフッターの高さとpaddingBlockを考慮
   PADDING_BOTTOM: "100px", // 下に100pxの余白を追加
   TASK_LIST_MIN_HEIGHT: "calc(100vh - 112px - 48px -40px)", // ヘッダーとフッターとカラムヘッダーの高さとpaddingBlockを考慮
-  HORIZONTAL_PADDING: 2,
-  TASK_GAP: 3,
+  HORIZONTAL_PADDING: "8px",
+  TASK_GAP: "12px",
 } as const;
 
 const COLUMN_STYLES = {
@@ -36,9 +35,10 @@ const COLUMN_STYLES = {
     flexShrink: 0,
     minHeight: COLUMN_CONFIG.MIN_HEIGHT,
     backgroundColor: "transparent",
-    pt: 0,
-    pb: 0, // ドロップエリア拡張のためpadding-bottomを削除
-    px: COLUMN_CONFIG.HORIZONTAL_PADDING,
+    paddingTop: 0,
+    paddingBottom: 0, // ドロップエリア拡張のためpadding-bottomを削除
+    paddingLeft: COLUMN_CONFIG.HORIZONTAL_PADDING,
+    paddingRight: COLUMN_CONFIG.HORIZONTAL_PADDING,
     overflow: "hidden",
     display: "flex",
     flexDirection: "column",
@@ -146,7 +146,7 @@ const KanbanColumn: React.FC<KanbanColumnProps> = React.memo(
     const canMoveRight = columnIndex < totalColumns - 1;
 
     return (
-      <Box sx={COLUMN_STYLES.container}>
+      <div style={COLUMN_STYLES.container}>
         <ColumnHeader
           column={column}
           onTitleEdit={handleTitleEdit}
@@ -158,7 +158,7 @@ const KanbanColumn: React.FC<KanbanColumnProps> = React.memo(
           canMoveRight={canMoveRight}
         />
 
-        <Box ref={setNodeRef} sx={COLUMN_STYLES.taskList}>
+        <div ref={setNodeRef} style={COLUMN_STYLES.taskList}>
           <SortableContext
             items={taskIds}
             strategy={verticalListSortingStrategy}
@@ -178,22 +178,22 @@ const KanbanColumn: React.FC<KanbanColumnProps> = React.memo(
 
             {/* カラムの一番下のドロップエリア - 残り空間を最大活用 */}
             {sortedTasks.length > 0 && (
-              <Box
-                sx={{
+              <div
+                style={{
                   flex: 1, // 残り空間を全て使用
                   minHeight: "200px", // より大きな最小高さを設定
                   height: "auto", // 自動高さ調整
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  borderRadius: 1,
-                  mt: 2, // 上のタスクとの間隔
-                  mb: "100px", // 下部マージンを追加
+                  borderRadius: "var(--borderRadius-small)",
+                  marginTop: "8px", // 上のタスクとの間隔
+                  marginBottom: "100px", // 下部マージンを追加
                 }}
               />
             )}
           </SortableContext>
-        </Box>
+        </div>
 
         <ColumnDialogs
           column={column}
@@ -204,7 +204,7 @@ const KanbanColumn: React.FC<KanbanColumnProps> = React.memo(
           onConfirmDeleteColumn={handleConfirmDeleteColumn}
           onCancelDeleteColumn={handleCancelDeleteColumn}
         />
-      </Box>
+      </div>
     );
   },
 );

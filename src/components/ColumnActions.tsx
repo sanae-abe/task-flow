@@ -6,7 +6,7 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
 } from "@primer/octicons-react";
-import { Button, Box, ActionMenu, ActionList } from "@primer/react";
+import { Button, ActionMenu, ActionList } from "@primer/react";
 import React from "react";
 
 interface ColumnActionsProps {
@@ -28,7 +28,7 @@ const ColumnActions: React.FC<ColumnActionsProps> = ({
   canMoveLeft = true,
   canMoveRight = true,
 }) => (
-  <Box sx={{ display: "flex", alignItems: "center" }}>
+  <div style={{ display: "flex", alignItems: "center" }}>
     <Button
       onClick={onAddTask}
       variant="invisible"
@@ -83,7 +83,7 @@ const ColumnActions: React.FC<ColumnActionsProps> = ({
         </ActionList>
       </ActionMenu.Overlay>
     </ActionMenu>
-  </Box>
+  </div>
 );
 
 export default ColumnActions;

@@ -1,4 +1,4 @@
-import { Box, Button, Text } from "@primer/react";
+import { Button, Text } from "@primer/react";
 import { memo, useCallback, KeyboardEvent } from "react";
 
 import { getLabelColors } from "../utils/labelHelpers";
@@ -43,11 +43,11 @@ const ColorSelector = memo<ColorSelectorProps>(
     );
 
     return (
-      <Box>
-        <Box
-          sx={{
+      <div>
+        <div
+          style={{
             display: "flex",
-            gap: 1,
+            gap: "4px",
             justifyContent: "flex-start",
             flexWrap: "wrap",
           }}
@@ -114,8 +114,8 @@ const ColorSelector = memo<ColorSelectorProps>(
               </Button>
             );
           })}
-        </Box>
-      </Box>
+        </div>
+      </div>
     );
   },
 );

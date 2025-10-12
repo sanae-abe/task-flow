@@ -1,15 +1,15 @@
 import {
   XIcon,
-  CheckCircleIcon,
-  PencilIcon,
-  ArrowRightIcon,
+  DatabaseIcon,
   FilterIcon,
-  UploadIcon,
   InfoIcon,
   CalendarIcon,
-  TriangleDownIcon,
+  TableIcon,
+  DeviceCameraVideoIcon,
 } from "@primer/octicons-react";
-import { Button, Box, Heading, Text } from "@primer/react";
+import { MousePointer, FileText, Paperclip } from "react-feather";
+
+import { Button, Heading, Text } from "@primer/react";
 import React, { useEffect, useCallback } from "react";
 
 import Logo from "./Logo";
@@ -28,69 +28,69 @@ interface HelpSectionProps {
   title: string;
   icon: React.ComponentType<{ size?: number }>;
   children: React.ReactNode;
-  color?: string;
+  background?: string;
 }
 
 const HelpSection: React.FC<HelpSectionProps> = ({
   title,
   icon: Icon,
   children,
-  color = "accent.emphasis",
+  background = "var(--bgColor-accent-emphasis)",
 }) => (
   <>
-    <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 3 }}>
-      <Box
-        sx={{
-          p: 2,
-          bg: color,
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: "8px",
+        marginBottom: "12px",
+      }}
+    >
+      <div
+        style={{
+          padding: "8px",
+          background,
           borderRadius: "50%",
-          color: "fg.onEmphasis",
+          color: "var(--fgColor-onEmphasis)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
         }}
       >
         <Icon size={14} />
-      </Box>
+      </div>
       <Heading
         sx={{ fontSize: 2, fontWeight: "600", color: "fg.default", margin: 0 }}
       >
         {title}
       </Heading>
-    </Box>
-    <Box
-      sx={{
-        mb: 5,
-        p: 3,
-        bg: "canvas.subtle",
-        borderRadius: "6px",
+    </div>
+    <div
+      style={{
+        marginBottom: "20px",
+        padding: "12px",
+        backgroundColor: "var(--bgColor-muted)",
+        borderRadius: "var(--borderRadius-medium)",
       }}
     >
-      <Box sx={{ pl: 0 }}>{children}</Box>
-    </Box>
+      <div style={{ paddingLeft: 0 }}>{children}</div>
+    </div>
   </>
 );
 
 interface HelpItemProps {
   title: string | React.ReactNode;
   description: string;
-  highlight?: boolean;
 }
 
-const HelpItem: React.FC<HelpItemProps> = ({
-  title,
-  description,
-  highlight = false,
-}) => (
-  <Box
-    sx={{
-      p: 2,
-      bg: highlight ? "attention.subtle" : "transparent",
-      borderRadius: "6px",
-      borderLeft: highlight ? "3px solid" : "none",
-      borderColor: highlight ? "attention.emphasis" : "transparent",
+const HelpItem: React.FC<HelpItemProps> = ({ title, description }) => (
+  <div
+    style={{
+      padding: "8px",
+      backgroundColor: "var(--bgColor-muted)",
+      borderRadius: "var(--borderRadius-medium)",
       display: "flex",
-      gap: 3,
+      gap: "12px",
       alignItems: "flex-start",
     }}
   >
@@ -108,7 +108,7 @@ const HelpItem: React.FC<HelpItemProps> = ({
     </Text>
     <Text
       sx={{
-        fontSize: 1,
+        fontSize: 0,
         lineHeight: 1.5,
         color: "fg.default",
         flex: 1,
@@ -116,7 +116,7 @@ const HelpItem: React.FC<HelpItemProps> = ({
     >
       {description}
     </Text>
-  </Box>
+  </div>
 );
 
 const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
@@ -144,36 +144,36 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
   }
 
   return (
-    <Box
+    <div
       role="dialog"
       aria-modal="true"
       aria-labelledby="help-title"
-      sx={{
+      style={{
         position: "fixed",
         top: 0,
         right: 0,
         width: SIDEBAR_WIDTH,
         height: "100vh",
-        bg: "canvas.default",
+        backgroundColor: "var(--bgColor-default)",
         boxShadow: "0 16px 32px rgba(0, 0, 0, 0.24)",
         borderLeft: "1px solid",
-        borderColor: "border.default",
+        borderColor: "var(--borderColor-default)",
         zIndex: SIDEBAR_Z_INDEX,
         overflowY: "auto",
         animation:
           "sidebar-slide-in-right 250ms cubic-bezier(0.33, 1, 0.68, 1)",
       }}
     >
-      <Box sx={{ display: "flex", height: "100%", flexDirection: "column" }}>
+      <div style={{ display: "flex", height: "100%", flexDirection: "column" }}>
         {/* Header */}
-        <Box
-          sx={{
+        <div
+          style={{
             display: "flex",
-            p: 4,
+            padding: "17px 16px 16px",
             alignItems: "flex-start",
             justifyContent: "space-between",
             borderBottom: "1px solid",
-            borderColor: "border.default",
+            borderColor: "var(--borderColor-default)",
             flexShrink: 0,
           }}
         >
@@ -201,14 +201,14 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
             aria-label="ヘルプを閉じる"
             sx={{ flexShrink: 0 }}
           />
-        </Box>
+        </div>
 
         {/* Content */}
-        <Box sx={{ flex: "1", p: 3, overflowY: "auto" }}>
+        <div style={{ flex: "1", padding: "16px", overflowY: "auto" }}>
           <HelpSection
             title="ビュー切り替え"
-            icon={CalendarIcon}
-            color="accent.emphasis"
+            icon={DeviceCameraVideoIcon}
+            background="var(--bgColor-accent-emphasis)"
           >
             <HelpItem
               title="カンバンビュー"
@@ -230,8 +230,8 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
 
           <HelpSection
             title="基本操作"
-            icon={CheckCircleIcon}
-            color="success.emphasis"
+            icon={MousePointer}
+            background="var(--bgColor-success-emphasis)"
           >
             <HelpItem
               title="ボード作成"
@@ -257,8 +257,8 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
 
           <HelpSection
             title="タスク管理"
-            icon={PencilIcon}
-            color="accent.emphasis"
+            icon={FileText}
+            background="var(--bgColor-accent-emphasis)"
           >
             <HelpItem
               title="タスク編集"
@@ -306,8 +306,8 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
 
           <HelpSection
             title="ファイル添付"
-            icon={UploadIcon}
-            color="attention.emphasis"
+            icon={Paperclip}
+            background="var(--bgColor-attention-emphasis)"
           >
             <HelpItem
               title="ファイル添付"
@@ -326,7 +326,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
           <HelpSection
             title="カレンダー機能"
             icon={CalendarIcon}
-            color="done.emphasis"
+            background="var(--bgColor-done-emphasis)"
           >
             <HelpItem
               title="月次表示"
@@ -349,7 +349,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
           <HelpSection
             title="フィルタリング・ソート"
             icon={FilterIcon}
-            color="severe.emphasis"
+            background="var(--bgColor-severe-emphasis)"
           >
             <HelpItem
               title="タスクフィルタ"
@@ -367,8 +367,8 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
 
           <HelpSection
             title="テーブルビューの詳細機能"
-            icon={TriangleDownIcon}
-            color="accent.emphasis"
+            icon={TableIcon}
+            background="var(--bgColor-accent-emphasis)"
           >
             <HelpItem
               title="カラム管理"
@@ -390,8 +390,8 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
 
           <HelpSection
             title="データ管理"
-            icon={ArrowRightIcon}
-            color="sponsors.emphasis"
+            icon={DatabaseIcon}
+            background="var(--bgColor-sponsors-emphasis)"
           >
             <HelpItem
               title="ローカル保存"
@@ -422,7 +422,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
           <HelpSection
             title="便利なヒント"
             icon={InfoIcon}
-            color="danger.emphasis"
+            background="var(--bgColor-success-emphasis)"
           >
             <HelpItem
               title="キーボード操作"
@@ -451,9 +451,9 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
               description="タスク複製機能で類似タスクを素早く作成、サブタスクの並び替えで優先順位を調整、完了タスクは自動で上部に表示"
             />
           </HelpSection>
-        </Box>
-      </Box>
-    </Box>
+        </div>
+      </div>
+    </div>
   );
 };
 

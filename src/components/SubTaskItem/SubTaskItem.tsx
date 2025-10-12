@@ -1,0 +1,91 @@
+import React from "react";
+import { Box } from "@primer/react";
+import type { SubTask } from "../../types";
+import { useSubTaskEdit } from "./hooks/useSubTaskEdit";
+import { useSubTaskDrag } from "./hooks/useSubTaskDrag";
+import { EditingView } from "./components/EditingView";
+import { DisplayView } from "./components/DisplayView";
+import { DragHandleAndToggle } from "./components/DragHandleAndToggle";
+import { subTaskItemStyles } from "./styles/subTaskItemStyles";
+
+interface SubTaskItemProps {
+  subTask: SubTask;
+  onToggle: (subTaskId: string) => void;
+  onEdit: (subTaskId: string, newTitle: string) => void;
+  onDelete: (subTaskId: string) => void;
+}
+
+const SubTaskItem: React.FC<SubTaskItemProps> = ({
+  subTask,
+  onToggle,
+  onEdit,
+  onDelete,
+}) => {
+  // 編集機能のカスタムフック
+  const {
+    isEditing,
+    editTitle,
+    setEditTitle,
+    inputRef,
+    startEdit,
+    saveEdit,
+    cancelEdit,
+    handleKeyDown,
+  } = useSubTaskEdit({
+    initialTitle: subTask.title,
+    onEdit,
+    subTaskId: subTask.id,
+  });
+
+  // ドラッグ&ドロップ機能のカスタムフック
+  const { attributes, listeners, setNodeRef, style } = useSubTaskDrag({
+    id: subTask.id,
+  });
+
+  // イベントハンドラー
+  const handleToggle = (event: React.MouseEvent) => {
+    event.stopPropagation();
+    onToggle(subTask.id);
+  };
+
+  const handleDelete = (event: React.MouseEvent) => {
+    event.stopPropagation();
+    onDelete(subTask.id);
+  };
+
+  return (
+    <Box
+      ref={setNodeRef}
+      style={style}
+      sx={subTaskItemStyles.container}
+    >
+      {/* ドラッグハンドルとトグルボタン */}
+      <DragHandleAndToggle
+        subTask={subTask}
+        onToggle={handleToggle}
+        dragAttributes={attributes}
+        dragListeners={listeners}
+      />
+
+      {/* 編集モードと表示モードの切り替え */}
+      {isEditing ? (
+        <EditingView
+          editTitle={editTitle}
+          setEditTitle={setEditTitle}
+          inputRef={inputRef}
+          onSave={saveEdit}
+          onCancel={cancelEdit}
+          onKeyDown={handleKeyDown}
+        />
+      ) : (
+        <DisplayView
+          subTask={subTask}
+          onEdit={startEdit}
+          onDelete={handleDelete}
+        />
+      )}
+    </Box>
+  );
+};
+
+export default SubTaskItem;

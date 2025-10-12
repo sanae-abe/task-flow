@@ -3,7 +3,7 @@ import { FormControl, Select } from "@primer/react";
 
 import type { ColumnCreateDialogProps } from "../types/dialog";
 import UnifiedDialog from "./shared/Dialog/UnifiedDialog";
-import FormField from "./FormField";
+import { UnifiedFormField } from "./shared/Form";
 
 const ColumnCreateDialog = memo<ColumnCreateDialogProps>(
   ({ isOpen, onSave, onCancel, columns = [] }) => {
@@ -64,14 +64,16 @@ const ColumnCreateDialog = memo<ColumnCreateDialogProps>(
       >
         <div>
           <div style={{ marginBottom: "24px" }}>
-            <FormField
+            <UnifiedFormField
               id="column-title-input"
+              name="column-title-input"
+              type="text"
               label="カラム名"
               value={title}
               placeholder="カラム名を入力"
-              onChange={setTitle}
+              onChange={(value) => setTitle(value as string)}
               autoFocus
-              required
+              validation={{ required: true }}
             />
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>

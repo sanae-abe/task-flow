@@ -1,4 +1,4 @@
-import { Box, Text, Heading } from "@primer/react";
+import { Text, Heading } from "@primer/react";
 import React from "react";
 
 import type { Task } from "../types";
@@ -9,25 +9,24 @@ interface TaskMetadataProps {
 }
 
 const TaskMetadata: React.FC<TaskMetadataProps> = ({ task }) => (
-  <Box sx={{ mb: 4 }}>
+  <div style={{ marginBottom: "16px" }}>
     <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: "700" }}>
       作成/更新日時
     </Heading>
-    <Box
-      sx={{
-        p: 3,
+    <div
+      style={{
+        padding: "12px",
         display: "flex",
         flexDirection: "column",
-        gap: 2,
-        bg: "canvas.subtle",
-        borderRadius: 2,
-        fontSize: 1,
+        gap: "4px",
+        backgroundColor: "var(--bgColor-muted)",
+        fontSize: "14px",
       }}
     >
       <Text>作成日時: {formatDateTime(task.createdAt)}</Text>
       <Text>更新日時: {formatDateTime(task.updatedAt)}</Text>
-    </Box>
-  </Box>
+    </div>
+  </div>
 );
 
 export default TaskMetadata;

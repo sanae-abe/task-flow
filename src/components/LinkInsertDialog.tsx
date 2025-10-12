@@ -1,4 +1,4 @@
-import { Box, Button, Text, TextInput } from "@primer/react";
+import { Button, Text, TextInput } from "@primer/react";
 import React, { useState, useCallback, useMemo, useEffect } from "react";
 
 import UnifiedDialog from "./shared/Dialog/UnifiedDialog";
@@ -82,8 +82,15 @@ const LinkInsertDialog: React.FC<LinkInsertDialogProps> = ({
       size="large"
       hideFooter
     >
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 3, mb: 4 }}>
-        <Box sx={{ mb: 2 }}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "12px",
+          marginBottom: "16px",
+        }}
+      >
+        <div style={{ marginBottom: "8px" }}>
           <Text
             sx={{ fontSize: 1, mb: 2, display: "block", fontWeight: "700" }}
           >
@@ -112,9 +119,9 @@ const LinkInsertDialog: React.FC<LinkInsertDialogProps> = ({
               有効なURLを入力してください
             </Text>
           )}
-        </Box>
+        </div>
 
-        <Box>
+        <div>
           <Text
             sx={{ fontSize: 1, mb: 2, display: "block", fontWeight: "700" }}
           >
@@ -127,15 +134,14 @@ const LinkInsertDialog: React.FC<LinkInsertDialogProps> = ({
             onKeyDown={handleKeyPress}
             sx={{ width: "100%" }}
           />
-        </Box>
-      </Box>
+        </div>
+      </div>
 
-      <Box
-        sx={{
+      <div
+        style={{
           display: "flex",
           justifyContent: "flex-end",
-          gap: 2,
-          borderColor: "border.default",
+          gap: "8px",
         }}
       >
         <Button onClick={handleCancel} variant="default">
@@ -144,7 +150,7 @@ const LinkInsertDialog: React.FC<LinkInsertDialogProps> = ({
         <Button onClick={handleInsert} variant="primary" disabled={!isValidUrl}>
           挿入
         </Button>
-      </Box>
+      </div>
     </UnifiedDialog>
   );
 };

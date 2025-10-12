@@ -1,5 +1,5 @@
 import { FileIcon, ImageIcon, DownloadIcon } from "@primer/octicons-react";
-import { Box, Text, Button } from "@primer/react";
+import { Text, Button } from "@primer/react";
 import React, { useMemo, useCallback } from "react";
 
 import type { FileAttachment } from "../types";
@@ -79,28 +79,28 @@ const styles = {
   container: {
     display: "flex",
     flexDirection: "column",
-    gap: 1,
+    gap: "4px",
   },
   fileItem: {
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    p: 2,
-    bg: "canvas.subtle",
-    borderRadius: 2,
-    fontSize: 0,
+    padding: "8px",
+    backgroundColor: "var(--bgColor-muted)",
+    borderRadius: "var(--borderRadius-medium)",
+    fontSize: "12px",
   },
   fileInfo: {
     display: "flex",
     alignItems: "center",
-    gap: 2,
+    gap: "8px",
     flex: 1,
     minWidth: 0,
   },
   fileDetails: {
     minWidth: 0,
     flex: 1,
-    gap: 2,
+    gap: "8px",
     display: "flex",
     alignItems: "center",
   },
@@ -111,20 +111,20 @@ const styles = {
   },
   fileSize: {
     fontSize: "10px",
-    color: "fg.muted",
+    color: "var(--fgColor-muted)",
   },
   actionButtons: {
     display: "flex",
-    gap: 1,
+    gap: "4px",
   },
   downloadButton: {
-    p: 1,
+    padding: "4px",
   },
   remainingText: {
     fontSize: "10px",
-    color: "fg.muted",
+    color: "var(--fgColor-muted)",
     textAlign: "center",
-    mt: 1,
+    marginTop: "4px",
   },
 } as const;
 
@@ -162,7 +162,7 @@ const FileList: React.FC<FileListProps> = ({
   }
 
   return (
-    <Box sx={styles.container}>
+    <div style={styles.container}>
       {displayAttachments.map((attachment) => (
         <FileListItem
           key={attachment.id}
@@ -176,7 +176,7 @@ const FileList: React.FC<FileListProps> = ({
       {remainingCount > 0 && (
         <Text sx={styles.remainingText}>他{remainingCount}個のファイル</Text>
       )}
-    </Box>
+    </div>
   );
 };
 
@@ -195,15 +195,15 @@ const FileListItem: React.FC<FileListItemProps> = React.memo(
     }, [attachment, onDownload]);
 
     return (
-      <Box sx={styles.fileItem}>
-        <Box sx={styles.fileInfo}>
+      <div style={styles.fileItem}>
+        <div style={styles.fileInfo}>
           {getFileIcon(attachment.type)}
-          <Box sx={styles.fileDetails}>
+          <div style={styles.fileDetails}>
             <Text sx={styles.fileName}>{attachment.name}</Text>
             <Text sx={styles.fileSize}>{formatFileSize(attachment.size)}</Text>
-          </Box>
-        </Box>
-        <Box sx={styles.actionButtons}>
+          </div>
+        </div>
+        <div style={styles.actionButtons}>
           {showPreview && <FilePreview attachment={attachment} />}
           {showDownload && (
             <Button
@@ -216,8 +216,8 @@ const FileListItem: React.FC<FileListItemProps> = React.memo(
               <DownloadIcon size={14} />
             </Button>
           )}
-        </Box>
-      </Box>
+        </div>
+      </div>
     );
   },
 );

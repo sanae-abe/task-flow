@@ -1,5 +1,5 @@
 import { memo, useMemo, useState, useCallback } from 'react';
-import { Box, Text, Button, FormControl, Select, RadioGroup, Radio } from '@primer/react';
+import { Text, Button, FormControl, Select, RadioGroup, Radio } from '@primer/react';
 import { DownloadIcon } from '@primer/octicons-react';
 
 import { useKanban } from '../../contexts/KanbanContext';
@@ -56,7 +56,7 @@ export const ExportSection = memo<ExportSectionProps>(({
   const statisticsTitle = exportType === 'all' ? 'エクスポートされるデータ' : `「${selectedBoard?.title}」のデータ`;
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: "16px" }}>
       {/* セクション概要 */}
       <Text sx={{ fontSize: 1, color: 'fg.muted' }}>
         タスク管理データをJSON形式でエクスポートします。バックアップや他の環境への移行にご利用ください。
@@ -120,7 +120,7 @@ export const ExportSection = memo<ExportSectionProps>(({
       >
         エクスポート実行
       </Button>
-    </Box>
+    </div>
   );
 });
 

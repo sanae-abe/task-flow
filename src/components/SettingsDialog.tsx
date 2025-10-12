@@ -1,5 +1,5 @@
 import { DatabaseIcon, TagIcon, ProjectIcon } from "@primer/octicons-react";
-import { Box, SplitPageLayout, NavList } from "@primer/react";
+import { SplitPageLayout, NavList } from "@primer/react";
 import React, { useState } from "react";
 import { FileText } from "react-feather";
 
@@ -35,7 +35,7 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
       variant="modal"
       size="xl"
     >
-      <Box sx={{ height: "500px" }}>
+      <div style={{ height: "500px" }}>
         <SplitPageLayout>
           {/* サイドバー（ナビゲーション） */}
           <SplitPageLayout.Pane
@@ -87,7 +87,7 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
 
           {/* メインコンテンツエリア */}
           <SplitPageLayout.Content padding="none" sx={{ py: "8px", pr: "8px" }}>
-            <Box sx={{ height: "100%", overflow: "auto" }}>
+            <div style={{ height: "100%", overflow: "auto" }}>
               {activeTab === "board" ? (
                 <BoardSettingsPanel />
               ) : activeTab === "templates" ? (
@@ -100,10 +100,10 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
                   onExportCurrent={onExportBoard}
                 />
               )}
-            </Box>
+            </div>
           </SplitPageLayout.Content>
         </SplitPageLayout>
-      </Box>
+      </div>
     </UnifiedDialog>
   );
 };

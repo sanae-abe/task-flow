@@ -5,7 +5,7 @@ import {
   TriangleDownIcon,
   TableIcon,
 } from "@primer/octicons-react";
-import { Box, ActionMenu, ActionList, Button } from "@primer/react";
+import { ActionMenu, ActionList, Button } from "@primer/react";
 import React from "react";
 
 import { useKanban } from "../contexts/KanbanContext";
@@ -69,13 +69,12 @@ const SubHeader: React.FC = () => {
   }
 
   return (
-    <Box
-      sx={{
-        bg: "canvas.default",
+    <div
+      style={{
+        background: "var(--bgColor-default)",
         borderBottom: "1px solid",
-        borderColor: "border.default",
-        px: 5,
-        py: 2,
+        borderColor: "var(--borderColor-default)",
+        padding: "8px 20px",
         zIndex: 999,
         display: "flex",
         alignItems: "center",
@@ -86,7 +85,7 @@ const SubHeader: React.FC = () => {
     >
       <TaskStatsDisplay stats={taskStats} />
 
-      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
         <FilterSelector
           currentFilter={state.taskFilter}
           onFilterChange={setTaskFilter}
@@ -96,11 +95,11 @@ const SubHeader: React.FC = () => {
           currentSort={state.sortOption}
           onSortChange={setSortOption}
         />
-        <Box
-          sx={{
+        <div
+          style={{
             width: "1px",
             height: "24px",
-            bg: "border.default",
+            background: "var(--borderColor-default)",
           }}
         />
         {state.viewMode === "kanban" && (
@@ -118,11 +117,11 @@ const SubHeader: React.FC = () => {
           onClearCompletedTasks={handlers.openClearCompletedConfirm}
         />
 
-        <Box
-          sx={{
+        <div
+          style={{
             width: "1px",
             height: "24px",
-            bg: "border.default",
+            background: "var(--borderColor-default)",
           }}
         />
 
@@ -181,7 +180,7 @@ const SubHeader: React.FC = () => {
             </ActionList>
           </ActionMenu.Overlay>
         </ActionMenu>
-      </Box>
+      </div>
 
       <ConfirmDialog
         isOpen={dialogState.showDeleteConfirm}
@@ -218,7 +217,7 @@ const SubHeader: React.FC = () => {
         onSave={handlers.createBoard}
         onCancel={handlers.cancelCreateBoard}
       />
-    </Box>
+    </div>
   );
 };
 

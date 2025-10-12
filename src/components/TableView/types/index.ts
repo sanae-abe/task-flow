@@ -1,5 +1,5 @@
-import type { Task, KanbanBoard, TaskFilter } from '../../../types';
-import type { TaskWithColumn, TableColumn } from '../../../types/table';
+import type { Task, KanbanBoard, TaskFilter } from "../../../types";
+import type { TaskWithColumn, TableColumn } from "../../../types/table";
 
 /**
  * 削除確認ダイアログの状態

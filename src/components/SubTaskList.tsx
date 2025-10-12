@@ -1,4 +1,3 @@
-import { Box } from "@primer/react";
 import React, { useMemo, useCallback } from "react";
 import {
   DndContext,
@@ -89,7 +88,7 @@ const SubTaskList: React.FC<SubTaskListProps> = ({
   );
 
   return (
-    <Box sx={{ mb: 4 }}>
+    <div style={{ marginBottom: "16px" }}>
       <SubTaskHeader
         completedCount={completedCount}
         totalCount={totalCount}
@@ -111,7 +110,7 @@ const SubTaskList: React.FC<SubTaskListProps> = ({
           items={subTasks.map((item) => item.id)}
           strategy={verticalListSortingStrategy}
         >
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
             {subTasks.map((subTask) => (
               <SubTaskItem
                 key={subTask.id}
@@ -131,10 +130,10 @@ const SubTaskList: React.FC<SubTaskListProps> = ({
                 onKeyDown={handleFormKeyDown}
               />
             )}
-          </Box>
+          </div>
         </SortableContext>
       </DndContext>
-    </Box>
+    </div>
   );
 };
 

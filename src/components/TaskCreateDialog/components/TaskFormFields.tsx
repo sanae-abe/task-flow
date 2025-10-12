@@ -3,7 +3,7 @@ import { TextInput, FormControl, Flash } from '@primer/react';
 import { InfoIcon } from '@primer/octicons-react';
 
 import type { TaskFormFieldsProps } from '../types';
-import FormField from '../../FormField';
+import { UnifiedFormField } from '../../shared/Form';
 import LabelSelector from '../../LabelSelector';
 import PrioritySelector from '../../PrioritySelector';
 import RecurrenceSelector from '../../RecurrenceSelector';
@@ -63,18 +63,18 @@ export const TaskFormFields: React.FC<TaskFormFieldsProps> = ({
       )}
 
       {/* タイトル */}
-      <div style={{ width: '100%', marginBottom: '24px' }}>
-        <FormField
-          id="task-title"
-          label="タイトル"
-          value={title}
-          placeholder="タスクのタイトルを入力"
-          onChange={setTitle}
-          onKeyDown={onKeyPress}
-          autoFocus
-          required
-        />
-      </div>
+      <UnifiedFormField
+        id="task-title"
+        name="task-title"
+        type="text"
+        label="タイトル"
+        value={title}
+        placeholder="タスクのタイトルを入力"
+        onChange={(value) => setTitle(value as string)}
+        onKeyDown={onKeyPress}
+        autoFocus
+        validation={{ required: true }}
+      />
 
       {/* 説明 */}
       <div style={{ width: '100%', marginBottom: '24px' }}>
@@ -143,7 +143,7 @@ export const TaskFormFields: React.FC<TaskFormFieldsProps> = ({
 
       {/* ファイル添付 */}
       <div>
-        <FormControl>
+        <FormControl sx={{ display: "flex", flexDirection: "column", gap: "4px" }}>
           <FormControl.Label>ファイル添付（任意）</FormControl.Label>
           <FileUploader
             attachments={attachments}

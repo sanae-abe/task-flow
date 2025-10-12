@@ -1,4 +1,3 @@
-import { Box } from "@primer/react";
 import React from "react";
 
 interface SubTaskProgressBarProps {
@@ -17,26 +16,26 @@ const SubTaskProgressBar: React.FC<SubTaskProgressBarProps> = ({
   const progressPercentage = (completedCount / totalCount) * 100;
 
   return (
-    <Box sx={{ mb: 2 }}>
-      <Box
-        sx={{
+    <div style={{ marginBottom: "8px" }}>
+      <div
+        style={{
           width: "100%",
           height: "6px",
-          bg: "neutral.muted",
+          backgroundColor: "var(--bgColor-neutral-muted)",
           borderRadius: "3px",
           overflow: "hidden",
         }}
       >
-        <Box
-          sx={{
+        <div
+          style={{
             width: `${progressPercentage}%`,
             height: "100%",
-            bg: "success.emphasis",
+            backgroundColor: "var(--bgColor-success-emphasis)",
             transition: "width 0.2s ease",
           }}
         />
-      </Box>
-    </Box>
+      </div>
+    </div>
   );
 };
 

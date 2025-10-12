@@ -102,16 +102,16 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
   return (
     <Box
       sx={{
-        p: compact ? 2 : 3,
+        padding: compact ? "8px" : "12px",
         border: '1px solid',
         borderColor: 'border.default',
         borderRadius: 2,
-        bg: 'canvas.default',
+        background: 'canvas.default',
         cursor: onSelect ? 'pointer' : 'default',
         transition: 'all 0.2s ease',
         '&:hover': {
           borderColor: onSelect ? 'accent.fg' : 'border.default',
-          bg: onSelect ? 'canvas.subtle' : 'canvas.default',
+          background: onSelect ? 'canvas.subtle' : 'canvas.default',
           '& .template-actions': {
             opacity: 1
           }
@@ -120,20 +120,20 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
       onClick={onSelect ? handleSelect : undefined}
     >
       {/* ヘッダー部分 */}
-      <Box sx={{
+      <div style={{
         display: 'flex',
         alignItems: 'flex-start',
         justifyContent: 'space-between',
-        gap: 2,
-        mb: compact ? 1 : 2
+        gap: "8px",
+        marginBottom: compact ? "4px" : "8px"
       }}>
-        <Box sx={{ flex: 1, minWidth: 0 }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
           {/* テンプレート名 */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: "4px", marginBottom: "4px" }}>
             {template.isFavorite && (
-              <Box sx={{ color: 'attention.fg' }}>
+              <div style={{ color: 'var(--fgColor-attention)' }}>
                 <StarFillIcon size={14} />
-              </Box>
+              </div>
             )}
             <Text sx={{
               fontSize: compact ? 1 : 2,
@@ -145,10 +145,10 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
             }}>
               {template.name}
             </Text>
-          </Box>
+          </div>
 
           {/* カテゴリーと使用回数 */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: "8px", flexWrap: 'wrap' }}>
             <Text sx={{
               fontSize: 0,
               color: 'fg.muted',
@@ -167,16 +167,16 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
                 使用回数: {template.usageCount}
               </Text>
             )}
-          </Box>
-        </Box>
+          </div>
+        </div>
 
         {/* アクションボタン */}
         {showActions && (
-          <Box
+          <div
             className="template-actions"
-            sx={{
+            style={{
               display: 'flex',
-              gap: 1,
+              gap: "4px",
               opacity: compact ? 1 : 0.7,
               transition: 'opacity 0.2s ease'
             }}
@@ -211,13 +211,13 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
                 onClick={handleDelete}
               />
             )}
-          </Box>
+          </div>
         )}
-      </Box>
+      </div>
 
       {/* 説明 */}
       {!compact && template.description && (
-        <Box sx={{ mb: 2 }}>
+        <div style={{ marginBottom: "8px" }}>
           <Text sx={{
             fontSize: 1,
             color: 'fg.muted',
@@ -228,18 +228,18 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
           }}>
             {template.description}
           </Text>
-        </Box>
+        </div>
       )}
 
       {/* タスク情報 */}
       {!compact && (
-        <Box sx={{
-          pt: 2,
+        <div style={{
+          paddingTop: "8px",
           borderTop: '1px solid',
-          borderColor: 'border.muted',
+          borderColor: 'var(--borderColor-muted)',
           display: 'flex',
           flexDirection: 'column',
-          gap: 1
+          gap: "4px"
         }}>
           {/* タスクタイトル */}
           <Text sx={{
@@ -254,7 +254,7 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
           </Text>
 
           {/* タスク詳細情報 */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: "8px", flexWrap: 'wrap' }}>
             {/* 優先度 */}
             <Text sx={{
               fontSize: 0,
@@ -265,7 +265,7 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
 
             {/* ラベル */}
             {template.labels.length > 0 && (
-              <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', gap: "4px", flexWrap: 'wrap' }}>
                 {template.labels.slice(0, 3).map((label) => (
                   <LabelChip key={label.id} label={label} />
                 ))}
@@ -274,7 +274,7 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
                     +{template.labels.length - 3}
                   </Text>
                 )}
-              </Box>
+              </div>
             )}
 
             {/* 繰り返し設定 */}
@@ -290,17 +290,17 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
                 繰り返し
               </Text>
             )}
-          </Box>
-        </Box>
+          </div>
+        </div>
       )}
 
       {/* 選択ボタン（コンパクトモード） */}
       {compact && onSelect && (
-        <Box sx={{ mt: 2 }}>
+        <div style={{ marginTop: "8px" }}>
           <Button variant="primary" size="small" sx={{ width: '100%' }}>
             このテンプレートを使用
           </Button>
-        </Box>
+        </div>
       )}
     </Box>
   );

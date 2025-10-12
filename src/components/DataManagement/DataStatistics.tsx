@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { Box, Text } from '@primer/react';
+import { Text } from '@primer/react';
 
 import type { DataStatistics as DataStatisticsType } from './types';
 import { formatFileSize } from '../../utils/dataStatistics';
@@ -19,7 +19,7 @@ export const DataStatistics = memo<DataStatisticsProps>(({
   statistics,
   title = 'データ概要'
 }) => (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: "8px" }}>
       {title && (
         <Text sx={{ fontSize: 1, fontWeight: '600', color: 'fg.muted' }}>
           {title}
@@ -27,21 +27,20 @@ export const DataStatistics = memo<DataStatisticsProps>(({
       )}
 
       {/* シンプルな1行統計表示 */}
-      <Box
-        sx={{
-          py: 2,
-          px: 3,
-          bg: 'canvas.subtle',
-          borderRadius: 2,
+      <div
+        style={{
+          padding: '8px 12px',
+          backgroundColor: 'var(--bgColor-muted)',
+          borderRadius: 'var(--borderRadius-medium)',
           border: '1px solid',
-          borderColor: 'border.default'
+          borderColor: 'var(--borderColor-default)'
         }}
       >
         <Text sx={{ fontSize: 1, color: 'fg.default' }}>
           {statistics.taskCount}タスク / {statistics.boardCount}ボード / {statistics.labelCount}ラベル / {statistics.attachmentCount}添付ファイル（約 {formatFileSize(statistics.estimatedSize)}）
         </Text>
-      </Box>
-    </Box>
+      </div>
+    </div>
   ));
 
 DataStatistics.displayName = 'DataStatistics';

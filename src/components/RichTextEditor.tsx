@@ -46,7 +46,7 @@ const EDITOR_STYLES = {
     backgroundColor: "#f6f8fa",
     color: "#e01e5a",
     padding: "2px 4px",
-    borderRadius: "4px",
+    borderRadius: "var(--borderRadius-small)",
     fontFamily: "'Monaco', 'Menlo', 'Consolas', monospace",
     fontSize: "0.875em",
     border: "1px solid #d0d7de",
@@ -616,15 +616,15 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
     >
       {/* ツールバー */}
       {shouldShowToolbar && (
-        <Box
-          sx={{
-            p: 2,
+        <div
+          style={{
+            padding: "8px",
             borderBottom: "1px solid",
-            borderColor: "border.default",
-            bg: "canvas.subtle",
+            borderColor: "var(--borderColor-default)",
+            background: "var(--bgColor-muted)",
           }}
         >
-          <Box sx={{ display: "flex", gap: 1 }}>
+          <div style={{ display: "flex", gap: "4px" }}>
             <IconButton
               size="small"
               variant="invisible"
@@ -661,7 +661,13 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
               }
               aria-label="取り消し線 (Ctrl+Shift+X)"
             />
-            <Box sx={{ width: "1px", bg: "border.default", mx: 1 }} />
+            <div
+              style={{
+                width: "1px",
+                background: "var(--borderColor-default)",
+                margin: "0 8px",
+              }}
+            />
             <IconButton
               size="small"
               variant="invisible"
@@ -683,7 +689,13 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
               onClick={() => handleToolbarButtonClick(insertCodeBlock)}
               aria-label="コードブロック (Ctrl+Shift+`)"
             />
-            <Box sx={{ width: "1px", bg: "border.default", mx: 1 }} />
+            <div
+              style={{
+                width: "1px",
+                background: "var(--borderColor-default)",
+                margin: "0 8px",
+              }}
+            />
             <IconButton
               size="small"
               variant="invisible"
@@ -706,7 +718,13 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
               }
               aria-label="番号付きリスト"
             />
-            <Box sx={{ width: "1px", bg: "border.default", mx: 1 }} />
+            <div
+              style={{
+                width: "1px",
+                background: "var(--borderColor-default)",
+                margin: "0 8px",
+              }}
+            />
             <IconButton
               ref={emojiButtonRef}
               size="small"
@@ -715,12 +733,12 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
               onClick={() => handleToolbarButtonClick(handleEmojiPickerToggle)}
               aria-label="絵文字を挿入"
             />
-          </Box>
-        </Box>
+          </div>
+        </div>
       )}
 
       {/* エディタ本体 */}
-      <Box sx={{ position: "relative", minHeight }}>
+      <div style={{ position: "relative", minHeight }}>
         <Box
           ref={editorRef}
           as="div"
@@ -820,7 +838,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
             リッチテキストエディタ。Ctrl+Bで太字、Ctrl+Iで斜体、Ctrl+Uで下線、Ctrl+Shift+Xで取り消し線、Ctrl+Kでリンク、Ctrl+`でコード、Ctrl+Shift+`でコードブロックを挿入できます。リンクをクリックで編集、Ctrl+クリックで新しいタブで開きます。ペーストはプレーンテキストとして貼り付けられます。
           </Text>
         )}
-      </Box>
+      </div>
 
       {/* 絵文字ピッカー */}
       {showEmojiPicker && (

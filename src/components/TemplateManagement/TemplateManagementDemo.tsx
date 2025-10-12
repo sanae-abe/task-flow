@@ -1,5 +1,5 @@
 import React from 'react';
-import { ThemeProvider, BaseStyles, Box } from '@primer/react';
+import { ThemeProvider, BaseStyles } from '@primer/react';
 
 import TemplateManagementPanel from './TemplateManagementPanel';
 
@@ -10,15 +10,15 @@ import TemplateManagementPanel from './TemplateManagementPanel';
 const TemplateManagementDemo: React.FC = () => (
     <ThemeProvider>
       <BaseStyles>
-        <Box
-          sx={{
+        <div
+          style={{
             minHeight: '100vh',
-            bg: 'canvas.default',
-            p: 4
+            backgroundColor: 'var(--bgColor-default)',
+            padding: '16px'
           }}
         >
           <TemplateManagementPanel />
-        </Box>
+        </div>
       </BaseStyles>
     </ThemeProvider>
   );

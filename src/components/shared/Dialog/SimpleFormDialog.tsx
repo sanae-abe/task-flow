@@ -2,7 +2,7 @@ import { memo } from 'react';
 
 import { useFormDialog } from '../../../hooks/useFormDialog';
 import type { SimpleFormDialogProps } from '../../../types/unified-dialog';
-import FormField from '../../FormField';
+import { UnifiedFormField } from '../../shared/Form';
 
 import UnifiedDialog from './UnifiedDialog';
 
@@ -54,7 +54,7 @@ const SimpleFormDialog = memo<SimpleFormDialogProps>(({
     }
   ];
 
-  const inputId = `simple-form-input-${Math.random().toString(36).substr(2, 9)}`;
+  const inputId = `simple-form-input-${Math.random().toString(36).substring(2, 11)}`;
 
   return (
     <UnifiedDialog
@@ -67,15 +67,17 @@ const SimpleFormDialog = memo<SimpleFormDialogProps>(({
       closeOnEscape
       closeOnBackdropClick
     >
-      <FormField
+      <UnifiedFormField
         id={inputId}
+        name={inputId}
+        type="text"
         label={fieldLabel}
         value={value}
         placeholder={placeholder}
-        onChange={setValue}
-        onKeyDown={handleKeyPress}
+        onChange={(value) => setValue(value as string)}
+        onKeyDown={(event) => handleKeyPress(event as React.KeyboardEvent<HTMLInputElement>)}
         autoFocus
-        required={required}
+        validation={{ required }}
       />
     </UnifiedDialog>
   );

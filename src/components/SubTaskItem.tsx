@@ -1,19 +1,12 @@
-import {
-  TrashIcon,
-  CheckCircleIcon,
-  CheckCircleFillIcon,
-  PencilIcon,
-  CheckIcon,
-  XIcon,
-  GrabberIcon,
-} from "@primer/octicons-react";
-import { Box, Text, TextInput } from "@primer/react";
-import React, { useState, useRef, useEffect } from "react";
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-
+import React from "react";
+import { Box } from "@primer/react";
 import type { SubTask } from "../types";
-import IconButton from "./shared/IconButton";
+import { useSubTaskEdit } from "./SubTaskItem/hooks/useSubTaskEdit";
+import { useSubTaskDrag } from "./SubTaskItem/hooks/useSubTaskDrag";
+import { EditingView } from "./SubTaskItem/components/EditingView";
+import { DisplayView } from "./SubTaskItem/components/DisplayView";
+import { DragHandleAndToggle } from "./SubTaskItem/components/DragHandleAndToggle";
+import { subTaskItemStyles } from "./SubTaskItem/styles/subTaskItemStyles";
 
 interface SubTaskItemProps {
   subTask: SubTask;
@@ -28,18 +21,28 @@ const SubTaskItem: React.FC<SubTaskItemProps> = ({
   onEdit,
   onDelete,
 }) => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [editTitle, setEditTitle] = useState(subTask.title);
-  const inputRef = useRef<HTMLInputElement>(null);
-
+  // 編集機能のカスタムフック
   const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: subTask.id });
+    isEditing,
+    editTitle,
+    setEditTitle,
+    inputRef,
+    startEdit,
+    saveEdit,
+    cancelEdit,
+    handleKeyDown,
+  } = useSubTaskEdit({
+    initialTitle: subTask.title,
+    onEdit,
+    subTaskId: subTask.id,
+  });
+
+  // ドラッグ&ドロップ機能のカスタムフック
+  const { attributes, listeners, setNodeRef, style } = useSubTaskDrag({
+    id: subTask.id,
+  });
+
+  // イベントハンドラー
   const handleToggle = (event: React.MouseEvent) => {
     event.stopPropagation();
     onToggle(subTask.id);
@@ -50,219 +53,32 @@ const SubTaskItem: React.FC<SubTaskItemProps> = ({
     onDelete(subTask.id);
   };
 
-  const handleEdit = (event: React.MouseEvent) => {
-    event.stopPropagation();
-    setIsEditing(true);
-    setEditTitle(subTask.title);
-  };
-
-  const handleSaveEdit = () => {
-    const trimmedTitle = editTitle.trim();
-    if (trimmedTitle && trimmedTitle !== subTask.title) {
-      onEdit(subTask.id, trimmedTitle);
-    }
-    setIsEditing(false);
-  };
-
-  const handleCancelEdit = () => {
-    setIsEditing(false);
-    setEditTitle(subTask.title);
-  };
-
-  const handleKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key === "Enter") {
-      event.preventDefault();
-      handleSaveEdit();
-    } else if (event.key === "Escape") {
-      event.preventDefault();
-      handleCancelEdit();
-    }
-  };
-
-  // 編集モードに入ったときにフォーカスを当てる
-  useEffect(() => {
-    if (isEditing && inputRef.current) {
-      inputRef.current.focus();
-      inputRef.current.select();
-    }
-  }, [isEditing]);
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-  };
-
   return (
-    <Box
-      ref={setNodeRef}
-      style={style}
-      sx={{
-        display: "flex",
-        alignItems: "center",
-        gap: 2,
-        borderRadius: 2,
-        bg: "canvas.default",
-        cursor: "pointer",
-        position: "relative",
-        "&:hover": {
-          bg: "canvas.subtle",
-        },
-        "&:hover .action-buttons": {
-          opacity: "1 !important",
-        },
-        "&:hover .drag-handle": {
-          opacity: "1 !important",
-        },
-      }}
-    >
-      {/* ドラッグハンドル */}
-      <div style={{ display: "flex", alignItems: "center" }}>
-        <Box
-          {...attributes}
-          {...listeners}
-          className="drag-handle"
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            width: 24,
-            height: 24,
-            color: "fg.muted",
-            opacity: 0,
-            transition: "opacity 0.2s ease",
-            cursor: "grab",
-            borderRadius: 1,
-            "&:active": {
-              cursor: "grabbing",
-            },
-            "&:hover": {
-              bg: "neutral.muted",
-              color: "accent.fg",
-            },
-          }}
-        >
-          <GrabberIcon size={16} />
-        </Box>
+    <Box ref={setNodeRef} style={style} sx={subTaskItemStyles.container}>
+      {/* ドラッグハンドルとトグルボタン */}
+      <DragHandleAndToggle
+        subTask={subTask}
+        onToggle={handleToggle}
+        dragAttributes={attributes}
+        dragListeners={listeners}
+      />
 
-        <IconButton
-          icon={subTask.completed ? CheckCircleFillIcon : CheckCircleIcon}
-          onClick={handleToggle}
-          ariaLabel={`${subTask.title}を${subTask.completed ? "未完了" : "完了"}にする`}
-          variant="success"
-          size="small"
-          stopPropagation
-          sx={{
-            "&:hover": {
-              bg: "transparent",
-            },
-          }}
-        />
-      </div>
-
+      {/* 編集モードと表示モードの切り替え */}
       {isEditing ? (
-        <>
-          <TextInput
-            ref={inputRef}
-            value={editTitle}
-            onChange={(e) => setEditTitle(e.target.value)}
-            onKeyDown={handleKeyDown}
-            sx={{
-              flex: 1,
-              fontSize: 1,
-              px: 2,
-              py: 1,
-            }}
-            size="small"
-          />
-          <Box
-            sx={{
-              display: "flex",
-              gap: 1,
-              opacity: 1,
-            }}
-          >
-            <IconButton
-              icon={CheckIcon}
-              onClick={handleSaveEdit}
-              ariaLabel="編集を保存"
-              size="small"
-              stopPropagation
-              sx={{
-                color: "success.fg",
-                "&:hover": {
-                  bg: "transparent",
-                  color: "success.emphasis",
-                },
-              }}
-            />
-            <IconButton
-              icon={XIcon}
-              onClick={handleCancelEdit}
-              ariaLabel="編集をキャンセル"
-              size="small"
-              stopPropagation
-              sx={{
-                color: "fg.muted",
-                "&:hover": {
-                  bg: "transparent",
-                  color: "danger.fg",
-                },
-              }}
-            />
-          </Box>
-        </>
+        <EditingView
+          editTitle={editTitle}
+          setEditTitle={setEditTitle}
+          inputRef={inputRef}
+          onSave={saveEdit}
+          onCancel={cancelEdit}
+          onKeyDown={handleKeyDown}
+        />
       ) : (
-        <>
-          <Text
-            sx={{
-              flex: 1,
-              textDecoration: "none",
-              opacity: subTask.completed ? 0.6 : 1,
-              fontSize: 1,
-            }}
-          >
-            {subTask.title}
-          </Text>
-          <Box
-            className="action-buttons"
-            sx={{
-              display: "flex",
-              gap: 1,
-              opacity: 0,
-              transition: "opacity 0.2s ease",
-            }}
-          >
-            <IconButton
-              icon={PencilIcon}
-              onClick={handleEdit}
-              ariaLabel={`${subTask.title}を編集`}
-              size="small"
-              stopPropagation
-              sx={{
-                color: "fg.muted",
-                "&:hover": {
-                  bg: "transparent",
-                  color: "accent.fg",
-                },
-              }}
-            />
-            <IconButton
-              icon={TrashIcon}
-              onClick={handleDelete}
-              ariaLabel={`${subTask.title}を削除`}
-              size="small"
-              stopPropagation
-              sx={{
-                color: "fg.muted",
-                "&:hover": {
-                  bg: "transparent",
-                  color: "danger.fg",
-                },
-              }}
-            />
-          </Box>
-        </>
+        <DisplayView
+          subTask={subTask}
+          onEdit={startEdit}
+          onDelete={handleDelete}
+        />
       )}
     </Box>
   );
