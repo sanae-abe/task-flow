@@ -703,7 +703,9 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
                 task.recurrence,
               );
               const now = new Date();
-              const nextCreation = nextCreationDate ? new Date(nextCreationDate) : null;
+              const nextCreation = nextCreationDate
+                ? new Date(nextCreationDate)
+                : null;
 
               // 次回作成日が現在時刻を過ぎている場合は新しいタスクを作成
               if (nextCreation && nextCreation <= now) {

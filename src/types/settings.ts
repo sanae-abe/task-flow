@@ -34,7 +34,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
     notifyBeforeDeletion: true, // 通知は有効
     notificationDays: 7, // 7日前に通知
     excludeLabelIds: [], // 初期状態では除外なし
-    excludePriorities: ['critical'], // 緊急タスクは自動除外
+    excludePriorities: ["critical"], // 緊急タスクは自動除外
     autoExportBeforeDeletion: true, // 安全のため自動エクスポート
     enableSoftDeletion: true, // ソフトデリート有効
     softDeletionRetentionDays: 7, // 7日間の猶予

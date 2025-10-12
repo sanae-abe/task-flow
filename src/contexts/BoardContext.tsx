@@ -9,9 +9,25 @@ import React, {
 } from "react";
 import { v4 as uuidv4 } from "uuid";
 
-import type { KanbanBoard, Column, Priority } from "../types";
+import type {
+  KanbanBoard,
+  Column,
+  Priority,
+  DeletionCandidate,
+  DeletionStatistics,
+} from "../types";
 import { saveBoards, loadBoards } from "../utils/storage";
-import { loadSettings } from "../utils/settingsStorage";
+import {
+  loadSettings,
+  getAutoDeletionSettings,
+} from "../utils/settingsStorage";
+import {
+  getDeletionCandidates,
+  executeDeletion as execDeletion,
+  restoreTask as taskRestore,
+  loadDeletionStatistics,
+} from "../utils/taskDeletion";
+import { useDeletionScheduler } from "../utils/deletionScheduler";
 import { useNotify } from "./NotificationContext";
 import { logger } from "../utils/logger";
 
@@ -62,6 +78,12 @@ interface BoardContextType {
   moveColumn: (columnId: string, direction: "left" | "right") => void;
   importBoards: (boards: KanbanBoard[], replaceAll?: boolean) => void;
   reorderBoards: (boards: KanbanBoard[]) => void;
+  // 削除機能関連
+  checkDeletionCandidates: () => DeletionCandidate[];
+  executeDeletion: () => void;
+  restoreTask: (taskId: string) => void;
+  getDeletionStatistics: () => DeletionStatistics;
+  runManualDeletionCheck: () => Promise<boolean>;
 }
 
 const BoardContext = createContext<BoardContextType | undefined>(undefined);
@@ -869,6 +891,62 @@ const authenticateUser = async (email, password) => {
     }),
     [state.boards, state.currentBoard],
   );
+  // 削除スケジューラーフック
+  const deletionScheduler = useDeletionScheduler();
+
+  // 削除機能関数
+  const checkDeletionCandidates = useCallback((): DeletionCandidate[] => {
+    const settings = getAutoDeletionSettings();
+    return getDeletionCandidates(state.boards, settings);
+  }, [state.boards]);
+
+  const executeDeletion = useCallback(() => {
+    try {
+      const settings = getAutoDeletionSettings();
+      const updatedBoards = execDeletion(state.boards, settings);
+
+      if (updatedBoards !== state.boards) {
+        dispatch({ type: "LOAD_BOARDS", payload: updatedBoards });
+        notify.success("削除処理が完了しました");
+      }
+    } catch (error) {
+      logger.error("Failed to execute deletion:", error);
+      notify.error("削除処理に失敗しました");
+    }
+  }, [state.boards, notify]);
+
+  const restoreTask = useCallback(
+    (taskId: string) => {
+      try {
+        const updatedBoards = taskRestore(state.boards, taskId);
+        if (updatedBoards) {
+          dispatch({ type: "LOAD_BOARDS", payload: updatedBoards });
+          notify.success("タスクを復元しました");
+        } else {
+          notify.error("タスクの復元に失敗しました");
+        }
+      } catch (error) {
+        logger.error("Failed to restore task:", error);
+        notify.error("タスクの復元に失敗しました");
+      }
+    },
+    [state.boards, notify],
+  );
+
+  const getDeletionStatistics = useCallback(
+    (): DeletionStatistics => loadDeletionStatistics(),
+    [],
+  );
+
+  const runManualDeletionCheck = useCallback(async (): Promise<boolean> => {
+    try {
+      return await deletionScheduler.runManualCheck();
+    } catch (error) {
+      logger.error("Failed to run manual deletion check:", error);
+      notify.error("削除チェックの実行に失敗しました");
+      return false;
+    }
+  }, [deletionScheduler, notify]);
 
   const value = useMemo(
     () => ({
@@ -886,6 +964,12 @@ const authenticateUser = async (email, password) => {
       importBoards,
       reorderBoards,
       exportData,
+      // 削除機能関連
+      checkDeletionCandidates,
+      executeDeletion,
+      restoreTask,
+      getDeletionStatistics,
+      runManualDeletionCheck,
     }),
     [
       state,
@@ -901,6 +985,12 @@ const authenticateUser = async (email, password) => {
       importBoards,
       reorderBoards,
       exportData,
+      // 削除機能関連
+      checkDeletionCandidates,
+      executeDeletion,
+      restoreTask,
+      getDeletionStatistics,
+      runManualDeletionCheck,
     ],
   );
 

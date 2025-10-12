@@ -1,5 +1,6 @@
 import { type Task, type DeletionCandidate } from "../types";
 import { type AutoDeletionSettings } from "../types/settings";
+import { logger } from "./logger";
 
 /**
  * 日付ユーティリティ関数
@@ -25,13 +26,12 @@ export const DateUtils = {
   /**
    * 日付を日本語形式でフォーマット
    */
-  formatJapanese: (date: Date): string => {
-    return date.toLocaleDateString("ja-JP", {
+  formatJapanese: (date: Date): string =>
+    date.toLocaleDateString("ja-JP", {
       year: "numeric",
       month: "long",
       day: "numeric",
-    });
-  },
+    }),
 
   /**
    * 相対的な日付表示
@@ -40,10 +40,18 @@ export const DateUtils = {
     const now = new Date();
     const days = DateUtils.getDaysDifference(now, date);
 
-    if (days === 0) return "今日";
-    if (days === 1) return "明日";
-    if (days <= 7) return `${days}日後`;
-    if (days <= 30) return `約${Math.ceil(days / 7)}週間後`;
+    if (days === 0) {
+      return "今日";
+    }
+    if (days === 1) {
+      return "明日";
+    }
+    if (days <= 7) {
+      return `${days}日後`;
+    }
+    if (days <= 30) {
+      return `約${Math.ceil(days / 7)}週間後`;
+    }
     return DateUtils.formatJapanese(date);
   },
 };
@@ -55,39 +63,48 @@ export const TaskFilters = {
   /**
    * 完了タスクのみをフィルター
    */
-  completedOnly: (tasks: Task[]): Task[] => {
-    return tasks.filter((task) => task.completedAt !== null);
-  },
+  completedOnly: (tasks: Task[]): Task[] =>
+    tasks.filter((task) => task.completedAt !== null),
 
   /**
    * アクティブなタスクのみをフィルター（削除対象外）
    */
-  activeOnly: (tasks: Task[]): Task[] => {
-    return tasks.filter(
-      (task) => !task.deletionState || task.deletionState === "active"
-    );
-  },
+  activeOnly: (tasks: Task[]): Task[] =>
+    tasks.filter(
+      (task) => !task.deletionState || task.deletionState === "active",
+    ),
 
   /**
    * ソフトデリートされたタスクのみをフィルター
    */
-  softDeletedOnly: (tasks: Task[]): Task[] => {
-    return tasks.filter((task) => task.deletionState === "soft-deleted");
-  },
+  softDeletedOnly: (tasks: Task[]): Task[] =>
+    tasks.filter((task) => task.deletionState === "soft-deleted"),
 
   /**
    * 削除予定タスクをフィルター
    */
-  scheduledForDeletion: (tasks: Task[], settings: AutoDeletionSettings): Task[] => {
-    if (!settings.enabled) return [];
+  scheduledForDeletion: (
+    tasks: Task[],
+    settings: AutoDeletionSettings,
+  ): Task[] => {
+    if (!settings.enabled) {
+      return [];
+    }
 
     const now = new Date();
     const notificationThreshold = new Date(
-      now.getTime() - (settings.retentionDays - settings.notificationDays) * 24 * 60 * 60 * 1000
+      now.getTime() -
+        (settings.retentionDays - settings.notificationDays) *
+          24 *
+          60 *
+          60 *
+          1000,
     );
 
     return tasks.filter((task) => {
-      if (!task.completedAt || task.deletionState !== "active") return false;
+      if (!task.completedAt || task.deletionState !== "active") {
+        return false;
+      }
 
       const completedDate = new Date(task.completedAt);
       return completedDate < notificationThreshold;
@@ -97,9 +114,8 @@ export const TaskFilters = {
   /**
    * 保護されたタスクをフィルター
    */
-  protectedTasks: (tasks: Task[]): Task[] => {
-    return tasks.filter((task) => task.protectedFromDeletion === true);
-  },
+  protectedTasks: (tasks: Task[]): Task[] =>
+    tasks.filter((task) => task.protectedFromDeletion === true),
 };
 
 /**
@@ -111,7 +127,9 @@ export const NotificationMessages = {
    */
   getDeletionWarning: (candidates: DeletionCandidate[]): string => {
     const count = candidates.length;
-    if (count === 0) return "";
+    if (count === 0) {
+      return "";
+    }
 
     const minDays = Math.min(...candidates.map((c) => c.daysUntilDeletion));
 
@@ -119,9 +137,8 @@ export const NotificationMessages = {
       return `${count}件のタスクが削除予定です。`;
     } else if (minDays === 1) {
       return `${count}件のタスクが明日削除されます。`;
-    } else {
-      return `${count}件のタスクが${minDays}日後に削除されます。`;
     }
+    return `${count}件のタスクが${minDays}日後に削除されます。`;
   },
 
   /**
@@ -135,9 +152,8 @@ export const NotificationMessages = {
   /**
    * 復元完了メッセージ
    */
-  getRestoreComplete: (restoredCount: number): string => {
-    return `${restoredCount}件のタスクを復元しました。`;
-  },
+  getRestoreComplete: (restoredCount: number): string =>
+    `${restoredCount}件のタスクを復元しました。`,
 };
 
 /**
@@ -186,7 +202,7 @@ export const DeletionEstimator = {
    */
   estimateDeletionCandidates: (
     tasks: Task[],
-    retentionDays: number
+    retentionDays: number,
   ): { immediate: number; upcoming: number } => {
     const now = new Date();
     const deletionThreshold = DateUtils.addDays(now, -retentionDays);
@@ -196,7 +212,9 @@ export const DeletionEstimator = {
     let upcoming = 0;
 
     tasks.forEach((task) => {
-      if (!task.completedAt || task.deletionState !== "active") return;
+      if (!task.completedAt || task.deletionState !== "active") {
+        return;
+      }
 
       const completedDate = new Date(task.completedAt);
       if (completedDate < deletionThreshold) {
@@ -212,12 +230,11 @@ export const DeletionEstimator = {
   /**
    * 削除による容量削減見積もり
    */
-  estimateSpaceSavings: (tasks: Task[]): number => {
-    return tasks.reduce((total, task) => {
+  estimateSpaceSavings: (tasks: Task[]): number =>
+    tasks.reduce((total, task) => {
       const taskSize = new Blob([JSON.stringify(task)]).size;
       return total + taskSize;
-    }, 0);
-  },
+    }, 0),
 };
 
 /**
@@ -227,16 +244,14 @@ export const ValidationUtils = {
   /**
    * 保持期間の妥当性チェック
    */
-  isValidRetentionDays: (days: number): boolean => {
-    return Number.isInteger(days) && days >= 1 && days <= 365;
-  },
+  isValidRetentionDays: (days: number): boolean =>
+    Number.isInteger(days) && days >= 1 && days <= 365,
 
   /**
    * 通知期間の妥当性チェック
    */
-  isValidNotificationDays: (days: number, retentionDays: number): boolean => {
-    return Number.isInteger(days) && days >= 0 && days < retentionDays;
-  },
+  isValidNotificationDays: (days: number, retentionDays: number): boolean =>
+    Number.isInteger(days) && days >= 0 && days < retentionDays,
 
   /**
    * 設定全体の妥当性チェック
@@ -248,11 +263,19 @@ export const ValidationUtils = {
       errors.push("保持期間は1〜365日の範囲で設定してください");
     }
 
-    if (!ValidationUtils.isValidNotificationDays(settings.notificationDays, settings.retentionDays)) {
+    if (
+      !ValidationUtils.isValidNotificationDays(
+        settings.notificationDays,
+        settings.retentionDays,
+      )
+    ) {
       errors.push("通知期間は0〜保持期間未満で設定してください");
     }
 
-    if (settings.softDeletionRetentionDays < 1 || settings.softDeletionRetentionDays > 30) {
+    if (
+      settings.softDeletionRetentionDays < 1 ||
+      settings.softDeletionRetentionDays > 30
+    ) {
       errors.push("ソフトデリート保持期間は1〜30日の範囲で設定してください");
     }
 
@@ -268,22 +291,26 @@ export const DebugUtils = {
    * タスクの削除関連状態をログ出力
    */
   logTaskDeletionState: (task: Task): void => {
-    console.log(`Task ${task.id} (${task.title}):`);
-    console.log(`  - Completed: ${task.completedAt}`);
-    console.log(`  - Deletion State: ${task.deletionState || 'active'}`);
-    console.log(`  - Soft Deleted: ${task.softDeletedAt}`);
-    console.log(`  - Scheduled Deletion: ${task.scheduledDeletionAt}`);
-    console.log(`  - Protected: ${task.protectedFromDeletion || false}`);
+    logger.debug(`Task ${task.id} (${task.title}):`);
+    logger.debug(`  - Completed: ${task.completedAt}`);
+    logger.debug(`  - Deletion State: ${task.deletionState || "active"}`);
+    logger.debug(`  - Soft Deleted: ${task.softDeletedAt}`);
+    logger.debug(`  - Scheduled Deletion: ${task.scheduledDeletionAt}`);
+    logger.debug(`  - Protected: ${task.protectedFromDeletion || false}`);
   },
 
   /**
    * 削除チェック結果をログ出力
    */
-  logDeletionCheckResult: (result: import("../types").DeletionCheckResult): void => {
-    console.log("🗑️ Deletion Check Result:");
-    console.log(`  - Soft Deleted: ${result.softDeletedTasks.length} tasks`);
-    console.log(`  - Notification: ${result.notificationTasks.length} tasks`);
-    console.log(`  - Processed: ${result.processedTaskCount} tasks`);
-    console.log(`  - Storage Freed: ${(result.storageFreed / 1024).toFixed(2)} KB`);
+  logDeletionCheckResult: (
+    result: import("../types").DeletionCheckResult,
+  ): void => {
+    logger.debug("🗑️ Deletion Check Result:");
+    logger.debug(`  - Soft Deleted: ${result.softDeletedTasks.length} tasks`);
+    logger.debug(`  - Notification: ${result.notificationTasks.length} tasks`);
+    logger.debug(`  - Processed: ${result.processedTaskCount} tasks`);
+    logger.debug(
+      `  - Storage Freed: ${(result.storageFreed / 1024).toFixed(2)} KB`,
+    );
   },
 };

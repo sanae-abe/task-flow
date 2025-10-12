@@ -22,7 +22,7 @@ export const DELETION_STORAGE_KEYS = {
  */
 export const checkTasksForDeletion = (
   boards: KanbanBoard[],
-  settings: AutoDeletionSettings
+  settings: AutoDeletionSettings,
 ): DeletionCheckResult => {
   if (!settings.enabled) {
     return {
@@ -36,10 +36,15 @@ export const checkTasksForDeletion = (
 
   const now = new Date();
   const deletionThreshold = new Date(
-    now.getTime() - settings.retentionDays * 24 * 60 * 60 * 1000
+    now.getTime() - settings.retentionDays * 24 * 60 * 60 * 1000,
   );
   const notificationThreshold = new Date(
-    now.getTime() - (settings.retentionDays - settings.notificationDays) * 24 * 60 * 60 * 1000
+    now.getTime() -
+      (settings.retentionDays - settings.notificationDays) *
+        24 *
+        60 *
+        60 *
+        1000,
   );
 
   const softDeletedTasks: Task[] = [];
@@ -54,7 +59,10 @@ export const checkTasksForDeletion = (
         processedTaskCount++;
 
         // 既に削除済みまたは保護されたタスクはスキップ
-        if (task.deletionState === "soft-deleted" || task.protectedFromDeletion) {
+        if (
+          task.deletionState === "soft-deleted" ||
+          task.protectedFromDeletion
+        ) {
           return;
         }
 
@@ -74,10 +82,11 @@ export const checkTasksForDeletion = (
         if (completedDate < deletionThreshold) {
           const deletedTask: Task = {
             ...task,
-            deletionState: "soft-deleted",
+            deletionState: "soft-deleted" as const,
             softDeletedAt: now.toISOString(),
             scheduledDeletionAt: new Date(
-              now.getTime() + settings.softDeletionRetentionDays * 24 * 60 * 60 * 1000
+              now.getTime() +
+                settings.softDeletionRetentionDays * 24 * 60 * 60 * 1000,
             ).toISOString(),
           };
 
@@ -111,7 +120,7 @@ export const checkTasksForDeletion = (
  */
 export const isTaskExcludedFromDeletion = (
   task: Task,
-  settings: AutoDeletionSettings
+  settings: AutoDeletionSettings,
 ): boolean => {
   // 優先度による除外
   if (task.priority && settings.excludePriorities.includes(task.priority)) {
@@ -148,7 +157,7 @@ export const estimateTaskSize = (task: Task): number => {
 export const createTaskBackup = (
   task: Task,
   boardId: string,
-  columnId: string
+  columnId: string,
 ): DeletionBackup => {
   const backup: DeletionBackup = {
     id: uuidv4(),
@@ -158,7 +167,7 @@ export const createTaskBackup = (
     columnId,
     backedUpAt: new Date().toISOString(),
     expiresAt: new Date(
-      Date.now() + 30 * 24 * 60 * 60 * 1000 // 30日後に期限切れ
+      Date.now() + 30 * 24 * 60 * 60 * 1000, // 30日後に期限切れ
     ).toISOString(),
     estimatedSize: estimateTaskSize(task),
   };
@@ -179,12 +188,16 @@ export const saveBackup = (backup: DeletionBackup): void => {
     const maxBackups = 50;
     if (updatedBackups.length > maxBackups) {
       updatedBackups.sort(
-        (a, b) => new Date(b.backedUpAt).getTime() - new Date(a.backedUpAt).getTime()
+        (a, b) =>
+          new Date(b.backedUpAt).getTime() - new Date(a.backedUpAt).getTime(),
       );
       updatedBackups.splice(maxBackups);
     }
 
-    localStorage.setItem(DELETION_STORAGE_KEYS.BACKUPS, JSON.stringify(updatedBackups));
+    localStorage.setItem(
+      DELETION_STORAGE_KEYS.BACKUPS,
+      JSON.stringify(updatedBackups),
+    );
   } catch (error) {
     logger.error("Failed to save backup:", error);
   }
@@ -219,7 +232,7 @@ export const loadBackups = (): DeletionBackup[] => {
  */
 export const getDeletionCandidates = (
   boards: KanbanBoard[],
-  settings: AutoDeletionSettings
+  settings: AutoDeletionSettings,
 ): DeletionCandidate[] => {
   if (!settings.enabled) {
     return [];
@@ -242,10 +255,11 @@ export const getDeletionCandidates = (
 
         const completedDate = new Date(task.completedAt);
         const deletionDate = new Date(
-          completedDate.getTime() + settings.retentionDays * 24 * 60 * 60 * 1000
+          completedDate.getTime() +
+            settings.retentionDays * 24 * 60 * 60 * 1000,
         );
         const daysUntilDeletion = Math.ceil(
-          (deletionDate.getTime() - now.getTime()) / (24 * 60 * 60 * 1000)
+          (deletionDate.getTime() - now.getTime()) / (24 * 60 * 60 * 1000),
         );
 
         if (daysUntilDeletion <= settings.notificationDays) {
@@ -268,7 +282,7 @@ export const getDeletionCandidates = (
  */
 export const restoreTask = (
   boards: KanbanBoard[],
-  taskId: string
+  taskId: string,
 ): KanbanBoard[] | null => {
   const updatedBoards = boards.map((board) => ({
     ...board,
@@ -276,13 +290,14 @@ export const restoreTask = (
       ...column,
       tasks: column.tasks.map((task) => {
         if (task.id === taskId && task.deletionState === "soft-deleted") {
-          return {
+          const restoredTask: Task = {
             ...task,
-            deletionState: "active",
+            deletionState: "active" as const,
             softDeletedAt: null,
             scheduledDeletionAt: null,
             updatedAt: new Date().toISOString(),
           };
+          return restoredTask;
         }
         return task;
       }),
@@ -295,7 +310,10 @@ export const restoreTask = (
 /**
  * 削除統計を更新
  */
-export const updateDeletionStatistics = (deletedTasksCount: number, freedSpace: number): void => {
+export const updateDeletionStatistics = (
+  deletedTasksCount: number,
+  freedSpace: number,
+): void => {
   try {
     const stats = loadDeletionStatistics();
 
@@ -308,7 +326,10 @@ export const updateDeletionStatistics = (deletedTasksCount: number, freedSpace: 
     stats.deletionsByPeriod.last7Days += deletedTasksCount;
     stats.deletionsByPeriod.last30Days += deletedTasksCount;
 
-    localStorage.setItem(DELETION_STORAGE_KEYS.STATISTICS, JSON.stringify(stats));
+    localStorage.setItem(
+      DELETION_STORAGE_KEYS.STATISTICS,
+      JSON.stringify(stats),
+    );
   } catch (error) {
     logger.error("Failed to update deletion statistics:", error);
   }
@@ -358,7 +379,7 @@ export const loadDeletionStatistics = (): DeletionStatistics => {
  */
 export const executeDeletion = (
   boards: KanbanBoard[],
-  settings: AutoDeletionSettings
+  settings: AutoDeletionSettings,
 ): KanbanBoard[] => {
   const checkResult = checkTasksForDeletion(boards, settings);
 
@@ -372,16 +393,23 @@ export const executeDeletion = (
     columns: board.columns.map((column) => ({
       ...column,
       tasks: column.tasks.map((task) => {
-        const deletedTask = checkResult.softDeletedTasks.find((dt) => dt.id === task.id);
+        const deletedTask = checkResult.softDeletedTasks.find(
+          (dt) => dt.id === task.id,
+        );
         return deletedTask || task;
       }),
     })),
   }));
 
   // 統計を更新
-  updateDeletionStatistics(checkResult.softDeletedTasks.length, checkResult.storageFreed);
+  updateDeletionStatistics(
+    checkResult.softDeletedTasks.length,
+    checkResult.storageFreed,
+  );
 
-  logger.info(`🗑️ Soft deleted ${checkResult.softDeletedTasks.length} tasks, freed ${checkResult.storageFreed} bytes`);
+  logger.info(
+    `🗑️ Soft deleted ${checkResult.softDeletedTasks.length} tasks, freed ${checkResult.storageFreed} bytes`,
+  );
 
   return updatedBoards;
 };

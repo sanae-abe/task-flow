@@ -36,7 +36,7 @@ const SortableHeader: React.FC<SortableHeaderProps> = ({
         fontWeight: 'bold',
         border: 0,
         padding: '8px',
-        color: 'var(--color-fg-muted)',
+        color: 'var(--fgColor-muted)',
         fontSize: 0,
         background: 'none',
         appearance: 'none'

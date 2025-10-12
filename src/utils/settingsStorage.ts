@@ -68,7 +68,8 @@ export const loadSettings = (): AppSettings => {
     }
 
     // 自動削除設定のバリデーション
-    let autoDeletionSettings: AutoDeletionSettings = DEFAULT_SETTINGS.autoDeletion;
+    let autoDeletionSettings: AutoDeletionSettings =
+      DEFAULT_SETTINGS.autoDeletion;
 
     if (parsed.autoDeletion && typeof parsed.autoDeletion === "object") {
       const autoDeletion = parsed.autoDeletion;
@@ -86,12 +87,31 @@ export const loadSettings = (): AppSettings => {
           enabled: autoDeletion.enabled,
           retentionDays: Math.max(1, Math.min(365, autoDeletion.retentionDays)), // 1-365日の範囲
           notifyBeforeDeletion: autoDeletion.notifyBeforeDeletion,
-          notificationDays: Math.max(0, Math.min(30, autoDeletion.notificationDays)), // 0-30日の範囲
-          excludeLabelIds: Array.isArray(autoDeletion.excludeLabelIds) ? autoDeletion.excludeLabelIds : [],
-          excludePriorities: Array.isArray(autoDeletion.excludePriorities) ? autoDeletion.excludePriorities : [],
-          autoExportBeforeDeletion: typeof autoDeletion.autoExportBeforeDeletion === "boolean" ? autoDeletion.autoExportBeforeDeletion : true,
-          enableSoftDeletion: typeof autoDeletion.enableSoftDeletion === "boolean" ? autoDeletion.enableSoftDeletion : true,
-          softDeletionRetentionDays: typeof autoDeletion.softDeletionRetentionDays === "number" ? Math.max(1, Math.min(30, autoDeletion.softDeletionRetentionDays)) : 7,
+          notificationDays: Math.max(
+            0,
+            Math.min(30, autoDeletion.notificationDays),
+          ), // 0-30日の範囲
+          excludeLabelIds: Array.isArray(autoDeletion.excludeLabelIds)
+            ? autoDeletion.excludeLabelIds
+            : [],
+          excludePriorities: Array.isArray(autoDeletion.excludePriorities)
+            ? autoDeletion.excludePriorities
+            : [],
+          autoExportBeforeDeletion:
+            typeof autoDeletion.autoExportBeforeDeletion === "boolean"
+              ? autoDeletion.autoExportBeforeDeletion
+              : true,
+          enableSoftDeletion:
+            typeof autoDeletion.enableSoftDeletion === "boolean"
+              ? autoDeletion.enableSoftDeletion
+              : true,
+          softDeletionRetentionDays:
+            typeof autoDeletion.softDeletionRetentionDays === "number"
+              ? Math.max(
+                  1,
+                  Math.min(30, autoDeletion.softDeletionRetentionDays),
+                )
+              : 7,
         };
       }
     }
@@ -128,7 +148,9 @@ export const resetSettings = (): void => {
 /**
  * 自動削除設定を更新
  */
-export const updateAutoDeletionSettings = (autoDeletionSettings: AutoDeletionSettings): void => {
+export const updateAutoDeletionSettings = (
+  autoDeletionSettings: AutoDeletionSettings,
+): void => {
   const currentSettings = loadSettings();
   const updatedSettings: AppSettings = {
     ...currentSettings,
