@@ -73,6 +73,79 @@ export function calculateNextDueDate(
 }
 
 /**
+ * 期限なし繰り返しタスクの次回作成日を計算する
+ * 作成日を基準に次回タスクの作成日を計算
+ */
+export function calculateNextCreationDate(
+  createdAt: string,
+  recurrence: RecurrenceConfig | undefined | null,
+): string | null {
+  if (!recurrence || !recurrence.enabled) {
+    return null;
+  }
+
+  const currentDate = new Date(createdAt);
+  if (isNaN(currentDate.getTime())) {
+    return null;
+  }
+
+  let nextDate = new Date(currentDate);
+
+  switch (recurrence.pattern) {
+    case "daily":
+      nextDate.setDate(nextDate.getDate() + recurrence.interval);
+      break;
+
+    case "weekly":
+      if (recurrence.daysOfWeek && recurrence.daysOfWeek.length > 0) {
+        // 指定された曜日の次の日を計算
+        nextDate = getNextWeekdayOccurrence(
+          currentDate,
+          recurrence.daysOfWeek,
+          recurrence.interval,
+        );
+      } else {
+        // 曜日指定がない場合は単純に週間隔で追加
+        nextDate.setDate(nextDate.getDate() + 7 * recurrence.interval);
+      }
+      break;
+
+    case "monthly":
+      if (recurrence.dayOfMonth) {
+        // 指定された日付で次の月を計算
+        nextDate.setMonth(nextDate.getMonth() + recurrence.interval);
+        nextDate.setDate(recurrence.dayOfMonth);
+
+        // 存在しない日付の場合は月末に調整
+        if (nextDate.getDate() !== recurrence.dayOfMonth) {
+          nextDate.setDate(0); // 前月の最終日
+        }
+      } else {
+        // 日付指定がない場合は現在の日付で次の月
+        nextDate.setMonth(nextDate.getMonth() + recurrence.interval);
+      }
+      break;
+
+    case "yearly":
+      nextDate.setFullYear(nextDate.getFullYear() + recurrence.interval);
+      break;
+
+    default:
+      return null;
+  }
+
+  // 終了日チェック
+  if (recurrence.endDate) {
+    const endDate = new Date(recurrence.endDate);
+    if (nextDate > endDate) {
+      return null;
+    }
+  }
+
+  return nextDate.toISOString();
+}
+
+/**
  * 指定された曜日の次の発生日を計算（週次繰り返し用）
  */
 function getNextWeekdayOccurrence(
