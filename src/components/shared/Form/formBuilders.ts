@@ -1,9 +1,9 @@
 import type {
   FormFieldConfig,
   FieldType,
-  ValidationRule
-} from '../../../types/unified-form';
-import type { Label, FileAttachment, RecurrenceConfig } from '../../../types';
+  ValidationRule,
+} from "../../../types/unified-form";
+import type { Label, FileAttachment, RecurrenceConfig } from "../../../types";
 
 /**
  * フォームフィールド作成ヘルパー関数
@@ -15,22 +15,22 @@ export const createFormField = (
     type: FieldType;
     label: string;
     onChange: (value: unknown) => void;
-  }
+  },
 ): FormFieldConfig => {
   const getDefaultValue = () => {
     switch (config.type) {
-      case 'recurrence-selector':
-        return { enabled: false, pattern: 'daily' as const, interval: 1 };
-      case 'number':
+      case "recurrence-selector":
+        return { enabled: false, pattern: "daily" as const, interval: 1 };
+      case "number":
         return 0;
-      case 'checkbox':
+      case "checkbox":
         return false;
-      case 'label-selector':
+      case "label-selector":
         return [];
-      case 'file':
+      case "file":
         return [];
       default:
-        return '';
+        return "";
     }
   };
 
@@ -38,11 +38,11 @@ export const createFormField = (
 
   return {
     value: defaultValue,
-    placeholder: '',
+    placeholder: "",
     autoFocus: false,
     disabled: false,
     hideLabel: false,
-    ...config
+    ...config,
   };
 };
 
@@ -82,57 +82,57 @@ export const createTaskFormFields = (
     showRecurrence?: boolean;
     statusOptions?: Array<{ value: string; label: string }>;
     onKeyPress?: (event: React.KeyboardEvent) => void;
-  } = {}
+  } = {},
 ): FormFieldConfig[] => {
   const fields: FormFieldConfig[] = [
     createFormField({
-      id: 'task-title',
-      name: 'title',
-      type: 'text',
-      label: 'タイトル',
+      id: "task-title",
+      name: "title",
+      type: "text",
+      label: "タイトル",
       value: values.title,
-      placeholder: 'タスクのタイトルを入力',
+      placeholder: "タスクのタイトルを入力",
       onChange: handlers.setTitle as (value: unknown) => void,
       onKeyDown: options.onKeyPress,
       autoFocus: true,
-      validation: { required: true, minLength: 1, maxLength: 100 }
+      validation: { required: true, minLength: 1, maxLength: 100 },
     }),
 
     createFormField({
-      id: 'task-description',
-      name: 'description',
-      type: 'textarea',
-      label: '説明（任意）',
+      id: "task-description",
+      name: "description",
+      type: "textarea",
+      label: "説明（任意）",
       value: values.description,
-      placeholder: 'タスクの説明を入力',
+      placeholder: "タスクの説明を入力",
       onChange: handlers.setDescription as (value: unknown) => void,
       onKeyDown: options.onKeyPress,
-      rows: 4
+      rows: 4,
     }),
 
     createFormField({
-      id: 'task-due-date',
-      name: 'dueDate',
-      type: 'date',
-      label: '期限（任意）',
+      id: "task-due-date",
+      name: "dueDate",
+      type: "date",
+      label: "期限（任意）",
       value: values.dueDate,
       onChange: handlers.setDueDate as (value: unknown) => void,
       onKeyDown: options.onKeyPress,
-      step: "1"
-    })
+      step: "1",
+    }),
   ];
 
   // 時刻設定チェックボックス（期限が設定されている場合のみ）
   if (values.dueDate && handlers.setHasTime) {
     fields.push(
       createFormField({
-        id: 'task-has-time',
-        name: 'hasTime',
-        type: 'checkbox',
-        label: '時刻を設定',
+        id: "task-has-time",
+        name: "hasTime",
+        type: "checkbox",
+        label: "時刻を設定",
         value: values.hasTime || false,
-        onChange: handlers.setHasTime as (value: unknown) => void
-      })
+        onChange: handlers.setHasTime as (value: unknown) => void,
+      }),
     );
   }
 
@@ -140,15 +140,15 @@ export const createTaskFormFields = (
   if (values.dueDate && values.hasTime && handlers.setDueTime) {
     fields.push(
       createFormField({
-        id: 'task-due-time',
-        name: 'dueTime',
-        type: 'time',
-        label: '時刻',
-        value: values.dueTime || '',
+        id: "task-due-time",
+        name: "dueTime",
+        type: "time",
+        label: "時刻",
+        value: values.dueTime || "",
         onChange: handlers.setDueTime as (value: unknown) => void,
         onKeyDown: options.onKeyPress,
-        step: "300" // 5分間隔
-      })
+        step: "300", // 5分間隔
+      }),
     );
   }
 
@@ -156,15 +156,21 @@ export const createTaskFormFields = (
   if (options.showRecurrence && handlers.setRecurrence) {
     fields.push(
       createFormField({
-        id: 'task-recurrence',
-        name: 'recurrence',
-        type: 'recurrence-selector',
-        label: '繰り返し設定（任意）',
-        value: values.recurrence || { enabled: false, pattern: 'daily', interval: 1 },
+        id: "task-recurrence",
+        name: "recurrence",
+        type: "recurrence-selector",
+        label: "繰り返し設定（任意）",
+        value: values.recurrence || {
+          enabled: false,
+          pattern: "daily",
+          interval: 1,
+        },
         onChange: handlers.setRecurrence as (value: unknown) => void,
         disabled: !values.dueDate, // 期限が未設定の場合は無効化
-        helpText: !values.dueDate ? '繰り返し設定をするには期限を設定してください' : undefined
-      })
+        helpText: !values.dueDate
+          ? "繰り返し設定をするには期限を設定してください"
+          : undefined,
+      }),
     );
   }
 
@@ -172,14 +178,14 @@ export const createTaskFormFields = (
   if (options.showStatus && options.statusOptions && handlers.setColumnId) {
     fields.push(
       createFormField({
-        id: 'task-status',
-        name: 'columnId',
-        type: 'select',
-        label: 'ステータス',
-        value: values.columnId ?? '',
+        id: "task-status",
+        name: "columnId",
+        type: "select",
+        label: "ステータス",
+        value: values.columnId ?? "",
         onChange: handlers.setColumnId as (value: unknown) => void,
-        options: options.statusOptions
-      })
+        options: options.statusOptions,
+      }),
     );
   }
 
@@ -187,15 +193,15 @@ export const createTaskFormFields = (
   if (options.isCompleted && handlers.setCompletedAt) {
     fields.push(
       createFormField({
-        id: 'task-completed-at',
-        name: 'completedAt',
-        type: 'datetime-local',
-        label: '完了日時',
-        value: values.completedAt ?? '',
+        id: "task-completed-at",
+        name: "completedAt",
+        type: "datetime-local",
+        label: "完了日時",
+        value: values.completedAt ?? "",
         onChange: handlers.setCompletedAt as (value: unknown) => void,
         onKeyDown: options.onKeyPress,
-        step: "300" // 5分間隔
-      })
+        step: "300", // 5分間隔
+      }),
     );
   }
 
@@ -203,13 +209,13 @@ export const createTaskFormFields = (
   if (options.showLabels) {
     fields.push(
       createFormField({
-        id: 'task-labels',
-        name: 'labels',
-        type: 'label-selector',
-        label: 'ラベル（任意）',
+        id: "task-labels",
+        name: "labels",
+        type: "label-selector",
+        label: "ラベル（任意）",
         value: values.labels,
-        onChange: handlers.setLabels as (value: unknown) => void
-      })
+        onChange: handlers.setLabels as (value: unknown) => void,
+      }),
     );
   }
 
@@ -217,13 +223,13 @@ export const createTaskFormFields = (
   if (options.showAttachments) {
     fields.push(
       createFormField({
-        id: 'task-attachments',
-        name: 'attachments',
-        type: 'file',
-        label: 'ファイル添付（任意）',
+        id: "task-attachments",
+        name: "attachments",
+        type: "file",
+        label: "ファイル添付（任意）",
         value: values.attachments,
-        onChange: handlers.setAttachments as (value: unknown) => void
-      })
+        onChange: handlers.setAttachments as (value: unknown) => void,
+      }),
     );
   }
 
@@ -244,58 +250,60 @@ export const createLabelFormFields = (
   },
   options: {
     onKeyDown?: (e: React.KeyboardEvent) => void;
-  } = {}
+  } = {},
 ): FormFieldConfig[] => [
   createFormField({
-    id: 'label-name',
-    name: 'name',
-    type: 'text',
-    label: 'ラベル名',
+    id: "label-name",
+    name: "name",
+    type: "text",
+    label: "ラベル名",
     value: values.name,
-    placeholder: 'ラベル名を入力',
+    placeholder: "ラベル名を入力",
     onChange: handlers.setName as (value: unknown) => void,
     onKeyDown: options.onKeyDown,
     autoFocus: true,
-    validation: { required: true, minLength: 1, maxLength: 50 }
+    validation: { required: true, minLength: 1, maxLength: 50 },
   }),
 
   createFormField({
-    id: 'label-color',
-    name: 'color',
-    type: 'color-selector',
-    label: '色',
+    id: "label-color",
+    name: "color",
+    type: "color-selector",
+    label: "色",
     value: values.color,
-    onChange: handlers.setColor as (value: unknown) => void
-  })
+    onChange: handlers.setColor as (value: unknown) => void,
+  }),
 ];
 
 /**
  * シンプルテキストフォーム用フィールド設定を生成（ボード名、カラム名など）
  */
-export const createSimpleTextFormFields = (
-  config: {
-    id: string;
-    name: string;
-    label: string;
-    value: string;
-    placeholder?: string;
-    onChange: (value: string) => void;
-    onKeyDown?: (event: React.KeyboardEvent) => void;
-    validation?: ValidationRule;
-  }
-): FormFieldConfig[] => [
+export const createSimpleTextFormFields = (config: {
+  id: string;
+  name: string;
+  label: string;
+  value: string;
+  placeholder?: string;
+  onChange: (value: string) => void;
+  onKeyDown?: (event: React.KeyboardEvent) => void;
+  validation?: ValidationRule;
+}): FormFieldConfig[] => [
   createFormField({
     id: config.id,
     name: config.name,
-    type: 'text',
+    type: "text",
     label: config.label,
     value: config.value,
     placeholder: config.placeholder ?? `${config.label}を入力`,
     onChange: config.onChange as (value: unknown) => void,
     onKeyDown: config.onKeyDown,
     autoFocus: true,
-    validation: config.validation ?? { required: true, minLength: 1, maxLength: 100 }
-  })
+    validation: config.validation ?? {
+      required: true,
+      minLength: 1,
+      maxLength: 100,
+    },
+  }),
 ];
 
 /**
@@ -310,21 +318,21 @@ export const createSubTaskFormFields = (
   },
   options: {
     onKeyDown?: (event: React.KeyboardEvent) => void;
-  } = {}
+  } = {},
 ): FormFieldConfig[] => [
   createFormField({
-    id: 'subtask-title',
-    name: 'title',
-    type: 'text',
-    label: 'サブタスク名',
+    id: "subtask-title",
+    name: "title",
+    type: "text",
+    label: "サブタスク名",
     value: values.title,
-    placeholder: 'サブタスク名を入力...',
+    placeholder: "サブタスク名を入力...",
     onChange: handlers.setTitle as (value: unknown) => void,
     onKeyDown: options.onKeyDown,
     autoFocus: true,
     hideLabel: true,
-    validation: { required: true, minLength: 1, maxLength: 100 }
-  })
+    validation: { required: true, minLength: 1, maxLength: 100 },
+  }),
 ];
 
 /**
@@ -337,8 +345,8 @@ export const ValidationRules = {
   columnName: { required: true, minLength: 1, maxLength: 30 },
   labelName: { required: true, minLength: 1, maxLength: 50 },
   description: { maxLength: 500 },
-  email: { 
-    required: true, 
-    pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ 
-  }
+  email: {
+    required: true,
+    pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+  },
 } as const;
