@@ -20,6 +20,7 @@ import { useNotify } from "./NotificationContext";
 import { useBoard } from "./BoardContext";
 import {
   calculateNextDueDate,
+  calculateNextCreationDate,
   isRecurrenceComplete,
 } from "../utils/recurrence";
 import { logger } from "../utils/logger";
@@ -238,33 +239,51 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
 
       // 繰り返しタスクの処理
       let recurringTask: Task | null = null;
-      if (
-        isMovingToCompleted &&
-        updatedTask.recurrence &&
-        updatedTask.dueDate
-      ) {
+      if (isMovingToCompleted && updatedTask.recurrence) {
         if (
           !isRecurrenceComplete(
             updatedTask.recurrence,
             updatedTask.occurrenceCount || 1,
           )
         ) {
-          const nextDueDate = calculateNextDueDate(
-            updatedTask.dueDate,
-            updatedTask.recurrence,
-          );
           const currentCount = (updatedTask.occurrenceCount || 1) + 1;
 
-          if (nextDueDate) {
-            recurringTask = {
-              ...updatedTask,
-              id: uuidv4(),
-              dueDate: nextDueDate,
-              completedAt: null,
-              occurrenceCount: currentCount,
-              createdAt: new Date().toISOString(),
-              updatedAt: new Date().toISOString(),
-            };
+          if (updatedTask.dueDate) {
+            // 期限ありタスクの場合：期限基準で次回期限を計算
+            const nextDueDate = calculateNextDueDate(
+              updatedTask.dueDate,
+              updatedTask.recurrence,
+            );
+
+            if (nextDueDate) {
+              recurringTask = {
+                ...updatedTask,
+                id: uuidv4(),
+                dueDate: nextDueDate,
+                completedAt: null,
+                occurrenceCount: currentCount,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+              };
+            }
+          } else {
+            // 期限なしタスクの場合：作成日基準で次回作成日を計算
+            const nextCreationDate = calculateNextCreationDate(
+              updatedTask.createdAt,
+              updatedTask.recurrence,
+            );
+
+            if (nextCreationDate) {
+              recurringTask = {
+                ...updatedTask,
+                id: uuidv4(),
+                dueDate: null, // 期限なしのまま
+                completedAt: null,
+                occurrenceCount: currentCount,
+                createdAt: nextCreationDate,
+                updatedAt: new Date().toISOString(),
+              };
+            }
           }
         }
       }
@@ -659,36 +678,53 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       const newTasks: Task[] = [];
 
       column.tasks.forEach((task) => {
-        if (task.recurrence && task.dueDate && task.completedAt) {
-          // 完了済みの繰り返しタスクで期限切れかチェック
-          const dueDate = new Date(task.dueDate);
-          const completedDate = new Date(task.completedAt);
+        if (task.recurrence && task.completedAt) {
+          if (
+            !isRecurrenceComplete(task.recurrence, task.occurrenceCount || 1)
+          ) {
+            const currentCount = (task.occurrenceCount || 1) + 1;
+            let shouldCreateNext = false;
+            let nextDate: string | null = null;
 
-          if (dueDate < completedDate) {
-            // 期限切れなので新しいタスクを作成
-            if (
-              !isRecurrenceComplete(task.recurrence, task.occurrenceCount || 1)
-            ) {
-              const nextDueDate = calculateNextDueDate(
-                task.dueDate,
+            if (task.dueDate) {
+              // 期限ありタスクの場合：期限切れかチェック
+              const dueDate = new Date(task.dueDate);
+              const completedDate = new Date(task.completedAt);
+
+              if (dueDate < completedDate) {
+                // 期限切れなので新しいタスクを作成
+                nextDate = calculateNextDueDate(task.dueDate, task.recurrence);
+                shouldCreateNext = true;
+              }
+            } else {
+              // 期限なしタスクの場合：作成日から次回作成日を計算
+              const nextCreationDate = calculateNextCreationDate(
+                task.createdAt,
                 task.recurrence,
               );
-              const currentCount = (task.occurrenceCount || 1) + 1;
+              const now = new Date();
+              const nextCreation = nextCreationDate ? new Date(nextCreationDate) : null;
 
-              if (nextDueDate) {
-                const newRecurringTask: Task = {
-                  ...task,
-                  id: uuidv4(),
-                  dueDate: nextDueDate,
-                  completedAt: null,
-                  occurrenceCount: currentCount,
-                  createdAt: new Date().toISOString(),
-                  updatedAt: new Date().toISOString(),
-                };
-
-                newTasks.push(newRecurringTask);
-                hasUpdates = true;
+              // 次回作成日が現在時刻を過ぎている場合は新しいタスクを作成
+              if (nextCreation && nextCreation <= now) {
+                nextDate = nextCreationDate;
+                shouldCreateNext = true;
               }
+            }
+
+            if (shouldCreateNext && nextDate) {
+              const newRecurringTask: Task = {
+                ...task,
+                id: uuidv4(),
+                dueDate: task.dueDate ? nextDate : null,
+                completedAt: null,
+                occurrenceCount: currentCount,
+                createdAt: task.dueDate ? new Date().toISOString() : nextDate,
+                updatedAt: new Date().toISOString(),
+              };
+
+              newTasks.push(newRecurringTask);
+              hasUpdates = true;
             }
           }
         }

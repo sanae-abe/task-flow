@@ -136,17 +136,9 @@ const TaskEditForm = memo<TaskEditFormProps>(
             <RecurrenceSelector
               recurrence={recurrence}
               onRecurrenceChange={setRecurrence}
-              disabled={!dueDate}
             />
           </div>
 
-          {!dueDate && (
-            <div
-              style={{ marginTop: "8px", fontSize: "12px", color: "fg.muted" }}
-            >
-              ※期限を設定すると時刻設定と繰り返し設定が有効になります
-            </div>
-          )}
         </div>
 
         <div style={{ marginBottom: "24px" }}>
