@@ -1,17 +1,17 @@
 import React from 'react';
-import { Box, Text } from '@primer/react';
+import { Text } from '@primer/react';
 
 const EmptyState: React.FC = () => (
-  <Box
-    sx={{
+  <div
+    style={{
       textAlign: 'center',
-      py: 6,
+      paddingBlock: '24px',
       border: '1px dashed',
-      borderColor: 'border.muted',
-      borderRadius: 2,
+      borderColor: 'var(--borderColor-muted)',
+      borderRadius: 'var(--borderRadius-medium)',
       display: 'flex',
       flexDirection: 'column',
-      gap: 2,
+      gap: "8px",
       justifyContent: 'center',
       alignItems: 'center'
     }}
@@ -19,7 +19,7 @@ const EmptyState: React.FC = () => (
     <Text sx={{ color: 'fg.muted' }}>
       まだラベルがありません
     </Text>
-  </Box>
+  </div>
 );
 
 export default EmptyState;

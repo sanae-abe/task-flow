@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { Box, Text, Button, Flash, Spinner, RadioGroup, Radio, FormControl } from '@primer/react';
+import { Text, Button, Flash, Spinner, RadioGroup, Radio, FormControl } from '@primer/react';
 import { UploadIcon, FileIcon, XIcon, AlertIcon } from '@primer/octicons-react';
 
 import { useDataImport } from '../../hooks/useDataImport';
@@ -176,10 +176,10 @@ export const ImportSection = memo<ImportSectionProps>(({ onImportSuccess }) => {
 
       {/* ローディング表示 */}
       {state.isLoading && (
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: "8px" }}>
           <Spinner size="small" />
           <Text sx={{ fontSize: 1 }}>処理中...</Text>
-        </Box>
+        </div>
       )}
 
       {/* エラー表示 - ErrorMessage使用 */}

@@ -30,7 +30,7 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
       }}
     >
       {visibleColumns.map((column) => (
-        <Box key={column.id} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <div key={column.id} style={{ display: 'flex', alignItems: 'center', gap: "4px" }}>
           <Text sx={{ fontWeight: 'bold', fontSize: 1 }}>
             {column.label}
           </Text>
@@ -39,19 +39,19 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
               {taskCount}
             </CounterLabel>
           )}
-        </Box>
+        </div>
       ))}
 
       {/* 設定ボタンを固定位置に配置 */}
-      <Box
-        sx={{
+      <div
+        style={{
           position: 'absolute',
           top: '50%',
-          right: 3,
+          right: "12px",
           transform: 'translateY(-50%)',
         }}
       >
         <TableColumnManager />
-      </Box>
+      </div>
     </Box>
   );

@@ -102,16 +102,16 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
   return (
     <Box
       sx={{
-        p: compact ? 2 : 3,
+        padding: compact ? "8px" : "12px",
         border: '1px solid',
         borderColor: 'border.default',
         borderRadius: 2,
-        bg: 'canvas.default',
+        background: 'canvas.default',
         cursor: onSelect ? 'pointer' : 'default',
         transition: 'all 0.2s ease',
         '&:hover': {
           borderColor: onSelect ? 'accent.fg' : 'border.default',
-          bg: onSelect ? 'canvas.subtle' : 'canvas.default',
+          background: onSelect ? 'canvas.subtle' : 'canvas.default',
           '& .template-actions': {
             opacity: 1
           }

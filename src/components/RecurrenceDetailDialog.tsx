@@ -1,5 +1,4 @@
 import {
-  Box,
   Text,
   Select,
   TextInput,
@@ -256,11 +255,11 @@ const RecurrenceDetailDialog: React.FC<RecurrenceDetailDialogProps> = ({
                         )
                       }
                     >
-                      <Box
-                        sx={{
+                      <div
+                        style={{
                           display: "flex",
                           alignItems: "center",
-                          gap: 2,
+                          gap: "8px",
                           width: "100%",
                         }}
                       >
@@ -271,7 +270,7 @@ const RecurrenceDetailDialog: React.FC<RecurrenceDetailDialogProps> = ({
                           onChange={() => {}}
                         />
                         {day.label}
-                      </Box>
+                      </div>
                     </ActionList.Item>
                   ))}
                 </ActionList>

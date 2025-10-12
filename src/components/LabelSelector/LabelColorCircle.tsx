@@ -1,4 +1,3 @@
-import { Box } from "@primer/react";
 import React from "react";
 
 import { getLabelColors } from "../../utils/labelHelpers";
@@ -15,12 +14,12 @@ export const LabelColorCircle: React.FC<LabelColorCircleProps> = ({
   const colors = getLabelColors(color);
 
   return (
-    <Box
-      sx={{
+    <div
+      style={{
         width: `${size}px`,
         height: `${size}px`,
         borderRadius: "50%",
-        bg: colors.bg,
+        backgroundColor: colors.bg,
         border: "1px solid",
         borderColor: colors.color,
       }}

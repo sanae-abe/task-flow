@@ -184,7 +184,7 @@ const TaskEditForm = memo<TaskEditFormProps>(
           />
         </div>
 
-        <div>
+        <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
           <Text
             sx={{ fontSize: 1, mb: 1, display: "block", fontWeight: "700" }}
           >

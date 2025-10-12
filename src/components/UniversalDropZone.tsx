@@ -1,5 +1,5 @@
 import { UploadIcon } from "@primer/octicons-react";
-import { Box, Text, Button } from "@primer/react";
+import { Text, Button } from "@primer/react";
 import React from "react";
 
 import type { ImportMode } from "../types";
@@ -99,22 +99,22 @@ const UniversalDropZone: React.FC<UniversalDropZoneProps> = ({
 
   const getBorderColor = () => {
     if (isLoading) {
-      return "border.muted";
+      return "var(--borderColor-muted)";
     }
     if (isDragOver) {
-      return "accent.emphasis";
+      return "var(--borderColor-accent-emphasis)";
     }
-    return "border.default";
+    return "var(--borderColor-default)";
   };
 
   const getBackgroundColor = () => {
     if (isLoading) {
-      return "canvas.inset";
+      return "var(--bgColor-inset)";
     }
     if (isDragOver) {
-      return "accent.subtle";
+      return "var(--bgColor-accent-muted)";
     }
-    return "canvas.subtle";
+    return "var(--bgColor-muted)";
   };
 
   const getCursor = () => {
@@ -141,19 +141,19 @@ const UniversalDropZone: React.FC<UniversalDropZoneProps> = ({
   };
 
   return (
-    <Box
-      sx={{
+    <div
+      style={{
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        gap: 2,
+        gap: "8px",
         border: shouldShowDropZone ? "2px dashed" : "2px solid",
         borderColor: getBorderColor(),
-        borderRadius: 2,
-        p: 4,
+        borderRadius: "var(--borderRadius-medium)",
+        padding: "16px",
         textAlign: "center",
-        bg: getBackgroundColor(),
+        background: getBackgroundColor(),
         cursor: getCursor(),
         transition: "all 0.2s ease",
         minHeight,
@@ -168,9 +168,9 @@ const UniversalDropZone: React.FC<UniversalDropZoneProps> = ({
       tabIndex={isLoading ? -1 : 0}
       aria-label={getAriaLabel()}
     >
-      <Box sx={{ color: isDragOver ? "accent.emphasis" : "fg.muted" }}>
+      <div style={{ color: isDragOver ? "var(--fgColor-accent-emphasis)" : "var(--fgColor-muted)" }}>
         <UploadIcon size={24} />
-      </Box>
+      </div>
       <Text
         sx={{
           display: "block",
@@ -209,7 +209,7 @@ const UniversalDropZone: React.FC<UniversalDropZoneProps> = ({
         disabled={isLoading}
         aria-hidden="true"
       />
-    </Box>
+    </div>
   );
 };
 

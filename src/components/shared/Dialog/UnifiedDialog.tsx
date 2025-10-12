@@ -282,7 +282,7 @@ const UnifiedDialog = memo<UnifiedDialogProps>(({
                 hideCloseButton={variant === 'overlay'}
               />
             )}
-            <Box style={styles.content}>
+            <Box sx={styles.content}>
               {children}
             </Box>
 

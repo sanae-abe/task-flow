@@ -272,8 +272,8 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
 
       {/* 背景オーバーレイ（絵文字ピッカー表示時） */}
       {showEmojiPicker && (
-        <Box
-          sx={{
+        <div
+          style={{
             position: 'fixed',
             top: 0,
             left: 0,

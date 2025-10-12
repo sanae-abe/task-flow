@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { Text, Box } from '@primer/react';
+import { Text } from '@primer/react';
 import type { TaskWithColumn } from '../../types/table';
 
 import { useKanban } from '../../contexts/KanbanContext';
@@ -72,37 +72,37 @@ const TableView: React.FC = () => {
   // 早期リターン：ボードが選択されていない場合
   if (!state.currentBoard) {
     return (
-      <Box
-        sx={{
+      <div
+        style={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           height: 'calc(100vh - 120px)',
-          color: 'fg.default',
+          color: 'var(--fgColor-default)',
         }}
       >
         <Text>ボードを選択してください</Text>
-      </Box>
+      </div>
     );
   }
 
   return (
-    <Box
+    <div
       key={`tableview-${tableColumnsData.forceRender}`}
-      sx={{
+      style={{
         height: 'calc(100vh - 120px)',
         overflow: 'auto',
-        bg: 'canvas.subtle',
-        p: '32px',
+        backgroundColor: 'var(--bgColor-muted)',
+        padding: '32px',
       }}
     >
       {/* メインテーブル */}
-      <Box
+      <div
         key={`table-${tableColumnsData.forceRender}`}
-        sx={{
+        style={{
           borderRadius: 2,
           overflow: 'auto',
-          bg: 'canvas.default',
+          backgroundColor: 'var(--bgColor-default)',
           boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
           minWidth: 'fit-content',
         }}
@@ -127,7 +127,7 @@ const TableView: React.FC = () => {
             renderCell={renderCell}
           />
         ))}
-      </Box>
+      </div>
 
       {/* 空状態 */}
       {filteredAndSortedTasks.length === 0 && (
@@ -144,7 +144,7 @@ const TableView: React.FC = () => {
         onConfirm={tableActions.handleTaskDelete}
         taskTitle={deleteConfirmDialog.task?.title || ''}
       />
-    </Box>
+    </div>
   );
 };
 

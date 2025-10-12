@@ -38,12 +38,12 @@ const LabelTableRow: React.FC<LabelTableRowProps> = ({
     }}
   >
     {/* ラベル表示 */}
-    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+    <div style={{ display: 'flex', alignItems: 'center' }}>
       <LabelChip label={label} />
-    </Box>
+    </div>
 
     {/* 所属ボード */}
-    <Box sx={{
+    <div style={{
       overflow: 'hidden',
       textOverflow: 'ellipsis',
       whiteSpace: 'nowrap'
@@ -53,20 +53,20 @@ const LabelTableRow: React.FC<LabelTableRowProps> = ({
       }}>
         {label.boardName}
       </Text>
-    </Box>
+    </div>
 
     {/* 使用数 */}
-    <Box sx={{ textAlign: 'center' }}>
+    <div style={{ textAlign: 'center' }}>
       <CounterLabel count={label.usageCount} />
-    </Box>
+    </div>
 
     {/* アクションボタン */}
-    <Box
+    <div
       className="label-actions"
-      sx={{
+      style={{
         display: 'flex',
         justifyContent: 'center',
-        gap: 1
+        gap: "8px"
       }}
     >
       <IconButton
@@ -83,7 +83,7 @@ const LabelTableRow: React.FC<LabelTableRowProps> = ({
         variant="invisible"
         onClick={() => onDelete(label)}
       />
-    </Box>
+    </div>
   </Box>
 );
 

@@ -1,5 +1,5 @@
 import { CheckIcon, PaperclipIcon } from "@primer/octicons-react";
-import { Box, Text } from "@primer/react";
+import { Text } from "@primer/react";
 import React from "react";
 
 import type { SubTask, FileAttachment } from "../types";
@@ -8,14 +8,14 @@ const INDICATOR_STYLES = {
   container: {
     display: "flex",
     alignItems: "center",
-    gap: 1,
-    px: 1,
-    py: 1,
-    borderRadius: 2,
-    fontSize: 0,
+    gap: "4px",
+    paddingInline: "4px",
+    paddingBlock: "4px",
+    borderRadius: "var(--borderRadius-medium)",
+    fontSize: "12px",
     fontWeight: "400",
     alignSelf: "flex-start" as const,
-    color: "fg.muted",
+    color: "var(--fgColor-muted)",
   },
 } as const;
 
@@ -36,23 +36,23 @@ const TaskIndicators: React.FC<TaskIndicatorsProps> = ({
   }
 
   return (
-    <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
+    <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}>
       {hasSubTasks && (
-        <Box sx={INDICATOR_STYLES.container}>
+        <div style={INDICATOR_STYLES.container}>
           <CheckIcon size={12} />
           <Text sx={{ fontSize: 0 }}>
             {subTasks.filter((sub) => sub.completed).length}/{subTasks.length}
           </Text>
-        </Box>
+        </div>
       )}
 
       {hasAttachments && (
-        <Box sx={INDICATOR_STYLES.container}>
+        <div style={INDICATOR_STYLES.container}>
           <PaperclipIcon size={12} />
           <Text sx={{ fontSize: 0 }}>{attachments.length}</Text>
-        </Box>
+        </div>
       )}
-    </Box>
+    </div>
   );
 };
 

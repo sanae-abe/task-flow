@@ -181,7 +181,7 @@ const TableView: React.FC = () => {
 
         case "status":
           return (
-            <Box onClick={(e: React.MouseEvent) => e.stopPropagation()}>
+            <div onClick={(e: React.MouseEvent) => e.stopPropagation()}>
               <ActionMenu>
                 <ActionMenu.Anchor>
                   <Button
@@ -225,7 +225,7 @@ const TableView: React.FC = () => {
                   </ActionList>
                 </ActionMenu.Overlay>
               </ActionMenu>
-            </Box>
+            </div>
           );
 
         case "priority":

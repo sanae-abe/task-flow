@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Box, TextInput, FormControl, Select } from '@primer/react';
+import { TextInput, FormControl, Select } from '@primer/react';
 
 import type { Label } from '../../types';
 import { useLabel } from '../../contexts/LabelContext';
@@ -166,9 +166,9 @@ const LabelFormDialog: React.FC<LabelFormDialogProps> = ({
       size="medium"
       actions={actions}
     >
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }} onKeyDown={handleKeyDown}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: "16px" }} onKeyDown={handleKeyDown}>
         {/* プレビューエリア */}
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: "4px" }}>
           <FormControl.Label sx={{ display: 'block' }}>
             プレビュー
           </FormControl.Label>
@@ -178,11 +178,11 @@ const LabelFormDialog: React.FC<LabelFormDialogProps> = ({
             border: '1px solid',
             borderColor: 'var(--borderColor-muted)'
           }}>
-            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
               <LabelChip label={previewLabel} />
-            </Box>
+            </div>
           </div>
-        </Box>
+        </div>
 
         {/* ラベル名入力 */}
         <FormControl>
@@ -231,14 +231,14 @@ const LabelFormDialog: React.FC<LabelFormDialogProps> = ({
         {/* カラーセレクター */}
         <FormControl>
           <FormControl.Label>色</FormControl.Label>
-          <Box sx={{ mt: 2 }}>
+          <div style={{ marginTop: "8px" }}>
             <ColorSelector
               selectedColor={formData.color}
               onColorSelect={(color: string) => setFormData(prev => ({ ...prev, color }))}
             />
-          </Box>
+          </div>
         </FormControl>
-      </Box>
+      </div>
     </UnifiedDialog>
   );
 };

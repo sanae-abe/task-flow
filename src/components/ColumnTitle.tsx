@@ -1,4 +1,4 @@
-import { Box, Heading, CounterLabel } from "@primer/react";
+import { Heading, CounterLabel } from "@primer/react";
 import React from "react";
 
 import type { Column } from "../types";
@@ -8,13 +8,13 @@ interface ColumnTitleProps {
 }
 
 const ColumnTitle: React.FC<ColumnTitleProps> = ({ column }) => (
-  <Box
-    sx={{
+  <div
+    style={{
       display: "flex",
       flex: 1,
       alignItems: "center",
       justifyContent: "space-between",
-      gap: 2,
+      gap: "8px",
       flexShrink: 0,
       width: "100%",
       overflow: "hidden",
@@ -36,7 +36,7 @@ const ColumnTitle: React.FC<ColumnTitleProps> = ({ column }) => (
       {column.title}
     </Heading>
     <CounterLabel sx={{ flexShrink: 0 }}>{column.tasks.length}</CounterLabel>
-  </Box>
+  </div>
 );
 
 export default ColumnTitle;

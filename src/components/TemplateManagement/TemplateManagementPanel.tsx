@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Box, Heading, Text } from '@primer/react';
+import { Button, Heading, Text } from '@primer/react';
 import { PlusIcon } from '@primer/octicons-react';
 
 import type { TemplateFormData, TaskTemplate } from '../../types/template';
@@ -90,34 +90,34 @@ const TemplateManagementPanel: React.FC = () => {
   // ローディングやエラー状態の表示
   if (loading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', p: 6 }}>
+      <div style={{ display: 'flex', justifyContent: 'center', padding: '24px' }}>
         <Text sx={{ color: 'fg.muted' }}>テンプレートを読み込み中...</Text>
-      </Box>
+      </div>
     );
   }
 
   if (error) {
     return (
-      <Box sx={{ textAlign: 'center', p: 6 }}>
+      <div style={{ textAlign: 'center', padding: '24px' }}>
         <Text sx={{ color: 'danger.fg', fontSize: 1, fontWeight: 'bold' }}>
           {error}
         </Text>
         <Button variant="default" sx={{ mt: 2 }} onClick={() => window.location.reload()}>
           再読み込み
         </Button>
-      </Box>
+      </div>
     );
   }
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
       {/* ヘッダー */}
-      <Box
-        sx={{
+      <div
+        style={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          gap: 2,
+          gap: "8px",
           flexWrap: 'wrap'
         }}
       >
@@ -125,7 +125,7 @@ const TemplateManagementPanel: React.FC = () => {
         <Button variant="primary" leadingVisual={PlusIcon} onClick={openCreateDialog} size="small">
           テンプレートを作成
         </Button>
-      </Box>
+      </div>
 
       {/* 検索・フィルターエリア */}
       <TemplateSearchFilter
@@ -175,7 +175,7 @@ const TemplateManagementPanel: React.FC = () => {
         cancelText="キャンセル"
         confirmVariant="danger"
       />
-    </Box>
+    </div>
   );
 };
 

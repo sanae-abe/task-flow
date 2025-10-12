@@ -121,7 +121,7 @@ const UnifiedForm = memo<UnifiedFormProps>(
           {children}
 
           {(showCancelButton || onCancel) && (
-            <Box sx={{ display: "flex", gap: 2, mt: 3 }}>
+            <div style={{ display: "flex", gap: "8px", marginTop: "12px" }}>
               <Button
                 type="submit"
                 variant="primary"
@@ -134,7 +134,7 @@ const UnifiedForm = memo<UnifiedFormProps>(
                   {cancelText}
                 </Button>
               )}
-            </Box>
+            </div>
           )}
         </VBox>
       </Box>

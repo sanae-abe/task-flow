@@ -143,7 +143,7 @@ export const TaskFormFields: React.FC<TaskFormFieldsProps> = ({
 
       {/* ファイル添付 */}
       <div>
-        <FormControl>
+        <FormControl sx={{ display: "flex", flexDirection: "column", gap: "4px" }}>
           <FormControl.Label>ファイル添付（任意）</FormControl.Label>
           <FileUploader
             attachments={attachments}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Text, Button } from '@primer/react';
+import { Text, Button } from '@primer/react';
 import type { EmptyStateProps } from '../types';
 
 /**
@@ -18,14 +18,14 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
     : 'タスクがありません';
 
   return (
-    <Box
-      sx={{
+    <div
+      style={{
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        py: 8,
-        color: 'fg.default',
+        paddingBlock: "32px",
+        color: 'var(--fgColor-default)',
       }}
     >
       <Text sx={{ fontSize: 1, mb: 2 }}>
@@ -40,6 +40,6 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
           フィルタをクリア
         </Button>
       )}
-    </Box>
+    </div>
   );
 };

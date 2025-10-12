@@ -1,4 +1,4 @@
-import { Box, Button } from '@primer/react';
+import { Button } from '@primer/react';
 import { memo } from 'react';
 
 import type { DialogAction } from '../../../types/unified-dialog';
@@ -24,15 +24,15 @@ const DialogActions = memo<DialogActionsProps>(({ actions, layout = 'standard' }
     const rightActions = actions.filter(action => action.position !== 'left');
 
     return (
-      <Box
-        sx={{
+      <div
+        style={{
           display: 'flex',
           justifyContent: 'space-between',
-          gap: 2,
+          gap: "8px",
           width: '100%'
         }}
       >
-        <Box sx={{ display: 'flex', gap: 2 }}>
+        <div style={{ display: 'flex', gap: "8px" }}>
           {leftActions.map((action, index) => (
             <Button
               key={index}
@@ -47,8 +47,8 @@ const DialogActions = memo<DialogActionsProps>(({ actions, layout = 'standard' }
               {action.label}
             </Button>
           ))}
-        </Box>
-        <Box sx={{ display: 'flex', gap: 2 }}>
+        </div>
+        <div style={{ display: 'flex', gap: "8px" }}>
           {rightActions.map((action, index) => (
             <Button
               key={index}
@@ -63,8 +63,8 @@ const DialogActions = memo<DialogActionsProps>(({ actions, layout = 'standard' }
               {action.label}
             </Button>
           ))}
-        </Box>
-      </Box>
+        </div>
+      </div>
     );
   }
 

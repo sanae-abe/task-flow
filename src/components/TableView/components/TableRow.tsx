@@ -46,9 +46,9 @@ export const TableRow: React.FC<TableRowProps> = ({
       onClick={() => onTaskClick(task)}
     >
       {visibleColumns.map((column) => (
-        <Box key={column.id}>
+        <div key={column.id}>
           {renderCell(task, column.id)}
-        </Box>
+        </div>
       ))}
     </Box>
   );

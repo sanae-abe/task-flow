@@ -122,7 +122,7 @@ const SortableColumnItem: React.FC<SortableColumnItemProps> = ({
       >
         <GrabberIcon size={16} />
       </Box>
-      <Box sx={{ flex: 1 }}>
+      <div style={{ flex: 1 }}>
         <TextInput
           value={localName}
           onChange={handleInputChange}
@@ -130,8 +130,8 @@ const SortableColumnItem: React.FC<SortableColumnItemProps> = ({
           sx={{ width: '100%' }}
           aria-label={`カラム「${column.name}」の名前`}
         />
-      </Box>
-      <Box sx={{ display: 'flex', gap: 1 }}>
+      </div>
+      <div style={{ display: 'flex', gap: "4px" }}>
         <Button
           variant="invisible"
           size="small"
@@ -159,7 +159,7 @@ const SortableColumnItem: React.FC<SortableColumnItemProps> = ({
           aria-label={`${column.name}を削除`}
           sx={{ color: 'danger.fg' }}
         />
-      </Box>
+      </div>
     </Box>
   );
 };
@@ -318,9 +318,9 @@ export const BoardSettingsPanel: React.FC = () => {
 
   if (isLoading) {
     return (
-      <Box sx={{ p: 3 }}>
+      <div style={{ padding: "12px" }}>
         <Flash>設定を読み込み中...</Flash>
-      </Box>
+      </div>
     );
   }
 

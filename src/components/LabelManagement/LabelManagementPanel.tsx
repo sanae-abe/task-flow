@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Box, Heading, Text } from '@primer/react';
+import { Button, Heading, Text } from '@primer/react';
 import { PlusIcon } from '@primer/octicons-react';
 
 import LabelFormDialog from './LabelFormDialog';
@@ -23,7 +23,7 @@ const LabelManagementPanel: React.FC = () => {
   } = useLabelDialogs();
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: "12px" }}>
       {/* ヘッダー */}
       <div style={{
         display: 'flex',
@@ -50,24 +50,24 @@ const LabelManagementPanel: React.FC = () => {
       {allLabelsWithInfo.length === 0 ? (
         <EmptyState />
       ) : (
-        <Box sx={{
+        <div style={{
           border: '1px solid',
-          borderColor: 'border.default',
-          borderRadius: 2,
+          borderColor: 'var(--borderColor-default)',
+          borderRadius: "var(--borderRadius-medium)",
           overflow: 'hidden'
         }}>
           {/* テーブルヘッダー */}
-          <Box sx={{
+          <div style={{
             display: 'grid',
             gridTemplateColumns: '1fr 200px 60px 50px',
-            gap: 2,
-            p: 2,
-            bg: 'canvas.subtle',
+            gap: "8px",
+            padding: "8px",
+            background: 'var(--bgColor-muted)',
             borderBottom: '1px solid',
-            borderColor: 'border.default',
-            fontSize: 1,
+            borderColor: 'var(--borderColor-default)',
+            fontSize: "14px",
             fontWeight: 'bold',
-            color: 'fg.muted'
+            color: 'var(--fgColor-muted)'
           }}>
             <SortableHeader
               field="name"
@@ -95,10 +95,10 @@ const LabelManagementPanel: React.FC = () => {
               使用数
             </SortableHeader>
             <Text sx={{ textAlign: 'center', fontSize: 0 }}>操作</Text>
-          </Box>
+          </div>
 
           {/* テーブルボディ */}
-          <Box sx={{ maxHeight: '400px', overflow: 'auto' }}>
+          <div style={{ maxHeight: '400px', overflow: 'auto' }}>
             {allLabelsWithInfo.map((label, index) => (
               <LabelTableRow
                 key={label.id}
@@ -109,8 +109,8 @@ const LabelManagementPanel: React.FC = () => {
                 onDelete={handleDelete}
               />
             ))}
-          </Box>
-        </Box>
+          </div>
+        </div>
       )}
 
       {/* フォームダイアログ */}
@@ -139,7 +139,7 @@ const LabelManagementPanel: React.FC = () => {
         cancelText="キャンセル"
         confirmVariant="danger"
       />
-    </Box>
+    </div>
   );
 };
 

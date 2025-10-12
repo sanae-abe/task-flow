@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, IconButton } from '@primer/react';
+import { IconButton } from '@primer/react';
 import {
   BoldIcon,
   ItalicIcon,
@@ -42,15 +42,15 @@ export const Toolbar: React.FC<ToolbarProps> = ({
   onEmoji,
   emojiButtonRef,
 }) => (
-    <Box
-      sx={{
-        p: 2,
+    <div
+      style={{
+        padding: "8px",
         borderBottom: '1px solid',
         borderColor: 'border.default',
-        bg: 'canvas.subtle',
+        background: 'var(--bgColor-muted)',
       }}
     >
-      <Box sx={{ display: 'flex', gap: 1 }}>
+      <div style={{ display: 'flex', gap: "4px" }}>
         <IconButton
           size="small"
           variant="invisible"
@@ -79,7 +79,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({
           onClick={onStrikethrough}
           aria-label="取り消し線 (Ctrl+Shift+X)"
         />
-        <Box sx={{ width: '1px', bg: 'border.default', mx: 1 }} />
+        <div style={{ width: '1px', background: 'var(--bgColor-muted)', marginInline: "4px" }} />
         <IconButton
           size="small"
           variant="invisible"
@@ -101,7 +101,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({
           onClick={onCodeBlock}
           aria-label="コードブロック (Ctrl+Shift+`)"
         />
-        <Box sx={{ width: '1px', bg: 'border.default', mx: 1 }} />
+        <div style={{ width: '1px', background: 'var(--bgColor-muted)', marginInline: "4px" }} />
         <IconButton
           size="small"
           variant="invisible"
@@ -116,7 +116,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({
           onClick={onOrderedList}
           aria-label="番号付きリスト"
         />
-        <Box sx={{ width: '1px', bg: 'border.default', mx: 1 }} />
+        <div style={{ width: '1px', background: 'var(--bgColor-muted)', marginInline: "4px" }} />
         <IconButton
           ref={emojiButtonRef}
           size="small"
@@ -125,6 +125,6 @@ export const Toolbar: React.FC<ToolbarProps> = ({
           onClick={onEmoji}
           aria-label="絵文字を挿入"
         />
-      </Box>
-    </Box>
+      </div>
+    </div>
   );
