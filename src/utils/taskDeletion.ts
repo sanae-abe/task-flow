@@ -292,7 +292,7 @@ export const restoreTask = (
         if (task.id === taskId && task.deletionState === "soft-deleted") {
           const restoredTask: Task = {
             ...task,
-            deletionState: "active" as const,
+            deletionState: "active",
             softDeletedAt: null,
             scheduledDeletionAt: null,
             updatedAt: new Date().toISOString(),
@@ -412,4 +412,147 @@ export const executeDeletion = (
   );
 
   return updatedBoards;
+};
+
+/**
+ * 完了タスクをソフトデリートする関数
+ */
+export const softDeleteCompletedTasks = (
+  boards: KanbanBoard[],
+  settings: AutoDeletionSettings,
+): {
+  updatedBoards: KanbanBoard[];
+  deletedCount: number;
+  storageFreed: number;
+} => {
+  let deletedCount = 0;
+  let storageFreed = 0;
+  const now = new Date();
+
+  // デバッグ: 処理対象のタスクを調査
+  logger.info("🔍 softDeleteCompletedTasks: Starting analysis");
+  logger.info("📋 Boards count:", boards.length);
+  
+  let totalTasks = 0;
+  let completedTasks = 0;
+  let activeTasks = 0;
+  let excludedTasks = 0;
+
+  boards.forEach((board, boardIndex) => {
+    logger.info(`📂 Board ${boardIndex + 1}: "${board.title}" (${board.columns.length} columns)`);
+    
+    board.columns.forEach((column, columnIndex) => {
+      logger.info(`  📁 Column ${columnIndex + 1}: "${column.title}" (${column.tasks.length} tasks)`);
+      
+      column.tasks.forEach((task, taskIndex) => {
+        totalTasks++;
+        
+        const isCompleted = !!task.completedAt;
+        const isActive = !task.deletionState || task.deletionState === "active"; // 修正: undefined を active として扱う
+        const isExcluded = isTaskExcludedFromDeletion(task, settings);
+        
+        if (isCompleted) {
+          completedTasks++;
+        }
+        if (isActive) {
+          activeTasks++;
+        }
+        if (isExcluded) {
+          excludedTasks++;
+        }
+        
+        logger.info(`    📝 Task ${taskIndex + 1}: "${task.title}"`);
+        logger.info(`      - Completed: ${isCompleted} (completedAt: ${task.completedAt})`);
+        logger.info(`      - Active: ${isActive} (deletionState: ${task.deletionState})`);
+        logger.info(`      - Excluded: ${isExcluded}`);
+        
+        if (isExcluded) {
+          logger.info(`      - Exclusion reasons:`);
+          if (task.priority && settings.excludePriorities.includes(task.priority)) {
+            logger.info(`        * Priority "${task.priority}" is excluded`);
+          }
+          if (settings.excludeLabelIds.length > 0 && task.labels.some(label => settings.excludeLabelIds.includes(label.id))) {
+            logger.info(`        * Has excluded label`);
+          }
+          if (task.recurrence) {
+            logger.info(`        * Is recurring task`);
+          }
+        }
+      });
+    });
+  });
+
+  logger.info(`📊 Analysis summary:`);
+  logger.info(`  - Total tasks: ${totalTasks}`);
+  logger.info(`  - Completed tasks: ${completedTasks}`);
+  logger.info(`  - Active tasks: ${activeTasks}`);
+  logger.info(`  - Excluded tasks: ${excludedTasks}`);
+  logger.info(`⚙️ Settings:`, settings);
+
+  const updatedBoards = boards.map((board) => ({
+    ...board,
+    columns: board.columns.map((column) => {
+      const updatedTasks = column.tasks.map((task) => {
+        // 完了済みかつソフトデリートされていないタスクのみを対象（修正）
+        if (!task.completedAt || task.deletionState === "soft-deleted") {
+          return task;
+        }
+
+        // 除外対象チェック
+        if (isTaskExcludedFromDeletion(task, settings)) {
+          return task;
+        }
+
+        logger.info(`🗑️ Deleting task: "${task.title}"`);
+
+        // タスクサイズを計算
+        const taskSize = estimateTaskSize(task);
+        storageFreed += taskSize;
+        deletedCount++;
+
+        // ソフトデリート状態に更新
+        const deletedTask: Task = {
+          ...task,
+          deletionState: "soft-deleted",
+          softDeletedAt: now.toISOString(),
+          scheduledDeletionAt: new Date(
+            now.getTime() + settings.softDeletionRetentionDays * 24 * 60 * 60 * 1000,
+          ).toISOString(),
+          updatedAt: now.toISOString(),
+        };
+
+        // バックアップ作成（設定が有効な場合）
+        if (settings.autoExportBeforeDeletion) {
+          try {
+            createTaskBackup(deletedTask, board.id, column.id);
+          } catch (error) {
+            logger.warn("Failed to create backup for task:", task.id, error);
+          }
+        }
+
+        return deletedTask;
+      });
+
+      return {
+        ...column,
+        tasks: updatedTasks,
+      };
+    }),
+  }));
+
+  logger.info(`✅ softDeleteCompletedTasks completed: ${deletedCount} tasks deleted`);
+
+  // 統計更新
+  if (deletedCount > 0) {
+    updateDeletionStatistics(deletedCount, storageFreed);
+    logger.info(
+      `🗑️ Soft deleted ${deletedCount} completed tasks, freed ${storageFreed} bytes`,
+    );
+  }
+
+  return {
+    updatedBoards,
+    deletedCount,
+    storageFreed,
+  };
 };

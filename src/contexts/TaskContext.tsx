@@ -24,6 +24,8 @@ import {
   isRecurrenceComplete,
 } from "../utils/recurrence";
 import { logger } from "../utils/logger";
+import { softDeleteCompletedTasks } from "../utils/taskDeletion";
+import { getAutoDeletionSettings } from "../utils/settingsStorage";
 
 interface TaskState {
   // Task操作の一時的な状態をここに追加可能
@@ -539,28 +541,71 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       return;
     }
 
-    const rightmostColumnId =
-      boardState.currentBoard.columns[
-        boardState.currentBoard.columns.length - 1
-      ]?.id;
-    if (!rightmostColumnId) {
+    // 自動削除設定を取得
+    const settings = getAutoDeletionSettings();
+
+    // 設定でソフトデリートが無効の場合は従来の完全削除
+    if (!settings.enableSoftDeletion) {
+      const rightmostColumnId =
+        boardState.currentBoard.columns[
+          boardState.currentBoard.columns.length - 1
+        ]?.id;
+      if (!rightmostColumnId) {
+        return;
+      }
+
+      const updatedBoard = {
+        ...boardState.currentBoard,
+        columns: boardState.currentBoard.columns.map((column) =>
+          column.id === rightmostColumnId ? { ...column, tasks: [] } : column,
+        ),
+        updatedAt: new Date().toISOString(),
+      };
+
+      boardDispatch({
+        type: "UPDATE_BOARD",
+        payload: { boardId: boardState.currentBoard.id, updates: updatedBoard },
+      });
+
+      notify.success("完了済みタスクを完全削除しました");
       return;
     }
 
-    const updatedBoard = {
-      ...boardState.currentBoard,
-      columns: boardState.currentBoard.columns.map((column) =>
-        column.id === rightmostColumnId ? { ...column, tasks: [] } : column,
-      ),
-      updatedAt: new Date().toISOString(),
-    };
+    // ソフトデリートを実行
+    try {
+      const result = softDeleteCompletedTasks([boardState.currentBoard], settings);
+      
+      if (result.deletedCount === 0) {
+        notify.info("削除対象の完了タスクがありません");
+        return;
+      }
 
-    boardDispatch({
-      type: "UPDATE_BOARD",
-      payload: { boardId: boardState.currentBoard.id, updates: updatedBoard },
-    });
+      // 更新されたボードを反映
+      const updatedBoard = result.updatedBoards[0];
+      if (updatedBoard) {
+        boardDispatch({
+          type: "UPDATE_BOARD",
+          payload: { boardId: boardState.currentBoard.id, updates: updatedBoard },
+        });
+      }
 
-    notify.success("完了済みタスクをクリアしました");
+      // 適切な通知メッセージ
+      const spaceMB = (result.storageFreed / (1024 * 1024)).toFixed(2);
+      const message = settings.enableSoftDeletion
+        ? `${result.deletedCount}件の完了タスクをソフトデリートしました（${spaceMB}MB）。ごみ箱から復元できます。`
+        : `${result.deletedCount}件の完了タスクを削除しました（${spaceMB}MB解放）`;
+      
+      notify.success(message);
+      
+      logger.info("Completed tasks cleared via soft delete:", {
+        deletedCount: result.deletedCount,
+        storageFreed: result.storageFreed,
+        softDeleteEnabled: settings.enableSoftDeletion,
+      });
+    } catch (error) {
+      logger.error("Failed to clear completed tasks:", error);
+      notify.error("完了タスクの削除に失敗しました");
+    }
   }, [boardState.currentBoard, boardDispatch, notify]);
 
   // サブタスク追加

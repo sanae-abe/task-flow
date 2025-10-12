@@ -9,17 +9,17 @@ export const KANBAN_BOARD_STYLES = {
     overflow: "auto" as const,
     gap: "16px",
     padding: "16px",
-    "&::-webkit-scrollbar": {
+    "&::WebkitScrollbar": {
       height: "8px",
     },
-    "&::-webkit-scrollbar-track": {
+    "&::WebkitScrollbarTrack": {
       background: "var(--bgColor-muted)",
     },
-    "&::-webkit-scrollbar-thumb": {
+    "&::WebkitScrollbarThumb": {
       background: "var(--borderColor-muted)",
       borderRadius: "var(--borderRadius-small)",
     },
-    "&::-webkit-scrollbar-thumb:hover": {
+    "&::WebkitScrollbarThumb:hover": {
       background: "var(--borderColor-default)",
     },
   },
