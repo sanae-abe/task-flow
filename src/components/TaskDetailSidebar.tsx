@@ -167,7 +167,9 @@ const TaskDetailSidebar = memo<TaskDetailSidebarProps>(
         aria-label="タスク詳細"
         aria-modal="true"
       >
-        <div style={{ display: "flex", height: "100%", flexDirection: "column" }}>
+        <div
+          style={{ display: "flex", height: "100%", flexDirection: "column" }}
+        >
           {/* Header */}
           <Box sx={headerStyles}>
             <Heading

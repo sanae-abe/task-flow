@@ -8,7 +8,7 @@ export const KANBAN_BOARD_STYLES = {
     display: "flex" as const,
     overflow: "auto" as const,
     gap: "16px",
-    padding: '16px',
+    padding: "16px",
     "&::-webkit-scrollbar": {
       height: "8px",
     },

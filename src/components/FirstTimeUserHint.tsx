@@ -48,10 +48,18 @@ const FirstTimeUserHint: React.FC<FirstTimeUserHintProps> = ({ onDismiss }) => (
         <SparklesFillIcon size={16} />
       </div>
       <div style={{ flex: 1 }}>
-        <div style={{ fontWeight: "bold", marginBottom: "4px", fontSize: "14px" }}>
+        <div
+          style={{ fontWeight: "bold", marginBottom: "4px", fontSize: "14px" }}
+        >
           TaskFlowアプリへようこそ！
         </div>
-        <div style={{ fontSize: "12px", color: "var(--fgColor-muted)", lineHeight: 1.4 }}>
+        <div
+          style={{
+            fontSize: "12px",
+            color: "var(--fgColor-muted)",
+            lineHeight: 1.4,
+          }}
+        >
           「ボード設定」メニューから新しいボードを作成して、プロジェクトごとにタスクを管理しましょう
         </div>
       </div>

@@ -82,7 +82,14 @@ const LinkInsertDialog: React.FC<LinkInsertDialogProps> = ({
       size="large"
       hideFooter
     >
-      <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "16px" }}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "12px",
+          marginBottom: "16px",
+        }}
+      >
         <div style={{ marginBottom: "8px" }}>
           <Text
             sx={{ fontSize: 1, mb: 2, display: "block", fontWeight: "700" }}

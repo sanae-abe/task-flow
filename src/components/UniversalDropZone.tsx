@@ -168,7 +168,13 @@ const UniversalDropZone: React.FC<UniversalDropZoneProps> = ({
       tabIndex={isLoading ? -1 : 0}
       aria-label={getAriaLabel()}
     >
-      <div style={{ color: isDragOver ? "var(--fgColor-accent-emphasis)" : "var(--fgColor-muted)" }}>
+      <div
+        style={{
+          color: isDragOver
+            ? "var(--fgColor-accent-emphasis)"
+            : "var(--fgColor-muted)",
+        }}
+      >
         <UploadIcon size={24} />
       </div>
       <Text

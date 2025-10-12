@@ -33,10 +33,10 @@ const headerStyles = {
   leftSection: {
     display: "flex",
     alignItems: "center",
-    gap: '16px',
+    gap: "16px",
     flex: 1,
     minWidth: 0,
-    paddingRight: '16px',
+    paddingRight: "16px",
     width: "100%",
     height: "100%",
   },
@@ -64,7 +64,11 @@ const headerStyles = {
 
 // 区切り線コンポーネント
 const VerticalDivider: React.FC = () => (
-  <div style={headerStyles.divider} role="separator" aria-orientation="vertical" />
+  <div
+    style={headerStyles.divider}
+    role="separator"
+    aria-orientation="vertical"
+  />
 );
 
 // 左側セクションコンポーネント

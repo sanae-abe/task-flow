@@ -9,7 +9,12 @@ interface ContentBoxProps {
 }
 
 const ContentBox = memo<ContentBoxProps>(
-  ({ children, background = "var(--bgColor-muted)", emptyText, isEmpty = false }) => (
+  ({
+    children,
+    background = "var(--bgColor-muted)",
+    emptyText,
+    isEmpty = false,
+  }) => (
     <div
       style={{
         padding: "12px",

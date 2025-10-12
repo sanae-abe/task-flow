@@ -199,7 +199,9 @@ const TableColumnManager: React.FC = () => {
                       ? "var(--borderColor-accent-emphasis)"
                       : "var(--borderColor-default)",
                     borderRadius: "var(--borderRadius-medium)",
-                    background: column.visible ? "var(--bgColor-default)" : "var(--bgColor-muted)",
+                    background: column.visible
+                      ? "var(--bgColor-default)"
+                      : "var(--bgColor-muted)",
                     opacity: isDragging ? 0.5 : 1,
                     cursor: "move",
                     transition: "all 0.2s ease",
@@ -252,7 +254,12 @@ const TableColumnManager: React.FC = () => {
           </div>
 
           <div
-            style={{ display: "flex", gap: "8px", marginTop: "16px", justifyContent: "flex-end" }}
+            style={{
+              display: "flex",
+              gap: "8px",
+              marginTop: "16px",
+              justifyContent: "flex-end",
+            }}
           >
             <Button onClick={() => setIsSettingsOpen(false)}>閉じる</Button>
           </div>

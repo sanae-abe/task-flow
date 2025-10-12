@@ -289,7 +289,7 @@ const TableView: React.FC = () => {
             <div
               style={{
                 display: "flex",
-                gap: '4px',
+                gap: "4px",
                 flexWrap: "wrap",
                 alignItems: "center",
               }}
@@ -352,7 +352,9 @@ const TableView: React.FC = () => {
           return (
             <div>
               {task.subTasks && task.subTasks.length > 0 ? (
-                <div style={{ display: "flex", alignItems: "center", gap: '8px' }}>
+                <div
+                  style={{ display: "flex", alignItems: "center", gap: "8px" }}
+                >
                   <SubTaskProgressBar
                     completedCount={
                       task.subTasks.filter((sub) => sub.completed).length
@@ -488,7 +490,7 @@ const TableView: React.FC = () => {
       <div
         key={`table-${tableColumnsData.forceRender}`}
         style={{
-          borderRadius: 'var(--borderRadius-medium)',
+          borderRadius: "var(--borderRadius-medium)",
           overflow: "auto",
           background: "var(--bgColor-default)",
           boxShadow: "0 1px 3px rgba(0,0,0,0.1)",

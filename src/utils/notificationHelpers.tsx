@@ -13,7 +13,9 @@ import type { NotificationType } from "../types";
  * @param type - 通知のタイプ
  * @returns 対応するPrimer Reactアイコンコンポーネント
  */
-export const getNotificationIcon = (type: NotificationType): React.ReactElement => {
+export const getNotificationIcon = (
+  type: NotificationType,
+): React.ReactElement => {
   switch (type) {
     case "success":
       return <CheckCircleIcon size={16} aria-hidden="true" />;

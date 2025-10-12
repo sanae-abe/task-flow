@@ -54,11 +54,7 @@ const SubTaskItem: React.FC<SubTaskItemProps> = ({
   };
 
   return (
-    <Box
-      ref={setNodeRef}
-      style={style}
-      sx={subTaskItemStyles.container}
-    >
+    <Box ref={setNodeRef} style={style} sx={subTaskItemStyles.container}>
       {/* ドラッグハンドルとトグルボタン */}
       <DragHandleAndToggle
         subTask={subTask}

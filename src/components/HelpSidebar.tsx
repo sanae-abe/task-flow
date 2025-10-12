@@ -7,11 +7,7 @@ import {
   TableIcon,
   DeviceCameraVideoIcon,
 } from "@primer/octicons-react";
-import {
-  MousePointer,
-  FileText,
-  Paperclip,
-} from "react-feather";
+import { MousePointer, FileText, Paperclip } from "react-feather";
 
 import { Button, Heading, Text } from "@primer/react";
 import React, { useEffect, useCallback } from "react";
@@ -42,7 +38,14 @@ const HelpSection: React.FC<HelpSectionProps> = ({
   background = "var(--bgColor-accent-emphasis)",
 }) => (
   <>
-    <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "12px" }}>
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: "8px",
+        marginBottom: "12px",
+      }}
+    >
       <div
         style={{
           padding: "8px",
@@ -80,10 +83,7 @@ interface HelpItemProps {
   description: string;
 }
 
-const HelpItem: React.FC<HelpItemProps> = ({
-  title,
-  description
-}) => (
+const HelpItem: React.FC<HelpItemProps> = ({ title, description }) => (
   <div
     style={{
       padding: "8px",

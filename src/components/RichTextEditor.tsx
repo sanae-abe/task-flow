@@ -621,7 +621,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
             padding: "8px",
             borderBottom: "1px solid",
             borderColor: "var(--borderColor-default)",
-            background: "var(--bgColor-muted)"
+            background: "var(--bgColor-muted)",
           }}
         >
           <div style={{ display: "flex", gap: "4px" }}>
@@ -661,7 +661,13 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
               }
               aria-label="取り消し線 (Ctrl+Shift+X)"
             />
-            <div style={{ width: "1px", background: "var(--borderColor-default)", margin: "0 8px" }} />
+            <div
+              style={{
+                width: "1px",
+                background: "var(--borderColor-default)",
+                margin: "0 8px",
+              }}
+            />
             <IconButton
               size="small"
               variant="invisible"
@@ -683,7 +689,13 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
               onClick={() => handleToolbarButtonClick(insertCodeBlock)}
               aria-label="コードブロック (Ctrl+Shift+`)"
             />
-            <div style={{ width: "1px", background: "var(--borderColor-default)", margin: "0 8px" }} />
+            <div
+              style={{
+                width: "1px",
+                background: "var(--borderColor-default)",
+                margin: "0 8px",
+              }}
+            />
             <IconButton
               size="small"
               variant="invisible"
@@ -706,7 +718,13 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
               }
               aria-label="番号付きリスト"
             />
-            <div style={{ width: "1px", background: "var(--borderColor-default)", margin: "0 8px" }} />
+            <div
+              style={{
+                width: "1px",
+                background: "var(--borderColor-default)",
+                margin: "0 8px",
+              }}
+            />
             <IconButton
               ref={emojiButtonRef}
               size="small"
