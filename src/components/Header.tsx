@@ -1,5 +1,5 @@
 import { PlusIcon, QuestionIcon, GearIcon } from "@primer/octicons-react";
-import { Box, Button } from "@primer/react";
+import { Button } from "@primer/react";
 import React from "react";
 
 import { useKanban } from "../contexts/KanbanContext";
@@ -16,11 +16,10 @@ const DIVIDER_HEIGHT = "24px";
 // スタイル定義オブジェクト
 const headerStyles = {
   container: {
-    px: 6,
-    py: 0,
-    bg: "canvas.default",
+    padding: "0 24px",
+    background: "var(--bgColor-default)",
     borderBottom: "1px solid",
-    borderColor: "border.default",
+    borderColor: "var(--borderColor-default)",
     height: HEADER_HEIGHT,
   },
   content: {
@@ -28,21 +27,21 @@ const headerStyles = {
     alignItems: "center",
     justifyContent: "space-between",
     maxWidth: MAX_CONTENT_WIDTH,
-    mx: "auto",
+    marginInline: "auto",
     height: "100%",
   },
   leftSection: {
     display: "flex",
     alignItems: "center",
-    gap: 4,
+    gap: '16px',
     flex: 1,
     minWidth: 0,
-    paddingRight: 4,
+    paddingRight: '16px',
   },
   divider: {
     height: DIVIDER_HEIGHT,
     width: "1px",
-    backgroundColor: "border.muted",
+    backgroundColor: "var(--borderColor-muted)",
   },
   rightSection: {
     display: "flex",
@@ -50,10 +49,10 @@ const headerStyles = {
     flexShrink: 0,
   },
   createButton: {
-    backgroundColor: "accent.emphasis",
+    backgroundColor: "var(--bgColor-accent-emphasis)",
     color: "#ffffff",
     border: "none",
-    borderRadius: 2,
+    borderRadius: "8px",
     transition: "background-color 0.2s ease",
     "&:hover": {
       backgroundColor: "var(--button-outline-bgColor-active)",
@@ -63,16 +62,16 @@ const headerStyles = {
 
 // 区切り線コンポーネント
 const VerticalDivider: React.FC = () => (
-  <Box sx={headerStyles.divider} role="separator" aria-orientation="vertical" />
+  <div style={headerStyles.divider} role="separator" aria-orientation="vertical" />
 );
 
 // 左側セクションコンポーネント
 const LeftSection: React.FC = () => (
-  <Box sx={headerStyles.leftSection}>
+  <div style={headerStyles.leftSection}>
     <Logo size="large" />
     <VerticalDivider />
     <BoardSelector />
-  </Box>
+  </div>
 );
 
 // 右側セクションコンポーネント
@@ -87,7 +86,7 @@ const RightSection: React.FC<RightSectionProps> = ({
   onHelpClick,
   onSettingsClick,
 }) => (
-  <Box sx={headerStyles.rightSection}>
+  <div style={headerStyles.rightSection}>
     <OfflineIndicator />
     <Button
       onClick={onCreateClick}
@@ -115,7 +114,7 @@ const RightSection: React.FC<RightSectionProps> = ({
     >
       ヘルプ
     </Button>
-  </Box>
+  </div>
 );
 
 interface HeaderProps {
@@ -131,16 +130,16 @@ const Header: React.FC<HeaderProps> = ({ onHelpClick, onSettingsClick }) => {
   };
 
   return (
-    <Box as="header" sx={headerStyles.container} role="banner">
-      <Box sx={headerStyles.content}>
+    <header style={headerStyles.container} role="banner">
+      <div style={headerStyles.content}>
         <LeftSection />
         <RightSection
           onCreateClick={handleStartCreateTask}
           onHelpClick={onHelpClick}
           onSettingsClick={onSettingsClick}
         />
-      </Box>
-    </Box>
+      </div>
+    </header>
   );
 };
 

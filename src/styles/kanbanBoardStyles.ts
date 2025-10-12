@@ -7,8 +7,8 @@ export const KANBAN_BOARD_STYLES = {
   columnsContainer: {
     display: "flex" as const,
     overflow: "auto" as const,
-    gap: 4,
-    p: 4,
+    gap: "16px",
+    padding: '16px',
     "&::-webkit-scrollbar": {
       height: "8px",
     },

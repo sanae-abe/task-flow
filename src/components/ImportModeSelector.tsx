@@ -1,4 +1,4 @@
-import { Box, Text, Button } from "@primer/react";
+import { Text, Button } from "@primer/react";
 import { UploadIcon, FileIcon, PackageIcon } from "@primer/octicons-react";
 import React, { useMemo } from "react";
 
@@ -54,37 +54,37 @@ const ImportModeSelector: React.FC<ImportModeSelectorProps> = ({
   );
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
       {showModeIndicator && (
-        <Box
-          sx={{
+        <div
+          style={{
             display: "flex",
             alignItems: "center",
-            gap: 2,
-            padding: 2,
-            backgroundColor: "canvas.subtle",
-            borderRadius: 2,
+            gap: "8px",
+            padding: "8px",
+            backgroundColor: "var(--bgColor-muted)",
+            borderRadius: "8px",
             border: "1px solid",
-            borderColor: "border.default",
+            borderColor: "var(--borderColor-default)",
           }}
         >
           {getModeIcon(selectedMode)}
-          <Box>
+          <div>
             <Text sx={{ fontWeight: "600", fontSize: 1 }}>
               現在のインポートモード
             </Text>
             <Text sx={{ fontSize: 0, color: "fg.muted" }}>
               {selectedConfig?.label}
             </Text>
-          </Box>
-        </Box>
+          </div>
+        </div>
       )}
 
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
         <Text sx={{ fontWeight: "600", fontSize: 1 }}>
           インポートモードを選択
         </Text>
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
           {IMPORT_MODES.map((modeConfig) => (
             <Button
               key={modeConfig.mode}
@@ -103,16 +103,16 @@ const ImportModeSelector: React.FC<ImportModeSelectorProps> = ({
                 gap: 1,
               }}
             >
-              <Box
-                sx={{
+              <span
+                style={{
                   display: "flex",
                   alignItems: "center",
-                  gap: 2,
+                  gap: "8px",
                   width: "100%",
                 }}
               >
-                <Box
-                  sx={{
+                <span
+                  style={{
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "flex-start",
@@ -124,13 +124,13 @@ const ImportModeSelector: React.FC<ImportModeSelectorProps> = ({
                   <Text sx={{ fontSize: 0, color: "fg.muted" }}>
                     {modeConfig.description}
                   </Text>
-                </Box>
-              </Box>
+                </span>
+              </span>
             </Button>
           ))}
-        </Box>
-      </Box>
-    </Box>
+        </div>
+      </div>
+    </div>
   );
 };
 

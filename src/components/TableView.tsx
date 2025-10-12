@@ -144,7 +144,7 @@ const TableView: React.FC = () => {
       switch (columnId) {
         case "actions":
           return (
-            <Box onClick={(e: React.MouseEvent) => e.stopPropagation()}>
+            <div onClick={(e: React.MouseEvent) => e.stopPropagation()}>
               <IconButton
                 aria-label="タスクを削除"
                 variant="invisible"
@@ -158,7 +158,7 @@ const TableView: React.FC = () => {
                   },
                 }}
               />
-            </Box>
+            </div>
           );
 
         case "title":
@@ -230,7 +230,7 @@ const TableView: React.FC = () => {
 
         case "priority":
           return (
-            <Box>
+            <div>
               {task.priority ? (
                 <Text sx={{ color: "fg.default", fontSize: 1 }}>
                   {getPriorityText(task.priority)}
@@ -238,15 +238,15 @@ const TableView: React.FC = () => {
               ) : (
                 <Text sx={{ color: "fg.default", fontSize: 1 }}>-</Text>
               )}
-            </Box>
+            </div>
           );
 
         case "dueDate": {
           if (!task.dueDate) {
             return (
-              <Box>
+              <div>
                 <Text sx={{ color: "fg.default", fontSize: 1 }}>-</Text>
-              </Box>
+              </div>
             );
           }
 
@@ -286,10 +286,10 @@ const TableView: React.FC = () => {
 
         case "labels":
           return (
-            <Box
-              sx={{
+            <div
+              style={{
                 display: "flex",
-                gap: 1,
+                gap: '4px',
                 flexWrap: "wrap",
                 alignItems: "center",
               }}
@@ -312,12 +312,12 @@ const TableView: React.FC = () => {
                   +{task.labels.length - 2}
                 </Text>
               )}
-            </Box>
+            </div>
           );
 
         case "subTasks":
           return (
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               {task.subTasks && task.subTasks.length > 0 ? (
                 <>
                   <CheckIcon size={12} />
@@ -329,12 +329,12 @@ const TableView: React.FC = () => {
               ) : (
                 <Text sx={{ color: "fg.default", fontSize: 1 }}>-</Text>
               )}
-            </Box>
+            </div>
           );
 
         case "files":
           return (
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
               {task.files && task.files.length > 0 ? (
                 <>
                   <PaperclipIcon size={12} />
@@ -345,14 +345,14 @@ const TableView: React.FC = () => {
               ) : (
                 <Text sx={{ color: "fg.default", fontSize: 1 }}>-</Text>
               )}
-            </Box>
+            </div>
           );
 
         case "progress":
           return (
-            <Box>
+            <div>
               {task.subTasks && task.subTasks.length > 0 ? (
-                <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: '8px' }}>
                   <SubTaskProgressBar
                     completedCount={
                       task.subTasks.filter((sub) => sub.completed).length
@@ -362,11 +362,11 @@ const TableView: React.FC = () => {
                   <Text sx={{ fontSize: 1, color: "fg.default" }}>
                     {getCompletionRate(task)}%
                   </Text>
-                </Box>
+                </div>
               ) : (
                 <Text sx={{ color: "fg.default", fontSize: 1 }}>-</Text>
               )}
-            </Box>
+            </div>
           );
 
         case "createdAt":
@@ -385,7 +385,7 @@ const TableView: React.FC = () => {
 
         case "completedAt":
           return (
-            <Box>
+            <div>
               {task.completedAt ? (
                 <Text sx={{ fontSize: 1, color: "fg.default" }}>
                   {formatDate(task.completedAt, "MM/dd HH:mm")}
@@ -393,12 +393,12 @@ const TableView: React.FC = () => {
               ) : (
                 <Text sx={{ color: "fg.default", fontSize: 1 }}>-</Text>
               )}
-            </Box>
+            </div>
           );
 
         case "description":
           return (
-            <Box>
+            <div>
               {task.description ? (
                 <Text
                   sx={{
@@ -417,17 +417,17 @@ const TableView: React.FC = () => {
               ) : (
                 <Text sx={{ color: "fg.default", fontSize: 0 }}>-</Text>
               )}
-            </Box>
+            </div>
           );
 
         case "recurrence":
           return (
-            <Box
-              sx={{
+            <div
+              style={{
                 display: "flex",
                 alignItems: "center",
-                gap: 1,
-                color: "fg.default",
+                gap: "4px",
+                color: "var(--fgColor-default)",
               }}
             >
               {task.recurrence?.enabled ? (
@@ -443,7 +443,7 @@ const TableView: React.FC = () => {
               ) : (
                 <Text sx={{ color: "fg.default", fontSize: 1 }}>-</Text>
               )}
-            </Box>
+            </div>
           );
 
         default:
@@ -460,37 +460,37 @@ const TableView: React.FC = () => {
 
   if (!currentBoard) {
     return (
-      <Box
-        sx={{
+      <div
+        style={{
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           height: "calc(100vh - 120px)",
-          color: "fg.default",
+          color: "var(--fgColor-default)",
         }}
       >
         <Text>ボードを選択してください</Text>
-      </Box>
+      </div>
     );
   }
 
   return (
-    <Box
+    <div
       key={`tableview-${tableColumnsData.forceRender}`}
-      sx={{
+      style={{
         height: "calc(100vh - 120px)",
         overflow: "auto",
-        bg: "canvas.subtle",
-        p: "32px",
+        background: "var(--bgColor-canvas-subtle)",
+        padding: "32px",
       }}
     >
       {/* テーブル */}
-      <Box
+      <div
         key={`table-${tableColumnsData.forceRender}`}
-        sx={{
-          borderRadius: 2,
+        style={{
+          borderRadius: '8px',
           overflow: "auto",
-          bg: "canvas.default",
+          background: "var(--bgColor-default)",
           boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
           minWidth: "fit-content",
         }}
@@ -500,7 +500,7 @@ const TableView: React.FC = () => {
           style={{ gridTemplateColumns: tableColumnsData.gridTemplateColumns }}
           sx={{
             display: "grid",
-            bg: "canvas.default",
+            bg: "var(--bgColor-default)",
             borderBottom: "1px solid",
             borderColor: "border.default",
             boxShadow: "0 0 2px rgba(0,0,0,0.05)",
@@ -512,9 +512,9 @@ const TableView: React.FC = () => {
           }}
         >
           {tableColumnsData.visibleColumns.map((column: TableColumn) => (
-            <Box
+            <div
               key={column.id}
-              sx={{ display: "flex", alignItems: "center", gap: 1 }}
+              style={{ display: "flex", alignItems: "center", gap: "4px" }}
             >
               <Text sx={{ fontWeight: "bold", fontSize: 1 }}>
                 {column.label}
@@ -524,19 +524,19 @@ const TableView: React.FC = () => {
                   {filteredAndSortedTasks.length}
                 </CounterLabel>
               )}
-            </Box>
+            </div>
           ))}
           {/* 設定ボタンを固定位置に配置 */}
-          <Box
-            sx={{
+          <div
+            style={{
               position: "absolute",
               top: "50%",
-              right: 3,
+              right: "12px",
               transform: "translateY(-50%)",
             }}
           >
             <TableColumnManager />
-          </Box>
+          </div>
         </Box>
 
         {/* データ行 */}
@@ -577,18 +577,18 @@ const TableView: React.FC = () => {
             </Box>
           );
         })}
-      </Box>
+      </div>
 
       {/* 空状態 */}
       {filteredAndSortedTasks.length === 0 && (
-        <Box
-          sx={{
+        <div
+          style={{
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
-            py: 8,
-            color: "fg.default",
+            padding: "32px 0",
+            color: "var(--fgColor-default)",
           }}
         >
           <Text sx={{ fontSize: 1, mb: 2 }}>
@@ -607,7 +607,7 @@ const TableView: React.FC = () => {
               フィルタをクリア
             </Button>
           )}
-        </Box>
+        </div>
       )}
 
       {/* 削除確認ダイアログ */}
@@ -617,7 +617,7 @@ const TableView: React.FC = () => {
         onConfirm={handleTaskDelete}
         taskTitle={deleteConfirmDialog.task?.title || ""}
       />
-    </Box>
+    </div>
   );
 };
 

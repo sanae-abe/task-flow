@@ -1,4 +1,3 @@
-import { Box } from "@primer/react";
 import React, { useCallback, useState } from "react";
 
 import {
@@ -53,8 +52,8 @@ const FileUploader: React.FC<FileUploaderProps> = ({
   );
 
   return (
-    <Box
-      sx={{ display: "flex", flexDirection: "column", gap: 3, width: "100%" }}
+    <div
+      style={{ display: "flex", flexDirection: "column", gap: "12px", width: "100%" }}
     >
       {showModeSelector && (
         <ImportModeSelector
@@ -84,7 +83,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({
       />
 
       <ErrorMessage error={error} />
-    </Box>
+    </div>
   );
 };
 

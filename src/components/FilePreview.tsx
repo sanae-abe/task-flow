@@ -1,5 +1,5 @@
 import { EyeIcon, ImageIcon, XIcon } from "@primer/octicons-react";
-import { Box, Text, Button } from "@primer/react";
+import { Text, Button } from "@primer/react";
 import React, { useState, memo, useCallback } from "react";
 
 import type { FileAttachment } from "../types";
@@ -43,14 +43,14 @@ const PreviewButton = memo<PreviewButtonProps>(
 
 // プレビューフッターコンポーネント
 const PreviewFooter = memo<PreviewFooterProps>(({ attachment }) => (
-  <Box
-    sx={{
-      p: 3,
+  <div
+    style={{
+      padding: "12px",
       borderTop: "1px solid",
-      borderColor: "border.default",
-      bg: "canvas.subtle",
+      borderColor: "var(--borderColor-default)",
+      background: "var(--bgColor-muted)",
       display: "flex",
-      gap: 3,
+      gap: "12px",
     }}
   >
     <Text sx={{ fontSize: 0, color: "fg.muted" }}>
@@ -60,7 +60,7 @@ const PreviewFooter = memo<PreviewFooterProps>(({ attachment }) => (
       アップロード日:{" "}
       {new Date(attachment.uploadedAt).toLocaleDateString("ja-JP")}
     </Text>
-  </Box>
+  </div>
 ));
 
 const FilePreview: React.FC<FilePreviewProps> = ({
@@ -97,8 +97,8 @@ const FilePreview: React.FC<FilePreviewProps> = ({
 
       if (isImage) {
         return (
-          <Box
-            sx={{ textAlign: "center", maxHeight: "70vh", overflow: "auto" }}
+          <div
+            style={{ textAlign: "center", maxHeight: "70vh", overflow: "auto" }}
           >
             <img
               src={getDataUrl()}
@@ -110,19 +110,19 @@ const FilePreview: React.FC<FilePreviewProps> = ({
                 borderRadius: "6px",
               }}
             />
-          </Box>
+          </div>
         );
       }
 
       if (isText) {
         return (
-          <Box
-            sx={{
+          <div
+            style={{
               maxHeight: "60vh",
               overflow: "auto",
-              bg: "canvas.subtle",
-              p: 3,
-              borderRadius: 1,
+              background: "var(--bgColor-muted)",
+              padding: "12px",
+              borderRadius: "4px",
               fontFamily: "mono",
             }}
           >
@@ -135,7 +135,7 @@ const FilePreview: React.FC<FilePreviewProps> = ({
             >
               {getTextContent()}
             </Text>
-          </Box>
+          </div>
         );
       }
 
@@ -158,14 +158,14 @@ const FilePreview: React.FC<FilePreviewProps> = ({
       )}
 
       {isPreviewOpen && (
-        <Box
-          sx={{
+        <div
+          style={{
             position: "fixed",
             top: 0,
             left: 0,
             right: 0,
             bottom: 0,
-            bg: "primer.canvas.backdrop",
+            background: "var(--overlay-backdrop-bgColor)",
             zIndex: 1000,
             display: "flex",
             alignItems: "center",
@@ -173,12 +173,12 @@ const FilePreview: React.FC<FilePreviewProps> = ({
           }}
           onClick={handleClosePreview}
         >
-          <Box
-            sx={{
-              bg: "canvas.default",
+          <div
+            style={{
+              background: "var(--bgColor-default)",
               border: "1px solid",
-              borderColor: "border.default",
-              borderRadius: 2,
+              borderColor: "var(--borderColor-default)",
+              borderRadius: "4px",
               boxShadow: "shadow.extra-large",
               maxWidth: "90vw",
               maxHeight: "90vh",
@@ -191,14 +191,14 @@ const FilePreview: React.FC<FilePreviewProps> = ({
             aria-modal="true"
             aria-labelledby="file-preview-title"
           >
-            <Box
-              sx={{
+            <div
+              style={{
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
-                p: 3,
+                padding: "12px",
                 borderBottom: "1px solid",
-                borderColor: "border.default",
+                borderColor: "var(--borderColor-default)",
               }}
             >
               <Text
@@ -215,19 +215,19 @@ const FilePreview: React.FC<FilePreviewProps> = ({
               >
                 <XIcon size={16} />
               </Button>
-            </Box>
+            </div>
 
-            <Box sx={{ p: 3, flex: 1, overflow: "auto" }}>
+            <div style={{ padding: "12px", flex: 1, overflow: "auto" }}>
               <PreviewContent
                 attachment={attachment}
                 isImage={isImage}
                 isText={isText}
               />
-            </Box>
+            </div>
 
             <PreviewFooter attachment={attachment} />
-          </Box>
-        </Box>
+          </div>
+        </div>
       )}
     </>
   );

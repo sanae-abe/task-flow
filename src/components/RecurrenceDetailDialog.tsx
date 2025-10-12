@@ -198,8 +198,8 @@ const RecurrenceDetailDialog: React.FC<RecurrenceDetailDialogProps> = ({
       onClose={onClose}
       actions={actions}
     >
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
           <Text sx={{ fontSize: 1, minWidth: "60px" }}>パターン:</Text>
           <Select
             value={config?.pattern || "daily"}
@@ -212,9 +212,9 @@ const RecurrenceDetailDialog: React.FC<RecurrenceDetailDialogProps> = ({
               </Select.Option>
             ))}
           </Select>
-        </Box>
+        </div>
 
-        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
           <Text sx={{ fontSize: 1, minWidth: "60px" }}>間隔:</Text>
           <TextInput
             type="number"
@@ -233,10 +233,10 @@ const RecurrenceDetailDialog: React.FC<RecurrenceDetailDialogProps> = ({
                   ? "ヶ月ごと"
                   : "年ごと"}
           </Text>
-        </Box>
+        </div>
 
         {config?.pattern === "weekly" && (
-          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
             <Text sx={{ fontSize: 1, minWidth: "60px" }}>曜日選択:</Text>
             <ActionMenu>
               <ActionMenu.Button sx={{ width: "200px" }}>
@@ -277,11 +277,11 @@ const RecurrenceDetailDialog: React.FC<RecurrenceDetailDialogProps> = ({
                 </ActionList>
               </ActionMenu.Overlay>
             </ActionMenu>
-          </Box>
+          </div>
         )}
 
         {config?.pattern === "monthly" && (
-          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
             <Text sx={{ fontSize: 1, minWidth: "60px" }}>日付:</Text>
             <TextInput
               type="number"
@@ -294,17 +294,17 @@ const RecurrenceDetailDialog: React.FC<RecurrenceDetailDialogProps> = ({
               step={1}
             />
             <Text sx={{ fontSize: 1 }}>日</Text>
-          </Box>
+          </div>
         )}
 
-        <Box>
+        <div>
           <div style={{ marginBottom: "8px" }}>
             <Text sx={{ fontSize: 1, fontWeight: "600" }}>
               終了条件（任意）:
             </Text>
           </div>
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 2, pl: 2 }}>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "8px", paddingLeft: "8px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               <Text sx={{ fontSize: 1, minWidth: "60px" }}>終了日:</Text>
               <TextInput
                 type="date"
@@ -312,8 +312,8 @@ const RecurrenceDetailDialog: React.FC<RecurrenceDetailDialogProps> = ({
                 onChange={(e) => handleEndDateChange(e.target.value)}
                 sx={{ width: "150px" }}
               />
-            </Box>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               <Text sx={{ fontSize: 1, minWidth: "60px" }}>最大回数:</Text>
               <TextInput
                 type="number"
@@ -325,21 +325,21 @@ const RecurrenceDetailDialog: React.FC<RecurrenceDetailDialogProps> = ({
                 step={1}
               />
               <Text sx={{ fontSize: 1 }}>回</Text>
-            </Box>
-          </Box>
-        </Box>
+            </div>
+          </div>
+        </div>
 
         <div>
           {config && (
-            <Box sx={{ p: 2, bg: "canvas.subtle", borderRadius: 2, mb: 2 }}>
+            <div style={{ padding: "8px", background: "var(--bgColor-muted)", borderRadius: "8px", marginBottom: "8px" }}>
               <Text sx={{ fontSize: 0, color: "fg.muted" }}>
                 設定内容: {getRecurrenceDescription(config)}
               </Text>
-            </Box>
+            </div>
           )}
 
           {errors.length > 0 && (
-            <Box sx={{ mb: 2 }}>
+            <div style={{ marginBottom: "8px" }}>
               {errors.map((error, index) => (
                 <Text
                   key={index}
@@ -348,10 +348,10 @@ const RecurrenceDetailDialog: React.FC<RecurrenceDetailDialogProps> = ({
                   ※{error}
                 </Text>
               ))}
-            </Box>
+            </div>
           )}
         </div>
-      </Box>
+      </div>
     </UnifiedDialog>
   );
 };
