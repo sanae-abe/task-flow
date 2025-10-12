@@ -45,7 +45,7 @@ const PrioritySelector: React.FC<PrioritySelectorProps> = ({
             <Radio
               value={option.label}
               onClick={() => handleClick(option.value)}
-              defaultChecked={priority === option.value}
+              checked={priority === option.value}
             />
             <FormControl.Label>{option.label}</FormControl.Label>
           </FormControl>
