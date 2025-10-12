@@ -1,7 +1,7 @@
-import { useCallback } from 'react';
-import type { Task, KanbanBoard } from '../../../types';
-import type { TaskWithColumn } from '../../../types/table';
-import type { TableActions, DeleteConfirmState } from '../types';
+import { useCallback } from "react";
+import type { Task, KanbanBoard } from "../../../types";
+import type { TaskWithColumn } from "../../../types/table";
+import type { TableActions, DeleteConfirmState } from "../types";
 
 /**
  * テーブルアクション管理カスタムフック
@@ -10,38 +10,62 @@ import type { TableActions, DeleteConfirmState } from '../types';
  */
 export const useTableActions = (
   currentBoard: KanbanBoard | null,
-  moveTask: (taskId: string, sourceColumnId: string, targetColumnId: string, targetIndex: number) => void,
+  moveTask: (
+    taskId: string,
+    sourceColumnId: string,
+    targetColumnId: string,
+    targetIndex: number,
+  ) => void,
   deleteTask: (taskId: string, columnId: string) => void,
   openTaskDetail: (taskId: string) => void,
   deleteConfirmDialog: DeleteConfirmState,
-  setDeleteConfirmDialog: (state: DeleteConfirmState) => void
+  setDeleteConfirmDialog: (state: DeleteConfirmState) => void,
 ): TableActions => {
   // タスククリック処理
-  const handleTaskClick = useCallback((task: Task) => {
-    openTaskDetail(task.id);
-  }, [openTaskDetail]);
+  const handleTaskClick = useCallback(
+    (task: Task) => {
+      openTaskDetail(task.id);
+    },
+    [openTaskDetail],
+  );
 
   // ステータス変更処理
-  const handleStatusChange = useCallback((task: TaskWithColumn, newColumnId: string) => {
-    if (task.columnId === newColumnId) {
-      return;
-    }
+  const handleStatusChange = useCallback(
+    (task: TaskWithColumn, newColumnId: string) => {
+      if (task.columnId === newColumnId) {
+        return;
+      }
 
-    const targetColumn = currentBoard?.columns.find(col => col.id === newColumnId);
-    if (targetColumn) {
-      moveTask(task.id, task.columnId, newColumnId, targetColumn.tasks.length);
-    }
-  }, [currentBoard, moveTask]);
+      const targetColumn = currentBoard?.columns.find(
+        (col) => col.id === newColumnId,
+      );
+      if (targetColumn) {
+        moveTask(
+          task.id,
+          task.columnId,
+          newColumnId,
+          targetColumn.tasks.length,
+        );
+      }
+    },
+    [currentBoard, moveTask],
+  );
 
   // タスク削除クリック処理
-  const handleTaskDeleteClick = useCallback((task: TaskWithColumn) => {
-    setDeleteConfirmDialog({ isOpen: true, task });
-  }, [setDeleteConfirmDialog]);
+  const handleTaskDeleteClick = useCallback(
+    (task: TaskWithColumn) => {
+      setDeleteConfirmDialog({ isOpen: true, task });
+    },
+    [setDeleteConfirmDialog],
+  );
 
   // タスク削除実行処理
   const handleTaskDelete = useCallback(() => {
     if (deleteConfirmDialog.task) {
-      deleteTask(deleteConfirmDialog.task.id, deleteConfirmDialog.task.columnId);
+      deleteTask(
+        deleteConfirmDialog.task.id,
+        deleteConfirmDialog.task.columnId,
+      );
     }
   }, [deleteTask, deleteConfirmDialog.task]);
 
@@ -55,6 +79,6 @@ export const useTableActions = (
     handleStatusChange,
     handleTaskDeleteClick,
     handleTaskDelete,
-    handleDeleteDialogClose
+    handleDeleteDialogClose,
   };
 };

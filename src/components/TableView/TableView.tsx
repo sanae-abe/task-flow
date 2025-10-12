@@ -1,19 +1,19 @@
-import React, { useCallback } from 'react';
-import { Text } from '@primer/react';
-import type { TaskWithColumn } from '../../types/table';
+import React, { useCallback } from "react";
+import { Text } from "@primer/react";
+import type { TaskWithColumn } from "../../types/table";
 
-import { useKanban } from '../../contexts/KanbanContext';
-import { useTableColumns } from '../../contexts/TableColumnsContext';
-import DeleteConfirmDialog from '../DeleteConfirmDialog';
+import { useKanban } from "../../contexts/KanbanContext";
+import { useTableColumns } from "../../contexts/TableColumnsContext";
+import DeleteConfirmDialog from "../DeleteConfirmDialog";
 
 // カスタムフック
-import { useTableData, useTableActions, useDeleteConfirm } from './hooks';
+import { useTableData, useTableActions, useDeleteConfirm } from "./hooks";
 
 // コンポーネント
-import { TableCell, TableRow, TableHeader, EmptyState } from './components';
+import { TableCell, TableRow, TableHeader, EmptyState } from "./components";
 
 // ユーティリティ
-import { getCompletionRate } from './utils/tableHelpers';
+import { getCompletionRate } from "./utils/tableHelpers";
 
 /**
  * テーブルビューコンポーネント
@@ -29,7 +29,8 @@ import { getCompletionRate } from './utils/tableHelpers';
  * - EmptyState：空状態の表示
  */
 const TableView: React.FC = () => {
-  const { state, moveTask, deleteTask, setTaskFilter, openTaskDetail } = useKanban();
+  const { state, moveTask, deleteTask, setTaskFilter, openTaskDetail } =
+    useKanban();
   const tableColumnsData = useTableColumns();
 
   // カスタムフック: 削除確認ダイアログ管理
@@ -39,7 +40,7 @@ const TableView: React.FC = () => {
   const { filteredAndSortedTasks } = useTableData(
     state.currentBoard,
     state.taskFilter,
-    state.sortOption
+    state.sortOption,
   );
 
   // カスタムフック: テーブルアクション管理
@@ -49,11 +50,12 @@ const TableView: React.FC = () => {
     deleteTask,
     openTaskDetail,
     deleteConfirmDialog,
-    setDeleteConfirmDialog
+    setDeleteConfirmDialog,
   );
 
   // セル描画関数
-  const renderCell = useCallback((task: TaskWithColumn, columnId: string) => (
+  const renderCell = useCallback(
+    (task: TaskWithColumn, columnId: string) => (
       <TableCell
         task={task}
         columnId={columnId}
@@ -62,11 +64,17 @@ const TableView: React.FC = () => {
         onDeleteClick={tableActions.handleTaskDeleteClick}
         getCompletionRate={getCompletionRate}
       />
-    ), [state.currentBoard, tableActions.handleStatusChange, tableActions.handleTaskDeleteClick]);
+    ),
+    [
+      state.currentBoard,
+      tableActions.handleStatusChange,
+      tableActions.handleTaskDeleteClick,
+    ],
+  );
 
   // フィルタクリア処理
   const handleClearFilter = useCallback(() => {
-    setTaskFilter({ type: 'all', label: 'すべてのタスク' });
+    setTaskFilter({ type: "all", label: "すべてのタスク" });
   }, [setTaskFilter]);
 
   // 早期リターン：ボードが選択されていない場合
@@ -74,11 +82,11 @@ const TableView: React.FC = () => {
     return (
       <div
         style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          height: 'calc(100vh - 120px)',
-          color: 'var(--fgColor-default)',
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "calc(100vh - 120px)",
+          color: "var(--fgColor-default)",
         }}
       >
         <Text>ボードを選択してください</Text>
@@ -90,10 +98,10 @@ const TableView: React.FC = () => {
     <div
       key={`tableview-${tableColumnsData.forceRender}`}
       style={{
-        height: 'calc(100vh - 120px)',
-        overflow: 'auto',
-        backgroundColor: 'var(--bgColor-muted)',
-        padding: '32px',
+        height: "calc(100vh - 120px)",
+        overflow: "auto",
+        backgroundColor: "var(--bgColor-muted)",
+        padding: "32px",
       }}
     >
       {/* メインテーブル */}
@@ -101,10 +109,10 @@ const TableView: React.FC = () => {
         key={`table-${tableColumnsData.forceRender}`}
         style={{
           borderRadius: 2,
-          overflow: 'auto',
-          backgroundColor: 'var(--bgColor-default)',
-          boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-          minWidth: 'fit-content',
+          overflow: "auto",
+          backgroundColor: "var(--bgColor-default)",
+          boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+          minWidth: "fit-content",
         }}
       >
         {/* ヘッダー行 */}
@@ -142,7 +150,7 @@ const TableView: React.FC = () => {
         isOpen={deleteConfirmDialog.isOpen}
         onClose={tableActions.handleDeleteDialogClose}
         onConfirm={tableActions.handleTaskDelete}
-        taskTitle={deleteConfirmDialog.task?.title || ''}
+        taskTitle={deleteConfirmDialog.task?.title || ""}
       />
     </div>
   );

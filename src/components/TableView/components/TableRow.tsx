@@ -1,8 +1,7 @@
-import React from 'react';
-import { Box } from '@primer/react';
-import type { TableRowProps } from '../types';
-import { isTaskWithColumn } from '../utils/tableHelpers';
-import { logger } from '../../../utils/logger';
+import React from "react";
+import type { TableRowProps } from "../types";
+import { isTaskWithColumn } from "../utils/tableHelpers";
+import { logger } from "../../../utils/logger";
 
 /**
  * テーブル行コンポーネント
@@ -17,39 +16,41 @@ export const TableRow: React.FC<TableRowProps> = ({
   visibleColumns,
   gridTemplateColumns,
   onTaskClick,
-  renderCell
+  renderCell,
 }) => {
   // 型ガードチェック
   if (!isTaskWithColumn(task)) {
-    logger.warn('Task is missing required column properties:', task);
+    logger.warn("Task is missing required column properties:", task);
     return null;
   }
 
   return (
-    <Box
+    <div
       key={task.id}
-      style={{ gridTemplateColumns }}
-      sx={{
-        display: 'grid',
-        py: 2,
-        px: 3,
-        gap: 2,
-        alignItems: 'center',
-        borderBottom: index < totalTasks - 1 ? '1px solid' : 'none',
-        borderColor: 'border.default',
-        cursor: 'pointer',
-        minWidth: 'fit-content',
-        '&:hover': {
-          bg: 'canvas.subtle',
-        },
+      style={{
+        gridTemplateColumns,
+        display: "grid",
+        padding: "8px 12px",
+        gap: "8px",
+        alignItems: "center",
+        borderBottom:
+          index < totalTasks - 1
+            ? "1px solid var(--borderColor-default)"
+            : "none",
+        cursor: "pointer",
+        minWidth: "fit-content",
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.backgroundColor = "var(--bgColor-muted)";
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.backgroundColor = "";
       }}
       onClick={() => onTaskClick(task)}
     >
       {visibleColumns.map((column) => (
-        <div key={column.id}>
-          {renderCell(task, column.id)}
-        </div>
+        <div key={column.id}>{renderCell(task, column.id)}</div>
       ))}
-    </Box>
+    </div>
   );
 };

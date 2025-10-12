@@ -1,6 +1,6 @@
-import React from 'react';
-import { Text, Button } from '@primer/react';
-import type { EmptyStateProps } from '../types';
+import React from "react";
+import { Text, Button } from "@primer/react";
+import type { EmptyStateProps } from "../types";
 
 /**
  * 空状態コンポーネント
@@ -10,33 +10,27 @@ import type { EmptyStateProps } from '../types';
  */
 export const EmptyState: React.FC<EmptyStateProps> = ({
   taskFilter,
-  onClearFilter
+  onClearFilter,
 }) => {
-  const isFiltered = taskFilter.type !== 'all';
+  const isFiltered = taskFilter.type !== "all";
   const message = isFiltered
-    ? 'フィルタ条件に一致するタスクがありません'
-    : 'タスクがありません';
+    ? "フィルタ条件に一致するタスクがありません"
+    : "タスクがありません";
 
   return (
     <div
       style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
         paddingBlock: "32px",
-        color: 'var(--fgColor-default)',
+        color: "var(--fgColor-default)",
       }}
     >
-      <Text sx={{ fontSize: 1, mb: 2 }}>
-        {message}
-      </Text>
+      <Text sx={{ fontSize: 1, mb: 2 }}>{message}</Text>
       {isFiltered && (
-        <Button
-          variant="invisible"
-          size="small"
-          onClick={onClearFilter}
-        >
+        <Button variant="invisible" size="small" onClick={onClearFilter}>
           フィルタをクリア
         </Button>
       )}
