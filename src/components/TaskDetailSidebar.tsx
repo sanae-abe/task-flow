@@ -12,6 +12,7 @@ import SubTaskList from "./SubTaskList";
 import TaskDisplayContent from "./TaskDisplayContent";
 import TaskEditDialog from "./TaskEditDialog";
 import TaskMetadata from "./TaskMetadata";
+import TaskBoardMover from "./TaskBoardMover";
 
 interface TaskDetailSidebarProps {
   task: Task | null;
@@ -31,6 +32,7 @@ const TaskDetailSidebar = memo<TaskDetailSidebarProps>(
       handleEdit,
       handleDelete,
       handleDuplicate,
+      handleMoveToBoard,
       handleConfirmDelete,
       handleSaveEdit,
       handleDeleteFromDialog,
@@ -228,6 +230,9 @@ const TaskDetailSidebar = memo<TaskDetailSidebarProps>(
               >
                 複製
               </Button>
+              <TaskBoardMover
+                onMoveTask={handleMoveToBoard}
+              />
               <Button
                 onClick={handleDelete}
                 variant="danger"

@@ -62,7 +62,17 @@ type BoardAction =
       type: "IMPORT_BOARDS";
       payload: { boards: KanbanBoard[]; replaceAll?: boolean };
     }
-  | { type: "REORDER_BOARDS"; payload: { boards: KanbanBoard[] } };
+  | { type: "REORDER_BOARDS"; payload: { boards: KanbanBoard[] } }
+  | {
+      type: "MOVE_TASK_TO_BOARD";
+      payload: {
+        taskId: string;
+        sourceBoardId: string;
+        sourceColumnId: string;
+        targetBoardId: string;
+        targetColumnId?: string;
+      };
+    };
 
 interface BoardContextType {
   state: BoardState;
@@ -78,6 +88,13 @@ interface BoardContextType {
   moveColumn: (columnId: string, direction: "left" | "right") => void;
   importBoards: (boards: KanbanBoard[], replaceAll?: boolean) => void;
   reorderBoards: (boards: KanbanBoard[]) => void;
+  moveTaskToBoard: (
+    taskId: string,
+    sourceBoardId: string,
+    sourceColumnId: string,
+    targetBoardId: string,
+    targetColumnId?: string,
+  ) => void;
   // 削除機能関連
   checkDeletionCandidates: () => DeletionCandidate[];
   executeDeletion: () => void;
@@ -394,6 +411,89 @@ const boardReducer = (state: BoardState, action: BoardAction): BoardState => {
       return {
         ...state,
         boards: reorderedBoards,
+      };
+    }
+
+    case "MOVE_TASK_TO_BOARD": {
+      const {
+        taskId,
+        sourceBoardId,
+        sourceColumnId,
+        targetBoardId,
+        targetColumnId,
+      } = action.payload;
+
+      // ソースボードとターゲットボードを取得
+      const sourceBoard = state.boards.find((board) => board.id === sourceBoardId);
+      const targetBoard = state.boards.find((board) => board.id === targetBoardId);
+
+      if (!sourceBoard || !targetBoard) {
+        return state;
+      }
+
+      // ソースカラムからタスクを取得
+      const sourceColumn = sourceBoard.columns.find((col) => col.id === sourceColumnId);
+      if (!sourceColumn) {
+        return state;
+      }
+
+      const taskToMove = sourceColumn.tasks.find((task) => task.id === taskId);
+      if (!taskToMove) {
+        return state;
+      }
+
+      // ターゲットカラムを決定（指定されていない場合は最初のカラムを使用）
+      const targetColumnToUse = targetColumnId
+        ? targetBoard.columns.find((col) => col.id === targetColumnId)
+        : targetBoard.columns[0];
+
+      if (!targetColumnToUse) {
+        return state;
+      }
+
+      // ソースボードからタスクを削除
+      const updatedSourceBoard = updateBoardTimestamp({
+        ...sourceBoard,
+        columns: sourceBoard.columns.map((col) =>
+          col.id === sourceColumnId
+            ? { ...col, tasks: col.tasks.filter((task) => task.id !== taskId) }
+            : col,
+        ),
+      });
+
+      // ターゲットボードにタスクを追加
+      const updatedTargetBoard = updateBoardTimestamp({
+        ...targetBoard,
+        columns: targetBoard.columns.map((col) =>
+          col.id === targetColumnToUse.id
+            ? { ...col, tasks: [...col.tasks, taskToMove] }
+            : col,
+        ),
+      });
+
+      // 両方のボードを更新
+      const updatedBoards = state.boards.map((board) => {
+        if (board.id === sourceBoardId) {
+          return updatedSourceBoard;
+        }
+        if (board.id === targetBoardId) {
+          return updatedTargetBoard;
+        }
+        return board;
+      });
+
+      // currentBoardが更新された場合は反映
+      let updatedCurrentBoard = state.currentBoard;
+      if (state.currentBoard?.id === sourceBoardId) {
+        updatedCurrentBoard = updatedSourceBoard;
+      } else if (state.currentBoard?.id === targetBoardId) {
+        updatedCurrentBoard = updatedTargetBoard;
+      }
+
+      return {
+        ...state,
+        boards: updatedBoards,
+        currentBoard: updatedCurrentBoard,
       };
     }
 
@@ -881,6 +981,53 @@ const authenticateUser = async (email, password) => {
   const reorderBoards = useCallback((boards: KanbanBoard[]) => {
     dispatch({ type: "REORDER_BOARDS", payload: { boards } });
   }, []);
+  const moveTaskToBoard = useCallback(
+    (
+      taskId: string,
+      sourceBoardId: string,
+      sourceColumnId: string,
+      targetBoardId: string,
+      targetColumnId?: string,
+    ) => {
+      // ソースボードとターゲットボードが同じ場合は何もしない
+      if (sourceBoardId === targetBoardId) {
+        notify.error("同じボード内でのタスク移動はできません");
+        return;
+      }
+
+      // ソースボードとターゲットボードの存在確認
+      const sourceBoard = state.boards.find((board) => board.id === sourceBoardId);
+      const targetBoard = state.boards.find((board) => board.id === targetBoardId);
+
+      if (!sourceBoard || !targetBoard) {
+        notify.error("移動先のボードが見つかりません");
+        return;
+      }
+
+      // タスクの存在確認
+      const sourceColumn = sourceBoard.columns.find((col) => col.id === sourceColumnId);
+      const taskToMove = sourceColumn?.tasks.find((task) => task.id === taskId);
+
+      if (!taskToMove) {
+        notify.error("移動するタスクが見つかりません");
+        return;
+      }
+
+      dispatch({
+        type: "MOVE_TASK_TO_BOARD",
+        payload: {
+          taskId,
+          sourceBoardId,
+          sourceColumnId,
+          targetBoardId,
+          targetColumnId,
+        },
+      });
+
+      notify.success(`タスク「${taskToMove.title}」を「${targetBoard.title}」に移動しました`);
+    },
+    [state.boards, notify],
+  );
 
   const exportData = useCallback(
     () => ({
@@ -963,6 +1110,7 @@ const authenticateUser = async (email, password) => {
       moveColumn,
       importBoards,
       reorderBoards,
+      moveTaskToBoard,
       exportData,
       // 削除機能関連
       checkDeletionCandidates,
@@ -984,6 +1132,7 @@ const authenticateUser = async (email, password) => {
       moveColumn,
       importBoards,
       reorderBoards,
+      moveTaskToBoard,
       exportData,
       // 削除機能関連
       checkDeletionCandidates,

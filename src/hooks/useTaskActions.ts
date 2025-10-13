@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 
 import { useKanban } from "../contexts/KanbanContext";
+import { useBoard } from "../contexts/BoardContext";
 import type { Task } from "../types";
 
 import { useTaskColumn } from "./useTaskColumn";
@@ -13,6 +14,7 @@ interface UseTaskActionsReturn {
   readonly handleEdit: () => void;
   readonly handleDelete: () => void;
   readonly handleDuplicate: () => void;
+  readonly handleMoveToBoard: (targetBoardId: string) => void;
   readonly handleConfirmDelete: () => void;
   readonly handleSaveEdit: (updatedTask: Task, targetColumnId?: string) => void;
   readonly handleDeleteFromDialog: (taskId: string) => void;
@@ -42,6 +44,7 @@ export const useTaskActions = (
     reorderSubTasks,
     state,
   } = useKanban();
+  const { moveTaskToBoard, currentBoard } = useBoard();
   const { column } = useTaskColumn(task);
 
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -159,6 +162,25 @@ export const useTaskActions = (
     [task, reorderSubTasks],
   );
 
+  const handleMoveToBoard = useCallback(
+    (targetBoardId: string) => {
+      if (!task || !column || !currentBoard) {
+        return;
+      }
+
+      moveTaskToBoard(
+        task.id,
+        currentBoard.id,
+        column.id,
+        targetBoardId,
+      );
+
+      // タスク詳細サイドバーを閉じる
+      onClose?.();
+    },
+    [task, column, currentBoard, moveTaskToBoard, onClose],
+  );
+
   return {
     showDeleteConfirm,
     showEditDialog,
@@ -167,6 +189,7 @@ export const useTaskActions = (
     handleEdit,
     handleDelete,
     handleDuplicate,
+    handleMoveToBoard,
     handleConfirmDelete,
     handleSaveEdit,
     handleDeleteFromDialog: handleDeleteEdit,
