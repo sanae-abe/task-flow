@@ -4,6 +4,7 @@ import { useState, memo } from "react";
 import type { TaskTemplate } from "../types/template";
 import type { CreateMode } from "./TaskCreateDialog/types";
 import { useKanban } from "../contexts/KanbanContext";
+import { useBoard } from "../contexts/BoardContext";
 import { useNotify } from "../contexts/NotificationContext";
 
 import UnifiedDialog from "./shared/Dialog/UnifiedDialog";
@@ -38,6 +39,7 @@ import {
 
 const TaskCreateDialog = memo(() => {
   const { state, closeTaskForm, createTask } = useKanban();
+  const { state: boardState, setCurrentBoard } = useBoard();
   const notify = useNotify();
 
   // 作成モード
@@ -49,6 +51,7 @@ const TaskCreateDialog = memo(() => {
     state.taskFormDefaultDate
       ? state.taskFormDefaultDate.toISOString().split("T")[0]
       : undefined,
+    state.currentBoard?.id
   );
 
   // カスタムフック: テンプレート選択管理
@@ -65,6 +68,8 @@ const TaskCreateDialog = memo(() => {
     notify,
     state.currentBoard,
     state.taskFormDefaultStatus,
+    boardState.boards,
+    setCurrentBoard
   );
 
   // テンプレート選択時の処理（モード切り替えを含む）
@@ -138,6 +143,7 @@ const TaskCreateDialog = memo(() => {
             selectedTemplate={templateState.selectedTemplate}
             onTimeChange={handleTimeChange}
             onKeyPress={handleKeyPress}
+            availableBoards={boardState.boards}
           />
         )}
       </div>

@@ -19,6 +19,7 @@ export interface TaskFormState {
   attachments: FileAttachment[];
   recurrence: RecurrenceConfig | undefined;
   priority: Priority | undefined;
+  selectedBoardId: string | undefined;
 }
 
 /**
@@ -42,6 +43,7 @@ export interface TaskFormActions {
   setAttachments: (attachments: FileAttachment[]) => void;
   setRecurrence: (recurrence: RecurrenceConfig | undefined) => void;
   setPriority: (priority: Priority | undefined) => void;
+  setSelectedBoardId: (boardId: string | undefined) => void;
   resetForm: () => void;
 }
 
@@ -72,4 +74,5 @@ export interface TaskFormFieldsProps {
   selectedTemplate?: TaskTemplate;
   onTimeChange: (hasTime: boolean, time: string) => void;
   onKeyPress: (event: React.KeyboardEvent) => void;
+  availableBoards?: Array<{ id: string; title: string }>;
 }
