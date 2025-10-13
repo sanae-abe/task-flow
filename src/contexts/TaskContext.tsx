@@ -239,57 +239,6 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
             : taskToMove.completedAt,
       };
 
-      // 繰り返しタスクの処理
-      let recurringTask: Task | null = null;
-      if (isMovingToCompleted && updatedTask.recurrence) {
-        if (
-          !isRecurrenceComplete(
-            updatedTask.recurrence,
-            updatedTask.occurrenceCount || 1,
-          )
-        ) {
-          const currentCount = (updatedTask.occurrenceCount || 1) + 1;
-
-          if (updatedTask.dueDate) {
-            // 期限ありタスクの場合：期限基準で次回期限を計算
-            const nextDueDate = calculateNextDueDate(
-              updatedTask.dueDate,
-              updatedTask.recurrence,
-            );
-
-            if (nextDueDate) {
-              recurringTask = {
-                ...updatedTask,
-                id: uuidv4(),
-                dueDate: nextDueDate,
-                completedAt: null,
-                occurrenceCount: currentCount,
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString(),
-              };
-            }
-          } else {
-            // 期限なしタスクの場合：作成日基準で次回作成日を計算
-            const nextCreationDate = calculateNextCreationDate(
-              updatedTask.createdAt,
-              updatedTask.recurrence,
-            );
-
-            if (nextCreationDate) {
-              recurringTask = {
-                ...updatedTask,
-                id: uuidv4(),
-                dueDate: null, // 期限なしのまま
-                completedAt: null,
-                occurrenceCount: currentCount,
-                createdAt: nextCreationDate,
-                updatedAt: new Date().toISOString(),
-              };
-            }
-          }
-        }
-      }
-
       // 同じカラム内での移動の場合は、特別な処理を行う
       if (sourceColumnId === targetColumnId) {
         const newTasks = [...sourceColumn.tasks];
@@ -357,11 +306,6 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
 
             newTasks.splice(safeTargetIndex, 0, updatedTask);
 
-            // 繰り返しタスクがある場合は追加（完了カラムに移動していない場合）
-            if (recurringTask && !isMovingToCompleted) {
-              newTasks.push(recurringTask);
-            }
-
             return {
               ...column,
               tasks: newTasks,
@@ -369,17 +313,6 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
           }
           return column;
         });
-
-        // 繰り返しタスクを最初のカラムに追加（完了カラムに移動した場合）
-        if (recurringTask && isMovingToCompleted && updatedColumns.length > 0) {
-          const firstColumn = updatedColumns[0];
-          if (firstColumn) {
-            updatedColumns[0] = {
-              ...firstColumn,
-              tasks: [...firstColumn.tasks, recurringTask],
-            };
-          }
-        }
 
         const updatedBoard = {
           ...boardState.currentBoard,
@@ -404,7 +337,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       });
     },
     [boardState.currentBoard, findTaskById, boardDispatch, notify],
-  );
+  );;;
 
   // タスク更新
   const updateTask = useCallback(

@@ -4,6 +4,7 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@primer/octicons-react";
 import { DndContext, DragOverlay } from "@dnd-kit/core";
 
 import { useKanban } from "../contexts/KanbanContext";
+import { useUI } from "../contexts/UIContext";
 import type { Task } from "../types";
 import type { VirtualRecurringTask } from "../utils/calendarRecurrence";
 import { useCalendarDragAndDrop } from "../hooks/useCalendarDragAndDrop";
@@ -17,6 +18,7 @@ import { calendarStyles } from "./CalendarView/styles/calendarStyles";
 
 const CalendarView: React.FC = () => {
   const { state, openTaskDetail, updateTask, openTaskForm } = useKanban();
+  const { openVirtualTaskDetail } = useUI();
 
   const { currentDate, navigateMonth, goToToday } = useCalendarNavigation();
 
@@ -35,6 +37,7 @@ const CalendarView: React.FC = () => {
   const { handleTaskDateChange, handleTaskClick, handleDateClick } =
     useCalendarHandlers({
       openTaskDetail,
+      openVirtualTaskDetail,
       openTaskForm,
       updateTask,
     });

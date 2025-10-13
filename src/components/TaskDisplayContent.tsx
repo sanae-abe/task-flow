@@ -2,6 +2,7 @@ import { Text } from "@primer/react";
 import React from "react";
 
 import type { Task, Priority } from "../types";
+import type { VirtualRecurringTask } from "../utils/calendarRecurrence";
 
 import { formatDateTime } from "../utils/dateHelpers";
 import { getRecurrenceDescription } from "../utils/recurrence";
@@ -31,10 +32,15 @@ const getPriorityText = (priority: Priority): string => {
 interface TaskDisplayContentProps {
   task: Task;
   columnName?: string;
+  virtualTaskInfo?: VirtualRecurringTask | null;
 }
 
 const TaskDisplayContent = React.memo<TaskDisplayContentProps>(
-  ({ task, columnName }) => (
+  ({ task, columnName, virtualTaskInfo }) => {
+    // 仮想タスクの場合は仮想タスクの期限を使用、そうでなければ元のタスクの期限を使用
+    const displayDueDate = virtualTaskInfo?.dueDate || task.dueDate;
+
+    return (
     <>
       <TaskDisplaySection title="説明">
         <ContentBox
@@ -55,10 +61,10 @@ const TaskDisplayContent = React.memo<TaskDisplayContentProps>(
         </ContentBox>
       </TaskDisplaySection>
 
-      {task.dueDate && (
+      {displayDueDate && (
         <TaskDisplaySection title="期限">
           <ContentBox>
-            <DueDateDisplay dueDate={new Date(task.dueDate)} showYear />
+            <DueDateDisplay dueDate={new Date(displayDueDate)} showYear />
           </ContentBox>
         </TaskDisplaySection>
       )}
@@ -109,7 +115,8 @@ const TaskDisplayContent = React.memo<TaskDisplayContentProps>(
         </TaskDisplaySection>
       )}
     </>
-  ),
+    );
+  },
 );
 
 export default TaskDisplayContent;

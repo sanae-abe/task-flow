@@ -4,6 +4,7 @@ import { useEffect, useCallback, useMemo, memo, useRef } from "react";
 
 import { useTaskActions } from "../hooks/useTaskActions";
 import { useTaskColumn } from "../hooks/useTaskColumn";
+import { useUI } from "../contexts/UIContext";
 import type { Task } from "../types";
 
 import ConfirmDialog from "./ConfirmDialog";
@@ -20,6 +21,7 @@ interface TaskDetailSidebarProps {
 
 const TaskDetailSidebar = memo<TaskDetailSidebarProps>(
   ({ task, isOpen, onClose }) => {
+    const { state } = useUI();
     const { columnName } = useTaskColumn(task);
     const {
       showDeleteConfirm,
@@ -189,7 +191,11 @@ const TaskDetailSidebar = memo<TaskDetailSidebarProps>(
 
           {/* Content */}
           <Box ref={contentRef} sx={contentStyles}>
-            <TaskDisplayContent task={task} columnName={columnName} />
+            <TaskDisplayContent
+              task={task}
+              columnName={columnName}
+              virtualTaskInfo={state.virtualTaskInfo}
+            />
             <SubTaskList
               subTasks={task.subTasks ?? []}
               onAddSubTask={handleAddSubTask}
