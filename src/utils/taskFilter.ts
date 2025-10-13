@@ -6,8 +6,10 @@ import type { Task, TaskFilter } from "../types";
  */
 export const filterTasks = (tasks: Task[], filter: TaskFilter): Task[] => {
   // 最初にソフトデリートされたタスクを除外
-  const activeTasks = tasks.filter(task => task.deletionState !== "soft-deleted");
-  
+  const activeTasks = tasks.filter(
+    (task) => task.deletionState !== "soft-deleted",
+  );
+
   if (filter.type === "all") {
     return activeTasks;
   }
@@ -72,7 +74,9 @@ export const filterTasks = (tasks: Task[], filter: TaskFilter): Task[] => {
     }
 
     case "has-labels": {
-      return activeTasks.filter((task) => task.labels && task.labels.length > 0);
+      return activeTasks.filter(
+        (task) => task.labels && task.labels.length > 0,
+      );
     }
 
     case "priority": {
@@ -89,7 +93,7 @@ export const filterTasks = (tasks: Task[], filter: TaskFilter): Task[] => {
     default:
       return activeTasks;
   }
-};;
+};
 
 /**
  * フィルター適用後のタスク数を取得

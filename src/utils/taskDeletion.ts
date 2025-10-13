@@ -432,25 +432,29 @@ export const softDeleteCompletedTasks = (
   // デバッグ: 処理対象のタスクを調査
   logger.info("🔍 softDeleteCompletedTasks: Starting analysis");
   logger.info("📋 Boards count:", boards.length);
-  
+
   let totalTasks = 0;
   let completedTasks = 0;
   let activeTasks = 0;
   let excludedTasks = 0;
 
   boards.forEach((board, boardIndex) => {
-    logger.info(`📂 Board ${boardIndex + 1}: "${board.title}" (${board.columns.length} columns)`);
-    
+    logger.info(
+      `📂 Board ${boardIndex + 1}: "${board.title}" (${board.columns.length} columns)`,
+    );
+
     board.columns.forEach((column, columnIndex) => {
-      logger.info(`  📁 Column ${columnIndex + 1}: "${column.title}" (${column.tasks.length} tasks)`);
-      
+      logger.info(
+        `  📁 Column ${columnIndex + 1}: "${column.title}" (${column.tasks.length} tasks)`,
+      );
+
       column.tasks.forEach((task, taskIndex) => {
         totalTasks++;
-        
+
         const isCompleted = !!task.completedAt;
         const isActive = !task.deletionState || task.deletionState === "active"; // 修正: undefined を active として扱う
         const isExcluded = isTaskExcludedFromDeletion(task, settings);
-        
+
         if (isCompleted) {
           completedTasks++;
         }
@@ -460,18 +464,30 @@ export const softDeleteCompletedTasks = (
         if (isExcluded) {
           excludedTasks++;
         }
-        
+
         logger.info(`    📝 Task ${taskIndex + 1}: "${task.title}"`);
-        logger.info(`      - Completed: ${isCompleted} (completedAt: ${task.completedAt})`);
-        logger.info(`      - Active: ${isActive} (deletionState: ${task.deletionState})`);
+        logger.info(
+          `      - Completed: ${isCompleted} (completedAt: ${task.completedAt})`,
+        );
+        logger.info(
+          `      - Active: ${isActive} (deletionState: ${task.deletionState})`,
+        );
         logger.info(`      - Excluded: ${isExcluded}`);
-        
+
         if (isExcluded) {
           logger.info(`      - Exclusion reasons:`);
-          if (task.priority && settings.excludePriorities.includes(task.priority)) {
+          if (
+            task.priority &&
+            settings.excludePriorities.includes(task.priority)
+          ) {
             logger.info(`        * Priority "${task.priority}" is excluded`);
           }
-          if (settings.excludeLabelIds.length > 0 && task.labels.some(label => settings.excludeLabelIds.includes(label.id))) {
+          if (
+            settings.excludeLabelIds.length > 0 &&
+            task.labels.some((label) =>
+              settings.excludeLabelIds.includes(label.id),
+            )
+          ) {
             logger.info(`        * Has excluded label`);
           }
           if (task.recurrence) {
@@ -516,7 +532,8 @@ export const softDeleteCompletedTasks = (
           deletionState: "soft-deleted",
           softDeletedAt: now.toISOString(),
           scheduledDeletionAt: new Date(
-            now.getTime() + settings.softDeletionRetentionDays * 24 * 60 * 60 * 1000,
+            now.getTime() +
+              settings.softDeletionRetentionDays * 24 * 60 * 60 * 1000,
           ).toISOString(),
           updatedAt: now.toISOString(),
         };
@@ -540,7 +557,9 @@ export const softDeleteCompletedTasks = (
     }),
   }));
 
-  logger.info(`✅ softDeleteCompletedTasks completed: ${deletedCount} tasks deleted`);
+  logger.info(
+    `✅ softDeleteCompletedTasks completed: ${deletedCount} tasks deleted`,
+  );
 
   // 統計更新
   if (deletedCount > 0) {

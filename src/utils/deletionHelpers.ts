@@ -163,33 +163,23 @@ export const RETENTION_PRESETS = {
   minimal: {
     label: "最小（7日）",
     days: 7,
-    description: "個人用タスク・短期プロジェクト向け",
-    icon: "⚡",
   },
   standard: {
     label: "標準（30日）",
     days: 30,
-    description: "バランスの取れた保持期間",
-    icon: "✅",
     recommended: true,
   },
   extended: {
     label: "延長（90日）",
     days: 90,
-    description: "四半期レビュー・業務記録用",
-    icon: "📅",
   },
   long_term: {
     label: "長期（180日）",
     days: 180,
-    description: "年次レビュー・監査対応用",
-    icon: "🗄️",
   },
   custom: {
     label: "カスタム",
     days: null,
-    description: "1〜365日の範囲で設定",
-    icon: "⚙️",
   },
 } as const;
 

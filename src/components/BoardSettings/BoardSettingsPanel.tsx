@@ -6,7 +6,7 @@ import {
   TextInput,
   Flash
 } from '@primer/react';
-import { PlusIcon, TrashIcon, GrabberIcon, ChevronUpIcon, ChevronDownIcon } from '@primer/octicons-react';
+import { PlusIcon, TrashIcon, GrabberIcon, ChevronUpIcon, ChevronDownIcon, CheckIcon } from '@primer/octicons-react';
 import {
   DndContext,
   closestCenter,
@@ -390,8 +390,12 @@ export const BoardSettingsPanel: React.FC = () => {
 
       {/* 保存ボタン */}
       <div style={{ paddingTop: "12px", borderTop: "1px solid", borderColor: "var(--borderColor-default)" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <Button variant="primary" onClick={handleSave}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "8px" }}>
+          <Button
+            variant="primary"
+            leadingVisual={CheckIcon}
+            onClick={handleSave}
+          >
             設定を保存
           </Button>
           {hasUnsavedChanges && (

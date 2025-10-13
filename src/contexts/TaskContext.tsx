@@ -573,8 +573,11 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
 
     // ソフトデリートを実行
     try {
-      const result = softDeleteCompletedTasks([boardState.currentBoard], settings);
-      
+      const result = softDeleteCompletedTasks(
+        [boardState.currentBoard],
+        settings,
+      );
+
       if (result.deletedCount === 0) {
         notify.info("削除対象の完了タスクがありません");
         return;
@@ -585,7 +588,10 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       if (updatedBoard) {
         boardDispatch({
           type: "UPDATE_BOARD",
-          payload: { boardId: boardState.currentBoard.id, updates: updatedBoard },
+          payload: {
+            boardId: boardState.currentBoard.id,
+            updates: updatedBoard,
+          },
         });
       }
 
@@ -594,9 +600,9 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       const message = settings.enableSoftDeletion
         ? `${result.deletedCount}件の完了タスクをソフトデリートしました（${spaceMB}MB）。ごみ箱から復元できます。`
         : `${result.deletedCount}件の完了タスクを削除しました（${spaceMB}MB解放）`;
-      
+
       notify.success(message);
-      
+
       logger.info("Completed tasks cleared via soft delete:", {
         deletedCount: result.deletedCount,
         storageFreed: result.storageFreed,
