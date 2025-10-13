@@ -90,22 +90,38 @@ export const RecycleBinView: React.FC = () => {
 
   if (softDeletedTasks.length === 0) {
     return (
-      <div style={{ padding: '16px', textAlign: 'center' }}>
-        <TrashIcon size={48} />
-        <Text
-          as="h2"
-          style={{
-            marginTop: '12px',
-            marginBottom: '8px',
-            fontSize: '16px',
-            fontWeight: 'bold'
-          }}
-        >
-          ごみ箱は空です
-        </Text>
-        <Text color="fg.muted">
-          ソフトデリートされたタスクはありません。
-        </Text>
+      <div
+        style={{
+          textAlign: 'center',
+          paddingBlock: '24px',
+          border: '1px dashed',
+          borderColor: 'var(--borderColor-muted)',
+          borderRadius: 'var(--borderRadius-medium)',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '12px',
+          justifyContent: 'center',
+          alignItems: 'center',
+          margin: '16px',
+          color: 'var(--fgColor-muted)'
+        }}
+      >
+        <TrashIcon size={24}  />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+          <Text
+            as="h2"
+            style={{
+              fontSize: '18px',
+              fontWeight: '600',
+              color: 'var(--fgColor-default)'
+            }}
+          >
+            ごみ箱は空です
+          </Text>
+          <Text style={{ color: 'var(--fgColor-muted)', fontSize: '14px' }}>
+            ソフトデリートされたタスクはありません。
+          </Text>
+        </div>
       </div>
     );
   }
