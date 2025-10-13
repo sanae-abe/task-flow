@@ -179,7 +179,7 @@ export const RETENTION_PRESETS = {
   },
   custom: {
     label: "カスタム",
-    days: null,
+    days: 365,
   },
 } as const;
 

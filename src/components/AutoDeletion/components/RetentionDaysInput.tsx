@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, TextInput } from "@primer/react";
+import { FormControl, Text, TextInput } from "@primer/react";
 
 interface RetentionDaysInputProps {
   value: number;
@@ -31,7 +31,10 @@ export const RetentionDaysInput: React.FC<RetentionDaysInputProps> = ({
   };
 
   return (
-    <>
+    <FormControl sx={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 2 }} disabled={disabled}>
+      <FormControl.Label id="retention-settings-description" visuallyHidden>
+        保持期間の日数
+      </FormControl.Label>
       <TextInput
         type="number"
         min="1"
@@ -57,6 +60,6 @@ export const RetentionDaysInput: React.FC<RetentionDaysInputProps> = ({
       >
         日後に削除
       </Text>
-    </>
+    </FormControl>
   );
 };
