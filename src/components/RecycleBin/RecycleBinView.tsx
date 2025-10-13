@@ -10,7 +10,7 @@ import {
   RepoIcon,
   ClockIcon,
   AlertIcon,
-  ArrowLeftIcon,
+  HistoryIcon,
 } from "@primer/octicons-react";
 import { useBoard } from "../../contexts/BoardContext";
 import { type Task } from "../../types";
@@ -127,7 +127,7 @@ export const RecycleBinView: React.FC = () => {
   }
 
   return (
-    <div style={{ padding: '16px' }}>
+    <div>
       <div style={{ marginBottom: '16px' }}>
         <Text
           as="h2"
@@ -256,7 +256,7 @@ export const RecycleBinView: React.FC = () => {
                       alignItems: 'center',
                       gap: '4px'
                     }}>
-                      <ArrowLeftIcon size={12} />
+                      <HistoryIcon size={12} />
                       <Text>復元</Text>
                     </div>
                   </Button>
