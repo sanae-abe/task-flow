@@ -132,7 +132,7 @@ export const RecycleBinView: React.FC = () => {
         <Text
           as="h2"
           style={{
-            fontSize: '20px',
+            fontSize: '16px',
             fontWeight: 'bold',
             marginBottom: '8px',
             display: 'flex',
@@ -140,14 +140,17 @@ export const RecycleBinView: React.FC = () => {
             gap: '8px'
           }}
         >
-          <TrashIcon size={20} /> ごみ箱
+          ごみ箱
         </Text>
-        <Text
-          color="fg.muted"
-          style={{ marginBottom: '8px' }}
+        <div
+          style={{
+            marginBottom: '12px',
+            color: 'var(--fgColor-muted)',
+            fontSize: '14px',
+        }}
         >
           {softDeletedTasks.length}件のソフトデリートされたタスクがあります
-        </Text>
+        </div>
         <Flash
           variant="warning"
           style={{ marginBottom: '12px' }}
@@ -186,7 +189,7 @@ export const RecycleBinView: React.FC = () => {
                 <Text
                   as="h3"
                   style={{
-                    fontSize: '16px',
+                    fontSize: '14px',
                     fontWeight: 'bold',
                     marginBottom: '4px'
                   }}
