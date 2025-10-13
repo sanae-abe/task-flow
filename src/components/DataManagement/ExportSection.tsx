@@ -111,15 +111,19 @@ export const ExportSection = memo<ExportSectionProps>(({
       )}
 
       {/* エクスポート実行ボタン */}
-      <Button
-        variant="primary"
-        leadingVisual={DownloadIcon}
-        onClick={handleExport}
-        disabled={exportType === 'selected' && !selectedBoard}
-        sx={{ alignSelf: 'flex-start' }}
-      >
-        エクスポート実行
-      </Button>
+      <div style={{ paddingTop: "12px", borderTop: "1px solid", borderColor: "var(--borderColor-default)" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "8px" }}>
+          <Button
+            variant="primary"
+            leadingVisual={DownloadIcon}
+            onClick={handleExport}
+            disabled={exportType === 'selected' && !selectedBoard}
+            sx={{ alignSelf: 'flex-start' }}
+          >
+            エクスポート実行
+          </Button>
+        </div>
+      </div>
     </div>
   );
 });

@@ -24,6 +24,8 @@ import {
   isRecurrenceComplete,
 } from "../utils/recurrence";
 import { logger } from "../utils/logger";
+import { softDeleteCompletedTasks } from "../utils/taskDeletion";
+import { getAutoDeletionSettings } from "../utils/settingsStorage";
 
 interface TaskState {
   // Task操作の一時的な状態をここに追加可能
@@ -237,57 +239,6 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
             : taskToMove.completedAt,
       };
 
-      // 繰り返しタスクの処理
-      let recurringTask: Task | null = null;
-      if (isMovingToCompleted && updatedTask.recurrence) {
-        if (
-          !isRecurrenceComplete(
-            updatedTask.recurrence,
-            updatedTask.occurrenceCount || 1,
-          )
-        ) {
-          const currentCount = (updatedTask.occurrenceCount || 1) + 1;
-
-          if (updatedTask.dueDate) {
-            // 期限ありタスクの場合：期限基準で次回期限を計算
-            const nextDueDate = calculateNextDueDate(
-              updatedTask.dueDate,
-              updatedTask.recurrence,
-            );
-
-            if (nextDueDate) {
-              recurringTask = {
-                ...updatedTask,
-                id: uuidv4(),
-                dueDate: nextDueDate,
-                completedAt: null,
-                occurrenceCount: currentCount,
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString(),
-              };
-            }
-          } else {
-            // 期限なしタスクの場合：作成日基準で次回作成日を計算
-            const nextCreationDate = calculateNextCreationDate(
-              updatedTask.createdAt,
-              updatedTask.recurrence,
-            );
-
-            if (nextCreationDate) {
-              recurringTask = {
-                ...updatedTask,
-                id: uuidv4(),
-                dueDate: null, // 期限なしのまま
-                completedAt: null,
-                occurrenceCount: currentCount,
-                createdAt: nextCreationDate,
-                updatedAt: new Date().toISOString(),
-              };
-            }
-          }
-        }
-      }
-
       // 同じカラム内での移動の場合は、特別な処理を行う
       if (sourceColumnId === targetColumnId) {
         const newTasks = [...sourceColumn.tasks];
@@ -355,11 +306,6 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
 
             newTasks.splice(safeTargetIndex, 0, updatedTask);
 
-            // 繰り返しタスクがある場合は追加（完了カラムに移動していない場合）
-            if (recurringTask && !isMovingToCompleted) {
-              newTasks.push(recurringTask);
-            }
-
             return {
               ...column,
               tasks: newTasks,
@@ -367,17 +313,6 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
           }
           return column;
         });
-
-        // 繰り返しタスクを最初のカラムに追加（完了カラムに移動した場合）
-        if (recurringTask && isMovingToCompleted && updatedColumns.length > 0) {
-          const firstColumn = updatedColumns[0];
-          if (firstColumn) {
-            updatedColumns[0] = {
-              ...firstColumn,
-              tasks: [...firstColumn.tasks, recurringTask],
-            };
-          }
-        }
 
         const updatedBoard = {
           ...boardState.currentBoard,
@@ -402,7 +337,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       });
     },
     [boardState.currentBoard, findTaskById, boardDispatch, notify],
-  );
+  );;;
 
   // タスク更新
   const updateTask = useCallback(
@@ -539,28 +474,77 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       return;
     }
 
-    const rightmostColumnId =
-      boardState.currentBoard.columns[
-        boardState.currentBoard.columns.length - 1
-      ]?.id;
-    if (!rightmostColumnId) {
+    // 自動削除設定を取得
+    const settings = getAutoDeletionSettings();
+
+    // 設定でソフトデリートが無効の場合は従来の完全削除
+    if (!settings.enableSoftDeletion) {
+      const rightmostColumnId =
+        boardState.currentBoard.columns[
+          boardState.currentBoard.columns.length - 1
+        ]?.id;
+      if (!rightmostColumnId) {
+        return;
+      }
+
+      const updatedBoard = {
+        ...boardState.currentBoard,
+        columns: boardState.currentBoard.columns.map((column) =>
+          column.id === rightmostColumnId ? { ...column, tasks: [] } : column,
+        ),
+        updatedAt: new Date().toISOString(),
+      };
+
+      boardDispatch({
+        type: "UPDATE_BOARD",
+        payload: { boardId: boardState.currentBoard.id, updates: updatedBoard },
+      });
+
+      notify.success("完了済みタスクを完全削除しました");
       return;
     }
 
-    const updatedBoard = {
-      ...boardState.currentBoard,
-      columns: boardState.currentBoard.columns.map((column) =>
-        column.id === rightmostColumnId ? { ...column, tasks: [] } : column,
-      ),
-      updatedAt: new Date().toISOString(),
-    };
+    // ソフトデリートを実行
+    try {
+      const result = softDeleteCompletedTasks(
+        [boardState.currentBoard],
+        settings,
+      );
 
-    boardDispatch({
-      type: "UPDATE_BOARD",
-      payload: { boardId: boardState.currentBoard.id, updates: updatedBoard },
-    });
+      if (result.deletedCount === 0) {
+        notify.info("削除対象の完了タスクがありません");
+        return;
+      }
 
-    notify.success("完了済みタスクをクリアしました");
+      // 更新されたボードを反映
+      const updatedBoard = result.updatedBoards[0];
+      if (updatedBoard) {
+        boardDispatch({
+          type: "UPDATE_BOARD",
+          payload: {
+            boardId: boardState.currentBoard.id,
+            updates: updatedBoard,
+          },
+        });
+      }
+
+      // 適切な通知メッセージ
+      const spaceMB = (result.storageFreed / (1024 * 1024)).toFixed(2);
+      const message = settings.enableSoftDeletion
+        ? `${result.deletedCount}件の完了タスクをソフトデリートしました（${spaceMB}MB）。ごみ箱から復元できます。`
+        : `${result.deletedCount}件の完了タスクを削除しました（${spaceMB}MB解放）`;
+
+      notify.success(message);
+
+      logger.info("Completed tasks cleared via soft delete:", {
+        deletedCount: result.deletedCount,
+        storageFreed: result.storageFreed,
+        softDeleteEnabled: settings.enableSoftDeletion,
+      });
+    } catch (error) {
+      logger.error("Failed to clear completed tasks:", error);
+      notify.error("完了タスクの削除に失敗しました");
+    }
   }, [boardState.currentBoard, boardDispatch, notify]);
 
   // サブタスク追加
@@ -703,7 +687,9 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
                 task.recurrence,
               );
               const now = new Date();
-              const nextCreation = nextCreationDate ? new Date(nextCreationDate) : null;
+              const nextCreation = nextCreationDate
+                ? new Date(nextCreationDate)
+                : null;
 
               // 次回作成日が現在時刻を過ぎている場合は新しいタスクを作成
               if (nextCreation && nextCreation <= now) {

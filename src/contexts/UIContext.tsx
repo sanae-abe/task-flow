@@ -9,6 +9,7 @@ import React, {
 } from "react";
 
 import type { SortOption, TaskFilter, ViewMode } from "../types";
+import type { VirtualRecurringTask } from "../utils/calendarRecurrence";
 import { logger } from "../utils/logger";
 
 interface UIState {
@@ -16,6 +17,7 @@ interface UIState {
   taskFilter: TaskFilter;
   viewMode: ViewMode;
   selectedTaskId: string | null;
+  virtualTaskInfo: VirtualRecurringTask | null;
   isTaskDetailOpen: boolean;
   isTaskFormOpen: boolean;
   isHelpOpen: boolean;
@@ -28,6 +30,7 @@ type UIAction =
   | { type: "SET_TASK_FILTER"; payload: TaskFilter }
   | { type: "SET_VIEW_MODE"; payload: ViewMode }
   | { type: "OPEN_TASK_DETAIL"; payload: { taskId: string } }
+  | { type: "OPEN_VIRTUAL_TASK_DETAIL"; payload: { virtualTask: VirtualRecurringTask } }
   | { type: "CLOSE_TASK_DETAIL" }
   | {
       type: "OPEN_TASK_FORM";
@@ -47,6 +50,7 @@ interface UIContextType {
   setTaskFilter: (filter: TaskFilter) => void;
   setViewMode: (mode: ViewMode) => void;
   openTaskDetail: (taskId: string) => void;
+  openVirtualTaskDetail: (virtualTask: VirtualRecurringTask) => void;
   closeTaskDetail: () => void;
   openTaskForm: (defaultDate?: Date, defaultStatus?: string) => void;
   closeTaskForm: () => void;
@@ -144,6 +148,16 @@ const uiReducer = (state: UIState, action: UIAction): UIState => {
       return {
         ...state,
         selectedTaskId: action.payload.taskId,
+        virtualTaskInfo: null, // 通常のタスクの場合は仮想タスク情報をクリア
+        isTaskDetailOpen: true,
+        isHelpOpen: false, // タスク詳細を開くときにヘルプを閉じる
+      };
+
+    case "OPEN_VIRTUAL_TASK_DETAIL":
+      return {
+        ...state,
+        selectedTaskId: action.payload.virtualTask.originalTaskId,
+        virtualTaskInfo: action.payload.virtualTask,
         isTaskDetailOpen: true,
         isHelpOpen: false, // タスク詳細を開くときにヘルプを閉じる
       };
@@ -152,6 +166,7 @@ const uiReducer = (state: UIState, action: UIAction): UIState => {
       return {
         ...state,
         selectedTaskId: null,
+        virtualTaskInfo: null,
         isTaskDetailOpen: false,
       };
 
@@ -161,6 +176,7 @@ const uiReducer = (state: UIState, action: UIAction): UIState => {
         isHelpOpen: true,
         isTaskDetailOpen: false, // ヘルプを開くときにタスク詳細を閉じる
         selectedTaskId: null,
+        virtualTaskInfo: null,
       };
 
     case "CLOSE_HELP":
@@ -200,6 +216,7 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
     taskFilter: { type: "all", label: "すべて" },
     viewMode: "kanban",
     selectedTaskId: null,
+    virtualTaskInfo: null,
     isTaskDetailOpen: false,
     isTaskFormOpen: false,
     isHelpOpen: false,
@@ -241,6 +258,10 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
     dispatch({ type: "OPEN_TASK_DETAIL", payload: { taskId } });
   }, []);
 
+  const openVirtualTaskDetail = useCallback((virtualTask: VirtualRecurringTask) => {
+    dispatch({ type: "OPEN_VIRTUAL_TASK_DETAIL", payload: { virtualTask } });
+  }, []);
+
   const closeTaskDetail = useCallback(() => {
     dispatch({ type: "CLOSE_TASK_DETAIL" });
   }, []);
@@ -278,6 +299,7 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
       setTaskFilter,
       setViewMode,
       openTaskDetail,
+      openVirtualTaskDetail,
       closeTaskDetail,
       openTaskForm,
       closeTaskForm,
@@ -290,6 +312,7 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
       setTaskFilter,
       setViewMode,
       openTaskDetail,
+      openVirtualTaskDetail,
       closeTaskDetail,
       openTaskForm,
       closeTaskForm,

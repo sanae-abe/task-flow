@@ -97,7 +97,7 @@ const LoadingState = memo<LoadingStateProps>(({
           <span
             style={{
               fontSize: `var(--text-body-size-${spinnerConfig.fontSize})`,
-              color: 'var(--color-fg-muted)',
+              color: 'var(--fgColor-muted)',
               textAlign: 'center'
             }}
           >

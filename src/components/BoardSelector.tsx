@@ -29,7 +29,7 @@ const styles = {
     height: "100%",
     overflowX: "auto",
     scrollbarWidth: "none",
-    "&::-webkit-scrollbar": {
+    "&::WebkitScrollbar": {
       display: "none",
     },
     maskImage:

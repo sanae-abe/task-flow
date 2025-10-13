@@ -2,6 +2,7 @@ import {
   DEFAULT_SETTINGS,
   type AppSettings,
   type DefaultColumnConfig,
+  type AutoDeletionSettings,
 } from "../types/settings";
 import { logger } from "./logger";
 
@@ -66,8 +67,58 @@ export const loadSettings = (): AppSettings => {
       return DEFAULT_SETTINGS;
     }
 
+    // 自動削除設定のバリデーション
+    let autoDeletionSettings: AutoDeletionSettings =
+      DEFAULT_SETTINGS.autoDeletion;
+
+    if (parsed.autoDeletion && typeof parsed.autoDeletion === "object") {
+      const autoDeletion = parsed.autoDeletion;
+
+      // 基本的なバリデーション
+      if (
+        typeof autoDeletion.enabled === "boolean" &&
+        typeof autoDeletion.retentionDays === "number" &&
+        autoDeletion.retentionDays > 0 &&
+        typeof autoDeletion.notifyBeforeDeletion === "boolean" &&
+        typeof autoDeletion.notificationDays === "number" &&
+        autoDeletion.notificationDays >= 0
+      ) {
+        autoDeletionSettings = {
+          enabled: autoDeletion.enabled,
+          retentionDays: Math.max(1, Math.min(365, autoDeletion.retentionDays)), // 1-365日の範囲
+          notifyBeforeDeletion: autoDeletion.notifyBeforeDeletion,
+          notificationDays: Math.max(
+            0,
+            Math.min(30, autoDeletion.notificationDays),
+          ), // 0-30日の範囲
+          excludeLabelIds: Array.isArray(autoDeletion.excludeLabelIds)
+            ? autoDeletion.excludeLabelIds
+            : [],
+          excludePriorities: Array.isArray(autoDeletion.excludePriorities)
+            ? autoDeletion.excludePriorities
+            : [],
+          autoExportBeforeDeletion:
+            typeof autoDeletion.autoExportBeforeDeletion === "boolean"
+              ? autoDeletion.autoExportBeforeDeletion
+              : true,
+          enableSoftDeletion:
+            typeof autoDeletion.enableSoftDeletion === "boolean"
+              ? autoDeletion.enableSoftDeletion
+              : true,
+          softDeletionRetentionDays:
+            typeof autoDeletion.softDeletionRetentionDays === "number"
+              ? Math.max(
+                  1,
+                  Math.min(30, autoDeletion.softDeletionRetentionDays),
+                )
+              : 7,
+        };
+      }
+    }
+
     return {
       defaultColumns: validatedColumns,
+      autoDeletion: autoDeletionSettings,
     };
   } catch (error) {
     logger.error("Failed to load settings:", error);
@@ -92,4 +143,34 @@ export const updateDefaultColumns = (columns: DefaultColumnConfig[]): void => {
  */
 export const resetSettings = (): void => {
   saveSettings(DEFAULT_SETTINGS);
+};
+
+/**
+ * 自動削除設定を更新
+ */
+export const updateAutoDeletionSettings = (
+  autoDeletionSettings: AutoDeletionSettings,
+): void => {
+  const currentSettings = loadSettings();
+  const updatedSettings: AppSettings = {
+    ...currentSettings,
+    autoDeletion: autoDeletionSettings,
+  };
+  saveSettings(updatedSettings);
+};
+
+/**
+ * 自動削除設定を取得
+ */
+export const getAutoDeletionSettings = (): AutoDeletionSettings => {
+  const settings = loadSettings();
+  return settings.autoDeletion;
+};
+
+/**
+ * 自動削除設定の有効性をチェック
+ */
+export const isAutoDeletionEnabled = (): boolean => {
+  const settings = getAutoDeletionSettings();
+  return settings.enabled;
 };

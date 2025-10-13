@@ -7,6 +7,7 @@ import {
 
 interface UseCalendarHandlersParams {
   openTaskDetail: (taskId: string) => void;
+  openVirtualTaskDetail: (virtualTask: VirtualRecurringTask) => void;
   openTaskForm: (defaultDate?: Date) => void;
   updateTask: (taskId: string, updates: Partial<Task>) => void;
 }
@@ -19,6 +20,7 @@ interface UseCalendarHandlersReturn {
 
 export const useCalendarHandlers = ({
   openTaskDetail,
+  openVirtualTaskDetail,
   openTaskForm,
   updateTask,
 }: UseCalendarHandlersParams): UseCalendarHandlersReturn => {
@@ -38,13 +40,13 @@ export const useCalendarHandlers = ({
   const handleTaskClick = useCallback(
     (task: Task | VirtualRecurringTask) => {
       if (isVirtualTask(task)) {
-        // 仮想タスクの場合は元のタスクのIDを使用
-        openTaskDetail(task.originalTaskId);
+        // 仮想タスクの場合は仮想タスク情報を含めて詳細を開く
+        openVirtualTaskDetail(task);
       } else {
         openTaskDetail(task.id);
       }
     },
-    [openTaskDetail],
+    [openTaskDetail, openVirtualTaskDetail],
   );
 
   const handleDateClick = useCallback(

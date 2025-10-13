@@ -138,7 +138,6 @@ const TaskEditForm = memo<TaskEditFormProps>(
               onRecurrenceChange={setRecurrence}
             />
           </div>
-
         </div>
 
         <div style={{ marginBottom: "24px" }}>

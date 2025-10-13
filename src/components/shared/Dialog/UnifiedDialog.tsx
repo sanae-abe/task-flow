@@ -144,7 +144,7 @@ const DialogHeader = memo<{
     justifyContent: 'space-between',
     backgroundColor: 'var(--bgColor-default)',
     borderRadius: 'var(--borderRadius-large) var(--borderRadius-large) 0 0',
-    boxShadow: '0 1px 0 var(--borderColor-default,var(--color-border-default))'
+    boxShadow: '0 1px 0 var(--borderColor-default,var(--borderColor-default))'
   }}>
     <Text 
       id={titleId}
