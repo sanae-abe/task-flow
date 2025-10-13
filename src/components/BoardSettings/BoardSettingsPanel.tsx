@@ -391,6 +391,11 @@ export const BoardSettingsPanel: React.FC = () => {
       {/* 保存ボタン */}
       <div style={{ paddingTop: "12px", borderTop: "1px solid", borderColor: "var(--borderColor-default)" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "8px" }}>
+          {hasUnsavedChanges && (
+            <div style={{ fontSize: "14px", color: "var(--fgColor-attention)" }}>
+              未保存の変更があります（1秒後に自動保存されます）
+            </div>
+          )}
           <Button
             variant="primary"
             leadingVisual={CheckIcon}
@@ -398,11 +403,6 @@ export const BoardSettingsPanel: React.FC = () => {
           >
             設定を保存
           </Button>
-          {hasUnsavedChanges && (
-            <div style={{ fontSize: "14px", color: "var(--fgColor-attention)" }}>
-              • 未保存の変更があります（1秒後に自動保存されます）
-            </div>
-          )}
         </div>
       </div>
     </div>
