@@ -31,15 +31,11 @@ export const RetentionPresetMenu: React.FC<RetentionPresetMenuProps> = ({
 
   return (
     <FormControl aria-label="保持期間プリセットから選択" disabled={disabled}>
-      <Select key={`preset-${value}`} defaultValue={value}>
+      <Select key={`preset-${value}`} value={value} onChange={(e) => onSelect(e.target.value)}>
         {Object.entries(RETENTION_PRESETS).map(([key, preset]) => (
           <Select.Option
             key={key}
             value={key}
-            onSelect={() => {
-              console.log("🔍 プリセット選択:", key);
-              onSelect(key);
-            }}
           >
             {preset.label}
           </Select.Option>
