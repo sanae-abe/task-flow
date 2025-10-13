@@ -109,6 +109,9 @@ export const RetentionSettingsSection: React.FC<
         }}
       >
         <FormControl disabled={!enabled}>
+          <FormControl.Label visuallyHidden>
+            保持期間設定
+          </FormControl.Label>
           <div
             style={{
               display: "flex",

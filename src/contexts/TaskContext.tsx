@@ -176,8 +176,6 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
         type: "UPDATE_BOARD",
         payload: { boardId: boardState.currentBoard.id, updates: updatedBoard },
       });
-
-      notify.success(`タスク「${title}」を作成しました`);
     },
     [boardState.currentBoard, boardDispatch, notify],
   );
