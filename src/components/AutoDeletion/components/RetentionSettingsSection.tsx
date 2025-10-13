@@ -124,7 +124,7 @@ export const RetentionSettingsSection: React.FC<
             <RetentionDaysInput
               value={retentionDays}
               onChange={handleDaysChange}
-              disabled={!enabled || selectedPreset !== "custom"}
+              disabled={!enabled}
             />
           </div>
         </FormControl>
