@@ -1,5 +1,5 @@
 import React from 'react';
-import { TextInput, FormControl, Flash } from '@primer/react';
+import { TextInput, FormControl, Flash, Select } from '@primer/react';
 import { InfoIcon } from '@primer/octicons-react';
 
 import type { TaskFormFieldsProps } from '../types';
@@ -28,7 +28,8 @@ export const TaskFormFields: React.FC<TaskFormFieldsProps> = ({
   formActions,
   selectedTemplate,
   onTimeChange,
-  onKeyPress
+  onKeyPress,
+  availableBoards
 }) => {
   const {
     title,
@@ -39,7 +40,8 @@ export const TaskFormFields: React.FC<TaskFormFieldsProps> = ({
     labels,
     attachments,
     recurrence,
-    priority
+    priority,
+    selectedBoardId
   } = formState;
 
   const {
@@ -49,7 +51,8 @@ export const TaskFormFields: React.FC<TaskFormFieldsProps> = ({
     setLabels,
     setAttachments,
     setRecurrence,
-    setPriority
+    setPriority,
+    setSelectedBoardId
   } = formActions;
 
   return (
@@ -75,6 +78,27 @@ export const TaskFormFields: React.FC<TaskFormFieldsProps> = ({
         autoFocus
         validation={{ required: true }}
       />
+
+      {/* ボード選択 */}
+      {availableBoards && availableBoards.length > 1 && (
+        <div style={{ marginBottom: '24px' }}>
+          <FormControl>
+            <FormControl.Label>作成先ボード（任意）</FormControl.Label>
+            <Select
+              value={selectedBoardId || ''}
+              onChange={(e) => setSelectedBoardId(e.target.value || undefined)}
+              sx={{ width: '100%' }}
+            >
+              <Select.Option value="">現在のボード</Select.Option>
+              {availableBoards.map((board) => (
+                <Select.Option key={board.id} value={board.id}>
+                  {board.title}
+                </Select.Option>
+              ))}
+            </Select>
+          </FormControl>
+        </div>
+      )}
 
       {/* 説明 */}
       <div style={{ width: '100%', marginBottom: '24px' }}>

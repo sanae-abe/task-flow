@@ -35,11 +35,23 @@ export const useTaskSubmission = (
   closeTaskForm: () => void,
   notify: NotifyFunction,
   currentBoard: KanbanBoard | null,
-  taskFormDefaultStatus?: string
+  taskFormDefaultStatus?: string,
+  availableBoards?: KanbanBoard[],
+  setCurrentBoard?: (boardId: string) => void
 ) => {
   // タスク保存処理
   const handleSave = useCallback(() => {
-    if (!formState.title.trim() || !currentBoard) {
+    if (!formState.title.trim()) {
+      return;
+    }
+
+    // 選択されたボードまたは現在のボードを取得
+    const targetBoard = formState.selectedBoardId
+      ? availableBoards?.find(board => board.id === formState.selectedBoardId)
+      : currentBoard;
+
+    if (!targetBoard) {
+      notify.error('タスクを作成するボードが選択されていません。');
       return;
     }
 
@@ -58,9 +70,14 @@ export const useTaskSubmission = (
     }
 
     // taskFormDefaultStatusが指定されている場合はそのカラムを使用、なければ最初のカラムを使用
-    const targetColumnId = taskFormDefaultStatus || currentBoard.columns[0]?.id;
+    const targetColumnId = taskFormDefaultStatus || targetBoard.columns[0]?.id;
 
     if (targetColumnId) {
+      // 選択されたボードが現在のボードと異なる場合は、ボードを切り替え
+      if (formState.selectedBoardId && formState.selectedBoardId !== currentBoard?.id && setCurrentBoard) {
+        setCurrentBoard(formState.selectedBoardId);
+      }
+
       createTask(
         targetColumnId,
         formState.title.trim(),
@@ -72,10 +89,15 @@ export const useTaskSubmission = (
         formState.priority
       );
 
-      // テンプレートから作成した場合の通知
+      // 通知メッセージ
+      let message = `タスク「${formState.title.trim()}」を作成しました`;
       if (selectedTemplate) {
-        notify.success(`テンプレート「${selectedTemplate.name}」からタスクを作成しました`);
+        message = `テンプレート「${selectedTemplate.name}」からタスク「${formState.title.trim()}」を作成しました`;
       }
+      if (formState.selectedBoardId && formState.selectedBoardId !== currentBoard?.id) {
+        message += `（ボード「${targetBoard.title}」に作成）`;
+      }
+      notify.success(message);
 
       closeTaskForm();
     } else {
@@ -89,6 +111,8 @@ export const useTaskSubmission = (
     closeTaskForm,
     currentBoard,
     taskFormDefaultStatus,
+    availableBoards,
+    setCurrentBoard,
     notify
   ]);
 

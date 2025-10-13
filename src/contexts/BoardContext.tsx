@@ -461,12 +461,24 @@ const boardReducer = (state: BoardState, action: BoardAction): BoardState => {
         ),
       });
 
-      // ターゲットボードにタスクを追加
+      // ターゲットボードにタスクを追加（完了タスクの場合は未完了状態にリセット）
+      const resetTask = taskToMove.completedAt
+        ? {
+            ...taskToMove,
+            completedAt: null,
+            // サブタスクも未完了状態にリセット
+            subTasks: taskToMove.subTasks?.map(subTask => ({
+              ...subTask,
+              completed: false
+            })) || []
+          }
+        : taskToMove;
+
       const updatedTargetBoard = updateBoardTimestamp({
         ...targetBoard,
         columns: targetBoard.columns.map((col) =>
           col.id === targetColumnToUse.id
-            ? { ...col, tasks: [...col.tasks, taskToMove] }
+            ? { ...col, tasks: [...col.tasks, resetTask] }
             : col,
         ),
       });
@@ -1024,7 +1036,10 @@ const authenticateUser = async (email, password) => {
         },
       });
 
-      notify.success(`タスク「${taskToMove.title}」を「${targetBoard.title}」に移動しました`);
+      const wasCompleted = taskToMove.completedAt !== null;
+      const baseMessage = `タスク「${taskToMove.title}」を「${targetBoard.title}」に移動しました`;
+      const resetMessage = wasCompleted ? `${baseMessage}（未完了状態にリセット）` : baseMessage;
+      notify.success(resetMessage);
     },
     [state.boards, notify],
   );

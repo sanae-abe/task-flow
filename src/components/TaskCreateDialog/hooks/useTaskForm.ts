@@ -10,7 +10,8 @@ import type { Label as LabelType, FileAttachment, RecurrenceConfig, Priority } f
  */
 export const useTaskForm = (
   isDialogOpen: boolean,
-  defaultDate?: string
+  defaultDate?: string,
+  currentBoardId?: string
 ) => {
   // フォーム状態
   const [title, setTitle] = useState('');
@@ -22,6 +23,7 @@ export const useTaskForm = (
   const [attachments, setAttachments] = useState<FileAttachment[]>([]);
   const [recurrence, setRecurrence] = useState<RecurrenceConfig | undefined>();
   const [priority, setPriority] = useState<Priority | undefined>();
+  const [selectedBoardId, setSelectedBoardId] = useState<string | undefined>(currentBoardId);
 
   // ダイアログが開かれた時の初期化処理
   const [isDialogFirstOpen, setIsDialogFirstOpen] = useState(false);
@@ -39,7 +41,8 @@ export const useTaskForm = (
     setAttachments([]);
     setRecurrence(undefined);
     setPriority(undefined);
-  }, [defaultDate]);
+    setSelectedBoardId(currentBoardId);
+  }, [defaultDate, currentBoardId]);
 
   // デフォルト日付が設定されている場合は期限日に設定
   useEffect(() => {
@@ -78,7 +81,8 @@ export const useTaskForm = (
     labels,
     attachments,
     recurrence,
-    priority
+    priority,
+    selectedBoardId
   };
 
   const formActions: TaskFormActions = {
@@ -91,6 +95,7 @@ export const useTaskForm = (
     setAttachments,
     setRecurrence,
     setPriority,
+    setSelectedBoardId,
     resetForm
   };
 
