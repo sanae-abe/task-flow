@@ -51,9 +51,16 @@ export const useDialogFlashMessage = (autoClearDelay: number = 3000) => {
    * 従来のonMessageコールバック形式に対応
    */
   const handleMessage = useCallback((
-    messageData: { type: DialogMessageType; text: string; title?: string },
+    messageData: { type: DialogMessageType; text: string; title?: string } | null,
     delay?: number
   ) => {
+    // nullチェックを追加してランタイムエラーを防ぐ
+    if (!messageData) {
+      // eslint-disable-next-line no-console
+      console.warn('handleMessage called with null messageData');
+      return;
+    }
+
     const messageWithTitle: DialogFlashMessageData = {
       type: messageData.type,
       text: messageData.text,

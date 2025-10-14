@@ -84,6 +84,36 @@ export const handleLabelActions = (
       };
     }
 
+    case "DELETE_LABEL_FROM_ALL_BOARDS": {
+      const { labelId } = action.payload;
+      const currentTime = new Date().toISOString();
+
+      // すべてのボードからラベルを削除し、タスクからも削除
+      const updatedBoards = state.boards.map((board) => ({
+        ...board,
+        labels: board.labels.filter((label) => label.id !== labelId),
+        columns: board.columns.map((column) => ({
+          ...column,
+          tasks: column.tasks.map((task) => ({
+            ...task,
+            labels: task.labels.filter((label) => label.id !== labelId),
+          })),
+        })),
+        updatedAt: currentTime,
+      }));
+
+      // 現在のボードも更新
+      const updatedCurrentBoard = state.currentBoard
+        ? updatedBoards.find((board) => board.id === state.currentBoard?.id) || null
+        : null;
+
+      return {
+        ...state,
+        boards: updatedBoards,
+        currentBoard: updatedCurrentBoard,
+      };
+    }
+
     default:
       return state;
   }

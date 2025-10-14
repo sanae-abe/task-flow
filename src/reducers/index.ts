@@ -46,7 +46,7 @@ export const kanbanReducer = (
   }
 
   // Label actions
-  if (["ADD_LABEL", "UPDATE_LABEL", "DELETE_LABEL"].includes(action.type)) {
+  if (["ADD_LABEL", "UPDATE_LABEL", "DELETE_LABEL", "DELETE_LABEL_FROM_ALL_BOARDS"].includes(action.type)) {
     return handleLabelActions(state, action);
   }
 

@@ -149,6 +149,7 @@ export type KanbanAction =
   | { type: 'ADD_LABEL'; payload: { label: Label } }
   | { type: 'UPDATE_LABEL'; payload: { labelId: string; updates: Partial<Label> } }
   | { type: 'DELETE_LABEL'; payload: { labelId: string } }
+  | { type: 'DELETE_LABEL_FROM_ALL_BOARDS'; payload: { labelId: string } }
   | { type: 'ADD_SUBTASK'; payload: { taskId: string; subTask: SubTask } }
   | { type: 'UPDATE_SUBTASK'; payload: { taskId: string; subTaskId: string; updates: Partial<SubTask> } }
   | { type: 'DELETE_SUBTASK'; payload: { taskId: string; subTaskId: string } }
