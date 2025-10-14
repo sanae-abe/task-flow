@@ -49,9 +49,14 @@ export const RecycleBinView: React.FC = () => {
   const handleRestore = async (taskId: string) => {
     setIsRestoring(taskId);
     try {
+      // 復元前にタスク情報を取得
+      const taskToRestore = deletedTasks.find(task => task.id === taskId);
       const updatedBoards = restoreTaskFromRecycleBin(state.boards, taskId);
       if (updatedBoards) {
-        importBoards(updatedBoards, true);
+        const customMessage = taskToRestore ?
+          `タスク「${taskToRestore.title}」を復元しました` :
+          "タスクを復元しました";
+        importBoards(updatedBoards, true, customMessage);
         setShowConfirm(null);
       }
     } catch (error) {
