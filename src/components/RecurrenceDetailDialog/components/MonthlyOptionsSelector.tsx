@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, TextInput } from "@primer/react";
+import { Text, TextInput, FormControl } from "@primer/react";
 import type { RecurrenceConfig } from "../types";
 
 interface MonthlyOptionsSelectorProps {
@@ -16,8 +16,8 @@ const MonthlyOptionsSelector: React.FC<MonthlyOptionsSelectorProps> = ({
   }
 
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-      <Text sx={{ fontSize: 1, minWidth: "60px" }}>日付:</Text>
+    <FormControl sx={{ display: "flex", flexDirection: "row", alignItems: "center", gap: "8px" }}>
+      <FormControl.Label sx={{ alignSelf: "center", minWidth: "80px" }}>日付</FormControl.Label>
       <TextInput
         type="number"
         value={config.dayOfMonth?.toString() || ""}
@@ -29,7 +29,7 @@ const MonthlyOptionsSelector: React.FC<MonthlyOptionsSelectorProps> = ({
         step={1}
       />
       <Text sx={{ fontSize: 1 }}>日</Text>
-    </div>
+    </FormControl>
   );
 };
 

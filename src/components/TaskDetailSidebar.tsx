@@ -230,9 +230,7 @@ const TaskDetailSidebar = memo<TaskDetailSidebarProps>(
               >
                 複製
               </Button>
-              <TaskBoardMover
-                onMoveTask={handleMoveToBoard}
-              />
+              <TaskBoardMover onMoveTask={handleMoveToBoard} />
               <Button
                 onClick={handleDelete}
                 variant="danger"

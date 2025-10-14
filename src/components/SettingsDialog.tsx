@@ -3,7 +3,6 @@ import {
   TagIcon,
   ProjectIcon,
   TrashIcon,
-  HistoryIcon,
 } from "@primer/octicons-react";
 import { SplitPageLayout, NavList } from "@primer/react";
 import React, { useState } from "react";
@@ -14,8 +13,8 @@ import { LabelManagementPanel } from "./LabelManagement";
 import { DataManagementPanel } from "./DataManagement";
 import { BoardSettingsPanel } from "./BoardSettings";
 import { TemplateManagementPanel } from "./TemplateManagement";
-import { AutoDeletionSettingsPanel } from "./AutoDeletion";
 import { RecycleBinView } from "./RecycleBin";
+import { RecycleBinSettingsPanel } from "./RecycleBin/RecycleBinSettingsPanel";
 import type { KanbanBoard } from "../types";
 
 interface SettingsDialogProps {
@@ -32,7 +31,7 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
   onExportBoard,
 }) => {
   const [activeTab, setActiveTab] = useState<
-    "labels" | "data" | "board" | "templates" | "autoDeletion" | "recycleBin"
+    "labels" | "data" | "board" | "templates" | "recycleBin"
   >("labels");
 
   return (
@@ -82,22 +81,13 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
                 ラベル管理
               </NavList.Item>
               <NavList.Item
-                aria-current={activeTab === "autoDeletion" ? "page" : undefined}
-                onClick={() => setActiveTab("autoDeletion")}
-              >
-                <NavList.LeadingVisual>
-                  <TrashIcon />
-                </NavList.LeadingVisual>
-                自動削除設定
-              </NavList.Item>
-              <NavList.Item
                 aria-current={activeTab === "recycleBin" ? "page" : undefined}
                 onClick={() => setActiveTab("recycleBin")}
               >
                 <NavList.LeadingVisual>
-                  <HistoryIcon />
+                  <TrashIcon />
                 </NavList.LeadingVisual>
-                ごみ箱
+                ゴミ箱管理
               </NavList.Item>
               <NavList.Item
                 aria-current={activeTab === "data" ? "page" : undefined}
@@ -120,10 +110,19 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
                 <TemplateManagementPanel />
               ) : activeTab === "labels" ? (
                 <LabelManagementPanel />
-              ) : activeTab === "autoDeletion" ? (
-                <AutoDeletionSettingsPanel />
               ) : activeTab === "recycleBin" ? (
-                <RecycleBinView />
+                <div>
+                  <RecycleBinSettingsPanel />
+                  <div
+                    style={{
+                      marginTop: "24px",
+                      borderTop: "1px solid var(--borderColor-muted)",
+                      paddingTop: "24px",
+                    }}
+                  >
+                    <RecycleBinView />
+                  </div>
+                </div>
               ) : (
                 <DataManagementPanel
                   onExportAll={onExportData}

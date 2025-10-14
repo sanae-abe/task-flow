@@ -41,80 +41,82 @@ const TaskDisplayContent = React.memo<TaskDisplayContentProps>(
     const displayDueDate = virtualTaskInfo?.dueDate || task.dueDate;
 
     return (
-    <>
-      <TaskDisplaySection title="説明">
-        <ContentBox
-          isEmpty={!task.description}
-          emptyText="説明が設定されていません"
-        >
-          {task.description && (
-            <LinkifiedText
-              sx={{
-                fontSize: 1,
-                whiteSpace: "pre-wrap",
-                overflowWrap: "anywhere",
-              }}
-            >
-              {task.description}
-            </LinkifiedText>
-          )}
-        </ContentBox>
-      </TaskDisplaySection>
-
-      {displayDueDate && (
-        <TaskDisplaySection title="期限">
-          <ContentBox>
-            <DueDateDisplay dueDate={new Date(displayDueDate)} showYear />
+      <>
+        <TaskDisplaySection title="説明">
+          <ContentBox
+            isEmpty={!task.description}
+            emptyText="説明が設定されていません"
+          >
+            {task.description && (
+              <LinkifiedText
+                sx={{
+                  fontSize: 1,
+                  whiteSpace: "pre-wrap",
+                  overflowWrap: "anywhere",
+                }}
+              >
+                {task.description}
+              </LinkifiedText>
+            )}
           </ContentBox>
         </TaskDisplaySection>
-      )}
 
-      {task.recurrence && (
-        <TaskDisplaySection title="繰り返し設定">
-          <ContentBox>
-            <Text sx={{ fontSize: 1 }}>
-              {getRecurrenceDescription(task.recurrence)}
-            </Text>
-          </ContentBox>
-        </TaskDisplaySection>
-      )}
+        {displayDueDate && (
+          <TaskDisplaySection title="期限">
+            <ContentBox>
+              <DueDateDisplay dueDate={new Date(displayDueDate)} showYear />
+            </ContentBox>
+          </TaskDisplaySection>
+        )}
 
-      {columnName && (
-        <TaskDisplaySection title="ステータス">
-          <ContentBox>
-            <Text sx={{ fontSize: 1 }}>{columnName}</Text>
-          </ContentBox>
-        </TaskDisplaySection>
-      )}
+        {task.recurrence && (
+          <TaskDisplaySection title="繰り返し設定">
+            <ContentBox>
+              <Text sx={{ fontSize: 1 }}>
+                {getRecurrenceDescription(task.recurrence)}
+              </Text>
+            </ContentBox>
+          </TaskDisplaySection>
+        )}
 
-      {task.priority && (
-        <TaskDisplaySection title="優先度">
-          <ContentBox>
-            <Text sx={{ fontSize: 1 }}>{getPriorityText(task.priority)}</Text>
-          </ContentBox>
-        </TaskDisplaySection>
-      )}
+        {columnName && (
+          <TaskDisplaySection title="ステータス">
+            <ContentBox>
+              <Text sx={{ fontSize: 1 }}>{columnName}</Text>
+            </ContentBox>
+          </TaskDisplaySection>
+        )}
 
-      {task.completedAt && (
-        <TaskDisplaySection title="完了日時">
-          <ContentBox>
-            <Text sx={{ fontSize: 1 }}>{formatDateTime(task.completedAt)}</Text>
-          </ContentBox>
-        </TaskDisplaySection>
-      )}
+        {task.priority && (
+          <TaskDisplaySection title="優先度">
+            <ContentBox>
+              <Text sx={{ fontSize: 1 }}>{getPriorityText(task.priority)}</Text>
+            </ContentBox>
+          </TaskDisplaySection>
+        )}
 
-      {task.labels && task.labels.length > 0 && (
-        <TaskDisplaySection title="ラベル">
-          <TaskLabels labels={task.labels} />
-        </TaskDisplaySection>
-      )}
+        {task.completedAt && (
+          <TaskDisplaySection title="完了日時">
+            <ContentBox>
+              <Text sx={{ fontSize: 1 }}>
+                {formatDateTime(task.completedAt)}
+              </Text>
+            </ContentBox>
+          </TaskDisplaySection>
+        )}
 
-      {task.files && task.files.length > 0 && (
-        <TaskDisplaySection title="ファイル添付">
-          <FileList attachments={task.files} />
-        </TaskDisplaySection>
-      )}
-    </>
+        {task.labels && task.labels.length > 0 && (
+          <TaskDisplaySection title="ラベル">
+            <TaskLabels labels={task.labels} />
+          </TaskDisplaySection>
+        )}
+
+        {task.files && task.files.length > 0 && (
+          <TaskDisplaySection title="ファイル添付">
+            <FileList attachments={task.files} />
+          </TaskDisplaySection>
+        )}
+      </>
     );
   },
 );

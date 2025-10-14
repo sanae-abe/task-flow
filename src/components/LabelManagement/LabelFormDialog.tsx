@@ -7,6 +7,7 @@ import { useBoard } from '../../contexts/BoardContext';
 import UnifiedDialog from '../shared/Dialog/UnifiedDialog';
 import ColorSelector from '../ColorSelector';
 import LabelChip from '../LabelChip';
+import ErrorMessage from '../ErrorMessage';
 
 interface LabelFormDialogProps {
   isOpen: boolean;
@@ -203,9 +204,7 @@ const LabelFormDialog: React.FC<LabelFormDialogProps> = ({
             disabled={isLoading}
           />
           {errors.name && (
-            <FormControl.Validation variant="error">
-              {errors.name}
-            </FormControl.Validation>
+            <ErrorMessage error={errors.name} />
           )}
         </FormControl>
 

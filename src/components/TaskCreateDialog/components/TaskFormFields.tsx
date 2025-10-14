@@ -83,7 +83,7 @@ export const TaskFormFields: React.FC<TaskFormFieldsProps> = ({
       {availableBoards && availableBoards.length > 1 && (
         <div style={{ marginBottom: '24px' }}>
           <FormControl>
-            <FormControl.Label>作成先ボード（任意）</FormControl.Label>
+            <FormControl.Label>作成先ボード</FormControl.Label>
             <Select
               value={selectedBoardId || ''}
               onChange={(e) => setSelectedBoardId(e.target.value || undefined)}
@@ -103,7 +103,7 @@ export const TaskFormFields: React.FC<TaskFormFieldsProps> = ({
       {/* 説明 */}
       <div style={{ width: '100%', marginBottom: '24px' }}>
         <FormControl>
-          <FormControl.Label>説明（任意）</FormControl.Label>
+          <FormControl.Label>説明</FormControl.Label>
           <RichTextEditor
             value={description}
             onChange={setDescription}
@@ -115,7 +115,7 @@ export const TaskFormFields: React.FC<TaskFormFieldsProps> = ({
       {/* 期限設定 */}
       <div style={{ marginBottom: '24px' }}>
         <FormControl>
-          <FormControl.Label>期限（任意）</FormControl.Label>
+          <FormControl.Label>期限</FormControl.Label>
           <div style={{ width: '100%' }}>
             <TextInput
               type="date"
@@ -140,17 +140,6 @@ export const TaskFormFields: React.FC<TaskFormFieldsProps> = ({
         </FormControl>
       </div>
 
-      {/* ラベル選択 */}
-      <div style={{ marginBottom: '24px' }}>
-        <FormControl>
-          <FormControl.Label>ラベル（任意）</FormControl.Label>
-          <LabelSelector
-            selectedLabels={labels}
-            onLabelsChange={setLabels}
-          />
-        </FormControl>
-      </div>
-
       {/* 優先度選択 */}
       <div style={{ marginBottom: '24px' }}>
         <PrioritySelector
@@ -159,10 +148,21 @@ export const TaskFormFields: React.FC<TaskFormFieldsProps> = ({
         />
       </div>
 
+      {/* ラベル選択 */}
+      <div style={{ marginBottom: '24px' }}>
+        <FormControl>
+          <FormControl.Label>ラベル</FormControl.Label>
+          <LabelSelector
+            selectedLabels={labels}
+            onLabelsChange={setLabels}
+          />
+        </FormControl>
+      </div>
+
       {/* ファイル添付 */}
       <div>
         <FormControl sx={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-          <FormControl.Label>ファイル添付（任意）</FormControl.Label>
+          <FormControl.Label>ファイル添付</FormControl.Label>
           <FileUploader
             attachments={attachments}
             onAttachmentsChange={setAttachments}

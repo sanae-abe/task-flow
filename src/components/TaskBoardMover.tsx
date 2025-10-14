@@ -1,12 +1,7 @@
-import React, { useState, useCallback, useMemo } from 'react';
-import {
-  ActionList,
-  ActionMenu,
-  Button,
-  Text,
-} from '@primer/react';
-import { ArrowRightIcon, ProjectIcon } from '@primer/octicons-react';
-import { useBoard } from '../contexts/BoardContext';
+import React, { useState, useCallback, useMemo } from "react";
+import { ActionList, ActionMenu, Button, Text } from "@primer/react";
+import { ArrowRightIcon, ProjectIcon } from "@primer/octicons-react";
+import { useBoard } from "../contexts/BoardContext";
 
 interface TaskBoardMoverProps {
   onMoveTask: (targetBoardId: string) => void;
@@ -21,15 +16,18 @@ export const TaskBoardMover: React.FC<TaskBoardMoverProps> = ({
   const [isOpen, setIsOpen] = useState(false);
 
   // 現在のボード以外のボードを取得
-  const availableBoards = useMemo(() =>
-    state.boards.filter(board => board.id !== currentBoard?.id),
-    [state.boards, currentBoard?.id]
+  const availableBoards = useMemo(
+    () => state.boards.filter((board) => board.id !== currentBoard?.id),
+    [state.boards, currentBoard?.id],
   );
 
-  const handleBoardSelect = useCallback((boardId: string) => {
-    onMoveTask(boardId);
-    setIsOpen(false);
-  }, [onMoveTask]);
+  const handleBoardSelect = useCallback(
+    (boardId: string) => {
+      onMoveTask(boardId);
+      setIsOpen(false);
+    },
+    [onMoveTask],
+  );
 
   const handleToggle = useCallback(() => {
     setIsOpen(!isOpen);
@@ -51,10 +49,10 @@ export const TaskBoardMover: React.FC<TaskBoardMoverProps> = ({
           onClick={handleToggle}
           style={{
             flex: 1,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '8px',
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "8px",
           }}
         >
           移動
@@ -72,13 +70,23 @@ export const TaskBoardMover: React.FC<TaskBoardMoverProps> = ({
                 <ActionList.LeadingVisual>
                   <ProjectIcon size={16} />
                 </ActionList.LeadingVisual>
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-                  <Text style={{ fontWeight: '600' }}>
-                    {board.title}
-                  </Text>
-                  <Text style={{ fontSize: '12px', color: 'var(--fgColor-muted)' }}>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "flex-start",
+                  }}
+                >
+                  <Text style={{ fontWeight: "600" }}>{board.title}</Text>
+                  <Text
+                    style={{ fontSize: "12px", color: "var(--fgColor-muted)" }}
+                  >
                     {board.columns.length} カラム・
-                    {board.columns.reduce((sum, col) => sum + col.tasks.length, 0)} タスク
+                    {board.columns.reduce(
+                      (sum, col) => sum + col.tasks.length,
+                      0,
+                    )}{" "}
+                    タスク
                   </Text>
                 </div>
               </ActionList.Item>
@@ -91,11 +99,19 @@ export const TaskBoardMover: React.FC<TaskBoardMoverProps> = ({
                 <ActionList.LeadingVisual>
                   <ProjectIcon size={16} />
                 </ActionList.LeadingVisual>
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-                  <Text style={{ fontWeight: '600' }}>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "flex-start",
+                  }}
+                >
+                  <Text style={{ fontWeight: "600" }}>
                     {currentBoard.title}
                   </Text>
-                  <Text style={{ fontSize: '12px', color: 'var(--fgColor-muted)' }}>
+                  <Text
+                    style={{ fontSize: "12px", color: "var(--fgColor-muted)" }}
+                  >
                     現在のボード
                   </Text>
                 </div>

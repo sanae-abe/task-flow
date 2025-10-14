@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, Select, TextInput } from "@primer/react";
+import { Text, Select, TextInput, FormControl } from "@primer/react";
 import type { RecurrenceConfig } from "../types";
 import { PATTERN_OPTIONS } from "../utils/constants";
 
@@ -30,9 +30,9 @@ const RecurrencePatternSelector: React.FC<RecurrencePatternSelectorProps> = ({
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-        <Text sx={{ fontSize: 1, minWidth: "60px" }}>パターン:</Text>
+    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+      <FormControl sx={{ display: "flex", flexDirection: "row", alignItems: "center", gap: "8px" }}>
+        <FormControl.Label sx={{ alignSelf: "center", minWidth: "80px" }}>パターン</FormControl.Label>
         <Select
           value={config.pattern || "daily"}
           onChange={(e) => onPatternChange(e.target.value)}
@@ -44,10 +44,10 @@ const RecurrencePatternSelector: React.FC<RecurrencePatternSelectorProps> = ({
             </Select.Option>
           ))}
         </Select>
-      </div>
+      </FormControl>
 
-      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-        <Text sx={{ fontSize: 1, minWidth: "60px" }}>間隔:</Text>
+      <FormControl sx={{ display: "flex", flexDirection: "row", alignItems: "center", gap: "8px" }}>
+        <FormControl.Label sx={{ alignSelf: "center", minWidth: "80px" }}>間隔</FormControl.Label>
         <TextInput
           type="number"
           value={(config.interval || 1).toString()}
@@ -57,7 +57,7 @@ const RecurrencePatternSelector: React.FC<RecurrencePatternSelectorProps> = ({
           step={1}
         />
         <Text sx={{ fontSize: 1 }}>{getIntervalUnit()}</Text>
-      </div>
+      </FormControl>
     </div>
   );
 };

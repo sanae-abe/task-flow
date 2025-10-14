@@ -549,7 +549,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
                   <br />
                   フィルター
                 </>
-              } 
+              }
               description="優先度設定で重要タスクを見える化、優先度フィルターで緊急タスクに集中、優先度ソートで効率的な作業順序を構築"
             />
             <HelpItem

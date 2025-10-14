@@ -9,25 +9,9 @@ import React, {
 } from "react";
 import { v4 as uuidv4 } from "uuid";
 
-import type {
-  KanbanBoard,
-  Column,
-  Priority,
-  DeletionCandidate,
-  DeletionStatistics,
-} from "../types";
+import type { KanbanBoard, Column, Priority } from "../types";
 import { saveBoards, loadBoards } from "../utils/storage";
-import {
-  loadSettings,
-  getAutoDeletionSettings,
-} from "../utils/settingsStorage";
-import {
-  getDeletionCandidates,
-  executeDeletion as execDeletion,
-  restoreTask as taskRestore,
-  loadDeletionStatistics,
-} from "../utils/taskDeletion";
-import { useDeletionScheduler } from "../utils/deletionScheduler";
+import { loadSettings } from "../utils/settingsStorage";
 import { useNotify } from "./NotificationContext";
 import { logger } from "../utils/logger";
 
@@ -95,12 +79,6 @@ interface BoardContextType {
     targetBoardId: string,
     targetColumnId?: string,
   ) => void;
-  // 削除機能関連
-  checkDeletionCandidates: () => DeletionCandidate[];
-  executeDeletion: () => void;
-  restoreTask: (taskId: string) => void;
-  getDeletionStatistics: () => DeletionStatistics;
-  runManualDeletionCheck: () => Promise<boolean>;
 }
 
 const BoardContext = createContext<BoardContextType | undefined>(undefined);
@@ -424,15 +402,21 @@ const boardReducer = (state: BoardState, action: BoardAction): BoardState => {
       } = action.payload;
 
       // ソースボードとターゲットボードを取得
-      const sourceBoard = state.boards.find((board) => board.id === sourceBoardId);
-      const targetBoard = state.boards.find((board) => board.id === targetBoardId);
+      const sourceBoard = state.boards.find(
+        (board) => board.id === sourceBoardId,
+      );
+      const targetBoard = state.boards.find(
+        (board) => board.id === targetBoardId,
+      );
 
       if (!sourceBoard || !targetBoard) {
         return state;
       }
 
       // ソースカラムからタスクを取得
-      const sourceColumn = sourceBoard.columns.find((col) => col.id === sourceColumnId);
+      const sourceColumn = sourceBoard.columns.find(
+        (col) => col.id === sourceColumnId,
+      );
       if (!sourceColumn) {
         return state;
       }
@@ -467,10 +451,11 @@ const boardReducer = (state: BoardState, action: BoardAction): BoardState => {
             ...taskToMove,
             completedAt: null,
             // サブタスクも未完了状態にリセット
-            subTasks: taskToMove.subTasks?.map(subTask => ({
-              ...subTask,
-              completed: false
-            })) || []
+            subTasks:
+              taskToMove.subTasks?.map((subTask) => ({
+                ...subTask,
+                completed: false,
+              })) || [],
           }
         : taskToMove;
 
@@ -1008,8 +993,12 @@ const authenticateUser = async (email, password) => {
       }
 
       // ソースボードとターゲットボードの存在確認
-      const sourceBoard = state.boards.find((board) => board.id === sourceBoardId);
-      const targetBoard = state.boards.find((board) => board.id === targetBoardId);
+      const sourceBoard = state.boards.find(
+        (board) => board.id === sourceBoardId,
+      );
+      const targetBoard = state.boards.find(
+        (board) => board.id === targetBoardId,
+      );
 
       if (!sourceBoard || !targetBoard) {
         notify.error("移動先のボードが見つかりません");
@@ -1017,7 +1006,9 @@ const authenticateUser = async (email, password) => {
       }
 
       // タスクの存在確認
-      const sourceColumn = sourceBoard.columns.find((col) => col.id === sourceColumnId);
+      const sourceColumn = sourceBoard.columns.find(
+        (col) => col.id === sourceColumnId,
+      );
       const taskToMove = sourceColumn?.tasks.find((task) => task.id === taskId);
 
       if (!taskToMove) {
@@ -1038,7 +1029,9 @@ const authenticateUser = async (email, password) => {
 
       const wasCompleted = taskToMove.completedAt !== null;
       const baseMessage = `タスク「${taskToMove.title}」を「${targetBoard.title}」に移動しました`;
-      const resetMessage = wasCompleted ? `${baseMessage}（未完了状態にリセット）` : baseMessage;
+      const resetMessage = wasCompleted
+        ? `${baseMessage}（未完了状態にリセット）`
+        : baseMessage;
       notify.success(resetMessage);
     },
     [state.boards, notify],
@@ -1053,62 +1046,6 @@ const authenticateUser = async (email, password) => {
     }),
     [state.boards, state.currentBoard],
   );
-  // 削除スケジューラーフック
-  const deletionScheduler = useDeletionScheduler();
-
-  // 削除機能関数
-  const checkDeletionCandidates = useCallback((): DeletionCandidate[] => {
-    const settings = getAutoDeletionSettings();
-    return getDeletionCandidates(state.boards, settings);
-  }, [state.boards]);
-
-  const executeDeletion = useCallback(() => {
-    try {
-      const settings = getAutoDeletionSettings();
-      const updatedBoards = execDeletion(state.boards, settings);
-
-      if (updatedBoards !== state.boards) {
-        dispatch({ type: "LOAD_BOARDS", payload: updatedBoards });
-        notify.success("削除処理が完了しました");
-      }
-    } catch (error) {
-      logger.error("Failed to execute deletion:", error);
-      notify.error("削除処理に失敗しました");
-    }
-  }, [state.boards, notify]);
-
-  const restoreTask = useCallback(
-    (taskId: string) => {
-      try {
-        const updatedBoards = taskRestore(state.boards, taskId);
-        if (updatedBoards) {
-          dispatch({ type: "LOAD_BOARDS", payload: updatedBoards });
-          notify.success("タスクを復元しました");
-        } else {
-          notify.error("タスクの復元に失敗しました");
-        }
-      } catch (error) {
-        logger.error("Failed to restore task:", error);
-        notify.error("タスクの復元に失敗しました");
-      }
-    },
-    [state.boards, notify],
-  );
-
-  const getDeletionStatistics = useCallback(
-    (): DeletionStatistics => loadDeletionStatistics(),
-    [],
-  );
-
-  const runManualDeletionCheck = useCallback(async (): Promise<boolean> => {
-    try {
-      return await deletionScheduler.runManualCheck();
-    } catch (error) {
-      logger.error("Failed to run manual deletion check:", error);
-      notify.error("削除チェックの実行に失敗しました");
-      return false;
-    }
-  }, [deletionScheduler, notify]);
 
   const value = useMemo(
     () => ({
@@ -1127,12 +1064,6 @@ const authenticateUser = async (email, password) => {
       reorderBoards,
       moveTaskToBoard,
       exportData,
-      // 削除機能関連
-      checkDeletionCandidates,
-      executeDeletion,
-      restoreTask,
-      getDeletionStatistics,
-      runManualDeletionCheck,
     }),
     [
       state,
@@ -1149,12 +1080,6 @@ const authenticateUser = async (email, password) => {
       reorderBoards,
       moveTaskToBoard,
       exportData,
-      // 削除機能関連
-      checkDeletionCandidates,
-      executeDeletion,
-      restoreTask,
-      getDeletionStatistics,
-      runManualDeletionCheck,
     ],
   );
 

@@ -15,10 +15,11 @@ const RecurrencePreview: React.FC<RecurrencePreviewProps> = ({ config }) => {
   return (
     <div
       style={{
+        marginTop: "20px",
         padding: "8px",
         background: "var(--bgColor-muted)",
         borderRadius: "var(--borderRadius-medium)",
-        marginBottom: "8px",
+        border: "1px solid var(--borderColor-muted)",
       }}
     >
       <Text sx={{ fontSize: 0, color: "fg.muted" }}>

@@ -5,10 +5,8 @@ import type { Task, TaskFilter } from "../types";
  * フィルター条件に基づいてタスクを絞り込む
  */
 export const filterTasks = (tasks: Task[], filter: TaskFilter): Task[] => {
-  // 最初にソフトデリートされたタスクを除外
-  const activeTasks = tasks.filter(
-    (task) => task.deletionState !== "soft-deleted",
-  );
+  // 最初に削除されたタスクを除外（ゴミ箱のタスクは表示しない）
+  const activeTasks = tasks.filter((task) => task.deletionState !== "deleted");
 
   if (filter.type === "all") {
     return activeTasks;

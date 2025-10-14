@@ -30,7 +30,10 @@ type UIAction =
   | { type: "SET_TASK_FILTER"; payload: TaskFilter }
   | { type: "SET_VIEW_MODE"; payload: ViewMode }
   | { type: "OPEN_TASK_DETAIL"; payload: { taskId: string } }
-  | { type: "OPEN_VIRTUAL_TASK_DETAIL"; payload: { virtualTask: VirtualRecurringTask } }
+  | {
+      type: "OPEN_VIRTUAL_TASK_DETAIL";
+      payload: { virtualTask: VirtualRecurringTask };
+    }
   | { type: "CLOSE_TASK_DETAIL" }
   | {
       type: "OPEN_TASK_FORM";
@@ -258,9 +261,12 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
     dispatch({ type: "OPEN_TASK_DETAIL", payload: { taskId } });
   }, []);
 
-  const openVirtualTaskDetail = useCallback((virtualTask: VirtualRecurringTask) => {
-    dispatch({ type: "OPEN_VIRTUAL_TASK_DETAIL", payload: { virtualTask } });
-  }, []);
+  const openVirtualTaskDetail = useCallback(
+    (virtualTask: VirtualRecurringTask) => {
+      dispatch({ type: "OPEN_VIRTUAL_TASK_DETAIL", payload: { virtualTask } });
+    },
+    [],
+  );
 
   const closeTaskDetail = useCallback(() => {
     dispatch({ type: "CLOSE_TASK_DETAIL" });

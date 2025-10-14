@@ -8,6 +8,7 @@ import TemplateCategorySelector from './TemplateCategorySelector';
 import LabelSelector from '../LabelSelector';
 import RichTextEditor from '../RichTextEditor';
 import PrioritySelector from '../PrioritySelector';
+import ErrorMessage from '../ErrorMessage';
 
 interface TemplateFormDialogProps {
   isOpen: boolean;
@@ -203,7 +204,9 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
 
           {/* テンプレート名 */}
           <FormControl sx={{ mb: 3 }}>
-            <FormControl.Label>テンプレート名</FormControl.Label>
+            <FormControl.Label required>
+              テンプレート名 
+            </FormControl.Label>
             <TextInput
               value={formData.name}
               onChange={(e) => {
@@ -219,13 +222,13 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
               disabled={isLoading}
             />
             {errors.name && (
-              <FormControl.Validation variant="error">{errors.name}</FormControl.Validation>
+              <ErrorMessage error={errors.name} />
             )}
           </FormControl>
 
           {/* テンプレート説明 */}
           <FormControl sx={{ mb: 3 }}>
-            <FormControl.Label>説明（任意）</FormControl.Label>
+            <FormControl.Label>説明</FormControl.Label>
             <Textarea
               value={formData.description}
               onChange={(e) =>
@@ -262,7 +265,9 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
         }}>
           {/* タスクタイトル */}
           <FormControl sx={{ mb: 3 }}>
-            <FormControl.Label>タスクタイトル</FormControl.Label>
+            <FormControl.Label required>
+              タスクタイトル
+            </FormControl.Label>
             <TextInput
               value={formData.taskTitle}
               onChange={(e) => {
@@ -277,15 +282,13 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
               disabled={isLoading}
             />
             {errors.taskTitle && (
-              <FormControl.Validation variant="error">
-                {errors.taskTitle}
-              </FormControl.Validation>
+              <ErrorMessage error={errors.taskTitle} />
             )}
           </FormControl>
 
           {/* タスク説明 */}
           <FormControl sx={{ mb: 3 }}>
-            <FormControl.Label>タスク説明（任意）</FormControl.Label>
+            <FormControl.Label>タスク説明</FormControl.Label>
             <RichTextEditor
               value={formData.taskDescription}
               onChange={(value) =>
@@ -309,7 +312,7 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
 
           {/* ラベル */}
           <FormControl>
-            <FormControl.Label>ラベル（任意）</FormControl.Label>
+            <FormControl.Label>ラベル</FormControl.Label>
             <LabelSelector
               selectedLabels={formData.labels}
               onLabelsChange={handleLabelsChange}
