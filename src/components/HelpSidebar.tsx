@@ -6,6 +6,7 @@ import {
   CalendarIcon,
   TableIcon,
   DeviceCameraVideoIcon,
+  PencilIcon,
 } from "@primer/octicons-react";
 import { MousePointer, FileText, Paperclip } from "react-feather";
 
@@ -246,7 +247,13 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
               description="ヘッダーの「タスク作成」ボタンまたは各カラムの「+」ボタンでタスクを作成"
             />
             <HelpItem
-              title="ドラッグ&ドロップ"
+              title={
+                <>
+                  ドラッグ&
+                  <br />
+                  ドロップ
+                </>
+              }
               description="タスクをドラッグしてカラム間を移動（カンバンビューで直感的操作）"
             />
             <HelpItem
@@ -257,7 +264,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
 
           <HelpSection
             title="タスク管理"
-            icon={FileText}
+            icon={PencilIcon}
             background="var(--bgColor-accent-emphasis)"
           >
             <HelpItem
@@ -300,7 +307,11 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
             />
             <HelpItem
               title="繰り返し設定"
-              description="毎日・毎週・毎月・毎年の繰り返しパターンでタスクを自動再作成"
+              description="毎日・毎週・毎月・毎年の繰り返しパターンでタスクを自動再作成。期限の有無に関わらず設定可能で、期限なし繰り返しタスクは作成日を基準に自動生成"
+            />
+            <HelpItem
+              title="優先度設定"
+              description="Critical（緊急）・High（高）・Medium（中）・Low（低）の4段階で優先度を設定。優先度によるフィルタリング・ソート機能も利用可能"
             />
           </HelpSection>
 
@@ -353,15 +364,48 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
           >
             <HelpItem
               title="タスクフィルタ"
-              description="期限・ラベル・完了状態でタスクを絞り込み（カンバンビュー）"
+              description="期限・ラベル・優先度・完了状態でタスクを絞り込み。優先度フィルターでは複数の優先度を同時選択可能"
             />
             <HelpItem
               title="ソート機能"
-              description="作成日・更新日・期限・名前順でタスクを並び替え"
+              description="作成日・更新日・期限・名前・優先度順でタスクを並び替え。優先度ソートは緊急→高→中→低→未設定の順"
             />
             <HelpItem
               title="統計表示"
               description="サブヘッダーで未完了タスク数・期限警告を確認"
+            />
+          </HelpSection>
+
+          <HelpSection
+            title="テンプレート管理"
+            icon={FileText}
+            background="var(--bgColor-closed-emphasis)"
+          >
+            <HelpItem
+              title="テンプレート作成"
+              description="設定画面のテンプレート管理から、繰り返し使用するタスクパターンをテンプレートとして保存。タスクタイトル・説明・優先度・ラベル等を事前定義"
+            />
+            <HelpItem
+              title={
+                <>
+                  テンプレートから
+                  <br />
+                  タスク作成
+                </>
+              }
+              description="タスク作成画面の「テンプレートから作成」タブで、保存済みテンプレートをワンクリックで選択してタスク作成"
+            />
+            <HelpItem
+              title="カテゴリー管理"
+              description="仕事・個人・プロジェクト・会議・ルーティン・その他の6つのカテゴリーでテンプレートを分類整理"
+            />
+            <HelpItem
+              title="お気に入り機能"
+              description="よく使用するテンプレートをお気に入りに登録。タスク作成時に優先表示され、使用統計も確認可能"
+            />
+            <HelpItem
+              title="検索・フィルター"
+              description="テンプレート名・説明・カテゴリーで検索、お気に入り・使用数・作成日時でソート可能"
             />
           </HelpSection>
 
@@ -402,7 +446,13 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
               description="JSONファイルでデータの一括インポート"
             />
             <HelpItem
-              title="ボード選択エクスポート"
+              title={
+                <>
+                  ボード選択
+                  <br />
+                  エクスポート
+                </>
+              }
               description="設定画面のデータ管理から、任意のボードを選択してJSONファイルとしてエクスポート"
             />
             <HelpItem
@@ -410,12 +460,38 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
               description="設定画面のラベル管理で全ボードのラベルを一覧表示。ラベル名・所属ボード・使用数でソート可能、新しいラベルの作成・編集・削除が可能"
             />
             <HelpItem
-              title="デフォルトカラム設定"
+              title={
+                <>
+                  デフォルト
+                  <br />
+                  カラム設定
+                </>
+              }
               description="設定画面のカンバン設定で、新しいボード作成時に使用されるデフォルトカラムを設定。カラム名の編集・追加・削除・順序変更（ドラッグ&ドロップ対応）が可能"
             />
             <HelpItem
               title="完了タスククリア"
               description="ボード設定から完了タスクを一括削除"
+            />
+            <HelpItem
+              title="自動削除システム"
+              description="設定画面の自動削除設定で、完了タスクを指定期間後に自動削除。保持期間（1-365日）・通知タイミング・ソフトデリート機能を設定可能"
+            />
+            <HelpItem
+              title="ごみ箱機能"
+              description="設定画面のごみ箱からソフトデリートされたタスクを管理。削除予定のタスクを復元したり、完全削除前に確認可能"
+            />
+            <HelpItem
+              title={
+                <>
+                  テンプレート
+                  <br />
+                  インポート・
+                  <br />
+                  エクスポート
+                </>
+              }
+              description="設定画面のテンプレート管理から、テンプレートデータのバックアップ・復元・他環境への移行が可能"
             />
           </HelpSection>
 
@@ -435,20 +511,50 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
             <HelpItem
               title={
                 <>
-                  期限と時刻・
+                  繰り返し設定の
                   <br />
-                  繰り返し設定
+                  柔軟性
                 </>
               }
-              description="期限を設定すると時刻設定と繰り返し設定が有効になります"
+              description="繰り返し設定は期限の有無に関わらず利用可能。期限ありは期限日基準、期限なしは作成日基準で次回タスクを自動生成"
             />
             <HelpItem
               title="オフライン対応"
               description="データはブラウザに保存されオフラインでも使用可能"
             />
             <HelpItem
-              title="効率的なタスク管理"
+              title={
+                <>
+                  効率的な
+                  <br />
+                  タスク管理
+                </>
+              }
               description="タスク複製機能で類似タスクを素早く作成、サブタスクの並び替えで優先順位を調整、完了タスクは自動で上部に表示"
+            />
+            <HelpItem
+              title={
+                <>
+                  テンプレート
+                  <br />
+                  活用術
+                </>
+              }
+              description="よく使用するタスクパターンをテンプレート化することで作業効率大幅UP。お気に入り登録で優先表示、カテゴリー分けで整理"
+            />
+            <HelpItem
+              title={
+                <>
+                  優先度と
+                  <br />
+                  フィルター
+                </>
+              } 
+              description="優先度設定で重要タスクを見える化、優先度フィルターで緊急タスクに集中、優先度ソートで効率的な作業順序を構築"
+            />
+            <HelpItem
+              title="自動削除と整理"
+              description="完了タスクの自動削除でワークスペースを常にクリーンに保持。ソフトデリート機能で誤削除対策、ごみ箱で削除前確認"
             />
           </HelpSection>
         </div>
