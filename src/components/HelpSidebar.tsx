@@ -474,10 +474,6 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
               description="ボード設定から完了タスクを一括削除"
             />
             <HelpItem
-              title="自動削除システム"
-              description="設定画面の自動削除設定で、完了タスクを指定期間後に自動削除。保持期間（1-365日）・通知タイミング・ソフトデリート機能を設定可能"
-            />
-            <HelpItem
               title="ごみ箱機能"
               description="設定画面のごみ箱からソフトデリートされたタスクを管理。削除予定のタスクを復元したり、完全削除前に確認可能"
             />
@@ -553,8 +549,8 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
               description="優先度設定で重要タスクを見える化、優先度フィルターで緊急タスクに集中、優先度ソートで効率的な作業順序を構築"
             />
             <HelpItem
-              title="自動削除と整理"
-              description="完了タスクの自動削除でワークスペースを常にクリーンに保持。ソフトデリート機能で誤削除対策、ごみ箱で削除前確認"
+              title="ごみ箱と整理"
+              description="ごみ箱機能でタスクの削除・復元を安全に管理。ソフトデリート機能で誤削除対策、削除前の確認が可能"
             />
           </HelpSection>
         </div>

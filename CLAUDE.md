@@ -52,8 +52,8 @@ npm test
 - **フィルタリング・ソート**: 多角的なタスク整理・優先度フィルター・優先度ソート対応
 - **優先度管理**: Critical/High/Medium/Low 4段階優先度システム
 - **テンプレート管理**: タスクテンプレートの作成・編集・削除・お気に入り機能
-- **自動削除システム**: 完了タスクの自動削除・ソフトデリート・ごみ箱機能
-- **設定管理**: デフォルトカラム設定・自動削除設定・各種カスタマイズ
+- **ごみ箱機能**: 削除されたタスクの一時保存・復元機能
+- **設定管理**: デフォルトカラム設定・ごみ箱設定・各種カスタマイズ
 - **データ管理**: ローカル保存・ボード選択エクスポート・インポート機能
 - **セキュリティ**: DOMPurifyによるHTMLサニタイズ機能
 
@@ -109,11 +109,11 @@ npm test
 ### 設定・管理
 - `LabelManagementPanel`: ラベル管理テーブル（ソート機能付き）
 - `BoardSettingsPanel`: デフォルトカラム設定パネル
-- `AutoDeletionSettingsPanel`: 自動削除設定パネル（多数のサブコンポーネント）
+- `RecycleBinSettingsPanel`: ごみ箱設定パネル
 - `DataManagementPanel`: データ管理パネル
 - `ExportSection`: ボード選択エクスポート機能
 
-### 自動削除・ごみ箱
+### ごみ箱機能
 - `RecycleBinView`: ソフトデリートされたタスクの復元
 - `DeletionCandidateBadge`: 削除候補表示バッジ
 - `DeletionNotificationBanner`: 削除通知バナー
