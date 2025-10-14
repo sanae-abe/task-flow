@@ -21,7 +21,7 @@ export interface AutoDeletionSettings {
  * 複雑なAutoDeleteionSettingsを置き換える新しい設計
  */
 export interface RecycleBinSettings {
-  retentionDays: number; // ゴミ箱の保持期間（デフォルト: 30日）
+  retentionDays: number | null; // ゴミ箱の保持期間（null = 無制限、数値 = 日数）
 }
 
 /**

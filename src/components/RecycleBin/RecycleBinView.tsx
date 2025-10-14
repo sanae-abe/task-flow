@@ -20,7 +20,7 @@ import {
   restoreTaskFromRecycleBin,
   formatTimeUntilDeletion,
 } from "../../utils/recycleBin";
-import { DEFAULT_RECYCLE_BIN_SETTINGS } from "../../types/settings";
+import { DEFAULT_RECYCLE_BIN_SETTINGS, type RecycleBinSettings } from "../../types/settings";
 import { logger } from "../../utils/logger";
 
 /**
@@ -32,6 +32,19 @@ export const RecycleBinView: React.FC = () => {
   const [isEmptying, setIsEmptying] = useState(false);
   const [showConfirm, setShowConfirm] = useState<string | null>(null);
   const [showEmptyConfirm, setShowEmptyConfirm] = useState(false);
+
+  // LocalStorageから現在のゴミ箱設定を読み込み
+  const recycleBinSettings = useMemo(() => {
+    try {
+      const stored = localStorage.getItem('recycleBinSettings');
+      if (stored) {
+        return JSON.parse(stored) as RecycleBinSettings;
+      }
+    } catch (error) {
+      logger.warn('ゴミ箱設定の読み込みに失敗:', error);
+    }
+    return DEFAULT_RECYCLE_BIN_SETTINGS;
+  }, []);
 
   // ゴミ箱のタスクを取得
   const deletedTasks = useMemo(() => getRecycleBinTasks(state.boards).map(task => ({
@@ -168,8 +181,17 @@ export const RecycleBinView: React.FC = () => {
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <AlertIcon size={16} />
             <Text style={{ marginLeft: '8px' }}>
-              これらのタスクは{DEFAULT_RECYCLE_BIN_SETTINGS.retentionDays}日後に自動的に完全削除されます。<br />
-              復元が必要な場合は早めに操作してください。
+              {recycleBinSettings.retentionDays === null ? (
+                <>
+                  これらのタスクは無制限に保持されます。手動で削除するまで自動削除されません。<br />
+                  不要なタスクは「ゴミ箱を空にする」で削除してください。
+                </>
+              ) : (
+                <>
+                  これらのタスクは{recycleBinSettings.retentionDays}日後に自動的に完全削除されます。<br />
+                  復元が必要な場合は早めに操作してください。
+                </>
+              )}
             </Text>
           </div>
         </Flash>
@@ -230,7 +252,7 @@ export const RecycleBinView: React.FC = () => {
                     <ClockIcon size={12} />
                     <Text>
                       削除予定: {task.deletedAt ?
-                        formatTimeUntilDeletion(task.deletedAt, DEFAULT_RECYCLE_BIN_SETTINGS.retentionDays)
+                        formatTimeUntilDeletion(task.deletedAt, recycleBinSettings.retentionDays)
                         : "不明"
                       }
                     </Text>

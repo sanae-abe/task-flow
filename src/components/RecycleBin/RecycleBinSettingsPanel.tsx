@@ -41,7 +41,11 @@ export const RecycleBinSettingsPanel: React.FC<RecycleBinSettingsPanelProps> = (
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
   const [validationError, setValidationError] = useState<string | null>(null);
 
-  const validateRetentionDays = (days: number): string | null => {
+  const validateRetentionDays = (days: number | null): string | null => {
+    // 無制限の場合は有効
+    if (days === null) {
+      return null;
+    }
     if (!Number.isInteger(days)) {
       return "整数で入力してください";
     }
@@ -55,6 +59,13 @@ export const RecycleBinSettingsPanel: React.FC<RecycleBinSettingsPanelProps> = (
   };
 
   const handleRetentionDaysChange = useCallback((value: string) => {
+    // 空文字列の場合は無制限として扱う
+    if (value.trim() === "") {
+      setSettings(prev => ({ ...prev, retentionDays: null }));
+      setValidationError(null);
+      return;
+    }
+
     const days = parseInt(value, 10);
 
     if (isNaN(days)) {
@@ -97,7 +108,7 @@ export const RecycleBinSettingsPanel: React.FC<RecycleBinSettingsPanelProps> = (
     }
   }, [settings, onSave]);
 
-  const handlePresetSelect = useCallback((days: number) => {
+  const handlePresetSelect = useCallback((days: number | null) => {
     setSettings(prev => ({ ...prev, retentionDays: days }));
     setValidationError(null);
   }, []);
@@ -133,7 +144,7 @@ export const RecycleBinSettingsPanel: React.FC<RecycleBinSettingsPanelProps> = (
         }}
       >
         削除したタスクをゴミ箱に保持する期間を設定します。<br />
-        期間を過ぎたタスクは自動的に完全削除されます。
+        期間を過ぎたタスクは自動的に完全削除されます。無制限を選択すると自動削除されません。
       </Text>
 
       {/* プリセットボタン */}
@@ -158,9 +169,10 @@ export const RecycleBinSettingsPanel: React.FC<RecycleBinSettingsPanelProps> = (
             { label: '2週間', days: 14 },
             { label: '1ヶ月', days: 30 },
             { label: '3ヶ月', days: 90 },
+            { label: '無制限', days: null },
           ].map(({ label, days }) => (
             <Button
-              key={days}
+              key={days?.toString() || 'unlimited'}
               variant={settings.retentionDays === days ? "primary" : "default"}
               onClick={() => handlePresetSelect(days)}
             >
@@ -184,7 +196,8 @@ export const RecycleBinSettingsPanel: React.FC<RecycleBinSettingsPanelProps> = (
             type="number"
             min="1"
             max="365"
-            value={settings.retentionDays.toString()}
+            value={settings.retentionDays?.toString() || ""}
+            placeholder={settings.retentionDays === null ? "無制限" : ""}
             onChange={(e) => handleRetentionDaysChange(e.target.value)}
             style={{ width: '100px' }}
             aria-describedby="retention-help"
@@ -192,7 +205,7 @@ export const RecycleBinSettingsPanel: React.FC<RecycleBinSettingsPanelProps> = (
           <Text style={{ color: 'var(--fgColor-muted)' }}>日間</Text>
         </div>
         <FormControl.Caption id="retention-help">
-          1〜365日の範囲で設定してください（推奨: 30日）
+          1〜365日の範囲で設定、または「無制限」ボタンで無制限に設定できます（推奨: 30日）
         </FormControl.Caption>
         {validationError && (
           <ErrorMessage error={validationError} />

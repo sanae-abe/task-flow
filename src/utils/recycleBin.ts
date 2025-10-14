@@ -44,6 +44,11 @@ export const getExpiredTasks = (
   boards: KanbanBoard[],
   settings: RecycleBinSettings,
 ): (Task & { boardId: string; columnId: string })[] => {
+  // 無制限の場合は期限切れタスクなし
+  if (settings.retentionDays === null) {
+    return [];
+  }
+
   const deletedTasks = getRecycleBinTasks(boards);
   const now = new Date();
   const expirationDate = new Date(
@@ -152,8 +157,13 @@ export const restoreTaskFromRecycleBin = (
  */
 export const calculateDeletionTime = (
   deletedAt: string,
-  retentionDays: number,
-): Date => {
+  retentionDays: number | null,
+): Date | null => {
+  // 無制限の場合は削除予定なし
+  if (retentionDays === null) {
+    return null;
+  }
+
   const deletedDate = new Date(deletedAt);
   return new Date(deletedDate.getTime() + retentionDays * 24 * 60 * 60 * 1000);
 };
@@ -163,10 +173,20 @@ export const calculateDeletionTime = (
  */
 export const formatTimeUntilDeletion = (
   deletedAt: string,
-  retentionDays: number,
+  retentionDays: number | null,
 ): string => {
+  // 無制限の場合
+  if (retentionDays === null) {
+    return "無制限（自動削除されません）";
+  }
+
   const deletionTime = calculateDeletionTime(deletedAt, retentionDays);
   const now = new Date();
+
+  // deletionTime が null の場合（理論的にはありえないが安全のため）
+  if (!deletionTime) {
+    return "無制限（自動削除されません）";
+  }
 
   if (deletionTime <= now) {
     return "削除予定時刻を過ぎています";
