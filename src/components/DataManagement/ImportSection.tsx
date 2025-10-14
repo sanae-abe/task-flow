@@ -5,8 +5,7 @@ import { UploadIcon, FileIcon, XIcon, AlertIcon } from '@primer/octicons-react';
 import { useDataImport } from '../../hooks/useDataImport';
 import { useDataImportDropZone } from '../../hooks/useDataImportDropZone';
 import UniversalDropZone from '../UniversalDropZone';
-import ErrorMessage from '../ErrorMessage';
-import SuccessMessage from "../SuccessMessage";
+import InlineMessage from '../shared/InlineMessage';
 
 /**
  * データインポート機能を提供するセクション
@@ -182,11 +181,10 @@ export const ImportSection = memo<ImportSectionProps>(({ onImportSuccess }) => {
         </div>
       )}
 
-      {/* エラー表示 - ErrorMessage使用 */}
-      <ErrorMessage error={state.message?.type  === 'error' ? state.message.text : null} />
-
-      {/* 成功メッセージ */}
-      <SuccessMessage success={state.message?.type  === 'success' ? state.message.text : null} />
+      {/* エラーメッセージ表示 */}
+      {state.message && (
+        <InlineMessage variant={state.message.type} message={state.message.text} />
+      )}
 
       {/* インポート実行ボタン */}
       {state.selectedFile && (

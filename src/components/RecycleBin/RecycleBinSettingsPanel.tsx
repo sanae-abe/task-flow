@@ -12,8 +12,7 @@ import { type RecycleBinSettings } from "../../types/settings";
 import { useRecycleBinSettings } from "../../hooks/useRecycleBinSettings";
 import { RETENTION_PRESETS, UI_TEXT, MESSAGES } from "../../constants/recycleBin";
 import { validateRetentionDaysInput, getValidationMessage } from "../../utils/recycleBinValidation";
-import ErrorMessage from "../ErrorMessage";
-import SuccessMessage from "../SuccessMessage";
+import InlineMessage from "../shared/InlineMessage";
 
 interface RecycleBinSettingsPanelProps {
   onSave?: (settings: RecycleBinSettings) => void;
@@ -170,7 +169,7 @@ export const RecycleBinSettingsPanel: React.FC<RecycleBinSettingsPanelProps> = (
           {UI_TEXT.PANEL.RETENTION_HELP}
         </FormControl.Caption>
         {validationError && (
-          <ErrorMessage error={validationError} />
+          <InlineMessage variant="error" message={validationError} />
         )}
       </FormControl>
 
@@ -189,14 +188,12 @@ export const RecycleBinSettingsPanel: React.FC<RecycleBinSettingsPanelProps> = (
           )}
         </Button>
         <div style={{ marginTop: '12px' }}>
-          {saveMessage?.includes('失敗') ? 
-            <ErrorMessage
-              error={saveMessage}
-            /> : 
-            <SuccessMessage
-              success={saveMessage}
-            />
-            }
+          {saveMessage && (
+            <InlineMessage
+              variant={saveMessage?.includes('失敗') ? "error" : "success"}
+              message={saveMessage}
+            /> 
+          )}
         </div>
       </div>
 

@@ -4,7 +4,8 @@ import {
   Heading,
   Button,
   TextInput,
-  Flash
+  Flash,
+  FormControl
 } from '@primer/react';
 import { PlusIcon, TrashIcon, GrabberIcon, ChevronUpIcon, ChevronDownIcon, CheckIcon } from '@primer/octicons-react';
 import {
@@ -28,6 +29,7 @@ import type { DefaultColumnConfig } from '../../types/settings';
 import { loadSettings, updateDefaultColumns } from '../../utils/settingsStorage';
 import { useNotify } from '../../contexts/NotificationContext';
 import { v4 as uuidv4 } from 'uuid';
+import InlineMessage from '../shared/InlineMessage';
 
 // デバウンス機能
 const useDebounce = <T extends unknown[]>(callback: (...args: T) => void, delay: number) => {
@@ -41,6 +43,11 @@ const useDebounce = <T extends unknown[]>(callback: (...args: T) => void, delay:
   }, [callback, delay]);
 };
 
+// カラム名正規化関数（大文字小文字・全角半角を統一）
+const normalizeColumnName = (name: string): string =>
+  name.toLowerCase().replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) =>
+    String.fromCharCode(s.charCodeAt(0) - 0xFEE0));
+
 // Sortable Column Item コンポーネント
 interface SortableColumnItemProps {
   column: DefaultColumnConfig;
@@ -49,6 +56,7 @@ interface SortableColumnItemProps {
   onUpdateName: (columnId: string, newName: string) => void;
   onMoveColumn: (columnId: string, direction: 'up' | 'down') => void;
   onDeleteColumn: (columnId: string) => void;
+  error?: string | null;
 }
 
 const SortableColumnItem: React.FC<SortableColumnItemProps> = ({
@@ -58,6 +66,7 @@ const SortableColumnItem: React.FC<SortableColumnItemProps> = ({
   onUpdateName,
   onMoveColumn,
   onDeleteColumn,
+  error,
 }) => {
   const {
     attributes,
@@ -123,13 +132,18 @@ const SortableColumnItem: React.FC<SortableColumnItemProps> = ({
         <GrabberIcon size={16} />
       </Box>
       <div style={{ flex: 1 }}>
-        <TextInput
-          value={localName}
-          onChange={handleInputChange}
-          placeholder="カラム名"
-          sx={{ width: '100%' }}
-          aria-label={`カラム「${column.name}」の名前`}
-        />
+        <FormControl>
+          <TextInput
+            value={localName}
+            onChange={handleInputChange}
+            placeholder="カラム名"
+            sx={{ width: '100%' }}
+            aria-label={`カラム「${column.name}」の名前`}
+          />
+          {error && (
+            <InlineMessage variant="error" message={error} />
+          )}
+        </FormControl>
       </div>
       <div style={{ display: 'flex', gap: "4px" }}>
         <Button
@@ -169,7 +183,42 @@ export const BoardSettingsPanel: React.FC = () => {
   const [newColumnName, setNewColumnName] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [saveMessage, setSaveMessage] = useState<string | null>(null);
+  const [saveMessageType, setSaveMessageType] = useState<'success' | 'error' | null>(null);
+  const [addColumnError, setAddColumnError] = useState<string | null>(null);
+  const [columnErrors, setColumnErrors] = useState<Record<string, string>>({});
+  const [erroredColumnName, setErroredColumnName] = useState<string>('');
   const notify = useNotify();
+  const messageTimerRef = React.useRef<NodeJS.Timeout | null>(null);
+
+  // メッセージ表示用の共通関数
+  const showMessage = useCallback((message: string, type: 'success' | 'error') => {
+    // 既存のタイマーをクリア
+    if (messageTimerRef.current) {
+      clearTimeout(messageTimerRef.current);
+    }
+
+    setSaveMessage(message);
+    setSaveMessageType(type);
+
+    // メッセージを自動消去（成功: 3秒、エラー: 5秒）
+    const delay = type === 'success' ? 3000 : 5000;
+    messageTimerRef.current = setTimeout(() => {
+      setSaveMessage(null);
+      setSaveMessageType(null);
+    }, delay);
+  }, []);
+
+  // カラムエラー設定用の関数
+  const setColumnError = useCallback((columnId: string, error: string | null) => {
+    setColumnErrors(prev => {
+      if (error === null) {
+        const { [columnId]: _, ...rest } = prev;
+        return rest;
+      }
+      return { ...prev, [columnId]: error };
+    });
+  }, []);
 
   // ドラッグ&ドロップ用のsensors設定
   const sensors = useSensors(
@@ -201,16 +250,40 @@ export const BoardSettingsPanel: React.FC = () => {
         try {
           updateDefaultColumns(columns);
           setHasUnsavedChanges(false);
-          notify.success('設定を自動保存しました');
+          showMessage('設定を自動保存しました', 'success');
         } catch (error) {
-          notify.error('自動保存に失敗しました');
+          showMessage('自動保存に失敗しました', 'error');
         }
       }, 1000);
 
       return () => clearTimeout(saveTimer);
     }
     return undefined;
-  }, [columns, isLoading, hasUnsavedChanges, notify]);
+  }, [columns, isLoading, hasUnsavedChanges, showMessage]);
+
+  // コンポーネントアンマウント時のクリーンアップ
+  useEffect(() => {
+    if (messageTimerRef.current) {
+      clearTimeout(messageTimerRef.current);
+    }
+  }, []);
+
+  // カラム名入力変更時のエラークリア
+  useEffect(() => {
+    if (addColumnError) {
+      const currentTrimmed = newColumnName.trim();
+      // 空文字エラーの場合：入力があればクリア
+      if (addColumnError === 'カラム名を入力してください' && currentTrimmed) {
+        setAddColumnError(null);
+        setErroredColumnName('');
+      }
+      // 重複エラーの場合：エラーが発生した値と異なる値を入力した時のみクリア
+      else if (addColumnError === '同じ名前のカラムが既に存在します' && currentTrimmed !== erroredColumnName) {
+        setAddColumnError(null);
+        setErroredColumnName('');
+      }
+    }
+  }, [newColumnName, addColumnError, erroredColumnName]);
 
   // ドラッグ終了ハンドラー
   const handleDragEnd = useCallback((event: DragEndEvent) => {
@@ -231,40 +304,56 @@ export const BoardSettingsPanel: React.FC = () => {
   // 設定保存
   const handleSave = useCallback(async () => {
     if (columns.length === 0) {
-      notify.error('最低1つのカラムが必要です');
+      showMessage('最低1つのカラムが必要です', 'error');
       return;
     }
 
     try {
       updateDefaultColumns(columns);
       setHasUnsavedChanges(false);
-      notify.success('デフォルトカラム設定を保存しました');
+      showMessage('デフォルトカラム設定を保存しました', 'success');
     } catch (error) {
-      notify.error('設定の保存に失敗しました');
+      showMessage('設定の保存に失敗しました', 'error');
     }
-  }, [columns, notify]);
+  }, [columns, showMessage]);
 
   // カラム追加
   const handleAddColumn = useCallback(() => {
-    if (!newColumnName.trim()) {
-      notify.error('カラム名を入力してください');
+    const trimmedName = newColumnName.trim();
+
+    if (!trimmedName) {
+      setAddColumnError('カラム名を入力してください');
+      setErroredColumnName('');
       return;
     }
 
-    if (columns.some(col => col.name === newColumnName.trim())) {
-      notify.error('同じ名前のカラムが既に存在します');
+    // 正規化した名前で重複チェック（大文字小文字・全角半角を無視）
+    const normalizedNewName = normalizeColumnName(trimmedName);
+
+    const isDuplicate = columns.some(col => {
+      const normalizedExisting = normalizeColumnName(col.name);
+      return normalizedExisting === normalizedNewName;
+    });
+
+    if (isDuplicate) {
+      setAddColumnError('同じ名前のカラムが既に存在します');
+      setErroredColumnName(trimmedName);
       return;
     }
+
+    // エラーをクリア
+    setAddColumnError(null);
+    setErroredColumnName('');
 
     const newColumn: DefaultColumnConfig = {
       id: uuidv4(),
-      name: newColumnName.trim()
+      name: trimmedName
     };
 
     setColumns(prev => [...prev, newColumn]);
     setNewColumnName('');
     setHasUnsavedChanges(true);
-  }, [newColumnName, columns, notify]);
+  }, [newColumnName, columns]);
 
   // カラム削除
   const handleDeleteColumn = useCallback((columnId: string) => {
@@ -274,35 +363,52 @@ export const BoardSettingsPanel: React.FC = () => {
     }
 
     setColumns(prev => prev.filter(col => col.id !== columnId));
+    setColumnError(columnId, null); // カラム削除時にエラーもクリア
     setHasUnsavedChanges(true);
-  }, [columns.length, notify]);
+  }, [columns.length, notify, setColumnError]);
 
   // カラム名更新
   const handleUpdateColumnName = useCallback((columnId: string, newName: string) => {
-    if (!newName.trim()) {
-      notify.error('カラム名を入力してください');
+    const trimmedName = newName.trim();
+
+    if (!trimmedName) {
+      setColumnError(columnId, 'カラム名を入力してください');
       return;
     }
 
-    if (columns.some(col => col.id !== columnId && col.name === newName.trim())) {
-      notify.error('同じ名前のカラムが既に存在します');
+    // 正規化した名前で重複チェック（大文字小文字・全角半角を無視）
+    const normalizedNewName = normalizeColumnName(trimmedName);
+
+    const isDuplicate = columns.some(col => {
+      if (col.id === columnId) {
+         return false; // 自分自身は除外
+      }
+      const normalizedExisting = normalizeColumnName(col.name);
+      return normalizedExisting === normalizedNewName;
+    });
+
+    if (isDuplicate) {
+      setColumnError(columnId, '同じ名前のカラムが既に存在します');
       return;
     }
+
+    // エラーをクリア
+    setColumnError(columnId, null);
 
     setColumns(prev => prev.map(col =>
-      col.id === columnId ? { ...col, name: newName.trim() } : col
+      col.id === columnId ? { ...col, name: trimmedName } : col
     ));
     setHasUnsavedChanges(true);
-  }, [columns, notify]);
+  }, [columns, setColumnError]);
 
   // カラム順序変更
   const handleMoveColumn = useCallback((columnId: string, direction: 'up' | 'down') => {
     setColumns(prev => {
       const currentIndex = prev.findIndex(col => col.id === columnId);
-      if (currentIndex === -1) {return prev;}
+      if (currentIndex === -1) { return prev; }
 
       const newIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
-      if (newIndex < 0 || newIndex >= prev.length) {return prev;}
+      if (newIndex < 0 || newIndex >= prev.length) { return prev; }
 
       const newColumns = [...prev];
       const currentColumn = newColumns[currentIndex];
@@ -353,6 +459,7 @@ export const BoardSettingsPanel: React.FC = () => {
                   onUpdateName={handleUpdateColumnName}
                   onMoveColumn={handleMoveColumn}
                   onDeleteColumn={handleDeleteColumn}
+                  error={columnErrors[column.id] || null}
                 />
               ))}
             </SortableContext>
@@ -362,39 +469,49 @@ export const BoardSettingsPanel: React.FC = () => {
         {/* 新しいカラム追加 */}
         <div style={{ marginBottom: "12px" }}>
           <div style={{ marginBottom: "8px", fontSize: "14px", fontWeight: "bold" }}>新しいカラムを追加</div>
-          <div style={{ display: "flex", gap: "8px" }}>
-            <TextInput
-              value={newColumnName}
-              onChange={(e) => setNewColumnName(e.target.value)}
-              placeholder="カラム名を入力"
-              sx={{ flex: 1 }}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  handleAddColumn();
-                }
-              }}
-              aria-label="新しいカラム名"
-            />
-            <Button
-              variant="primary"
-              size="small"
-              leadingVisual={PlusIcon}
-              onClick={handleAddColumn}
-              aria-label="新しいカラムを追加"
-            >
-              追加
-            </Button>
-          </div>
+          <FormControl>
+            <div style={{ display: "flex", gap: "8px" }}>
+              <TextInput
+                value={newColumnName}
+                onChange={(e) => setNewColumnName(e.target.value)}
+                placeholder="カラム名を入力"
+                sx={{ flex: 1 }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    handleAddColumn();
+                  }
+                }}
+                aria-label="新しいカラム名"
+              />
+              <Button
+                variant="primary"
+                size="small"
+                leadingVisual={PlusIcon}
+                onClick={handleAddColumn}
+                aria-label="新しいカラムを追加"
+              >
+                追加
+              </Button>
+            </div>
+            {addColumnError && (
+              <InlineMessage variant="error" message={addColumnError} />
+            )}
+          </FormControl>
         </div>
       </div>
 
       {/* 保存ボタン */}
       <div style={{ paddingTop: "12px", borderTop: "1px solid", borderColor: "var(--borderColor-default)" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "8px" }}>
+          {/* 未保存状態メッセージ */}
           {hasUnsavedChanges && (
-            <div style={{ fontSize: "14px", color: "var(--fgColor-attention)" }}>
-              未保存の変更があります（1秒後に自動保存されます）
-            </div>
+            <InlineMessage variant="warning" message="未保存の変更があります（1秒後に自動保存されます）" />
+          )}
+          {/* 保存メッセージ */}
+          {saveMessage && (
+            <FormControl>
+              <InlineMessage variant={saveMessageType === 'success' ? 'success' : 'error'} message={saveMessage} />
+            </FormControl>
           )}
           <Button
             variant="primary"

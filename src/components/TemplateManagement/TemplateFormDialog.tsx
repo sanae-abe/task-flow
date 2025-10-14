@@ -8,7 +8,7 @@ import TemplateCategorySelector from './TemplateCategorySelector';
 import LabelSelector from '../LabelSelector';
 import RichTextEditor from '../RichTextEditor';
 import PrioritySelector from '../PrioritySelector';
-import ErrorMessage from '../ErrorMessage';
+import InlineMessage from '../shared/InlineMessage';
 
 interface TemplateFormDialogProps {
   isOpen: boolean;
@@ -222,7 +222,7 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
               disabled={isLoading}
             />
             {errors.name && (
-              <ErrorMessage error={errors.name} />
+              <InlineMessage variant="error" message={errors.name} />
             )}
           </FormControl>
 
@@ -282,7 +282,7 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
               disabled={isLoading}
             />
             {errors.taskTitle && (
-              <ErrorMessage error={errors.taskTitle} />
+              <InlineMessage variant="error" message={errors.taskTitle} />
             )}
           </FormControl>
 

@@ -2,7 +2,7 @@ import { Button, FormControl, TextInput } from "@primer/react";
 import React, { useState, useCallback, useMemo, useEffect } from "react";
 
 import UnifiedDialog from "./shared/Dialog/UnifiedDialog";
-import ErrorMessage from "./ErrorMessage";
+import InlineMessage from "./shared/InlineMessage";
 
 interface LinkInsertDialogProps {
   isOpen: boolean;
@@ -123,7 +123,7 @@ const LinkInsertDialog: React.FC<LinkInsertDialogProps> = ({
             }}
           />
           {url && !isValidUrl && (
-            <ErrorMessage error="有効なURLを入力してください" />
+            <InlineMessage variant="error" message="有効なURLを入力してください" />
           )}
         </FormControl>
 
