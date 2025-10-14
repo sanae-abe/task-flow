@@ -59,7 +59,7 @@ export const TaskFormFields: React.FC<TaskFormFieldsProps> = ({
     <div onKeyDown={onKeyPress} style={{ flex: 1, minHeight: '500px' }}>
       {/* テンプレート選択通知 */}
       {selectedTemplate && (
-        <Flash variant="default" sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
+        <Flash variant="default" sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 1 }}>
           <InfoIcon size={16} />
           <span>テンプレート「{selectedTemplate.name}」から作成中</span>
         </Flash>

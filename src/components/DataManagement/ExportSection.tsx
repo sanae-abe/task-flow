@@ -15,11 +15,14 @@ interface ExportSectionProps {
   onExportAll?: () => void;
   /** ボード選択エクスポート時のコールバック */
   onExportCurrent?: (board?: KanbanBoard) => void;
+  /** メッセージ表示時のコールバック */
+  onMessage?: (message: { type: 'success' | 'critical'; text: string }) => void;
 }
 
 export const ExportSection = memo<ExportSectionProps>(({
   onExportAll,
-  onExportCurrent
+  onExportCurrent,
+  onMessage
 }) => {
   const { state } = useKanban();
   const [exportType, setExportType] = useState<'all' | 'selected'>('all');
@@ -44,12 +47,31 @@ export const ExportSection = memo<ExportSectionProps>(({
 
   // エクスポート実行処理
   const handleExport = useCallback(() => {
-    if (exportType === 'all') {
-      onExportAll?.();
-    } else if (selectedBoard && onExportCurrent) {
-      onExportCurrent(selectedBoard);
+
+    try {
+      if (exportType === 'all') {
+        onExportAll?.();
+        const successMessage = {
+          type: 'success' as const,
+          text: '全データをエクスポートしました'
+        };
+        onMessage?.(successMessage);
+      } else if (selectedBoard && onExportCurrent) {
+        onExportCurrent(selectedBoard);
+        const successMessage = {
+          type: 'success' as const,
+          text: `「${selectedBoard.title}」をエクスポートしました`
+        };
+        onMessage?.(successMessage);
+      }
+    } catch (error) {
+      const errorMessage = {
+        type: 'critical' as const,
+        text: 'エクスポートに失敗しました'
+      };
+      onMessage?.(errorMessage);
     }
-  }, [exportType, selectedBoard, onExportAll, onExportCurrent]);
+  }, [exportType, selectedBoard, onExportAll, onExportCurrent, onMessage]);
 
   // 表示する統計情報を決定
   const currentStatistics = exportType === 'all' ? allDataStatistics : selectedBoardStatistics;
@@ -112,13 +134,12 @@ export const ExportSection = memo<ExportSectionProps>(({
 
       {/* エクスポート実行ボタン */}
       <div style={{ paddingTop: "12px", borderTop: "1px solid", borderColor: "var(--borderColor-default)" }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "8px" }}>
+        <div style={{ display: "flex", alignItems: "flex-end", flexDirection: "column", gap: "8px" }}>
           <Button
             variant="primary"
             leadingVisual={DownloadIcon}
             onClick={handleExport}
             disabled={exportType === 'selected' && !selectedBoard}
-            sx={{ alignSelf: 'flex-start' }}
           >
             エクスポート実行
           </Button>

@@ -15,12 +15,15 @@ interface DataManagementPanelProps {
   onExportCurrent?: (board?: KanbanBoard) => void;
   /** インポート成功時のコールバック */
   onImportSuccess?: () => void;
+  /** メッセージ表示時のコールバック */
+  onMessage?: (message: { type: 'success' | 'critical' | 'warning' | 'danger' | 'default'; text: string }) => void;
 }
 
 export const DataManagementPanel = memo<DataManagementPanelProps>(({
   onExportAll,
   onExportCurrent,
-  onImportSuccess
+  onImportSuccess,
+  onMessage
 }) => {
   const [activeTab, setActiveTab] = useState<'export' | 'import'>('export');
 
@@ -65,10 +68,12 @@ export const DataManagementPanel = memo<DataManagementPanelProps>(({
           <ExportSection
             onExportAll={onExportAll}
             onExportCurrent={onExportCurrent}
+            onMessage={onMessage}
           />
         ) : (
           <ImportSection
             onImportSuccess={onImportSuccess}
+            onMessage={onMessage}
           />
         )}
       </div>

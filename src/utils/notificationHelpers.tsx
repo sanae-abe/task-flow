@@ -23,8 +23,10 @@ export const getNotificationIcon = (
       return <InfoIcon size={16} aria-hidden="true" />;
     case "warning":
       return <AlertIcon size={16} aria-hidden="true" />;
-    case "error":
+    case "critical":
       return <StopIcon size={16} aria-hidden="true" />;
+    case "upsell":
+      return <InfoIcon size={16} aria-hidden="true" />;
     default:
       return <InfoIcon size={16} aria-hidden="true" />;
   }
@@ -44,10 +46,34 @@ export const getFlashVariant = (
       return "success";
     case "warning":
       return "warning";
-    case "error":
+    case "critical":
       return "danger";
     case "info":
+    case "upsell":
     default:
       return "default";
+  }
+};
+
+/**
+ * 通知タイプに応じたPrimer Banner variantを返す
+ *
+ * @param type - 通知のタイプ
+ * @returns Primer Banner componentに対応するvariant文字列
+ */
+export const getBannerVariant = (
+  type: NotificationType,
+): "info" | "warning" | "critical" | "success" => {
+  switch (type) {
+    case "success":
+      return "success";
+    case "warning":
+      return "warning";
+    case "critical":
+      return "critical";
+    case "info":
+    case "upsell":
+    default:
+      return "info";
   }
 };

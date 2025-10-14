@@ -21,7 +21,7 @@ export interface ImportModeConfig {
   description: string;
 }
 
-export type NotificationType = 'success' | 'info' | 'warning' | 'error';
+export type NotificationType = 'critical' | 'info' | 'success' | 'upsell' | 'warning';
 
 export interface Notification {
   id: string;

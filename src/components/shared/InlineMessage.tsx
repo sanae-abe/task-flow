@@ -1,15 +1,26 @@
 import React from "react";
 import { FormControl } from "@primer/react";
-import { StopIcon } from '@primer/octicons-react';
+import { StopIcon, InfoIcon } from '@primer/octicons-react';
 
 interface InlineMessageProps {
   message: string | null;
-  variant?: "success" | "error" | "warning";
+  variant?: "success" | "error" | "warning" | "info";
 }
 
 const InlineMessage: React.FC<InlineMessageProps> = ({ message, variant = "error" }) => {
   if (!message) {
     return null;
+  }
+
+  if (variant === "info") {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--fgColor-accent)' }}>
+        <span style={{ display: 'flex', alignItems: 'center' }}><InfoIcon size={12} /></span>
+        <span style={{ fontSize: "12px", fontWeight: "bold" }}>
+          {message}
+        </span>
+      </div>
+    );
   }
 
   if (variant === "warning") {

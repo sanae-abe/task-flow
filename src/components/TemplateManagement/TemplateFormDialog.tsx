@@ -199,7 +199,8 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
         <div style={{
           padding: '12px',
           borderRadius: 'var(--borderRadius-medium)',
-          background: 'var(--bgColor-muted)'
+          background: 'var(--bgColor-muted)',
+          border: '1px solid var(--borderColor-default)',
         }}>
 
           {/* テンプレート名 */}
@@ -262,6 +263,7 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
           padding: '12px',
           background: 'var(--bgColor-muted)',
           borderRadius: 'var(--borderRadius-medium)',
+          border: '1px solid var(--borderColor-default)',
         }}>
           {/* タスクタイトル */}
           <FormControl sx={{ mb: 3 }}>

@@ -226,7 +226,7 @@ export const useNotify = () => {
         addNotification("warning", message, options),
 
       error: (message: string, options?: AddNotificationOptions) =>
-        addNotification("error", message, {
+        addNotification("critical", message, {
           duration: 5000, // エラーは少し長めに表示
           ...options,
         }),
@@ -236,7 +236,7 @@ export const useNotify = () => {
         success: (message: string, options?: AddNotificationOptions) =>
           addNotification("success", message, options),
         error: (message: string, options?: AddNotificationOptions) =>
-          addNotification("error", message, { duration: 5000, ...options }),
+          addNotification("critical", message, { duration: 5000, ...options }),
         loading: (message: string, options?: AddNotificationOptions) =>
           addNotification("info", message, { persistent: true, ...options }),
       },
@@ -261,7 +261,7 @@ export const useNotify = () => {
           message: string,
           options?: Omit<AddNotificationOptions, "persistent">,
         ) =>
-          addNotification("error", message, { ...options, persistent: true }),
+          addNotification("critical", message, { ...options, persistent: true }),
       },
     }),
     [addNotification],

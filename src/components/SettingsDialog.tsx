@@ -3,8 +3,9 @@ import {
   TagIcon,
   ProjectIcon,
   TrashIcon,
+  AlertIcon,
 } from "@primer/octicons-react";
-import { SplitPageLayout, NavList } from "@primer/react";
+import { SplitPageLayout, NavList, Flash } from "@primer/react";
 import React, { useState } from "react";
 import { FileText } from "react-feather";
 
@@ -33,6 +34,16 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
   const [activeTab, setActiveTab] = useState<
     "labels" | "data" | "board" | "templates" | "recycleBin"
   >("labels");
+  const [message, setMessage] = useState<{ type: 'success' | 'danger' | 'warning' | 'critical' | 'default'; text: string } | null>(null);
+
+  // メッセージコールバック
+  const handleMessage = (newMessage: { type: 'success' | 'danger' | 'warning' | 'critical' | 'default'; text: string }) => {
+    setMessage(newMessage);
+    // 3秒後にメッセージを自動クリア
+    setTimeout(() => {
+      setMessage(null);
+    }, 3000);
+  };
 
   return (
     <UnifiedDialog
@@ -124,10 +135,24 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
                   </div>
                 </div>
               ) : (
-                <DataManagementPanel
-                  onExportAll={onExportData}
-                  onExportCurrent={onExportBoard}
-                />
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  {/* メッセージ表示 */}
+                  {message && (
+                    <Flash variant={message.type === 'critical' ? 'danger' : message.type}>
+                      <div style={{ display: 'flex', gap: "8px" }}>
+                        {(message.type === 'warning' || message.type === 'critical') && <AlertIcon size={16} /> }
+                        <div>
+                          {message.text}
+                        </div>
+                      </div>
+                    </Flash>
+                  )}
+                  <DataManagementPanel
+                    onExportAll={onExportData}
+                    onExportCurrent={onExportBoard}
+                    onMessage={handleMessage}
+                  />
+                </div>
               )}
             </div>
           </SplitPageLayout.Content>

@@ -1,11 +1,10 @@
-import { memo } from 'react';
+import { memo, useEffect } from 'react';
 import { Text, Button, Flash, Spinner, RadioGroup, Radio, FormControl } from '@primer/react';
 import { UploadIcon, FileIcon, XIcon, AlertIcon } from '@primer/octicons-react';
 
 import { useDataImport } from '../../hooks/useDataImport';
 import { useDataImportDropZone } from '../../hooks/useDataImportDropZone';
 import UniversalDropZone from '../UniversalDropZone';
-import InlineMessage from '../shared/InlineMessage';
 
 /**
  * データインポート機能を提供するセクション
@@ -13,9 +12,11 @@ import InlineMessage from '../shared/InlineMessage';
 interface ImportSectionProps {
   /** インポート成功時のコールバック */
   onImportSuccess?: () => void;
+  /** メッセージ表示時のコールバック */
+  onMessage?: (message: { type: 'success' | 'critical'; text: string }) => void;
 }
 
-export const ImportSection = memo<ImportSectionProps>(({ onImportSuccess }) => {
+export const ImportSection = memo<ImportSectionProps>(({ onImportSuccess, onMessage }) => {
   const {
     state,
     selectFile,
@@ -38,6 +39,16 @@ export const ImportSection = memo<ImportSectionProps>(({ onImportSuccess }) => {
     onFileSelected: selectFile,
     disabled: state.isLoading
   });
+
+  // メッセージ状態の変化を監視してonMessageコールバックを呼び出す
+  useEffect(() => {
+    if (state.message && onMessage) {
+      onMessage({
+        type: state.message.type === 'error' ? 'critical' : state.message.type,
+        text: state.message.text
+      });
+    }
+  }, [state.message, onMessage]);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: "12px", width: '100%' }}>
@@ -179,11 +190,6 @@ export const ImportSection = memo<ImportSectionProps>(({ onImportSuccess }) => {
           <Spinner size="small" />
           <Text sx={{ fontSize: 1 }}>処理中...</Text>
         </div>
-      )}
-
-      {/* エラーメッセージ表示 */}
-      {state.message && (
-        <InlineMessage variant={state.message.type} message={state.message.text} />
       )}
 
       {/* インポート実行ボタン */}
