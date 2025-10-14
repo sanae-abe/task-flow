@@ -31,6 +31,7 @@ const PrioritySelector: React.FC<PrioritySelectorProps> = ({
       )}
       <RadioGroup
         name="priority"
+        aria-labelledby="priority-label"
         sx={{
           "& > div": {
             flexDirection: "row",

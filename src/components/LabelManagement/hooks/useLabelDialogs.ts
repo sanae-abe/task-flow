@@ -17,10 +17,17 @@ export const useLabelDialogs = (onMessage?: UseLabelDialogsOptions['onMessage'])
 
   // LabelContextのメッセージコールバックを設定
   useEffect(() => {
-    setMessageCallback(onMessage || null);
-    
+    console.log('🔌 useLabelDialogs useEffect triggered, onMessage:', onMessage);
+    if (onMessage) {
+      console.log('🔌 Setting message callback');
+      setMessageCallback(onMessage);
+    } else {
+      console.log('🔌 onMessage is null/undefined, not setting callback');
+    }
+
     // クリーンアップ: コンポーネントがアンマウントされたときにコールバックをクリア
     return () => {
+      console.log('🔌 useLabelDialogs cleanup: clearing message callback');
       setMessageCallback(null);
     };
   }, [onMessage, setMessageCallback]);
@@ -80,15 +87,20 @@ export const useLabelDialogs = (onMessage?: UseLabelDialogsOptions['onMessage'])
 
   // ラベル保存（作成・編集）
   const handleSave = useCallback((labelData: LabelFormData) => {
+    console.log('⚡ handleSave called with:', labelData, 'mode:', editDialog.mode);
+
     if (editDialog.mode === 'create') {
       if (labelData.boardId) {
         // 指定されたボードに作成
+        console.log('⚡ Calling createLabelInBoard');
         createLabelInBoard(labelData.name, labelData.color, labelData.boardId);
       } else {
         // 現在のボードに作成（従来通り）
+        console.log('⚡ Calling createLabel');
         createLabel(labelData.name, labelData.color);
       }
     } else if (editDialog.label) {
+      console.log('⚡ Calling updateLabel');
       updateLabel(editDialog.label.id, labelData);
     }
     handleCloseEditDialog();

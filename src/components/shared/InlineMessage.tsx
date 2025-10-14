@@ -25,8 +25,8 @@ const InlineMessage: React.FC<InlineMessageProps> = ({ message, variant = "defau
 
   if (variant === "warning") {
     return (
-      <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--fgColor-attention)' }}>
-        <span style={{ display: 'flex', alignItems: 'center' }}><StopIcon size={12} /></span>
+      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '4px', color: 'var(--fgColor-attention)' }}>
+        <span style={{ display: 'flex', alignItems: 'center', marginTop: "0.25em" }}><StopIcon size={12} /></span>
         <span style={{ fontSize: "12px", fontWeight: "bold" }}>
           {message}
         </span>

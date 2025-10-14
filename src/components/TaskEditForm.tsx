@@ -153,12 +153,12 @@ const TaskEditForm = memo<TaskEditFormProps>(
           <LabelSelector selectedLabels={labels} onLabelsChange={setLabels} />
         </FormControl>
 
-        <FormControl sx={{ marginBottom: "24px" }}>
+        <div style={{ marginBottom: "24px" }}>
           <PrioritySelector
             priority={priority}
             onPriorityChange={setPriority}
           />
-        </FormControl>
+        </div>
 
         <FormControl sx={{ display: "flex", flexDirection: "column", gap: "4px" }}>
           <FormControl.Label>ファイル添付</FormControl.Label>

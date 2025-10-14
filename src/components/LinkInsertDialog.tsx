@@ -37,7 +37,7 @@ const validateUrl = (url: string): boolean => {
   } catch {
     return false;
   }
-};;
+};
 
 const LinkInsertDialog: React.FC<LinkInsertDialogProps> = ({
   isOpen,

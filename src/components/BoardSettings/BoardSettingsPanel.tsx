@@ -132,18 +132,16 @@ const SortableColumnItem: React.FC<SortableColumnItemProps> = ({
         <GrabberIcon size={16} />
       </Box>
       <div style={{ flex: 1 }}>
-        <FormControl>
-          <TextInput
-            value={localName}
-            onChange={handleInputChange}
-            placeholder="カラム名"
-            sx={{ width: '100%' }}
-            aria-label={`カラム「${column.name}」の名前`}
-          />
-          {error && (
-            <InlineMessage variant="error" message={error} />
-          )}
-        </FormControl>
+        <TextInput
+          value={localName}
+          onChange={handleInputChange}
+          placeholder="カラム名"
+          sx={{ width: '100%' }}
+          aria-label={`カラム「${column.name}」の名前`}
+        />
+        {error && (
+          <InlineMessage variant="error" message={error} />
+        )}
       </div>
       <div style={{ display: 'flex', gap: "4px" }}>
         <Button
