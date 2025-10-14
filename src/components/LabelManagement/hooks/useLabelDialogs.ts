@@ -7,6 +7,9 @@ interface UseLabelDialogsOptions {
 }
 
 export const useLabelDialogs = (onMessage?: UseLabelDialogsOptions['onMessage']) => {
+  console.log('🚀 useLabelDialogs: Hook called with onMessage:', onMessage);
+  console.log('🚀 useLabelDialogs: onMessage type:', typeof onMessage);
+
   const {
     createLabel,
     createLabelInBoard,
@@ -15,14 +18,20 @@ export const useLabelDialogs = (onMessage?: UseLabelDialogsOptions['onMessage'])
     setMessageCallback
   } = useLabel();
 
+  console.log('🚀 useLabelDialogs: useLabel() methods obtained, setMessageCallback:', setMessageCallback);
+
   // LabelContextのメッセージコールバックを設定
   useEffect(() => {
-    console.log('🔌 useLabelDialogs useEffect triggered, onMessage:', onMessage);
+    console.log('🔌 useLabelDialogs useEffect: STARTING callback registration');
+    console.log('🔌 useLabelDialogs useEffect: onMessage received:', onMessage);
+    console.log('🔌 useLabelDialogs useEffect: setMessageCallback function:', setMessageCallback);
+
     if (onMessage) {
-      console.log('🔌 Setting message callback');
+      console.log('🔌 useLabelDialogs useEffect: onMessage is valid, calling setMessageCallback...');
       setMessageCallback(onMessage);
+      console.log('🔌 useLabelDialogs useEffect: setMessageCallback COMPLETED');
     } else {
-      console.log('🔌 onMessage is null/undefined, not setting callback');
+      console.log('🔌 useLabelDialogs useEffect: onMessage is null/undefined, skipping callback registration');
     }
 
     // クリーンアップ: コンポーネントがアンマウントされたときにコールバックをクリア
@@ -114,7 +123,7 @@ export const useLabelDialogs = (onMessage?: UseLabelDialogsOptions['onMessage'])
     }
   }, [deleteDialog.label, deleteLabelFromAllBoards, handleCloseDeleteDialog]);
 
-  return {
+  const returnMethods = {
     editDialog,
     deleteDialog,
     handleEdit,
@@ -125,4 +134,8 @@ export const useLabelDialogs = (onMessage?: UseLabelDialogsOptions['onMessage'])
     handleSave,
     handleConfirmDelete
   };
+
+  console.log('✅ useLabelDialogs: Hook initialization COMPLETE, returning methods:', Object.keys(returnMethods));
+
+  return returnMethods;
 };

@@ -19,6 +19,7 @@ interface InlineMessageData {
 }
 
 const LabelManagementPanel: React.FC<LabelManagementPanelProps> = ({ onMessage: _onMessage }) => {
+  console.log('🚀 LabelManagementPanel: Component mounted');
   const { sortField, sortDirection, handleSort } = useLabelSort();
   const { allLabelsWithInfo } = useLabelData(sortField, sortDirection);
 
@@ -27,34 +28,43 @@ const LabelManagementPanel: React.FC<LabelManagementPanelProps> = ({ onMessage: 
 
   // メッセージ表示とクリア
   const showInlineMessage = useCallback((message: InlineMessageData) => {
+    console.log('🎯 showInlineMessage called with:', message);
     setInlineMessage(message);
+    console.log('🎯 setInlineMessage called');
     // 3秒後に自動クリア
     setTimeout(() => {
+      console.log('🎯 Clearing InlineMessage');
       setInlineMessage(null);
     }, 3000);
   }, []);
 
   // メッセージコールバック
   const handleMessage = useCallback((message: { type: 'success' | 'danger' | 'warning' | 'critical' | 'default' | 'info' | 'upsell'; text: string } | null) => {
+    console.log('📨 handleMessage called with:', message);
     // nullチェックを追加してランタイムエラーを防ぐ
     if (!message) {
+      console.log('📨 handleMessage: message is null, returning');
       return;
     }
 
     // InlineMessageで表示
     if (message.type === 'success' || message.type === 'danger' || message.type === 'warning' || message.type === 'info') {
+      console.log('📨 handleMessage: message type matches, calling showInlineMessage');
       showInlineMessage({
         type: message.type,
         text: message.text
       });
+    } else {
+      console.log('📨 handleMessage: message type does not match:', message.type);
     }
 
     // DialogFlashMessageは無効化（InlineMessageを使用）
     // if (onMessage) {
     //   onMessage(message);
     // }
-  }, [showInlineMessage]); // onMessageを依存配列から削除;
+  }, [showInlineMessage]);
 
+  console.log('🔌 LabelManagementPanel: About to call useLabelDialogs with handleMessage:', handleMessage);
   const {
     editDialog,
     deleteDialog,
@@ -66,7 +76,9 @@ const LabelManagementPanel: React.FC<LabelManagementPanelProps> = ({ onMessage: 
     handleSave,
     handleConfirmDelete
   } = useLabelDialogs(handleMessage);
+  console.log('✅ LabelManagementPanel: useLabelDialogs returned successfully');
 
+  console.log('🎨 LabelManagementPanel: About to render with inlineMessage:', inlineMessage);
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: "12px", paddingBottom: "16px" }}>
       {/* ヘッダー */}

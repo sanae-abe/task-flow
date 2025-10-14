@@ -6,6 +6,7 @@ import { useDataImport } from '../../hooks/useDataImport';
 import { useDataImportDropZone } from '../../hooks/useDataImportDropZone';
 import UniversalDropZone from '../UniversalDropZone';
 import { DialogFlashMessage } from '../shared';
+import InlineMessage from '../shared/InlineMessage';
 
 /**
  * データインポート機能を提供するセクション
@@ -196,6 +197,11 @@ export const ImportSection = memo<ImportSectionProps>(({ onImportSuccess, onMess
         >
           {state.isLoading ? 'インポート中...' : 'インポート実行'}
         </Button>
+      )}
+
+      {/* エラーメッセージ表示 */}
+      {state.message && (
+        <InlineMessage variant={state.message.type} message={state.message.text} />
       )}
     </div>
   );
