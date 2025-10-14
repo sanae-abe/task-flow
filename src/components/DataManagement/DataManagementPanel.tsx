@@ -25,7 +25,7 @@ export const DataManagementPanel = memo<DataManagementPanelProps>(({
   const [activeTab, setActiveTab] = useState<'export' | 'import'>('export');
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: "12px" }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: "12px", paddingBottom: "16px" }}>
       {/* タブナビゲーション */}
       <UnderlineNav aria-label="データ管理" sx={{ px: 0, transform: 'translateY(-8px)' }}>
         <UnderlineNav.Item

@@ -325,7 +325,7 @@ export const BoardSettingsPanel: React.FC = () => {
   }
 
   return (
-    <div>
+    <div style={{ paddingBottom: "16px" }}>
       <div style={{ marginBottom: "16px" }}>
         <Heading sx={{ fontSize: 2, mb: 2 }}>デフォルトカラム設定</Heading>
         <div style={{ color: 'var(--fgColor-muted)', fontSize: "14px" }}>

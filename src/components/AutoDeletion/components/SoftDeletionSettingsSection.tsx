@@ -34,11 +34,11 @@ export const SoftDeletionSettingsSection: React.FC<
         marginBottom: "8px",
       }}
     >
-      <ShieldIcon size={16} aria-hidden="true" />
+      <ShieldIcon size={14} aria-hidden="true" />
       <h2
         id="soft-deletion-settings-label"
         style={{
-          fontSize: "16px",
+          fontSize: "14px",
           margin: 0,
           padding: 0,
         }}

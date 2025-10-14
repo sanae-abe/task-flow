@@ -84,11 +84,11 @@ export const RetentionSettingsSection: React.FC<
           marginBottom: "8px",
         }}
       >
-        <ClockIcon size={16} aria-hidden="true" />
+        <ClockIcon size={14} aria-hidden="true" />
         <h2
           id="retention-settings-label"
           style={{
-            fontSize: "16px",
+            fontSize: "14px",
             margin: 0,
             padding: 0,
           }}

@@ -40,11 +40,11 @@ export const NotificationSettingsSection: React.FC<
           marginBottom: "8px",
         }}
       >
-        <BellIcon size={16} aria-hidden="true" />
+        <BellIcon size={14} aria-hidden="true" />
         <h2
           id="notification-settings-label"
           style={{
-            fontSize: "16px",
+            fontSize: "14px",
             margin: 0,
             padding: 0,
           }}

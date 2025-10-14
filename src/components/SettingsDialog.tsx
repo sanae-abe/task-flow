@@ -88,7 +88,7 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
                 <NavList.LeadingVisual>
                   <TrashIcon />
                 </NavList.LeadingVisual>
-                自動削除
+                自動削除設定
               </NavList.Item>
               <NavList.Item
                 aria-current={activeTab === "recycleBin" ? "page" : undefined}

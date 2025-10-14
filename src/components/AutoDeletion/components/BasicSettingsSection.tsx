@@ -36,10 +36,10 @@ export const BasicSettingsSection: React.FC<BasicSettingsSectionProps> = ({
         marginBottom: "8px",
       }}
     >
-      <GearIcon size={16} aria-hidden="true" />
+      <GearIcon size={14} aria-hidden="true" />
       <h2
         style={{
-          fontSize: "16px",
+          fontSize: "14px",
           margin: 0,
           padding: 0,
         }}

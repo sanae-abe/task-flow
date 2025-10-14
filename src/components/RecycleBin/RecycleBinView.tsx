@@ -127,8 +127,8 @@ export const RecycleBinView: React.FC = () => {
   }
 
   return (
-    <div>
-      <div style={{ marginBottom: '16px' }}>
+    <div style={{ paddingBottom: '16px' }}>
+      <div style={{ marginBottom: '16px', }}>
         <Text
           as="h2"
           style={{
@@ -158,7 +158,8 @@ export const RecycleBinView: React.FC = () => {
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <AlertIcon size={16} />
             <Text style={{ marginLeft: '8px' }}>
-              これらのタスクは自動的に完全削除されます。復元が必要な場合は早めに操作してください。
+              これらのタスクは自動的に完全削除されます。<br />
+              復元が必要な場合は早めに操作してください。
             </Text>
           </div>
         </Flash>
@@ -166,7 +167,7 @@ export const RecycleBinView: React.FC = () => {
 
       <div style={{
         display: 'grid',
-        gap: '12px'
+        gap: '12px',
       }}>
         {softDeletedTasks.map((task) => (
           <div

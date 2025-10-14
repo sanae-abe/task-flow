@@ -36,11 +36,11 @@ export const ExportSettingsSection: React.FC<ExportSettingsSectionProps> = ({
         marginBottom: "8px",
       }}
     >
-      <DownloadIcon size={16} aria-hidden="true" />
+      <DownloadIcon size={14} aria-hidden="true" />
       <h2
         id="soft-deletion-settings-label"
         style={{
-          fontSize: "16px",
+          fontSize: "14px",
           margin: 0,
           padding: 0,
         }}
