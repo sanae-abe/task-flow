@@ -70,9 +70,7 @@ export const validateRetentionDaysInput = (value: string): ValidationResult => {
 /**
  * ゴミ箱設定全体をバリデーション
  */
-export const validateRecycleBinSettings = (settings: RecycleBinSettings): ValidationResult => {
-  return validateRetentionDays(settings.retentionDays);
-};
+export const validateRecycleBinSettings = (settings: RecycleBinSettings): ValidationResult => validateRetentionDays(settings.retentionDays);
 
 /**
  * 入力値を安全な値に変換

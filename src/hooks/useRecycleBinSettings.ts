@@ -1,8 +1,9 @@
 import { useState, useCallback, useEffect } from "react";
 import { DEFAULT_RECYCLE_BIN_SETTINGS, type RecycleBinSettings } from "../types/settings";
+import { RECYCLE_BIN_STORAGE_KEY, RECYCLE_BIN_SETTINGS_CHANGED_EVENT } from "../constants/recycleBin";
 import { logger } from "../utils/logger";
 
-const STORAGE_KEY = 'recycleBinSettings';
+const STORAGE_KEY = RECYCLE_BIN_STORAGE_KEY;
 
 /**
  * ゴミ箱設定の管理を行うカスタムフック
@@ -38,6 +39,13 @@ export const useRecycleBinSettings = () => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(newSettings));
       setSettings(newSettings);
+
+      // 同一タブ内での更新通知のためカスタムイベントを発行
+      const customEvent = new CustomEvent(RECYCLE_BIN_SETTINGS_CHANGED_EVENT, {
+        detail: newSettings,
+      });
+      window.dispatchEvent(customEvent);
+
       logger.info('ゴミ箱設定を保存しました:', newSettings);
       return true;
     } catch (error) {
@@ -60,9 +68,7 @@ export const useRecycleBinSettings = () => {
   /**
    * 設定をリセット
    */
-  const resetSettings = useCallback(async (): Promise<boolean> => {
-    return await saveSettings(DEFAULT_RECYCLE_BIN_SETTINGS);
-  }, [saveSettings]);
+  const resetSettings = useCallback(async (): Promise<boolean> => saveSettings(DEFAULT_RECYCLE_BIN_SETTINGS), [saveSettings]);
 
   /**
    * LocalStorageの変更を監視してリアルタイム更新
@@ -114,6 +120,7 @@ export const useRecycleBinSettingsReadOnly = (): RecycleBinSettings => {
   });
 
   useEffect(() => {
+    // LocalStorageの変更を監視（他のタブから）
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === STORAGE_KEY && e.newValue) {
         try {
@@ -125,8 +132,22 @@ export const useRecycleBinSettingsReadOnly = (): RecycleBinSettings => {
       }
     };
 
+    // カスタムイベントを監視（同一タブ内から）
+    const handleCustomEvent = (e: CustomEvent<RecycleBinSettings>) => {
+      try {
+        setSettings(e.detail);
+      } catch (error) {
+        logger.warn('設定の同期に失敗:', error);
+      }
+    };
+
     window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
+    window.addEventListener(RECYCLE_BIN_SETTINGS_CHANGED_EVENT, handleCustomEvent as EventListener);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener(RECYCLE_BIN_SETTINGS_CHANGED_EVENT, handleCustomEvent as EventListener);
+    };
   }, []);
 
   return settings;

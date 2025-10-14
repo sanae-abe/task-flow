@@ -4,7 +4,6 @@ import {
   TextInput,
   Button,
   Text,
-  Flash,
 } from "@primer/react";
 import {
   CheckIcon,
@@ -14,6 +13,7 @@ import { useRecycleBinSettings } from "../../hooks/useRecycleBinSettings";
 import { RETENTION_PRESETS, UI_TEXT, MESSAGES } from "../../constants/recycleBin";
 import { validateRetentionDaysInput, getValidationMessage } from "../../utils/recycleBinValidation";
 import ErrorMessage from "../ErrorMessage";
+import SuccessMessage from "../SuccessMessage";
 
 interface RecycleBinSettingsPanelProps {
   onSave?: (settings: RecycleBinSettings) => void;
@@ -188,15 +188,16 @@ export const RecycleBinSettingsPanel: React.FC<RecycleBinSettingsPanelProps> = (
             <>{UI_TEXT.PANEL.SAVE_BUTTON}</>
           )}
         </Button>
-
-        {saveMessage && (
-          <Flash
-            variant={saveMessage.includes('失敗') ? 'danger' : 'success'}
-            style={{ marginTop: '12px' }}
-          >
-            {saveMessage}
-          </Flash>
-        )}
+        <div style={{ marginTop: '12px' }}>
+          {saveMessage?.includes('失敗') ? 
+            <ErrorMessage
+              error={saveMessage}
+            /> : 
+            <SuccessMessage
+              success={saveMessage}
+            />
+            }
+        </div>
       </div>
 
       {/* 注意事項 */}

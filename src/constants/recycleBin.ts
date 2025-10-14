@@ -5,6 +5,9 @@
 // LocalStorage キー
 export const RECYCLE_BIN_STORAGE_KEY = 'recycleBinSettings';
 
+// カスタムイベント名
+export const RECYCLE_BIN_SETTINGS_CHANGED_EVENT = 'recycleBinSettingsChanged';
+
 // バリデーション定数
 export const RETENTION_DAYS_LIMITS = {
   MIN: 1,
@@ -107,11 +110,7 @@ export const UI_TEXT = {
 } as const;
 
 // プリセット検索ヘルパー
-export const findPresetByDays = (days: number | null): RetentionPreset | undefined => {
-  return RETENTION_PRESETS.find(preset => preset.days === days);
-};
+export const findPresetByDays = (days: number | null): RetentionPreset | undefined => RETENTION_PRESETS.find(preset => preset.days === days);
 
 // プリセットの値のみを取得
-export const getPresetValues = (): (number | null)[] => {
-  return RETENTION_PRESETS.map(preset => preset.days);
-};
+export const getPresetValues = (): (number | null)[] => RETENTION_PRESETS.map(preset => preset.days);
