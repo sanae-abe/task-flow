@@ -57,8 +57,8 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
   const { state: boardState, dispatch: boardDispatch } = useBoard();
   // const _notify = useNotify(); // 将来的にメッセージ機能で使用予定
 
-  // メッセージコールバック管理
-  const _messageCallbackRef = useRef<MessageCallback | null>(null);
+  // 複数のメッセージコールバックを管理する配列
+  const _messageCallbacksRef = useRef<Set<MessageCallback>>(new Set());
 
   // 現在のボードからラベルを取得
   const currentBoard = boardState.currentBoard;
@@ -151,23 +151,29 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
           payload: { label: newLabel }
         });
 
-        // 成功メッセージを送信（_messageCallbackがnullでない場合のみ）
-        console.log('💬 createLabel: Attempting to send message, callback exists:', !!_messageCallbackRef.current);
-        if (_messageCallbackRef.current && typeof _messageCallbackRef.current === 'function') {
-          try {
-            const messageToSend = {
-              type: 'success' as const,
-              text: `ラベル「${name}」を作成しました`,
-              title: 'ラベル作成完了'
-            };
-            console.log('💬 createLabel: Sending message:', messageToSend);
-            _messageCallbackRef.current(messageToSend);
-            console.log('💬 createLabel: Message sent successfully');
-          } catch (error) {
-            console.error('💬 createLabel: Error sending message:', error);
-          }
+        // 成功メッセージを全てのコールバックに送信
+        console.log('💬 createLabel: Attempting to send message, callback count:', _messageCallbacksRef.current.size);
+        if (_messageCallbacksRef.current.size > 0) {
+          const messageToSend = {
+            type: 'success' as const,
+            text: `ラベル「${name}」を作成しました`,
+            title: 'ラベル作成完了'
+          };
+          console.log('💬 createLabel: Sending message to all callbacks:', messageToSend);
+          
+          let callbackIndex = 0;
+          _messageCallbacksRef.current.forEach((callback) => {
+            callbackIndex++;
+            try {
+              console.log(`💬 createLabel: Sending to callback ${callbackIndex}`);
+              callback(messageToSend);
+              console.log(`💬 createLabel: Message sent successfully to callback ${callbackIndex}`);
+            } catch (error) {
+              console.error(`💬 createLabel: Error sending message to callback ${callbackIndex}:`, error);
+            }
+          });
         } else {
-          console.log('💬 createLabel: No valid callback available');
+          console.log('💬 createLabel: No callbacks available');
         }
       },
       createLabelInBoard: (name: string, color: string, boardId: string) => {
@@ -184,23 +190,29 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
             payload: { label: newLabel }
           });
 
-          // 成功メッセージを送信（_messageCallbackがnullでない場合のみ）
-          console.log('💬 createLabelInBoard: Attempting to send message, callback exists:', !!_messageCallbackRef.current);
-          if (_messageCallbackRef.current && typeof _messageCallbackRef.current === 'function') {
-            try {
-              const messageToSend = {
-                type: 'success' as const,
-                text: `ラベル「${name}」を作成しました`,
-                title: 'ラベル作成完了'
-              };
-              console.log('💬 createLabelInBoard: Sending message:', messageToSend);
-              _messageCallbackRef.current(messageToSend);
-              console.log('💬 createLabelInBoard: Message sent successfully');
-            } catch (error) {
-              console.error('💬 createLabelInBoard: Error sending message:', error);
-            }
+          // 成功メッセージを全てのコールバックに送信
+          console.log('💬 createLabelInBoard: Attempting to send message, callback count:', _messageCallbacksRef.current.size);
+          if (_messageCallbacksRef.current.size > 0) {
+            const messageToSend = {
+              type: 'success' as const,
+              text: `ラベル「${name}」を作成しました`,
+              title: 'ラベル作成完了'
+            };
+            console.log('💬 createLabelInBoard: Sending message to all callbacks:', messageToSend);
+            
+            let callbackIndex = 0;
+            _messageCallbacksRef.current.forEach((callback) => {
+              callbackIndex++;
+              try {
+                console.log(`💬 createLabelInBoard: Sending to callback ${callbackIndex}`);
+                callback(messageToSend);
+                console.log(`💬 createLabelInBoard: Message sent successfully to callback ${callbackIndex}`);
+              } catch (error) {
+                console.error(`💬 createLabelInBoard: Error sending message to callback ${callbackIndex}:`, error);
+              }
+            });
           } else {
-            console.log('💬 createLabelInBoard: No valid callback available');
+            console.log('💬 createLabelInBoard: No callbacks available');
           }
         }
       },
@@ -214,23 +226,29 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
           payload: { labelId, updates }
         });
 
-        // 成功メッセージを送信（_messageCallbackがnullでない場合のみ）
-        console.log('💬 updateLabel: Attempting to send message, callback exists:', !!_messageCallbackRef.current);
-        if (_messageCallbackRef.current && typeof _messageCallbackRef.current === 'function') {
-          try {
-            const messageToSend = {
-              type: 'success' as const,
-              text: 'ラベルを更新しました',
-              title: 'ラベル更新完了'
-            };
-            console.log('💬 updateLabel: Sending message:', messageToSend);
-            _messageCallbackRef.current(messageToSend);
-            console.log('💬 updateLabel: Message sent successfully');
-          } catch (error) {
-            console.error('💬 updateLabel: Error sending message:', error);
-          }
+        // 成功メッセージを全てのコールバックに送信
+        console.log('💬 updateLabel: Attempting to send message, callback count:', _messageCallbacksRef.current.size);
+        if (_messageCallbacksRef.current.size > 0) {
+          const messageToSend = {
+            type: 'success' as const,
+            text: 'ラベルを更新しました',
+            title: 'ラベル更新完了'
+          };
+          console.log('💬 updateLabel: Sending message to all callbacks:', messageToSend);
+          
+          let callbackIndex = 0;
+          _messageCallbacksRef.current.forEach((callback) => {
+            callbackIndex++;
+            try {
+              console.log(`💬 updateLabel: Sending to callback ${callbackIndex}`);
+              callback(messageToSend);
+              console.log(`💬 updateLabel: Message sent successfully to callback ${callbackIndex}`);
+            } catch (error) {
+              console.error(`💬 updateLabel: Error sending message to callback ${callbackIndex}:`, error);
+            }
+          });
         } else {
-          console.log('💬 updateLabel: No valid callback available');
+          console.log('💬 updateLabel: No callbacks available');
         }
       },
       deleteLabel: (labelId: string) => {
@@ -249,23 +267,29 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
           payload: { labelId }
         });
 
-        // 成功メッセージを送信（_messageCallbackがnullでない場合のみ）
-        console.log('💬 deleteLabelFromAllBoards: Attempting to send message, callback exists:', !!_messageCallbackRef.current);
-        if (_messageCallbackRef.current && typeof _messageCallbackRef.current === 'function') {
-          try {
-            const messageToSend = {
-              type: 'success' as const,
-              text: 'ラベルを全ボードから削除しました',
-              title: 'ラベル削除完了'
-            };
-            console.log('💬 deleteLabelFromAllBoards: Sending message:', messageToSend);
-            _messageCallbackRef.current(messageToSend);
-            console.log('💬 deleteLabelFromAllBoards: Message sent successfully');
-          } catch (error) {
-            console.error('💬 deleteLabelFromAllBoards: Error sending message:', error);
-          }
+        // 成功メッセージを全てのコールバックに送信
+        console.log('💬 deleteLabelFromAllBoards: Attempting to send message, callback count:', _messageCallbacksRef.current.size);
+        if (_messageCallbacksRef.current.size > 0) {
+          const messageToSend = {
+            type: 'success' as const,
+            text: 'ラベルを全ボードから削除しました',
+            title: 'ラベル削除完了'
+          };
+          console.log('💬 deleteLabelFromAllBoards: Sending message to all callbacks:', messageToSend);
+          
+          let callbackIndex = 0;
+          _messageCallbacksRef.current.forEach((callback) => {
+            callbackIndex++;
+            try {
+              console.log(`💬 deleteLabelFromAllBoards: Sending to callback ${callbackIndex}`);
+              callback(messageToSend);
+              console.log(`💬 deleteLabelFromAllBoards: Message sent successfully to callback ${callbackIndex}`);
+            } catch (error) {
+              console.error(`💬 deleteLabelFromAllBoards: Error sending message to callback ${callbackIndex}:`, error);
+            }
+          });
         } else {
-          console.log('💬 deleteLabelFromAllBoards: No valid callback available');
+          console.log('💬 deleteLabelFromAllBoards: No callbacks available');
         }
       },
 
@@ -296,8 +320,15 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
       // メッセージコールバック設定
       setMessageCallback: (callback: MessageCallback | null) => {
         console.log('🔧 LabelContext setMessageCallback called with:', callback);
-        _messageCallbackRef.current = callback;
-        console.log('🔧 LabelContext callback state updated');
+        if (callback) {
+          // コールバックを追加
+          _messageCallbacksRef.current.add(callback);
+          console.log('🔧 LabelContext callback added, total count:', _messageCallbacksRef.current.size);
+        } else {
+          // nullの場合は全てクリア（後方互換性のため）
+          _messageCallbacksRef.current.clear();
+          console.log('🔧 LabelContext all callbacks cleared');
+        }
       },
     };
   }, [boardState, currentBoard, boardDispatch]);
