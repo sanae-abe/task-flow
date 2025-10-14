@@ -92,7 +92,6 @@ export const UI_TEXT = {
     RETENTION_UNIT: '日間',
     RETENTION_HELP: '1〜365日の範囲で設定、または「無制限」ボタンで無制限に設定できます（推奨: 30日）',
     SAVE_BUTTON: '設定を保存',
-    IMPORTANT_NOTE_TITLE: '重要:',
     IMPORTANT_NOTE_TEXT: '保持期間を短くすると、既にゴミ箱にあるタスクも新しい期間で再計算されます。必要なタスクは期間変更前に復元することをお勧めします。',
   },
   VIEW: {
@@ -100,7 +99,7 @@ export const UI_TEXT = {
     EMPTY_TITLE: 'ゴミ箱は空です',
     EMPTY_DESCRIPTION: '削除されたタスクはありません。',
     TASK_COUNT: (count: number) => `${count}件のタスクがゴミ箱にあります`,
-    WARNING_LIMITED: (days: number) => `これらのタスクは${days}日後に自動的に完全削除されます。復元が必要な場合は早めに操作してください。`,
+    WARNING_LIMITED: (days: number) => `これらのタスクは${days}日後に自動的に完全削除されます。`,
     WARNING_UNLIMITED: 'これらのタスクは無制限に保持されます。手動で削除するまで自動削除されません。不要なタスクは「ゴミ箱を空にする」で削除してください。',
     EMPTY_BIN_BUTTON: 'ゴミ箱を空にする',
     RESTORE_BUTTON: '復元',

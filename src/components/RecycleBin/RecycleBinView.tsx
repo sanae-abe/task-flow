@@ -22,7 +22,7 @@ import {
 import { useRecycleBinSettingsReadOnly } from "../../hooks/useRecycleBinSettings";
 import { UI_TEXT, MESSAGES } from "../../constants/recycleBin";
 import { logger } from "../../utils/logger";
-import { DialogFlashMessage } from "../shared";
+import { InlineMessage } from "../shared";
 
 /**
  * ゴミ箱のタスクを表示・復元・完全削除するコンポーネント
@@ -165,14 +165,12 @@ export const RecycleBinView: React.FC = () => {
         </div>
 
         <div style={{ marginBottom: '12px' }}>
-          <DialogFlashMessage message={{
-            type: 'warning',
-            text: recycleBinSettings.retentionDays === null ? (
+          <InlineMessage variant="warning" message={recycleBinSettings.retentionDays === null ? (
               UI_TEXT.VIEW.WARNING_UNLIMITED
             ) : (
               UI_TEXT.VIEW.WARNING_LIMITED(recycleBinSettings.retentionDays)
             )
-          }} />
+          } />
         </div>
       </div>
 

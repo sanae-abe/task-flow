@@ -193,16 +193,18 @@ export const RecycleBinSettingsPanel: React.FC<RecycleBinSettingsPanelProps> = (
             <InlineMessage
               variant={saveMessage?.includes('失敗') ? "error" : "success"}
               message={saveMessage}
-            /> 
+            />
           )}
         </div>
       </div>
 
       {/* 注意事項 */}
-      <DialogFlashMessage message={{
-        type: 'default',
-        text: UI_TEXT.PANEL.IMPORTANT_NOTE_TITLE
-      }} />
+      <div style={{ marginTop: '20px' }}>
+        <DialogFlashMessage message={{
+          type: 'warning',  
+          text: UI_TEXT.PANEL.IMPORTANT_NOTE_TEXT
+        }} />
+      </div>
     </div>
   );
 };

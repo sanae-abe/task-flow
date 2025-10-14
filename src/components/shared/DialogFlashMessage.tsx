@@ -94,11 +94,12 @@ export const DialogFlashMessage: React.FC<DialogFlashMessageProps> = ({
       style={style}
       className={className}
     >
-      <div style={{ display: 'flex', gap: "8px", alignItems: 'flex-start' }}>
-        {getMessageIcon(message.type)}
+      <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+        <div>{getMessageIcon(message.type)}</div>
         <div>
-          {message.title ? <Text sx={{ fontWeight: 'bold', display: 'block', mb: 1 }}>{message.title}</Text> : null}
-          <Text sx={{ display: 'block', mb: 1 }}>
+          {message.title ?
+            <Text sx={{ fontWeight: 'bold', display: 'block', mb: 1 }}>{message.title}</Text> : null}
+          <Text sx={{ display: 'block' }}>
             {message.text}
           </Text>
         </div>

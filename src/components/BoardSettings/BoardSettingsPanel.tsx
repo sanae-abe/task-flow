@@ -502,7 +502,14 @@ export const BoardSettingsPanel: React.FC = () => {
 
       {/* 保存ボタン */}
       <div style={{ paddingTop: "12px", borderTop: "1px solid", borderColor: "var(--borderColor-default)" }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "8px" }}>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", justifyContent: "center", gap: "8px" }}>
+          <Button
+            variant="primary"
+            leadingVisual={CheckIcon}
+            onClick={handleSave}
+          >
+            設定を保存
+          </Button>
           <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
             {/* 未保存状態メッセージ */}
             {hasUnsavedChanges ? (
@@ -512,15 +519,7 @@ export const BoardSettingsPanel: React.FC = () => {
                 <InlineMessage variant={saveMessageType === 'success' ? 'success' : 'error'} message={saveMessage} />
               )
             )}
-
           </div>
-          <Button
-            variant="primary"
-            leadingVisual={CheckIcon}
-            onClick={handleSave}
-          >
-            設定を保存
-          </Button>
         </div>
       </div>
     </div>

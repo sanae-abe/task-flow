@@ -7,8 +7,9 @@ import {
   TableIcon,
   DeviceCameraVideoIcon,
   PencilIcon,
+  PaperclipIcon
 } from "@primer/octicons-react";
-import { MousePointer, FileText, Paperclip } from "react-feather";
+import { MousePointer, FileText } from "react-feather";
 
 import { Button, Heading, Text } from "@primer/react";
 import React, { useEffect, useCallback } from "react";
@@ -317,7 +318,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
 
           <HelpSection
             title="ファイル添付"
-            icon={Paperclip}
+            icon={PaperclipIcon}
             background="var(--bgColor-attention-emphasis)"
           >
             <HelpItem
