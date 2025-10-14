@@ -18,7 +18,7 @@ interface InlineMessageData {
   text: string;
 }
 
-const LabelManagementPanel: React.FC<LabelManagementPanelProps> = ({ onMessage }) => {
+const LabelManagementPanel: React.FC<LabelManagementPanelProps> = ({ onMessage: _onMessage }) => {
   const { sortField, sortDirection, handleSort } = useLabelSort();
   const { allLabelsWithInfo } = useLabelData(sortField, sortDirection);
 
@@ -53,7 +53,7 @@ const LabelManagementPanel: React.FC<LabelManagementPanelProps> = ({ onMessage }
     // if (onMessage) {
     //   onMessage(message);
     // }
-  }, [showInlineMessage, onMessage]);
+  }, [showInlineMessage]); // onMessageを依存配列から削除;
 
   const {
     editDialog,
