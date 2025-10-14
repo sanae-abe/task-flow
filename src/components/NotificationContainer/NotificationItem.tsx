@@ -1,12 +1,8 @@
-import { Text } from "@primer/react";
 import { Banner } from '@primer/react/experimental'
 import React, { useMemo, useCallback } from "react";
 
 import type { Notification } from "../../types";
 import { getNotificationIcon } from "../../utils/notificationHelpers";
-import {
-  notificationItemStyles,
-} from "./styles";
 
 /**
  * NotificationItemコンポーネントのプロパティ型定義
@@ -76,13 +72,10 @@ export const NotificationItem: React.FC<NotificationItemProps> = React.memo(
         tabIndex={0}
         icon={icon}
         onDismiss={handleClose}
-        style={notificationItemStyles}
-      >
-        {notification.title && <Banner.Title>
-          {notification.title}
-        </Banner.Title>}
-        <Text>{notification.message}</Text>
-      </Banner>
+        title={notification.title || "通知"}
+        description={notification.message}
+        hideTitle
+      />
     );
   },
 );

@@ -28,19 +28,6 @@ export const wrapperStyles: React.CSSProperties = {
 };
 
 /**
- * 通知アイテムのインナースタイル定義
- */
-export const notificationItemStyles: React.CSSProperties = {
-  display: "flex",
-  alignItems: "center",
-  gap: "8px",
-  padding: "10px 16px",
-  position: "relative",
-  width: "100%",
-  boxSizing: "border-box",
-};
-
-/**
  * アイコンコンテナのスタイル定義
  */
 export const iconContainerStyles: React.CSSProperties = {
