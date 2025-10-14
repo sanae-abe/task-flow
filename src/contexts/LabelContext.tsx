@@ -3,6 +3,7 @@ import React, {
   useContext,
   useMemo,
   useCallback,
+  useState,
   type ReactNode,
 } from "react";
 
@@ -34,7 +35,17 @@ interface LabelContextType {
   // ラベル共通化機能
   copyLabelToCurrentBoard: (label: Label) => void;
   isLabelInCurrentBoard: (labelId: string) => boolean;
+
+  // メッセージコールバック設定
+  setMessageCallback: (callback: MessageCallback | null) => void;
 }
+
+// メッセージコールバックの型定義
+type MessageCallback = (message: { 
+  type: 'success' | 'danger' | 'warning' | 'critical' | 'default' | 'info' | 'upsell'; 
+  text: string; 
+  title?: string;
+}) => void;
 
 const LabelContext = createContext<LabelContextType | undefined>(undefined);
 
@@ -55,16 +66,51 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
   const notify = useNotify();
   const { state: boardState, dispatch: boardDispatch } = useBoard();
 
+  // メッセージコールバック状態（Hooksの順序を保つため、常に呼び出す）
+  const [messageCallback, setMessageCallback] = useState<MessageCallback | null>(null);
+
+  // メッセージ送信のヘルパー関数
+  const sendMessage = useCallback((message: { type: 'success' | 'danger' | 'warning' | 'critical' | 'default' | 'info' | 'upsell'; text: string; title?: string }) => {
+    // 安全性チェック
+    if (!message || typeof message !== 'object' || !message.type || !message.text) {
+      // eslint-disable-next-line no-console
+      console.error('Invalid message passed to sendMessage:', message);
+      return;
+    }
+
+    if (messageCallback) {
+      messageCallback(message);
+    } else if (notify) {
+      // フォールバック: notifyを使用
+      switch (message.type) {
+        case 'success':
+          notify.success(message.text);
+          break;
+        case 'critical':
+        case 'danger':
+          notify.error(message.text);
+          break;
+        case 'warning':
+          notify.warning(message.text);
+          break;
+        case 'info':
+        default:
+          notify.info(message.text);
+          break;
+      }
+    }
+  }, [messageCallback, notify]);
+
   // 現在のボードのラベル
   const labels = useMemo(
-    () => boardState.currentBoard?.labels || [],
-    [boardState.currentBoard],
+    () => boardState?.currentBoard?.labels || [],
+    [boardState?.currentBoard],
   );
 
   // 現在のボードのラベルを取得
   const getCurrentBoardLabels = useCallback(
-    (): Label[] => boardState.currentBoard?.labels || [],
-    [boardState.currentBoard],
+    (): Label[] => boardState?.currentBoard?.labels || [],
+    [boardState?.currentBoard],
   );
 
   // 全ボードからすべてのラベルを取得
@@ -72,7 +118,7 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
     const labelMap = new Map<string, Label>();
 
     // すべてのボードからラベルを収集
-    boardState.boards.forEach((board) => {
+    boardState?.boards?.forEach((board) => {
       board.labels?.forEach((label) => {
         if (!labelMap.has(label.id)) {
           labelMap.set(label.id, label);
@@ -92,12 +138,12 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
     });
 
     return Array.from(labelMap.values());
-  }, [boardState.boards]);
+  }, [boardState?.boards]);
 
   // 現在のボードでのラベル使用数を取得
   const getCurrentBoardLabelUsageCount = useCallback(
     (labelId: string): number => {
-      if (!boardState.currentBoard) {
+      if (!boardState?.currentBoard) {
         return 0;
       }
 
@@ -112,26 +158,26 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
 
       return count;
     },
-    [boardState.currentBoard],
+    [boardState?.currentBoard],
   );
 
   // ラベル作成
   const createLabel = useCallback(
     (name: string, color: string) => {
-      // バリデーション
-      if (!boardState.currentBoard) {
-        notify.error("ボードが選択されていません");
+      // 初期化チェック
+      if (!boardState?.currentBoard || !boardDispatch) {
+        sendMessage({ type: 'critical', text: 'ボードが選択されていません' });
         return;
       }
 
       const trimmedName = name.trim();
       if (!trimmedName) {
-        notify.error("ラベル名が空です");
+        sendMessage({ type: 'critical', text: 'ラベル名が空です' });
         return;
       }
 
       if (trimmedName.length > 50) {
-        notify.error("ラベル名は50文字以下で入力してください");
+        sendMessage({ type: 'critical', text: 'ラベル名は50文字以下で入力してください' });
         return;
       }
 
@@ -142,7 +188,7 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
       );
 
       if (isDuplicate) {
-        notify.error("同じ名前のラベルが既に存在します");
+        sendMessage({ type: 'critical', text: '同じ名前のラベルが既に存在します' });
         return;
       }
 
@@ -163,34 +209,40 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
           },
         });
 
-        notify.success(`ラベル「${trimmedName}」を作成しました`);
+        sendMessage({ type: 'success', text: `ラベル「${trimmedName}」を作成しました` });
       } catch (error) {
-        notify.error("ラベルの作成に失敗しました");
+        sendMessage({ type: 'critical', text: 'ラベルの作成に失敗しました' });
       }
     },
-    [boardState.currentBoard, boardDispatch, notify],
+    [boardState?.currentBoard, boardDispatch, sendMessage],
   );
 
   // 指定されたボードにラベルを作成
   const createLabelInBoard = useCallback(
     (name: string, color: string, boardId: string) => {
+      // 初期化チェック
+      if (!boardDispatch) {
+        sendMessage({ type: 'critical', text: 'システムが初期化されていません' });
+        return;
+      }
+
       // 指定されたボードを取得
-      const targetBoard = boardState.boards.find(
+      const targetBoard = boardState?.boards?.find(
         (board) => board.id === boardId,
       );
       if (!targetBoard) {
-        notify.error("指定されたボードが見つかりません");
+        sendMessage({ type: 'critical', text: '指定されたボードが見つかりません' });
         return;
       }
 
       const trimmedName = name.trim();
       if (!trimmedName) {
-        notify.error("ラベル名が空です");
+        sendMessage({ type: 'critical', text: 'ラベル名が空です' });
         return;
       }
 
       if (trimmedName.length > 50) {
-        notify.error("ラベル名は50文字以下で入力してください");
+        sendMessage({ type: 'critical', text: 'ラベル名は50文字以下で入力してください' });
         return;
       }
 
@@ -201,9 +253,10 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
       );
 
       if (isDuplicate) {
-        notify.error(
-          `ボード「${targetBoard.title}」に同じ名前のラベルが既に存在します`,
-        );
+        sendMessage({
+          type: 'critical',
+          text: `ボード「${targetBoard.title}」に同じ名前のラベルが既に存在します`
+        });
         return;
       }
 
@@ -224,21 +277,23 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
           },
         });
 
-        notify.success(
-          `ボード「${targetBoard.title}」にラベル「${trimmedName}」を作成しました`,
-        );
+        sendMessage({
+          type: 'success',
+          text: `ボード「${targetBoard.title}」にラベル「${trimmedName}」を作成しました`
+        });
       } catch (error) {
-        notify.error("ラベルの作成に失敗しました");
+        sendMessage({ type: 'critical', text: 'ラベルの作成に失敗しました' });
       }
     },
-    [boardState.boards, boardDispatch, notify],
+    [boardState?.boards, boardDispatch, sendMessage],
   );
 
   // ラベル更新（原子性を考慮した統合更新）
   const updateLabel = useCallback(
     (labelId: string, updates: Partial<Label>) => {
-      if (!boardState.currentBoard) {
-        notify.error("ボードが選択されていません");
+      // 初期化チェック
+      if (!boardState?.currentBoard || !boardDispatch) {
+        sendMessage({ type: 'critical', text: 'ボードが選択されていません' });
         return;
       }
 
@@ -246,11 +301,11 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
       if (updates.name !== undefined) {
         const trimmedName = updates.name.trim();
         if (!trimmedName) {
-          notify.error("ラベル名が空です");
+          sendMessage({ type: 'critical', text: 'ラベル名が空です' });
           return;
         }
         if (trimmedName.length > 50) {
-          notify.error("ラベル名は50文字以下で入力してください");
+          sendMessage({ type: 'critical', text: 'ラベル名は50文字以下で入力してください' });
           return;
         }
 
@@ -263,7 +318,7 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
         );
 
         if (isDuplicate) {
-          notify.error("同じ名前のラベルが既に存在します");
+          sendMessage({ type: 'critical', text: '同じ名前のラベルが既に存在します' });
           return;
         }
       }
@@ -299,19 +354,20 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
           },
         });
 
-        notify.success("ラベルを更新しました");
+        sendMessage({ type: 'success', text: 'ラベルを更新しました' });
       } catch (error) {
-        notify.error("ラベルの更新に失敗しました");
+        sendMessage({ type: 'critical', text: 'ラベルの更新に失敗しました' });
       }
     },
-    [boardState.currentBoard, boardDispatch, notify],
+    [boardState?.currentBoard, boardDispatch, sendMessage],
   );
 
   // ラベル削除（原子性を考慮した統合削除）
   const deleteLabel = useCallback(
     (labelId: string) => {
-      if (!boardState.currentBoard) {
-        notify.error("ボードが選択されていません");
+      // 初期化チェック
+      if (!boardState?.currentBoard || !boardDispatch) {
+        sendMessage({ type: 'critical', text: 'ボードが選択されていません' });
         return;
       }
 
@@ -319,7 +375,7 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
         (label) => label.id === labelId,
       );
       if (!labelToDelete) {
-        notify.error("削除対象のラベルが見つかりません");
+        sendMessage({ type: 'critical', text: '削除対象のラベルが見つかりません' });
         return;
       }
 
@@ -362,15 +418,15 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
             ? `ラベル「${labelToDelete.name}」を削除しました（${usageCount}個のタスクから削除）`
             : `ラベル「${labelToDelete.name}」を削除しました`;
 
-        notify.success(message);
+        sendMessage({ type: 'success', text: message });
       } catch (error) {
-        notify.error("ラベルの削除に失敗しました");
+        sendMessage({ type: 'critical', text: 'ラベルの削除に失敗しました' });
       }
     },
     [
-      boardState.currentBoard,
+      boardState?.currentBoard,
       boardDispatch,
-      notify,
+      sendMessage,
       getCurrentBoardLabelUsageCount,
     ],
   );
@@ -378,7 +434,7 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
   // ラベルが現在のボードにあるかチェック
   const isLabelInCurrentBoard = useCallback(
     (labelId: string): boolean => {
-      if (!boardState.currentBoard) {
+      if (!boardState?.currentBoard) {
         return false;
       }
 
@@ -386,20 +442,24 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
         (label) => label.id === labelId,
       );
     },
-    [boardState.currentBoard],
+    [boardState?.currentBoard],
   );
 
   // 他のボードのラベルを現在のボードにコピー
   const copyLabelToCurrentBoard = useCallback(
     (label: Label) => {
-      if (!boardState.currentBoard) {
-        notify.error("ボードが選択されていません");
+      // 初期化チェック
+      if (!boardState?.currentBoard || !boardDispatch) {
+        sendMessage({ type: 'critical', text: 'ボードが選択されていません' });
         return;
       }
 
       // 既に現在のボードに存在するかチェック
       if (isLabelInCurrentBoard(label.id)) {
-        notify.info(`ラベル「${label.name}」は既に現在のボードに存在します`);
+        sendMessage({
+          type: 'info',
+          text: `ラベル「${label.name}」は既に現在のボードに存在します`
+        });
         return;
       }
 
@@ -411,9 +471,10 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
       );
 
       if (isDuplicate) {
-        notify.error(
-          `同じ名前のラベル「${label.name}」が既に現在のボードに存在します`,
-        );
+        sendMessage({
+          type: 'critical',
+          text: `同じ名前のラベル「${label.name}」が既に現在のボードに存在します`
+        });
         return;
       }
 
@@ -435,12 +496,15 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
           },
         });
 
-        notify.success(`ラベル「${label.name}」を現在のボードにコピーしました`);
+        sendMessage({
+          type: 'success',
+          text: `ラベル「${label.name}」を現在のボードにコピーしました`
+        });
       } catch (error) {
-        notify.error("ラベルのコピーに失敗しました");
+        sendMessage({ type: 'critical', text: 'ラベルのコピーに失敗しました' });
       }
     },
-    [boardState.currentBoard, boardDispatch, notify, isLabelInCurrentBoard],
+    [boardState?.currentBoard, boardDispatch, sendMessage, isLabelInCurrentBoard],
   );
 
   // 全ボードのラベル情報をボード名付きで取得
@@ -452,7 +516,7 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
     > = [];
 
     // すべてのボードからラベルを収集
-    boardState.boards.forEach((board) => {
+    boardState?.boards?.forEach((board) => {
       board.labels?.forEach((label) => {
         labelsWithBoardInfo.push({
           ...label,
@@ -463,12 +527,12 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
     });
 
     return labelsWithBoardInfo;
-  }, [boardState.boards]);
+  }, [boardState?.boards]);
 
   // 指定されたボードでのラベル使用数を取得
   const getLabelUsageCountInBoard = useCallback(
     (labelId: string, boardId: string): number => {
-      const board = boardState.boards.find((b) => b.id === boardId);
+      const board = boardState?.boards?.find((b) => b.id === boardId);
       if (!board) {
         return 0;
       }
@@ -484,7 +548,7 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
 
       return count;
     },
-    [boardState.boards],
+    [boardState?.boards],
   );
 
   // 全ボードでのラベル使用数を取得
@@ -492,7 +556,7 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
     (labelId: string): number => {
       let totalCount = 0;
 
-      boardState.boards.forEach((board) => {
+      boardState?.boards?.forEach((board) => {
         board.columns.forEach((column) => {
           column.tasks.forEach((task) => {
             if (task.labels?.some((label) => label.id === labelId)) {
@@ -504,18 +568,24 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
 
       return totalCount;
     },
-    [boardState.boards],
+    [boardState?.boards],
   );
 
   // 全ボードからラベルを削除
   const deleteLabelFromAllBoards = useCallback(
     (labelId: string) => {
+      // 初期化チェック
+      if (!boardDispatch) {
+        sendMessage({ type: 'critical', text: 'システムが初期化されていません' });
+        return;
+      }
+
       // まず、削除対象のラベル情報を取得
       const labelToDelete = getAllLabels().find(
         (label) => label.id === labelId,
       );
       if (!labelToDelete) {
-        notify.error("削除対象のラベルが見つかりません");
+        sendMessage({ type: 'critical', text: '削除対象のラベルが見つかりません' });
         return;
       }
 
@@ -524,7 +594,7 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
 
       try {
         // すべてのボードを個別に更新
-        boardState.boards.forEach((board) => {
+        boardState?.boards?.forEach((board) => {
           const hasLabel = (board.labels || []).some(
             (label) => label.id === labelId,
           );
@@ -567,15 +637,15 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
             ? `ラベル「${labelToDelete.name}」を全ボードから削除しました（${totalUsageCount}個のタスクから削除）`
             : `ラベル「${labelToDelete.name}」を全ボードから削除しました`;
 
-        notify.success(message);
+        sendMessage({ type: 'success', text: message });
       } catch (error) {
-        notify.error("ラベルの削除に失敗しました");
+        sendMessage({ type: 'critical', text: 'ラベルの削除に失敗しました' });
       }
     },
     [
-      boardState.boards,
+      boardState?.boards,
       boardDispatch,
-      notify,
+      sendMessage,
       getAllLabels,
       getAllLabelUsageCount,
     ],
@@ -605,6 +675,9 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
       // ラベル共通化機能
       copyLabelToCurrentBoard,
       isLabelInCurrentBoard,
+
+      // メッセージコールバック設定
+      setMessageCallback,
     }),
     [
       labels,
@@ -621,8 +694,34 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
       deleteLabelFromAllBoards,
       copyLabelToCurrentBoard,
       isLabelInCurrentBoard,
+      setMessageCallback,
     ],
   );
+
+  // 初期化されていない場合は、空のコンテキストを提供
+  if (!notify || !boardDispatch) {
+    return (
+      <LabelContext.Provider value={{
+        labels: [],
+        getCurrentBoardLabels: () => [],
+        getCurrentBoardLabelUsageCount: () => 0,
+        getAllLabels: () => [],
+        getAllLabelsWithBoardInfo: () => [],
+        getLabelUsageCountInBoard: () => 0,
+        getAllLabelUsageCount: () => 0,
+        createLabel: () => {},
+        createLabelInBoard: () => {},
+        updateLabel: () => {},
+        deleteLabel: () => {},
+        deleteLabelFromAllBoards: () => {},
+        copyLabelToCurrentBoard: () => {},
+        isLabelInCurrentBoard: () => false,
+        setMessageCallback: () => {},
+      }}>
+        {children}
+      </LabelContext.Provider>
+    );
+  }
 
   return (
     <LabelContext.Provider value={contextValue}>
