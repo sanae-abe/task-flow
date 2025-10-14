@@ -210,7 +210,6 @@ export const RecycleBinView: React.FC = () => {
                   style={{
                     fontSize: '14px',
                     fontWeight: 'bold',
-                    marginBottom: '4px'
                   }}
                 >
                   {task.title}
