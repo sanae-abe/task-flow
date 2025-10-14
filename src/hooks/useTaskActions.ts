@@ -168,12 +168,7 @@ export const useTaskActions = (
         return;
       }
 
-      moveTaskToBoard(
-        task.id,
-        currentBoard.id,
-        column.id,
-        targetBoardId,
-      );
+      moveTaskToBoard(task.id, currentBoard.id, column.id, targetBoardId);
 
       // タスク詳細サイドバーを閉じる
       onClose?.();

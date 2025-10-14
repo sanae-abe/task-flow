@@ -1,4 +1,4 @@
-import { Text, TextInput, Select } from "@primer/react";
+import { TextInput, Select, FormControl } from "@primer/react";
 import React, { memo, useCallback } from "react";
 
 import type {
@@ -96,35 +96,28 @@ const TaskEditForm = memo<TaskEditFormProps>(
           validation={{ required: true }}
         />
 
-        <div style={{ marginBottom: "24px" }}>
-          <Text
-            sx={{ fontSize: 1, mb: 2, display: "block", fontWeight: "700" }}
-          >
-            説明（任意）
-          </Text>
+        <FormControl sx={{ marginBottom: "24px" }}>
+          <FormControl.Label>説明</FormControl.Label>
           <RichTextEditor
             value={description}
             onChange={setDescription}
             placeholder="タスクの説明を入力"
           />
-        </div>
+        </FormControl>
 
-        <div style={{ marginBottom: "24px" }}>
-          <div style={{ marginBottom: "8px" }}>
-            <Text
-              sx={{ fontSize: 1, mb: 1, display: "block", fontWeight: "700" }}
-            >
-              期限（任意）
-            </Text>
-            <TextInput
-              type="date"
+      <div style={{ marginBottom: "24px" }}>
+        <FormControl sx={{ marginBottom: "8px" }}>
+          <FormControl.Label>期限</FormControl.Label>
+          <TextInput
+            type="date"
               value={dueDate}
               onChange={(e) => setDueDate(e.target.value)}
               onKeyDown={onKeyPress}
               sx={{ width: "100%" }}
               step="1"
             />
-          </div>
+          </FormControl>
+
           <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
             <TimeSelector
               hasTime={hasTime}
@@ -140,12 +133,8 @@ const TaskEditForm = memo<TaskEditFormProps>(
           </div>
         </div>
 
-        <div style={{ marginBottom: "24px" }}>
-          <Text
-            sx={{ fontSize: 1, mb: 1, display: "block", fontWeight: "700" }}
-          >
-            ステータス
-          </Text>
+        <FormControl sx={{ marginBottom: "24px" }}>
+          <FormControl.Label>ステータス</FormControl.Label>
           <Select
             value={columnId}
             onChange={(e) => setColumnId(e.target.value)}
@@ -157,36 +146,28 @@ const TaskEditForm = memo<TaskEditFormProps>(
               </Select.Option>
             ))}
           </Select>
-        </div>
+        </FormControl>
 
-        <div style={{ marginBottom: "24px" }}>
-          <Text
-            sx={{ fontSize: 1, mb: 1, display: "block", fontWeight: "700" }}
-          >
-            ラベル（任意）
-          </Text>
+        <FormControl sx={{ marginBottom: "24px" }}>
+          <FormControl.Label>ラベル</FormControl.Label>
           <LabelSelector selectedLabels={labels} onLabelsChange={setLabels} />
-        </div>
+        </FormControl>
 
-        <div style={{ marginBottom: "24px" }}>
+        <FormControl sx={{ marginBottom: "24px" }}>
           <PrioritySelector
             priority={priority}
             onPriorityChange={setPriority}
           />
-        </div>
+        </FormControl>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-          <Text
-            sx={{ fontSize: 1, mb: 1, display: "block", fontWeight: "700" }}
-          >
-            ファイル添付（任意）
-          </Text>
+        <FormControl sx={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+          <FormControl.Label>ファイル添付</FormControl.Label>
           <FileUploader
             attachments={attachments}
             onAttachmentsChange={setAttachments}
             showModeSelector={false}
           />
-        </div>
+        </FormControl>
       </div>
     );
   },

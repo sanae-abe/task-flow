@@ -68,11 +68,9 @@ export interface Task {
   recurrenceId?: string; // 同じ繰り返しグループを識別するID
   occurrenceCount?: number; // 何回目の発生か
 
-  // 自動削除機能関連
-  deletionState?: 'active' | 'soft-deleted' | 'archived';
-  softDeletedAt?: string | null;
-  scheduledDeletionAt?: string | null;
-  protectedFromDeletion?: boolean; // 手動保護フラグ
+  // シンプルなゴミ箱機能
+  deletionState?: 'active' | 'deleted';
+  deletedAt?: string | null; // 削除日時（猶予期間計算用）
 }
 
 export interface Column {
@@ -158,55 +156,3 @@ export type KanbanAction =
   | { type: 'CLEAR_TASK_FILTER' }
   | { type: 'SET_VIEW_MODE'; payload: ViewMode };
 
-// 自動削除機能関連の型定義
-
-export interface AutoDeletionSettings {
-  enabled: boolean;
-  retentionDays: number; // 完了後何日で削除するか
-  notifyBeforeDeletion: boolean; // 削除前に通知するか
-  notificationDays: number; // 削除何日前に通知するか
-  excludeLabelIds: string[]; // 削除対象外とするラベルID
-  excludePriorities: Priority[]; // 削除対象外とする優先度
-  autoExportBeforeDeletion: boolean; // 削除前に自動エクスポートするか
-  enableSoftDeletion: boolean; // ソフトデリート機能を有効にするか
-  softDeletionRetentionDays: number; // ソフトデリート後の保持日数
-}
-
-export interface DeletionCandidate {
-  task: Task;
-  daysUntilDeletion: number;
-  boardId: string;
-  columnId: string;
-}
-
-export interface DeletionCheckResult {
-  softDeletedTasks: Task[];
-  notificationTasks: Task[];
-  archivedTasks: Task[];
-  processedTaskCount: number;
-  storageFreed: number; // バイト数
-}
-
-export interface DeletionStatistics {
-  totalDeletedTasks: number;
-  totalArchivedTasks: number;
-  totalFreedSpace: number;
-  lastCleanupAt: string | null;
-  deletionsByPeriod: {
-    last24Hours: number;
-    last7Days: number;
-    last30Days: number;
-  };
-  averageTaskLifetime: number; // 日数
-}
-
-export interface DeletionBackup {
-  id: string;
-  taskId: string;
-  task: Task;
-  boardId: string;
-  columnId: string;
-  backedUpAt: string;
-  expiresAt: string;
-  estimatedSize: number;
-}

@@ -1,5 +1,5 @@
 import React from "react";
-import { Text } from "@primer/react";
+import ErrorMessage from "../../ErrorMessage";
 
 interface RecurrenceErrorDisplayProps {
   errors: string[];
@@ -13,14 +13,12 @@ const RecurrenceErrorDisplay: React.FC<RecurrenceErrorDisplayProps> = ({
   }
 
   return (
-    <div style={{ marginBottom: "8px" }}>
+    <div style={{ marginTop: "8px" }}>
       {errors.map((error, index) => (
-        <Text
+        <ErrorMessage
           key={index}
-          sx={{ fontSize: 0, color: "danger.fg", display: "block" }}
-        >
-          ※{error}
-        </Text>
+          error={error}
+        />
       ))}
     </div>
   );

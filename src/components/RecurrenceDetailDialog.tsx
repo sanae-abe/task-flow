@@ -94,28 +94,30 @@ const RecurrenceDetailDialog: React.FC<RecurrenceDetailDialogProps> = ({
       actions={actions}
     >
       <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-        <RecurrencePatternSelector
-          config={config}
-          onPatternChange={handlePatternChange}
-          onIntervalChange={handleIntervalChange}
-        />
+        <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+          <RecurrencePatternSelector
+            config={config}
+            onPatternChange={handlePatternChange}
+            onIntervalChange={handleIntervalChange}
+          />
 
-        <WeeklyOptionsSelector
-          config={config}
-          onDaysOfWeekChange={handleDaysOfWeekChange}
-        />
+          <WeeklyOptionsSelector
+            config={config}
+            onDaysOfWeekChange={handleDaysOfWeekChange}
+          />
 
-        <MonthlyOptionsSelector
-          config={config}
-          onDayOfMonthChange={handleDayOfMonthChange}
-        />
+          <MonthlyOptionsSelector
+            config={config}
+            onDayOfMonthChange={handleDayOfMonthChange}
+          />
 
-        <RecurrenceEndConditions
-          config={config}
-          onEndDateChange={handleEndDateChange}
-          onMaxOccurrencesChange={handleMaxOccurrencesChange}
-        />
+          <RecurrenceEndConditions
+            config={config}
+            onEndDateChange={handleEndDateChange}
+            onMaxOccurrencesChange={handleMaxOccurrencesChange}
+          />
 
+        </div>
         <div>
           <RecurrencePreview config={config} />
           <RecurrenceErrorDisplay errors={errors} />

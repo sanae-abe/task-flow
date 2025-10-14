@@ -1,7 +1,8 @@
-import { Button, Text, TextInput } from "@primer/react";
+import { Button, FormControl, TextInput } from "@primer/react";
 import React, { useState, useCallback, useMemo, useEffect } from "react";
 
 import UnifiedDialog from "./shared/Dialog/UnifiedDialog";
+import ErrorMessage from "./ErrorMessage";
 
 interface LinkInsertDialogProps {
   isOpen: boolean;
@@ -20,12 +21,23 @@ const validateUrl = (url: string): boolean => {
 
   try {
     const fullUrl = url.startsWith("http") ? url : `https://${url}`;
-    new URL(fullUrl);
-    return true;
+    const urlObj = new URL(fullUrl);
+    const hostname = urlObj.hostname.toLowerCase();
+
+    // localhost と IPアドレスは許可
+    if (hostname === "localhost" || /^(\d{1,3}\.){3}\d{1,3}$/.test(hostname)) {
+      return true;
+    }
+
+    // 一般的なTLD（トップレベルドメイン）チェック
+    const tldPattern = /\.(com|org|net|edu|gov|mil|int|co|io|dev|app|tech|info|biz|name|pro|museum|aero|coop|jobs|travel|mobi|asia|cat|tel|xxx|post|geo|local|test|example|localhost|jp|us|uk|de|fr|ca|au|cn|ru|br|mx|in|it|es|nl|se|ch|at|be|dk|no|fi|ie|pt|pl|cz|hu|gr|il|tr|za|my|sg|th|tw|hk|kr|nz|ar|cl|pe|ve|ec|py|uy|bo|co|gf|gy|sr|fk|gs)$/i.test(hostname);
+
+    // ドメインに少なくとも1つのドットがあり、有効なTLDを持つ
+    return hostname.includes(".") && tldPattern;
   } catch {
     return false;
   }
-};
+};;
 
 const LinkInsertDialog: React.FC<LinkInsertDialogProps> = ({
   isOpen,
@@ -79,23 +91,19 @@ const LinkInsertDialog: React.FC<LinkInsertDialogProps> = ({
       isOpen={isOpen}
       onClose={handleCancel}
       variant="modal"
-      size="large"
+      size="medium"
       hideFooter
     >
       <div
         style={{
           display: "flex",
           flexDirection: "column",
-          gap: "12px",
-          marginBottom: "16px",
+          gap: "16px",
+          marginBottom: "24px",
         }}
       >
-        <div style={{ marginBottom: "8px" }}>
-          <Text
-            sx={{ fontSize: 1, mb: 2, display: "block", fontWeight: "700" }}
-          >
-            URL <span style={{ color: "#d1242f" }}>*</span>
-          </Text>
+        <FormControl>
+          <FormControl.Label required>URL</FormControl.Label>
           <TextInput
             value={url}
             onChange={(e) => setUrl(e.target.value)}
@@ -115,18 +123,12 @@ const LinkInsertDialog: React.FC<LinkInsertDialogProps> = ({
             }}
           />
           {url && !isValidUrl && (
-            <Text sx={{ fontSize: 0, color: "danger.fg", mt: 1 }}>
-              有効なURLを入力してください
-            </Text>
+            <ErrorMessage error="有効なURLを入力してください" />
           )}
-        </div>
+        </FormControl>
 
-        <div>
-          <Text
-            sx={{ fontSize: 1, mb: 2, display: "block", fontWeight: "700" }}
-          >
-            表示テキスト（任意）
-          </Text>
+        <FormControl>
+          <FormControl.Label>表示テキスト</FormControl.Label>
           <TextInput
             value={linkText}
             onChange={(e) => setLinkText(e.target.value)}
@@ -134,7 +136,7 @@ const LinkInsertDialog: React.FC<LinkInsertDialogProps> = ({
             onKeyDown={handleKeyPress}
             sx={{ width: "100%" }}
           />
-        </div>
+        </FormControl>
       </div>
 
       <div

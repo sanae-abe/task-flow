@@ -51,7 +51,7 @@ const TaskCreateDialog = memo(() => {
     state.taskFormDefaultDate
       ? state.taskFormDefaultDate.toISOString().split("T")[0]
       : undefined,
-    state.currentBoard?.id
+    state.currentBoard?.id,
   );
 
   // カスタムフック: テンプレート選択管理
@@ -69,7 +69,7 @@ const TaskCreateDialog = memo(() => {
     state.currentBoard,
     state.taskFormDefaultStatus,
     boardState.boards,
-    setCurrentBoard
+    setCurrentBoard,
   );
 
   // テンプレート選択時の処理（モード切り替えを含む）

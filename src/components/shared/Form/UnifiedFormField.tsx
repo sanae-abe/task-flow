@@ -1,5 +1,5 @@
 import React, { memo } from "react";
-import { Text, FormControl } from "@primer/react";
+import { FormControl } from "@primer/react";
 
 import type { FormFieldConfig } from "../../../types/unified-form";
 import { shouldShowError } from "../../../utils/formHelpers";
@@ -16,6 +16,7 @@ import {
   RecurrenceSelectorField,
   CustomComponentField,
 } from "./fields";
+import ErrorMessage from "../../ErrorMessage";
 
 interface UnifiedFormFieldProps extends FormFieldConfig {
   error?: string | null;
@@ -160,13 +161,8 @@ const UnifiedFormField = memo<UnifiedFormFieldProps>(
         }
       >
         {!hideLabel && (
-          <FormControl.Label>
+          <FormControl.Label required={validation?.required}>
             {label}
-            {validation?.required && (
-              <Text as="span" sx={{ color: "danger.fg", ml: 1 }}>
-                *
-              </Text>
-            )}
           </FormControl.Label>
         )}
 
@@ -177,9 +173,7 @@ const UnifiedFormField = memo<UnifiedFormFieldProps>(
         )}
 
         {showError && (
-          <FormControl.Validation variant="error">
-            {error}
-          </FormControl.Validation>
+          <ErrorMessage error={error || "入力に誤りがあります"} />
         )}
       </FormControl>
     );

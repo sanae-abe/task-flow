@@ -1,9 +1,9 @@
 import React from "react";
 import {
-  Text,
   ActionMenu,
   ActionList,
   Checkbox,
+  FormControl
 } from "@primer/react";
 import type { RecurrenceConfig } from "../types";
 import { WEEKDAYS } from "../utils/constants";
@@ -29,10 +29,10 @@ const WeeklyOptionsSelector: React.FC<WeeklyOptionsSelectorProps> = ({
       : "曜日を選択";
 
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-      <Text sx={{ fontSize: 1, minWidth: "60px" }}>曜日選択:</Text>
+    <FormControl sx={{ display: "flex", flexDirection: "row", alignItems: "center", gap: "8px" }}>
+      <FormControl.Label sx={{ alignSelf: "center", minWidth: "80px" }}>曜日選択</FormControl.Label>
       <ActionMenu>
-        <ActionMenu.Button sx={{ width: "200px" }}>
+        <ActionMenu.Button>
           {selectedDaysText}
         </ActionMenu.Button>
         <ActionMenu.Overlay>
@@ -66,7 +66,7 @@ const WeeklyOptionsSelector: React.FC<WeeklyOptionsSelectorProps> = ({
           </ActionList>
         </ActionMenu.Overlay>
       </ActionMenu>
-    </div>
+    </FormControl>
   );
 };
 

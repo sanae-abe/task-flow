@@ -56,7 +56,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({
       style={{
         display: "flex",
         flexDirection: "column",
-        gap: "12px",
+        gap: "24px",
         width: "100%",
       }}
     >

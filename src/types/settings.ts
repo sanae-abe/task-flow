@@ -16,6 +16,21 @@ export interface AutoDeletionSettings {
   softDeletionRetentionDays: number; // ソフトデリート後の保持日数
 }
 
+/**
+ * シンプルなゴミ箱設定
+ * 複雑なAutoDeleteionSettingsを置き換える新しい設計
+ */
+export interface RecycleBinSettings {
+  retentionDays: number; // ゴミ箱の保持期間（デフォルト: 30日）
+}
+
+/**
+ * デフォルトのゴミ箱設定
+ */
+export const DEFAULT_RECYCLE_BIN_SETTINGS: RecycleBinSettings = {
+  retentionDays: 30, // 30日間ゴミ箱に保持
+};
+
 export interface AppSettings {
   defaultColumns: DefaultColumnConfig[];
   autoDeletion: AutoDeletionSettings;

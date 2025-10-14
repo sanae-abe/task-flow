@@ -27,7 +27,7 @@ const PrioritySelector: React.FC<PrioritySelectorProps> = ({
   return (
     <FormControl>
       {variant === "full" && (
-        <FormControl.Label>優先度（任意）</FormControl.Label>
+        <FormControl.Label>優先度</FormControl.Label>
       )}
       <RadioGroup
         name="priority"
