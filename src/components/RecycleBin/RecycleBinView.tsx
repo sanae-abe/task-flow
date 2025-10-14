@@ -12,6 +12,7 @@ import {
   ClockIcon,
   AlertIcon,
   HistoryIcon,
+  ArrowRightIcon
 } from "@primer/octicons-react";
 import { useBoard } from "../../contexts/BoardContext";
 import {
@@ -39,12 +40,12 @@ export const RecycleBinView: React.FC = () => {
 
   // ゴミ箱のタスクを取得
   const deletedTasks = useMemo(() => getRecycleBinTasks(state.boards).map(task => ({
-      ...task,
-      boardTitle: state.boards.find(b => b.id === task.boardId)?.title || "不明なボード",
-      columnTitle: state.boards
-        .find(b => b.id === task.boardId)
-        ?.columns.find(c => c.id === task.columnId)?.title || "不明なカラム",
-    })), [state.boards]);
+    ...task,
+    boardTitle: state.boards.find(b => b.id === task.boardId)?.title || "不明なボード",
+    columnTitle: state.boards
+      .find(b => b.id === task.boardId)
+      ?.columns.find(c => c.id === task.columnId)?.title || "不明なカラム",
+  })), [state.boards]);
 
   const handleRestore = async (taskId: string) => {
     setIsRestoring(taskId);
@@ -93,7 +94,7 @@ export const RecycleBinView: React.FC = () => {
           color: 'var(--fgColor-muted)'
         }}
       >
-        <TrashIcon size={24}  />
+        <TrashIcon size={24} />
         <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
           <Text
             as="h2"
@@ -120,7 +121,6 @@ export const RecycleBinView: React.FC = () => {
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          marginBottom: '8px'
         }}>
           <Text
             as="h2"
@@ -160,7 +160,7 @@ export const RecycleBinView: React.FC = () => {
             marginBottom: '12px',
             color: 'var(--fgColor-muted)',
             fontSize: '14px',
-        }}
+          }}
         >
           {UI_TEXT.VIEW.TASK_COUNT(deletedTasks.length)}
         </div>
@@ -199,6 +199,7 @@ export const RecycleBinView: React.FC = () => {
           >
             <div style={{
               display: 'flex',
+              gap: "8px",
               justifyContent: 'space-between',
               alignItems: 'flex-start',
               marginBottom: '8px'
@@ -214,37 +215,7 @@ export const RecycleBinView: React.FC = () => {
                 >
                   {task.title}
                 </Text>
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  fontSize: '14px',
-                  color: 'var(--fgColor-muted)'
-                }}>
-                  <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '4px'
-                  }}>
-                    <RepoIcon size={12} />
-                    <Text>{task.boardTitle} → {task.columnTitle}</Text>
-                  </div>
-                  <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '4px'
-                  }}>
-                    <ClockIcon size={12} />
-                    <Text>
-                      {UI_TEXT.VIEW.DELETION_SCHEDULE} {task.deletedAt ?
-                        formatTimeUntilDeletion(task.deletedAt, recycleBinSettings.retentionDays)
-                        : MESSAGES.RETENTION.UNKNOWN
-                      }
-                    </Text>
-                  </div>
-                </div>
               </div>
-
               <div style={{ display: 'flex', gap: '8px' }}>
                 {isRestoring === task.id ? (
                   <Button disabled>
@@ -284,16 +255,45 @@ export const RecycleBinView: React.FC = () => {
                 )}
               </div>
             </div>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              flexWrap: 'wrap',
+              fontSize: '14px',
+              color: 'var(--fgColor-muted)'
+            }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px'
+              }}>
+                <RepoIcon size={12} />
+                <Text>{task.boardTitle} <ArrowRightIcon size={12} /> {task.columnTitle}</Text>
+              </div>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px'
+              }}>
+                <ClockIcon size={12} />
+                <Text>
+                  {UI_TEXT.VIEW.DELETION_SCHEDULE} {task.deletedAt ?
+                    formatTimeUntilDeletion(task.deletedAt, recycleBinSettings.retentionDays)
+                    : MESSAGES.RETENTION.UNKNOWN
+                  }
+                </Text>
+              </div>
+            </div>
 
             {task.description && (
               <div style={{
                 marginTop: '8px',
-                padding: '8px',
                 backgroundColor: 'var(--color-canvas-default)',
                 borderRadius: '4px'
               }}>
                 <Text
-                  fontSize={1}
+                  fontSize={0}
                   color="fg.muted"
                   style={{
                     display: '-webkit-box',

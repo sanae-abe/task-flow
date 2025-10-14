@@ -470,12 +470,12 @@ export const BoardSettingsPanel: React.FC = () => {
         <div style={{ marginBottom: "12px" }}>
           <div style={{ marginBottom: "8px", fontSize: "14px", fontWeight: "bold" }}>新しいカラムを追加</div>
           <FormControl>
-            <div style={{ display: "flex", gap: "8px" }}>
+            <div style={{ display: "flex", gap: "8px", width: "100%" }}>
               <TextInput
                 value={newColumnName}
                 onChange={(e) => setNewColumnName(e.target.value)}
                 placeholder="カラム名を入力"
-                sx={{ flex: 1 }}
+                sx={{ width: "100%" }}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
                     handleAddColumn();
@@ -503,16 +503,17 @@ export const BoardSettingsPanel: React.FC = () => {
       {/* 保存ボタン */}
       <div style={{ paddingTop: "12px", borderTop: "1px solid", borderColor: "var(--borderColor-default)" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "8px" }}>
-          {/* 未保存状態メッセージ */}
-          {hasUnsavedChanges && (
-            <InlineMessage variant="warning" message="未保存の変更があります（1秒後に自動保存されます）" />
-          )}
-          {/* 保存メッセージ */}
-          {saveMessage && (
-            <FormControl>
-              <InlineMessage variant={saveMessageType === 'success' ? 'success' : 'error'} message={saveMessage} />
-            </FormControl>
-          )}
+          <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+            {/* 未保存状態メッセージ */}
+            {hasUnsavedChanges ? (
+              <InlineMessage variant="warning" message="未保存の変更があります（1秒後に自動保存されます）" />
+            ) : (
+              saveMessage && (
+                <InlineMessage variant={saveMessageType === 'success' ? 'success' : 'error'} message={saveMessage} />
+              )
+            )}
+
+          </div>
           <Button
             variant="primary"
             leadingVisual={CheckIcon}

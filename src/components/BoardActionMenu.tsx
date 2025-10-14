@@ -1,4 +1,5 @@
 import {
+  PlusIcon,
   PencilIcon,
   TrashIcon,
   KebabHorizontalIcon,
@@ -51,7 +52,7 @@ const BoardActionMenu = memo<BoardActionMenuProps>(
           {/* ボード作成アクション */}
           <ActionList.Item onSelect={onCreateBoard}>
             <ActionList.LeadingVisual>
-              <PencilIcon />
+              <PlusIcon />
             </ActionList.LeadingVisual>
             ボード作成
           </ActionList.Item>
