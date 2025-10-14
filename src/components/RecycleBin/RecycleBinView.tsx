@@ -3,8 +3,8 @@ import {
   Button,
   Text,
   Spinner,
-  ConfirmationDialog,
 } from "@primer/react";
+import ConfirmDialog from "../ConfirmDialog";
 import {
   TrashIcon,
   RepoIcon,
@@ -302,25 +302,15 @@ export const RecycleBinView: React.FC = () => {
       </div>
 
       {/* ゴミ箱を空にする確認ダイアログ */}
-      {showEmptyConfirm && (
-        <ConfirmationDialog
-          title={MESSAGES.EMPTY_BIN.CONFIRM_TITLE}
-          onClose={(confirmed) => {
-            if (confirmed === "confirm") {
-              handleEmptyRecycleBin();
-            } else {
-              setShowEmptyConfirm(false);
-            }
-          }}
-          confirmButtonContent={MESSAGES.EMPTY_BIN.CONFIRM_ACTION}
-          confirmButtonType="danger"
-          cancelButtonContent={MESSAGES.EMPTY_BIN.CANCEL_ACTION}
-        >
-          <Text>
-            {UI_TEXT.VIEW.CONFIRM_EMPTY_MESSAGE(deletedTasks.length)}
-          </Text>
-        </ConfirmationDialog>
-      )}
+      <ConfirmDialog
+        isOpen={showEmptyConfirm}
+        title={MESSAGES.EMPTY_BIN.CONFIRM_TITLE}
+        message={UI_TEXT.VIEW.CONFIRM_EMPTY_MESSAGE(deletedTasks.length)}
+        onConfirm={handleEmptyRecycleBin}
+        onCancel={() => setShowEmptyConfirm(false)}
+        confirmText={MESSAGES.EMPTY_BIN.CONFIRM_ACTION}
+        cancelText={MESSAGES.EMPTY_BIN.CANCEL_ACTION}
+      />
     </div>
   );
 };
