@@ -59,7 +59,7 @@ export const ExportSection = memo<ExportSectionProps>(({
     <div style={{ display: 'flex', flexDirection: 'column', gap: "16px" }}>
       {/* セクション概要 */}
       <Text sx={{ fontSize: 1, color: 'fg.muted' }}>
-        タスク管理データをJSON形式でエクスポートします。バックアップや他の環境への移行にご利用ください。
+        タスク管理データをJSON形式でエクスポートします。<br />バックアップや他の環境への移行にご利用ください。
       </Text>
 
       {/* エクスポート範囲選択 */}

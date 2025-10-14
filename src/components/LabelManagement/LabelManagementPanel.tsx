@@ -23,7 +23,7 @@ const LabelManagementPanel: React.FC = () => {
   } = useLabelDialogs();
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: "12px" }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: "12px", paddingBottom: "16px" }}>
       {/* ヘッダー */}
       <div style={{
         display: 'flex',

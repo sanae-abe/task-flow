@@ -44,7 +44,7 @@ const FirstTimeUserHint: React.FC<FirstTimeUserHintProps> = ({ onDismiss }) => (
     }}
   >
     <div style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
-      <div style={{ color: "var(---fgColor-accent)" }}>
+      <div style={{ color: "var(--fgColor-accent)" }}>
         <SparklesFillIcon size={16} />
       </div>
       <div style={{ flex: 1 }}>
