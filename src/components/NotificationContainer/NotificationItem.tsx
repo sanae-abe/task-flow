@@ -75,13 +75,12 @@ export const NotificationItem: React.FC<NotificationItemProps> = React.memo(
         onKeyDown={handleKeyDown}
         tabIndex={0}
         icon={icon}
-        hideTitle
         onDismiss={handleClose}
         style={notificationItemStyles}
       >
-        <Banner.Title style={{ display: 'none' }}>
-          Notification
-        </Banner.Title>
+        {notification.title && <Banner.Title>
+          {notification.title}
+        </Banner.Title>}
         <Text>{notification.message}</Text>
       </Banner>
     );

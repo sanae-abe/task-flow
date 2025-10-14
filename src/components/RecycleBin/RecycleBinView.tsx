@@ -2,7 +2,6 @@ import React, { useMemo, useState } from "react";
 import {
   Button,
   Text,
-  Flash,
   Spinner,
   ConfirmationDialog,
 } from "@primer/react";
@@ -10,7 +9,6 @@ import {
   TrashIcon,
   RepoIcon,
   ClockIcon,
-  AlertIcon,
   HistoryIcon,
   ArrowRightIcon
 } from "@primer/octicons-react";
@@ -24,6 +22,7 @@ import {
 import { useRecycleBinSettingsReadOnly } from "../../hooks/useRecycleBinSettings";
 import { UI_TEXT, MESSAGES } from "../../constants/recycleBin";
 import { logger } from "../../utils/logger";
+import { DialogFlashMessage } from "../shared";
 
 /**
  * ゴミ箱のタスクを表示・復元・完全削除するコンポーネント
@@ -165,21 +164,16 @@ export const RecycleBinView: React.FC = () => {
           {UI_TEXT.VIEW.TASK_COUNT(deletedTasks.length)}
         </div>
 
-        <Flash
-          variant="warning"
-          style={{ marginBottom: '12px' }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <AlertIcon size={16} />
-            <Text style={{ marginLeft: '8px' }}>
-              {recycleBinSettings.retentionDays === null ? (
-                UI_TEXT.VIEW.WARNING_UNLIMITED
-              ) : (
-                UI_TEXT.VIEW.WARNING_LIMITED(recycleBinSettings.retentionDays)
-              )}
-            </Text>
-          </div>
-        </Flash>
+        <div style={{ marginBottom: '12px' }}>
+          <DialogFlashMessage message={{
+            type: 'warning',
+            text: recycleBinSettings.retentionDays === null ? (
+              UI_TEXT.VIEW.WARNING_UNLIMITED
+            ) : (
+              UI_TEXT.VIEW.WARNING_LIMITED(recycleBinSettings.retentionDays)
+            )
+          }} />
+        </div>
       </div>
 
       <div style={{

@@ -32,6 +32,7 @@ interface NotificationContextType {
   config: NotificationConfig;
   addNotification: (
     type: NotificationType,
+    title: string,
     message: string,
     options?: AddNotificationOptions,
   ) => string; // IDを返すように変更
@@ -96,6 +97,7 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
   const addNotification = useCallback(
     (
       type: NotificationType,
+      title: string,
       message: string,
       options: AddNotificationOptions = {},
     ): string => {
@@ -112,6 +114,7 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
         const notification: Notification = {
           id,
           type,
+          title: title ? title.trim() : "",
           message: message.trim(),
           duration: persistent ? undefined : duration,
           createdAt: new Date().toISOString(),
@@ -217,16 +220,16 @@ export const useNotify = () => {
   return useMemo(
     () => ({
       success: (message: string, options?: AddNotificationOptions) =>
-        addNotification("success", message, options),
+        addNotification("success", "", message, options),
 
       info: (message: string, options?: AddNotificationOptions) =>
-        addNotification("info", message, options),
+        addNotification("info", "", message, options),
 
       warning: (message: string, options?: AddNotificationOptions) =>
-        addNotification("warning", message, options),
+        addNotification("warning", "", message, options),
 
       error: (message: string, options?: AddNotificationOptions) =>
-        addNotification("critical", message, {
+        addNotification("critical", "", message, {
           duration: 5000, // エラーは少し長めに表示
           ...options,
         }),
@@ -234,11 +237,11 @@ export const useNotify = () => {
       // 便利なメソッド追加
       toast: {
         success: (message: string, options?: AddNotificationOptions) =>
-          addNotification("success", message, options),
+          addNotification("success", "", message, options),
         error: (message: string, options?: AddNotificationOptions) =>
-          addNotification("critical", message, { duration: 5000, ...options }),
+          addNotification("critical", "", message, { duration: 5000, ...options }),
         loading: (message: string, options?: AddNotificationOptions) =>
-          addNotification("info", message, { persistent: true, ...options }),
+          addNotification("info", "", message, { persistent: true, ...options }),
       },
 
       // 永続的な通知
@@ -247,21 +250,21 @@ export const useNotify = () => {
           message: string,
           options?: Omit<AddNotificationOptions, "persistent">,
         ) =>
-          addNotification("success", message, { ...options, persistent: true }),
+          addNotification("success", "", message, { ...options, persistent: true }),
         info: (
           message: string,
           options?: Omit<AddNotificationOptions, "persistent">,
-        ) => addNotification("info", message, { ...options, persistent: true }),
+        ) => addNotification("info", "", message, { ...options, persistent: true }),
         warning: (
           message: string,
           options?: Omit<AddNotificationOptions, "persistent">,
         ) =>
-          addNotification("warning", message, { ...options, persistent: true }),
+          addNotification("warning", "", message, { ...options, persistent: true }),
         error: (
           message: string,
           options?: Omit<AddNotificationOptions, "persistent">,
         ) =>
-          addNotification("critical", message, { ...options, persistent: true }),
+          addNotification("critical", "", message, { ...options, persistent: true }),
       },
     }),
     [addNotification],

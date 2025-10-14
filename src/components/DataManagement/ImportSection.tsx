@@ -1,10 +1,11 @@
 import { memo, useEffect } from 'react';
-import { Text, Button, Flash, Spinner, RadioGroup, Radio, FormControl } from '@primer/react';
-import { UploadIcon, FileIcon, XIcon, AlertIcon } from '@primer/octicons-react';
+import { Text, Button, Spinner, RadioGroup, Radio, FormControl } from '@primer/react';
+import { UploadIcon, FileIcon, XIcon } from '@primer/octicons-react';
 
 import { useDataImport } from '../../hooks/useDataImport';
 import { useDataImportDropZone } from '../../hooks/useDataImportDropZone';
 import UniversalDropZone from '../UniversalDropZone';
+import { DialogFlashMessage } from '../shared';
 
 /**
  * データインポート機能を提供するセクション
@@ -13,7 +14,7 @@ interface ImportSectionProps {
   /** インポート成功時のコールバック */
   onImportSuccess?: () => void;
   /** メッセージ表示時のコールバック */
-  onMessage?: (message: { type: 'success' | 'critical'; text: string }) => void;
+  onMessage?: (message: { type: 'success' | 'critical' | 'warning' | 'danger' | 'default' | 'info' | 'upsell'; text: string }) => void;
 }
 
 export const ImportSection = memo<ImportSectionProps>(({ onImportSuccess, onMessage }) => {
@@ -75,19 +76,11 @@ export const ImportSection = memo<ImportSectionProps>(({ onImportSuccess, onMess
 
       {/* 警告メッセージ - 置換モード時のみ表示 */}
       {state.mode === 'replace' && (
-        <Flash variant="warning">
-          <div style={{ display: 'flex', gap: "8px" }}>
-            <AlertIcon size={16} />
-            <div>
-              <Text sx={{ fontWeight: 'bold', display: 'block', mb: 1 }}>
-                危険: データの置換操作
-              </Text>
-              <Text sx={{ fontSize: 1, color: 'danger.fg', fontWeight: 'bold' }}>
-                現在のすべてのデータが削除されます。この操作は元に戻せません。
-              </Text>
-            </div>
-          </div>
-        </Flash>
+        <DialogFlashMessage message={{
+          type: 'warning',
+          title: '危険: データの置換操作',
+          text: '現在のすべてのデータが削除されます。この操作は元に戻せません。'
+        }} />
       )}
 
       {/* ドラッグ&ドロップエリア - UniversalDropZone使用 */}

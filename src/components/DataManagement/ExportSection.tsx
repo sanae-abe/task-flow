@@ -16,7 +16,7 @@ interface ExportSectionProps {
   /** ボード選択エクスポート時のコールバック */
   onExportCurrent?: (board?: KanbanBoard) => void;
   /** メッセージ表示時のコールバック */
-  onMessage?: (message: { type: 'success' | 'critical'; text: string }) => void;
+  onMessage?: (message: { type: 'success' | 'critical' | 'warning' | 'danger' | 'default' | 'info' | 'upsell'; text: string }) => void;
 }
 
 export const ExportSection = memo<ExportSectionProps>(({

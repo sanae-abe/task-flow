@@ -16,7 +16,7 @@ interface DataManagementPanelProps {
   /** インポート成功時のコールバック */
   onImportSuccess?: () => void;
   /** メッセージ表示時のコールバック */
-  onMessage?: (message: { type: 'success' | 'critical' | 'warning' | 'danger' | 'default'; text: string }) => void;
+  onMessage?: (message: { type: 'success' | 'critical' | 'warning' | 'danger' | 'default' | 'info' | 'upsell'; text: string }) => void;
 }
 
 export const DataManagementPanel = memo<DataManagementPanelProps>(({

@@ -1,14 +1,29 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import type { EditDialogState, DeleteDialogState, LabelWithInfo, LabelFormData } from '../../../types/labelManagement';
 import { useLabel } from '../../../contexts/LabelContext';
 
-export const useLabelDialogs = () => {
+interface UseLabelDialogsOptions {
+  onMessage?: (message: { type: 'success' | 'danger' | 'warning' | 'critical' | 'default' | 'info' | 'upsell'; text: string }) => void;
+}
+
+export const useLabelDialogs = (onMessage?: UseLabelDialogsOptions['onMessage']) => {
   const {
     createLabel,
     createLabelInBoard,
     updateLabel,
-    deleteLabelFromAllBoards
+    deleteLabelFromAllBoards,
+    setMessageCallback
   } = useLabel();
+
+  // LabelContextのメッセージコールバックを設定
+  useEffect(() => {
+    setMessageCallback(onMessage || null);
+    
+    // クリーンアップ: コンポーネントがアンマウントされたときにコールバックをクリア
+    return () => {
+      setMessageCallback(null);
+    };
+  }, [onMessage, setMessageCallback]);
 
   const [editDialog, setEditDialog] = useState<EditDialogState>({
     isOpen: false,

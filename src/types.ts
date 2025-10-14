@@ -26,6 +26,7 @@ export type NotificationType = 'critical' | 'info' | 'success' | 'upsell' | 'war
 export interface Notification {
   id: string;
   type: NotificationType;
+  title: string;
   message: string;
   duration?: number; // milliseconds
   createdAt: string;

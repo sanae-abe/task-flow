@@ -3,13 +3,13 @@ import {
   TagIcon,
   ProjectIcon,
   TrashIcon,
-  AlertIcon,
 } from "@primer/octicons-react";
-import { SplitPageLayout, NavList, Flash } from "@primer/react";
+import { SplitPageLayout, NavList } from "@primer/react";
 import React, { useState } from "react";
 import { FileText } from "react-feather";
 
 import UnifiedDialog from "./shared/Dialog/UnifiedDialog";
+import { DialogFlashMessage, useDialogFlashMessage } from "./shared";
 import { LabelManagementPanel } from "./LabelManagement";
 import { DataManagementPanel } from "./DataManagement";
 import { BoardSettingsPanel } from "./BoardSettings";
@@ -34,16 +34,9 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
   const [activeTab, setActiveTab] = useState<
     "labels" | "data" | "board" | "templates" | "recycleBin"
   >("labels");
-  const [message, setMessage] = useState<{ type: 'success' | 'danger' | 'warning' | 'critical' | 'default'; text: string } | null>(null);
 
-  // メッセージコールバック
-  const handleMessage = (newMessage: { type: 'success' | 'danger' | 'warning' | 'critical' | 'default'; text: string }) => {
-    setMessage(newMessage);
-    // 3秒後にメッセージを自動クリア
-    setTimeout(() => {
-      setMessage(null);
-    }, 3000);
-  };
+  // DialogFlashMessageフック使用
+  const { message, handleMessage } = useDialogFlashMessage();
 
   return (
     <UnifiedDialog
@@ -120,7 +113,11 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
               ) : activeTab === "templates" ? (
                 <TemplateManagementPanel />
               ) : activeTab === "labels" ? (
-                <LabelManagementPanel />
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  {/* メッセージ表示 */}
+                  <DialogFlashMessage message={message} />
+                  <LabelManagementPanel onMessage={handleMessage} />
+                </div>
               ) : activeTab === "recycleBin" ? (
                 <div>
                   <RecycleBinSettingsPanel />
@@ -137,16 +134,7 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                   {/* メッセージ表示 */}
-                  {message && (
-                    <Flash variant={message.type === 'critical' ? 'danger' : message.type}>
-                      <div style={{ display: 'flex', gap: "8px" }}>
-                        {(message.type === 'warning' || message.type === 'critical') && <AlertIcon size={16} /> }
-                        <div>
-                          {message.text}
-                        </div>
-                      </div>
-                    </Flash>
-                  )}
+                  <DialogFlashMessage message={message} />
                   <DataManagementPanel
                     onExportAll={onExportData}
                     onExportCurrent={onExportBoard}

@@ -13,6 +13,7 @@ import { useRecycleBinSettings } from "../../hooks/useRecycleBinSettings";
 import { RETENTION_PRESETS, UI_TEXT, MESSAGES } from "../../constants/recycleBin";
 import { validateRetentionDaysInput, getValidationMessage } from "../../utils/recycleBinValidation";
 import InlineMessage from "../shared/InlineMessage";
+import DialogFlashMessage from "../shared/DialogFlashMessage";
 
 interface RecycleBinSettingsPanelProps {
   onSave?: (settings: RecycleBinSettings) => void;
@@ -198,23 +199,10 @@ export const RecycleBinSettingsPanel: React.FC<RecycleBinSettingsPanelProps> = (
       </div>
 
       {/* 注意事項 */}
-      <div style={{
-        marginTop: '24px',
-        padding: '12px',
-        backgroundColor: 'var(--bgColor-muted)',
-        borderRadius: '6px',
-        border: '1px solid var(--borderColor-muted)'
-      }}>
-        <Text
-          style={{
-            fontSize: '12px',
-            color: 'var(--fgColor-muted)',
-            lineHeight: '1.4'
-          }}
-        >
-          <strong>{UI_TEXT.PANEL.IMPORTANT_NOTE_TITLE}</strong> {UI_TEXT.PANEL.IMPORTANT_NOTE_TEXT}
-        </Text>
-      </div>
+      <DialogFlashMessage message={{
+        type: 'default',
+        text: UI_TEXT.PANEL.IMPORTANT_NOTE_TITLE
+      }} />
     </div>
   );
 };

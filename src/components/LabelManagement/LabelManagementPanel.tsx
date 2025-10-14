@@ -7,7 +7,12 @@ import ConfirmDialog from '../shared/Dialog/ConfirmDialog';
 import { EmptyState, SortableHeader, LabelTableRow } from './components';
 import { useLabelSort, useLabelDialogs, useLabelData } from './hooks';
 
-const LabelManagementPanel: React.FC = () => {
+interface LabelManagementPanelProps {
+  /** メッセージ表示時のコールバック */
+  onMessage?: (message: { type: 'success' | 'danger' | 'warning' | 'critical' | 'default' | 'info' | 'upsell'; text: string }) => void;
+}
+
+const LabelManagementPanel: React.FC<LabelManagementPanelProps> = ({ onMessage }) => {
   const { sortField, sortDirection, handleSort } = useLabelSort();
   const { allLabelsWithInfo } = useLabelData(sortField, sortDirection);
   const {
@@ -20,7 +25,7 @@ const LabelManagementPanel: React.FC = () => {
     handleCloseDeleteDialog,
     handleSave,
     handleConfirmDelete
-  } = useLabelDialogs();
+  } = useLabelDialogs(onMessage);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: "12px", paddingBottom: "16px" }}>

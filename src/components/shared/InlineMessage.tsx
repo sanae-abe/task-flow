@@ -4,10 +4,10 @@ import { StopIcon, InfoIcon } from '@primer/octicons-react';
 
 interface InlineMessageProps {
   message: string | null;
-  variant?: "success" | "error" | "warning" | "info";
+  variant?: "success" | "error" | "warning" | "info" | "default";
 }
 
-const InlineMessage: React.FC<InlineMessageProps> = ({ message, variant = "error" }) => {
+const InlineMessage: React.FC<InlineMessageProps> = ({ message, variant = "default" }) => {
   if (!message) {
     return null;
   }
@@ -27,6 +27,17 @@ const InlineMessage: React.FC<InlineMessageProps> = ({ message, variant = "error
     return (
       <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--fgColor-attention)' }}>
         <span style={{ display: 'flex', alignItems: 'center' }}><StopIcon size={12} /></span>
+        <span style={{ fontSize: "12px", fontWeight: "bold" }}>
+          {message}
+        </span>
+      </div>
+    );
+  }
+
+  if (variant === "default") {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--fgColor-default)' }}>
+        <span style={{ display: 'flex', alignItems: 'center' }}><InfoIcon size={12} /></span>
         <span style={{ fontSize: "12px", fontWeight: "bold" }}>
           {message}
         </span>
