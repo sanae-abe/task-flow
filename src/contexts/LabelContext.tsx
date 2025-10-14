@@ -256,12 +256,47 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
           return;
         }
 
+        // 削除前にラベル名を取得
+        const labelToDelete = currentBoardLabels.find(label => label.id === labelId);
+        const labelName = labelToDelete?.name || 'ラベル';
+
         boardDispatch({
           type: 'DELETE_LABEL',
           payload: { labelId }
         });
+
+        // 成功メッセージを全てのコールバックに送信
+        console.log('💬 deleteLabel: Attempting to send message, callback count:', _messageCallbacksRef.current.size);
+        if (_messageCallbacksRef.current.size > 0) {
+          const messageToSend = {
+            type: 'success' as const,
+            text: `ラベル「${labelName}」を削除しました`,
+            title: 'ラベル削除完了'
+          };
+          console.log('💬 deleteLabel: Sending message to all callbacks:', messageToSend);
+
+          let callbackIndex = 0;
+          _messageCallbacksRef.current.forEach((callback) => {
+            callbackIndex++;
+            try {
+              console.log(`💬 deleteLabel: Sending to callback ${callbackIndex}`);
+              callback(messageToSend);
+              console.log(`💬 deleteLabel: Message sent successfully to callback ${callbackIndex}`);
+            } catch (error) {
+              console.error(`💬 deleteLabel: Error sending message to callback ${callbackIndex}:`, error);
+            }
+          });
+        } else {
+          console.log('💬 deleteLabel: No callbacks available');
+        }
       },
       deleteLabelFromAllBoards: (labelId: string) => {
+        // 削除前にラベル名を取得
+        const labelToDelete = boardState.boards
+          .flatMap(board => board.labels || [])
+          .find(label => label.id === labelId);
+        const labelName = labelToDelete?.name || 'ラベル';
+
         boardDispatch({
           type: 'DELETE_LABEL_FROM_ALL_BOARDS',
           payload: { labelId }
@@ -272,11 +307,11 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
         if (_messageCallbacksRef.current.size > 0) {
           const messageToSend = {
             type: 'success' as const,
-            text: 'ラベルを全ボードから削除しました',
+            text: `ラベル「${labelName}」を削除しました`,
             title: 'ラベル削除完了'
           };
           console.log('💬 deleteLabelFromAllBoards: Sending message to all callbacks:', messageToSend);
-          
+
           let callbackIndex = 0;
           _messageCallbacksRef.current.forEach((callback) => {
             callbackIndex++;
@@ -321,12 +356,14 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
       setMessageCallback: (callback: MessageCallback | null) => {
         console.log('🔧 LabelContext setMessageCallback called with:', callback);
         if (callback) {
-          // コールバックを追加
+          // 既存のコールバックをクリアして新しいコールバックのみを設定
+          _messageCallbacksRef.current.clear();
           _messageCallbacksRef.current.add(callback);
-          console.log('🔧 LabelContext callback added, total count:', _messageCallbacksRef.current.size);
+          console.log('🔧 LabelContext callback replaced, total count:', _messageCallbacksRef.current.size);
         } else {
-          // null の場合は何もしない（全クリアを避ける）
-          console.log('🔧 LabelContext null callback ignored (avoiding clear all)');
+          // null の場合は全てのコールバックをクリア
+          _messageCallbacksRef.current.clear();
+          console.log('🔧 LabelContext all callbacks cleared');
         }
       },
     };

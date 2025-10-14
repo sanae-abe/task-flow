@@ -14,7 +14,7 @@ export const useLabelDialogs = (onMessage?: UseLabelDialogsOptions['onMessage'])
     createLabel,
     createLabelInBoard,
     updateLabel,
-    deleteLabelFromAllBoards,
+    deleteLabel,
     setMessageCallback
   } = useLabel();
 
@@ -115,13 +115,13 @@ export const useLabelDialogs = (onMessage?: UseLabelDialogsOptions['onMessage'])
     handleCloseEditDialog();
   }, [editDialog.mode, editDialog.label, createLabel, createLabelInBoard, updateLabel, handleCloseEditDialog]);
 
-  // ラベル削除確認（全ボードから削除）
+  // ラベル削除確認（現在のボードからのみ削除）
   const handleConfirmDelete = useCallback(() => {
     if (deleteDialog.label) {
-      deleteLabelFromAllBoards(deleteDialog.label.id);
+      deleteLabel(deleteDialog.label.id);
       handleCloseDeleteDialog();
     }
-  }, [deleteDialog.label, deleteLabelFromAllBoards, handleCloseDeleteDialog]);
+  }, [deleteDialog.label, deleteLabel, handleCloseDeleteDialog]);
 
   const returnMethods = {
     editDialog,
