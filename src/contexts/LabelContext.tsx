@@ -325,9 +325,8 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
           _messageCallbacksRef.current.add(callback);
           console.log('🔧 LabelContext callback added, total count:', _messageCallbacksRef.current.size);
         } else {
-          // nullの場合は全てクリア（後方互換性のため）
-          _messageCallbacksRef.current.clear();
-          console.log('🔧 LabelContext all callbacks cleared');
+          // null の場合は何もしない（全クリアを避ける）
+          console.log('🔧 LabelContext null callback ignored (avoiding clear all)');
         }
       },
     };
