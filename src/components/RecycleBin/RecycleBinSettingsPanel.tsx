@@ -9,8 +9,10 @@ import {
 import {
   CheckIcon,
 } from "@primer/octicons-react";
-import { DEFAULT_RECYCLE_BIN_SETTINGS, type RecycleBinSettings } from "../../types/settings";
-import { logger } from "../../utils/logger";
+import { type RecycleBinSettings } from "../../types/settings";
+import { useRecycleBinSettings } from "../../hooks/useRecycleBinSettings";
+import { RETENTION_PRESETS, UI_TEXT, MESSAGES } from "../../constants/recycleBin";
+import { validateRetentionDaysInput, getValidationMessage } from "../../utils/recycleBinValidation";
 import ErrorMessage from "../ErrorMessage";
 
 interface RecycleBinSettingsPanelProps {
@@ -24,94 +26,61 @@ interface RecycleBinSettingsPanelProps {
 export const RecycleBinSettingsPanel: React.FC<RecycleBinSettingsPanelProps> = ({
   onSave,
 }) => {
-  const [settings, setSettings] = useState<RecycleBinSettings>(() => {
-    // LocalStorageから設定を読み込み、なければデフォルト値を使用
-    try {
-      const stored = localStorage.getItem('recycleBinSettings');
-      if (stored) {
-        return JSON.parse(stored);
-      }
-    } catch (error) {
-      logger.warn('ゴミ箱設定の読み込みに失敗:', error);
-    }
-    return DEFAULT_RECYCLE_BIN_SETTINGS;
-  });
+  const {
+    settings,
+    updateSettings,
+    saveSettings,
+    isLoading,
+    error: hookError,
+  } = useRecycleBinSettings();
 
-  const [isSaving, setIsSaving] = useState(false);
-  const [saveMessage, setSaveMessage] = useState<string | null>(null);
   const [validationError, setValidationError] = useState<string | null>(null);
+  const [saveMessage, setSaveMessage] = useState<string | null>(null);
 
-  const validateRetentionDays = (days: number | null): string | null => {
-    // 無制限の場合は有効
-    if (days === null) {
-      return null;
-    }
-    if (!Number.isInteger(days)) {
-      return "整数で入力してください";
-    }
-    if (days < 1) {
-      return "1日以上で設定してください";
-    }
-    if (days > 365) {
-      return "365日以下で設定してください";
-    }
-    return null;
-  };
 
   const handleRetentionDaysChange = useCallback((value: string) => {
-    // 空文字列の場合は無制限として扱う
-    if (value.trim() === "") {
-      setSettings(prev => ({ ...prev, retentionDays: null }));
-      setValidationError(null);
-      return;
+    // バリデーション実行
+    const validationMessage = getValidationMessage(value);
+    setValidationError(validationMessage);
+
+    // 有効な場合のみ設定を更新
+    if (!validationMessage) {
+      const newRetentionDays = value.trim() === "" ? null : parseInt(value, 10);
+      updateSettings({ ...settings, retentionDays: newRetentionDays });
     }
-
-    const days = parseInt(value, 10);
-
-    if (isNaN(days)) {
-      setValidationError("数値を入力してください");
-      return;
-    }
-
-    const error = validateRetentionDays(days);
-    setValidationError(error);
-
-    if (!error) {
-      setSettings(prev => ({ ...prev, retentionDays: days }));
-    }
-  }, []);
+  }, [settings, updateSettings]);
 
   const handleSave = useCallback(async () => {
-    const error = validateRetentionDays(settings.retentionDays);
-    if (error) {
-      setValidationError(error);
+    // バリデーション実行
+    const validationResult = validateRetentionDaysInput(settings.retentionDays?.toString() || "");
+    if (!validationResult.isValid) {
+      setValidationError(validationResult.error || null);
       return;
     }
 
-    setIsSaving(true);
     setSaveMessage(null);
 
     try {
-      // LocalStorageに保存
-      localStorage.setItem('recycleBinSettings', JSON.stringify(settings));
+      const success = await saveSettings(settings);
 
-      // 親コンポーネントに通知
-      onSave?.(settings);
+      if (success) {
+        // 親コンポーネントに通知
+        onSave?.(settings);
 
-      setSaveMessage("設定を保存しました");
-      setTimeout(() => setSaveMessage(null), 3000);
+        setSaveMessage(MESSAGES.SAVE.SUCCESS);
+        setTimeout(() => setSaveMessage(null), 3000);
+      } else {
+        setSaveMessage(hookError || MESSAGES.SAVE.FAILED);
+      }
     } catch (error) {
-      logger.error('設定の保存に失敗:', error);
-      setSaveMessage("保存に失敗しました");
-    } finally {
-      setIsSaving(false);
+      setSaveMessage(MESSAGES.SAVE.FAILED);
     }
-  }, [settings, onSave]);
+  }, [settings, saveSettings, onSave, hookError]);
 
   const handlePresetSelect = useCallback((days: number | null) => {
-    setSettings(prev => ({ ...prev, retentionDays: days }));
+    updateSettings({ ...settings, retentionDays: days });
     setValidationError(null);
-  }, []);
+  }, [settings, updateSettings]);
 
   return (
     <div style={{ paddingBottom: '16px' }}>
@@ -130,7 +99,7 @@ export const RecycleBinSettingsPanel: React.FC<RecycleBinSettingsPanelProps> = (
             margin: 0
           }}
         >
-          ゴミ箱設定
+          {UI_TEXT.PANEL.TITLE}
         </Text>
       </div>
 
@@ -143,8 +112,7 @@ export const RecycleBinSettingsPanel: React.FC<RecycleBinSettingsPanelProps> = (
           display: 'block'
         }}
       >
-        削除したタスクをゴミ箱に保持する期間を設定します。<br />
-        期間を過ぎたタスクは自動的に完全削除されます。無制限を選択すると自動削除されません。
+        {UI_TEXT.PANEL.DESCRIPTION_WITH_UNLIMITED}
       </Text>
 
       {/* プリセットボタン */}
@@ -157,20 +125,14 @@ export const RecycleBinSettingsPanel: React.FC<RecycleBinSettingsPanelProps> = (
             display: 'block'
           }}
         >
-          よく使われる設定
+          {UI_TEXT.PANEL.PRESET_TITLE}
         </Text>
         <div style={{
           display: 'flex',
           gap: '8px',
           flexWrap: 'wrap'
         }}>
-          {[
-            { label: '1週間', days: 7 },
-            { label: '2週間', days: 14 },
-            { label: '1ヶ月', days: 30 },
-            { label: '3ヶ月', days: 90 },
-            { label: '無制限', days: null },
-          ].map(({ label, days }) => (
+          {RETENTION_PRESETS.map(({ label, days }) => (
             <Button
               key={days?.toString() || 'unlimited'}
               variant={settings.retentionDays === days ? "primary" : "default"}
@@ -185,7 +147,7 @@ export const RecycleBinSettingsPanel: React.FC<RecycleBinSettingsPanelProps> = (
       {/* 保持期間設定 */}
       <FormControl required>
         <FormControl.Label>
-          保持期間
+          {UI_TEXT.PANEL.RETENTION_LABEL}
         </FormControl.Label>
         <div style={{
           display: 'flex',
@@ -202,10 +164,10 @@ export const RecycleBinSettingsPanel: React.FC<RecycleBinSettingsPanelProps> = (
             style={{ width: '100px' }}
             aria-describedby="retention-help"
           />
-          <Text style={{ color: 'var(--fgColor-muted)' }}>日間</Text>
+          <Text style={{ color: 'var(--fgColor-muted)' }}>{UI_TEXT.PANEL.RETENTION_UNIT}</Text>
         </div>
         <FormControl.Caption id="retention-help">
-          1〜365日の範囲で設定、または「無制限」ボタンで無制限に設定できます（推奨: 30日）
+          {UI_TEXT.PANEL.RETENTION_HELP}
         </FormControl.Caption>
         {validationError && (
           <ErrorMessage error={validationError} />
@@ -217,13 +179,13 @@ export const RecycleBinSettingsPanel: React.FC<RecycleBinSettingsPanelProps> = (
         <Button
           variant="primary"
           onClick={handleSave}
-          disabled={isSaving || validationError !== null}
-          leadingVisual={!isSaving ? CheckIcon : undefined}
+          disabled={isLoading || validationError !== null}
+          leadingVisual={!isLoading ? CheckIcon : undefined}
         >
-          {isSaving ? (
-            <>保存中...</>
+          {isLoading ? (
+            <>{MESSAGES.SAVE.IN_PROGRESS}</>
           ) : (
-            <>設定を保存</>
+            <>{UI_TEXT.PANEL.SAVE_BUTTON}</>
           )}
         </Button>
 
@@ -252,8 +214,7 @@ export const RecycleBinSettingsPanel: React.FC<RecycleBinSettingsPanelProps> = (
             lineHeight: '1.4'
           }}
         >
-          <strong>重要:</strong> 保持期間を短くすると、既にゴミ箱にあるタスクも新しい期間で再計算されます。
-          必要なタスクは期間変更前に復元することをお勧めします。
+          <strong>{UI_TEXT.PANEL.IMPORTANT_NOTE_TITLE}</strong> {UI_TEXT.PANEL.IMPORTANT_NOTE_TEXT}
         </Text>
       </div>
     </div>

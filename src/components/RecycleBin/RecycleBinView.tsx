@@ -20,7 +20,8 @@ import {
   restoreTaskFromRecycleBin,
   formatTimeUntilDeletion,
 } from "../../utils/recycleBin";
-import { DEFAULT_RECYCLE_BIN_SETTINGS, type RecycleBinSettings } from "../../types/settings";
+import { useRecycleBinSettingsReadOnly } from "../../hooks/useRecycleBinSettings";
+import { UI_TEXT, MESSAGES } from "../../constants/recycleBin";
 import { logger } from "../../utils/logger";
 
 /**
@@ -33,18 +34,8 @@ export const RecycleBinView: React.FC = () => {
   const [showConfirm, setShowConfirm] = useState<string | null>(null);
   const [showEmptyConfirm, setShowEmptyConfirm] = useState(false);
 
-  // LocalStorageから現在のゴミ箱設定を読み込み
-  const recycleBinSettings = useMemo(() => {
-    try {
-      const stored = localStorage.getItem('recycleBinSettings');
-      if (stored) {
-        return JSON.parse(stored) as RecycleBinSettings;
-      }
-    } catch (error) {
-      logger.warn('ゴミ箱設定の読み込みに失敗:', error);
-    }
-    return DEFAULT_RECYCLE_BIN_SETTINGS;
-  }, []);
+  // ゴミ箱設定を読み込み
+  const recycleBinSettings = useRecycleBinSettingsReadOnly();
 
   // ゴミ箱のタスクを取得
   const deletedTasks = useMemo(() => getRecycleBinTasks(state.boards).map(task => ({
@@ -112,10 +103,10 @@ export const RecycleBinView: React.FC = () => {
               color: 'var(--fgColor-default)'
             }}
           >
-            ゴミ箱は空です
+            {UI_TEXT.VIEW.EMPTY_TITLE}
           </Text>
           <Text style={{ color: 'var(--fgColor-muted)', fontSize: '14px' }}>
-            削除されたタスクはありません。
+            {UI_TEXT.VIEW.EMPTY_DESCRIPTION}
           </Text>
         </div>
       </div>
@@ -142,7 +133,7 @@ export const RecycleBinView: React.FC = () => {
             }}
           >
             <TrashIcon size={16} />
-            ゴミ箱
+            {UI_TEXT.VIEW.TITLE}
           </Text>
           <Button
             variant="danger"
@@ -153,12 +144,12 @@ export const RecycleBinView: React.FC = () => {
             {isEmptying ? (
               <>
                 <Spinner size="small" style={{ marginRight: '4px' }} />
-                削除中...
+                {MESSAGES.EMPTY_BIN.IN_PROGRESS}
               </>
             ) : (
               <>
                 <TrashIcon size={12} />
-                ゴミ箱を空にする
+                {UI_TEXT.VIEW.EMPTY_BIN_BUTTON}
               </>
             )}
           </Button>
@@ -171,7 +162,7 @@ export const RecycleBinView: React.FC = () => {
             fontSize: '14px',
         }}
         >
-          {deletedTasks.length}件のタスクがゴミ箱にあります
+          {UI_TEXT.VIEW.TASK_COUNT(deletedTasks.length)}
         </div>
 
         <Flash
@@ -182,15 +173,9 @@ export const RecycleBinView: React.FC = () => {
             <AlertIcon size={16} />
             <Text style={{ marginLeft: '8px' }}>
               {recycleBinSettings.retentionDays === null ? (
-                <>
-                  これらのタスクは無制限に保持されます。手動で削除するまで自動削除されません。<br />
-                  不要なタスクは「ゴミ箱を空にする」で削除してください。
-                </>
+                UI_TEXT.VIEW.WARNING_UNLIMITED
               ) : (
-                <>
-                  これらのタスクは{recycleBinSettings.retentionDays}日後に自動的に完全削除されます。<br />
-                  復元が必要な場合は早めに操作してください。
-                </>
+                UI_TEXT.VIEW.WARNING_LIMITED(recycleBinSettings.retentionDays)
               )}
             </Text>
           </div>
@@ -251,9 +236,9 @@ export const RecycleBinView: React.FC = () => {
                   }}>
                     <ClockIcon size={12} />
                     <Text>
-                      削除予定: {task.deletedAt ?
+                      {UI_TEXT.VIEW.DELETION_SCHEDULE} {task.deletedAt ?
                         formatTimeUntilDeletion(task.deletedAt, recycleBinSettings.retentionDays)
-                        : "不明"
+                        : MESSAGES.RETENTION.UNKNOWN
                       }
                     </Text>
                   </div>
@@ -264,7 +249,7 @@ export const RecycleBinView: React.FC = () => {
                 {isRestoring === task.id ? (
                   <Button disabled>
                     <Spinner size="small" style={{ marginRight: '4px' }} />
-                    復元中...
+                    {MESSAGES.RESTORE.IN_PROGRESS}
                   </Button>
                 ) : showConfirm === task.id ? (
                   <div style={{ display: 'flex', gap: '4px' }}>
@@ -273,13 +258,13 @@ export const RecycleBinView: React.FC = () => {
                       size="small"
                       onClick={() => handleRestore(task.id)}
                     >
-                      復元を確認
+                      {MESSAGES.RESTORE.CONFIRM_ACTION}
                     </Button>
                     <Button
                       size="small"
                       onClick={() => setShowConfirm(null)}
                     >
-                      キャンセル
+                      {MESSAGES.RESTORE.CANCEL_ACTION}
                     </Button>
                   </div>
                 ) : (
@@ -293,7 +278,7 @@ export const RecycleBinView: React.FC = () => {
                       gap: '4px'
                     }}>
                       <HistoryIcon size={12} />
-                      <Text>復元</Text>
+                      <Text>{UI_TEXT.VIEW.RESTORE_BUTTON}</Text>
                     </div>
                   </Button>
                 )}
@@ -328,7 +313,7 @@ export const RecycleBinView: React.FC = () => {
       {/* ゴミ箱を空にする確認ダイアログ */}
       {showEmptyConfirm && (
         <ConfirmationDialog
-          title="ゴミ箱を空にする"
+          title={MESSAGES.EMPTY_BIN.CONFIRM_TITLE}
           onClose={(confirmed) => {
             if (confirmed === "confirm") {
               handleEmptyRecycleBin();
@@ -336,13 +321,12 @@ export const RecycleBinView: React.FC = () => {
               setShowEmptyConfirm(false);
             }
           }}
-          confirmButtonContent="完全削除"
+          confirmButtonContent={MESSAGES.EMPTY_BIN.CONFIRM_ACTION}
           confirmButtonType="danger"
-          cancelButtonContent="キャンセル"
+          cancelButtonContent={MESSAGES.EMPTY_BIN.CANCEL_ACTION}
         >
           <Text>
-            ゴミ箱内の{deletedTasks.length}件のタスクをすべて完全削除します。<br />
-            この操作は取り消すことができません。本当に実行しますか？
+            {UI_TEXT.VIEW.CONFIRM_EMPTY_MESSAGE(deletedTasks.length)}
           </Text>
         </ConfirmationDialog>
       )}
