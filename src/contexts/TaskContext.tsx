@@ -479,7 +479,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       return;
     }
 
-    // 最右カラム（完了カラム）のタスクを全て削除
+    // 最右カラム（完了カラム）のタスクを取得
     const rightmostColumnIndex = boardState.currentBoard.columns.length - 1;
     const rightmostColumn =
       boardState.currentBoard.columns[rightmostColumnIndex];
@@ -496,10 +496,21 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       return;
     }
 
+    // 🔧 修正: ソフトデリートを適用
     const updatedBoard = {
       ...boardState.currentBoard,
       columns: boardState.currentBoard.columns.map((column, index) =>
-        index === rightmostColumnIndex ? { ...column, tasks: [] } : column,
+        index === rightmostColumnIndex
+          ? {
+              ...column,
+              tasks: column.tasks.map((task) => ({
+                ...task,
+                deletionState: "deleted" as const,
+                deletedAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+              })),
+            }
+          : column,
       ),
       updatedAt: new Date().toISOString(),
     };
@@ -509,13 +520,13 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       payload: { boardId: boardState.currentBoard.id, updates: updatedBoard },
     });
 
-    notify.success(`${completedTaskCount}件の完了済みタスクを削除しました`);
+    notify.success(`${completedTaskCount}件の完了済みタスクをゴミ箱に移動しました`);
 
-    logger.info("Completed tasks cleared:", {
+    logger.info("Completed tasks moved to recycle bin:", {
       deletedCount: completedTaskCount,
       boardId: boardState.currentBoard.id,
     });
-  }, [boardState.currentBoard, boardDispatch, notify]);
+  }, [boardState.currentBoard, boardDispatch, notify]);;
 
   // サブタスク追加
   const addSubTask = useCallback(
