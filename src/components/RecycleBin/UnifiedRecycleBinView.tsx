@@ -220,9 +220,9 @@ const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
           {/* テーブルヘッダー */}
           <div style={{
             display: 'grid',
-            gridTemplateColumns: '100px 1fr 150px 100px',
+            gridTemplateColumns: '80px 1fr 100px 100px',
             gap: "8px",
-            padding: "8px",
+            alignItems: 'center',
             background: 'var(--bgColor-muted)',
             borderBottom: '1px solid',
             borderColor: 'var(--borderColor-default)',
@@ -265,7 +265,7 @@ const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
                 key={`${item.type}-${item.id}`}
                 style={{
                   display: 'grid',
-                  gridTemplateColumns: '100px 1fr 150px 100px',
+                  gridTemplateColumns: '80px 1fr 100px 100px',
                   gap: "8px",
                   padding: "12px 8px",
                   borderBottom: index === allRecycleBinItems.length - 1 ? 'none' : '1px solid',
