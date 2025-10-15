@@ -35,8 +35,8 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
     "labels" | "data" | "board" | "templates" | "recycleBin"
   >("labels");
 
-  // DialogFlashMessageフック使用
-  const { message, handleMessage } = useDialogFlashMessage();
+  // DialogFlashMessageフック使用（autoClearDelay: 0でStickyメッセージ化）
+  const { message, handleMessage } = useDialogFlashMessage(0);
 
   return (
     <UnifiedDialog
