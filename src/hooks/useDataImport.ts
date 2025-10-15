@@ -27,7 +27,6 @@ export const useDataImport = (options?: UseDataImportOptions) => {
     isLoading: false,
     selectedFile: null,
     mode: "merge",
-    message: null,
   });
 
   /**
@@ -37,13 +36,6 @@ export const useDataImport = (options?: UseDataImportOptions) => {
     // ファイルサイズチェック
     if (file.size > MAX_FILE_SIZE) {
       const errorMessage = `ファイルサイズが大きすぎます（最大: ${MAX_FILE_SIZE / 1024 / 1024}MB）`;
-      setState((prev) => ({
-        ...prev,
-        message: {
-          type: "error",
-          text: errorMessage,
-        },
-      }));
       options?.onMessage?.({
         type: 'danger',
         text: errorMessage
@@ -54,13 +46,6 @@ export const useDataImport = (options?: UseDataImportOptions) => {
     // ファイルタイプチェック
     if (!file.type.includes("json") && !file.name.endsWith(".json")) {
       const errorMessage = "JSONファイルを選択してください";
-      setState((prev) => ({
-        ...prev,
-        message: {
-          type: "error",
-          text: errorMessage,
-        },
-      }));
       options?.onMessage?.({
         type: 'danger',
         text: errorMessage
@@ -71,7 +56,6 @@ export const useDataImport = (options?: UseDataImportOptions) => {
     setState((prev) => ({
       ...prev,
       selectedFile: file,
-      message: null,
     }));
   }, [options]);
 
@@ -85,15 +69,6 @@ export const useDataImport = (options?: UseDataImportOptions) => {
     }));
   }, []);
 
-  /**
-   * メッセージをクリア
-   */
-  const clearMessage = useCallback(() => {
-    setState((prev) => ({
-      ...prev,
-      message: null,
-    }));
-  }, []);
 
   /**
    * 選択をクリア
@@ -103,7 +78,6 @@ export const useDataImport = (options?: UseDataImportOptions) => {
       isLoading: false,
       selectedFile: null,
       mode: "merge",
-      message: null,
     });
   }, []);
 
@@ -118,7 +92,6 @@ export const useDataImport = (options?: UseDataImportOptions) => {
     setState((prev) => ({
       ...prev,
       isLoading: true,
-      message: null,
     }));
 
     try {
@@ -134,7 +107,6 @@ export const useDataImport = (options?: UseDataImportOptions) => {
       setState((prev) => ({
         ...prev,
         isLoading: false,
-        message: null,
       }));
 
       // DialogFlashMessageで成功通知を表示
@@ -156,11 +128,13 @@ export const useDataImport = (options?: UseDataImportOptions) => {
       setState((prev) => ({
         ...prev,
         isLoading: false,
-        message: {
-          type: "error",
-          text: errorMessage,
-        },
       }));
+
+      // DialogFlashMessageでエラー通知を表示
+      options?.onMessage?.({
+        type: 'danger',
+        text: errorMessage
+      });
 
       options?.onError?.();
     }
@@ -170,7 +144,6 @@ export const useDataImport = (options?: UseDataImportOptions) => {
     state,
     selectFile,
     setImportMode,
-    clearMessage,
     clearSelection,
     executeImport,
     maxFileSize: MAX_FILE_SIZE,

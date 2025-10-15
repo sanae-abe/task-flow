@@ -33,9 +33,4 @@ export interface ImportState {
   selectedFile: File | null;
   /** インポートモード */
   mode: ImportMode;
-  /** メッセージ */
-  message: {
-    type: 'success' | 'error';
-    text: string;
-  } | null;
 }

@@ -74,7 +74,7 @@ interface BoardContextType {
   deleteColumn: (columnId: string) => void;
   updateColumn: (columnId: string, updates: Partial<Column>) => void;
   moveColumn: (columnId: string, direction: "left" | "right") => void;
-  importBoards: (boards: KanbanBoard[], replaceAll?: boolean, customMessage?: string, silent?: boolean) => void;
+  importBoards: (boards: KanbanBoard[], replaceAll?: boolean) => void;
   reorderBoards: (boards: KanbanBoard[]) => void;
   moveTaskToBoard: (
     taskId: string,
@@ -1084,16 +1084,10 @@ const authenticateUser = async (email, password) => {
   );
 
   const importBoards = useCallback(
-    (boards: KanbanBoard[], replaceAll = false, customMessage?: string, silent = false) => {
+    (boards: KanbanBoard[], replaceAll = false) => {
       dispatch({ type: "IMPORT_BOARDS", payload: { boards, replaceAll } });
-      if (!silent) {
-        const message = customMessage || (replaceAll
-          ? `${boards.length}個のボードをインポートしました（既存データを置換）`
-          : `${boards.length}個のボードをインポートしました`);
-        notify.success(message);
-      }
     },
-    [notify],
+    [],
   );
   const reorderBoards = useCallback((boards: KanbanBoard[]) => {
     dispatch({ type: "REORDER_BOARDS", payload: { boards } });
