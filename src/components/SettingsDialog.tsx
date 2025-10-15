@@ -9,6 +9,7 @@ import React, { useState } from "react";
 import { FileText } from "react-feather";
 
 import UnifiedDialog from "./shared/Dialog/UnifiedDialog";
+import { DialogFlashMessage, useDialogFlashMessage } from "./shared";
 import { LabelManagementPanel } from "./LabelManagement";
 import { DataManagementPanel } from "./DataManagement";
 import { BoardSettingsPanel } from "./BoardSettings";
@@ -33,6 +34,9 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
   const [activeTab, setActiveTab] = useState<
     "labels" | "data" | "board" | "templates" | "recycleBin"
   >("labels");
+
+  // DialogFlashMessageフック使用
+  const { message, handleMessage, clearMessage } = useDialogFlashMessage();
 
   return (
     <UnifiedDialog
@@ -103,13 +107,18 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
 
           {/* メインコンテンツエリア */}
           <SplitPageLayout.Content padding="none" sx={{ py: "8px", pr: "8px" }}>
-            <div style={{ height: "100%", overflow: "auto" }}>
+            <div style={{ position: "relative", display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {/* メッセージ表示（全タブ共通） */}
+              <div style={{ position: "absolute", left: 0, width: "100%" }}>
+                <DialogFlashMessage message={message} onDismiss={clearMessage} />
+              </div>
+
               {activeTab === "board" ? (
                 <BoardSettingsPanel />
               ) : activeTab === "templates" ? (
-                <TemplateManagementPanel />
+                <TemplateManagementPanel onMessage={handleMessage} />
               ) : activeTab === "labels" ? (
-                <LabelManagementPanel />
+                <LabelManagementPanel onMessage={handleMessage} />
               ) : activeTab === "recycleBin" ? (
                 <div>
                   <RecycleBinSettingsPanel />
@@ -120,13 +129,14 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
                       paddingTop: "24px",
                     }}
                   >
-                    <RecycleBinView />
+                    <RecycleBinView onMessage={handleMessage} />
                   </div>
                 </div>
               ) : (
                 <DataManagementPanel
                   onExportAll={onExportData}
                   onExportCurrent={onExportBoard}
+                  onMessage={handleMessage}
                 />
               )}
             </div>

@@ -145,7 +145,6 @@ export const useSubHeader = (): UseSubHeaderReturn => {
 
       exportAllData: () => {
         exportData(state.boards);
-        notify.success("全データをエクスポートしました");
       },
 
       exportCurrentBoard: (board?: KanbanBoard) => {
@@ -153,7 +152,6 @@ export const useSubHeader = (): UseSubHeaderReturn => {
         const targetBoard = board || state.currentBoard;
         if (targetBoard) {
           exportBoard(targetBoard);
-          notify.success(`「${targetBoard.title}」をエクスポートしました`);
         } else {
           notify.error("エクスポートするボードが選択されていません");
         }

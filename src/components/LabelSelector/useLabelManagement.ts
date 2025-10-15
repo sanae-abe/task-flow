@@ -17,8 +17,8 @@ export const useLabelManagement = ({
     createLabel,
     isLabelInCurrentBoard,
     copyLabelToCurrentBoard,
+    setMessageCallback,
   } = useLabel();
-
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [pendingAutoSelect, setPendingAutoSelect] = useState<{
     name: string;
@@ -53,6 +53,30 @@ export const useLabelManagement = ({
       otherBoardLabels: other,
     };
   }, [allLabels, isLabelInCurrentBoard]);
+
+  // LabelContextからのメッセージを受信する設定
+  useEffect(() => {
+    const messageCallback = (message: {
+      type: 'success' | 'danger' | 'warning' | 'critical' | 'default' | 'info' | 'upsell';
+      text: string;
+      title?: string;
+    }) => {
+      console.log('📥 LabelSelector: Message received from LabelContext:', message);
+      // Toast通知で表示
+      // showToastMessage(message);
+    };
+
+    // LabelContextにコールバックを設定
+    console.log('🔌 LabelSelector: Calling setMessageCallback');
+    setMessageCallback(messageCallback);
+    console.log('✅ LabelSelector: Message callback registered');
+
+    // クリーンアップ
+    return () => {
+      console.log('🧹 LabelSelector: Cleaning up message callback');
+      setMessageCallback(null);
+    };
+  }, [setMessageCallback]);
 
   // refを常に最新の値で更新
   useEffect(() => {
@@ -121,6 +145,7 @@ export const useLabelManagement = ({
   // 新しいラベル作成後の処理
   const handleLabelCreated = useCallback(
     (labelData: { name: string; color: string }) => {
+
       // LabelContextのcreateLabelでボード状態に保存
       createLabel(labelData.name, labelData.color);
 
@@ -156,5 +181,5 @@ export const useLabelManagement = ({
     removeLabel,
     handleLabelCreated,
     handleCopyAndSelectLabel,
-  };
+  } as const;
 };

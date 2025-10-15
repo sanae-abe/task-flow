@@ -8,7 +8,7 @@ import {
 import type { FileAttachment, ImportMode } from "../types";
 
 import AttachmentList from "./AttachmentList";
-import ErrorMessage from "./ErrorMessage";
+import InlineMessage from "./shared/InlineMessage";
 import UniversalDropZone from "./UniversalDropZone";
 import ImportModeSelector from "./ImportModeSelector";
 
@@ -87,7 +87,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({
         onRemoveAttachment={handleRemoveAttachment}
       />
 
-      <ErrorMessage error={error} />
+      <InlineMessage variant="error" message={error} />
     </div>
   );
 };

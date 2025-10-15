@@ -1,22 +1,21 @@
 import { memo } from 'react';
-import { Text, Button, Flash, Spinner, RadioGroup, Radio, FormControl } from '@primer/react';
-import { UploadIcon, FileIcon, XIcon, AlertIcon } from '@primer/octicons-react';
+import { Text, Button, Spinner, RadioGroup, Radio, FormControl } from '@primer/react';
+import { UploadIcon, FileIcon, XIcon } from '@primer/octicons-react';
 
 import { useDataImport } from '../../hooks/useDataImport';
 import { useDataImportDropZone } from '../../hooks/useDataImportDropZone';
 import UniversalDropZone from '../UniversalDropZone';
-import ErrorMessage from '../ErrorMessage';
-import SuccessMessage from "../SuccessMessage";
+import DialogFlashMessage from '../shared/DialogFlashMessage';
 
 /**
  * データインポート機能を提供するセクション
  */
 interface ImportSectionProps {
-  /** インポート成功時のコールバック */
-  onImportSuccess?: () => void;
+  /** メッセージ表示時のコールバック */
+  onMessage?: (message: { type: 'success' | 'critical' | 'warning' | 'danger' | 'default' | 'info' | 'upsell'; text: string }) => void;
 }
 
-export const ImportSection = memo<ImportSectionProps>(({ onImportSuccess }) => {
+export const ImportSection = memo<ImportSectionProps>(({ onMessage }) => {
   const {
     state,
     selectFile,
@@ -29,9 +28,12 @@ export const ImportSection = memo<ImportSectionProps>(({ onImportSuccess }) => {
       // 成功後に少し待ってから選択をクリア
       setTimeout(() => {
         clearSelection();
-        onImportSuccess?.();
       }, 1500);
-    }
+    },
+    onError: () => {
+      // エラー処理は useDataImport 内で統一して実行
+    },
+    onMessage
   });
 
   const dropZoneProps = useDataImportDropZone({
@@ -65,19 +67,13 @@ export const ImportSection = memo<ImportSectionProps>(({ onImportSuccess }) => {
 
       {/* 警告メッセージ - 置換モード時のみ表示 */}
       {state.mode === 'replace' && (
-        <Flash variant="warning">
-          <div style={{ display: 'flex', gap: "8px" }}>
-            <AlertIcon size={16} />
-            <div>
-              <Text sx={{ fontWeight: 'bold', display: 'block', mb: 1 }}>
-                危険: データの置換操作
-              </Text>
-              <Text sx={{ fontSize: 1, color: 'danger.fg', fontWeight: 'bold' }}>
-                現在のすべてのデータが削除されます。この操作は元に戻せません。
-              </Text>
-            </div>
-          </div>
-        </Flash>
+        <DialogFlashMessage message={{
+          type: 'warning',
+          title: '危険: データの置換操作',
+          text: `現在のすべてのデータが削除されます。この操作は元に戻せません。`,
+        }}
+          isStatic
+        />
       )}
 
       {/* ドラッグ&ドロップエリア - UniversalDropZone使用 */}
@@ -182,12 +178,6 @@ export const ImportSection = memo<ImportSectionProps>(({ onImportSuccess }) => {
         </div>
       )}
 
-      {/* エラー表示 - ErrorMessage使用 */}
-      <ErrorMessage error={state.message?.type  === 'error' ? state.message.text : null} />
-
-      {/* 成功メッセージ */}
-      <SuccessMessage success={state.message?.type  === 'success' ? state.message.text : null} />
-
       {/* インポート実行ボタン */}
       {state.selectedFile && (
         <Button
@@ -200,6 +190,7 @@ export const ImportSection = memo<ImportSectionProps>(({ onImportSuccess }) => {
           {state.isLoading ? 'インポート中...' : 'インポート実行'}
         </Button>
       )}
+
     </div>
   );
 });

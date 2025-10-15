@@ -1,6 +1,5 @@
 import React from 'react';
-import { TextInput, FormControl, Flash, Select } from '@primer/react';
-import { InfoIcon } from '@primer/octicons-react';
+import { TextInput, FormControl, Select } from '@primer/react';
 
 import type { TaskFormFieldsProps } from '../types';
 import { UnifiedFormField } from '../../shared/Form';
@@ -10,6 +9,7 @@ import RecurrenceSelector from '../../RecurrenceSelector';
 import RichTextEditor from '../../RichTextEditor';
 import TimeSelector from '../../TimeSelector';
 import FileUploader from '../../FileUploader';
+import DialogFlashMessage from '../../shared/DialogFlashMessage';
 
 /**
  * タスク作成フォームのフィールド群コンポーネント
@@ -59,10 +59,14 @@ export const TaskFormFields: React.FC<TaskFormFieldsProps> = ({
     <div onKeyDown={onKeyPress} style={{ flex: 1, minHeight: '500px' }}>
       {/* テンプレート選択通知 */}
       {selectedTemplate && (
-        <Flash variant="default" sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
-          <InfoIcon size={16} />
-          <span>テンプレート「{selectedTemplate.name}」から作成中</span>
-        </Flash>
+        <div style={{ marginBottom: '24px' }}>
+          <DialogFlashMessage message={{
+            type: 'default',
+            text: `テンプレート「${selectedTemplate.name}」から作成中`,
+          }}
+            isStatic
+          />
+        </div>
       )}
 
       {/* タイトル */}

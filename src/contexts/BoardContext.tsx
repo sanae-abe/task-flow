@@ -9,7 +9,7 @@ import React, {
 } from "react";
 import { v4 as uuidv4 } from "uuid";
 
-import type { KanbanBoard, Column, Priority } from "../types";
+import type { KanbanBoard, Column, Priority, Label } from "../types";
 import { saveBoards, loadBoards } from "../utils/storage";
 import { loadSettings } from "../utils/settingsStorage";
 import { useNotify } from "./NotificationContext";
@@ -56,7 +56,11 @@ type BoardAction =
         targetBoardId: string;
         targetColumnId?: string;
       };
-    };
+    }
+  | { type: "ADD_LABEL"; payload: { label: Label } }
+  | { type: "UPDATE_LABEL"; payload: { labelId: string; updates: Partial<Label> } }
+  | { type: "DELETE_LABEL"; payload: { labelId: string } }
+  | { type: "DELETE_LABEL_FROM_ALL_BOARDS"; payload: { labelId: string } };
 
 interface BoardContextType {
   state: BoardState;
@@ -70,7 +74,7 @@ interface BoardContextType {
   deleteColumn: (columnId: string) => void;
   updateColumn: (columnId: string, updates: Partial<Column>) => void;
   moveColumn: (columnId: string, direction: "left" | "right") => void;
-  importBoards: (boards: KanbanBoard[], replaceAll?: boolean) => void;
+  importBoards: (boards: KanbanBoard[], replaceAll?: boolean, customMessage?: string, silent?: boolean) => void;
   reorderBoards: (boards: KanbanBoard[]) => void;
   moveTaskToBoard: (
     taskId: string,
@@ -360,7 +364,6 @@ const boardReducer = (state: BoardState, action: BoardAction): BoardState => {
           return {
             ...board,
             id: uuidv4(),
-            title: `${board.title} (インポート)`,
             updatedAt: new Date().toISOString(),
           };
         }
@@ -486,6 +489,121 @@ const boardReducer = (state: BoardState, action: BoardAction): BoardState => {
       } else if (state.currentBoard?.id === targetBoardId) {
         updatedCurrentBoard = updatedTargetBoard;
       }
+
+      return {
+        ...state,
+        boards: updatedBoards,
+        currentBoard: updatedCurrentBoard,
+      };
+    }
+
+    case "ADD_LABEL": {
+      if (!state.currentBoard) {
+        return state;
+      }
+
+      const updatedBoard = updateBoardTimestamp({
+        ...state.currentBoard,
+        labels: [...state.currentBoard.labels, action.payload.label],
+      });
+
+      return {
+        ...state,
+        boards: state.boards.map((board) =>
+          board.id === updatedBoard.id ? updatedBoard : board,
+        ),
+        currentBoard: updatedBoard,
+      };
+    }
+
+    case "UPDATE_LABEL": {
+      if (!state.currentBoard) {
+        return state;
+      }
+
+      const updatedBoard = updateBoardTimestamp({
+        ...state.currentBoard,
+        labels: state.currentBoard.labels.map((label) =>
+          label.id === action.payload.labelId
+            ? { ...label, ...action.payload.updates }
+            : label,
+        ),
+        columns: state.currentBoard.columns.map((column) => ({
+          ...column,
+          tasks: column.tasks.map((task) => ({
+            ...task,
+            labels: task.labels.map((label) =>
+              label.id === action.payload.labelId
+                ? { ...label, ...action.payload.updates }
+                : label,
+            ),
+          })),
+        })),
+      });
+
+      return {
+        ...state,
+        boards: state.boards.map((board) =>
+          board.id === updatedBoard.id ? updatedBoard : board,
+        ),
+        currentBoard: updatedBoard,
+      };
+    }
+
+    case "DELETE_LABEL": {
+      if (!state.currentBoard) {
+        return state;
+      }
+
+      const updatedBoard = updateBoardTimestamp({
+        ...state.currentBoard,
+        labels: state.currentBoard.labels.filter(
+          (label) => label.id !== action.payload.labelId,
+        ),
+        columns: state.currentBoard.columns.map((column) => ({
+          ...column,
+          tasks: column.tasks.map((task) => ({
+            ...task,
+            labels: task.labels.filter(
+              (label) => label.id !== action.payload.labelId,
+            ),
+          })),
+        })),
+      });
+
+      return {
+        ...state,
+        boards: state.boards.map((board) =>
+          board.id === updatedBoard.id ? updatedBoard : board,
+        ),
+        currentBoard: updatedBoard,
+      };
+    }
+
+    case "DELETE_LABEL_FROM_ALL_BOARDS": {
+      const { labelId } = action.payload;
+      const currentTime = new Date().toISOString();
+
+      // すべてのボードからラベルを削除し、タスクからも削除
+      const updatedBoards = state.boards.map((board) =>
+        updateBoardTimestamp({
+          ...board,
+          labels: board.labels.filter((label) => label.id !== labelId),
+          columns: board.columns.map((column) => ({
+            ...column,
+            tasks: column.tasks.map((task) => ({
+              ...task,
+              labels: task.labels.filter((label) => label.id !== labelId),
+            })),
+          })),
+          updatedAt: currentTime,
+        }),
+      );
+
+      // 現在のボードも更新
+      const updatedCurrentBoard = state.currentBoard
+        ? updatedBoards.find((board) => board.id === state.currentBoard?.id) || null
+        : null;
 
       return {
         ...state,
@@ -966,12 +1084,14 @@ const authenticateUser = async (email, password) => {
   );
 
   const importBoards = useCallback(
-    (boards: KanbanBoard[], replaceAll = false) => {
+    (boards: KanbanBoard[], replaceAll = false, customMessage?: string, silent = false) => {
       dispatch({ type: "IMPORT_BOARDS", payload: { boards, replaceAll } });
-      const message = replaceAll
-        ? `${boards.length}個のボードをインポートしました（既存データを置換）`
-        : `${boards.length}個のボードをインポートしました`;
-      notify.success(message);
+      if (!silent) {
+        const message = customMessage || (replaceAll
+          ? `${boards.length}個のボードをインポートしました（既存データを置換）`
+          : `${boards.length}個のボードをインポートしました`);
+        notify.success(message);
+      }
     },
     [notify],
   );

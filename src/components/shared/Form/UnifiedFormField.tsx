@@ -16,7 +16,7 @@ import {
   RecurrenceSelectorField,
   CustomComponentField,
 } from "./fields";
-import ErrorMessage from "../../ErrorMessage";
+import InlineMessage from "../InlineMessage";
 
 interface UnifiedFormFieldProps extends FormFieldConfig {
   error?: string | null;
@@ -173,7 +173,7 @@ const UnifiedFormField = memo<UnifiedFormFieldProps>(
         )}
 
         {showError && (
-          <ErrorMessage error={error || "入力に誤りがあります"} />
+          <InlineMessage variant="error" message={error || "入力に誤りがあります"} />
         )}
       </FormControl>
     );

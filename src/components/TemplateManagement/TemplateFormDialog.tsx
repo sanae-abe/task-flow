@@ -8,7 +8,7 @@ import TemplateCategorySelector from './TemplateCategorySelector';
 import LabelSelector from '../LabelSelector';
 import RichTextEditor from '../RichTextEditor';
 import PrioritySelector from '../PrioritySelector';
-import ErrorMessage from '../ErrorMessage';
+import InlineMessage from '../shared/InlineMessage';
 
 interface TemplateFormDialogProps {
   isOpen: boolean;
@@ -199,7 +199,8 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
         <div style={{
           padding: '12px',
           borderRadius: 'var(--borderRadius-medium)',
-          background: 'var(--bgColor-muted)'
+          background: 'var(--bgColor-muted)',
+          border: '1px solid var(--borderColor-default)',
         }}>
 
           {/* テンプレート名 */}
@@ -222,7 +223,7 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
               disabled={isLoading}
             />
             {errors.name && (
-              <ErrorMessage error={errors.name} />
+              <InlineMessage variant="error" message={errors.name} />
             )}
           </FormControl>
 
@@ -262,6 +263,7 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
           padding: '12px',
           background: 'var(--bgColor-muted)',
           borderRadius: 'var(--borderRadius-medium)',
+          border: '1px solid var(--borderColor-default)',
         }}>
           {/* タスクタイトル */}
           <FormControl sx={{ mb: 3 }}>
@@ -282,7 +284,7 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
               disabled={isLoading}
             />
             {errors.taskTitle && (
-              <ErrorMessage error={errors.taskTitle} />
+              <InlineMessage variant="error" message={errors.taskTitle} />
             )}
           </FormControl>
 

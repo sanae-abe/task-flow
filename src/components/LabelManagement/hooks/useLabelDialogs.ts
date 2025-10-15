@@ -1,14 +1,31 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import type { EditDialogState, DeleteDialogState, LabelWithInfo, LabelFormData } from '../../../types/labelManagement';
 import { useLabel } from '../../../contexts/LabelContext';
 
-export const useLabelDialogs = () => {
+interface UseLabelDialogsOptions {
+  onMessage?: (message: { type: 'success' | 'danger' | 'warning' | 'critical' | 'default' | 'info' | 'upsell'; text: string }) => void;
+}
+
+export const useLabelDialogs = (onMessage?: UseLabelDialogsOptions['onMessage']) => {
   const {
     createLabel,
     createLabelInBoard,
     updateLabel,
-    deleteLabelFromAllBoards
+    deleteLabel,
+    setMessageCallback
   } = useLabel();
+
+  // LabelContextのメッセージコールバックを設定
+  useEffect(() => {
+    if (onMessage) {
+      setMessageCallback(onMessage);
+    }
+
+    // クリーンアップ: コンポーネントがアンマウントされたときにコールバックをクリア
+    return () => {
+      setMessageCallback(null);
+    };
+  }, [onMessage, setMessageCallback]);
 
   const [editDialog, setEditDialog] = useState<EditDialogState>({
     isOpen: false,
@@ -65,6 +82,7 @@ export const useLabelDialogs = () => {
 
   // ラベル保存（作成・編集）
   const handleSave = useCallback((labelData: LabelFormData) => {
+
     if (editDialog.mode === 'create') {
       if (labelData.boardId) {
         // 指定されたボードに作成
@@ -79,15 +97,15 @@ export const useLabelDialogs = () => {
     handleCloseEditDialog();
   }, [editDialog.mode, editDialog.label, createLabel, createLabelInBoard, updateLabel, handleCloseEditDialog]);
 
-  // ラベル削除確認（全ボードから削除）
+  // ラベル削除確認（現在のボードからのみ削除）
   const handleConfirmDelete = useCallback(() => {
     if (deleteDialog.label) {
-      deleteLabelFromAllBoards(deleteDialog.label.id);
+      deleteLabel(deleteDialog.label.id);
       handleCloseDeleteDialog();
     }
-  }, [deleteDialog.label, deleteLabelFromAllBoards, handleCloseDeleteDialog]);
+  }, [deleteDialog.label, deleteLabel, handleCloseDeleteDialog]);
 
-  return {
+  const returnMethods = {
     editDialog,
     deleteDialog,
     handleEdit,
@@ -98,4 +116,6 @@ export const useLabelDialogs = () => {
     handleSave,
     handleConfirmDelete
   };
+
+  return returnMethods;
 };

@@ -526,7 +526,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       deletedCount: completedTaskCount,
       boardId: boardState.currentBoard.id,
     });
-  }, [boardState.currentBoard, boardDispatch, notify]);;
+  }, [boardState.currentBoard, boardDispatch, notify]);
 
   // サブタスク追加
   const addSubTask = useCallback(

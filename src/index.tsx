@@ -1,4 +1,4 @@
-import React from 'react';
+// import React from 'react'; // StrictMode無効時は不要
 import ReactDOM from 'react-dom/client';
 import { HashRouter } from 'react-router-dom';
 import { StyleSheetManager } from 'styled-components';
@@ -18,13 +18,13 @@ const shouldForwardProp = (prop: string) =>
 // HashRouter使用（S3環境での確実なルーティング）
 
 root.render(
-  <React.StrictMode>
+  // <React.StrictMode> - 一時的に無効化（React Hooks初期化問題のデバッグ用）
     <StyleSheetManager shouldForwardProp={shouldForwardProp}>
       <HashRouter>
         <App />
       </HashRouter>
     </StyleSheetManager>
-  </React.StrictMode>
+  // </React.StrictMode>
 );
 
 // Service Worker registration - temporarily disabled for debugging

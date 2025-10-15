@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Button, Heading, Text } from '@primer/react';
 import { PlusIcon } from '@primer/octicons-react';
 
@@ -7,9 +7,28 @@ import ConfirmDialog from '../shared/Dialog/ConfirmDialog';
 import { EmptyState, SortableHeader, LabelTableRow } from './components';
 import { useLabelSort, useLabelDialogs, useLabelData } from './hooks';
 
-const LabelManagementPanel: React.FC = () => {
+interface LabelManagementPanelProps {
+  /** メッセージ表示時のコールバック */
+  onMessage?: (message: { type: 'success' | 'danger' | 'warning' | 'critical' | 'default' | 'info' | 'upsell'; text: string }) => void;
+}
+
+const LabelManagementPanel: React.FC<LabelManagementPanelProps> = ({ onMessage }) => {
   const { sortField, sortDirection, handleSort } = useLabelSort();
   const { allLabelsWithInfo } = useLabelData(sortField, sortDirection);
+
+  // メッセージコールバック
+  const handleMessage = useCallback((message: { type: 'success' | 'danger' | 'warning' | 'critical' | 'default' | 'info' | 'upsell'; text: string } | null) => {
+    // nullチェックを追加してランタイムエラーを防ぐ
+    if (!message) {
+      return;
+    }
+
+    // 親のSettingsDialogのDialogFlashMessageに送信
+    if (onMessage) {
+      onMessage(message);
+    }
+  }, [onMessage]);
+
   const {
     editDialog,
     deleteDialog,
@@ -20,7 +39,7 @@ const LabelManagementPanel: React.FC = () => {
     handleCloseDeleteDialog,
     handleSave,
     handleConfirmDelete
-  } = useLabelDialogs();
+  } = useLabelDialogs(handleMessage);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: "12px", paddingBottom: "16px" }}>

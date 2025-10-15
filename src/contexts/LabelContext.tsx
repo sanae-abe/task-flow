@@ -2,13 +2,13 @@ import React, {
   createContext,
   useContext,
   useMemo,
-  useCallback,
+  useRef,
   type ReactNode,
 } from "react";
 
 import type { Label } from "../types";
 import { useBoard } from "./BoardContext";
-import { useNotify } from "./NotificationContext";
+// import { useNotify } from "./NotificationContext"; // 将来的にメッセージ機能で使用予定
 
 interface LabelContextType {
   // 現在のボード対象
@@ -34,7 +34,17 @@ interface LabelContextType {
   // ラベル共通化機能
   copyLabelToCurrentBoard: (label: Label) => void;
   isLabelInCurrentBoard: (labelId: string) => boolean;
+
+  // メッセージコールバック設定
+  setMessageCallback: (callback: MessageCallback | null) => void;
 }
+
+// メッセージコールバックの型定義
+type MessageCallback = (message: {
+  type: 'success' | 'danger' | 'warning' | 'critical' | 'default' | 'info' | 'upsell';
+  text: string;
+  title?: string;
+}) => void;
 
 const LabelContext = createContext<LabelContextType | undefined>(undefined);
 
@@ -42,587 +52,307 @@ interface LabelProviderProps {
   children: ReactNode;
 }
 
-// 安全なUUID生成（フォールバック付き）
-const generateId = (): string => {
-  if (typeof crypto !== "undefined" && crypto.randomUUID) {
-    return crypto.randomUUID();
-  }
-  // フォールバック: より堅牢なランダムID生成
-  return `label-${Date.now()}-${Math.random().toString(36).substring(2, 15)}`;
-};
-
 export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
-  const notify = useNotify();
+  // 基本的な依存関係を安全に取得
   const { state: boardState, dispatch: boardDispatch } = useBoard();
+  // const _notify = useNotify(); // 将来的にメッセージ機能で使用予定
 
-  // 現在のボードのラベル
-  const labels = useMemo(
-    () => boardState.currentBoard?.labels || [],
-    [boardState.currentBoard],
-  );
+  // 複数のメッセージコールバックを管理する配列
+  const _messageCallbacksRef = useRef<Set<MessageCallback>>(new Set());
 
-  // 現在のボードのラベルを取得
-  const getCurrentBoardLabels = useCallback(
-    (): Label[] => boardState.currentBoard?.labels || [],
-    [boardState.currentBoard],
-  );
+  // 現在のボードからラベルを取得
+  const currentBoard = boardState.currentBoard;
 
-  // 全ボードからすべてのラベルを取得
-  const getAllLabels = useCallback((): Label[] => {
-    const labelMap = new Map<string, Label>();
+  // 段階的機能実装：実際のデータを使用した基本機能
+  const contextValue = useMemo(() => {
+    const currentBoardLabels = currentBoard?.labels || [];
 
-    // すべてのボードからラベルを収集
-    boardState.boards.forEach((board) => {
-      board.labels?.forEach((label) => {
-        if (!labelMap.has(label.id)) {
-          labelMap.set(label.id, label);
-        }
-      });
-
-      // タスクからもラベルを収集
-      board.columns.forEach((column) => {
-        column.tasks.forEach((task) => {
-          task.labels?.forEach((label) => {
-            if (!labelMap.has(label.id)) {
-              labelMap.set(label.id, label);
-            }
-          });
-        });
-      });
-    });
-
-    return Array.from(labelMap.values());
-  }, [boardState.boards]);
-
-  // 現在のボードでのラベル使用数を取得
-  const getCurrentBoardLabelUsageCount = useCallback(
-    (labelId: string): number => {
-      if (!boardState.currentBoard) {
-        return 0;
-      }
-
-      let count = 0;
-      boardState.currentBoard.columns.forEach((column) => {
-        column.tasks.forEach((task) => {
-          if (task.labels?.some((label) => label.id === labelId)) {
-            count++;
-          }
-        });
-      });
-
-      return count;
-    },
-    [boardState.currentBoard],
-  );
-
-  // ラベル作成
-  const createLabel = useCallback(
-    (name: string, color: string) => {
-      // バリデーション
-      if (!boardState.currentBoard) {
-        notify.error("ボードが選択されていません");
-        return;
-      }
-
-      const trimmedName = name.trim();
-      if (!trimmedName) {
-        notify.error("ラベル名が空です");
-        return;
-      }
-
-      if (trimmedName.length > 50) {
-        notify.error("ラベル名は50文字以下で入力してください");
-        return;
-      }
-
-      // 重複チェック
-      const existingLabels = boardState.currentBoard.labels || [];
-      const isDuplicate = existingLabels.some(
-        (label) => label.name.toLowerCase() === trimmedName.toLowerCase(),
-      );
-
-      if (isDuplicate) {
-        notify.error("同じ名前のラベルが既に存在します");
-        return;
-      }
-
-      try {
-        const newLabel: Label = {
-          id: generateId(),
-          name: trimmedName,
-          color,
-        };
-
-        const updatedLabels = [...existingLabels, newLabel];
-
-        boardDispatch({
-          type: "UPDATE_BOARD",
-          payload: {
-            boardId: boardState.currentBoard.id,
-            updates: { labels: updatedLabels },
-          },
-        });
-
-        notify.success(`ラベル「${trimmedName}」を作成しました`);
-      } catch (error) {
-        notify.error("ラベルの作成に失敗しました");
-      }
-    },
-    [boardState.currentBoard, boardDispatch, notify],
-  );
-
-  // 指定されたボードにラベルを作成
-  const createLabelInBoard = useCallback(
-    (name: string, color: string, boardId: string) => {
-      // 指定されたボードを取得
-      const targetBoard = boardState.boards.find(
-        (board) => board.id === boardId,
-      );
-      if (!targetBoard) {
-        notify.error("指定されたボードが見つかりません");
-        return;
-      }
-
-      const trimmedName = name.trim();
-      if (!trimmedName) {
-        notify.error("ラベル名が空です");
-        return;
-      }
-
-      if (trimmedName.length > 50) {
-        notify.error("ラベル名は50文字以下で入力してください");
-        return;
-      }
-
-      // 指定されたボードでの重複チェック
-      const existingLabels = targetBoard.labels || [];
-      const isDuplicate = existingLabels.some(
-        (label) => label.name.toLowerCase() === trimmedName.toLowerCase(),
-      );
-
-      if (isDuplicate) {
-        notify.error(
-          `ボード「${targetBoard.title}」に同じ名前のラベルが既に存在します`,
-        );
-        return;
-      }
-
-      try {
-        const newLabel: Label = {
-          id: generateId(),
-          name: trimmedName,
-          color,
-        };
-
-        const updatedLabels = [...existingLabels, newLabel];
-
-        boardDispatch({
-          type: "UPDATE_BOARD",
-          payload: {
-            boardId: targetBoard.id,
-            updates: { labels: updatedLabels },
-          },
-        });
-
-        notify.success(
-          `ボード「${targetBoard.title}」にラベル「${trimmedName}」を作成しました`,
-        );
-      } catch (error) {
-        notify.error("ラベルの作成に失敗しました");
-      }
-    },
-    [boardState.boards, boardDispatch, notify],
-  );
-
-  // ラベル更新（原子性を考慮した統合更新）
-  const updateLabel = useCallback(
-    (labelId: string, updates: Partial<Label>) => {
-      if (!boardState.currentBoard) {
-        notify.error("ボードが選択されていません");
-        return;
-      }
-
-      // バリデーション
-      if (updates.name !== undefined) {
-        const trimmedName = updates.name.trim();
-        if (!trimmedName) {
-          notify.error("ラベル名が空です");
-          return;
-        }
-        if (trimmedName.length > 50) {
-          notify.error("ラベル名は50文字以下で入力してください");
-          return;
-        }
-
-        // 重複チェック（自分自身を除外）
-        const existingLabels = boardState.currentBoard.labels || [];
-        const isDuplicate = existingLabels.some(
-          (label) =>
-            label.id !== labelId &&
-            label.name.toLowerCase() === trimmedName.toLowerCase(),
-        );
-
-        if (isDuplicate) {
-          notify.error("同じ名前のラベルが既に存在します");
-          return;
-        }
-      }
-
-      try {
-        // ボードのラベルを更新
-        const updatedLabels = (boardState.currentBoard.labels || []).map(
-          (label) => (label.id === labelId ? { ...label, ...updates } : label),
-        );
-
-        // タスクのラベルも同時に更新
-        const updatedColumns = boardState.currentBoard.columns.map(
-          (column) => ({
-            ...column,
-            tasks: column.tasks.map((task) => ({
-              ...task,
-              labels: (task.labels || []).map((label) =>
-                label.id === labelId ? { ...label, ...updates } : label,
-              ),
-            })),
-          }),
-        );
-
-        // 単一のディスパッチでボードとタスクを同時更新
-        boardDispatch({
-          type: "UPDATE_BOARD",
-          payload: {
-            boardId: boardState.currentBoard.id,
-            updates: {
-              labels: updatedLabels,
-              columns: updatedColumns,
-            },
-          },
-        });
-
-        notify.success("ラベルを更新しました");
-      } catch (error) {
-        notify.error("ラベルの更新に失敗しました");
-      }
-    },
-    [boardState.currentBoard, boardDispatch, notify],
-  );
-
-  // ラベル削除（原子性を考慮した統合削除）
-  const deleteLabel = useCallback(
-    (labelId: string) => {
-      if (!boardState.currentBoard) {
-        notify.error("ボードが選択されていません");
-        return;
-      }
-
-      const labelToDelete = (boardState.currentBoard.labels || []).find(
-        (label) => label.id === labelId,
-      );
-      if (!labelToDelete) {
-        notify.error("削除対象のラベルが見つかりません");
-        return;
-      }
-
-      // 使用数をチェック
-      const usageCount = getCurrentBoardLabelUsageCount(labelId);
-
-      try {
-        // ボードからラベルを削除
-        const updatedLabels = (boardState.currentBoard.labels || []).filter(
-          (label) => label.id !== labelId,
-        );
-
-        // タスクからもラベルを削除
-        const updatedColumns = boardState.currentBoard.columns.map(
-          (column) => ({
-            ...column,
-            tasks: column.tasks.map((task) => ({
-              ...task,
-              labels: (task.labels || []).filter(
-                (label) => label.id !== labelId,
-              ),
-            })),
-          }),
-        );
-
-        // 単一のディスパッチでボードとタスクを同時更新
-        boardDispatch({
-          type: "UPDATE_BOARD",
-          payload: {
-            boardId: boardState.currentBoard.id,
-            updates: {
-              labels: updatedLabels,
-              columns: updatedColumns,
-            },
-          },
-        });
-
-        const message =
-          usageCount > 0
-            ? `ラベル「${labelToDelete.name}」を削除しました（${usageCount}個のタスクから削除）`
-            : `ラベル「${labelToDelete.name}」を削除しました`;
-
-        notify.success(message);
-      } catch (error) {
-        notify.error("ラベルの削除に失敗しました");
-      }
-    },
-    [
-      boardState.currentBoard,
-      boardDispatch,
-      notify,
-      getCurrentBoardLabelUsageCount,
-    ],
-  );
-
-  // ラベルが現在のボードにあるかチェック
-  const isLabelInCurrentBoard = useCallback(
-    (labelId: string): boolean => {
-      if (!boardState.currentBoard) {
-        return false;
-      }
-
-      return (boardState.currentBoard.labels || []).some(
-        (label) => label.id === labelId,
-      );
-    },
-    [boardState.currentBoard],
-  );
-
-  // 他のボードのラベルを現在のボードにコピー
-  const copyLabelToCurrentBoard = useCallback(
-    (label: Label) => {
-      if (!boardState.currentBoard) {
-        notify.error("ボードが選択されていません");
-        return;
-      }
-
-      // 既に現在のボードに存在するかチェック
-      if (isLabelInCurrentBoard(label.id)) {
-        notify.info(`ラベル「${label.name}」は既に現在のボードに存在します`);
-        return;
-      }
-
-      // 同じ名前のラベルが現在のボードに存在するかチェック
-      const existingLabels = boardState.currentBoard.labels || [];
-      const isDuplicate = existingLabels.some(
-        (existingLabel) =>
-          existingLabel.name.toLowerCase() === label.name.toLowerCase(),
-      );
-
-      if (isDuplicate) {
-        notify.error(
-          `同じ名前のラベル「${label.name}」が既に現在のボードに存在します`,
-        );
-        return;
-      }
-
-      try {
-        // 新しいIDでラベルをコピー
-        const newLabel: Label = {
-          id: generateId(),
-          name: label.name,
-          color: label.color,
-        };
-
-        const updatedLabels = [...existingLabels, newLabel];
-
-        boardDispatch({
-          type: "UPDATE_BOARD",
-          payload: {
-            boardId: boardState.currentBoard.id,
-            updates: { labels: updatedLabels },
-          },
-        });
-
-        notify.success(`ラベル「${label.name}」を現在のボードにコピーしました`);
-      } catch (error) {
-        notify.error("ラベルのコピーに失敗しました");
-      }
-    },
-    [boardState.currentBoard, boardDispatch, notify, isLabelInCurrentBoard],
-  );
-
-  // 全ボードのラベル情報をボード名付きで取得
-  const getAllLabelsWithBoardInfo = useCallback((): Array<
-    Label & { boardName: string; boardId: string }
-  > => {
-    const labelsWithBoardInfo: Array<
-      Label & { boardName: string; boardId: string }
-    > = [];
-
-    // すべてのボードからラベルを収集
-    boardState.boards.forEach((board) => {
-      board.labels?.forEach((label) => {
-        labelsWithBoardInfo.push({
-          ...label,
-          boardName: board.title,
-          boardId: board.id,
-        });
-      });
-    });
-
-    return labelsWithBoardInfo;
-  }, [boardState.boards]);
-
-  // 指定されたボードでのラベル使用数を取得
-  const getLabelUsageCountInBoard = useCallback(
-    (labelId: string, boardId: string): number => {
-      const board = boardState.boards.find((b) => b.id === boardId);
-      if (!board) {
-        return 0;
-      }
-
-      let count = 0;
-      board.columns.forEach((column) => {
-        column.tasks.forEach((task) => {
-          if (task.labels?.some((label) => label.id === labelId)) {
-            count++;
-          }
-        });
-      });
-
-      return count;
-    },
-    [boardState.boards],
-  );
-
-  // 全ボードでのラベル使用数を取得
-  const getAllLabelUsageCount = useCallback(
-    (labelId: string): number => {
-      let totalCount = 0;
-
-      boardState.boards.forEach((board) => {
-        board.columns.forEach((column) => {
-          column.tasks.forEach((task) => {
-            if (task.labels?.some((label) => label.id === labelId)) {
-              totalCount++;
-            }
-          });
-        });
-      });
-
-      return totalCount;
-    },
-    [boardState.boards],
-  );
-
-  // 全ボードからラベルを削除
-  const deleteLabelFromAllBoards = useCallback(
-    (labelId: string) => {
-      // まず、削除対象のラベル情報を取得
-      const labelToDelete = getAllLabels().find(
-        (label) => label.id === labelId,
-      );
-      if (!labelToDelete) {
-        notify.error("削除対象のラベルが見つかりません");
-        return;
-      }
-
-      // 全ボードでの使用数を確認
-      const totalUsageCount = getAllLabelUsageCount(labelId);
-
-      try {
-        // すべてのボードを個別に更新
-        boardState.boards.forEach((board) => {
-          const hasLabel = (board.labels || []).some(
-            (label) => label.id === labelId,
-          );
-
-          if (!hasLabel) {
-            return; // このボードにはラベルがないのでスキップ
-          }
-
-          // ボードからラベルを削除
-          const updatedLabels = (board.labels || []).filter(
-            (label) => label.id !== labelId,
-          );
-
-          // タスクからもラベルを削除
-          const updatedColumns = board.columns.map((column) => ({
-            ...column,
-            tasks: column.tasks.map((task) => ({
-              ...task,
-              labels: (task.labels || []).filter(
-                (label) => label.id !== labelId,
-              ),
-            })),
-          }));
-
-          // 個別のボードを更新
-          boardDispatch({
-            type: "UPDATE_BOARD",
-            payload: {
-              boardId: board.id,
-              updates: {
-                labels: updatedLabels,
-                columns: updatedColumns,
-              },
-            },
-          });
-        });
-
-        const message =
-          totalUsageCount > 0
-            ? `ラベル「${labelToDelete.name}」を全ボードから削除しました（${totalUsageCount}個のタスクから削除）`
-            : `ラベル「${labelToDelete.name}」を全ボードから削除しました`;
-
-        notify.success(message);
-      } catch (error) {
-        notify.error("ラベルの削除に失敗しました");
-      }
-    },
-    [
-      boardState.boards,
-      boardDispatch,
-      notify,
-      getAllLabels,
-      getAllLabelUsageCount,
-    ],
-  );
-
-  // メモ化されたコンテキスト値
-  const contextValue = useMemo(
-    () => ({
+    return {
       // 現在のボード対象
-      labels,
-      getCurrentBoardLabels,
-      getCurrentBoardLabelUsageCount,
+      labels: currentBoardLabels,
+      getCurrentBoardLabels: () => currentBoardLabels,
+      getCurrentBoardLabelUsageCount: (labelId: string) => {
+        if (!currentBoard) {
+          return 0;
+        }
+        let count = 0;
+        currentBoard.columns.forEach(column => {
+          count += column.tasks.filter(task =>
+            task.labels && task.labels.some(label => label.id === labelId)
+          ).length;
+        });
+        return count;
+      },
 
       // 全ボード対象
-      getAllLabels,
-      getAllLabelsWithBoardInfo,
-      getLabelUsageCountInBoard,
-      getAllLabelUsageCount,
+      getAllLabels: () => {
+        const allLabels: Label[] = [];
+        boardState.boards.forEach(board => {
+          if (board.labels) {
+            allLabels.push(...board.labels);
+          }
+        });
+        return allLabels;
+      },
+      getAllLabelsWithBoardInfo: () => {
+        const result: Array<Label & { boardName: string; boardId: string }> = [];
+        boardState.boards.forEach(board => {
+          if (board.labels) {
+            board.labels.forEach(label => {
+              result.push({
+                ...label,
+                boardName: board.title,
+                boardId: board.id
+              });
+            });
+          }
+        });
+        return result;
+      },
+      getLabelUsageCountInBoard: (labelId: string, boardId: string) => {
+        const board = boardState.boards.find(b => b.id === boardId);
+        if (!board) {
+          return 0;
+        }
+        let count = 0;
+        board.columns.forEach(column => {
+          count += column.tasks.filter(task =>
+            task.labels && task.labels.some(label => label.id === labelId)
+          ).length;
+        });
+        return count;
+      },
+      getAllLabelUsageCount: (labelId: string) => {
+        let totalCount = 0;
+        boardState.boards.forEach(board => {
+          board.columns.forEach(column => {
+            totalCount += column.tasks.filter(task =>
+              task.labels && task.labels.some(label => label.id === labelId)
+            ).length;
+          });
+        });
+        return totalCount;
+      },
 
       // ラベル操作
-      createLabel,
-      createLabelInBoard,
-      updateLabel,
-      deleteLabel,
-      deleteLabelFromAllBoards,
+      createLabel: (name: string, color: string) => {
+        if (!currentBoard) {
+          return;
+        }
+
+        const newLabel: Label = {
+          id: crypto.randomUUID(),
+          name,
+          color
+        };
+
+        boardDispatch({
+          type: 'ADD_LABEL',
+          payload: { label: newLabel }
+        });
+
+        // 成功メッセージを全てのコールバックに送信
+        if (_messageCallbacksRef.current.size > 0) {
+          const messageToSend = {
+            type: 'success' as const,
+            text: `ラベル「${name}」を作成しました`
+          };
+
+          let callbackIndex = 0;
+          _messageCallbacksRef.current.forEach((callback) => {
+            callbackIndex++;
+            try {
+              callback(messageToSend);
+            } catch (error) {
+              console.error(`💬 createLabel: Error sending message to callback ${callbackIndex}:`, error);
+            }
+          });
+        }
+      },
+      createLabelInBoard: (name: string, color: string, boardId: string) => {
+        // 現在のボードでない場合の処理は将来実装
+        if (boardId === currentBoard?.id) {
+          const newLabel: Label = {
+            id: crypto.randomUUID(),
+            name,
+            color
+          };
+
+          boardDispatch({
+            type: 'ADD_LABEL',
+            payload: { label: newLabel }
+          });
+
+          // 成功メッセージを全てのコールバックに送信
+          if (_messageCallbacksRef.current.size > 0) {
+            const messageToSend = {
+              type: 'success' as const,
+              text: `ラベル「${name}」を作成しました`
+            };
+            
+            let callbackIndex = 0;
+            _messageCallbacksRef.current.forEach((callback) => {
+              callbackIndex++;
+              try {
+                callback(messageToSend);
+              } catch (error) {
+                console.error(`💬 createLabelInBoard: Error sending message to callback ${callbackIndex}:`, error);
+              }
+            });
+          }
+        }
+      },
+      updateLabel: (labelId: string, updates: Partial<Label>) => {
+        if (!currentBoard) {
+          return;
+        }
+        const labelToUpdate = currentBoardLabels.find(label => label.id === labelId);
+        if (!labelToUpdate) {
+          return;
+        }
+
+        // 変更内容を判定してメッセージを生成
+        const isNameChanged = updates.name !== undefined && updates.name !== labelToUpdate.name;
+        const isColorChanged = updates.color !== undefined && updates.color !== labelToUpdate.color;
+
+        let messageText = '';
+        if (isNameChanged && isColorChanged) {
+          messageText = `ラベル「${labelToUpdate.name}」を「${updates.name}」に変更し、色も変更しました`;
+        } else if (isNameChanged) {
+          messageText = `ラベル名を「${labelToUpdate.name}」から「${updates.name}」に変更しました`;
+        } else if (isColorChanged) {
+          messageText = `ラベル「${labelToUpdate.name}」の色を変更しました`;
+        } else {
+          // 変更がない場合（念のため）
+          messageText = `ラベル「${labelToUpdate.name}」を更新しました`;
+        }
+
+        boardDispatch({
+          type: 'UPDATE_LABEL',
+          payload: { labelId, updates }
+        });
+
+        // 成功メッセージを全てのコールバックに送信
+        if (_messageCallbacksRef.current.size > 0) {
+          const messageToSend = {
+            type: 'success' as const,
+            text: messageText
+          };
+          
+          let callbackIndex = 0;
+          _messageCallbacksRef.current.forEach((callback) => {
+            callbackIndex++;
+            try {
+              callback(messageToSend);
+            } catch (error) {
+              console.error(`📬 updateLabel: Error sending message to callback ${callbackIndex}:`, error);
+            }
+          });
+        } else {
+        }
+      },
+      deleteLabel: (labelId: string) => {
+        if (!currentBoard) {
+          return;
+        }
+
+        // 削除前にラベル名を取得
+        const labelToDelete = currentBoardLabels.find(label => label.id === labelId);
+        const labelName = labelToDelete?.name || 'ラベル';
+
+        boardDispatch({
+          type: 'DELETE_LABEL',
+          payload: { labelId }
+        });
+
+        // 成功メッセージを全てのコールバックに送信
+        if (_messageCallbacksRef.current.size > 0) {
+          const messageToSend = {
+            type: 'success' as const,
+            text: `ラベル「${labelName}」を削除しました`
+          };
+
+          let callbackIndex = 0;
+          _messageCallbacksRef.current.forEach((callback) => {
+            callbackIndex++;
+            try {
+              callback(messageToSend);
+            } catch (error) {
+              console.error(`💬 deleteLabel: Error sending message to callback ${callbackIndex}:`, error);
+            }
+          });
+        } else {
+        }
+      },
+      deleteLabelFromAllBoards: (labelId: string) => {
+        // 削除前にラベル名を取得
+        const labelToDelete = boardState.boards
+          .flatMap(board => board.labels || [])
+          .find(label => label.id === labelId);
+        const labelName = labelToDelete?.name || 'ラベル';
+
+        boardDispatch({
+          type: 'DELETE_LABEL_FROM_ALL_BOARDS',
+          payload: { labelId }
+        });
+
+        // 成功メッセージを全てのコールバックに送信
+        if (_messageCallbacksRef.current.size > 0) {
+          const messageToSend = {
+            type: 'success' as const,
+            text: `ラベル「${labelName}」を削除しました`
+          };
+
+          let callbackIndex = 0;
+          _messageCallbacksRef.current.forEach((callback) => {
+            callbackIndex++;
+            try {
+              callback(messageToSend);
+            } catch (error) {
+              console.error(`💬 deleteLabelFromAllBoards: Error sending message to callback ${callbackIndex}:`, error);
+            }
+          });
+        } else {
+        }
+      },
 
       // ラベル共通化機能
-      copyLabelToCurrentBoard,
-      isLabelInCurrentBoard,
-    }),
-    [
-      labels,
-      getCurrentBoardLabels,
-      getCurrentBoardLabelUsageCount,
-      getAllLabels,
-      getAllLabelsWithBoardInfo,
-      getLabelUsageCountInBoard,
-      getAllLabelUsageCount,
-      createLabel,
-      createLabelInBoard,
-      updateLabel,
-      deleteLabel,
-      deleteLabelFromAllBoards,
-      copyLabelToCurrentBoard,
-      isLabelInCurrentBoard,
-    ],
-  );
+      copyLabelToCurrentBoard: (label: Label) => {
+        if (!currentBoard) {
+          return;
+        }
+
+        // 既に現在のボードに存在するかチェック
+        if (currentBoardLabels.some(existing => existing.id === label.id)) {
+          return; // 既に存在する場合は何もしない
+        }
+
+        // 新しいIDでラベルをコピー（重複を避けるため）
+        const copiedLabel: Label = {
+          ...label,
+          id: crypto.randomUUID()
+        };
+
+        boardDispatch({
+          type: 'ADD_LABEL',
+          payload: { label: copiedLabel }
+        });
+      },
+      isLabelInCurrentBoard: (labelId: string) => currentBoardLabels.some(label => label.id === labelId),
+
+      // メッセージコールバック設定
+      setMessageCallback: (callback: MessageCallback | null) => {
+        if (callback) {
+          // 既存のコールバックをクリアして新しいコールバックのみを設定
+          _messageCallbacksRef.current.clear();
+          _messageCallbacksRef.current.add(callback);
+        } else {
+          // null の場合は全てのコールバックをクリア
+          _messageCallbacksRef.current.clear();
+        }
+      },
+    };
+  }, [boardState, currentBoard, boardDispatch]);
 
   return (
     <LabelContext.Provider value={contextValue}>

@@ -1,16 +1,8 @@
-import { XIcon } from "@primer/octicons-react";
-import { Text, IconButton, Flash } from "@primer/react";
+import { Banner } from '@primer/react/experimental'
 import React, { useMemo, useCallback } from "react";
 
 import type { Notification } from "../../types";
-import { getNotificationIcon, getFlashVariant } from "../../utils/notificationHelpers";
-import {
-  notificationItemStyles,
-  iconContainerStyles,
-  messageContainerStyles,
-  messageTextStyles,
-  closeButtonStyles,
-} from "./styles";
+import { getNotificationIcon } from "../../utils/notificationHelpers";
 
 /**
  * NotificationItemコンポーネントのプロパティ型定義
@@ -50,55 +42,40 @@ export const NotificationItem: React.FC<NotificationItemProps> = React.memo(
       [handleClose],
     );
 
-    /**
-     * 閉じるボタンのマウスエンターハンドラー
-     */
-    const handleCloseButtonMouseEnter = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
-      (e.target as HTMLElement).style.opacity = "1";
-    }, []);
 
-    /**
-     * 閉じるボタンのマウスリーブハンドラー
-     */
-    const handleCloseButtonMouseLeave = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
-      (e.target as HTMLElement).style.opacity = "0.7";
-    }, []);
-
-    // Flash variantをメモ化
-    const variant = useMemo(() => getFlashVariant(notification.type), [notification.type]);
+    // Banner variantをメモ化
+    const variant = useMemo((): "info" | "warning" | "critical" | "success" => {
+      // 通知タイプを直接Bannerのvariantにマッピング
+      switch (notification.type) {
+        case "success":
+          return "success";
+        case "warning":
+          return "warning";
+        case "critical":
+          return "critical";
+        case "info":
+        case "upsell":
+        default:
+          return "info";
+      }
+    }, [notification.type]);
 
     // アイコンをメモ化
     const icon = useMemo(() => getNotificationIcon(notification.type), [notification.type]);
 
     return (
-      <Flash
+      <Banner
         variant={variant}
         role="alert"
         aria-live="polite"
         onKeyDown={handleKeyDown}
         tabIndex={0}
-        style={notificationItemStyles}
-      >
-        {/* アイコンエリア */}
-        <div style={iconContainerStyles}>{icon}</div>
-
-        {/* メッセージエリア */}
-        <div style={messageContainerStyles}>
-          <Text style={messageTextStyles}>{notification.message}</Text>
-        </div>
-
-        {/* 閉じるボタン */}
-        <IconButton
-          variant="invisible"
-          size="small"
-          onClick={handleClose}
-          aria-label="通知を閉じる"
-          style={closeButtonStyles}
-          onMouseEnter={handleCloseButtonMouseEnter}
-          onMouseLeave={handleCloseButtonMouseLeave}
-          icon={XIcon}
-        />
-      </Flash>
+        icon={icon}
+        onDismiss={handleClose}
+        title={notification.title || "通知"}
+        description={notification.message}
+        hideTitle
+      />
     );
   },
 );
