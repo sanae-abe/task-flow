@@ -109,9 +109,7 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
           <SplitPageLayout.Content padding="none" sx={{ py: "8px", pr: "8px" }}>
             <div style={{ position: "relative", display: 'flex', flexDirection: 'column', gap: '12px' }}>
               {/* メッセージ表示（全タブ共通） */}
-              <div style={{ position: "absolute", left: 0, width: "100%" }}>
-                <DialogFlashMessage message={message} onDismiss={clearMessage} />
-              </div>
+              <DialogFlashMessage message={message} onDismiss={clearMessage} />
 
               {activeTab === "board" ? (
                 <BoardSettingsPanel />
