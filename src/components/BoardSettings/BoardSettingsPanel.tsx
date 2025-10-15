@@ -309,7 +309,7 @@ export const BoardSettingsPanel: React.FC = () => {
     try {
       updateDefaultColumns(columns);
       setHasUnsavedChanges(false);
-      showMessage('デフォルトカラム設定を保存しました', 'success');
+      showMessage('設定を保存しました', 'success');
     } catch (error) {
       showMessage('設定の保存に失敗しました', 'error');
     }
