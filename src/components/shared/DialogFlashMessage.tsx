@@ -91,7 +91,9 @@ export const DialogFlashMessage: React.FC<DialogFlashMessageProps> = ({
   return (
     <Flash
       variant={getFlashVariant(message.type)}
-      style={style}
+      style={
+        { position: 'fixed', width: '100%', ...style }
+      }
       className={className}
     >
       <div style={{ display: 'flex', alignItems: 'flex-start' }}>

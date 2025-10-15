@@ -91,6 +91,7 @@ export const ExportSection = memo<ExportSectionProps>(({
         </FormControl.Label>
         <RadioGroup
           name="exportType"
+          aria-labelledby='export-type-label'
           onChange={(value) => setExportType(value as 'all' | 'selected')}
           sx={{ mt: 1 }}
         >
