@@ -79,6 +79,10 @@ export interface Column {
   title: string;
   tasks: Task[];
   color?: string;
+
+  // シンプルなゴミ箱機能
+  deletionState?: 'active' | 'deleted';
+  deletedAt?: string | null; // 削除日時（猶予期間計算用）
 }
 
 export type SortOption = 'manual' | 'dueDate' | 'createdAt' | 'updatedAt' | 'title' | 'priority';

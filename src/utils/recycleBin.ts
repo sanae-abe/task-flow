@@ -1,4 +1,4 @@
-import type { Task, KanbanBoard } from "../types";
+import type { Task, KanbanBoard, Column } from "../types";
 import type { RecycleBinSettings } from "../types/settings";
 import type { RecycleBinItemWithMeta } from "../types/recycleBin";
 import { logger } from "./logger";
@@ -386,8 +386,191 @@ export const emptyBoardRecycleBin = (
 };
 
 /**
+ * カラム用ゴミ箱機能
+ */
+
+/**
+ * ゴミ箱のカラムを取得
+ */
+export const getRecycleBinColumns = (
+  boards: KanbanBoard[],
+): (Column & { boardId: string })[] => {
+  const deletedColumns: (Column & { boardId: string })[] = [];
+
+  boards.forEach((board) => {
+    board.columns.forEach((column) => {
+      if (column.deletionState === "deleted") {
+        deletedColumns.push({
+          ...column,
+          boardId: board.id,
+        });
+      }
+    });
+  });
+
+  // 削除日時順でソート（新しいものから）
+  return deletedColumns.sort((a, b) => {
+    const aTime = new Date(a.deletedAt || 0).getTime();
+    const bTime = new Date(b.deletedAt || 0).getTime();
+    return bTime - aTime;
+  });
+};
+
+/**
+ * 自動削除対象のカラムを取得
+ */
+export const getExpiredColumns = (
+  boards: KanbanBoard[],
+  settings: RecycleBinSettings,
+): (Column & { boardId: string })[] => {
+  // 無制限の場合は期限切れカラムなし
+  if (settings.retentionDays === null) {
+    return [];
+  }
+
+  const deletedColumns = getRecycleBinColumns(boards);
+  const now = new Date();
+  const expirationDate = new Date(
+    now.getTime() - settings.retentionDays * 24 * 60 * 60 * 1000,
+  );
+
+  return deletedColumns.filter((column) => {
+    if (!column.deletedAt) {
+      return false;
+    }
+    const deletedDate = new Date(column.deletedAt);
+    return deletedDate < expirationDate;
+  });
+};
+
+/**
+ * 期限切れカラムを完全削除
+ */
+export const deleteExpiredColumns = (
+  boards: KanbanBoard[],
+  settings: RecycleBinSettings,
+): { updatedBoards: KanbanBoard[]; deletedCount: number } => {
+  const expiredColumns = getExpiredColumns(boards, settings);
+
+  if (expiredColumns.length === 0) {
+    return { updatedBoards: boards, deletedCount: 0 };
+  }
+
+  const expiredColumnIds = new Set(expiredColumns.map((column) => column.id));
+
+  const updatedBoards = boards.map((board) => ({
+    ...board,
+    columns: board.columns.filter((column) => !expiredColumnIds.has(column.id)),
+  }));
+
+  logger.info(
+    `🗑️ Auto-deleted ${expiredColumns.length} expired columns from recycle bin`,
+  );
+
+  return { updatedBoards, deletedCount: expiredColumns.length };
+};
+
+/**
+ * カラムをソフトデリート（ゴミ箱に移動）
+ */
+export const moveColumnToRecycleBin = (
+  boards: KanbanBoard[],
+  columnId: string,
+): KanbanBoard[] =>
+  boards.map(board => ({
+    ...board,
+    columns: board.columns.map(column => {
+      if (column.id === columnId) {
+        return {
+          ...column,
+          deletionState: "deleted" as const,
+          deletedAt: new Date().toISOString(),
+        };
+      }
+      return column;
+    }),
+    updatedAt: new Date().toISOString(),
+  }));
+
+/**
+ * カラムをゴミ箱から復元
+ */
+export const restoreColumnFromRecycleBin = (
+  boards: KanbanBoard[],
+  columnId: string,
+): KanbanBoard[] =>
+  boards.map(board => ({
+    ...board,
+    columns: board.columns.map(column => {
+      if (column.id === columnId && column.deletionState === "deleted") {
+        return {
+          ...column,
+          deletionState: "active" as const,
+          deletedAt: null,
+        };
+      }
+      return column;
+    }),
+    updatedAt: new Date().toISOString(),
+  }));
+
+/**
+ * 特定のカラムを完全削除
+ */
+export const permanentlyDeleteColumn = (
+  boards: KanbanBoard[],
+  columnId: string,
+): { updatedBoards: KanbanBoard[]; success: boolean } => {
+  const updatedBoards = boards.map(board => ({
+    ...board,
+    columns: board.columns.filter(column => column.id !== columnId),
+    updatedAt: new Date().toISOString(),
+  }));
+
+  // カラムが実際に削除されたかチェック
+  const columnStillExists = updatedBoards.some(board =>
+    board.columns.some(column => column.id === columnId)
+  );
+
+  const success = !columnStillExists;
+
+  if (success) {
+    logger.info(`🗑️ Permanently deleted column: ${columnId}`);
+  }
+
+  return { updatedBoards, success };
+};
+
+/**
+ * ゴミ箱のカラムを完全に空にする
+ */
+export const emptyColumnRecycleBin = (
+  boards: KanbanBoard[],
+): { updatedBoards: KanbanBoard[]; deletedCount: number } => {
+  const deletedColumns = getRecycleBinColumns(boards);
+
+  if (deletedColumns.length === 0) {
+    return { updatedBoards: boards, deletedCount: 0 };
+  }
+
+  const deletedColumnIds = new Set(deletedColumns.map(column => column.id));
+
+  const updatedBoards = boards.map(board => ({
+    ...board,
+    columns: board.columns.filter(column => !deletedColumnIds.has(column.id)),
+    updatedAt: new Date().toISOString(),
+  }));
+
+  logger.info(
+    `🗑️ Manually emptied column recycle bin: ${deletedColumns.length} columns permanently deleted`,
+  );
+
+  return { updatedBoards, deletedCount: deletedColumns.length };
+};
+
+/**
  * 統合されたゴミ箱アイテムを取得
- * タスクとボードの両方を含む統合されたリストを返す
+ * タスク、ボード、カラムの全てを含む統合されたリストを返す
  */
 export const getAllRecycleBinItems = (
   boards: KanbanBoard[],
@@ -435,6 +618,27 @@ export const getAllRecycleBinItems = (
       canRestore: true,
       timeUntilDeletion: board.deletedAt
         ? formatTimeUntilDeletion(board.deletedAt, settings.retentionDays)
+        : undefined,
+    });
+  });
+
+  // 削除されたカラムを追加
+  const deletedColumns = getRecycleBinColumns(boards);
+  deletedColumns.forEach((column) => {
+    const board = boards.find(b => b.id === column.boardId);
+
+    allItems.push({
+      id: column.id,
+      type: 'column',
+      title: column.title,
+      description: `${column.tasks.length}個のタスクを含むカラム`,
+      deletedAt: column.deletedAt,
+      boardId: column.boardId,
+      boardTitle: board?.title || "不明なボード",
+      taskCount: column.tasks.length,
+      canRestore: true,
+      timeUntilDeletion: column.deletedAt
+        ? formatTimeUntilDeletion(column.deletedAt, settings.retentionDays)
         : undefined,
     });
   });

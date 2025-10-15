@@ -14,7 +14,13 @@ import { saveBoards, loadBoards } from "../utils/storage";
 import { loadSettings } from "../utils/settingsStorage";
 import { useNotify } from "./NotificationContext";
 import { logger } from "../utils/logger";
-import { moveBoardToRecycleBin, restoreBoardFromRecycleBin } from "../utils/recycleBin";
+import {
+  moveBoardToRecycleBin,
+  restoreBoardFromRecycleBin,
+  moveColumnToRecycleBin,
+  restoreColumnFromRecycleBin,
+  permanentlyDeleteColumn
+} from "../utils/recycleBin";
 
 interface BoardState {
   boards: KanbanBoard[];
@@ -64,7 +70,9 @@ type BoardAction =
   | { type: "DELETE_LABEL_FROM_ALL_BOARDS"; payload: { labelId: string } }
   | { type: "RESTORE_BOARD"; payload: { boardId: string } }
   | { type: "PERMANENTLY_DELETE_BOARD"; payload: { boardId: string } }
-  | { type: "EMPTY_BOARD_RECYCLE_BIN" };
+  | { type: "EMPTY_BOARD_RECYCLE_BIN" }
+  | { type: "RESTORE_COLUMN"; payload: { columnId: string } }
+  | { type: "PERMANENTLY_DELETE_COLUMN"; payload: { columnId: string } };
 
 interface BoardContextType {
   state: BoardState;
@@ -79,6 +87,8 @@ interface BoardContextType {
   emptyBoardRecycleBin: () => void;
   createColumn: (title: string, insertIndex?: number) => void;
   deleteColumn: (columnId: string) => void;
+  restoreColumn: (columnId: string) => void;
+  permanentlyDeleteColumn: (columnId: string) => void;
   updateColumn: (columnId: string, updates: Partial<Column>) => void;
   moveColumn: (columnId: string, direction: "left" | "right") => void;
   importBoards: (boards: KanbanBoard[], replaceAll?: boolean) => void;
@@ -250,6 +260,8 @@ const boardReducer = (state: BoardState, action: BoardAction): BoardState => {
         id: uuidv4(),
         title: action.payload.title,
         tasks: [],
+        deletionState: "active",
+        deletedAt: null,
       };
 
       const currentColumns = [...state.currentBoard.columns];
@@ -278,23 +290,18 @@ const boardReducer = (state: BoardState, action: BoardAction): BoardState => {
     }
 
     case "DELETE_COLUMN": {
-      if (!state.currentBoard) {
-        return state;
-      }
+      // ソフトデリート（ゴミ箱に移動）
+      const newBoards = moveColumnToRecycleBin(state.boards, action.payload.columnId);
 
-      const updatedBoard = updateBoardTimestamp({
-        ...state.currentBoard,
-        columns: state.currentBoard.columns.filter(
-          (column) => column.id !== action.payload.columnId,
-        ),
-      });
+      // 現在のボードを更新
+      const updatedCurrentBoard = state.currentBoard
+        ? newBoards.find(board => board.id === state.currentBoard?.id) || null
+        : null;
 
       return {
         ...state,
-        boards: state.boards.map((board) =>
-          board.id === updatedBoard.id ? updatedBoard : board,
-        ),
-        currentBoard: updatedBoard,
+        boards: newBoards,
+        currentBoard: updatedCurrentBoard,
       };
     }
 
@@ -683,6 +690,36 @@ const boardReducer = (state: BoardState, action: BoardAction): BoardState => {
         ...state,
         boards: activeBoards,
         currentBoard: newCurrentBoard,
+      };
+    }
+
+    case "RESTORE_COLUMN": {
+      const restoredBoards = restoreColumnFromRecycleBin(state.boards, action.payload.columnId);
+
+      // 現在のボードを更新
+      const updatedCurrentBoard = state.currentBoard
+        ? restoredBoards.find(board => board.id === state.currentBoard?.id) || null
+        : null;
+
+      return {
+        ...state,
+        boards: restoredBoards,
+        currentBoard: updatedCurrentBoard,
+      };
+    }
+
+    case "PERMANENTLY_DELETE_COLUMN": {
+      const { updatedBoards } = permanentlyDeleteColumn(state.boards, action.payload.columnId);
+
+      // 現在のボードを更新
+      const updatedCurrentBoard = state.currentBoard
+        ? updatedBoards.find(board => board.id === state.currentBoard?.id) || null
+        : null;
+
+      return {
+        ...state,
+        boards: updatedBoards,
+        currentBoard: updatedCurrentBoard,
       };
     }
 
@@ -1139,10 +1176,49 @@ const authenticateUser = async (email, password) => {
 
   const deleteColumn = useCallback(
     (columnId: string) => {
-      dispatch({ type: "DELETE_COLUMN", payload: { columnId } });
-      notify.success("カラムを削除しました");
+      const columnToDelete = state.currentBoard?.columns.find(column => column.id === columnId);
+      if (columnToDelete) {
+        dispatch({ type: "DELETE_COLUMN", payload: { columnId } });
+        notify.success(`カラム「${columnToDelete.title}」をゴミ箱に移動しました`);
+      }
     },
-    [notify],
+    [state.currentBoard, notify],
+  );
+
+  const restoreColumn = useCallback(
+    (columnId: string) => {
+      // 削除されたカラムを探す
+      let columnToRestore: Column | undefined;
+      for (const board of state.boards) {
+        columnToRestore = board.columns.find(column =>
+          column.id === columnId && column.deletionState === "deleted"
+        );
+        if (columnToRestore) {break;}
+      }
+
+      if (columnToRestore) {
+        dispatch({ type: "RESTORE_COLUMN", payload: { columnId } });
+        notify.success(`カラム「${columnToRestore.title}」を復元しました`);
+      }
+    },
+    [state.boards, notify],
+  );
+
+  const permanentlyDeleteColumn = useCallback(
+    (columnId: string) => {
+      // 削除されたカラムを探す
+      let columnToDelete: Column | undefined;
+      for (const board of state.boards) {
+        columnToDelete = board.columns.find(column => column.id === columnId);
+        if (columnToDelete) {break;}
+      }
+
+      if (columnToDelete) {
+        dispatch({ type: "PERMANENTLY_DELETE_COLUMN", payload: { columnId } });
+        notify.success(`カラム「${columnToDelete.title}」を完全削除しました`);
+      }
+    },
+    [state.boards, notify],
   );
 
   const updateColumn = useCallback(
@@ -1281,6 +1357,8 @@ const authenticateUser = async (email, password) => {
       emptyBoardRecycleBin,
       createColumn,
       deleteColumn,
+      restoreColumn,
+      permanentlyDeleteColumn,
       updateColumn,
       moveColumn,
       importBoards,
@@ -1300,6 +1378,8 @@ const authenticateUser = async (email, password) => {
       emptyBoardRecycleBin,
       createColumn,
       deleteColumn,
+      restoreColumn,
+      permanentlyDeleteColumn,
       updateColumn,
       moveColumn,
       importBoards,

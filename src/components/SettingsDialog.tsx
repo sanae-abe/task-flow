@@ -1,12 +1,12 @@
 import {
   DatabaseIcon,
   TagIcon,
-  ProjectIcon,
+  ColumnsIcon,
   TrashIcon,
+  TasklistIcon
 } from "@primer/octicons-react";
 import { SplitPageLayout, NavList } from "@primer/react";
 import React, { useState } from "react";
-import { FileText } from "react-feather";
 
 import UnifiedDialog from "./shared/Dialog/UnifiedDialog";
 import { DialogFlashMessage, useDialogFlashMessage } from "./shared";
@@ -62,7 +62,7 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
                 onClick={() => setActiveTab("board")}
               >
                 <NavList.LeadingVisual>
-                  <ProjectIcon />
+                  <ColumnsIcon />
                 </NavList.LeadingVisual>
                 カラム設定
               </NavList.Item>
@@ -71,7 +71,7 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
                 onClick={() => setActiveTab("templates")}
               >
                 <NavList.LeadingVisual>
-                  <FileText size={16} />
+                  <TasklistIcon size={16} />
                 </NavList.LeadingVisual>
                 テンプレート管理
               </NavList.Item>

@@ -11,6 +11,7 @@ import {
   TrashIcon,
   ProjectIcon,
   TasklistIcon,
+  ColumnsIcon,
   ClockIcon,
   ChevronUpIcon,
   ChevronDownIcon,
@@ -37,7 +38,13 @@ interface UnifiedRecycleBinViewProps {
 const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
   onMessage,
 }) => {
-  const { state, restoreBoard, permanentlyDeleteBoard } = useBoard();
+  const {
+    state,
+    restoreBoard,
+    permanentlyDeleteBoard,
+    restoreColumn,
+    permanentlyDeleteColumn
+  } = useBoard();
   const [restoringItemId, setRestoringItemId] = useState<string | null>(null);
   const [deletingItemId, setDeletingItemId] = useState<string | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
@@ -132,11 +139,14 @@ const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
         await restoreTask(item.id, item.title);
       } else if (item.type === 'board') {
         restoreBoard(item.id);
+      } else if (item.type === 'column') {
+        restoreColumn(item.id);
       }
     } catch {
+      const itemTypeText = item.type === 'task' ? 'タスク' : item.type === 'board' ? 'ボード' : 'カラム';
       onMessage?.({
         type: "danger",
-        text: `${item.type === 'task' ? 'タスク' : 'ボード'}の復元に失敗しました`,
+        text: `${itemTypeText}の復元に失敗しました`,
       });
     } finally {
       setRestoringItemId(null);
@@ -150,11 +160,14 @@ const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
         await permanentlyDeleteTask(item.id, item.title);
       } else if (item.type === 'board') {
         permanentlyDeleteBoard(item.id);
+      } else if (item.type === 'column') {
+        permanentlyDeleteColumn(item.id);
       }
     } catch {
+      const itemTypeText = item.type === 'task' ? 'タスク' : item.type === 'board' ? 'ボード' : 'カラム';
       onMessage?.({
         type: "danger",
-        text: `${item.type === 'task' ? 'タスク' : 'ボード'}の完全削除に失敗しました`,
+        text: `${itemTypeText}の完全削除に失敗しました`,
       });
     } finally {
       setDeletingItemId(null);
@@ -251,21 +264,21 @@ const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
       <div style={{ display: 'flex', justifyContent: 'center', gap: '4px' }}>
         <IconButton
           icon={EyeIcon}
-          aria-label={`${item.type === 'board' ? 'ボード' : 'タスク'}「${item.title}」の詳細を表示`}
+          aria-label={`${item.type === 'board' ? 'ボード' : item.type === 'column' ? 'カラム' : 'タスク'}「${item.title}」の詳細を表示`}
           size="small"
           variant="invisible"
           onClick={() => setShowDetailDialog(item.id)}
         />
         <IconButton
           icon={HistoryIcon}
-          aria-label={`${item.type === 'board' ? 'ボード' : 'タスク'}「${item.title}」を復元`}
+          aria-label={`${item.type === 'board' ? 'ボード' : item.type === 'column' ? 'カラム' : 'タスク'}「${item.title}」を復元`}
           size="small"
           variant="invisible"
           onClick={() => handleRestore(item)}
         />
         <IconButton
           icon={TrashIcon}
-          aria-label={`${item.type === 'board' ? 'ボード' : 'タスク'}「${item.title}」を完全に削除`}
+          aria-label={`${item.type === 'board' ? 'ボード' : item.type === 'column' ? 'カラム' : 'タスク'}「${item.title}」を完全に削除`}
           size="small"
           variant="invisible"
           onClick={() => setShowDeleteConfirm(item.id)}
@@ -374,18 +387,24 @@ const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
               >
                 {/* 種別 */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  {item.type === 'board' ? <ProjectIcon size={16} /> : <TasklistIcon size={16} />}
+                  {item.type === 'board' ? (
+                    <ProjectIcon size={16} />
+                  ) : item.type === 'column' ? (
+                    <ColumnsIcon size={16} />
+                  ) : (
+                    <TasklistIcon size={16} />
+                  )}
                   <Text
                     sx={{
                       fontSize: 0,
                       color: "fg.default",
                       px: 1,
                       py: 0.5,
-                      bg: item.type === 'board' ? "attention.subtle" : "accent.subtle",
+                      bg: item.type === 'board' ? "attention.subtle" : item.type === 'column' ? "success.subtle" : "accent.subtle",
                       borderRadius: 1,
                     }}
                   >
-                    {item.type === 'board' ? 'ボード' : 'タスク'}
+                    {item.type === 'board' ? 'ボード' : item.type === 'column' ? 'カラム' : 'タスク'}
                   </Text>
                 </div>
 
@@ -449,8 +468,8 @@ const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
       {selectedItem && (
         <ConfirmDialog
           isOpen={!!showDeleteConfirm}
-          title={`${selectedItem.type === 'board' ? 'ボード' : 'タスク'}の完全削除`}
-          message={`${selectedItem.type === 'board' ? 'ボード' : 'タスク'}「${selectedItem.title}」を完全に削除しますか？この操作は元に戻せません。`}
+          title={`${selectedItem.type === 'board' ? 'ボード' : selectedItem.type === 'column' ? 'カラム' : 'タスク'}の完全削除`}
+          message={`${selectedItem.type === 'board' ? 'ボード' : selectedItem.type === 'column' ? 'カラム' : 'タスク'}「${selectedItem.title}」を完全に削除しますか？この操作は元に戻せません。`}
           onConfirm={() => handlePermanentDelete(selectedItem)}
           onCancel={() => setShowDeleteConfirm(null)}
           confirmText="完全に削除"
@@ -463,7 +482,7 @@ const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
         <UnifiedDialog
           isOpen={!!showDetailDialog}
           onClose={() => setShowDetailDialog(null)}
-          title={`${detailItem.type === 'board' ? 'ボード' : 'タスク'}詳細`}
+          title={`${detailItem.type === 'board' ? 'ボード' : detailItem.type === 'column' ? 'カラム' : 'タスク'}詳細`}
           variant="modal"
           size="large"
         >
@@ -472,7 +491,13 @@ const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
             <div>
               <Text sx={{ fontSize: 0, color: 'fg.muted', mb: 1 }}>タイトル</Text>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                {detailItem.type === 'board' ? <ProjectIcon size={20} /> : <TasklistIcon size={20} />}
+                {detailItem.type === 'board' ? (
+                  <ProjectIcon size={20} />
+                ) : detailItem.type === 'column' ? (
+                  <ColumnsIcon size={20} />
+                ) : (
+                  <TasklistIcon size={20} />
+                )}
                 <Text sx={{ fontSize: 2, fontWeight: 'semibold' }}>{detailItem.title}</Text>
                 <Text
                   sx={{
@@ -480,11 +505,11 @@ const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
                     color: "fg.default",
                     px: 2,
                     py: 1,
-                    bg: detailItem.type === 'board' ? "attention.subtle" : "accent.subtle",
+                    bg: detailItem.type === 'board' ? "attention.subtle" : detailItem.type === 'column' ? "success.subtle" : "accent.subtle",
                     borderRadius: 1,
                   }}
                 >
-                  {detailItem.type === 'board' ? 'ボード' : 'タスク'}
+                  {detailItem.type === 'board' ? 'ボード' : detailItem.type === 'column' ? 'カラム' : 'タスク'}
                 </Text>
               </div>
             </div>
@@ -531,6 +556,17 @@ const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
                     <div>
                       <Text sx={{ fontSize: 0, color: 'fg.muted', mb: 1 }}>所属カラム</Text>
                       <Text sx={{ fontSize: 1, fontWeight: 'semibold' }}>{detailItem.columnTitle}</Text>
+                    </div>
+                  </>
+                ) : detailItem.type === 'column' ? (
+                  <>
+                    <div>
+                      <Text sx={{ fontSize: 0, color: 'fg.muted', mb: 1 }}>所属ボード</Text>
+                      <Text sx={{ fontSize: 1, fontWeight: 'semibold' }}>{detailItem.boardTitle}</Text>
+                    </div>
+                    <div>
+                      <Text sx={{ fontSize: 0, color: 'fg.muted', mb: 1 }}>タスク数</Text>
+                      <Text sx={{ fontSize: 1, fontWeight: 'semibold' }}>{detailItem.taskCount}個</Text>
                     </div>
                   </>
                 ) : (

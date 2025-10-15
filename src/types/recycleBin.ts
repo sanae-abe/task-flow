@@ -1,6 +1,6 @@
 export interface RecycleBinItem {
   id: string;
-  type: 'task' | 'board';
+  type: 'task' | 'board' | 'column';
   title: string;
   description?: string;
   deletedAt?: string | null;

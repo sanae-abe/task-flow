@@ -6,7 +6,7 @@ import {
   CalendarIcon,
   TableIcon,
   DeviceCameraVideoIcon,
-  PencilIcon,
+  TasklistIcon,
   PaperclipIcon
 } from "@primer/octicons-react";
 import { MousePointer, FileText } from "react-feather";
@@ -265,7 +265,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
 
           <HelpSection
             title="タスク管理"
-            icon={PencilIcon}
+            icon={TasklistIcon}
             background="var(--bgColor-accent-emphasis)"
           >
             <HelpItem
