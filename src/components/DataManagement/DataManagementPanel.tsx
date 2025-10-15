@@ -13,8 +13,6 @@ interface DataManagementPanelProps {
   onExportAll?: () => void;
   /** ボード選択エクスポート時のコールバック */
   onExportCurrent?: (board?: KanbanBoard) => void;
-  /** インポート成功時のコールバック */
-  onImportSuccess?: () => void;
   /** メッセージ表示時のコールバック */
   onMessage?: (message: { type: 'success' | 'critical' | 'warning' | 'danger' | 'default' | 'info' | 'upsell'; text: string }) => void;
 }
@@ -22,7 +20,6 @@ interface DataManagementPanelProps {
 export const DataManagementPanel = memo<DataManagementPanelProps>(({
   onExportAll,
   onExportCurrent,
-  onImportSuccess,
   onMessage
 }) => {
   const [activeTab, setActiveTab] = useState<'export' | 'import'>('export');
@@ -72,7 +69,6 @@ export const DataManagementPanel = memo<DataManagementPanelProps>(({
           />
         ) : (
           <ImportSection
-            onImportSuccess={onImportSuccess}
             onMessage={onMessage}
           />
         )}

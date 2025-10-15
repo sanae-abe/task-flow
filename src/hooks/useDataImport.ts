@@ -11,9 +11,9 @@ const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
 interface UseDataImportOptions {
   /** インポート成功時のコールバック */
-  onSuccess?: (importedCount: number) => void;
+  onSuccess?: () => void;
   /** エラー発生時のコールバック */
-  onError?: (error: Error) => void;
+  onError?: () => void;
   /** メッセージ表示時のコールバック */
   onMessage?: (message: { type: 'success' | 'danger' | 'warning'; text: string }) => void;
 }
@@ -137,7 +137,14 @@ export const useDataImport = (options?: UseDataImportOptions) => {
         message: null,
       }));
 
-      options?.onSuccess?.(importedCount);
+      // DialogFlashMessageで成功通知を表示
+      const modeText = state.mode === 'replace' ? '置換' : '追加';
+      options?.onMessage?.({
+        type: 'success',
+        text: `${importedCount}個のボードを${modeText}しました`
+      });
+
+      options?.onSuccess?.();
     } catch (error) {
       let errorMessage = "インポートに失敗しました";
       if (error instanceof SyntaxError) {
@@ -155,9 +162,7 @@ export const useDataImport = (options?: UseDataImportOptions) => {
         },
       }));
 
-      options?.onError?.(
-        error instanceof Error ? error : new Error(errorMessage),
-      );
+      options?.onError?.();
     }
   }, [state.selectedFile, state.mode, importBoards, options]);
 

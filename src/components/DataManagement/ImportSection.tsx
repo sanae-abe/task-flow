@@ -10,13 +10,11 @@ import UniversalDropZone from '../UniversalDropZone';
  * データインポート機能を提供するセクション
  */
 interface ImportSectionProps {
-  /** インポート成功時のコールバック */
-  onImportSuccess?: () => void;
   /** メッセージ表示時のコールバック */
   onMessage?: (message: { type: 'success' | 'critical' | 'warning' | 'danger' | 'default' | 'info' | 'upsell'; text: string }) => void;
 }
 
-export const ImportSection = memo<ImportSectionProps>(({ onImportSuccess, onMessage }) => {
+export const ImportSection = memo<ImportSectionProps>(({ onMessage }) => {
   const {
     state,
     selectFile,
@@ -25,26 +23,14 @@ export const ImportSection = memo<ImportSectionProps>(({ onImportSuccess, onMess
     executeImport,
     maxFileSize
   } = useDataImport({
-    onSuccess: (importedCount: number) => {
-      // DialogFlashMessageで成功通知を表示
-      const modeText = state.mode === 'replace' ? '置換' : '追加';
-      onMessage?.({
-        type: 'success',
-        text: `${importedCount}個のボードを${modeText}しました`
-      });
-
+    onSuccess: () => {
       // 成功後に少し待ってから選択をクリア
       setTimeout(() => {
         clearSelection();
-        onImportSuccess?.();
       }, 1500);
     },
-    onError: (error: Error) => {
-      // エラー時もDialogFlashMessageで表示
-      onMessage?.({
-        type: 'danger',
-        text: error.message
-      });
+    onError: () => {
+      // エラー処理は useDataImport 内で統一して実行
     },
     onMessage
   });
