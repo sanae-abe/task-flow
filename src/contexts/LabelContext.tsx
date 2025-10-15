@@ -156,8 +156,7 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
         if (_messageCallbacksRef.current.size > 0) {
           const messageToSend = {
             type: 'success' as const,
-            text: `ラベル「${name}」を作成しました`,
-            title: 'ラベル作成完了'
+            text: `ラベル「${name}」を作成しました`
           };
           console.log('💬 createLabel: Sending message to all callbacks:', messageToSend);
           
@@ -195,8 +194,7 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
           if (_messageCallbacksRef.current.size > 0) {
             const messageToSend = {
               type: 'success' as const,
-              text: `ラベル「${name}」を作成しました`,
-              title: 'ラベル作成完了'
+              text: `ラベル「${name}」を作成しました`
             };
             console.log('💬 createLabelInBoard: Sending message to all callbacks:', messageToSend);
             
@@ -251,8 +249,7 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
         if (_messageCallbacksRef.current.size > 0) {
           const messageToSend = {
             type: 'success' as const,
-            text: messageText,
-            title: 'ラベル更新完了'
+            text: messageText
           };
           console.log('📬 updateLabel: Sending message to all callbacks:', messageToSend);
           
@@ -270,7 +267,7 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
         } else {
           console.log('📬 updateLabel: No callbacks available');
         }
-      },,
+      },
       deleteLabel: (labelId: string) => {
         if (!currentBoard) {
           return;
@@ -290,8 +287,7 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
         if (_messageCallbacksRef.current.size > 0) {
           const messageToSend = {
             type: 'success' as const,
-            text: `ラベル「${labelName}」を削除しました`,
-            title: 'ラベル削除完了'
+            text: `ラベル「${labelName}」を削除しました`
           };
           console.log('💬 deleteLabel: Sending message to all callbacks:', messageToSend);
 
@@ -327,8 +323,7 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
         if (_messageCallbacksRef.current.size > 0) {
           const messageToSend = {
             type: 'success' as const,
-            text: `ラベル「${labelName}」を削除しました`,
-            title: 'ラベル削除完了'
+            text: `ラベル「${labelName}」を削除しました`
           };
           console.log('💬 deleteLabelFromAllBoards: Sending message to all callbacks:', messageToSend);
 
