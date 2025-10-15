@@ -57,8 +57,6 @@ export const RecycleBinSettingsPanel: React.FC<RecycleBinSettingsPanelProps> = (
       return;
     }
 
-    setSaveMessage(null);
-
     try {
       const success = await saveSettings(settings);
 
@@ -66,13 +64,30 @@ export const RecycleBinSettingsPanel: React.FC<RecycleBinSettingsPanelProps> = (
         // 親コンポーネントに通知
         onSave?.(settings);
 
+        // 成功メッセージを設定
         setSaveMessage(MESSAGES.SAVE.SUCCESS);
-        setTimeout(() => setSaveMessage(null), 3000);
+
+        // メッセージを一定時間後にクリア
+        setTimeout(() => {
+          setSaveMessage(null);
+        }, 3000);
       } else {
+        // エラーメッセージを設定
         setSaveMessage(hookError || MESSAGES.SAVE.FAILED);
+
+        // メッセージを一定時間後にクリア
+        setTimeout(() => {
+          setSaveMessage(null);
+        }, 5000);
       }
     } catch (error) {
+      // エラーメッセージを設定
       setSaveMessage(MESSAGES.SAVE.FAILED);
+
+      // メッセージを一定時間後にクリア
+      setTimeout(() => {
+        setSaveMessage(null);
+      }, 5000);
     }
   }, [settings, saveSettings, onSave, hookError]);
 
