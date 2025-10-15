@@ -119,7 +119,9 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
                   <LabelManagementPanel onMessage={handleMessage} />
                 </div>
               ) : activeTab === "recycleBin" ? (
-                <div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  {/* メッセージ表示 */}
+                  <DialogFlashMessage message={message} />
                   <RecycleBinSettingsPanel />
                   <div
                     style={{
@@ -128,7 +130,7 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
                       paddingTop: "24px",
                     }}
                   >
-                    <RecycleBinView />
+                    <RecycleBinView onMessage={handleMessage} />
                   </div>
                 </div>
               ) : (

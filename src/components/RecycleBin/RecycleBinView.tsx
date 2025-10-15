@@ -31,7 +31,12 @@ import { InlineMessage } from "../shared";
 /**
  * ゴミ箱のタスクを表示・復元・完全削除するコンポーネント
  */
-export const RecycleBinView: React.FC = () => {
+interface RecycleBinViewProps {
+  /** メッセージ表示時のコールバック */
+  onMessage?: (message: { type: 'success' | 'critical' | 'warning' | 'danger' | 'default' | 'info' | 'upsell'; text: string }) => void;
+}
+
+export const RecycleBinView: React.FC<RecycleBinViewProps> = ({ onMessage }) => {
   const { state, importBoards } = useBoard();
   const [isRestoring, setIsRestoring] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
@@ -58,13 +63,15 @@ export const RecycleBinView: React.FC = () => {
       const taskToRestore = deletedTasks.find(task => task.id === taskId);
       const updatedBoards = restoreTaskFromRecycleBin(state.boards, taskId);
       if (updatedBoards) {
-        const customMessage = taskToRestore ?
+        const message = taskToRestore ?
           `タスク「${taskToRestore.title}」を復元しました` :
           "タスクを復元しました";
-        importBoards(updatedBoards, true, customMessage);
+        importBoards(updatedBoards, true);
+        onMessage?.({ type: 'success', text: message });
       }
     } catch (error) {
       logger.error("復元エラー:", error);
+      onMessage?.({ type: 'danger', text: '復元に失敗しました' });
     } finally {
       setIsRestoring(null);
     }
@@ -77,14 +84,16 @@ export const RecycleBinView: React.FC = () => {
       const taskToDelete = deletedTasks.find(task => task.id === taskId);
       const { updatedBoards, success } = permanentlyDeleteTask(state.boards, taskId);
       if (success) {
-        const customMessage = taskToDelete ?
+        const message = taskToDelete ?
           `タスク「${taskToDelete.title}」を完全に削除しました` :
           "タスクを完全に削除しました";
-        importBoards(updatedBoards, true, customMessage);
+        importBoards(updatedBoards, true);
         setShowDeleteConfirm(null);
+        onMessage?.({ type: 'success', text: message });
       }
     } catch (error) {
       logger.error("完全削除エラー:", error);
+      onMessage?.({ type: 'danger', text: '完全削除に失敗しました' });
     } finally {
       setIsDeleting(null);
     }
@@ -96,9 +105,11 @@ export const RecycleBinView: React.FC = () => {
       const { updatedBoards, deletedCount } = emptyRecycleBin(state.boards);
       importBoards(updatedBoards, true);
       setShowEmptyConfirm(false);
+      onMessage?.({ type: 'success', text: `${deletedCount}件のタスクを完全削除しました` });
       logger.info(`${deletedCount}件のタスクを完全削除しました`);
     } catch (error) {
       logger.error("ゴミ箱を空にする際のエラー:", error);
+      onMessage?.({ type: 'danger', text: 'ゴミ箱を空にする際にエラーが発生しました' });
     } finally {
       setIsEmptying(false);
     }
@@ -118,7 +129,7 @@ export const RecycleBinView: React.FC = () => {
           gap: '12px',
           justifyContent: 'center',
           alignItems: 'center',
-          margin: '16px',
+          marginBottom: '16px',
           color: 'var(--fgColor-muted)'
         }}
       >
@@ -185,6 +196,7 @@ export const RecycleBinView: React.FC = () => {
 
         <div
           style={{
+            marginTop: '12px',
             marginBottom: '12px',
             color: 'var(--fgColor-muted)',
             fontSize: '14px',
