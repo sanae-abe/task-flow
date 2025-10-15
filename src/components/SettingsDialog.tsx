@@ -107,21 +107,18 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
 
           {/* メインコンテンツエリア */}
           <SplitPageLayout.Content padding="none" sx={{ py: "8px", pr: "8px" }}>
-            <div style={{ height: "100%", overflow: "auto" }}>
+            <div style={{ height: "100%", overflow: "auto", display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {/* メッセージ表示（全タブ共通） */}
+              <DialogFlashMessage message={message} />
+
               {activeTab === "board" ? (
                 <BoardSettingsPanel />
               ) : activeTab === "templates" ? (
                 <TemplateManagementPanel />
               ) : activeTab === "labels" ? (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  {/* メッセージ表示 */}
-                  <DialogFlashMessage message={message} />
-                  <LabelManagementPanel onMessage={handleMessage} />
-                </div>
+                <LabelManagementPanel onMessage={handleMessage} />
               ) : activeTab === "recycleBin" ? (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  {/* メッセージ表示 */}
-                  <DialogFlashMessage message={message} />
+                <div>
                   <RecycleBinSettingsPanel />
                   <div
                     style={{
@@ -134,15 +131,11 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
                   </div>
                 </div>
               ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  {/* メッセージ表示 */}
-                  <DialogFlashMessage message={message} />
-                  <DataManagementPanel
-                    onExportAll={onExportData}
-                    onExportCurrent={onExportBoard}
-                    onMessage={handleMessage}
-                  />
-                </div>
+                <DataManagementPanel
+                  onExportAll={onExportData}
+                  onExportCurrent={onExportBoard}
+                  onMessage={handleMessage}
+                />
               )}
             </div>
           </SplitPageLayout.Content>
