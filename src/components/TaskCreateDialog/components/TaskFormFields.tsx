@@ -59,10 +59,14 @@ export const TaskFormFields: React.FC<TaskFormFieldsProps> = ({
     <div onKeyDown={onKeyPress} style={{ flex: 1, minHeight: '500px' }}>
       {/* テンプレート選択通知 */}
       {selectedTemplate && (
-        <DialogFlashMessage message={{
-          type: 'default',
-          text: `テンプレート「${selectedTemplate.name}」から作成中`
-        }} />
+        <div style={{ marginBottom: '24px' }}>
+          <DialogFlashMessage message={{
+            type: 'default',
+            text: `テンプレート「${selectedTemplate.name}」から作成中`,
+          }}
+            isStatic
+          />
+        </div>
       )}
 
       {/* タイトル */}

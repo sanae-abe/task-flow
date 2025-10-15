@@ -34,6 +34,8 @@ interface DialogFlashMessageProps {
   className?: string;
   /** xボタンを表示するかどうか（デフォルト: true） */
   showDismiss?: boolean;
+  /** 固定位置表示するかどうか（デフォルト: false） */
+  isStatic?: boolean;
   /** xボタンがクリックされたときのコールバック */
   onDismiss?: () => void;
 }
@@ -89,6 +91,7 @@ export const DialogFlashMessage: React.FC<DialogFlashMessageProps> = ({
   style,
   className,
   showDismiss = true,
+  isStatic = false,
   onDismiss
 }) => {
   if (!message) {
@@ -98,9 +101,13 @@ export const DialogFlashMessage: React.FC<DialogFlashMessageProps> = ({
   return (
     <Flash
       variant={getFlashVariant(message.type)}
-      style={
-        { position: 'fixed', width: "100%", maxWidth: "550px", zIndex: 1000, ...style }
-      }
+      style={{
+        position: isStatic ? 'static' : 'fixed',
+        width: "100%",
+        maxWidth: isStatic ? "none" : "550px",
+        zIndex: 1000,
+        ...style
+      }}
       className={className}
     >
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
