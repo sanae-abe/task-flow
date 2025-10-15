@@ -44,7 +44,7 @@ export const useRecycleBinOperations = (onMessage?: MessageCallback): UseRecycle
         const message = taskTitle
           ? `タスク「${taskTitle}」を復元しました`
           : "タスクを復元しました";
-        importBoards(updatedBoards, true, undefined, true);
+        importBoards(updatedBoards, true);
         onMessage?.({ type: 'success', text: message });
       }
     } catch (error) {
@@ -64,7 +64,7 @@ export const useRecycleBinOperations = (onMessage?: MessageCallback): UseRecycle
         const message = taskTitle
           ? `タスク「${taskTitle}」を完全に削除しました`
           : "タスクを完全に削除しました";
-        importBoards(updatedBoards, true, undefined, true);
+        importBoards(updatedBoards, true);
         onMessage?.({ type: 'success', text: message });
       }
     } catch (error) {
@@ -80,7 +80,7 @@ export const useRecycleBinOperations = (onMessage?: MessageCallback): UseRecycle
     setIsEmptying(true);
     try {
       const { updatedBoards, deletedCount } = emptyRecycleBin(state.boards);
-      importBoards(updatedBoards, true, undefined, true);
+      importBoards(updatedBoards, true);
       onMessage?.({ type: 'success', text: `${deletedCount}件のタスクを完全削除しました` });
       logger.info(`${deletedCount}件のタスクを完全削除しました`);
     } catch (error) {
