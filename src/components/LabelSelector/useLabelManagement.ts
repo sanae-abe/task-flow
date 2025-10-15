@@ -1,7 +1,6 @@
 import { useState, useCallback, useMemo, useRef, useEffect } from "react";
 
 import { useLabel } from "../../contexts/LabelContext";
-import { useNotify } from "../../contexts/NotificationContext";
 import type { Label } from "../../types";
 
 interface UseLabelManagementProps {
@@ -13,8 +12,6 @@ export const useLabelManagement = ({
   selectedLabels,
   onLabelsChange,
 }: UseLabelManagementProps) => {
-  console.log('🚀 useLabelManagement: Hook initialized');
-
   const {
     getAllLabels,
     createLabel,
@@ -22,53 +19,11 @@ export const useLabelManagement = ({
     copyLabelToCurrentBoard,
     setMessageCallback,
   } = useLabel();
-
-  const notify = useNotify();
-
-  console.log('🚀 useLabelManagement: LabelContext methods obtained:', {
-    getAllLabels: !!getAllLabels,
-    createLabel: !!createLabel,
-    isLabelInCurrentBoard: !!isLabelInCurrentBoard,
-    copyLabelToCurrentBoard: !!copyLabelToCurrentBoard,
-    setMessageCallback: !!setMessageCallback,
-  });
-
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [pendingAutoSelect, setPendingAutoSelect] = useState<{
     name: string;
     color: string;
   } | null>(null);
-
-  // Toast通知用のメッセージ処理関数
-  const showToastMessage = useCallback((message: {
-    type: 'success' | 'danger' | 'warning' | 'critical' | 'default' | 'info' | 'upsell';
-    text: string;
-    title?: string;
-  }) => {
-    console.log('🎯 LabelSelector showToastMessage called with:', message);
-
-    // メッセージタイプに応じてtoast通知
-    switch (message.type) {
-      case 'success':
-        notify.success(message.text);
-        break;
-      case 'danger':
-      case 'critical':
-        notify.error(message.text);
-        break;
-      case 'warning':
-        notify.warning(message.text);
-        break;
-      case 'info':
-      case 'default':
-      case 'upsell':
-      default:
-        notify.info(message.text);
-        break;
-    }
-
-    console.log('🎯 LabelSelector toast notification sent');
-  }, [notify]);
 
   // selectedLabelsの最新値を追跡するref
   const selectedLabelsRef = useRef<Label[]>(selectedLabels);
@@ -101,8 +56,6 @@ export const useLabelManagement = ({
 
   // LabelContextからのメッセージを受信する設定
   useEffect(() => {
-    console.log('🔄 LabelSelector: Setting up message callback');
-
     const messageCallback = (message: {
       type: 'success' | 'danger' | 'warning' | 'critical' | 'default' | 'info' | 'upsell';
       text: string;
@@ -110,7 +63,7 @@ export const useLabelManagement = ({
     }) => {
       console.log('📥 LabelSelector: Message received from LabelContext:', message);
       // Toast通知で表示
-      showToastMessage(message);
+      // showToastMessage(message);
     };
 
     // LabelContextにコールバックを設定
@@ -123,7 +76,7 @@ export const useLabelManagement = ({
       console.log('🧹 LabelSelector: Cleaning up message callback');
       setMessageCallback(null);
     };
-  }, [setMessageCallback, showToastMessage]);
+  }, [setMessageCallback]);
 
   // refを常に最新の値で更新
   useEffect(() => {
@@ -192,19 +145,15 @@ export const useLabelManagement = ({
   // 新しいラベル作成後の処理
   const handleLabelCreated = useCallback(
     (labelData: { name: string; color: string }) => {
-      console.log('🆕 LabelSelector: handleLabelCreated called with:', labelData);
 
       // LabelContextのcreateLabelでボード状態に保存
-      console.log('🆕 LabelSelector: Calling createLabel from LabelContext');
       createLabel(labelData.name, labelData.color);
-      console.log('🆕 LabelSelector: createLabel completed');
 
       // ダイアログを閉じる
       setIsAddDialogOpen(false);
 
       // 自動選択用の状態を設定（useEffectで監視される）
       setPendingAutoSelect(labelData);
-      console.log('🆕 LabelSelector: Pending auto-select set');
     },
     [createLabel],
   );
