@@ -13,29 +13,22 @@ interface LabelManagementPanelProps {
 }
 
 const LabelManagementPanel: React.FC<LabelManagementPanelProps> = ({ onMessage }) => {
-  console.log('🚀 LabelManagementPanel: Component mounted');
   const { sortField, sortDirection, handleSort } = useLabelSort();
   const { allLabelsWithInfo } = useLabelData(sortField, sortDirection);
 
   // メッセージコールバック
   const handleMessage = useCallback((message: { type: 'success' | 'danger' | 'warning' | 'critical' | 'default' | 'info' | 'upsell'; text: string } | null) => {
-    console.log('📨 handleMessage called with:', message);
     // nullチェックを追加してランタイムエラーを防ぐ
     if (!message) {
-      console.log('📨 handleMessage: message is null, returning');
       return;
     }
 
     // 親のSettingsDialogのDialogFlashMessageに送信
     if (onMessage) {
-      console.log('📨 handleMessage: calling onMessage with:', message);
       onMessage(message);
-    } else {
-      console.log('📨 handleMessage: onMessage is not available');
     }
   }, [onMessage]);
 
-  console.log('🔌 LabelManagementPanel: About to call useLabelDialogs with handleMessage:', handleMessage);
   const {
     editDialog,
     deleteDialog,
@@ -47,9 +40,7 @@ const LabelManagementPanel: React.FC<LabelManagementPanelProps> = ({ onMessage }
     handleSave,
     handleConfirmDelete
   } = useLabelDialogs(handleMessage);
-  console.log('✅ LabelManagementPanel: useLabelDialogs returned successfully');
 
-  console.log('🎨 LabelManagementPanel: About to render');
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: "12px", paddingBottom: "16px" }}>
       {/* ヘッダー */}

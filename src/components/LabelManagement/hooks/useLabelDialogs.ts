@@ -7,9 +7,6 @@ interface UseLabelDialogsOptions {
 }
 
 export const useLabelDialogs = (onMessage?: UseLabelDialogsOptions['onMessage']) => {
-  console.log('🚀 useLabelDialogs: Hook called with onMessage:', onMessage);
-  console.log('🚀 useLabelDialogs: onMessage type:', typeof onMessage);
-
   const {
     createLabel,
     createLabelInBoard,
@@ -18,25 +15,14 @@ export const useLabelDialogs = (onMessage?: UseLabelDialogsOptions['onMessage'])
     setMessageCallback
   } = useLabel();
 
-  console.log('🚀 useLabelDialogs: useLabel() methods obtained, setMessageCallback:', setMessageCallback);
-
   // LabelContextのメッセージコールバックを設定
   useEffect(() => {
-    console.log('🔌 useLabelDialogs useEffect: STARTING callback registration');
-    console.log('🔌 useLabelDialogs useEffect: onMessage received:', onMessage);
-    console.log('🔌 useLabelDialogs useEffect: setMessageCallback function:', setMessageCallback);
-
     if (onMessage) {
-      console.log('🔌 useLabelDialogs useEffect: onMessage is valid, calling setMessageCallback...');
       setMessageCallback(onMessage);
-      console.log('🔌 useLabelDialogs useEffect: setMessageCallback COMPLETED');
-    } else {
-      console.log('🔌 useLabelDialogs useEffect: onMessage is null/undefined, skipping callback registration');
     }
 
     // クリーンアップ: コンポーネントがアンマウントされたときにコールバックをクリア
     return () => {
-      console.log('🔌 useLabelDialogs cleanup: clearing message callback');
       setMessageCallback(null);
     };
   }, [onMessage, setMessageCallback]);
@@ -96,20 +82,16 @@ export const useLabelDialogs = (onMessage?: UseLabelDialogsOptions['onMessage'])
 
   // ラベル保存（作成・編集）
   const handleSave = useCallback((labelData: LabelFormData) => {
-    console.log('⚡ handleSave called with:', labelData, 'mode:', editDialog.mode);
 
     if (editDialog.mode === 'create') {
       if (labelData.boardId) {
         // 指定されたボードに作成
-        console.log('⚡ Calling createLabelInBoard');
         createLabelInBoard(labelData.name, labelData.color, labelData.boardId);
       } else {
         // 現在のボードに作成（従来通り）
-        console.log('⚡ Calling createLabel');
         createLabel(labelData.name, labelData.color);
       }
     } else if (editDialog.label) {
-      console.log('⚡ Calling updateLabel');
       updateLabel(editDialog.label.id, labelData);
     }
     handleCloseEditDialog();
@@ -134,8 +116,6 @@ export const useLabelDialogs = (onMessage?: UseLabelDialogsOptions['onMessage'])
     handleSave,
     handleConfirmDelete
   };
-
-  console.log('✅ useLabelDialogs: Hook initialization COMPLETE, returning methods:', Object.keys(returnMethods));
 
   return returnMethods;
 };

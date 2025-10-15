@@ -74,7 +74,7 @@ interface BoardContextType {
   deleteColumn: (columnId: string) => void;
   updateColumn: (columnId: string, updates: Partial<Column>) => void;
   moveColumn: (columnId: string, direction: "left" | "right") => void;
-  importBoards: (boards: KanbanBoard[], replaceAll?: boolean, customMessage?: string) => void;
+  importBoards: (boards: KanbanBoard[], replaceAll?: boolean, customMessage?: string, silent?: boolean) => void;
   reorderBoards: (boards: KanbanBoard[]) => void;
   moveTaskToBoard: (
     taskId: string,
@@ -364,7 +364,6 @@ const boardReducer = (state: BoardState, action: BoardAction): BoardState => {
           return {
             ...board,
             id: uuidv4(),
-            title: `${board.title} (インポート)`,
             updatedAt: new Date().toISOString(),
           };
         }
@@ -1085,12 +1084,14 @@ const authenticateUser = async (email, password) => {
   );
 
   const importBoards = useCallback(
-    (boards: KanbanBoard[], replaceAll = false, customMessage?: string) => {
+    (boards: KanbanBoard[], replaceAll = false, customMessage?: string, silent = false) => {
       dispatch({ type: "IMPORT_BOARDS", payload: { boards, replaceAll } });
-      const message = customMessage || (replaceAll
-        ? `${boards.length}個のボードをインポートしました（既存データを置換）`
-        : `${boards.length}個のボードをインポートしました`);
-      notify.success(message);
+      if (!silent) {
+        const message = customMessage || (replaceAll
+          ? `${boards.length}個のボードをインポートしました（既存データを置換）`
+          : `${boards.length}個のボードをインポートしました`);
+        notify.success(message);
+      }
     },
     [notify],
   );
