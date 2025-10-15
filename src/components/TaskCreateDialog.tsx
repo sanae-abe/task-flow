@@ -1,13 +1,15 @@
 import { UnderlineNav } from "@primer/react";
-import { useState, memo } from "react";
+import { useState, memo, useMemo } from "react";
 
 import type { TaskTemplate } from "../types/template";
 import type { CreateMode } from "./TaskCreateDialog/types";
 import { useKanban } from "../contexts/KanbanContext";
 import { useBoard } from "../contexts/BoardContext";
 import { useNotify } from "../contexts/NotificationContext";
+import { useFormChangeDetector } from "../hooks/useFormChangeDetector";
 
 import UnifiedDialog from "./shared/Dialog/UnifiedDialog";
+import ConfirmDialog from "./ConfirmDialog";
 
 // カスタムフック
 import {
@@ -72,6 +74,21 @@ const TaskCreateDialog = memo(() => {
     setCurrentBoard,
   );
 
+  // フォーム変更検知のためのデータ
+  const formDataForDetection = useMemo(() => ({
+    ...formState,
+    createMode,
+    selectedTemplate: templateState.selectedTemplate,
+  }), [formState, createMode, templateState.selectedTemplate]);
+
+  // フォーム変更検知
+  const {
+    showCloseConfirm,
+    handleClose,
+    handleConfirmClose,
+    handleCancelClose,
+  } = useFormChangeDetector(formDataForDetection, state.isTaskFormOpen);
+
   // テンプレート選択時の処理（モード切り替えを含む）
   const handleTemplateSelect = (template: TaskTemplate) => {
     templateActions.handleTemplateSelect(template);
@@ -79,11 +96,15 @@ const TaskCreateDialog = memo(() => {
     setCreateMode("normal");
   };
 
-  // ダイアログが閉じられた時の追加処理
+  // ダイアログが閉じられた時の処理（確認機能付き）
   const handleDialogClose = () => {
-    setCreateMode("normal");
-    resetTemplateSelection();
-    closeTaskForm();
+    const actualClose = () => {
+      setCreateMode("normal");
+      resetTemplateSelection();
+      closeTaskForm();
+    };
+
+    handleClose(actualClose);
   };
 
   // 早期リターン：ダイアログが開いていない場合
@@ -92,62 +113,74 @@ const TaskCreateDialog = memo(() => {
   }
 
   return (
-    <UnifiedDialog
-      variant="modal"
-      isOpen={state.isTaskFormOpen}
-      title="新しいタスクを作成"
-      onClose={handleDialogClose}
-      ariaLabelledBy="task-create-dialog-title"
-      size="large"
-      actions={actions}
-    >
-      <div
-        style={{ display: "flex", flexDirection: "column", minHeight: "600px" }}
+    <>
+      <UnifiedDialog
+        variant="modal"
+        isOpen={state.isTaskFormOpen}
+        title="新しいタスクを作成"
+        onClose={handleDialogClose}
+        ariaLabelledBy="task-create-dialog-title"
+        size="large"
+        actions={actions}
       >
-        {/* タブナビゲーション */}
-        <div style={{ marginBottom: "16px" }}>
-          <UnderlineNav
-            aria-label="タスク作成モード選択"
-            sx={{ padding: 0, transform: "translateY(-8px)" }}
-          >
-            <UnderlineNav.Item
-              aria-current={createMode === "normal" ? "page" : undefined}
-              onSelect={() => setCreateMode("normal")}
+        <div
+          style={{ display: "flex", flexDirection: "column", minHeight: "600px" }}
+        >
+          {/* タブナビゲーション */}
+          <div style={{ marginBottom: "16px" }}>
+            <UnderlineNav
+              aria-label="タスク作成モード選択"
+              sx={{ padding: 0, transform: "translateY(-8px)" }}
             >
-              通常作成
-            </UnderlineNav.Item>
-            <UnderlineNav.Item
-              aria-current={createMode === "template" ? "page" : undefined}
-              onSelect={() => setCreateMode("template")}
-            >
-              テンプレートから作成
-            </UnderlineNav.Item>
-          </UnderlineNav>
-        </div>
-
-        {/* テンプレート選択モード */}
-        {createMode === "template" && (
-          <div style={{ marginBottom: "24px", flex: 1, minHeight: "500px" }}>
-            <TemplateSelector
-              templates={templateState.templates}
-              onSelect={handleTemplateSelect}
-            />
+              <UnderlineNav.Item
+                aria-current={createMode === "normal" ? "page" : undefined}
+                onSelect={() => setCreateMode("normal")}
+              >
+                通常作成
+              </UnderlineNav.Item>
+              <UnderlineNav.Item
+                aria-current={createMode === "template" ? "page" : undefined}
+                onSelect={() => setCreateMode("template")}
+              >
+                テンプレートから作成
+              </UnderlineNav.Item>
+            </UnderlineNav>
           </div>
-        )}
 
-        {/* 通常作成フォーム */}
-        {createMode === "normal" && (
-          <TaskFormFields
-            formState={formState}
-            formActions={formActions}
-            selectedTemplate={templateState.selectedTemplate}
-            onTimeChange={handleTimeChange}
-            onKeyPress={handleKeyPress}
-            availableBoards={boardState.boards}
-          />
-        )}
-      </div>
-    </UnifiedDialog>
+          {/* テンプレート選択モード */}
+          {createMode === "template" && (
+            <div style={{ marginBottom: "24px", flex: 1, minHeight: "500px" }}>
+              <TemplateSelector
+                templates={templateState.templates}
+                onSelect={handleTemplateSelect}
+              />
+            </div>
+          )}
+
+          {/* 通常作成フォーム */}
+          {createMode === "normal" && (
+            <TaskFormFields
+              formState={formState}
+              formActions={formActions}
+              selectedTemplate={templateState.selectedTemplate}
+              onTimeChange={handleTimeChange}
+              onKeyPress={handleKeyPress}
+              availableBoards={boardState.boards}
+            />
+          )}
+        </div>
+      </UnifiedDialog>
+
+      <ConfirmDialog
+        isOpen={showCloseConfirm}
+        title="変更を破棄しますか？"
+        message="入力した内容が失われますが、よろしいですか？"
+        confirmText="破棄する"
+        cancelText="戻る"
+        onConfirm={handleConfirmClose}
+        onCancel={handleCancelClose}
+      />
+    </>
   );
 });
 

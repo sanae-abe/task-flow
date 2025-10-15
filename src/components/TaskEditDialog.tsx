@@ -1,7 +1,8 @@
 import { TrashIcon } from "@primer/octicons-react";
-import { memo, useMemo } from "react";
+import { memo, useMemo, useCallback } from "react";
 
 import { useTaskEdit } from "../hooks/useTaskEdit";
+import { useFormChangeDetector } from "../hooks/useFormChangeDetector";
 import type { Task } from "../types";
 import type { DialogAction } from "../types/unified-dialog";
 
@@ -56,6 +57,33 @@ const TaskEditDialog = memo<TaskEditDialogProps>(
       onCancel,
     });
 
+    // フォーム変更検知のためのデータ
+    const formDataForDetection = useMemo(() => ({
+      title,
+      description,
+      dueDate,
+      dueTime,
+      hasTime,
+      labels,
+      attachments,
+      columnId,
+      recurrence,
+      priority,
+    }), [title, description, dueDate, dueTime, hasTime, labels, attachments, columnId, recurrence, priority]);
+
+    // フォーム変更検知
+    const {
+      showCloseConfirm,
+      handleClose,
+      handleConfirmClose,
+      handleCancelClose,
+    } = useFormChangeDetector(formDataForDetection, isOpen);
+
+    // ダイアログが閉じられた時の処理（確認機能付き）
+    const handleDialogClose = useCallback(() => {
+      handleClose(onCancel);
+    }, [handleClose, onCancel]);
+
     const actions = useMemo<DialogAction[]>(
       () => [
         {
@@ -67,7 +95,7 @@ const TaskEditDialog = memo<TaskEditDialogProps>(
         },
         {
           label: "キャンセル",
-          onClick: onCancel,
+          onClick: handleDialogClose,
           variant: "default" as const,
           position: "right",
         },
@@ -79,7 +107,7 @@ const TaskEditDialog = memo<TaskEditDialogProps>(
           position: "right",
         },
       ],
-      [handleDelete, onCancel, handleSave, isValid],
+      [handleDelete, handleDialogClose, handleSave, isValid],
     );
 
     if (!isOpen || !task) {
@@ -92,7 +120,7 @@ const TaskEditDialog = memo<TaskEditDialogProps>(
           variant="modal"
           isOpen={isOpen}
           title="タスクを編集"
-          onClose={onCancel}
+          onClose={handleDialogClose}
           size="large"
           ariaLabelledBy="task-edit-dialog-title"
           actions={actions}
@@ -130,6 +158,16 @@ const TaskEditDialog = memo<TaskEditDialogProps>(
           message={`「${task?.title}」を削除しますか？この操作は元に戻せません。`}
           onConfirm={handleConfirmDelete}
           onCancel={() => setShowDeleteConfirm(false)}
+        />
+
+        <ConfirmDialog
+          isOpen={showCloseConfirm}
+          title="変更を破棄しますか？"
+          message="編集した内容が失われますが、よろしいですか？"
+          confirmText="破棄する"
+          cancelText="戻る"
+          onConfirm={handleConfirmClose}
+          onCancel={handleCancelClose}
         />
       </>
     );
