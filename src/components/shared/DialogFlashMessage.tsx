@@ -102,10 +102,8 @@ export const DialogFlashMessage: React.FC<DialogFlashMessageProps> = ({
     <Flash
       variant={getFlashVariant(message.type)}
       style={{
-        position: isStatic ? 'static' : 'fixed',
-        width: "100%",
-        maxWidth: isStatic ? "none" : "550px",
-        zIndex: 1000,
+        position: isStatic ? 'static' : 'sticky',
+        top: 0,
         ...style
       }}
       className={className}

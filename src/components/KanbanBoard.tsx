@@ -61,11 +61,13 @@ const KanbanBoard: React.FC = () => {
     const pointerIntersections = pointerWithin(args);
 
     if (pointerIntersections.length > 0) {
-      // タスクとカラムが重なっている場合、タスクを優先
+      // タスクとカラムが重なっている場合、タスクを優先（削除済みカラムは除外）
       const taskIntersections = pointerIntersections.filter((intersection) =>
-        currentBoard?.columns.some((column) =>
-          column.tasks.some((task) => task.id === intersection.id),
-        ),
+        currentBoard?.columns
+          .filter(column => column.deletionState !== "deleted")
+          .some((column) =>
+            column.tasks.some((task) => task.id === intersection.id),
+          ),
       );
 
       if (taskIntersections.length > 0) {
@@ -89,16 +91,18 @@ const KanbanBoard: React.FC = () => {
         onDragEnd={handleDragEnd}
       >
         <div style={KANBAN_BOARD_STYLES.columnsContainer}>
-          {currentBoard.columns.map((column, index) => (
-            <KanbanColumn
-              key={column.id}
-              column={column}
-              columnIndex={index}
-              totalColumns={currentBoard.columns.length}
-              onTaskClick={handleTaskClick}
-              keyboardDragAndDrop={keyboardDragAndDrop}
-            />
-          ))}
+          {currentBoard.columns
+            .filter(column => column.deletionState !== "deleted")
+            .map((column, index) => (
+              <KanbanColumn
+                key={column.id}
+                column={column}
+                columnIndex={index}
+                totalColumns={currentBoard.columns.filter(col => col.deletionState !== "deleted").length}
+                onTaskClick={handleTaskClick}
+                keyboardDragAndDrop={keyboardDragAndDrop}
+              />
+            ))}
         </div>
 
         <DragOverlay>

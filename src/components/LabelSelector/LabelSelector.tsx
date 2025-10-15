@@ -23,10 +23,6 @@ interface LabelSelectorProps {
 
 const LabelSelector = memo<LabelSelectorProps>(
   ({ selectedLabels, onLabelsChange }) => {
-    console.log('🔄 LabelSelector: Component rendering with props:', {
-      selectedLabels: selectedLabels.length,
-      onLabelsChange: !!onLabelsChange
-    });
     const {
       allLabels,
       currentBoardLabels,
@@ -109,21 +105,18 @@ const LabelSelector = memo<LabelSelectorProps>(
   (prevProps, nextProps) => {
     // selectedLabelsの長さと各ラベルのIDを比較
     if (prevProps.selectedLabels.length !== nextProps.selectedLabels.length) {
-      console.log('🔄 LabelSelector memo: selectedLabels length changed');
       return false;
     }
 
     // 各ラベルのIDを比較
     for (let i = 0; i < prevProps.selectedLabels.length; i++) {
       if (prevProps.selectedLabels[i]?.id !== nextProps.selectedLabels[i]?.id) {
-        console.log('🔄 LabelSelector memo: selectedLabels content changed');
         return false;
       }
     }
 
     // onLabelsChangeは関数なので、参照が変わっても実質同じ場合がある
     // ここでは常に再レンダリングを避けるために、selectedLabelsのみで判定
-    console.log('🔄 LabelSelector memo: Props unchanged, skipping render');
     return true;
   }
 );

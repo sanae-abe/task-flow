@@ -195,13 +195,16 @@ const DragOverlayBoardTab: React.FC<DragOverlayBoardTabProps> = memo(
 const BoardSelector: React.FC = () => {
   const { state, setCurrentBoard, reorderBoards } = useBoard();
 
+  // アクティブなボードのみをフィルタリング
+  const activeBoards = state.boards.filter(board => board.deletionState !== "deleted");
+
   const { sensors, activeBoard, handleDragStart, handleDragEnd } =
     useBoardDragAndDrop({
-      boards: state.boards,
+      boards: activeBoards,
       onReorderBoards: reorderBoards,
     });
 
-  if (state.boards.length === 0) {
+  if (activeBoards.length === 0) {
     return <EmptyBoardsMessage />;
   }
 
@@ -213,11 +216,11 @@ const BoardSelector: React.FC = () => {
       onDragEnd={handleDragEnd}
     >
       <SortableContext
-        items={state.boards.map((board) => board.id)}
+        items={activeBoards.map((board) => board.id)}
         strategy={horizontalListSortingStrategy}
       >
         <div style={styles.container} role="tablist" aria-label="ボード選択">
-          {state.boards.map((board) => (
+          {activeBoards.map((board) => (
             <SortableBoardTab
               key={board.id}
               board={board}

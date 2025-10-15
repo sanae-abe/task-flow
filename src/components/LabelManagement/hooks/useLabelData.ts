@@ -10,7 +10,9 @@ export const useLabelData = (sortField: SortField, sortDirection: SortDirection)
     const labelsMap = new Map<string, LabelWithInfo>();
 
     // 全ボードのラベルを収集
-    getAllLabelsWithBoardInfo().forEach(labelWithBoard => {
+    const allLabelsFromContext = getAllLabelsWithBoardInfo();
+
+    allLabelsFromContext.forEach(labelWithBoard => {
       const existingLabel = labelsMap.get(labelWithBoard.id);
 
       if (existingLabel) {

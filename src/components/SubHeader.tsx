@@ -40,16 +40,18 @@ const SubHeader: React.FC = () => {
       return [];
     }
     const labelMap = new Map();
-    state.currentBoard.columns.forEach((column) => {
-      column.tasks.forEach((task) => {
-        task.labels?.forEach((label) => {
-          // ラベル名で重複を除去し、同じ名前のラベルは1つだけ表示
-          if (!labelMap.has(label.name)) {
-            labelMap.set(label.name, label);
-          }
+    state.currentBoard.columns
+      .filter(column => column.deletionState !== "deleted")
+      .forEach((column) => {
+        column.tasks.forEach((task) => {
+          task.labels?.forEach((label) => {
+            // ラベル名で重複を除去し、同じ名前のラベルは1つだけ表示
+            if (!labelMap.has(label.name)) {
+              labelMap.set(label.name, label);
+            }
+          });
         });
       });
-    });
     return Array.from(labelMap.values());
   }, [state.currentBoard]);
 
@@ -58,10 +60,12 @@ const SubHeader: React.FC = () => {
     if (!state.currentBoard) {
       return [];
     }
-    return state.currentBoard.columns.map((column) => ({
-      id: column.id,
-      title: column.title,
-    }));
+    return state.currentBoard.columns
+      .filter(column => column.deletionState !== "deleted")
+      .map((column) => ({
+        id: column.id,
+        title: column.title,
+      }));
   }, [state.currentBoard]);
 
   if (!state.currentBoard) {
@@ -185,7 +189,7 @@ const SubHeader: React.FC = () => {
       <ConfirmDialog
         isOpen={dialogState.showDeleteConfirm}
         title="プロジェクトを削除"
-        message={`「${state.currentBoard.title}」を削除しますか？この操作は元に戻せません。`}
+        message={`「${state.currentBoard.title}」を削除しますか？`}
         onConfirm={handlers.deleteBoard}
         onCancel={handlers.closeDeleteConfirm}
       />

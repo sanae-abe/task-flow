@@ -281,7 +281,6 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
               console.error(`💬 deleteLabel: Error sending message to callback ${callbackIndex}:`, error);
             }
           });
-        } else {
         }
       },
       deleteLabelFromAllBoards: (labelId: string) => {

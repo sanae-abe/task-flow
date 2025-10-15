@@ -158,7 +158,7 @@ const TaskCard: React.FC<TaskCardProps> = React.memo(
         <ConfirmDialog
           isOpen={taskCardData.showDeleteConfirm}
           title="タスクを削除"
-          message={`「${task.title}」を削除しますか？この操作は元に戻せません。`}
+          message={`「${task.title}」を削除しますか？`}
           onConfirm={taskCardData.handleConfirmDelete}
           onCancel={taskCardData.handleCancelDelete}
         />

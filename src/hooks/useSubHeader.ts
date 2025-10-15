@@ -85,8 +85,11 @@ export const useSubHeader = (): UseSubHeaderReturn => {
   }, [state.currentBoard?.columns]);
 
   const canDeleteBoard = useMemo(
-    () => state.boards.length > 1,
-    [state.boards.length],
+    () => {
+      const activeBoards = state.boards.filter(board => board.deletionState !== "deleted");
+      return activeBoards.length > 1;
+    },
+    [state.boards],
   );
 
   const updateDialogState = useCallback(

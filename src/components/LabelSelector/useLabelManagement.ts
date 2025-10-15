@@ -56,24 +56,20 @@ export const useLabelManagement = ({
 
   // LabelContextからのメッセージを受信する設定
   useEffect(() => {
-    const messageCallback = (message: {
+    const messageCallback = (_message: {
       type: 'success' | 'danger' | 'warning' | 'critical' | 'default' | 'info' | 'upsell';
       text: string;
       title?: string;
     }) => {
-      console.log('📥 LabelSelector: Message received from LabelContext:', message);
-      // Toast通知で表示
-      // showToastMessage(message);
+      // Toast通知で表示（将来実装予定）
+      // 現在は何もしない
     };
 
     // LabelContextにコールバックを設定
-    console.log('🔌 LabelSelector: Calling setMessageCallback');
     setMessageCallback(messageCallback);
-    console.log('✅ LabelSelector: Message callback registered');
 
     // クリーンアップ
     return () => {
-      console.log('🧹 LabelSelector: Cleaning up message callback');
       setMessageCallback(null);
     };
   }, [setMessageCallback]);

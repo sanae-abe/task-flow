@@ -47,9 +47,6 @@ const DeleteConfirmDialog: React.FC<DeleteConfirmDialogProps> = ({
       actions={actions}
     >
       <Text>「{taskTitle}」を削除しますか？</Text>
-      <Text sx={{ fontSize: 1, color: "fg.muted" }}>
-        この操作は取り消せません。
-      </Text>
     </UnifiedDialog>
   );
 };

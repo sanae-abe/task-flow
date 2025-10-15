@@ -1,12 +1,12 @@
 import {
   DatabaseIcon,
   TagIcon,
-  ProjectIcon,
+  ColumnsIcon,
   TrashIcon,
+  TasklistIcon
 } from "@primer/octicons-react";
 import { SplitPageLayout, NavList } from "@primer/react";
 import React, { useState } from "react";
-import { FileText } from "react-feather";
 
 import UnifiedDialog from "./shared/Dialog/UnifiedDialog";
 import { DialogFlashMessage, useDialogFlashMessage } from "./shared";
@@ -14,8 +14,8 @@ import { LabelManagementPanel } from "./LabelManagement";
 import { DataManagementPanel } from "./DataManagement";
 import { BoardSettingsPanel } from "./BoardSettings";
 import { TemplateManagementPanel } from "./TemplateManagement";
-import { RecycleBinView } from "./RecycleBin";
 import { RecycleBinSettingsPanel } from "./RecycleBin/RecycleBinSettingsPanel";
+import UnifiedRecycleBinView from "./RecycleBin/UnifiedRecycleBinView";
 import type { KanbanBoard } from "../types";
 
 interface SettingsDialogProps {
@@ -62,7 +62,7 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
                 onClick={() => setActiveTab("board")}
               >
                 <NavList.LeadingVisual>
-                  <ProjectIcon />
+                  <ColumnsIcon />
                 </NavList.LeadingVisual>
                 カラム設定
               </NavList.Item>
@@ -71,7 +71,7 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
                 onClick={() => setActiveTab("templates")}
               >
                 <NavList.LeadingVisual>
-                  <FileText size={16} />
+                  <TasklistIcon size={16} />
                 </NavList.LeadingVisual>
                 テンプレート管理
               </NavList.Item>
@@ -109,9 +109,7 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
           <SplitPageLayout.Content padding="none" sx={{ py: "8px", pr: "8px" }}>
             <div style={{ position: "relative", display: 'flex', flexDirection: 'column', gap: '12px' }}>
               {/* メッセージ表示（全タブ共通） */}
-              <div style={{ position: "absolute", left: 0, width: "100%" }}>
-                <DialogFlashMessage message={message} onDismiss={clearMessage} />
-              </div>
+              <DialogFlashMessage message={message} onDismiss={clearMessage} />
 
               {activeTab === "board" ? (
                 <BoardSettingsPanel />
@@ -122,6 +120,8 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
               ) : activeTab === "recycleBin" ? (
                 <div>
                   <RecycleBinSettingsPanel />
+
+                  {/* 統合ゴミ箱セクション */}
                   <div
                     style={{
                       marginTop: "24px",
@@ -129,7 +129,7 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
                       paddingTop: "24px",
                     }}
                   >
-                    <RecycleBinView onMessage={handleMessage} />
+                    <UnifiedRecycleBinView onMessage={handleMessage} />
                   </div>
                 </div>
               ) : (

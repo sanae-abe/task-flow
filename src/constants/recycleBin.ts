@@ -85,14 +85,14 @@ export const MESSAGES = {
 export const UI_TEXT = {
   PANEL: {
     TITLE: 'ゴミ箱設定',
-    DESCRIPTION: '削除したタスクをゴミ箱に保持する期間を設定します。',
-    DESCRIPTION_WITH_UNLIMITED: '削除したタスクをゴミ箱に保持する期間を設定します。\n期間を過ぎたタスクは自動的に完全削除されます。無制限を選択すると自動削除されません。',
+    DESCRIPTION: '削除したボード、カラム、タスクをゴミ箱に保持する期間を設定します。',
+    DESCRIPTION_WITH_UNLIMITED: '削除したボード、カラム、タスクをゴミ箱に保持する期間を設定します。\n期間を過ぎたデータは自動的に完全削除されます。無制限を選択すると自動削除されません。',
     PRESET_TITLE: 'よく使われる設定',
     RETENTION_LABEL: '保持期間',
     RETENTION_UNIT: '日間',
     RETENTION_HELP: '1〜365日の範囲で設定、または「無制限」ボタンで無制限に設定できます（推奨: 30日）',
     SAVE_BUTTON: '設定を保存',
-    IMPORTANT_NOTE_TEXT: '保持期間を短くすると、既にゴミ箱にあるタスクも新しい期間で再計算されます。必要なタスクは期間変更前に復元することをお勧めします。',
+    IMPORTANT_NOTE_TEXT: '保持期間を短くすると、既にゴミ箱にあるデータも新しい期間で再計算されます。必要なデータは期間変更前に復元することをお勧めします。',
   },
   VIEW: {
     TITLE: 'ゴミ箱',
