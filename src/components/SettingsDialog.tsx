@@ -107,7 +107,7 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
 
           {/* メインコンテンツエリア */}
           <SplitPageLayout.Content padding="none" sx={{ py: "8px", pr: "8px" }}>
-            <div style={{ height: "100%", overflow: "auto", display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               {/* メッセージ表示（全タブ共通） */}
               <DialogFlashMessage message={message} />
 
