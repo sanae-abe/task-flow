@@ -5,7 +5,7 @@ import type { DialogFlashMessageData, DialogMessageType } from '../components/sh
  * ダイアログFlashメッセージの管理フック
  * メッセージの表示と自動クリア機能を提供します
  */
-export const useDialogFlashMessage = (autoClearDelay: number = 3000) => {
+export const useDialogFlashMessage = (autoClearDelay: number = 2000) => {
   const [message, setMessage] = useState<DialogFlashMessageData | null>(null);
 
   /**

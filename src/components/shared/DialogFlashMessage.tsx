@@ -1,10 +1,11 @@
 import React from 'react';
-import { Flash, Text } from '@primer/react';
+import { Flash, Text, IconButton } from '@primer/react';
 import {
   AlertIcon,
   CheckCircleIcon,
   InfoIcon,
   StopIcon,
+  XIcon,
 } from '@primer/octicons-react';
 
 /**
@@ -31,6 +32,10 @@ interface DialogFlashMessageProps {
   style?: React.CSSProperties;
   /** 追加のクラス名 */
   className?: string;
+  /** xボタンを表示するかどうか（デフォルト: true） */
+  showDismiss?: boolean;
+  /** xボタンがクリックされたときのコールバック */
+  onDismiss?: () => void;
 }
 
 /**
@@ -82,7 +87,9 @@ export const getMessageIcon = (type: DialogMessageType): React.ReactElement => {
 export const DialogFlashMessage: React.FC<DialogFlashMessageProps> = ({
   message,
   style,
-  className
+  className,
+  showDismiss = true,
+  onDismiss
 }) => {
   if (!message) {
     return null;
@@ -92,19 +99,35 @@ export const DialogFlashMessage: React.FC<DialogFlashMessageProps> = ({
     <Flash
       variant={getFlashVariant(message.type)}
       style={
-        { position: 'fixed', top: 0, ...style }
+        { position: 'fixed', width: "100%", maxWidth: "550px", zIndex: 1000, ...style }
       }
       className={className}
     >
-      <div style={{ display: 'flex', alignItems: 'flex-start' }}>
-        <div>{getMessageIcon(message.type)}</div>
-        <div>
-          {message.title ?
-            <Text sx={{ fontWeight: 'bold', display: 'block', mb: 1 }}>{message.title}</Text> : null}
-          <Text sx={{ display: 'block' }}>
-            {message.text}
-          </Text>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+        <div style={{ display: 'flex', alignItems: 'flex-start', flex: 1 }}>
+          <div style={{ marginRight: '8px' }}>{getMessageIcon(message.type)}</div>
+          <div style={{ flex: 1 }}>
+            {message.title ?
+              <Text sx={{ fontWeight: 'bold', display: 'block', mb: 1 }}>{message.title}</Text> : null}
+            <Text sx={{ display: 'block' }}>
+              {message.text}
+            </Text>
+          </div>
         </div>
+        {showDismiss && onDismiss && (
+          <IconButton
+            aria-label="閉じる"
+            icon={XIcon}
+            size="small"
+            variant="invisible"
+            onClick={onDismiss}
+            style={{
+              marginLeft: '8px',
+              flexShrink: 0,
+              alignSelf: 'flex-start'
+            }}
+          />
+        )}
       </div>
     </Flash>
   );

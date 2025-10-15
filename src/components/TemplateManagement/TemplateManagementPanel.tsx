@@ -3,6 +3,7 @@ import { Button, Heading, Text } from '@primer/react';
 import { PlusIcon } from '@primer/octicons-react';
 
 import type { TemplateFormData, TaskTemplate } from '../../types/template';
+import type { DialogFlashMessageData } from '../shared/DialogFlashMessage';
 import TemplateFormDialog from './TemplateFormDialog';
 import ConfirmDialog from '../shared/Dialog/ConfirmDialog';
 import TemplateSearchFilter from './TemplateSearchFilter';
@@ -13,12 +14,15 @@ import { useTemplateManagement } from '../../hooks/useTemplateManagement';
 import { useTemplateFiltering } from '../../hooks/useTemplateFiltering';
 import { useTemplateDialogs } from '../../hooks/useTemplateDialogs';
 
+interface TemplateManagementPanelProps {
+  onMessage?: (message: DialogFlashMessageData) => void;
+}
 
 /**
  * テンプレート管理パネル
  * テンプレートの一覧表示、作成、編集、削除を行うパネル
  */
-const TemplateManagementPanel: React.FC = () => {
+const TemplateManagementPanel: React.FC<TemplateManagementPanelProps> = ({ onMessage }) => {
   // カスタムフック
   const {
     templates,
@@ -57,11 +61,24 @@ const TemplateManagementPanel: React.FC = () => {
   // 保存ハンドラー
   const handleSave = async (data: TemplateFormData) => {
     let success = false;
+    let template: TaskTemplate | null = null;
 
     if (editDialog.mode === 'create') {
-      success = await createTemplate(data) !== null;
+      template = await createTemplate(data);
+      success = template !== null;
+      if (success && template) {
+        onMessage?.({ type: 'success', text: `テンプレート「${template.name}」を作成しました` });
+      } else {
+        onMessage?.({ type: 'danger', text: 'テンプレートの作成に失敗しました' });
+      }
     } else if (editDialog.template) {
-      success = await updateTemplate(editDialog.template.id, data) !== null;
+      template = await updateTemplate(editDialog.template.id, data);
+      success = template !== null;
+      if (success && template) {
+        onMessage?.({ type: 'success', text: `テンプレート「${template.name}」を更新しました` });
+      } else {
+        onMessage?.({ type: 'danger', text: 'テンプレートの更新に失敗しました' });
+      }
     }
 
     if (success) {
@@ -72,20 +89,26 @@ const TemplateManagementPanel: React.FC = () => {
   // 削除確認ハンドラー
   const handleConfirmDelete = async () => {
     if (deleteDialog.template) {
+      const templateName = deleteDialog.template.name;
       const success = await deleteTemplate(deleteDialog.template.id);
       if (success) {
+        onMessage?.({ type: 'success', text: `テンプレート「${templateName}」を削除しました` });
         closeDeleteDialog();
+      } else {
+        onMessage?.({ type: 'danger', text: 'テンプレートの削除に失敗しました' });
       }
     }
   };
 
+  // お気に入りトグルハンドラー（型適合用ラッパー）
+  const handleToggleFavorite = async (template: TaskTemplate) => {
+    const newFavoriteState = await toggleFavorite(template.id);
+    const action = newFavoriteState ? 'お気に入りに追加' : 'お気に入りから削除';
+    onMessage?.({ type: 'success', text: `テンプレート「${template.name}」を${action}しました` });
+  };
+
   // アクティブなフィルターの有無
   const hasActiveFilters = searchQuery.trim() !== '' || filterCategory !== 'all' || filterFavorite;
-
-  // お気に入りトグルハンドラー（型適合用ラッパー）
-  const handleToggleFavorite = (template: TaskTemplate) => {
-    toggleFavorite(template.id);
-  };
 
   // ローディングやエラー状態の表示
   if (loading) {

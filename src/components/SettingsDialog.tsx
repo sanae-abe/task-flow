@@ -36,7 +36,7 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
   >("labels");
 
   // DialogFlashMessageフック使用
-  const { message, handleMessage } = useDialogFlashMessage();
+  const { message, handleMessage, clearMessage } = useDialogFlashMessage();
 
   return (
     <UnifiedDialog
@@ -107,14 +107,16 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
 
           {/* メインコンテンツエリア */}
           <SplitPageLayout.Content padding="none" sx={{ py: "8px", pr: "8px" }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div style={{ position: "relative", display: 'flex', flexDirection: 'column', gap: '12px' }}>
               {/* メッセージ表示（全タブ共通） */}
-              <DialogFlashMessage message={message} />
+              <div style={{ position: "absolute", left: 0, width: "100%" }}>
+                <DialogFlashMessage message={message} onDismiss={clearMessage} />
+              </div>
 
               {activeTab === "board" ? (
                 <BoardSettingsPanel />
               ) : activeTab === "templates" ? (
-                <TemplateManagementPanel />
+                <TemplateManagementPanel onMessage={handleMessage} />
               ) : activeTab === "labels" ? (
                 <LabelManagementPanel onMessage={handleMessage} />
               ) : activeTab === "recycleBin" ? (
