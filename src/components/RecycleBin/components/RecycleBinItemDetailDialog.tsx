@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { Box } from '@primer/react';
+import { ReplyIcon, TrashIcon } from '@primer/octicons-react';
 import UnifiedDialog from '../../shared/Dialog/UnifiedDialog';
 import type { RecycleBinItemWithMeta } from '../../../types/recycleBin';
+import type { DialogAction } from '../../../types/unified-dialog';
 import { useRecycleBinSettingsReadOnly } from '../../../hooks/useRecycleBinSettings';
 import { HeroSection } from './DetailDialog/components/HeroSection';
 import { DescriptionCard } from './DetailDialog/components/DescriptionCard';
 import { MetadataGrid } from './DetailDialog/components/MetadataGrid';
 import { WarningCard } from './DetailDialog/components/WarningCard';
-import { ActionFooter } from './DetailDialog/components/ActionFooter';
 import { spacing } from './DetailDialog/styles/designTokens';
 
 interface RecycleBinItemDetailDialogProps {
@@ -36,14 +37,11 @@ export const RecycleBinItemDetailDialog: React.FC<RecycleBinItemDetailDialogProp
   // ゴミ箱設定を取得
   const recycleBinSettings = useRecycleBinSettingsReadOnly();
 
-  if (!item) {
-    return null;
-  }
-
-  const itemTypeText = item.type === 'board' ? 'ボード' : item.type === 'column' ? 'カラム' : 'タスク';
+  const itemTypeText = item?.type === 'board' ? 'ボード' : item?.type === 'column' ? 'カラム' : 'タスク';
 
   // 復元処理
-  const handleRestore = async () => {
+  const handleRestore = useCallback(async () => {
+    if (!item) { return; }
     setIsLoading(true);
     setLoadingAction('restore');
     try {
@@ -55,10 +53,11 @@ export const RecycleBinItemDetailDialog: React.FC<RecycleBinItemDetailDialogProp
       setIsLoading(false);
       setLoadingAction(null);
     }
-  };
+  }, [item, onRestore, onClose]);
 
   // 削除処理
-  const handleDelete = async () => {
+  const handleDelete = useCallback(async () => {
+    if (!item) { return; }
     setIsLoading(true);
     setLoadingAction('delete');
     try {
@@ -70,7 +69,31 @@ export const RecycleBinItemDetailDialog: React.FC<RecycleBinItemDetailDialogProp
       setIsLoading(false);
       setLoadingAction(null);
     }
-  };
+  }, [item, onClose, onDelete]);
+
+  // UnifiedDialogのアクション定義
+  const actions = useMemo<DialogAction[]>(() => [
+    {
+      label: loadingAction === 'restore' ? '復元中...' : '復元',
+      onClick: handleRestore,
+      variant: 'primary',
+      disabled: !item?.canRestore || isLoading,
+      loading: loadingAction === 'restore',
+      icon: ReplyIcon,
+    },
+    {
+      label: loadingAction === 'delete' ? '削除中...' : '完全に削除',
+      onClick: handleDelete,
+      variant: 'danger',
+      disabled: isLoading,
+      loading: loadingAction === 'delete',
+      icon: TrashIcon,
+    },
+  ], [handleRestore, handleDelete, item?.canRestore, isLoading, loadingAction]);
+
+  if (!item) {
+    return null;
+  }
 
   return (
     <UnifiedDialog
@@ -79,51 +102,29 @@ export const RecycleBinItemDetailDialog: React.FC<RecycleBinItemDetailDialogProp
       title={`${itemTypeText}詳細`}
       variant="modal"
       size="large"
+      actions={actions}
     >
       <Box
         sx={{
           display: 'flex',
           flexDirection: 'column',
-          minHeight: '70vh',
-          maxHeight: '90vh',
-          overflow: 'hidden',
+          gap: spacing.lg,
+          p: spacing.lg,
         }}
       >
-        {/* スクロール可能なメインコンテンツ */}
-        <Box
-          sx={{
-            flex: 1,
-            overflow: 'auto',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: spacing.lg,
-            p: spacing.lg,
-          }}
-        >
-          {/* Hero Section - タイトルエリア */}
-          <HeroSection item={item} />
+        {/* Hero Section - タイトルエリア */}
+        <HeroSection item={item} />
 
-          {/* Description Card - 説明文 */}
-          <DescriptionCard item={item} />
+        {/* Description Card - 説明文 */}
+        <DescriptionCard item={item} />
 
-          {/* Metadata Grid - 詳細情報 */}
-          <MetadataGrid item={item} />
+        {/* Metadata Grid - 詳細情報 */}
+        <MetadataGrid item={item} />
 
-          {/* Warning Card - 警告 */}
-          <WarningCard
-            item={item}
-            retentionDays={recycleBinSettings.retentionDays}
-          />
-        </Box>
-
-        {/* Action Footer - アクションボタン */}
-        <ActionFooter
+        {/* Warning Card - 警告 */}
+        <WarningCard
           item={item}
-          isLoading={isLoading}
-          loadingAction={loadingAction}
-          onRestore={handleRestore}
-          onDelete={handleDelete}
-          onClose={onClose}
+          retentionDays={recycleBinSettings.retentionDays}
         />
       </Box>
     </UnifiedDialog>

@@ -1,8 +1,7 @@
 import React from 'react';
 import { Text, Box } from '@primer/react';
-import { AlertIcon, ClockIcon, StopIcon } from '@primer/octicons-react';
 import type { RecycleBinItem } from '../../../../../types/recycleBin';
-import { spacing, borderRadius, typography, transitions } from '../styles/designTokens';
+import { spacing, borderRadius } from '../styles/designTokens';
 
 interface WarningCardProps {
   item: {
@@ -14,21 +13,19 @@ interface WarningCardProps {
 }
 
 /**
- * Warning Card - 削除やゴミ箱に関する重要な警告を表示するカードコンポーネント
+ * Warning Card - 削除やゴミ箱に関する重要な警告をシンプルに表示するカードコンポーネント
  *
  * 機能:
  * - 削除予定日の警告表示
  * - 復元不可能アイテムの警告
  * - 自動削除設定の情報表示
- * - アクセシブルな警告表示
- * - 視覚的に目立つ重要度別デザイン
+ * - シンプルで読みやすいデザイン
  */
 export const WarningCard: React.FC<WarningCardProps> = ({ item, retentionDays }) => {
   // 警告レベルと内容を判定
   const getWarningInfo = () => {
     const warnings: Array<{
       level: 'danger' | 'warning' | 'info';
-      icon: React.ComponentType<{ size: number; 'aria-hidden'?: boolean; style?: React.CSSProperties }>;
       title: string;
       message: string;
       showTimeUntil?: boolean;
@@ -38,7 +35,6 @@ export const WarningCard: React.FC<WarningCardProps> = ({ item, retentionDays })
     if (!item.canRestore) {
       warnings.push({
         level: 'danger',
-        icon: StopIcon,
         title: '復元不可',
         message: 'このアイテムは復元できません。関連するデータが見つからないか、破損している可能性があります。',
       });
@@ -51,7 +47,6 @@ export const WarningCard: React.FC<WarningCardProps> = ({ item, retentionDays })
       if (urgencyLevel === 'critical') {
         warnings.push({
           level: 'danger',
-          icon: AlertIcon,
           title: '緊急: 自動削除間近',
           message: 'このアイテムは間もなく自動的に完全削除されます。復元が必要な場合は至急実行してください。',
           showTimeUntil: true,
@@ -59,7 +54,6 @@ export const WarningCard: React.FC<WarningCardProps> = ({ item, retentionDays })
       } else if (urgencyLevel === 'warning') {
         warnings.push({
           level: 'warning',
-          icon: ClockIcon,
           title: '注意: 自動削除予定',
           message: 'このアイテムは自動削除予定です。必要に応じて復元をご検討ください。',
           showTimeUntil: true,
@@ -67,7 +61,6 @@ export const WarningCard: React.FC<WarningCardProps> = ({ item, retentionDays })
       } else {
         warnings.push({
           level: 'info',
-          icon: ClockIcon,
           title: '自動削除設定',
           message: `このアイテムは${retentionDays}日後に自動的に完全削除されます。`,
           showTimeUntil: true,
@@ -76,7 +69,6 @@ export const WarningCard: React.FC<WarningCardProps> = ({ item, retentionDays })
     } else if (retentionDays === null) {
       warnings.push({
         level: 'info',
-        icon: ClockIcon,
         title: '手動削除のみ',
         message: '自動削除は設定されていません。手動で完全削除するまでゴミ箱に保持されます。',
       });
@@ -144,8 +136,6 @@ export const WarningCard: React.FC<WarningCardProps> = ({ item, retentionDays })
   return (
     <Box
       as="section"
-      role="region"
-      aria-labelledby="warning-heading"
       sx={{
         display: 'flex',
         flexDirection: 'column',
@@ -155,157 +145,67 @@ export const WarningCard: React.FC<WarningCardProps> = ({ item, retentionDays })
       {/* 警告一覧 */}
       {warnings.map((warning, index) => {
         const styles = getWarningStyles(warning.level);
-        const warningId = `warning-${index}`;
 
         return (
           <Box
-            key={warningId}
+            key={index}
             role="alert"
-            aria-labelledby={`${warningId}-title`}
-            aria-describedby={`${warningId}-message`}
             sx={{
-              display: 'flex',
-              gap: spacing.sm,
               p: spacing.md,
               bg: styles.bg,
-              border: '2px solid',
+              border: '1px solid',
               borderColor: styles.borderColor,
               borderRadius: borderRadius.medium,
-              transition: transitions.default,
-              position: 'relative',
-              overflow: 'hidden',
-
-              // ホバー効果
-              '&:hover': {
-                borderColor: styles.titleColor,
-                transform: 'translateY(-1px)',
-                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-              },
 
               // レスポンシブ対応
               '@media (max-width: 543px)': {
                 p: spacing.sm,
-                flexDirection: 'column',
-                gap: spacing.xs,
               },
             }}
           >
-            {/* 左側のアクセント線 */}
-            <Box
+            {/* タイトル */}
+            <Text
               sx={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '4px',
-                height: '100%',
-                bg: styles.titleColor,
-              }}
-              aria-hidden="true"
-            />
-
-            {/* アイコン */}
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'flex-start',
-                pt: '2px', // テキストとの位置調整
-                flexShrink: 0,
+                fontSize: 1,
+                fontWeight: 'bold',
+                color: styles.titleColor,
+                margin: 0,
+                mb: spacing.xs,
+                lineHeight: 'condensed',
               }}
             >
-              <warning.icon
-                size={20}
-                aria-hidden
-              />
-            </Box>
+              {warning.title}
+            </Text>
 
-            {/* コンテンツ */}
-            <Box
+            {/* メッセージ */}
+            <Text
               sx={{
-                flex: 1,
-                minWidth: 0,
-                display: 'flex',
-                flexDirection: 'column',
-                gap: spacing.xs,
+                fontSize: 1,
+                color: 'fg.default',
+                margin: 0,
+                lineHeight: 'default',
               }}
             >
-              {/* タイトル */}
+              {warning.message}
+            </Text>
+
+            {/* 削除予定時間 */}
+            {warning.showTimeUntil && item.timeUntilDeletion && (
               <Text
-                id={`${warningId}-title`}
                 sx={{
-                  fontSize: 1,
-                  fontWeight: 'bold',
-                  color: styles.titleColor,
+                  fontSize: 0,
+                  fontWeight: 'semibold',
+                  color: 'fg.muted',
                   margin: 0,
-                  lineHeight: 'condensed',
+                  mt: spacing.sm,
                 }}
               >
-                {warning.title}
+                削除予定: {item.timeUntilDeletion}
               </Text>
-
-              {/* メッセージ */}
-              <Text
-                id={`${warningId}-message`}
-                sx={{
-                  ...typography.description,
-                  margin: 0,
-                  color: 'fg.default',
-                }}
-              >
-                {warning.message}
-              </Text>
-
-              {/* 削除予定時間 */}
-              {warning.showTimeUntil && item.timeUntilDeletion && (
-                <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: spacing.xs,
-                    mt: spacing.xs,
-                    p: spacing.xs,
-                    bg: 'canvas.default',
-                    borderRadius: borderRadius.small,
-                    border: '1px solid',
-                    borderColor: 'border.muted',
-                  }}
-                >
-                  <ClockIcon
-                    size={14}
-                    aria-hidden
-                  />
-                  <Text
-                    sx={{
-                      fontSize: 0,
-                      fontWeight: 'semibold',
-                      color: 'fg.default',
-                      margin: 0,
-                    }}
-                    aria-label={`削除予定: ${item.timeUntilDeletion}`}
-                  >
-                    削除予定: {item.timeUntilDeletion}
-                  </Text>
-                </Box>
-              )}
-            </Box>
+            )}
           </Box>
         );
       })}
-
-      {/* スクリーンリーダー用の概要 */}
-      <Box
-        role="status"
-        aria-live="polite"
-        aria-atomic="true"
-        sx={{
-          position: 'absolute',
-          left: '-10000px',
-          width: '1px',
-          height: '1px',
-          overflow: 'hidden',
-        }}
-      >
-        {warnings.length > 0 && `${warnings.length}件の重要な警告があります`}
-      </Box>
     </Box>
   );
 };
