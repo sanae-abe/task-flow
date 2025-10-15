@@ -63,6 +63,7 @@ type BoardAction =
   | { type: "DELETE_LABEL"; payload: { labelId: string } }
   | { type: "DELETE_LABEL_FROM_ALL_BOARDS"; payload: { labelId: string } }
   | { type: "RESTORE_BOARD"; payload: { boardId: string } }
+  | { type: "PERMANENTLY_DELETE_BOARD"; payload: { boardId: string } }
   | { type: "EMPTY_BOARD_RECYCLE_BIN" };
 
 interface BoardContextType {
@@ -74,6 +75,7 @@ interface BoardContextType {
   updateBoard: (boardId: string, updates: Partial<KanbanBoard>) => void;
   deleteBoard: (boardId: string) => void;
   restoreBoard: (boardId: string) => void;
+  permanentlyDeleteBoard: (boardId: string) => void;
   emptyBoardRecycleBin: () => void;
   createColumn: (title: string, insertIndex?: number) => void;
   deleteColumn: (columnId: string) => void;
@@ -645,6 +647,25 @@ const boardReducer = (state: BoardState, action: BoardAction): BoardState => {
       };
     }
 
+    case "PERMANENTLY_DELETE_BOARD": {
+      // 指定されたボードを完全に削除
+      const updatedBoards = state.boards.filter(board => board.id !== action.payload.boardId);
+
+      // 現在のボードが削除された場合は、最初のアクティブボードに変更
+      let newCurrentBoard = state.currentBoard;
+      if (state.currentBoard?.id === action.payload.boardId) {
+        const activeBoards = getActiveBoards(updatedBoards);
+        newCurrentBoard = activeBoards.length > 0 ? activeBoards[0] : null;
+        updateCurrentBoardId(newCurrentBoard?.id ?? null);
+      }
+
+      return {
+        ...state,
+        boards: updatedBoards,
+        currentBoard: newCurrentBoard,
+      };
+    }
+
     case "EMPTY_BOARD_RECYCLE_BIN": {
       // 削除されたボードを完全に削除
       const activeBoards = getActiveBoards(state.boards);
@@ -1082,6 +1103,17 @@ const authenticateUser = async (email, password) => {
     [state.boards, notify],
   );
 
+  const permanentlyDeleteBoard = useCallback(
+    (boardId: string) => {
+      const boardToDelete = state.boards.find((board) => board.id === boardId);
+      if (boardToDelete) {
+        dispatch({ type: "PERMANENTLY_DELETE_BOARD", payload: { boardId } });
+        notify.success(`ボード「${boardToDelete.title}」を完全削除しました`);
+      }
+    },
+    [state.boards, notify],
+  );
+
   const emptyBoardRecycleBin = useCallback(() => {
     const deletedBoards = state.boards.filter(board => board.deletionState === "deleted");
     if (deletedBoards.length > 0) {
@@ -1245,6 +1277,7 @@ const authenticateUser = async (email, password) => {
       updateBoard,
       deleteBoard,
       restoreBoard,
+      permanentlyDeleteBoard,
       emptyBoardRecycleBin,
       createColumn,
       deleteColumn,
@@ -1263,6 +1296,7 @@ const authenticateUser = async (email, password) => {
       updateBoard,
       deleteBoard,
       restoreBoard,
+      permanentlyDeleteBoard,
       emptyBoardRecycleBin,
       createColumn,
       deleteColumn,

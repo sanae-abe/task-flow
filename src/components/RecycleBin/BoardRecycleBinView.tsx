@@ -1,10 +1,15 @@
-import { Button, Text, Box, Spinner } from "@primer/react";
-import { HistoryIcon } from "@primer/octicons-react";
+import { Button, Text, Box, Spinner, ActionMenu, ActionList } from "@primer/react";
+import {
+  HistoryIcon,
+  TrashIcon,
+  KebabHorizontalIcon
+} from "@primer/octicons-react";
 import React, { useMemo, useState } from "react";
 
 import { useBoard } from "../../contexts/BoardContext";
 import { getRecycleBinBoards } from "../../utils/recycleBin";
 import ConfirmDialog from "../ConfirmDialog";
+import { LoadingButton } from "../shared/LoadingButton";
 import type { DialogFlashMessageData } from "../shared/DialogFlashMessage";
 
 interface BoardRecycleBinViewProps {
@@ -14,22 +19,20 @@ interface BoardRecycleBinViewProps {
 const BoardRecycleBinView: React.FC<BoardRecycleBinViewProps> = ({
   onMessage,
 }) => {
-  const { state, restoreBoard, emptyBoardRecycleBin } = useBoard();
+  const { state, restoreBoard, permanentlyDeleteBoard, emptyBoardRecycleBin } = useBoard();
   const [restoringBoardId, setRestoringBoardId] = useState<string | null>(null);
+  const [deletingBoardId, setDeletingBoardId] = useState<string | null>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
   const [showEmptyConfirm, setShowEmptyConfirm] = useState(false);
   const [emptyingRecycleBin, setEmptyingRecycleBin] = useState(false);
 
   // 削除されたボードを取得
   const deletedBoards = useMemo(() => getRecycleBinBoards(state.boards), [state.boards]);
 
-  const handleRestore = async (boardId: string, boardTitle: string) => {
+  const handleRestore = async (boardId: string) => {
     setRestoringBoardId(boardId);
     try {
       restoreBoard(boardId);
-      onMessage?.({
-        type: "success",
-        text: `ボード「${boardTitle}」を復元しました`,
-      });
     } catch {
       onMessage?.({
         type: "danger",
@@ -40,15 +43,25 @@ const BoardRecycleBinView: React.FC<BoardRecycleBinViewProps> = ({
     }
   };
 
+  const handlePermanentDelete = async (boardId: string) => {
+    setDeletingBoardId(boardId);
+    try {
+      permanentlyDeleteBoard(boardId);
+    } catch {
+      onMessage?.({
+        type: "danger",
+        text: "ボードの完全削除に失敗しました",
+      });
+    } finally {
+      setDeletingBoardId(null);
+      setShowDeleteConfirm(null);
+    }
+  };
+
   const handleEmptyRecycleBin = async () => {
     setEmptyingRecycleBin(true);
     try {
-      const deletedCount = deletedBoards.length;
       emptyBoardRecycleBin();
-      onMessage?.({
-        type: "success",
-        text: `${deletedCount}件のボードを完全削除しました`,
-      });
     } catch {
       onMessage?.({
         type: "danger",
@@ -134,23 +147,50 @@ const BoardRecycleBinView: React.FC<BoardRecycleBinViewProps> = ({
               </Box>
 
               <Box sx={{ display: "flex", gap: 2, flexShrink: 0 }}>
-                <Button
-                  variant="default"
-                  size="small"
-                  leadingVisual={HistoryIcon}
-                  onClick={() => handleRestore(board.id, board.title)}
-                  disabled={restoringBoardId === board.id}
-                  aria-label={`ボード「${board.title}」を復元`}
-                >
-                  {restoringBoardId === board.id ? (
-                    <>
-                      <Spinner size="small" sx={{ mr: 1 }} />
-                      復元中...
-                    </>
-                  ) : (
-                    "復元"
-                  )}
-                </Button>
+                {(restoringBoardId === board.id || deletingBoardId === board.id) ? (
+                  <LoadingButton
+                    disabled
+                    isLoading
+                    loadingText={
+                      restoringBoardId === board.id
+                        ? "復元中..."
+                        : "削除中..."
+                    }
+                  >
+                    処理中
+                  </LoadingButton>
+                ) : (
+                  <ActionMenu>
+                    <ActionMenu.Anchor>
+                      <Button
+                        size="small"
+                        leadingVisual={KebabHorizontalIcon}
+                      >
+                        操作
+                      </Button>
+                    </ActionMenu.Anchor>
+                    <ActionMenu.Overlay>
+                      <ActionList>
+                        <ActionList.Item onSelect={() => handleRestore(board.id)}>
+                          <ActionList.LeadingVisual>
+                            <HistoryIcon size={16} />
+                          </ActionList.LeadingVisual>
+                          復元
+                        </ActionList.Item>
+                        <ActionList.Divider />
+                        <ActionList.Item
+                          variant="danger"
+                          onSelect={() => setShowDeleteConfirm(board.id)}
+                        >
+                          <ActionList.LeadingVisual>
+                            <TrashIcon size={16} />
+                          </ActionList.LeadingVisual>
+                          完全に削除
+                        </ActionList.Item>
+                      </ActionList>
+                    </ActionMenu.Overlay>
+                  </ActionMenu>
+                )}
               </Box>
             </Box>
           </Box>
@@ -166,6 +206,19 @@ const BoardRecycleBinView: React.FC<BoardRecycleBinViewProps> = ({
         confirmText="完全削除"
         cancelText="キャンセル"
       />
+
+      {/* 個別完全削除の確認ダイアログ */}
+      {showDeleteConfirm && (
+        <ConfirmDialog
+          isOpen={!!showDeleteConfirm}
+          title="ボードの完全削除"
+          message={`ボード「${deletedBoards.find(b => b.id === showDeleteConfirm)?.title || ''}」を完全に削除しますか？この操作は元に戻せません。`}
+          onConfirm={() => handlePermanentDelete(showDeleteConfirm)}
+          onCancel={() => setShowDeleteConfirm(null)}
+          confirmText="完全に削除"
+          cancelText="キャンセル"
+        />
+      )}
     </Box>
   );
 };
