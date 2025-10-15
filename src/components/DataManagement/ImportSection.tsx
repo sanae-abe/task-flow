@@ -1,11 +1,10 @@
-import { memo, useEffect } from 'react';
+import { memo } from 'react';
 import { Text, Button, Spinner, RadioGroup, Radio, FormControl, Flash } from '@primer/react';
 import { UploadIcon, FileIcon, XIcon, AlertIcon } from '@primer/octicons-react';
 
 import { useDataImport } from '../../hooks/useDataImport';
 import { useDataImportDropZone } from '../../hooks/useDataImportDropZone';
 import UniversalDropZone from '../UniversalDropZone';
-import InlineMessage from '../shared/InlineMessage';
 
 /**
  * データインポート機能を提供するセクション
@@ -26,13 +25,28 @@ export const ImportSection = memo<ImportSectionProps>(({ onImportSuccess, onMess
     executeImport,
     maxFileSize
   } = useDataImport({
-    onSuccess: () => {
+    onSuccess: (importedCount: number) => {
+      // DialogFlashMessageで成功通知を表示
+      const modeText = state.mode === 'replace' ? '置換' : '追加';
+      onMessage?.({
+        type: 'success',
+        text: `${importedCount}個のボードを${modeText}しました`
+      });
+
       // 成功後に少し待ってから選択をクリア
       setTimeout(() => {
         clearSelection();
         onImportSuccess?.();
       }, 1500);
-    }
+    },
+    onError: (error: Error) => {
+      // エラー時もDialogFlashMessageで表示
+      onMessage?.({
+        type: 'danger',
+        text: error.message
+      });
+    },
+    onMessage
   });
 
   const dropZoneProps = useDataImportDropZone({
@@ -40,16 +54,6 @@ export const ImportSection = memo<ImportSectionProps>(({ onImportSuccess, onMess
     onFileSelected: selectFile,
     disabled: state.isLoading
   });
-
-  // メッセージ状態の変化を監視してonMessageコールバックを呼び出す
-  useEffect(() => {
-    if (state.message && onMessage) {
-      onMessage({
-        type: state.message.type === 'error' ? 'critical' : state.message.type,
-        text: state.message.text
-      });
-    }
-  }, [state.message, onMessage]);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: "12px", width: '100%' }}>
@@ -204,10 +208,6 @@ export const ImportSection = memo<ImportSectionProps>(({ onImportSuccess, onMess
         </Button>
       )}
 
-      {/* エラーメッセージ表示 */}
-      {state.message && (
-        <InlineMessage variant={state.message.type} message={state.message.text} />
-      )}
     </div>
   );
 });
