@@ -1,10 +1,9 @@
-import React, { useState, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { Button, Heading, Text } from '@primer/react';
 import { PlusIcon } from '@primer/octicons-react';
 
 import LabelFormDialog from './LabelFormDialog';
 import ConfirmDialog from '../shared/Dialog/ConfirmDialog';
-import InlineMessage from '../shared/InlineMessage';
 import { EmptyState, SortableHeader, LabelTableRow } from './components';
 import { useLabelSort, useLabelDialogs, useLabelData } from './hooks';
 
@@ -13,30 +12,10 @@ interface LabelManagementPanelProps {
   onMessage?: (message: { type: 'success' | 'danger' | 'warning' | 'critical' | 'default' | 'info' | 'upsell'; text: string }) => void;
 }
 
-interface InlineMessageData {
-  type: 'success' | 'danger' | 'warning' | 'info';
-  text: string;
-}
-
-const LabelManagementPanel: React.FC<LabelManagementPanelProps> = ({ onMessage: _onMessage }) => {
+const LabelManagementPanel: React.FC<LabelManagementPanelProps> = ({ onMessage }) => {
   console.log('🚀 LabelManagementPanel: Component mounted');
   const { sortField, sortDirection, handleSort } = useLabelSort();
   const { allLabelsWithInfo } = useLabelData(sortField, sortDirection);
-
-  // InlineMessage管理
-  const [inlineMessage, setInlineMessage] = useState<InlineMessageData | null>(null);
-
-  // メッセージ表示とクリア
-  const showInlineMessage = useCallback((message: InlineMessageData) => {
-    console.log('🎯 showInlineMessage called with:', message);
-    setInlineMessage(message);
-    console.log('🎯 setInlineMessage called');
-    // 3秒後に自動クリア
-    setTimeout(() => {
-      console.log('🎯 Clearing InlineMessage');
-      setInlineMessage(null);
-    }, 3000);
-  }, []);
 
   // メッセージコールバック
   const handleMessage = useCallback((message: { type: 'success' | 'danger' | 'warning' | 'critical' | 'default' | 'info' | 'upsell'; text: string } | null) => {
@@ -47,22 +26,14 @@ const LabelManagementPanel: React.FC<LabelManagementPanelProps> = ({ onMessage: 
       return;
     }
 
-    // InlineMessageで表示
-    if (message.type === 'success' || message.type === 'danger' || message.type === 'warning' || message.type === 'info') {
-      console.log('📨 handleMessage: message type matches, calling showInlineMessage');
-      showInlineMessage({
-        type: message.type,
-        text: message.text
-      });
+    // 親のSettingsDialogのDialogFlashMessageに送信
+    if (onMessage) {
+      console.log('📨 handleMessage: calling onMessage with:', message);
+      onMessage(message);
     } else {
-      console.log('📨 handleMessage: message type does not match:', message.type);
+      console.log('📨 handleMessage: onMessage is not available');
     }
-
-    // DialogFlashMessageは無効化（InlineMessageを使用）
-    // if (onMessage) {
-    //   onMessage(message);
-    // }
-  }, [showInlineMessage]);
+  }, [onMessage]);
 
   console.log('🔌 LabelManagementPanel: About to call useLabelDialogs with handleMessage:', handleMessage);
   const {
@@ -78,7 +49,7 @@ const LabelManagementPanel: React.FC<LabelManagementPanelProps> = ({ onMessage: 
   } = useLabelDialogs(handleMessage);
   console.log('✅ LabelManagementPanel: useLabelDialogs returned successfully');
 
-  console.log('🎨 LabelManagementPanel: About to render with inlineMessage:', inlineMessage);
+  console.log('🎨 LabelManagementPanel: About to render');
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: "12px", paddingBottom: "16px" }}>
       {/* ヘッダー */}
@@ -102,14 +73,6 @@ const LabelManagementPanel: React.FC<LabelManagementPanelProps> = ({ onMessage: 
           ラベルを作成
         </Button>
       </div>
-
-      {/* InlineMessage */}
-      {inlineMessage && (
-        <InlineMessage
-          variant={inlineMessage.type === 'success' ? 'success' : inlineMessage.type === 'danger' ? 'error' : inlineMessage.type === 'warning' ? 'warning' : 'info'}
-          message={inlineMessage.text}
-        />
-      )}
 
       {/* ラベル一覧 */}
       {allLabelsWithInfo.length === 0 ? (
