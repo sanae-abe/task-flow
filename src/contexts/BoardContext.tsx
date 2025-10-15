@@ -655,7 +655,7 @@ const boardReducer = (state: BoardState, action: BoardAction): BoardState => {
       let newCurrentBoard = state.currentBoard;
       if (state.currentBoard?.id === action.payload.boardId) {
         const activeBoards = getActiveBoards(updatedBoards);
-        newCurrentBoard = activeBoards.length > 0 ? activeBoards[0] : null;
+        newCurrentBoard = activeBoards.length > 0 ? activeBoards[0]! : null;
         updateCurrentBoardId(newCurrentBoard?.id ?? null);
       }
 
@@ -671,7 +671,7 @@ const boardReducer = (state: BoardState, action: BoardAction): BoardState => {
       const activeBoards = getActiveBoards(state.boards);
 
       // 現在のボードが削除された場合は、最初のアクティブボードに変更
-      const newCurrentBoard = activeBoards.length > 0 ? activeBoards[0] : null;
+      const newCurrentBoard = activeBoards.length > 0 ? activeBoards[0]! : null;
 
       if (newCurrentBoard && newCurrentBoard.id !== state.currentBoard?.id) {
         updateCurrentBoardId(newCurrentBoard.id);

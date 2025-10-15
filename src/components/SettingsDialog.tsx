@@ -14,8 +14,8 @@ import { LabelManagementPanel } from "./LabelManagement";
 import { DataManagementPanel } from "./DataManagement";
 import { BoardSettingsPanel } from "./BoardSettings";
 import { TemplateManagementPanel } from "./TemplateManagement";
-import { RecycleBinView, BoardRecycleBinView } from "./RecycleBin";
 import { RecycleBinSettingsPanel } from "./RecycleBin/RecycleBinSettingsPanel";
+import UnifiedRecycleBinView from "./RecycleBin/UnifiedRecycleBinView";
 import type { KanbanBoard } from "../types";
 
 interface SettingsDialogProps {
@@ -121,7 +121,7 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
                 <div>
                   <RecycleBinSettingsPanel />
 
-                  {/* ボードゴミ箱セクション */}
+                  {/* 統合ゴミ箱セクション */}
                   <div
                     style={{
                       marginTop: "24px",
@@ -129,18 +129,7 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
                       paddingTop: "24px",
                     }}
                   >
-                    <BoardRecycleBinView onMessage={handleMessage} />
-                  </div>
-
-                  {/* タスクゴミ箱セクション */}
-                  <div
-                    style={{
-                      marginTop: "24px",
-                      borderTop: "1px solid var(--borderColor-muted)",
-                      paddingTop: "24px",
-                    }}
-                  >
-                    <RecycleBinView onMessage={handleMessage} />
+                    <UnifiedRecycleBinView onMessage={handleMessage} />
                   </div>
                 </div>
               ) : (

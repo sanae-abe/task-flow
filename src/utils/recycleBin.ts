@@ -1,5 +1,6 @@
 import type { Task, KanbanBoard } from "../types";
 import type { RecycleBinSettings } from "../types/settings";
+import type { RecycleBinItemWithMeta } from "../types/recycleBin";
 import { logger } from "./logger";
 
 /**
@@ -382,4 +383,66 @@ export const emptyBoardRecycleBin = (
   );
 
   return { updatedBoards, deletedCount: deletedBoards.length };
+};
+
+/**
+ * 統合されたゴミ箱アイテムを取得
+ * タスクとボードの両方を含む統合されたリストを返す
+ */
+export const getAllRecycleBinItems = (
+  boards: KanbanBoard[],
+  settings: RecycleBinSettings,
+): RecycleBinItemWithMeta[] => {
+  const allItems: RecycleBinItemWithMeta[] = [];
+
+  // 削除されたタスクを追加
+  const deletedTasks = getRecycleBinTasks(boards);
+  deletedTasks.forEach((task) => {
+    const board = boards.find(b => b.id === task.boardId);
+    const column = board?.columns.find(c => c.id === task.columnId);
+
+    allItems.push({
+      id: task.id,
+      type: 'task',
+      title: task.title,
+      description: task.description,
+      deletedAt: task.deletedAt,
+      boardId: task.boardId,
+      columnId: task.columnId,
+      boardTitle: board?.title || "不明なボード",
+      columnTitle: column?.title || "不明なカラム",
+      canRestore: true,
+      timeUntilDeletion: task.deletedAt
+        ? formatTimeUntilDeletion(task.deletedAt, settings.retentionDays)
+        : undefined,
+    });
+  });
+
+  // 削除されたボードを追加
+  const deletedBoards = getRecycleBinBoards(boards);
+  deletedBoards.forEach((board) => {
+    // ボード内の全タスク数を計算
+    const taskCount = board.columns.reduce((total, column) => total + column.tasks.length, 0);
+
+    allItems.push({
+      id: board.id,
+      type: 'board',
+      title: board.title,
+      description: `${board.columns.length}個のカラムを含むボード`,
+      deletedAt: board.deletedAt,
+      columnsCount: board.columns.length,
+      taskCount,
+      canRestore: true,
+      timeUntilDeletion: board.deletedAt
+        ? formatTimeUntilDeletion(board.deletedAt, settings.retentionDays)
+        : undefined,
+    });
+  });
+
+  // 削除日時順でソート（新しいものから）
+  return allItems.sort((a, b) => {
+    const aTime = new Date(a.deletedAt || 0).getTime();
+    const bTime = new Date(b.deletedAt || 0).getTime();
+    return bTime - aTime;
+  });
 };
