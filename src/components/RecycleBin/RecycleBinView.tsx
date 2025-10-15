@@ -3,6 +3,8 @@ import {
   Button,
   Text,
   Spinner,
+  ActionMenu,
+  ActionList,
 } from "@primer/react";
 import ConfirmDialog from "../ConfirmDialog";
 import {
@@ -10,7 +12,8 @@ import {
   RepoIcon,
   ClockIcon,
   HistoryIcon,
-  ArrowRightIcon
+  ArrowRightIcon,
+  KebabHorizontalIcon
 } from "@primer/octicons-react";
 import { useBoard } from "../../contexts/BoardContext";
 import {
@@ -18,6 +21,7 @@ import {
   emptyRecycleBin,
   restoreTaskFromRecycleBin,
   formatTimeUntilDeletion,
+  permanentlyDeleteTask,
 } from "../../utils/recycleBin";
 import { useRecycleBinSettingsReadOnly } from "../../hooks/useRecycleBinSettings";
 import { UI_TEXT, MESSAGES } from "../../constants/recycleBin";
@@ -30,8 +34,9 @@ import { InlineMessage } from "../shared";
 export const RecycleBinView: React.FC = () => {
   const { state, importBoards } = useBoard();
   const [isRestoring, setIsRestoring] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState<string | null>(null);
   const [isEmptying, setIsEmptying] = useState(false);
-  const [showConfirm, setShowConfirm] = useState<string | null>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
   const [showEmptyConfirm, setShowEmptyConfirm] = useState(false);
 
   // ゴミ箱設定を読み込み
@@ -57,12 +62,31 @@ export const RecycleBinView: React.FC = () => {
           `タスク「${taskToRestore.title}」を復元しました` :
           "タスクを復元しました";
         importBoards(updatedBoards, true, customMessage);
-        setShowConfirm(null);
       }
     } catch (error) {
       logger.error("復元エラー:", error);
     } finally {
       setIsRestoring(null);
+    }
+  };
+
+  const handlePermanentDelete = async (taskId: string) => {
+    setIsDeleting(taskId);
+    try {
+      // 削除前にタスク情報を取得
+      const taskToDelete = deletedTasks.find(task => task.id === taskId);
+      const { updatedBoards, success } = permanentlyDeleteTask(state.boards, taskId);
+      if (success) {
+        const customMessage = taskToDelete ?
+          `タスク「${taskToDelete.title}」を完全に削除しました` :
+          "タスクを完全に削除しました";
+        importBoards(updatedBoards, true, customMessage);
+        setShowDeleteConfirm(null);
+      }
+    } catch (error) {
+      logger.error("完全削除エラー:", error);
+    } finally {
+      setIsDeleting(null);
     }
   };
 
@@ -146,15 +170,15 @@ export const RecycleBinView: React.FC = () => {
             disabled={isEmptying}
           >
             {isEmptying ? (
-              <>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                 <Spinner size="small" style={{ marginRight: '4px' }} />
                 {MESSAGES.EMPTY_BIN.IN_PROGRESS}
-              </>
+              </span>
             ) : (
-              <>
-                <TrashIcon size={12} />
+              <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <TrashIcon size={14} />
                 {UI_TEXT.VIEW.EMPTY_BIN_BUTTON}
-              </>
+              </span>
             )}
           </Button>
         </div>
@@ -213,41 +237,44 @@ export const RecycleBinView: React.FC = () => {
                 </Text>
               </div>
               <div style={{ display: 'flex', gap: '8px' }}>
-                {isRestoring === task.id ? (
+                {(isRestoring === task.id || isDeleting === task.id) ? (
                   <Button disabled>
                     <Spinner size="small" style={{ marginRight: '4px' }} />
-                    {MESSAGES.RESTORE.IN_PROGRESS}
+                    {isRestoring === task.id ? MESSAGES.RESTORE.IN_PROGRESS : "削除中..."}
                   </Button>
-                ) : showConfirm === task.id ? (
-                  <div style={{ display: 'flex', gap: '4px' }}>
-                    <Button
-                      variant="primary"
-                      size="small"
-                      onClick={() => handleRestore(task.id)}
-                    >
-                      {MESSAGES.RESTORE.CONFIRM_ACTION}
-                    </Button>
-                    <Button
-                      size="small"
-                      onClick={() => setShowConfirm(null)}
-                    >
-                      {MESSAGES.RESTORE.CANCEL_ACTION}
-                    </Button>
-                  </div>
                 ) : (
-                  <Button
-                    size="small"
-                    onClick={() => setShowConfirm(task.id)}
-                  >
-                    <div style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '4px'
-                    }}>
-                      <HistoryIcon size={12} />
-                      <Text>{UI_TEXT.VIEW.RESTORE_BUTTON}</Text>
-                    </div>
-                  </Button>
+                  <ActionMenu>
+                    <ActionMenu.Anchor>
+                      <Button
+                        size="small"
+                        leadingVisual={KebabHorizontalIcon}
+                      >
+                        操作
+                      </Button>
+                    </ActionMenu.Anchor>
+                    <ActionMenu.Overlay>
+                      <ActionList>
+                        <ActionList.Item
+                          onSelect={() => handleRestore(task.id)}
+                        >
+                          <ActionList.LeadingVisual>
+                            <HistoryIcon size={16} />
+                          </ActionList.LeadingVisual>
+                          復元
+                        </ActionList.Item>
+                        <ActionList.Divider />
+                        <ActionList.Item
+                          variant="danger"
+                          onSelect={() => setShowDeleteConfirm(task.id)}
+                        >
+                          <ActionList.LeadingVisual>
+                            <TrashIcon size={16} />
+                          </ActionList.LeadingVisual>
+                          完全に削除
+                        </ActionList.Item>
+                      </ActionList>
+                    </ActionMenu.Overlay>
+                  </ActionMenu>
                 )}
               </div>
             </div>
@@ -316,6 +343,19 @@ export const RecycleBinView: React.FC = () => {
         confirmText={MESSAGES.EMPTY_BIN.CONFIRM_ACTION}
         cancelText={MESSAGES.EMPTY_BIN.CANCEL_ACTION}
       />
+
+      {/* 個別完全削除の確認ダイアログ */}
+      {showDeleteConfirm && (
+        <ConfirmDialog
+          isOpen={!!showDeleteConfirm}
+          title="タスクの完全削除"
+          message={`タスク「${deletedTasks.find(t => t.id === showDeleteConfirm)?.title || ''}」を完全に削除しますか？この操作は元に戻せません。`}
+          onConfirm={() => handlePermanentDelete(showDeleteConfirm)}
+          onCancel={() => setShowDeleteConfirm(null)}
+          confirmText="完全に削除"
+          cancelText="キャンセル"
+        />
+      )}
     </div>
   );
 };

@@ -122,6 +122,36 @@ export const emptyRecycleBin = (
 
   return { updatedBoards, deletedCount: deletedTasks.length };
 };
+/**
+ * 特定のタスクを完全に削除する
+ */
+export const permanentlyDeleteTask = (
+  boards: KanbanBoard[],
+  taskId: string,
+): { updatedBoards: KanbanBoard[]; success: boolean } => {
+  const updatedBoards = boards.map((board) => ({
+    ...board,
+    columns: board.columns.map((column) => ({
+      ...column,
+      tasks: column.tasks.filter((task) => task.id !== taskId),
+    })),
+  }));
+
+  // タスクが実際に削除されたかチェック
+  const taskStillExists = updatedBoards.some(board =>
+    board.columns.some(column =>
+      column.tasks.some(task => task.id === taskId)
+    )
+  );
+
+  const success = !taskStillExists;
+
+  if (success) {
+    logger.info(`🗑️ Permanently deleted task: ${taskId}`);
+  }
+
+  return { updatedBoards, success };
+};
 
 /**
  * タスクをゴミ箱から復元

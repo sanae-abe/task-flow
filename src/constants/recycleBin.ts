@@ -100,7 +100,7 @@ export const UI_TEXT = {
     EMPTY_DESCRIPTION: '削除されたタスクはありません。',
     TASK_COUNT: (count: number) => `${count}件のタスクがゴミ箱にあります`,
     WARNING_LIMITED: (days: number) => `これらのタスクは${days}日後に自動的に完全削除されます。`,
-    WARNING_UNLIMITED: 'これらのタスクは無制限に保持されます。手動で削除するまで自動削除されません。不要なタスクは「ゴミ箱を空にする」で削除してください。',
+    WARNING_UNLIMITED: 'これらのタスクは無制限に保持されます。手動で削除するまで自動削除されません。',
     EMPTY_BIN_BUTTON: 'ゴミ箱を空にする',
     RESTORE_BUTTON: '復元',
     DELETION_SCHEDULE: '削除予定:',
