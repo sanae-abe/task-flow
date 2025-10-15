@@ -220,6 +220,26 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
         if (!currentBoard) {
           return;
         }
+        const labelToUpdate = currentBoardLabels.find(label => label.id === labelId);
+        if (!labelToUpdate) {
+          return;
+        }
+
+        // 変更内容を判定してメッセージを生成
+        const isNameChanged = updates.name !== undefined && updates.name !== labelToUpdate.name;
+        const isColorChanged = updates.color !== undefined && updates.color !== labelToUpdate.color;
+
+        let messageText = '';
+        if (isNameChanged && isColorChanged) {
+          messageText = `ラベル「${labelToUpdate.name}」を「${updates.name}」に変更し、色も変更しました`;
+        } else if (isNameChanged) {
+          messageText = `ラベル名を「${labelToUpdate.name}」から「${updates.name}」に変更しました`;
+        } else if (isColorChanged) {
+          messageText = `ラベル「${labelToUpdate.name}」の色を変更しました`;
+        } else {
+          // 変更がない場合（念のため）
+          messageText = `ラベル「${labelToUpdate.name}」を更新しました`;
+        }
 
         boardDispatch({
           type: 'UPDATE_LABEL',
@@ -227,30 +247,30 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
         });
 
         // 成功メッセージを全てのコールバックに送信
-        console.log('💬 updateLabel: Attempting to send message, callback count:', _messageCallbacksRef.current.size);
+        console.log('📬 updateLabel: Attempting to send message, callback count:', _messageCallbacksRef.current.size);
         if (_messageCallbacksRef.current.size > 0) {
           const messageToSend = {
             type: 'success' as const,
-            text: 'ラベルを更新しました',
+            text: messageText,
             title: 'ラベル更新完了'
           };
-          console.log('💬 updateLabel: Sending message to all callbacks:', messageToSend);
+          console.log('📬 updateLabel: Sending message to all callbacks:', messageToSend);
           
           let callbackIndex = 0;
           _messageCallbacksRef.current.forEach((callback) => {
             callbackIndex++;
             try {
-              console.log(`💬 updateLabel: Sending to callback ${callbackIndex}`);
+              console.log(`📬 updateLabel: Sending to callback ${callbackIndex}`);
               callback(messageToSend);
-              console.log(`💬 updateLabel: Message sent successfully to callback ${callbackIndex}`);
+              console.log(`📬 updateLabel: Message sent successfully to callback ${callbackIndex}`);
             } catch (error) {
-              console.error(`💬 updateLabel: Error sending message to callback ${callbackIndex}:`, error);
+              console.error(`📬 updateLabel: Error sending message to callback ${callbackIndex}:`, error);
             }
           });
         } else {
-          console.log('💬 updateLabel: No callbacks available');
+          console.log('📬 updateLabel: No callbacks available');
         }
-      },
+      },,
       deleteLabel: (labelId: string) => {
         if (!currentBoard) {
           return;
