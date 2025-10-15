@@ -28,7 +28,7 @@ const TemplateTableRow: React.FC<TemplateTableRowProps> = ({
     <Box
       sx={{
         display: 'grid',
-        gridTemplateColumns: '1fr 120px 80px 100px',
+        gridTemplateColumns: '1fr 100px 80px 100px',
         gap: 2,
         p: 2,
         alignItems: 'center',
@@ -73,7 +73,7 @@ const TemplateTableRow: React.FC<TemplateTableRowProps> = ({
       <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
         <Text
           sx={{
-            fontSize: 0,
+            fontSize: 1,
             color: 'fg.muted',
             display: 'inline-block'
           }}
