@@ -1,10 +1,12 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { deepEqual } from '../utils/deepEqual';
 
 /**
  * フォームの変更を検知するカスタムフック
  *
  * フォームの初期状態と現在の状態を比較して、
  * 変更があったかどうかを判定します。
+ * パフォーマンス最適化のためuseCallback/useMemoを活用しています。
  */
 export const useFormChangeDetector = <T extends Record<string, unknown>>(
   formData: T,
@@ -15,10 +17,29 @@ export const useFormChangeDetector = <T extends Record<string, unknown>>(
   const initialDataRef = useRef<T | null>(null);
   const onCloseCallbackRef = useRef<(() => void) | null>(null);
 
+  /**
+   * 初期データを効率的に複製
+   * structuredCloneがサポートされている場合はそれを使用、
+   * そうでなければJSON.parse/stringifyを使用
+   */
+  const cloneFormData = useCallback((data: T): T => {
+    try {
+      // structuredClone は新しいブラウザでサポート
+      if (typeof structuredClone !== 'undefined') {
+        return structuredClone(data);
+      }
+      // フォールバック: JSON parse/stringify
+      return JSON.parse(JSON.stringify(data));
+    } catch {
+      // 最終的なフォールバック: シャローコピー
+      return { ...data };
+    }
+  }, []);
+
   // ダイアログが開かれた時に初期データを保存
   useEffect(() => {
     if (isOpen && !initialDataRef.current) {
-      initialDataRef.current = JSON.parse(JSON.stringify(formData));
+      initialDataRef.current = cloneFormData(formData);
       setHasChanges(false);
     } else if (!isOpen) {
       // ダイアログが閉じられた時に初期化
@@ -27,46 +48,52 @@ export const useFormChangeDetector = <T extends Record<string, unknown>>(
       setShowCloseConfirm(false);
       onCloseCallbackRef.current = null;
     }
-  }, [isOpen, formData]);
+  }, [isOpen, formData, cloneFormData]);
 
-  // フォームデータの変更を監視
-  useEffect(() => {
-    if (isOpen && initialDataRef.current) {
-      const hasFormChanges = !deepEqual(initialDataRef.current, formData);
-      setHasChanges(hasFormChanges);
+  // フォームデータの変更を監視（メモ化して不要な再計算を防ぐ）
+  const hasFormChanges = useMemo(() => {
+    if (!isOpen || !initialDataRef.current) {
+      return false;
     }
+    return !deepEqual(initialDataRef.current, formData);
   }, [formData, isOpen]);
+
+  // hasChanges状態の更新
+  useEffect(() => {
+    setHasChanges(hasFormChanges);
+  }, [hasFormChanges]);
 
   /**
    * ダイアログを閉じる処理
    * 変更がある場合は確認ダイアログを表示
    */
-  const handleClose = (onClose: () => void) => {
+  const handleClose = useCallback((onClose: () => void) => {
     if (hasChanges) {
       onCloseCallbackRef.current = onClose;
       setShowCloseConfirm(true);
     } else {
       onClose();
     }
-  };
+  }, [hasChanges]);
 
   /**
    * 確認ダイアログで「はい」を選択した時の処理
    */
-  const handleConfirmClose = () => {
+  const handleConfirmClose = useCallback(() => {
     setShowCloseConfirm(false);
     if (onCloseCallbackRef.current) {
       onCloseCallbackRef.current();
+      onCloseCallbackRef.current = null;
     }
-  };
+  }, []);
 
   /**
    * 確認ダイアログで「キャンセル」を選択した時の処理
    */
-  const handleCancelClose = () => {
+  const handleCancelClose = useCallback(() => {
     setShowCloseConfirm(false);
     onCloseCallbackRef.current = null;
-  };
+  }, []);
 
   return {
     hasChanges,
@@ -76,62 +103,3 @@ export const useFormChangeDetector = <T extends Record<string, unknown>>(
     handleCancelClose,
   };
 };
-
-/**
- * 深い比較を行うヘルパー関数
- */
-function deepEqual(obj1: unknown, obj2: unknown): boolean {
-  if (obj1 === obj2) {
-    return true;
-  }
-
-  if (obj1 === null || obj2 === null || obj1 === undefined || obj2 === undefined) {
-    return obj1 === obj2;
-  }
-
-  if (typeof obj1 !== typeof obj2) {
-    return false;
-  }
-
-  if (typeof obj1 !== 'object') {
-    return obj1 === obj2;
-  }
-
-  if (Array.isArray(obj1) !== Array.isArray(obj2)) {
-    return false;
-  }
-
-  if (Array.isArray(obj1) && Array.isArray(obj2)) {
-    if (obj1.length !== obj2.length) {
-      return false;
-    }
-    for (let i = 0; i < obj1.length; i++) {
-      if (!deepEqual(obj1[i], obj2[i])) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  // Both are objects
-  const objRecord1 = obj1 as Record<string, unknown>;
-  const objRecord2 = obj2 as Record<string, unknown>;
-
-  const keys1 = Object.keys(objRecord1);
-  const keys2 = Object.keys(objRecord2);
-
-  if (keys1.length !== keys2.length) {
-    return false;
-  }
-
-  for (const key of keys1) {
-    if (!keys2.includes(key)) {
-      return false;
-    }
-    if (!deepEqual(objRecord1[key], objRecord2[key])) {
-      return false;
-    }
-  }
-
-  return true;
-}

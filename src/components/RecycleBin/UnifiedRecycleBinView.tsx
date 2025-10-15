@@ -4,32 +4,25 @@ import {
   Text,
   Spinner,
   Heading,
-  IconButton,
 } from "@primer/react";
 import {
-  HistoryIcon,
-  TrashIcon,
   ProjectIcon,
   TasklistIcon,
   ColumnsIcon,
   ClockIcon,
-  ChevronUpIcon,
-  ChevronDownIcon,
-  EyeIcon,
 } from "@primer/octicons-react";
 
 import { useBoard } from "../../contexts/BoardContext";
 import { getAllRecycleBinItems } from "../../utils/recycleBin";
 import { useRecycleBinSettingsReadOnly } from "../../hooks/useRecycleBinSettings";
 import { useRecycleBinOperations } from "../../hooks/useRecycleBinOperations";
+import { useRecycleBinSort } from "../../hooks/useRecycleBinSort";
 import ConfirmDialog from "../ConfirmDialog";
-import UnifiedDialog from "../shared/Dialog/UnifiedDialog";
-import { LoadingButton } from "../shared/LoadingButton";
+import { SortableHeader } from "./components/SortableHeader";
+import { RecycleBinItemActions } from "./components/RecycleBinItemActions";
+import { RecycleBinItemDetailDialog } from "./components/RecycleBinItemDetailDialog";
 import type { DialogFlashMessageData } from "../shared/DialogFlashMessage";
 import type { RecycleBinItemWithMeta } from "../../types/recycleBin";
-
-type SortField = 'type' | 'title' | 'deletedAt' | 'location' | 'timeUntilDeletion';
-type SortDirection = 'asc' | 'desc';
 
 interface UnifiedRecycleBinViewProps {
   onMessage?: (message: DialogFlashMessageData) => void;
@@ -50,8 +43,6 @@ const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
   const [showEmptyConfirm, setShowEmptyConfirm] = useState(false);
   const [emptyingRecycleBin, setEmptyingRecycleBin] = useState(false);
-  const [sortField, setSortField] = useState<SortField>('deletedAt');
-  const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   const [showDetailDialog, setShowDetailDialog] = useState<string | null>(null);
 
   // ゴミ箱設定を読み込み
@@ -73,64 +64,16 @@ const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
     [state.boards, recycleBinSettings]
   );
 
-  // ソート済みアイテム
-  const allRecycleBinItems = useMemo(() =>
-    [...rawRecycleBinItems].sort((a, b) => {
-      let aValue: string | number;
-      let bValue: string | number;
-
-      switch (sortField) {
-        case 'type':
-          aValue = a.type;
-          bValue = b.type;
-          break;
-        case 'title':
-          aValue = a.title.toLowerCase();
-          bValue = b.title.toLowerCase();
-          break;
-        case 'deletedAt':
-          aValue = new Date(a.deletedAt || 0).getTime();
-          bValue = new Date(b.deletedAt || 0).getTime();
-          break;
-        case 'location':
-          aValue = a.type === 'task' ? `${a.boardTitle} → ${a.columnTitle}` : '';
-          bValue = b.type === 'task' ? `${b.boardTitle} → ${b.columnTitle}` : '';
-          break;
-        case 'timeUntilDeletion':
-          // 削除予定時刻を計算してソート（無制限の場合は最後に配置）
-          const getExpirationTime = (item: RecycleBinItemWithMeta) => {
-            if (recycleBinSettings.retentionDays === null || !item.deletedAt) {
-              return Number.MAX_SAFE_INTEGER; // 無制限は最後
-            }
-            const deletedDate = new Date(item.deletedAt);
-            return deletedDate.getTime() + (recycleBinSettings.retentionDays * 24 * 60 * 60 * 1000);
-          };
-          aValue = getExpirationTime(a);
-          bValue = getExpirationTime(b);
-          break;
-        default:
-          return 0;
-      }
-
-      if (aValue < bValue) {
-        return sortDirection === 'asc' ? -1 : 1;
-      }
-      if (aValue > bValue) {
-        return sortDirection === 'asc' ? 1 : -1;
-      }
-      return 0;
-    }),
-    [rawRecycleBinItems, sortField, sortDirection, recycleBinSettings.retentionDays]);
-
-  // ソートハンドラー
-  const handleSort = (field: SortField) => {
-    if (sortField === field) {
-      setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc');
-    } else {
-      setSortField(field);
-      setSortDirection('asc');
-    }
-  };
+  // ソート機能
+  const {
+    sortField,
+    sortDirection,
+    sortedItems: allRecycleBinItems,
+    handleSort,
+  } = useRecycleBinSort({
+    items: rawRecycleBinItems,
+    recycleBinSettings,
+  });
 
   const handleRestore = async (item: RecycleBinItemWithMeta) => {
     setRestoringItemId(item.id);
@@ -196,95 +139,18 @@ const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
     }
   };
 
-  // ソート可能ヘッダーコンポーネント
-  const SortableHeader: React.FC<{
-    field: SortField;
-    children: React.ReactNode;
-    align?: 'left' | 'center';
-  }> = ({ field, children, align = 'left' }) => {
-    const isActive = sortField === field;
-
-    return (
-      <button
-        onClick={() => handleSort(field)}
-        aria-label={`${children}でソート`}
-        style={{
-          width: '100%',
-          justifyContent: align === 'center' ? 'center' : 'flex-start',
-          fontWeight: 'bold',
-          border: 0,
-          padding: '8px',
-          color: 'var(--fgColor-muted)',
-          fontSize: '12px',
-          background: 'none',
-          appearance: 'none',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '4px',
-        }}
-      >
-        <Text sx={{ fontSize: 0, fontWeight: 'bold' }}>
-          {children}
-        </Text>
-        <div style={{ opacity: isActive ? 1 : 0.3 }}>
-          {isActive && sortDirection === 'asc' ? (
-            <ChevronUpIcon size={12} />
-          ) : (
-            <ChevronDownIcon size={12} />
-          )}
-        </div>
-      </button>
-    );
-  };
-
-  const renderItemActions = (item: RecycleBinItemWithMeta) => {
+  const getItemLoadingState = (item: RecycleBinItemWithMeta) => {
     const isLoading =
       restoringItemId === item.id ||
       deletingItemId === item.id ||
       (item.type === 'task' && (restoringTaskId === item.id || deletingTaskId === item.id));
 
-    if (isLoading) {
-      return (
-        <LoadingButton
-          disabled
-          isLoading
-          loadingText={
-            restoringItemId === item.id || restoringTaskId === item.id
-              ? "復元中..."
-              : "削除中..."
-          }
-          size="small"
-        >
-          処理中
-        </LoadingButton>
-      );
-    }
+    const loadingText =
+      restoringItemId === item.id || restoringTaskId === item.id
+        ? "復元中..."
+        : "削除中...";
 
-    return (
-      <div style={{ display: 'flex', justifyContent: 'center', gap: '4px' }}>
-        <IconButton
-          icon={EyeIcon}
-          aria-label={`${item.type === 'board' ? 'ボード' : item.type === 'column' ? 'カラム' : 'タスク'}「${item.title}」の詳細を表示`}
-          size="small"
-          variant="invisible"
-          onClick={() => setShowDetailDialog(item.id)}
-        />
-        <IconButton
-          icon={HistoryIcon}
-          aria-label={`${item.type === 'board' ? 'ボード' : item.type === 'column' ? 'カラム' : 'タスク'}「${item.title}」を復元`}
-          size="small"
-          variant="invisible"
-          onClick={() => handleRestore(item)}
-        />
-        <IconButton
-          icon={TrashIcon}
-          aria-label={`${item.type === 'board' ? 'ボード' : item.type === 'column' ? 'カラム' : 'タスク'}「${item.title}」を完全に削除`}
-          size="small"
-          variant="invisible"
-          onClick={() => setShowDeleteConfirm(item.id)}
-        />
-      </div>
-    );
+    return { isLoading, loadingText };
   };
 
   const selectedItem = showDeleteConfirm
@@ -292,7 +158,7 @@ const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
     : null;
 
   const detailItem = showDetailDialog
-    ? allRecycleBinItems.find(item => item.id === showDetailDialog)
+    ? allRecycleBinItems.find(item => item.id === showDetailDialog) ?? null
     : null;
 
   return (
@@ -364,9 +230,31 @@ const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
             fontWeight: 'bold',
             color: 'var(--fgColor-muted)'
           }}>
-            <SortableHeader field="type">種別</SortableHeader>
-            <SortableHeader field="title">タイトル</SortableHeader>
-            <SortableHeader field="timeUntilDeletion" align="center">削除予定</SortableHeader>
+            <SortableHeader
+              field="type"
+              sortField={sortField}
+              sortDirection={sortDirection}
+              onSort={handleSort}
+            >
+              種別
+            </SortableHeader>
+            <SortableHeader
+              field="title"
+              sortField={sortField}
+              sortDirection={sortDirection}
+              onSort={handleSort}
+            >
+              タイトル
+            </SortableHeader>
+            <SortableHeader
+              field="timeUntilDeletion"
+              align="center"
+              sortField={sortField}
+              sortDirection={sortDirection}
+              onSort={handleSort}
+            >
+              削除予定
+            </SortableHeader>
             <Text sx={{ textAlign: 'center', fontSize: 0, p: 1 }}>操作</Text>
           </div>
 
@@ -445,7 +333,14 @@ const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
 
                 {/* 操作 */}
                 <div>
-                  {renderItemActions(item)}
+                  <RecycleBinItemActions
+                    item={item}
+                    isLoading={getItemLoadingState(item).isLoading}
+                    loadingText={getItemLoadingState(item).loadingText}
+                    onRestore={handleRestore}
+                    onDelete={(item) => setShowDeleteConfirm(item.id)}
+                    onShowDetail={(item) => setShowDetailDialog(item.id)}
+                  />
                 </div>
               </div>
             ))}
@@ -478,156 +373,13 @@ const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
       )}
 
       {/* 詳細表示ダイアログ */}
-      {detailItem && (
-        <UnifiedDialog
-          isOpen={!!showDetailDialog}
-          onClose={() => setShowDetailDialog(null)}
-          title={`${detailItem.type === 'board' ? 'ボード' : detailItem.type === 'column' ? 'カラム' : 'タスク'}詳細`}
-          variant="modal"
-          size="large"
-        >
-          <div style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            {/* タイトル */}
-            <div>
-              <Text sx={{ fontSize: 0, color: 'fg.muted', mb: 1 }}>タイトル</Text>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                {detailItem.type === 'board' ? (
-                  <ProjectIcon size={20} />
-                ) : detailItem.type === 'column' ? (
-                  <ColumnsIcon size={20} />
-                ) : (
-                  <TasklistIcon size={20} />
-                )}
-                <Text sx={{ fontSize: 2, fontWeight: 'semibold' }}>{detailItem.title}</Text>
-                <Text
-                  sx={{
-                    fontSize: 0,
-                    color: "fg.default",
-                    px: 2,
-                    py: 1,
-                    bg: detailItem.type === 'board' ? "attention.subtle" : detailItem.type === 'column' ? "success.subtle" : "accent.subtle",
-                    borderRadius: 1,
-                  }}
-                >
-                  {detailItem.type === 'board' ? 'ボード' : detailItem.type === 'column' ? 'カラム' : 'タスク'}
-                </Text>
-              </div>
-            </div>
-
-            {/* 説明文（タスクの場合） */}
-            {detailItem.description && detailItem.type === 'task' && (
-              <div>
-                <Text sx={{ fontSize: 0, color: 'fg.muted', mb: 1 }}>説明</Text>
-                <Text
-                  sx={{
-                    fontSize: 1,
-                    color: 'fg.default',
-                    p: 2,
-                    bg: 'canvas.subtle',
-                    borderRadius: 1,
-                    border: '1px solid',
-                    borderColor: 'border.default'
-                  }}
-                >
-                  {detailItem.description.replace(/<[^>]*>/g, "")}
-                </Text>
-              </div>
-            )}
-
-            {/* 元の場所・詳細情報 */}
-            <div>
-              <Text sx={{ fontSize: 0, color: 'fg.muted', mb: 1 }}>詳細情報</Text>
-              <div style={{
-                display: 'grid',
-                gridTemplateColumns: '1fr 1fr',
-                gap: '12px',
-                padding: '12px',
-                background: 'var(--bgColor-muted)',
-                borderRadius: '6px',
-                border: '1px solid',
-                borderColor: 'var(--borderColor-default)'
-              }}>
-                {detailItem.type === 'task' ? (
-                  <>
-                    <div>
-                      <Text sx={{ fontSize: 0, color: 'fg.muted', mb: 1 }}>所属ボード</Text>
-                      <Text sx={{ fontSize: 1, fontWeight: 'semibold' }}>{detailItem.boardTitle}</Text>
-                    </div>
-                    <div>
-                      <Text sx={{ fontSize: 0, color: 'fg.muted', mb: 1 }}>所属カラム</Text>
-                      <Text sx={{ fontSize: 1, fontWeight: 'semibold' }}>{detailItem.columnTitle}</Text>
-                    </div>
-                  </>
-                ) : detailItem.type === 'column' ? (
-                  <>
-                    <div>
-                      <Text sx={{ fontSize: 0, color: 'fg.muted', mb: 1 }}>所属ボード</Text>
-                      <Text sx={{ fontSize: 1, fontWeight: 'semibold' }}>{detailItem.boardTitle}</Text>
-                    </div>
-                    <div>
-                      <Text sx={{ fontSize: 0, color: 'fg.muted', mb: 1 }}>タスク数</Text>
-                      <Text sx={{ fontSize: 1, fontWeight: 'semibold' }}>{detailItem.taskCount}個</Text>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div>
-                      <Text sx={{ fontSize: 0, color: 'fg.muted', mb: 1 }}>カラム数</Text>
-                      <Text sx={{ fontSize: 1, fontWeight: 'semibold' }}>{detailItem.columnsCount}個</Text>
-                    </div>
-                    <div>
-                      <Text sx={{ fontSize: 0, color: 'fg.muted', mb: 1 }}>タスク数</Text>
-                      <Text sx={{ fontSize: 1, fontWeight: 'semibold' }}>{detailItem.taskCount}個</Text>
-                    </div>
-                  </>
-                )}
-                <div>
-                  <Text sx={{ fontSize: 0, color: 'fg.muted', mb: 1 }}>削除日時</Text>
-                  <Text sx={{ fontSize: 1 }}>
-                    {new Date(detailItem.deletedAt || "").toLocaleString("ja-JP")}
-                  </Text>
-                </div>
-                <div>
-                  <Text sx={{ fontSize: 0, color: 'fg.muted', mb: 1 }}>削除予定</Text>
-                  {detailItem.timeUntilDeletion ? (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      <ClockIcon size={16} />
-                      <Text sx={{ fontSize: 1 }}>{detailItem.timeUntilDeletion}</Text>
-                    </div>
-                  ) : (
-                    <Text sx={{ fontSize: 1, color: 'fg.muted' }}>自動削除なし</Text>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* アクションボタン */}
-            <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end', borderTop: '1px solid', borderColor: 'var(--borderColor-default)', paddingTop: '16px' }}>
-              <Button onClick={() => setShowDetailDialog(null)}>閉じる</Button>
-              <Button
-                variant="primary"
-                leadingVisual={HistoryIcon}
-                onClick={() => {
-                  handleRestore(detailItem);
-                  setShowDetailDialog(null);
-                }}
-              >
-                復元
-              </Button>
-              <Button
-                variant="danger"
-                leadingVisual={TrashIcon}
-                onClick={() => {
-                  setShowDetailDialog(null);
-                  setShowDeleteConfirm(detailItem.id);
-                }}
-              >
-                完全に削除
-              </Button>
-            </div>
-          </div>
-        </UnifiedDialog>
-      )}
+      <RecycleBinItemDetailDialog
+        item={detailItem}
+        isOpen={!!showDetailDialog}
+        onClose={() => setShowDetailDialog(null)}
+        onRestore={handleRestore}
+        onDelete={(item) => setShowDeleteConfirm(item.id)}
+      />
     </div>
   );
 };

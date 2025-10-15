@@ -29,28 +29,50 @@ const BoardRecycleBinView: React.FC<BoardRecycleBinViewProps> = ({
   // 削除されたボードを取得
   const deletedBoards = useMemo(() => getRecycleBinBoards(state.boards), [state.boards]);
 
+  /**
+   * ボード復元の統一エラーハンドリング
+   */
   const handleRestore = async (boardId: string) => {
+    const board = deletedBoards.find(b => b.id === boardId);
+    const boardTitle = board?.title || 'ボード';
+
     setRestoringBoardId(boardId);
     try {
       restoreBoard(boardId);
-    } catch {
+      onMessage?.({
+        type: "success",
+        text: `ボード「${boardTitle}」を復元しました`,
+      });
+    } catch (error) {
+      console.error('Board restore failed:', error);
       onMessage?.({
         type: "danger",
-        text: "ボードの復元に失敗しました",
+        text: `ボード「${boardTitle}」の復元に失敗しました`,
       });
     } finally {
       setRestoringBoardId(null);
     }
   };
 
+  /**
+   * ボード完全削除の統一エラーハンドリング
+   */
   const handlePermanentDelete = async (boardId: string) => {
+    const board = deletedBoards.find(b => b.id === boardId);
+    const boardTitle = board?.title || 'ボード';
+
     setDeletingBoardId(boardId);
     try {
       permanentlyDeleteBoard(boardId);
-    } catch {
+      onMessage?.({
+        type: "success",
+        text: `ボード「${boardTitle}」を完全に削除しました`,
+      });
+    } catch (error) {
+      console.error('Board permanent delete failed:', error);
       onMessage?.({
         type: "danger",
-        text: "ボードの完全削除に失敗しました",
+        text: `ボード「${boardTitle}」の完全削除に失敗しました`,
       });
     } finally {
       setDeletingBoardId(null);
@@ -58,11 +80,21 @@ const BoardRecycleBinView: React.FC<BoardRecycleBinViewProps> = ({
     }
   };
 
+  /**
+   * ゴミ箱を空にする処理の統一エラーハンドリング
+   */
   const handleEmptyRecycleBin = async () => {
+    const boardCount = deletedBoards.length;
+
     setEmptyingRecycleBin(true);
     try {
       emptyBoardRecycleBin();
-    } catch {
+      onMessage?.({
+        type: "success",
+        text: `${boardCount}件のボードを完全に削除しました`,
+      });
+    } catch (error) {
+      console.error('Empty recycle bin failed:', error);
       onMessage?.({
         type: "danger",
         text: "ゴミ箱を空にすることに失敗しました",
