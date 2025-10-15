@@ -14,6 +14,7 @@ import { saveBoards, loadBoards } from "../utils/storage";
 import { loadSettings } from "../utils/settingsStorage";
 import { useNotify } from "./NotificationContext";
 import { logger } from "../utils/logger";
+import { moveBoardToRecycleBin, restoreBoardFromRecycleBin } from "../utils/recycleBin";
 
 interface BoardState {
   boards: KanbanBoard[];
@@ -60,7 +61,9 @@ type BoardAction =
   | { type: "ADD_LABEL"; payload: { label: Label } }
   | { type: "UPDATE_LABEL"; payload: { labelId: string; updates: Partial<Label> } }
   | { type: "DELETE_LABEL"; payload: { labelId: string } }
-  | { type: "DELETE_LABEL_FROM_ALL_BOARDS"; payload: { labelId: string } };
+  | { type: "DELETE_LABEL_FROM_ALL_BOARDS"; payload: { labelId: string } }
+  | { type: "RESTORE_BOARD"; payload: { boardId: string } }
+  | { type: "EMPTY_BOARD_RECYCLE_BIN" };
 
 interface BoardContextType {
   state: BoardState;
@@ -70,6 +73,8 @@ interface BoardContextType {
   setCurrentBoard: (boardId: string) => void;
   updateBoard: (boardId: string, updates: Partial<KanbanBoard>) => void;
   deleteBoard: (boardId: string) => void;
+  restoreBoard: (boardId: string) => void;
+  emptyBoardRecycleBin: () => void;
   createColumn: (title: string, insertIndex?: number) => void;
   deleteColumn: (columnId: string) => void;
   updateColumn: (columnId: string, updates: Partial<Column>) => void;
@@ -92,6 +97,10 @@ const updateBoardTimestamp = (board: KanbanBoard): KanbanBoard => ({
   ...board,
   updatedAt: new Date().toISOString(),
 });
+
+// ヘルパー関数: アクティブなボードのみを取得
+const getActiveBoards = (boards: KanbanBoard[]): KanbanBoard[] =>
+  boards.filter(board => board.deletionState !== "deleted");
 
 // ヘルパー関数: LocalStorageのcurrent-board-idを安全に管理
 const updateCurrentBoardId = (boardId: string | null) => {
@@ -119,13 +128,14 @@ const boardReducer = (state: BoardState, action: BoardAction): BoardState => {
   switch (action.type) {
     case "LOAD_BOARDS": {
       const boards = action.payload;
+      const activeBoards = getActiveBoards(boards);
 
       // 保存された現在のボードIDを取得
       const savedCurrentBoardId = getCurrentBoardId();
       const currentBoard = savedCurrentBoardId
-        ? boards.find((board) => board.id === savedCurrentBoardId) || null
-        : boards.length > 0
-          ? boards[0]
+        ? activeBoards.find((board) => board.id === savedCurrentBoardId) || null
+        : activeBoards.length > 0
+          ? activeBoards[0]
           : null;
 
       // 現在のボードIDが無効な場合は更新
@@ -156,6 +166,8 @@ const boardReducer = (state: BoardState, action: BoardAction): BoardState => {
         updatedAt: new Date().toISOString(),
         columns: defaultColumns,
         labels: [],
+        deletionState: "active",
+        deletedAt: null,
       };
 
       const newBoards = [...state.boards, newBoard];
@@ -168,8 +180,9 @@ const boardReducer = (state: BoardState, action: BoardAction): BoardState => {
     }
 
     case "SET_CURRENT_BOARD": {
+      const activeBoards = getActiveBoards(state.boards);
       const newCurrentBoard =
-        state.boards.find((board) => board.id === action.payload) || null;
+        activeBoards.find((board) => board.id === action.payload) || null;
 
       if (newCurrentBoard) {
         updateCurrentBoardId(newCurrentBoard.id);
@@ -207,14 +220,14 @@ const boardReducer = (state: BoardState, action: BoardAction): BoardState => {
     }
 
     case "DELETE_BOARD": {
-      const newBoards = state.boards.filter(
-        (board) => board.id !== action.payload.boardId,
-      );
+      // ソフトデリート（ゴミ箱に移動）
+      const newBoards = moveBoardToRecycleBin(state.boards, action.payload.boardId);
+      const activeBoards = getActiveBoards(newBoards);
 
       let newCurrentBoard: KanbanBoard | null = state.currentBoard;
       if (state.currentBoard?.id === action.payload.boardId) {
         newCurrentBoard = (
-          newBoards.length > 0 ? newBoards[0] : null
+          activeBoards.length > 0 ? activeBoards[0] : null
         ) as KanbanBoard | null;
         updateCurrentBoardId(newCurrentBoard?.id ?? null);
       }
@@ -612,6 +625,46 @@ const boardReducer = (state: BoardState, action: BoardAction): BoardState => {
       };
     }
 
+    case "RESTORE_BOARD": {
+      const restoredBoards = restoreBoardFromRecycleBin(state.boards, action.payload.boardId);
+
+      // 復元されたボードを現在のボードに設定
+      const restoredBoard = restoredBoards.find(board => board.id === action.payload.boardId);
+      const newCurrentBoard = restoredBoard && restoredBoard.deletionState === "active"
+        ? restoredBoard
+        : state.currentBoard;
+
+      if (newCurrentBoard && newCurrentBoard.id !== state.currentBoard?.id) {
+        updateCurrentBoardId(newCurrentBoard.id);
+      }
+
+      return {
+        ...state,
+        boards: restoredBoards,
+        currentBoard: newCurrentBoard,
+      };
+    }
+
+    case "EMPTY_BOARD_RECYCLE_BIN": {
+      // 削除されたボードを完全に削除
+      const activeBoards = getActiveBoards(state.boards);
+
+      // 現在のボードが削除された場合は、最初のアクティブボードに変更
+      const newCurrentBoard = activeBoards.length > 0 ? activeBoards[0] : null;
+
+      if (newCurrentBoard && newCurrentBoard.id !== state.currentBoard?.id) {
+        updateCurrentBoardId(newCurrentBoard.id);
+      } else if (!newCurrentBoard) {
+        updateCurrentBoardId(null);
+      }
+
+      return {
+        ...state,
+        boards: activeBoards,
+        currentBoard: newCurrentBoard,
+      };
+    }
+
     default:
       return state;
   }
@@ -677,6 +730,8 @@ export const BoardProvider: React.FC<BoardProviderProps> = ({ children }) => {
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
             labels,
+            deletionState: "active",
+            deletedAt: null,
             columns: [
               {
                 id: uuidv4(),
@@ -1010,11 +1065,30 @@ const authenticateUser = async (email, password) => {
       const boardToDelete = state.boards.find((board) => board.id === boardId);
       if (boardToDelete) {
         dispatch({ type: "DELETE_BOARD", payload: { boardId } });
-        notify.success(`ボード「${boardToDelete.title}」を削除しました`);
+        notify.success(`ボード「${boardToDelete.title}」をゴミ箱に移動しました`);
       }
     },
     [state.boards, notify],
   );
+
+  const restoreBoard = useCallback(
+    (boardId: string) => {
+      const boardToRestore = state.boards.find((board) => board.id === boardId);
+      if (boardToRestore) {
+        dispatch({ type: "RESTORE_BOARD", payload: { boardId } });
+        notify.success(`ボード「${boardToRestore.title}」を復元しました`);
+      }
+    },
+    [state.boards, notify],
+  );
+
+  const emptyBoardRecycleBin = useCallback(() => {
+    const deletedBoards = state.boards.filter(board => board.deletionState === "deleted");
+    if (deletedBoards.length > 0) {
+      dispatch({ type: "EMPTY_BOARD_RECYCLE_BIN" });
+      notify.success(`${deletedBoards.length}件のボードを完全削除しました`);
+    }
+  }, [state.boards, notify]);
 
   const createColumn = useCallback(
     (title: string, insertIndex?: number) => {
@@ -1170,6 +1244,8 @@ const authenticateUser = async (email, password) => {
       setCurrentBoard,
       updateBoard,
       deleteBoard,
+      restoreBoard,
+      emptyBoardRecycleBin,
       createColumn,
       deleteColumn,
       updateColumn,
@@ -1186,6 +1262,8 @@ const authenticateUser = async (email, password) => {
       setCurrentBoard,
       updateBoard,
       deleteBoard,
+      restoreBoard,
+      emptyBoardRecycleBin,
       createColumn,
       deleteColumn,
       updateColumn,

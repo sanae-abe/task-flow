@@ -235,3 +235,151 @@ export const formatTimeUntilDeletion = (
   const diffMinutes = Math.floor(diffMs / (1000 * 60));
   return `約${diffMinutes}分後`;
 };
+
+/**
+ * ボード用ゴミ箱機能
+ */
+
+/**
+ * ゴミ箱のボードを取得
+ */
+export const getRecycleBinBoards = (
+  boards: KanbanBoard[],
+): KanbanBoard[] => {
+  const deletedBoards = boards.filter(board => board.deletionState === "deleted");
+
+  // 削除日時順でソート（新しいものから）
+  return deletedBoards.sort((a, b) => {
+    const aTime = new Date(a.deletedAt || 0).getTime();
+    const bTime = new Date(b.deletedAt || 0).getTime();
+    return bTime - aTime;
+  });
+};
+
+/**
+ * 自動削除対象のボードを取得
+ */
+export const getExpiredBoards = (
+  boards: KanbanBoard[],
+  settings: RecycleBinSettings,
+): KanbanBoard[] => {
+  // 無制限の場合は期限切れボードなし
+  if (settings.retentionDays === null) {
+    return [];
+  }
+
+  const deletedBoards = getRecycleBinBoards(boards);
+  const now = new Date();
+  const expirationDate = new Date(
+    now.getTime() - settings.retentionDays * 24 * 60 * 60 * 1000,
+  );
+
+  return deletedBoards.filter((board) => {
+    if (!board.deletedAt) {
+      return false;
+    }
+    const deletedDate = new Date(board.deletedAt);
+    return deletedDate < expirationDate;
+  });
+};
+
+/**
+ * 期限切れボードを完全削除
+ */
+export const deleteExpiredBoards = (
+  boards: KanbanBoard[],
+  settings: RecycleBinSettings,
+): { updatedBoards: KanbanBoard[]; deletedCount: number } => {
+  const expiredBoards = getExpiredBoards(boards, settings);
+
+  if (expiredBoards.length === 0) {
+    return { updatedBoards: boards, deletedCount: 0 };
+  }
+
+  const expiredBoardIds = new Set(expiredBoards.map((board) => board.id));
+
+  const updatedBoards = boards.filter(board => !expiredBoardIds.has(board.id));
+
+  logger.info(
+    `🗑️ Auto-deleted ${expiredBoards.length} expired boards from recycle bin`,
+  );
+
+  return { updatedBoards, deletedCount: expiredBoards.length };
+};
+
+/**
+ * ボードをソフトデリート（ゴミ箱に移動）
+ */
+export const moveBoardToRecycleBin = (
+  boards: KanbanBoard[],
+  boardId: string,
+): KanbanBoard[] =>
+  boards.map(board => {
+    if (board.id === boardId) {
+      return {
+        ...board,
+        deletionState: "deleted" as const,
+        deletedAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+    }
+    return board;
+  });
+
+/**
+ * ボードをゴミ箱から復元
+ */
+export const restoreBoardFromRecycleBin = (
+  boards: KanbanBoard[],
+  boardId: string,
+): KanbanBoard[] =>
+  boards.map(board => {
+    if (board.id === boardId && board.deletionState === "deleted") {
+      return {
+        ...board,
+        deletionState: "active" as const,
+        deletedAt: null,
+        updatedAt: new Date().toISOString(),
+      };
+    }
+    return board;
+  });
+
+/**
+ * 特定のボードを完全削除
+ */
+export const permanentlyDeleteBoard = (
+  boards: KanbanBoard[],
+  boardId: string,
+): { updatedBoards: KanbanBoard[]; success: boolean } => {
+  const updatedBoards = boards.filter(board => board.id !== boardId);
+  const success = updatedBoards.length < boards.length;
+
+  if (success) {
+    logger.info(`🗑️ Permanently deleted board: ${boardId}`);
+  }
+
+  return { updatedBoards, success };
+};
+
+/**
+ * ゴミ箱のボードを完全に空にする
+ */
+export const emptyBoardRecycleBin = (
+  boards: KanbanBoard[],
+): { updatedBoards: KanbanBoard[]; deletedCount: number } => {
+  const deletedBoards = getRecycleBinBoards(boards);
+
+  if (deletedBoards.length === 0) {
+    return { updatedBoards: boards, deletedCount: 0 };
+  }
+
+  const deletedBoardIds = new Set(deletedBoards.map(board => board.id));
+  const updatedBoards = boards.filter(board => !deletedBoardIds.has(board.id));
+
+  logger.info(
+    `🗑️ Manually emptied board recycle bin: ${deletedBoards.length} boards permanently deleted`,
+  );
+
+  return { updatedBoards, deletedCount: deletedBoards.length };
+};

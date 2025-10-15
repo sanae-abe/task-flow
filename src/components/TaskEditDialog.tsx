@@ -155,7 +155,7 @@ const TaskEditDialog = memo<TaskEditDialogProps>(
         <ConfirmDialog
           isOpen={showDeleteConfirm}
           title="タスクを削除"
-          message={`「${task?.title}」を削除しますか？この操作は元に戻せません。`}
+          message={`「${task?.title}」を削除しますか？`}
           onConfirm={handleConfirmDelete}
           onCancel={() => setShowDeleteConfirm(false)}
         />

@@ -185,7 +185,7 @@ const SubHeader: React.FC = () => {
       <ConfirmDialog
         isOpen={dialogState.showDeleteConfirm}
         title="プロジェクトを削除"
-        message={`「${state.currentBoard.title}」を削除しますか？この操作は元に戻せません。`}
+        message={`「${state.currentBoard.title}」を削除しますか？`}
         onConfirm={handlers.deleteBoard}
         onCancel={handlers.closeDeleteConfirm}
       />

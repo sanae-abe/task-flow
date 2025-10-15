@@ -115,6 +115,10 @@ export interface KanbanBoard {
   labels: Label[];
   createdAt: string;
   updatedAt: string;
+
+  // シンプルなゴミ箱機能
+  deletionState?: 'active' | 'deleted';
+  deletedAt?: string | null; // 削除日時（猶予期間計算用）
 }
 
 export type Priority = 'low' | 'medium' | 'high' | 'critical';
