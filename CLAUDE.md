@@ -55,6 +55,7 @@ npm test
 - **ごみ箱機能**: 削除されたタスクの一時保存・復元機能
 - **設定管理**: デフォルトカラム設定・ごみ箱設定・各種カスタマイズ
 - **データ管理**: ローカル保存・ボード選択エクスポート・インポート機能
+- **通知システム**: DialogFlashMessage統合による統一されたメッセージ表示
 - **セキュリティ**: DOMPurifyによるHTMLサニタイズ機能
 
 ## ビュー詳細
@@ -107,21 +108,43 @@ npm test
 - `TemplateCategorySelector`: カテゴリー選択
 
 ### 設定・管理
-- `LabelManagementPanel`: ラベル管理テーブル（ソート機能付き）
+- `LabelManagementPanel`: ラベル管理テーブル（ソート機能付き・DialogFlashMessage統合）
 - `BoardSettingsPanel`: デフォルトカラム設定パネル
 - `RecycleBinSettingsPanel`: ごみ箱設定パネル
-- `DataManagementPanel`: データ管理パネル
+- `DataManagementPanel`: データ管理パネル（DialogFlashMessage統合）
 - `ExportSection`: ボード選択エクスポート機能
+- `ImportSection`: インポート機能（DialogFlashMessage統合）
+
+### 通知・メッセージシステム
+- `DialogFlashMessage`: 統一されたダイアログ内メッセージ表示
+- `NotificationContainer`: Toast通知システム
+- `InlineMessage`: インライン形式のメッセージ表示
 
 ### ごみ箱機能
-- `RecycleBinView`: ソフトデリートされたタスクの復元
+- `RecycleBinView`: ソフトデリートされたタスクの復元（DialogFlashMessage統合）
+- `RecycleBinItemDetailDialog`: ごみ箱アイテム詳細ダイアログ
 - `DeletionCandidateBadge`: 削除候補表示バッジ
 - `DeletionNotificationBanner`: 削除通知バナー
+- `RecycleBinTaskActions`: 操作ActionMenu（復元・完全削除）
 
 ### 時刻・日付
 - `TimeSelector`/`TimeSelectorDialog`: 時刻設定機能
 - `RecurrenceSelector`/`RecurrenceDetailDialog`: 繰り返し設定機能（モジュラー分割済み）
 
+### ラベル・セレクター
+- `LabelSelector`: 統合ラベル選択システム（現在ボード・他ボード選択）
+- `LabelColorCircle`: ラベル色表示コンポーネント
+- `useLabelManagement`: ラベル管理ロジック
+
+### 共有コンポーネント・システム
+- `UnifiedDialog`: 統一ダイアログシステム
+- `UnifiedForm`: 統一フォームシステム
+- `ActionMenu`: 統一アクションメニューシステム
+- `ConfirmDialog`: 確認ダイアログ
+- `LoadingButton`: ローディング状態付きボタン
+- `FlexBox`: レイアウト用フレックスコンテナ
+
 ### その他
 - `HelpSidebar`: 機能説明サイドバー
-- `SettingsDialog`: 設定ダイアログ（タブ形式）
+- `SettingsDialog`: 設定ダイアログ（タブ形式・DialogFlashMessage統合）
+- `LinkifiedText`: リンク対応・HTMLサニタイズテキスト表示

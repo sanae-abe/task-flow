@@ -100,10 +100,13 @@ npm start
 
 ### 開発
 ```bash
-npm start          # 開発サーバー起動
-npm run typecheck  # TypeScript型チェック
-npm run lint       # ESLintによるコード品質チェック
-npm run format     # Prettierによるコード整形
+npm start              # 開発サーバー起動
+npm run typecheck      # TypeScript型チェック
+npm run typecheck:watch # TypeScript型チェック（ウォッチモード）
+npm run lint           # ESLintによるコード品質チェック・自動修正
+npm run lint:check     # ESLintチェックのみ（修正なし）
+npm run format         # Prettierによるコード整形
+npm run format:check   # Prettierチェックのみ（整形なし）
 ```
 
 ### テスト
@@ -115,8 +118,10 @@ npm run test:ci        # CI用テスト実行
 
 ### ビルド・デプロイ
 ```bash
-npm run build      # プロダクションビルド
-npm run analyze    # バンドルサイズ解析
+npm run build         # プロダクションビルド
+npm run build:prod    # プロダクションビルド + サイズ解析
+npm run analyze       # バンドルサイズ解析（ビルド後実行）
+npm run analyze:size  # ビルド済みファイルのサイズ解析
 ```
 
 ### コード品質
@@ -124,7 +129,17 @@ npm run analyze    # バンドルサイズ解析
 npm run quality        # 全品質チェック実行
 npm run quality:fix    # 自動修正付き品質チェック
 npm run audit          # セキュリティ監査
+npm run audit:fix      # セキュリティ脆弱性の自動修正
 npm run audit:security # 高レベルセキュリティチェック
+npm run lint:security  # セキュリティ特化ESLintチェック
+npm run check-deps     # 依存関係の更新チェック
+npm run pre-commit     # コミット前品質チェック
+```
+
+### パフォーマンス・SEO
+```bash
+npm run lighthouse     # Lighthouseパフォーマンス監査
+npm run seo:validate   # SEO検証（ビルド + Lighthouse）
 ```
 
 ## 🏗️ 技術スタック
@@ -157,24 +172,54 @@ npm run audit:security # 高レベルセキュリティチェック
 
 ```
 src/
-├── components/                 # 再利用可能なUIコンポーネント
-│   ├── RecycleBin/           # ごみ箱機能
-│   ├── TemplateManagement/    # テンプレート管理システム
-│   ├── RichTextEditor/        # リッチテキストエディタ（12モジュール分割）
-│   ├── TaskCreateDialog/      # タスク作成ダイアログ（8モジュール分割）
-│   ├── TableView/             # テーブルビュー（23ファイル分割）
-│   ├── CalendarView/          # カレンダービュー（モジュラー分割）
-│   ├── LabelManagement/       # ラベル管理システム
-│   ├── BoardSettings/         # ボード設定
-│   ├── shared/               # 共有コンポーネント（Form/Dialog/Menu）
-│   └── ...                   # その他多数のコンポーネント
-├── contexts/                  # React Context (状態管理)
-├── hooks/                     # カスタムフック
-├── types/                     # TypeScript型定義
-├── utils/                     # ユーティリティ関数
-│   ├── settingsStorage.ts    # 設定永続化
-│   └── templateStorage.ts    # テンプレート管理
-└── App.tsx                    # メインアプリケーション
+├── components/                          # 再利用可能なUIコンポーネント
+│   ├── CalendarView/                   # カレンダービュー（モジュラー分割）
+│   │   ├── components/                 # カレンダー専用コンポーネント
+│   │   ├── hooks/                      # カレンダーロジック
+│   │   └── styles/                     # カレンダースタイル
+│   ├── DataManagement/                 # データ管理パネル
+│   ├── LabelManagement/                # ラベル管理システム
+│   │   ├── components/                 # ラベル管理コンポーネント
+│   │   └── hooks/                      # ラベル管理ロジック
+│   ├── LabelSelector/                  # ラベル選択システム
+│   ├── NotificationContainer/          # 通知システム
+│   ├── RecycleBin/                     # ごみ箱機能（詳細ダイアログ付き）
+│   │   ├── components/                 # ごみ箱専用コンポーネント
+│   │   │   └── DetailDialog/          # 詳細ダイアログシステム
+│   │   └── settings/                   # ごみ箱設定
+│   ├── RecurrenceDetailDialog/         # 繰り返し設定ダイアログ
+│   │   ├── components/                 # 繰り返し設定コンポーネント
+│   │   ├── hooks/                      # 繰り返し設定ロジック
+│   │   └── types/                      # 繰り返し設定型定義
+│   ├── RichTextEditor/                 # リッチテキストエディタ（12モジュール分割）
+│   │   ├── components/                 # エディタコンポーネント
+│   │   ├── hooks/                      # エディタロジック
+│   │   └── utils/                      # エディタユーティリティ
+│   ├── SubTaskItem/                    # サブタスクアイテム（詳細分割）
+│   │   ├── components/                 # サブタスク専用コンポーネント
+│   │   ├── hooks/                      # ドラッグ&ドロップロジック
+│   │   └── styles/                     # サブタスクスタイル
+│   ├── TableView/                      # テーブルビュー（23ファイル分割）
+│   │   ├── components/                 # テーブル専用コンポーネント
+│   │   ├── hooks/                      # テーブルロジック
+│   │   └── utils/                      # テーブルユーティリティ
+│   ├── TaskCreateDialog/               # タスク作成ダイアログ（8モジュール分割）
+│   │   ├── components/                 # タスク作成コンポーネント
+│   │   └── hooks/                      # タスク作成ロジック
+│   ├── TemplateManagement/             # テンプレート管理システム
+│   ├── shared/                         # 共有コンポーネント
+│   │   ├── Dialog/                     # ダイアログシステム
+│   │   ├── Form/                       # フォームシステム
+│   │   │   └── fields/                 # フォームフィールド
+│   │   └── Menu/                       # メニューシステム
+│   └── ...                             # その他のコンポーネント
+├── contexts/                            # React Context (状態管理)
+├── hooks/                               # カスタムフック
+├── types/                               # TypeScript型定義
+├── utils/                               # ユーティリティ関数
+│   ├── settingsStorage.ts              # 設定永続化
+│   └── templateStorage.ts              # テンプレート管理
+└── App.tsx                              # メインアプリケーション
 ```
 
 ## 🔧 設定
