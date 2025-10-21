@@ -15,9 +15,11 @@ export const TaskBoardMover: React.FC<TaskBoardMoverProps> = ({
   const { state, currentBoard } = useBoard();
   const [isOpen, setIsOpen] = useState(false);
 
-  // 現在のボード以外のボードを取得
+  // 現在のボード以外のボード（削除されたボードを除く）を取得
   const availableBoards = useMemo(
-    () => state.boards.filter((board) => board.id !== currentBoard?.id),
+    () => state.boards.filter((board) =>
+      board.id !== currentBoard?.id && board.deletionState !== 'deleted'
+    ),
     [state.boards, currentBoard?.id],
   );
 

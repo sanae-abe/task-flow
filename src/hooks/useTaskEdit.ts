@@ -312,16 +312,18 @@ export const useTaskEdit = ({
     return rightmostColumn.tasks.some((t) => t.id === task.id);
   }, [task, state.currentBoard]);
 
-  // ステータス選択肢を生成
+  // ステータス選択肢を生成（ゴミ箱に入っているカラムを除外）
   const statusOptions = useMemo(() => {
     if (!state.currentBoard?.columns.length) {
       return [];
     }
 
-    return state.currentBoard.columns.map((column) => ({
-      value: column.id,
-      label: column.title,
-    }));
+    return state.currentBoard.columns
+      .filter((column) => column.deletionState !== 'deleted')
+      .map((column) => ({
+        value: column.id,
+        label: column.title,
+      }));
   }, [state.currentBoard]);
 
   return {
@@ -357,4 +359,4 @@ export const useTaskEdit = ({
     handleKeyPress,
     isValid,
   };
-};
+};;
