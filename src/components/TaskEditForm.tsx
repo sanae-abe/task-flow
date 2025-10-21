@@ -101,7 +101,7 @@ const TaskEditForm = memo<TaskEditFormProps>(
           <RichTextEditor
             value={description}
             onChange={setDescription}
-            placeholder="タスクの説明を入力"
+            placeholder="タスクの説明を入力..."
           />
         </FormControl>
 

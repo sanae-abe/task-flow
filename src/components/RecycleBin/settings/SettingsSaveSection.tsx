@@ -43,8 +43,9 @@ export const SettingsSaveSection: React.FC<SettingsSaveSectionProps> = ({
       <SaveMessageContainer>
         {message && (
           <InlineMessage
-            variant={message.type === 'success' ? "success" : "error"}
+            variant={message.type === 'success' ? "success" : "critical"}
             message={message.text}
+            size="small"
           />
         )}
       </SaveMessageContainer>

@@ -197,7 +197,7 @@ const SubHeader: React.FC = () => {
       <ConfirmDialog
         isOpen={dialogState.showClearCompletedConfirm}
         title="完了したタスクをクリア"
-        message="完了したタスクをすべて削除しますか？この操作は元に戻せません。"
+        message="完了したタスクをすべて削除しますか？"
         onConfirm={handlers.clearCompletedTasks}
         onCancel={handlers.closeClearCompletedConfirm}
       />

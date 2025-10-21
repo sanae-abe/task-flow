@@ -47,7 +47,7 @@ export const SettingsRetentionInput: React.FC<SettingsRetentionInputProps> = ({
         {UI_TEXT.PANEL.RETENTION_HELP}
       </FormControl.Caption>
       {validationError && (
-        <InlineMessage variant="error" message={validationError} />
+        <InlineMessage variant="critical" message={validationError} size="small" />
       )}
     </FormControl>
   );

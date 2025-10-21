@@ -1,7 +1,7 @@
 import React from 'react';
-import { Text, Box } from '@primer/react';
 import type { RecycleBinItem } from '../../../../../types/recycleBin';
-import { spacing, borderRadius } from '../styles/designTokens';
+import { spacing } from '../styles/designTokens';
+import DialogFlashMessage, { type DialogFlashMessageData, type DialogMessageType } from '../../../../shared/DialogFlashMessage';
 
 interface WarningCardProps {
   item: {
@@ -92,37 +92,17 @@ export const WarningCard: React.FC<WarningCardProps> = ({ item, retentionDays })
     return 'normal';
   };
 
-  // 警告レベルに応じたスタイル
-  const getWarningStyles = (level: 'danger' | 'warning' | 'info') => {
+  // 警告レベルをDialogMessageTypeにマッピング
+  const getDialogMessageType = (level: 'danger' | 'warning' | 'info'): DialogMessageType => {
     switch (level) {
       case 'danger':
-        return {
-          bg: 'danger.subtle',
-          borderColor: 'danger.muted',
-          iconColor: 'var(--fgColor-danger)',
-          titleColor: 'danger.fg',
-        };
+        return 'critical';
       case 'warning':
-        return {
-          bg: 'attention.subtle',
-          borderColor: 'attention.muted',
-          iconColor: 'var(--fgColor-attention)',
-          titleColor: 'attention.fg',
-        };
+        return 'warning';
       case 'info':
-        return {
-          bg: 'accent.subtle',
-          borderColor: 'accent.muted',
-          iconColor: 'var(--fgColor-accent)',
-          titleColor: 'accent.fg',
-        };
+        return 'info';
       default:
-        return {
-          bg: 'neutral.subtle',
-          borderColor: 'border.default',
-          iconColor: 'var(--fgColor-muted)',
-          titleColor: 'fg.default',
-        };
+        return 'info';
     }
   };
 
@@ -134,9 +114,8 @@ export const WarningCard: React.FC<WarningCardProps> = ({ item, retentionDays })
   }
 
   return (
-    <Box
-      as="section"
-      sx={{
+    <section
+      style={{
         display: 'flex',
         flexDirection: 'column',
         gap: spacing.sm,
@@ -144,68 +123,27 @@ export const WarningCard: React.FC<WarningCardProps> = ({ item, retentionDays })
     >
       {/* 警告一覧 */}
       {warnings.map((warning, index) => {
-        const styles = getWarningStyles(warning.level);
+        const messageType = getDialogMessageType(warning.level);
+
+        // DialogFlashMessageData形式のメッセージを作成
+        const flashMessage: DialogFlashMessageData = {
+          type: messageType,
+          title: warning.title,
+          text: warning.showTimeUntil && item.timeUntilDeletion
+            ? `${warning.message}（削除予定: ${item.timeUntilDeletion}）`
+            : warning.message
+        };
 
         return (
-          <Box
-            key={index}
-            role="alert"
-            sx={{
-              p: spacing.md,
-              bg: styles.bg,
-              border: '1px solid',
-              borderColor: styles.borderColor,
-              borderRadius: borderRadius.medium,
-
-              // レスポンシブ対応
-              '@media (max-width: 543px)': {
-                p: spacing.sm,
-              },
-            }}
-          >
-            {/* タイトル */}
-            <Text
-              sx={{
-                fontSize: 1,
-                fontWeight: 'bold',
-                color: styles.titleColor,
-                margin: 0,
-                mb: spacing.xs,
-                lineHeight: 'condensed',
-              }}
-            >
-              {warning.title}
-            </Text>
-
-            {/* メッセージ */}
-            <Text
-              sx={{
-                fontSize: 1,
-                color: 'fg.default',
-                margin: 0,
-                lineHeight: 'default',
-              }}
-            >
-              {warning.message}
-            </Text>
-
-            {/* 削除予定時間 */}
-            {warning.showTimeUntil && item.timeUntilDeletion && (
-              <Text
-                sx={{
-                  fontSize: 0,
-                  fontWeight: 'semibold',
-                  color: 'fg.muted',
-                  margin: 0,
-                  mt: spacing.sm,
-                }}
-              >
-                削除予定: {item.timeUntilDeletion}
-              </Text>
-            )}
-          </Box>
+          <div key={index} role="alert">
+            <DialogFlashMessage
+              message={flashMessage}
+              showDismiss={false}
+              isStatic
+            />
+          </div>
         );
       })}
-    </Box>
+    </section>
   );
 };

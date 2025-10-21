@@ -140,7 +140,7 @@ const SortableColumnItem: React.FC<SortableColumnItemProps> = ({
           aria-label={`カラム「${column.name}」の名前`}
         />
         {error && (
-          <InlineMessage variant="error" message={error} />
+          <InlineMessage variant="critical" message={error} size="small" />
         )}
       </div>
       <div style={{ display: 'flex', gap: "4px" }}>
@@ -492,7 +492,7 @@ export const BoardSettingsPanel: React.FC = () => {
               </Button>
             </div>
             {addColumnError && (
-              <InlineMessage variant="error" message={addColumnError} />
+              <InlineMessage variant="critical" message={addColumnError} size="small" />
             )}
           </FormControl>
         </div>
@@ -511,10 +511,10 @@ export const BoardSettingsPanel: React.FC = () => {
           <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
             {/* 未保存状態メッセージ */}
             {hasUnsavedChanges ? (
-              <InlineMessage variant="warning" message="未保存の変更があります（1秒後に自動保存されます）" />
+              <InlineMessage variant="warning" message="未保存の変更があります（1秒後に自動保存されます）" size="small" />
             ) : (
               saveMessage && (
-                <InlineMessage variant={saveMessageType === 'success' ? 'success' : 'error'} message={saveMessage} />
+                <InlineMessage variant={saveMessageType === 'success' ? 'success' : 'critical'} message={saveMessage} size="small" />
               )
             )}
           </div>

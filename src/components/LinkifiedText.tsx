@@ -4,7 +4,7 @@ import DOMPurify from "dompurify";
 
 interface LinkifiedTextProps {
   children: string;
-  sx?: React.CSSProperties;
+  sx?: React.ComponentProps<typeof Text>['sx'];
 }
 
 /**

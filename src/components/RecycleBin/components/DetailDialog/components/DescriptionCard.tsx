@@ -2,6 +2,7 @@ import React from 'react';
 import { Text, Box } from '@primer/react';
 import type { RecycleBinItem } from '../../../../../types/recycleBin';
 import { spacing, borderRadius } from '../styles/designTokens';
+import LinkifiedText from '../../../../LinkifiedText';
 
 interface DescriptionCardProps {
   item: Pick<RecycleBinItem, 'description' | 'type'>;
@@ -40,18 +41,19 @@ export const DescriptionCard: React.FC<DescriptionCardProps> = ({ item }) => {
       {/* セクションヘッダー */}
       <Text
         sx={{
-          fontSize: 2,
-          fontWeight: 'semibold',
+          display: 'block',
+          fontSize: 1,
+          fontWeight: 'bold',
           color: 'fg.default',
           margin: 0,
-          mb: spacing.md,
+          mb: spacing.sm,
         }}
       >
         説明
       </Text>
 
       {/* 説明文本文 */}
-      <Text
+      <LinkifiedText
         sx={{
           fontSize: 1,
           whiteSpace: 'pre-wrap',
@@ -72,7 +74,7 @@ export const DescriptionCard: React.FC<DescriptionCardProps> = ({ item }) => {
         }}
       >
         {item.description}
-      </Text>
+      </LinkifiedText>
     </Box>
   );
 };
