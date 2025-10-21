@@ -26,11 +26,6 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ item }) => {
         display: 'flex',
         alignItems: 'center',
         gap: spacing.md,
-        p: spacing.lg,
-        bg: 'canvas.subtle',
-        borderRadius: borderRadius.medium,
-        border: '1px solid',
-        borderColor: 'border.default',
 
         // レスポンシブ対応
         '@media (max-width: 543px)': {
@@ -45,16 +40,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ item }) => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          width: '48px',
-          height: '48px',
+          width: '40px',
+          height: '40px',
           bg: colors.background,
           borderRadius: borderRadius.medium,
           flexShrink: 0,
-
-          '@media (max-width: 543px)': {
-            width: '40px',
-            height: '40px',
-          },
         }}
       >
         <Icon
@@ -73,7 +63,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ item }) => {
         <Text
           as="h2"
           sx={{
-            fontSize: [2, 3, 3], // レスポンシブフォントサイズ
+            fontSize: 2, // レスポンシブフォントサイズ
             fontWeight: 'bold',
             lineHeight: 'condensed',
             color: 'fg.default',
@@ -94,7 +84,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ item }) => {
         {/* タイプ表示 */}
         <Text
           sx={{
-            fontSize: 1,
+            fontSize: 0,
             color: 'fg.muted',
             fontWeight: 'normal',
             margin: 0,

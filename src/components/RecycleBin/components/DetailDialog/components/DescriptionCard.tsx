@@ -40,11 +40,12 @@ export const DescriptionCard: React.FC<DescriptionCardProps> = ({ item }) => {
       {/* セクションヘッダー */}
       <Text
         sx={{
-          fontSize: 2,
-          fontWeight: 'semibold',
+          display: 'block',
+          fontSize: 1,
+          fontWeight: 'bold',
           color: 'fg.default',
           margin: 0,
-          mb: spacing.md,
+          mb: spacing.sm,
         }}
       >
         説明

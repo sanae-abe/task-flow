@@ -204,7 +204,7 @@ const LabelFormDialog: React.FC<LabelFormDialogProps> = ({
             disabled={isLoading}
           />
           {errors.name && (
-            <InlineMessage variant="error" message={errors.name} />
+            <InlineMessage variant="critical" message={errors.name} size="small" />
           )}
         </FormControl>
 

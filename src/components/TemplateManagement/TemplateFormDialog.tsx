@@ -223,7 +223,7 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
               disabled={isLoading}
             />
             {errors.name && (
-              <InlineMessage variant="error" message={errors.name} />
+              <InlineMessage variant="critical" message={errors.name} size="small" />
             )}
           </FormControl>
 
@@ -235,7 +235,7 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, description: e.target.value }))
               }
-              placeholder="このテンプレートの用途を説明"
+              placeholder="このテンプレートの用途を説明..."
               sx={{ width: '100%' }}
               rows={2}
               disabled={isLoading}
@@ -284,7 +284,7 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
               disabled={isLoading}
             />
             {errors.taskTitle && (
-              <InlineMessage variant="error" message={errors.taskTitle} />
+              <InlineMessage variant="critical" message={errors.taskTitle} size="small" />
             )}
           </FormControl>
 
@@ -296,7 +296,7 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
               onChange={(value) =>
                 setFormData((prev) => ({ ...prev, taskDescription: value }))
               }
-              placeholder="タスクの詳細を入力"
+              placeholder="タスクの説明を入力..."
               disabled={isLoading}
               minHeight="120px"
             />

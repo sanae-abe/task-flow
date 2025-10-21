@@ -104,7 +104,7 @@ export const createTaskFormFields = (
       type: "textarea",
       label: "説明",
       value: values.description,
-      placeholder: "タスクの説明を入力",
+      placeholder: "タスクの説明を入力...",
       onChange: handlers.setDescription as (value: unknown) => void,
       onKeyDown: options.onKeyPress,
       rows: 4,

@@ -108,8 +108,7 @@ export const RecycleBinItemDetailDialog: React.FC<RecycleBinItemDetailDialogProp
         sx={{
           display: 'flex',
           flexDirection: 'column',
-          gap: spacing.lg,
-          p: spacing.lg,
+          gap: spacing.md,
         }}
       >
         {/* Hero Section - タイトルエリア */}

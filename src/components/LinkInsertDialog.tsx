@@ -123,7 +123,7 @@ const LinkInsertDialog: React.FC<LinkInsertDialogProps> = ({
             }}
           />
           {url && !isValidUrl && (
-            <InlineMessage variant="error" message="有効なURLを入力してください" />
+            <InlineMessage variant="critical" message="有効なURLを入力してください" size="small" />
           )}
         </FormControl>
 

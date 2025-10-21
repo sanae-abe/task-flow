@@ -111,7 +111,7 @@ export const TaskFormFields: React.FC<TaskFormFieldsProps> = ({
           <RichTextEditor
             value={description}
             onChange={setDescription}
-            placeholder="タスクの説明を入力"
+            placeholder="タスクの説明を入力..."
           />
         </FormControl>
       </div>

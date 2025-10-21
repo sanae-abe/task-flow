@@ -1,22 +1,29 @@
 import React from "react";
-import { FormControl } from "@primer/react";
-import { StopIcon, InfoIcon } from '@primer/octicons-react';
+import { InfoIcon, CheckCircleIcon, CheckCircleFillIcon, AlertIcon, AlertFillIcon } from '@primer/octicons-react';
+import InfoFillIcon from './icons/InfoFillIcon';
 
 interface InlineMessageProps {
   message: string | null;
-  variant?: "success" | "error" | "warning" | "info" | "default";
+  variant?: "success" | "warning" | "critical" | "info" | "unavailable";
+  size?: "small" | "medium";
 }
 
-const InlineMessage: React.FC<InlineMessageProps> = ({ message, variant = "default" }) => {
+const InlineMessage: React.FC<InlineMessageProps> = ({ message, variant = "info", size = "medium" }) => {
   if (!message) {
     return null;
   }
 
-  if (variant === "info") {
+  const fontSize = size === "small" ? "12px" : "14px";
+  const iconSize = size === "small" ? 12 : 16;
+  const gap = size === "small" ? '4px' : '8px';
+  const fontWeight = size === "small" ? '700' : '400';
+
+  if (variant === "success") {
+    const SuccessIconComponent = size === "small" ? CheckCircleFillIcon : CheckCircleIcon;
     return (
-      <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--fgColor-accent)' }}>
-        <span style={{ display: 'flex', alignItems: 'center' }}><InfoIcon size={12} /></span>
-        <span style={{ fontSize: "12px", fontWeight: "bold" }}>
+      <div style={{ display: 'flex', alignItems: 'flex-start', gap, color: 'var(--fgColor-success)' }}>
+        <span style={{ display: 'flex', alignItems: 'center', paddingTop: '0.25em' }}><SuccessIconComponent size={iconSize} /></span>
+        <span style={{ fontSize, fontWeight }}>
           {message}
         </span>
       </div>
@@ -24,32 +31,50 @@ const InlineMessage: React.FC<InlineMessageProps> = ({ message, variant = "defau
   }
 
   if (variant === "warning") {
+    const WarningIconComponent = size === "small" ? AlertFillIcon : AlertIcon;
     return (
-      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '4px', color: 'var(--fgColor-attention)' }}>
-        <span style={{ display: 'flex', alignItems: 'center', marginTop: "0.25em" }}><StopIcon size={12} /></span>
-        <span style={{ fontSize: "12px", fontWeight: "bold" }}>
+      <div style={{ display: 'flex', alignItems: 'flex-start', gap, color: 'var(--fgColor-attention)' }}>
+        <span style={{ display: 'flex', alignItems: 'center', paddingTop: "0.25em" }}><WarningIconComponent size={iconSize} /></span>
+        <span style={{ fontSize, fontWeight }}>
           {message}
         </span>
       </div>
     );
   }
 
-  if (variant === "default") {
+  if (variant === "critical") {
+    const CriticalIconComponent = size === "small" ? AlertFillIcon : AlertIcon;
     return (
-      <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--fgColor-default)' }}>
-        <span style={{ display: 'flex', alignItems: 'center' }}><InfoIcon size={12} /></span>
-        <span style={{ fontSize: "12px", fontWeight: "bold" }}>
+      <div style={{ display: 'flex', alignItems: 'flex-start', gap, color: 'var(--fgColor-default)' }}>
+        <span style={{ display: 'flex', alignItems: 'center', paddingTop: '0.25em' }}><CriticalIconComponent size={iconSize} /></span>
+        <span style={{ fontSize, fontWeight }}>
           {message}
         </span>
       </div>
     );
   }
 
-  if (variant === "success") {
-    return <FormControl.Validation variant="success">{message}</FormControl.Validation>;
+  if (variant === "info") {
+    const InfoIconComponent = size === "small" ? InfoFillIcon : InfoIcon;
+    return (
+      <div style={{ display: 'flex', alignItems: 'flex-start', gap, color: 'var(--fgColor-accent)' }}>
+        <span style={{ display: 'flex', alignItems: 'center', paddingTop: '0.25em' }}><InfoIconComponent size={iconSize} /></span>
+        <span style={{ fontSize, fontWeight }}>
+          {message}
+        </span>
+      </div>
+    );
   }
 
-  return <FormControl.Validation variant="error">{message}</FormControl.Validation>;
+  const UnavailableIconComponent = size === "small" ? AlertFillIcon : AlertIcon;
+  return (
+    <div style={{ display: 'flex', alignItems: 'flex-start', gap, color: 'var(--fgColor-muted)' }}>
+      <span style={{ display: 'flex', alignItems: 'center', paddingTop: '0.25em' }}><UnavailableIconComponent size={iconSize} /></span>
+      <span style={{ fontSize, fontWeight }}>
+        {message}
+      </span>
+    </div>
+  );
 };
 
 export default InlineMessage;

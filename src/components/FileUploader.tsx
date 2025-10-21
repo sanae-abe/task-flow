@@ -87,7 +87,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({
         onRemoveAttachment={handleRemoveAttachment}
       />
 
-      <InlineMessage variant="error" message={error} />
+      <InlineMessage variant="critical" message={error} size="small" />
     </div>
   );
 };

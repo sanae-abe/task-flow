@@ -173,7 +173,7 @@ const UnifiedFormField = memo<UnifiedFormFieldProps>(
         )}
 
         {showError && (
-          <InlineMessage variant="error" message={error || "入力に誤りがあります"} />
+          <InlineMessage variant="critical" message={error || "入力に誤りがあります"} size="small" />
         )}
       </FormControl>
     );

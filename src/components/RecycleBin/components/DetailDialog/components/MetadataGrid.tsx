@@ -80,8 +80,9 @@ export const MetadataGrid: React.FC<MetadataGridProps> = ({ item }) => {
       {/* セクションヘッダー */}
       <Text
         sx={{
-          fontSize: 2,
-          fontWeight: 'semibold',
+          display: 'block',
+          fontSize: 1,
+          fontWeight: 'bold',
           color: 'fg.default',
           margin: 0,
           mb: spacing.md,
@@ -146,6 +147,7 @@ export const MetadataGrid: React.FC<MetadataGridProps> = ({ item }) => {
 
               '&:last-child': {
                 borderBottom: 'none',
+                paddingBottom: 0,
               },
             }}
           >
