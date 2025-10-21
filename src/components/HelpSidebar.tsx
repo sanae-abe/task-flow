@@ -444,7 +444,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
             />
             <HelpItem
               title="データインポート"
-              description="JSONファイルでデータの一括インポート"
+              description="JSONファイルでデータの一括インポート。インポート結果・エラー情報は設定画面上部にメッセージで表示"
             />
             <HelpItem
               title={
@@ -458,7 +458,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
             />
             <HelpItem
               title="ラベル管理"
-              description="設定画面のラベル管理で全ボードのラベルを一覧表示。ラベル名・所属ボード・使用数でソート可能、新しいラベルの作成・編集・削除が可能"
+              description="設定画面のラベル管理で全ボードのラベルを一覧表示。ラベル名・所属ボード・使用数でソート可能、新しいラベルの作成・編集・削除が可能。操作結果は設定画面上部にメッセージで表示"
             />
             <HelpItem
               title={
@@ -476,7 +476,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
             />
             <HelpItem
               title="ごみ箱機能"
-              description="設定画面のごみ箱からソフトデリートされたタスクを管理。削除予定のタスクを復元したり、完全削除前に確認可能"
+              description="設定画面のごみ箱からソフトデリートされたタスクを管理。削除予定のタスクを復元したり、完全削除前に確認可能。操作結果は設定画面上部にメッセージで表示"
             />
             <HelpItem
               title={
