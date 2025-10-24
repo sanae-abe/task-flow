@@ -1,5 +1,5 @@
-import { Button } from "@primer/react";
 import { ClockIcon } from "@primer/octicons-react";
+import { Button } from "@/components/ui/button";
 import React, { useState, useCallback } from "react";
 
 import TimeSelectorDialog from "./TimeSelectorDialog";
@@ -48,14 +48,8 @@ const TimeSelector: React.FC<TimeSelectorProps> = ({
       <Button
         onClick={handleButtonClick}
         disabled={disabled}
-        sx={{
-          color: disabled ? "fg.disabled" : "fg.default",
-          "& span": {
-            display: "flex",
-            alignItems: "center",
-            gap: 1,
-          },
-        }}
+        variant="ghost"
+        className="flex items-center gap-2"
       >
         <ClockIcon size={16} />
         {getButtonText()}

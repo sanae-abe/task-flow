@@ -1,5 +1,5 @@
-import { Button } from "@primer/react";
 import { SyncIcon } from "@primer/octicons-react";
+import { Button } from "@/components/ui/button";
 import React, { useState, useCallback } from "react";
 
 import type { RecurrenceConfig } from "../types";
@@ -48,14 +48,8 @@ const RecurrenceSelector: React.FC<RecurrenceSelectorProps> = ({
       <Button
         onClick={handleButtonClick}
         disabled={disabled}
-        sx={{
-          color: disabled ? "fg.disabled" : "fg.default",
-          "& span": {
-            display: "flex",
-            alignItems: "center",
-            gap: 1,
-          },
-        }}
+        variant="ghost"
+        className="flex items-center gap-2"
       >
         <SyncIcon size={16} />
         {getButtonText()}

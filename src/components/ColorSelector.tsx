@@ -1,15 +1,9 @@
-import { Button, Text } from "@primer/react";
+import { Button } from "@/components/ui/button";
 import { memo, useCallback, KeyboardEvent } from "react";
+import { cn } from "@/lib/utils";
 
 import { getLabelColors } from "../utils/labelHelpers";
 import { LABEL_COLORS } from "../utils/labels";
-
-// 定数
-const COLOR_BUTTON_SIZE = 32;
-const TRANSITION_DURATION = "0.15s";
-const HOVER_SCALE = 1.05;
-const FOCUS_OUTLINE_WIDTH = "2px";
-const FOCUS_OUTLINE_OFFSET = "1px";
 
 interface ColorSelectorProps {
   readonly selectedColor: string;
@@ -45,12 +39,7 @@ const ColorSelector = memo<ColorSelectorProps>(
     return (
       <div>
         <div
-          style={{
-            display: "flex",
-            gap: "4px",
-            justifyContent: "flex-start",
-            flexWrap: "wrap",
-          }}
+          className="flex gap-1 justify-start flex-wrap"
           role="radiogroup"
           aria-label="ラベルの色を選択"
         >
@@ -67,50 +56,27 @@ const ColorSelector = memo<ColorSelectorProps>(
                 aria-checked={isSelected}
                 role="radio"
                 tabIndex={isSelected ? 0 : -1}
-                sx={{
-                  width: `${COLOR_BUTTON_SIZE}px`,
-                  height: `${COLOR_BUTTON_SIZE}px`,
-                  minHeight: `${COLOR_BUTTON_SIZE}px`,
-                  p: 0,
+                variant="ghost"
+                size="icon"
+                className={cn(
+                  "w-8 h-8 min-h-8 p-0 border-2 rounded-md",
+                  "flex items-center justify-center relative cursor-pointer",
+                  "transition-all duration-150 ease-in-out",
+                  "hover:scale-105 hover:shadow-md",
+                  "focus:outline-2 focus:outline-blue-500 focus:outline-offset-1",
+                  isSelected ? "border-blue-600" : "border-transparent",
+                  "hover:border-gray-600"
+                )}
+                style={{
                   backgroundColor: colors.bg,
-                  border: "2px solid",
-                  borderColor: isSelected ? "accent.emphasis" : "transparent",
-                  borderRadius: "6px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  position: "relative",
-                  cursor: "pointer",
-                  transition: `all ${TRANSITION_DURATION} ease`,
-                  "&:hover": {
-                    borderColor: isSelected
-                      ? "accent.emphasis"
-                      : "neutral.emphasis",
-                    transform: `scale(${HOVER_SCALE})`,
-                    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-                    backgroundColor: colors.bg,
-                  },
-                  "&:focus": {
-                    borderColor: "accent.emphasis",
-                    outline: `${FOCUS_OUTLINE_WIDTH} solid`,
-                    outlineColor: "accent.fg",
-                    outlineOffset: FOCUS_OUTLINE_OFFSET,
-                    backgroundColor: colors.bg,
-                  },
                 }}
               >
-                <Text
-                  sx={{
-                    fontSize: 1,
-                    color: colors.color,
-                    textAlign: "center",
-                    fontWeight: "semibold",
-                    pointerEvents: "none",
-                    lineHeight: 1,
-                  }}
+                <span
+                  className="text-xs text-center font-semibold pointer-events-none leading-none"
+                  style={{ color: colors.color }}
                 >
                   {color.name.charAt(0)}
-                </Text>
+                </span>
               </Button>
             );
           })}
