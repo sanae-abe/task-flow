@@ -12,19 +12,17 @@ const sizeMap = {
 }
 
 const Spinner = React.forwardRef<HTMLDivElement, SpinnerProps>(
-  ({ className, size = 'medium', ...props }, ref) => {
-    return (
-      <div
-        ref={ref}
-        className={cn(
-          "animate-spin rounded-full border-2 border-gray-300 border-t-gray-600",
-          sizeMap[size],
-          className
-        )}
-        {...props}
-      />
-    )
-  }
+  ({ className, size = 'medium', ...props }, ref) => (
+    <div
+      ref={ref}
+      className={cn(
+        "animate-spin rounded-full border-2 border-gray-300 border-t-gray-600",
+        sizeMap[size],
+        className
+      )}
+      {...props}
+    />
+  )
 )
 Spinner.displayName = "Spinner"
 
