@@ -23,7 +23,7 @@ const InfoFillIcon: React.FC<InfoFillIconProps> = ({ size = 16, className }) => 
         cx="8"
         cy="8"
         r="8"
-        fill="var(--fgColor-accent, #0969da)"
+        fill="rgb(37 99 235)"
       />
       {/* 白い情報アイコン */}
       <g fill="white">

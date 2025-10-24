@@ -85,7 +85,7 @@ const TableView: React.FC = () => {
           alignItems: "center",
           justifyContent: "center",
           height: "calc(100vh - 120px)",
-          color: "var(--fgColor-default)",
+          color: "hsl(var(--foreground))",
         }}
       >
         <span className="text-foreground">ボードを選択してください</span>

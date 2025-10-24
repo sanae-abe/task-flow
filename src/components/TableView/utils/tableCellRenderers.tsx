@@ -287,7 +287,7 @@ export const renderDescriptionCell = (task: TaskWithColumn) => (
 export const renderRecurrenceCell = (task: TaskWithColumn) => (
   <div
     style={{
-      color: "var(--fgColor-default)",
+      color: "hsl(var(--foreground))",
     }}
     className="flex items-center gap-1"
   >

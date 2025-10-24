@@ -28,6 +28,6 @@ export const KANBAN_BOARD_STYLES = {
 
   emptyStateText: {
     fontSize: "16px",
-    color: "var(--fgColor-muted)",
+    color: "hsl(var(--muted-foreground))",
   },
 } as const;

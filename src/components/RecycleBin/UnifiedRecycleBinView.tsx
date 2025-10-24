@@ -219,7 +219,7 @@ const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
             borderColor: 'var(--borderColor-default)',
             fontSize: "14px",
             fontWeight: 'bold',
-            color: 'var(--fgColor-muted)'
+            color: 'hsl(var(--muted-foreground))'
           }}>
             <SortableHeader
               field="type"

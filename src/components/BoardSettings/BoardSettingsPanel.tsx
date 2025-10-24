@@ -417,7 +417,7 @@ export const BoardSettingsPanel: React.FC = () => {
     <div className="pb-4">
       <div className="mb-4">
         <h2 className="text-lg font-bold mb-4 text-gray-900">デフォルトカラム設定</h2>
-        <div style={{ color: 'var(--fgColor-muted)', fontSize: "14px" }}>
+        <div style={{ color: 'hsl(var(--muted-foreground))', fontSize: "14px" }}>
           新しいボード作成時に使用されるデフォルトカラムを設定できます。<br />
           既存のボードには影響しません。
         </div>
