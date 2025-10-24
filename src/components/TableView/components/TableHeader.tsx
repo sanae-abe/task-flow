@@ -17,7 +17,7 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
     style={{
       gridTemplateColumns,
       display: "grid",
-      background: "var(--background)",
+      background: "hsl(var(--background))",
       borderBottom: "1px solid hsl(var(--border))",
       boxShadow: "0 0 2px rgba(0,0,0,0.05)",
       padding: "8px 12px",

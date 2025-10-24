@@ -97,7 +97,7 @@ const TableView: React.FC = () => {
     <div
       key={`tableview-${tableColumnsData.forceRender}`}
       style={{
-        backgroundColor: "var(--color-neutral-100)"
+        backgroundColor: "hsl(var(--color-neutral-100))"
       }}
       className="h-[calc(100vh-120px)] overflow-auto p-8"
     >
@@ -107,7 +107,7 @@ const TableView: React.FC = () => {
         style={{
           borderRadius: 2,
           overflow: "auto",
-          backgroundColor: "var(--background)",
+          backgroundColor: "hsl(var(--background))",
           boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
           minWidth: "fit-content",
         }}
