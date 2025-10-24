@@ -8,10 +8,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Loader2 } from "lucide-react";
 import {
-  HistoryIcon,
-  TrashIcon,
-  KebabHorizontalIcon
-} from "@primer/octicons-react";
+  RotateCcw,
+  Trash2,
+  MoreHorizontal
+} from "lucide-react";
 import React, { useMemo, useState } from "react";
 
 import { useBoard } from "../../contexts/BoardContext";
@@ -185,13 +185,13 @@ const BoardRecycleBinView: React.FC<BoardRecycleBinViewProps> = ({
                         size="sm"
                         variant="outline"
                       >
-                        <KebabHorizontalIcon size={16} className="mr-2" />
+                        <MoreHorizontal size={16} className="mr-2" />
                         操作
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
                       <DropdownMenuItem onClick={() => handleRestore(board.id)}>
-                        <HistoryIcon size={16} className="mr-2" />
+                        <RotateCcw size={16} className="mr-2" />
                         復元
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
@@ -199,7 +199,7 @@ const BoardRecycleBinView: React.FC<BoardRecycleBinViewProps> = ({
                         onClick={() => setShowDeleteConfirm(board.id)}
                         className="text-red-600 focus:text-red-600"
                       >
-                        <TrashIcon size={16} className="mr-2" />
+                        <Trash2 size={16} className="mr-2" />
                         完全に削除
                       </DropdownMenuItem>
                     </DropdownMenuContent>

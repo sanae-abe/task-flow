@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { ReplyIcon, TrashIcon, XIcon } from '@primer/octicons-react';
+import { RotateCcw, Trash2, X } from 'lucide-react';
 import { Loader2 } from 'lucide-react';
 import type { RecycleBinItemWithMeta } from '../../../../../types/recycleBin';
 
@@ -85,7 +85,7 @@ export const ActionFooter: React.FC<ActionFooterProps> = ({
         {loadingAction === 'restore' ? (
           <Loader2 size={16} className="animate-spin" />
         ) : (
-          <ReplyIcon
+          <RotateCcw
             size={16}
             aria-hidden="true"
           />
@@ -105,7 +105,7 @@ export const ActionFooter: React.FC<ActionFooterProps> = ({
         {loadingAction === 'delete' ? (
           <Loader2 size={16} className="animate-spin" />
         ) : (
-          <TrashIcon
+          <Trash2
             size={16}
             aria-hidden="true"
           />
@@ -125,7 +125,7 @@ export const ActionFooter: React.FC<ActionFooterProps> = ({
         {loadingAction === 'close' ? (
           <Loader2 size={16} className="animate-spin" />
         ) : (
-          <XIcon
+          <X
             size={16}
             aria-hidden="true"
           />

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { HistoryIcon, TrashIcon, EyeIcon } from '@primer/octicons-react';
+import { RotateCcw, Trash2, Eye } from 'lucide-react';
 import { LoadingButton } from '../../shared/LoadingButton';
 import type { RecycleBinItemWithMeta } from '../../../types/recycleBin';
 
@@ -48,7 +48,7 @@ export const RecycleBinItemActions: React.FC<RecycleBinItemActionsProps> = ({
         onClick={() => onShowDetail(item)}
         className="p-1 h-auto min-w-0"
       >
-        <EyeIcon size={16} />
+        <Eye size={16} />
       </Button>
       <Button
         variant="ghost"
@@ -57,7 +57,7 @@ export const RecycleBinItemActions: React.FC<RecycleBinItemActionsProps> = ({
         onClick={() => onRestore(item)}
         className="p-1 h-auto min-w-0"
       >
-        <HistoryIcon size={16} />
+        <RotateCcw size={16} />
       </Button>
       <Button
         variant="ghost"
@@ -66,7 +66,7 @@ export const RecycleBinItemActions: React.FC<RecycleBinItemActionsProps> = ({
         onClick={() => onDelete(item)}
         className="p-1 h-auto min-w-0"
       >
-        <TrashIcon size={16} />
+        <Trash2 size={16} />
       </Button>
     </div>
   );
