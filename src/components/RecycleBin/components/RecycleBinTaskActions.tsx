@@ -1,9 +1,12 @@
 import React from "react";
+import { Button } from "@/components/ui/button";
 import {
-  Button,
-  ActionMenu,
-  ActionList,
-} from "@primer/react";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   KebabHorizontalIcon,
   HistoryIcon,
@@ -59,36 +62,28 @@ export const RecycleBinTaskActions: React.FC<RecycleBinTaskActionsProps> = ({
 
   return (
     <TaskActionsContainer>
-      <ActionMenu>
-        <ActionMenu.Anchor>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
           <Button
-            size="small"
-            leadingVisual={KebabHorizontalIcon}
+            size="sm"
+            variant="outline"
           >
+            <KebabHorizontalIcon size={16} className="mr-2" />
             操作
           </Button>
-        </ActionMenu.Anchor>
-        <ActionMenu.Overlay>
-          <ActionList>
-            <ActionList.Item onSelect={() => onRestore(taskId)}>
-              <ActionList.LeadingVisual>
-                <HistoryIcon size={16} />
-              </ActionList.LeadingVisual>
-              復元
-            </ActionList.Item>
-            <ActionList.Divider />
-            <ActionList.Item
-              variant="danger"
-              onSelect={() => onDeleteConfirm(taskId)}
-            >
-              <ActionList.LeadingVisual>
-                <TrashIcon size={16} />
-              </ActionList.LeadingVisual>
-              完全に削除
-            </ActionList.Item>
-          </ActionList>
-        </ActionMenu.Overlay>
-      </ActionMenu>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuItem onClick={() => onRestore(taskId)}>
+            <HistoryIcon size={16} className="mr-2" />
+            復元
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={() => onDeleteConfirm(taskId)}>
+            <TrashIcon size={16} className="mr-2" />
+            完全に削除
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </TaskActionsContainer>
   );
 };

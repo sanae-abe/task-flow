@@ -1,10 +1,6 @@
 import React, { useMemo, useState } from "react";
-import {
-  Button,
-  Text,
-  Spinner,
-  Heading,
-} from "@primer/react";
+import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
 import {
   ProjectIcon,
   TasklistIcon,
@@ -171,19 +167,19 @@ const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
         gap: '8px'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <Heading sx={{ fontSize: 2, fontWeight: 'bold' }}>
+          <h2 className="text-lg font-bold text-gray-900">
             ゴミ箱 ({allRecycleBinItems.length}件)
-          </Heading>
+          </h2>
         </div>
         <Button
-          variant="danger"
-          size="small"
+          variant="destructive"
+          size="sm"
           onClick={() => setShowEmptyConfirm(true)}
           disabled={emptyingRecycleBin || isEmptying || allRecycleBinItems.length === 0}
         >
           {emptyingRecycleBin || isEmptying ? (
             <>
-              <Spinner size="small" sx={{ mr: 1 }} />
+              <Loader2 size={16} className="animate-spin mr-2" />
               削除中...
             </>
           ) : (
@@ -206,9 +202,9 @@ const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
           justifyContent: 'center',
           alignItems: 'center'
         }}>
-          <Text sx={{ color: 'fg.muted' }}>
+          <span className="text-gray-500">
             ゴミ箱にアイテムはありません
-          </Text>
+          </span>
         </div>
       ) : (
         <div style={{
@@ -255,7 +251,7 @@ const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
             >
               削除予定
             </SortableHeader>
-            <Text sx={{ textAlign: 'center', fontSize: 0, p: 1 }}>操作</Text>
+            <span className="text-center text-sm p-2 text-gray-600">操作</span>
           </div>
 
           {/* テーブルボディ */}
@@ -282,31 +278,24 @@ const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
                   ) : (
                     <TasklistIcon size={16} />
                   )}
-                  <Text
-                    sx={{
-                      fontSize: 0,
-                      color: "fg.default",
-                      px: 1,
-                      py: 0.5,
-                      bg: item.type === 'board' ? "attention.subtle" : item.type === 'column' ? "success.subtle" : "accent.subtle",
-                      borderRadius: 1,
-                    }}
+                  <span
+                    className={`text-sm px-2 py-1 rounded text-gray-900 ${
+                      item.type === 'board'
+                        ? 'bg-yellow-100'
+                        : item.type === 'column'
+                        ? 'bg-green-100'
+                        : 'bg-blue-100'
+                    }`}
                   >
                     {item.type === 'board' ? 'ボード' : item.type === 'column' ? 'カラム' : 'タスク'}
-                  </Text>
+                  </span>
                 </div>
 
                 {/* タイトル */}
                 <div style={{ minWidth: 0 }}>
-                  <Text
-                    sx={{
-                      fontSize: 1,
-                      fontWeight: "semibold",
-                      wordBreak: "break-word",
-                    }}
-                  >
+                  <span className="text-base font-semibold break-words text-gray-900">
                     {item.title}
-                  </Text>
+                  </span>
                 </div>
 
                 {/* 削除予定 */}
@@ -314,20 +303,18 @@ const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
                   {item.timeUntilDeletion ? (
                     <>
                       <ClockIcon size={14} />
-                      <Text
-                        sx={{
-                          fontSize: 0,
-                          color: recycleBinSettings.retentionDays === null ? 'fg.muted' : 'fg.default',
-                          textAlign: 'center',
-                        }}
+                      <span
+                        className={`text-sm text-center ${
+                          recycleBinSettings.retentionDays === null ? 'text-gray-500' : 'text-gray-900'
+                        }`}
                       >
                         {item.timeUntilDeletion}
-                      </Text>
+                      </span>
                     </>
                   ) : (
-                    <Text sx={{ fontSize: 0, color: 'fg.muted', textAlign: 'center' }}>
+                    <span className="text-sm text-gray-500 text-center">
                       未設定
-                    </Text>
+                    </span>
                   )}
                 </div>
 

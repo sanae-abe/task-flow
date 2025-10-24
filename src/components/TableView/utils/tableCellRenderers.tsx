@@ -1,10 +1,8 @@
 import React from "react";
+import { Button } from "@/components/ui/button";
 import {
-  Text,
-  IconButton,
   ActionMenu,
   ActionList,
-  Button,
 } from "@primer/react";
 import {
   XIcon,
@@ -35,19 +33,15 @@ export const renderActionsCell = (
   onDeleteClick: (task: TaskWithColumn) => void,
 ) => (
   <div onClick={(e: React.MouseEvent) => e.stopPropagation()}>
-    <IconButton
+    <Button
       aria-label="タスクを削除"
-      variant="invisible"
-      icon={XIcon}
-      size="small"
+      variant="ghost"
+      size="sm"
       onClick={() => onDeleteClick(task)}
-      sx={{
-        "&:hover": {
-          bg: "transparent",
-          color: "danger.fg",
-        },
-      }}
-    />
+      className="p-1 h-auto min-w-0 hover:bg-transparent hover:text-red-600"
+    >
+      <XIcon size={16} />
+    </Button>
   </div>
 );
 
@@ -55,20 +49,13 @@ export const renderActionsCell = (
  * タイトルセルの描画
  */
 export const renderTitleCell = (task: TaskWithColumn) => (
-  <Text
-    sx={{
-      display: "block",
-      overflow: "hidden",
-      textOverflow: "ellipsis",
-      whiteSpace: "nowrap",
-      fontWeight: "semibold",
-      color: task.completedAt ? "fg.default" : "fg.default",
-      textDecoration: task.completedAt ? "line-through" : "none",
-      fontSize: 1,
-    }}
+  <span
+    className={`block overflow-hidden text-ellipsis whitespace-nowrap font-semibold text-gray-900 text-sm ${
+      task.completedAt ? "line-through" : ""
+    }`}
   >
     {task.title}
-  </Text>
+  </span>
 );
 
 /**
@@ -83,21 +70,14 @@ export const renderStatusCell = (
     <ActionMenu>
       <ActionMenu.Anchor>
         <Button
-          variant="invisible"
-          size="small"
-          trailingVisual={TriangleDownIcon}
-          sx={{
-            padding: 0,
-            minHeight: "auto",
-            border: "none",
-            "&:hover": {
-              bg: "transparent",
-            },
-          }}
+          variant="ghost"
+          size="sm"
+          className="p-0 h-auto min-h-0 border-none hover:bg-transparent"
         >
           <StatusBadge size="medium" variant="default" fontWeight="400">
             {task.status}
           </StatusBadge>
+          <TriangleDownIcon size={12} className="ml-1" />
         </Button>
       </ActionMenu.Anchor>
       <ActionMenu.Overlay>
@@ -125,11 +105,11 @@ export const renderStatusCell = (
 export const renderPriorityCell = (task: TaskWithColumn) => (
   <div>
     {task.priority ? (
-      <Text sx={{ color: "fg.default", fontSize: 1 }}>
+      <span className="text-gray-900 text-sm">
         {getPriorityText(task.priority)}
-      </Text>
+      </span>
     ) : (
-      <Text sx={{ color: "fg.default", fontSize: 1 }}>-</Text>
+      <span className="text-gray-900 text-sm">-</span>
     )}
   </div>
 );
@@ -141,7 +121,7 @@ export const renderDueDateCell = (task: TaskWithColumn) => {
   if (!task.dueDate) {
     return (
       <div>
-        <Text sx={{ color: "fg.default", fontSize: 1 }}>-</Text>
+        <span className="text-gray-900 text-sm">-</span>
       </div>
     );
   }
@@ -151,19 +131,21 @@ export const renderDueDateCell = (task: TaskWithColumn) => {
   const formattedDate = formatDate(task.dueDate, "MM/dd HH:mm");
   const dateColor = getDateColor(isOverdue, isDueToday, isDueTomorrow);
 
+  // Convert Primer color to Tailwind classes
+  const getColorClass = (color: string) => {
+    if (color === "danger.fg") return "text-red-600";
+    if (color === "attention.fg") return "text-yellow-600";
+    if (color === "success.fg") return "text-green-600";
+    return "text-gray-900";
+  };
+
   return (
-    <Text
-      sx={{
-        display: "flex",
-        alignItems: "center",
-        gap: 1,
-        fontSize: 1,
-        color: dateColor,
-      }}
+    <span
+      className={`flex items-center gap-1 text-sm ${getColorClass(dateColor)}`}
     >
       {formattedDate}
       {task.recurrence?.enabled && <SyncIcon size={12} />}
-    </Text>
+    </span>
   );
 };
 
@@ -183,19 +165,9 @@ export const renderLabelsCell = (task: TaskWithColumn) => (
       <LabelChip key={label.id} label={label} />
     ))}
     {task.labels && task.labels.length > 2 && (
-      <Text
-        sx={{
-          fontSize: 0,
-          color: "fg.default",
-          px: 2,
-          py: 1,
-          border: "1px solid",
-          borderColor: "border.default",
-          borderRadius: 2,
-        }}
-      >
+      <span className="text-xs text-gray-900 px-2 py-1 border border-gray-200 rounded">
         +{task.labels.length - 2}
-      </Text>
+      </span>
     )}
   </div>
 );
@@ -208,13 +180,13 @@ export const renderSubTasksCell = (task: TaskWithColumn) => (
     {task.subTasks && task.subTasks.length > 0 ? (
       <>
         <CheckIcon size={12} />
-        <Text sx={{ fontSize: 1, color: "fg.default" }}>
+        <span className="text-sm text-gray-900">
           {task.subTasks.filter((sub) => sub.completed).length}/
           {task.subTasks.length}
-        </Text>
+        </span>
       </>
     ) : (
-      <Text sx={{ color: "fg.default", fontSize: 1 }}>-</Text>
+      <span className="text-gray-900 text-sm">-</span>
     )}
   </div>
 );
@@ -227,12 +199,12 @@ export const renderFilesCell = (task: TaskWithColumn) => (
     {task.files && task.files.length > 0 ? (
       <>
         <PaperclipIcon size={12} />
-        <Text sx={{ fontSize: 1, color: "fg.default" }}>
+        <span className="text-sm text-gray-900">
           {task.files.length}
-        </Text>
+        </span>
       </>
     ) : (
-      <Text sx={{ color: "fg.default", fontSize: 1 }}>-</Text>
+      <span className="text-gray-900 text-sm">-</span>
     )}
   </div>
 );
@@ -248,12 +220,12 @@ export const renderProgressCell = (task: TaskWithColumn) => (
           completedCount={task.subTasks.filter((sub) => sub.completed).length}
           totalCount={task.subTasks.length}
         />
-        <Text sx={{ fontSize: 1, color: "fg.default" }}>
+        <span className="text-sm text-gray-900">
           {getCompletionRate(task)}%
-        </Text>
+        </span>
       </div>
     ) : (
-      <Text sx={{ color: "fg.default", fontSize: 1 }}>-</Text>
+      <span className="text-gray-900 text-sm">-</span>
     )}
   </div>
 );
@@ -262,18 +234,18 @@ export const renderProgressCell = (task: TaskWithColumn) => (
  * 作成日セルの描画
  */
 export const renderCreatedAtCell = (task: TaskWithColumn) => (
-  <Text sx={{ fontSize: 1, color: "fg.default" }}>
+  <span className="text-sm text-gray-900">
     {formatDate(task.createdAt, "MM/dd HH:mm")}
-  </Text>
+  </span>
 );
 
 /**
  * 更新日セルの描画
  */
 export const renderUpdatedAtCell = (task: TaskWithColumn) => (
-  <Text sx={{ fontSize: 1, color: "fg.default" }}>
+  <span className="text-sm text-gray-900">
     {formatDate(task.updatedAt, "MM/dd HH:mm")}
-  </Text>
+  </span>
 );
 
 /**
@@ -282,11 +254,11 @@ export const renderUpdatedAtCell = (task: TaskWithColumn) => (
 export const renderCompletedAtCell = (task: TaskWithColumn) => (
   <div>
     {task.completedAt ? (
-      <Text sx={{ fontSize: 1, color: "fg.default" }}>
+      <span className="text-sm text-gray-900">
         {formatDate(task.completedAt, "MM/dd HH:mm")}
-      </Text>
+      </span>
     ) : (
-      <Text sx={{ color: "fg.default", fontSize: 1 }}>-</Text>
+      <span className="text-gray-900 text-sm">-</span>
     )}
   </div>
 );
@@ -297,22 +269,14 @@ export const renderCompletedAtCell = (task: TaskWithColumn) => (
 export const renderDescriptionCell = (task: TaskWithColumn) => (
   <div>
     {task.description ? (
-      <Text
-        sx={{
-          display: "block",
-          fontSize: 0,
-          color: "fg.default",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          whiteSpace: "nowrap",
-          maxWidth: "580px",
-        }}
+      <span
+        className="block text-xs text-gray-900 overflow-hidden text-ellipsis whitespace-nowrap max-w-[580px]"
         title={stripHtml(task.description)}
       >
         {stripHtml(task.description)}
-      </Text>
+      </span>
     ) : (
-      <Text sx={{ color: "fg.default", fontSize: 0 }}>-</Text>
+      <span className="text-gray-900 text-xs">-</span>
     )}
   </div>
 );
@@ -332,15 +296,15 @@ export const renderRecurrenceCell = (task: TaskWithColumn) => (
     {task.recurrence?.enabled ? (
       <>
         <SyncIcon size={12} />
-        <Text sx={{ fontSize: 1 }}>
+        <span className="text-sm">
           {task.recurrence.pattern === "daily" && "毎日"}
           {task.recurrence.pattern === "weekly" && "毎週"}
           {task.recurrence.pattern === "monthly" && "毎月"}
           {task.recurrence.pattern === "yearly" && "毎年"}
-        </Text>
+        </span>
       </>
     ) : (
-      <Text sx={{ color: "fg.default", fontSize: 1 }}>-</Text>
+      <span className="text-gray-900 text-sm">-</span>
     )}
   </div>
 );
@@ -349,5 +313,5 @@ export const renderRecurrenceCell = (task: TaskWithColumn) => (
  * デフォルトセルの描画
  */
 export const renderDefaultCell = () => (
-  <Text sx={{ fontSize: 1, color: "fg.default" }}>-</Text>
+  <span className="text-sm text-gray-900">-</span>
 );
