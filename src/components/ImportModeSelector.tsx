@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { UploadIcon, FileIcon, PackageIcon } from "@primer/octicons-react";
+import { Upload, File, Package } from "lucide-react";
 import React, { useMemo } from "react";
 
 import type { ImportMode, ImportModeConfig } from "../types";
@@ -31,15 +31,15 @@ const IMPORT_MODES: ImportModeConfig[] = [
 const getModeIcon = (mode: ImportMode): React.ReactElement => {
   switch (mode) {
     case "drag-drop":
-      return <UploadIcon size={16} />;
+      return <Upload size={16} />;
     case "file-select":
-      return <FileIcon size={16} />;
+      return <File size={16} />;
     case "both":
-      return <PackageIcon size={16} />;
+      return <Package size={16} />;
     default:
       // TypeScript exhaustiveness check - should never reach here
       mode satisfies never;
-      return <PackageIcon size={16} />;
+      return <Package size={16} />;
   }
 };
 

@@ -1,4 +1,4 @@
-import { AlertIcon, ClockIcon, XCircleIcon } from "@primer/octicons-react";
+import { AlertTriangle, Clock, XCircle } from "lucide-react";
 import { memo } from "react";
 
 import {
@@ -23,17 +23,17 @@ const BADGE_CONFIGS = {
   overdue: {
     variant: "danger" as const,
     text: "期限切れ",
-    icon: XCircleIcon,
+    icon: XCircle,
   },
   today: {
     variant: "warning" as const,
     text: "本日期限",
-    icon: AlertIcon,
+    icon: AlertTriangle,
   },
   tomorrow: {
     variant: "info" as const,
     text: "明日期限",
-    icon: ClockIcon,
+    icon: Clock,
   },
 } as const;
 

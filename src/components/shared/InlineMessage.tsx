@@ -1,5 +1,5 @@
 import React from "react";
-import { InfoIcon, CheckCircleIcon, CheckCircleFillIcon, AlertIcon, AlertFillIcon } from '@primer/octicons-react';
+import { Info, CheckCircle, CheckCircle2, AlertTriangle } from 'lucide-react';
 import InfoFillIcon from './icons/InfoFillIcon';
 
 interface InlineMessageProps {
@@ -19,7 +19,7 @@ const InlineMessage: React.FC<InlineMessageProps> = ({ message, variant = "info"
   const fontWeight = size === "small" ? '700' : '400';
 
   if (variant === "success") {
-    const SuccessIconComponent = size === "small" ? CheckCircleFillIcon : CheckCircleIcon;
+    const SuccessIconComponent = size === "small" ? CheckCircle2 : CheckCircle;
     return (
       <div style={{ display: 'flex', alignItems: 'flex-start', gap, color: 'rgb(22 163 74)' }}>
         <span style={{ display: 'flex', alignItems: 'center', paddingTop: '0.25em' }}><SuccessIconComponent size={iconSize} /></span>
@@ -31,7 +31,7 @@ const InlineMessage: React.FC<InlineMessageProps> = ({ message, variant = "info"
   }
 
   if (variant === "warning") {
-    const WarningIconComponent = size === "small" ? AlertFillIcon : AlertIcon;
+    const WarningIconComponent = AlertTriangle;
     return (
       <div style={{ display: 'flex', alignItems: 'flex-start', gap, color: 'rgb(212 167 44)' }}>
         <span style={{ display: 'flex', alignItems: 'center', paddingTop: "0.25em" }}><WarningIconComponent size={iconSize} /></span>
@@ -43,7 +43,7 @@ const InlineMessage: React.FC<InlineMessageProps> = ({ message, variant = "info"
   }
 
   if (variant === "critical") {
-    const CriticalIconComponent = size === "small" ? AlertFillIcon : AlertIcon;
+    const CriticalIconComponent = AlertTriangle;
     return (
       <div style={{ display: 'flex', alignItems: 'flex-start', gap, color: 'hsl(var(--foreground))' }}>
         <span style={{ display: 'flex', alignItems: 'center', paddingTop: '0.25em' }}><CriticalIconComponent size={iconSize} /></span>
@@ -55,7 +55,7 @@ const InlineMessage: React.FC<InlineMessageProps> = ({ message, variant = "info"
   }
 
   if (variant === "info") {
-    const InfoIconComponent = size === "small" ? InfoFillIcon : InfoIcon;
+    const InfoIconComponent = size === "small" ? InfoFillIcon : Info;
     return (
       <div style={{ display: 'flex', alignItems: 'flex-start', gap, color: 'rgb(37 99 235)' }}>
         <span style={{ display: 'flex', alignItems: 'center', paddingTop: '0.25em' }}><InfoIconComponent size={iconSize} /></span>
@@ -66,7 +66,7 @@ const InlineMessage: React.FC<InlineMessageProps> = ({ message, variant = "info"
     );
   }
 
-  const UnavailableIconComponent = size === "small" ? AlertFillIcon : AlertIcon;
+  const UnavailableIconComponent = AlertTriangle;
   return (
     <div style={{ display: 'flex', alignItems: 'flex-start', gap, color: 'hsl(var(--muted-foreground))' }}>
       <span style={{ display: 'flex', alignItems: 'center', paddingTop: '0.25em' }}><UnavailableIconComponent size={iconSize} /></span>
