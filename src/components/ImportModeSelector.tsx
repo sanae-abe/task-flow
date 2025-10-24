@@ -1,4 +1,4 @@
-import { Text, Button } from "@primer/react";
+import { Button } from "@/components/ui/button";
 import { UploadIcon, FileIcon, PackageIcon } from "@primer/octicons-react";
 import React, { useMemo } from "react";
 
@@ -54,76 +54,35 @@ const ImportModeSelector: React.FC<ImportModeSelectorProps> = ({
   );
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+    <div className="flex flex-col gap-2">
       {showModeIndicator && (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "8px",
-            padding: "8px",
-            backgroundColor: "var(--bgColor-muted)",
-            borderRadius: "var(--borderRadius-medium)",
-            border: "1px solid",
-            borderColor: "var(--borderColor-default)",
-          }}
-        >
+        <div className="flex items-center gap-2 p-2 bg-gray-50 rounded-md border border-gray-200">
           {getModeIcon(selectedMode)}
           <div>
-            <Text sx={{ fontWeight: "600", fontSize: 1 }}>
-              現在のインポートモード
-            </Text>
-            <Text sx={{ fontSize: 0, color: "fg.muted" }}>
-              {selectedConfig?.label}
-            </Text>
+            <p className="font-semibold text-sm">現在のインポートモード</p>
+            <p className="text-xs text-gray-600">{selectedConfig?.label}</p>
           </div>
         </div>
       )}
 
-      <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-        <Text sx={{ fontWeight: "600", fontSize: 1 }}>
-          インポートモードを選択
-        </Text>
-        <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+      <div className="flex flex-col gap-1">
+        <p className="font-semibold text-sm">インポートモードを選択</p>
+        <div className="flex flex-col gap-2">
           {IMPORT_MODES.map((modeConfig) => (
             <Button
               key={modeConfig.mode}
-              variant={selectedMode === modeConfig.mode ? "primary" : "default"}
-              leadingVisual={getModeIcon(modeConfig.mode)}
+              variant={selectedMode === modeConfig.mode ? "default" : "outline"}
               onClick={() => onModeChange(modeConfig.mode)}
               aria-label={`インポートモードを${modeConfig.label}に変更`}
-              sx={{
-                width: "100%",
-                justifyContent: "flex-start",
-                textAlign: "left",
-                p: 3,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "flex-start",
-                gap: 1,
-              }}
+              className="w-full justify-start text-left p-3 flex flex-col items-start gap-1 h-auto"
             >
-              <span
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                  width: "100%",
-                }}
-              >
-                <span
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "flex-start",
-                  }}
-                >
-                  <Text sx={{ fontWeight: "bold", fontSize: 1 }}>
-                    {modeConfig.label}
-                  </Text>
-                  <Text sx={{ fontSize: 0, color: "fg.muted" }}>
+              <span className="flex items-center gap-2 w-full">
+                {getModeIcon(modeConfig.mode)}
+                <span className="flex flex-col items-start">
+                  <span className="font-bold text-sm">{modeConfig.label}</span>
+                  <span className="text-xs text-gray-600">
                     {modeConfig.description}
-                  </Text>
+                  </span>
                 </span>
               </span>
             </Button>

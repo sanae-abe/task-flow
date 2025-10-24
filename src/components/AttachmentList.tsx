@@ -1,5 +1,5 @@
 import { XIcon } from "@primer/octicons-react";
-import { Text, Button } from "@primer/react";
+import { Button } from "@/components/ui/button";
 import React from "react";
 
 import type { FileAttachment } from "../types";
@@ -19,69 +19,31 @@ const AttachmentList: React.FC<AttachmentListProps> = ({
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-      <Text sx={{ fontSize: 1, fontWeight: "700" }}>
+    <div className="flex flex-col gap-2">
+      <h3 className="text-sm font-bold">
         添付ファイル ({attachments.length})
-      </Text>
+      </h3>
       {attachments.map((attachment) => (
         <div
           key={attachment.id}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            padding: "8px",
-            backgroundColor: "var(--bgColor-muted)",
-            borderRadius: "var(--borderRadius-medium)",
-            border: "1px solid",
-            borderColor: "var(--borderColor-default)",
-          }}
+          className="flex items-center justify-between p-2 bg-gray-50 rounded-md border border-gray-200"
         >
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-              flex: 1,
-              minWidth: 0,
-            }}
-          >
+          <div className="flex items-center gap-2 flex-1 min-w-0">
             {getFileIcon(attachment.type)}
-            <div
-              style={{
-                minWidth: 0,
-                flex: 1,
-                display: "flex",
-                flexDirection: "column",
-                gap: "4px",
-              }}
-            >
-              <Text
-                sx={{
-                  fontSize: 1,
-                  fontWeight: "600",
-                  wordBreak: "break-word",
-                  lineHeight: 1.2,
-                }}
-              >
+            <div className="min-w-0 flex-1 flex flex-col gap-1">
+              <span className="text-sm font-semibold break-words leading-tight">
                 {attachment.name}
-              </Text>
-              <Text sx={{ fontSize: 0, color: "fg.muted" }}>
+              </span>
+              <span className="text-xs text-gray-600">
                 {formatFileSize(attachment.size)}
-              </Text>
+              </span>
             </div>
           </div>
           <Button
-            variant="invisible"
-            size="small"
+            variant="ghost"
+            size="sm"
             onClick={() => onRemoveAttachment(attachment.id)}
-            sx={{
-              p: 1,
-              color: "danger.fg",
-              "&:hover": {
-                color: "danger.emphasis",
-              },
-            }}
+            className="p-1 text-red-600 hover:text-red-700 hover:bg-red-50"
             aria-label="ファイルを削除"
           >
             <XIcon size={16} />
