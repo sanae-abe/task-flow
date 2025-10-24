@@ -1,12 +1,12 @@
 import {
-  DatabaseIcon,
-  TagIcon,
-  ColumnsIcon,
-  TrashIcon,
-  TasklistIcon
-} from "@primer/octicons-react";
-import { SplitPageLayout, NavList } from "@primer/react";
+  Database,
+  Tag,
+  Columns,
+  Trash2,
+  ListTodo
+} from "lucide-react";
 import React, { useState } from "react";
+import { cn } from "@/lib/utils";
 
 import UnifiedDialog from "./shared/Dialog/UnifiedDialog";
 import { DialogFlashMessage, useDialogFlashMessage } from "./shared";
@@ -46,102 +46,108 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
       variant="modal"
       size="xl"
     >
-      <div style={{ height: "500px" }}>
-        <SplitPageLayout>
-          {/* サイドバー（ナビゲーション） */}
-          <SplitPageLayout.Pane
-            position="start"
-            width={{ min: "150px", max: "200px", default: "200px" }}
-            padding="none"
-            divider="none"
-            sx={{ pr: "16px" }}
-          >
-            <NavList>
-              <NavList.Item
-                aria-current={activeTab === "board" ? "page" : undefined}
-                onClick={() => setActiveTab("board")}
-              >
-                <NavList.LeadingVisual>
-                  <ColumnsIcon />
-                </NavList.LeadingVisual>
-                カラム設定
-              </NavList.Item>
-              <NavList.Item
-                aria-current={activeTab === "templates" ? "page" : undefined}
-                onClick={() => setActiveTab("templates")}
-              >
-                <NavList.LeadingVisual>
-                  <TasklistIcon size={16} />
-                </NavList.LeadingVisual>
-                テンプレート管理
-              </NavList.Item>
-              <NavList.Item
-                aria-current={activeTab === "labels" ? "page" : undefined}
-                onClick={() => setActiveTab("labels")}
-              >
-                <NavList.LeadingVisual>
-                  <TagIcon />
-                </NavList.LeadingVisual>
-                ラベル管理
-              </NavList.Item>
-              <NavList.Item
-                aria-current={activeTab === "recycleBin" ? "page" : undefined}
-                onClick={() => setActiveTab("recycleBin")}
-              >
-                <NavList.LeadingVisual>
-                  <TrashIcon />
-                </NavList.LeadingVisual>
-                ゴミ箱管理
-              </NavList.Item>
-              <NavList.Item
-                aria-current={activeTab === "data" ? "page" : undefined}
-                onClick={() => setActiveTab("data")}
-              >
-                <NavList.LeadingVisual>
-                  <DatabaseIcon />
-                </NavList.LeadingVisual>
-                データ管理
-              </NavList.Item>
-            </NavList>
-          </SplitPageLayout.Pane>
-
-          {/* メインコンテンツエリア */}
-          <SplitPageLayout.Content padding="none" sx={{ py: "8px", pr: "8px" }}>
-            <div style={{ position: "relative", display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              {/* メッセージ表示（全タブ共通） */}
-              <DialogFlashMessage message={message} onDismiss={clearMessage} />
-
-              {activeTab === "board" ? (
-                <BoardSettingsPanel />
-              ) : activeTab === "templates" ? (
-                <TemplateManagementPanel onMessage={handleMessage} />
-              ) : activeTab === "labels" ? (
-                <LabelManagementPanel onMessage={handleMessage} />
-              ) : activeTab === "recycleBin" ? (
-                <div>
-                  <RecycleBinSettingsPanel />
-
-                  {/* 統合ゴミ箱セクション */}
-                  <div
-                    style={{
-                      marginTop: "24px",
-                      borderTop: "1px solid var(--borderColor-muted)",
-                      paddingTop: "24px",
-                    }}
-                  >
-                    <UnifiedRecycleBinView onMessage={handleMessage} />
-                  </div>
-                </div>
-              ) : (
-                <DataManagementPanel
-                  onExportAll={onExportData}
-                  onExportCurrent={onExportBoard}
-                  onMessage={handleMessage}
-                />
+      <div className="h-[500px] flex">
+        {/* サイドバー（ナビゲーション） */}
+        <div className="w-48 min-w-[150px] max-w-[200px] pr-4 border-r border-border">
+          <nav className="flex flex-col space-y-1">
+            <button
+              className={cn(
+                "flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors text-left",
+                activeTab === "board"
+                  ? "bg-accent text-accent-foreground"
+                  : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
               )}
-            </div>
-          </SplitPageLayout.Content>
-        </SplitPageLayout>
+              onClick={() => setActiveTab("board")}
+              aria-current={activeTab === "board" ? "page" : undefined}
+            >
+              <Columns size={16} />
+              カラム設定
+            </button>
+            <button
+              className={cn(
+                "flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors text-left",
+                activeTab === "templates"
+                  ? "bg-accent text-accent-foreground"
+                  : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+              )}
+              onClick={() => setActiveTab("templates")}
+              aria-current={activeTab === "templates" ? "page" : undefined}
+            >
+              <ListTodo size={16} />
+              テンプレート管理
+            </button>
+            <button
+              className={cn(
+                "flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors text-left",
+                activeTab === "labels"
+                  ? "bg-accent text-accent-foreground"
+                  : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+              )}
+              onClick={() => setActiveTab("labels")}
+              aria-current={activeTab === "labels" ? "page" : undefined}
+            >
+              <Tag size={16} />
+              ラベル管理
+            </button>
+            <button
+              className={cn(
+                "flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors text-left",
+                activeTab === "recycleBin"
+                  ? "bg-accent text-accent-foreground"
+                  : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+              )}
+              onClick={() => setActiveTab("recycleBin")}
+              aria-current={activeTab === "recycleBin" ? "page" : undefined}
+            >
+              <Trash2 size={16} />
+              ゴミ箱管理
+            </button>
+            <button
+              className={cn(
+                "flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors text-left",
+                activeTab === "data"
+                  ? "bg-accent text-accent-foreground"
+                  : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+              )}
+              onClick={() => setActiveTab("data")}
+              aria-current={activeTab === "data" ? "page" : undefined}
+            >
+              <Database size={16} />
+              データ管理
+            </button>
+          </nav>
+        </div>
+
+        {/* メインコンテンツエリア */}
+        <div className="flex-1 py-2 pr-2 overflow-auto">
+          <div className="relative flex flex-col gap-3">
+            {/* メッセージ表示（全タブ共通） */}
+            <DialogFlashMessage message={message} onDismiss={clearMessage} />
+
+            {activeTab === "board" ? (
+              <BoardSettingsPanel />
+            ) : activeTab === "templates" ? (
+              <TemplateManagementPanel onMessage={handleMessage} />
+            ) : activeTab === "labels" ? (
+              <LabelManagementPanel onMessage={handleMessage} />
+            ) : activeTab === "recycleBin" ? (
+              <div>
+                <RecycleBinSettingsPanel />
+
+                {/* 統合ゴミ箱セクション */}
+                <div className="mt-6 pt-6 border-t border-border">
+                  <UnifiedRecycleBinView onMessage={handleMessage} />
+                </div>
+              </div>
+            ) : (
+              <DataManagementPanel
+                onExportAll={onExportData}
+                onExportCurrent={onExportBoard}
+                onMessage={handleMessage}
+              />
+            )}
+          </div>
+        </div>
       </div>
     </UnifiedDialog>
   );
