@@ -2,12 +2,12 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import {
-  AlertIcon,
-  CheckCircleIcon,
-  InfoIcon,
-  StopIcon,
-  XIcon,
-} from '@primer/octicons-react';
+  AlertTriangle,
+  CheckCircle,
+  Info,
+  XCircle,
+  X,
+} from 'lucide-react';
 
 /**
  * ダイアログ内でFlashメッセージを表示するためのメッセージタイプ
@@ -68,19 +68,19 @@ export const getAlertStyles = (type: DialogMessageType): string => {
 export const getMessageIcon = (type: DialogMessageType): React.ReactElement => {
   switch (type) {
     case 'success':
-      return <CheckCircleIcon size={16} />;
+      return <CheckCircle size={16} />;
     case 'info':
     case 'upsell':
-      return <InfoIcon size={16} />;
+      return <Info size={16} />;
     case 'warning':
-      return <AlertIcon size={16} />;
+      return <AlertTriangle size={16} />;
     case 'critical':
-      return <StopIcon size={16} />;
+      return <XCircle size={16} />;
     case 'danger':
-      return <AlertIcon size={16} />;
+      return <AlertTriangle size={16} />;
     case 'default':
     default:
-      return <InfoIcon size={16} />;
+      return <Info size={16} />;
   }
 };
 
@@ -130,7 +130,7 @@ export const DialogFlashMessage: React.FC<DialogFlashMessageProps> = ({
             onClick={onDismiss}
             className="ml-2 flex-shrink-0 self-start p-1 h-auto min-w-0"
           >
-            <XIcon size={16} />
+            <X size={16} />
           </Button>
         )}
       </div>
