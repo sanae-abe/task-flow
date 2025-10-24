@@ -30,7 +30,7 @@ const ExampleDialog: React.FC = () => {
       <DialogFlashMessage message={message} />
 
       {/* テストボタン群 */}
-      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+      <div className="flex gap-2 flex-wrap">
         <Button
           variant="primary"
           onClick={() => showSuccess('操作が成功しました')}

@@ -1,5 +1,5 @@
 import React from "react";
-import { TrashIcon } from "@primer/octicons-react";
+import { Trash2 } from "lucide-react";
 import { UI_TEXT } from "../../../constants/recycleBin";
 import {
   EmptyStateContainer,
@@ -13,7 +13,7 @@ import {
  */
 export const RecycleBinEmptyState: React.FC = () => (
     <EmptyStateContainer>
-      <TrashIcon size={24} />
+      <Trash2 size={24} />
       <EmptyStateContent>
         <EmptyStateTitle>
           {UI_TEXT.VIEW.EMPTY_TITLE}

@@ -80,7 +80,7 @@ const TaskCreateDialog = memo(() => {
       size="large"
       actions={actions}
     >
-      <div style={{ display: 'flex', flexDirection: 'column', minHeight: '600px' }}>
+      <div className="flex flex-col" style={{ minHeight: '600px' }}>
         <Tabs defaultValue="normal" className="w-full">
           {/* タブナビゲーション */}
           <TabsList className="grid w-full grid-cols-2 mb-4">

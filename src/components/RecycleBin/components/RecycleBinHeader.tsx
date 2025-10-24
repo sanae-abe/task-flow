@@ -1,5 +1,5 @@
 import React from "react";
-import { TrashIcon } from "@primer/octicons-react";
+import { Trash2 } from "lucide-react";
 import { UI_TEXT, MESSAGES } from "../../../constants/recycleBin";
 import { type RecycleBinSettings } from "../../../types/settings";
 import { LoadingButton } from "../../shared/LoadingButton";
@@ -37,7 +37,7 @@ export const RecycleBinHeader: React.FC<RecycleBinHeaderProps> = ({
     <HeaderContainer>
       <HeaderTop>
         <HeaderTitle>
-          <TrashIcon size={16} />
+          <Trash2 size={16} />
           {UI_TEXT.VIEW.TITLE}
         </HeaderTitle>
         <LoadingButton
@@ -48,7 +48,7 @@ export const RecycleBinHeader: React.FC<RecycleBinHeaderProps> = ({
           onClick={onEmptyClick}
         >
           <EmptyButtonContent>
-            <TrashIcon size={14} />
+            <Trash2 size={14} />
             {UI_TEXT.VIEW.EMPTY_BIN_BUTTON}
           </EmptyButtonContent>
         </LoadingButton>

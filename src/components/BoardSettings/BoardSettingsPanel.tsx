@@ -123,7 +123,7 @@ const SortableColumnItem: React.FC<SortableColumnItemProps> = ({
           <InlineMessage variant="critical" message={error} size="small" />
         )}
       </div>
-      <div style={{ display: 'flex', gap: "4px" }}>
+      <div className="flex gap-1">
         <Button
           variant="ghost"
           size="sm"

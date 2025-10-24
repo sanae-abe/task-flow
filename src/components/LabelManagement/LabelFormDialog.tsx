@@ -167,9 +167,9 @@ const LabelFormDialog: React.FC<LabelFormDialogProps> = ({
       size="medium"
       actions={actions}
     >
-      <div style={{ display: 'flex', flexDirection: 'column', gap: "16px" }} onKeyDown={handleKeyDown}>
+      <div className="flex flex-col" style={{ gap: "16px" }} onKeyDown={handleKeyDown}>
         {/* プレビューエリア */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: "4px" }}>
+        <div className="flex flex-col" style={{ gap: "4px" }}>
           <FormControl.Label sx={{ display: 'block' }}>
             プレビュー
           </FormControl.Label>
@@ -179,7 +179,7 @@ const LabelFormDialog: React.FC<LabelFormDialogProps> = ({
             border: '1px solid',
             borderColor: 'var(--borderColor-muted)'
           }}>
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <div className="flex justify-center">
               <LabelChip label={previewLabel} />
             </div>
           </div>

@@ -42,7 +42,7 @@ const SortableHeader: React.FC<SortableHeaderProps> = ({
         appearance: 'none'
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+      <div className="flex items-center gap-1">
         <Text sx={{ fontSize: 0, fontWeight: 'bold' }}>
           {children}
         </Text>
@@ -91,7 +91,7 @@ const TemplateTableHeader: React.FC<TemplateTableHeaderProps> = ({
       sortDirection={sortDirection}
       onSort={onSort}
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+      <div className="flex items-center gap-1">
         <StarFillIcon size={12} />
         <Text sx={{ fontSize: 0 }}>おすすめ順</Text>
       </div>

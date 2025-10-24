@@ -19,7 +19,7 @@ export const DataStatistics = memo<DataStatisticsProps>(({
   statistics,
   title = 'データ概要'
 }) => (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: "8px" }}>
+    <div className="flex flex-col" style={{ gap: "8px" }}>
       {title && (
         <Text sx={{ fontSize: 1, fontWeight: '600', color: 'fg.muted' }}>
           {title}

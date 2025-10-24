@@ -34,7 +34,7 @@ const TemplateTableRow: React.FC<TemplateTableRowProps> = ({
       )}
     >
       {/* テンプレート名 */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: "4px" }}>
+      <div className="flex flex-col" style={{ gap: "4px" }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: "4px" }}>
           {template.isFavorite && (
             <div style={{ color: 'var(--fgColor-attention)' }}>

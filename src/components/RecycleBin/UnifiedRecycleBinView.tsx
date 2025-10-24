@@ -158,7 +158,7 @@ const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
     : null;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: "12px", paddingBottom: "16px" }}>
+    <div className="flex flex-col" style={{ gap: "12px", paddingBottom: "16px" }}>
       {/* ヘッダー */}
       <div style={{
         display: 'flex',
@@ -166,7 +166,7 @@ const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
         justifyContent: 'space-between',
         gap: '8px'
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div className="flex items-center gap-2">
           <h2 className="text-lg font-bold text-gray-900">
             ゴミ箱 ({allRecycleBinItems.length}件)
           </h2>
@@ -270,7 +270,7 @@ const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
                 }}
               >
                 {/* 種別 */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <div className="flex items-center gap-1">
                   {item.type === 'board' ? (
                     <FolderKanban size={16} />
                   ) : item.type === 'column' ? (
@@ -292,14 +292,14 @@ const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
                 </div>
 
                 {/* タイトル */}
-                <div style={{ minWidth: 0 }}>
+                <div>
                   <span className="text-base font-semibold break-words text-gray-900">
                     {item.title}
                   </span>
                 </div>
 
                 {/* 削除予定 */}
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
+                <div className="flex justify-center gap-1">
                   {item.timeUntilDeletion ? (
                     <>
                       <Clock size={14} />
