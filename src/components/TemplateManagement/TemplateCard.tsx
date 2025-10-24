@@ -120,7 +120,7 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
       }}>
         <div style={{ flex: 1, minWidth: 0 }}>
           {/* テンプレート名 */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: "4px", marginBottom: "4px" }}>
+          <div className="flex items-center gap-1 mb-1">
             {template.isFavorite && (
               <div style={{ color: 'var(--fgColor-attention)' }}>
                 <Star size={14} fill="currentColor" />
@@ -135,7 +135,7 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
           </div>
 
           {/* カテゴリーと使用回数 */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: "8px", flexWrap: 'wrap' }}>
+          <div className="flex items-center gap-2 flex-wrap">
             <span className="text-xs text-gray-600 px-2 py-1 bg-gray-100 rounded-md">
               {categoryInfo?.label || template.category}
             </span>
@@ -222,7 +222,7 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
           </h4>
 
           {/* タスク詳細情報 */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: "8px", flexWrap: 'wrap' }}>
+          <div className="flex items-center gap-2 flex-wrap">
             {/* 優先度 */}
             <span className={`text-xs ${getPriorityColorClass(template.priority)}`}>
               優先度: {getPriorityLabel(template.priority)}
@@ -230,7 +230,7 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
 
             {/* ラベル */}
             {template.labels.length > 0 && (
-              <div style={{ display: 'flex', gap: "4px", flexWrap: 'wrap' }}>
+              <div className="flex gap-1 flex-wrap">
                 {template.labels.slice(0, 3).map((label) => (
                   <LabelChip key={label.id} label={label} />
                 ))}

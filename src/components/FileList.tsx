@@ -1,4 +1,4 @@
-import { FileIcon, ImageIcon, DownloadIcon } from "@primer/octicons-react";
+import { File, Image, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import React, { useMemo, useCallback } from "react";
 
@@ -39,9 +39,9 @@ const formatFileSize = (bytes: number): string => {
 const getFileIcon = (type: string) => {
   const iconProps = { size: 14 } as const;
   return type.startsWith("image/") ? (
-    <ImageIcon {...iconProps} />
+    <Image {...iconProps} />
   ) : (
-    <FileIcon {...iconProps} />
+    <File {...iconProps} />
   );
 };
 
@@ -166,7 +166,7 @@ const FileListItem: React.FC<FileListItemProps> = React.memo(
               className="p-1"
               aria-label={`${attachment.name}をダウンロード`}
             >
-              <DownloadIcon size={14} />
+              <Download size={14} />
             </Button>
           )}
         </div>
