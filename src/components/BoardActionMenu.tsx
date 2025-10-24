@@ -1,14 +1,14 @@
 import {
-  PlusIcon,
-  PencilIcon,
-  TrashIcon,
-  CheckCircleIcon,
-} from "@primer/octicons-react";
-import { MoreHorizontal } from "lucide-react";
-import { ActionMenu, ActionList } from "@primer/react";
-import { memo } from "react";
+  Plus,
+  Edit,
+  Trash2,
+  CheckCircle,
+  MoreHorizontal,
+} from "lucide-react";
+import { memo, useMemo } from "react";
 
-import SubHeaderButton from "./SubHeaderButton";
+import type { MenuGroup, MenuTrigger } from "../types/unified-menu";
+import UnifiedMenu from "./shared/Menu/UnifiedMenu";
 
 /**
  * ボード設定用のアクションメニューコンポーネント
@@ -37,63 +37,78 @@ const BoardActionMenu = memo<BoardActionMenuProps>(
     onEditBoard,
     onDeleteBoard,
     onClearCompletedTasks,
-  }) => (
-    <ActionMenu>
-      <ActionMenu.Anchor>
-        <SubHeaderButton
-          icon={MoreHorizontal}
-          aria-label="ボード設定メニューを開く"
-        >
-          ボード設定
-        </SubHeaderButton>
-      </ActionMenu.Anchor>
-      <ActionMenu.Overlay>
-        <ActionList>
-          {/* ボード作成アクション */}
-          <ActionList.Item onSelect={onCreateBoard}>
-            <ActionList.LeadingVisual>
-              <PlusIcon />
-            </ActionList.LeadingVisual>
-            ボード作成
-          </ActionList.Item>
+  }) => {
+    // トリガー設定
+    const trigger: MenuTrigger = useMemo(() => ({
+      type: 'button',
+      label: 'ボード設定',
+      icon: MoreHorizontal,
+      ariaLabel: 'ボード設定メニューを開く'
+    }), []);
 
-          {/* ボード管理アクション */}
-          <ActionList.Item onSelect={onEditBoard}>
-            <ActionList.LeadingVisual>
-              <PencilIcon />
-            </ActionList.LeadingVisual>
-            ボード名を編集
-          </ActionList.Item>
+    // メニューグループ設定
+    const menuGroups: MenuGroup[] = useMemo(() => [
+      // ボード管理グループ
+      {
+        id: 'board-management',
+        label: 'ボード管理',
+        items: [
+          {
+            id: 'create-board',
+            type: 'action',
+            label: 'ボード作成',
+            icon: Plus,
+            onSelect: onCreateBoard
+          },
+          {
+            id: 'edit-board',
+            type: 'action',
+            label: 'ボード名を編集',
+            icon: Edit,
+            onSelect: onEditBoard
+          }
+        ]
+      },
+      // タスク管理グループ（条件付き表示）
+      {
+        id: 'task-management',
+        label: 'タスク管理',
+        condition: hasCompletedTasks,
+        items: [
+          {
+            id: 'clear-completed',
+            type: 'action',
+            label: '完了したタスクをクリア',
+            icon: CheckCircle,
+            onSelect: onClearCompletedTasks
+          }
+        ]
+      },
+      // 危険なアクショングループ（条件付き表示）
+      {
+        id: 'danger-actions',
+        label: '危険なアクション',
+        condition: canDeleteBoard,
+        items: [
+          {
+            id: 'delete-board',
+            type: 'action',
+            label: 'ボードを削除',
+            icon: Trash2,
+            variant: 'danger',
+            onSelect: onDeleteBoard
+          }
+        ]
+      }
+    ], [hasCompletedTasks, canDeleteBoard, onCreateBoard, onEditBoard, onDeleteBoard, onClearCompletedTasks]);
 
-          {/* タスク管理アクション */}
-          {hasCompletedTasks && (
-            <>
-              <ActionList.Divider />
-              <ActionList.Item onSelect={onClearCompletedTasks}>
-                <ActionList.LeadingVisual>
-                  <CheckCircleIcon />
-                </ActionList.LeadingVisual>
-                完了したタスクをクリア
-              </ActionList.Item>
-            </>
-          )}
-
-          {/* 危険なアクション */}
-          {canDeleteBoard && (
-            <>
-              <ActionList.Divider />
-              <ActionList.Item variant="danger" onSelect={onDeleteBoard}>
-                <ActionList.LeadingVisual>
-                  <TrashIcon />
-                </ActionList.LeadingVisual>
-                ボードを削除
-              </ActionList.Item>
-            </>
-          )}
-        </ActionList>
-      </ActionMenu.Overlay>
-    </ActionMenu>
-  ),
+    return (
+      <UnifiedMenu
+        groups={menuGroups}
+        trigger={trigger}
+      />
+    );
+  },
 );
 
 BoardActionMenu.displayName = "BoardActionMenu";
