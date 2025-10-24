@@ -11,7 +11,7 @@ import {
 } from "@primer/octicons-react";
 import { MousePointer, FileText } from "react-feather";
 
-import { Button, Heading, Text } from "@primer/react";
+import { Button } from "@/components/ui/button";
 import React, { useEffect, useCallback } from "react";
 
 import Logo from "./Logo";
@@ -61,11 +61,9 @@ const HelpSection: React.FC<HelpSectionProps> = ({
       >
         <Icon size={14} />
       </div>
-      <Heading
-        sx={{ fontSize: 2, fontWeight: "600", color: "fg.default", margin: 0 }}
-      >
+      <h3 className="text-base font-semibold text-gray-900 m-0">
         {title}
-      </Heading>
+      </h3>
     </div>
     <div
       style={{
@@ -96,28 +94,15 @@ const HelpItem: React.FC<HelpItemProps> = ({ title, description }) => (
       alignItems: "flex-start",
     }}
   >
-    <Text
-      sx={{
-        fontSize: 1,
-        fontWeight: "600",
-        color: "accent.emphasis",
-        minWidth: TITLE_MIN_WIDTH,
-        flexShrink: 0,
-        overflowWrap: "break-word",
-      }}
+    <span
+      className="text-sm font-semibold text-blue-700 flex-shrink-0 break-words"
+      style={{ minWidth: TITLE_MIN_WIDTH }}
     >
       {title}
-    </Text>
-    <Text
-      sx={{
-        fontSize: 0,
-        lineHeight: 1.5,
-        color: "fg.default",
-        flex: 1,
-      }}
-    >
+    </span>
+    <span className="text-xs leading-6 text-gray-900 flex-1">
       {description}
-    </Text>
+    </span>
   </div>
 );
 
@@ -179,30 +164,22 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
             flexShrink: 0,
           }}
         >
-          <Heading
+          <h1
             id="help-title"
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: 2,
-              fontSize: "1.25rem !important",
-              "& svg": {
-                color: "accent.emphasis",
-                marginRight: "2px",
-              },
-            }}
+            className="flex items-center gap-2 text-xl font-medium"
           >
             <Logo />
             使い方ガイド
-          </Heading>
+          </h1>
           <Button
             onClick={onClose}
-            variant="invisible"
-            size="small"
-            leadingVisual={XIcon}
+            variant="ghost"
+            size="sm"
             aria-label="ヘルプを閉じる"
-            sx={{ flexShrink: 0 }}
-          />
+            className="flex-shrink-0 p-1 h-auto min-w-0"
+          >
+            <XIcon size={16} />
+          </Button>
         </div>
 
         {/* Content */}
