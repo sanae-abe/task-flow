@@ -1,4 +1,3 @@
-import { Heading } from "@primer/react";
 import { memo } from "react";
 
 interface TaskDisplaySectionProps {
@@ -10,9 +9,9 @@ interface TaskDisplaySectionProps {
 const TaskDisplaySection = memo<TaskDisplaySectionProps>(
   ({ title, children, marginBottom = "16px" }) => (
     <div style={{ marginBottom }}>
-      <Heading sx={{ fontSize: 1, margin: 0, mb: 2, fontWeight: "700" }}>
+      <h3 className="text-sm m-0 mb-2 font-bold">
         {title}
-      </Heading>
+      </h3>
       {children}
     </div>
   ),
