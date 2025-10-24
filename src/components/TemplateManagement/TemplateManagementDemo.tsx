@@ -13,7 +13,7 @@ const TemplateManagementDemo: React.FC = () => (
         <div
           style={{
             minHeight: '100vh',
-            backgroundColor: 'var(--bgColor-default)',
+            backgroundColor: 'var(--background)',
             padding: '16px'
           }}
         >

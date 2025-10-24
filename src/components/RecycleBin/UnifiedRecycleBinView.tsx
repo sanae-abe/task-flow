@@ -219,7 +219,7 @@ const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
             gridTemplateColumns: '80px 1fr 100px 100px',
             gap: "8px",
             alignItems: 'center',
-            background: 'var(--bgColor-muted)',
+            background: 'var(--color-neutral-100)',
             borderBottom: '1px solid',
             borderColor: 'var(--borderColor-default)',
             fontSize: "14px",

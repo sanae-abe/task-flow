@@ -1,5 +1,5 @@
-import { TextInput, Select, FormControl } from "@primer/react";
 import React, { memo, useCallback } from "react";
+import { Input } from "@/components/ui/input";
 
 import type {
   Label,
@@ -75,14 +75,7 @@ const TaskEditForm = memo<TaskEditFormProps>(
     );
 
     return (
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "flex-start",
-          gap: 0,
-        }}
-      >
+      <div className="flex flex-col space-y-6">
         <UnifiedFormField
           id="task-title"
           name="task-title"
@@ -96,29 +89,32 @@ const TaskEditForm = memo<TaskEditFormProps>(
           validation={{ required: true }}
         />
 
-        <FormControl sx={{ marginBottom: "24px" }}>
-          <FormControl.Label>説明</FormControl.Label>
+        <div className="space-y-2">
+          <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+            説明
+          </label>
           <RichTextEditor
             value={description}
             onChange={setDescription}
             placeholder="タスクの説明を入力..."
           />
-        </FormControl>
+        </div>
 
-      <div style={{ marginBottom: "24px" }}>
-        <FormControl sx={{ marginBottom: "8px" }}>
-          <FormControl.Label>期限</FormControl.Label>
-          <TextInput
-            type="date"
+        <div className="space-y-3">
+          <div className="space-y-2">
+            <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+              期限
+            </label>
+            <Input
+              type="date"
               value={dueDate}
               onChange={(e) => setDueDate(e.target.value)}
               onKeyDown={onKeyPress}
-              sx={{ width: "100%" }}
-              step="1"
+              className="w-full"
             />
-          </FormControl>
+          </div>
 
-          <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+          <div className="flex gap-2 flex-wrap">
             <TimeSelector
               hasTime={hasTime}
               dueTime={dueTime}
@@ -133,41 +129,47 @@ const TaskEditForm = memo<TaskEditFormProps>(
           </div>
         </div>
 
-        <FormControl sx={{ marginBottom: "24px" }}>
-          <FormControl.Label>ステータス</FormControl.Label>
-          <Select
+        <div className="space-y-2">
+          <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+            ステータス
+          </label>
+          <select
             value={columnId}
             onChange={(e) => setColumnId(e.target.value)}
-            sx={{ width: "100%" }}
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {statusOptions.map((option) => (
-              <Select.Option key={option.value} value={option.value}>
+              <option key={option.value} value={option.value}>
                 {option.label}
-              </Select.Option>
+              </option>
             ))}
-          </Select>
-        </FormControl>
+          </select>
+        </div>
 
-        <FormControl sx={{ marginBottom: "24px" }}>
-          <FormControl.Label>ラベル</FormControl.Label>
+        <div className="space-y-2">
+          <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+            ラベル
+          </label>
           <LabelSelector selectedLabels={labels} onLabelsChange={setLabels} />
-        </FormControl>
+        </div>
 
-        <div style={{ marginBottom: "24px" }}>
+        <div>
           <PrioritySelector
             priority={priority}
             onPriorityChange={setPriority}
           />
         </div>
 
-        <FormControl sx={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-          <FormControl.Label>ファイル添付</FormControl.Label>
+        <div className="flex flex-col space-y-2">
+          <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+            ファイル添付
+          </label>
           <FileUploader
             attachments={attachments}
             onAttachmentsChange={setAttachments}
             showModeSelector={false}
           />
-        </FormControl>
+        </div>
       </div>
     );
   },

@@ -1,5 +1,5 @@
 import React from 'react';
-import { TextInput, FormControl, Select } from '@primer/react';
+import { Input } from "@/components/ui/input";
 
 import type { TaskFormFieldsProps } from '../types';
 import { UnifiedFormField } from '../../shared/Form';
@@ -56,10 +56,10 @@ export const TaskFormFields: React.FC<TaskFormFieldsProps> = ({
   } = formActions;
 
   return (
-    <div onKeyDown={onKeyPress} style={{ flex: 1, minHeight: '500px' }}>
+    <div onKeyDown={onKeyPress} className="flex-1 min-h-[500px] space-y-6">
       {/* テンプレート選択通知 */}
       {selectedTemplate && (
-        <div style={{ marginBottom: '24px' }}>
+        <div className="mb-6">
           <DialogFlashMessage message={{
             type: 'default',
             text: `テンプレート「${selectedTemplate.name}」から作成中`,
@@ -85,67 +85,66 @@ export const TaskFormFields: React.FC<TaskFormFieldsProps> = ({
 
       {/* ボード選択 */}
       {availableBoards && availableBoards.length > 1 && (
-        <div style={{ marginBottom: '24px' }}>
-          <FormControl>
-            <FormControl.Label>作成先ボード</FormControl.Label>
-            <Select
-              value={selectedBoardId || ''}
-              onChange={(e) => setSelectedBoardId(e.target.value || undefined)}
-              sx={{ width: '100%' }}
-            >
-              <Select.Option value="">現在のボード</Select.Option>
-              {availableBoards.map((board) => (
-                <Select.Option key={board.id} value={board.id}>
-                  {board.title}
-                </Select.Option>
-              ))}
-            </Select>
-          </FormControl>
+        <div className="space-y-2">
+          <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+            作成先ボード
+          </label>
+          <select
+            value={selectedBoardId || ''}
+            onChange={(e) => setSelectedBoardId(e.target.value || undefined)}
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <option value="">現在のボード</option>
+            {availableBoards.map((board) => (
+              <option key={board.id} value={board.id}>
+                {board.title}
+              </option>
+            ))}
+          </select>
         </div>
       )}
 
       {/* 説明 */}
-      <div style={{ width: '100%', marginBottom: '24px' }}>
-        <FormControl>
-          <FormControl.Label>説明</FormControl.Label>
-          <RichTextEditor
-            value={description}
-            onChange={setDescription}
-            placeholder="タスクの説明を入力..."
-          />
-        </FormControl>
+      <div className="w-full space-y-2">
+        <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+          説明
+        </label>
+        <RichTextEditor
+          value={description}
+          onChange={setDescription}
+          placeholder="タスクの説明を入力..."
+        />
       </div>
 
       {/* 期限設定 */}
-      <div style={{ marginBottom: '24px' }}>
-        <FormControl>
-          <FormControl.Label>期限</FormControl.Label>
-          <div style={{ width: '100%' }}>
-            <TextInput
-              type="date"
-              value={dueDate}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDueDate(e.target.value)}
-              sx={{ width: '100%' }}
-            />
-          </div>
-          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '8px' }}>
-            <TimeSelector
-              hasTime={hasTime}
-              dueTime={dueTime}
-              onTimeChange={onTimeChange}
-              disabled={!dueDate}
-            />
-            <RecurrenceSelector
-              recurrence={recurrence}
-              onRecurrenceChange={setRecurrence}
-            />
-          </div>
-
-        </FormControl>
+      <div className="space-y-3">
+        <div className="space-y-2">
+          <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+            期限
+          </label>
+          <Input
+            type="date"
+            value={dueDate}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDueDate(e.target.value)}
+            className="w-full"
+          />
+        </div>
+        <div className="flex gap-2 flex-wrap">
+          <TimeSelector
+            hasTime={hasTime}
+            dueTime={dueTime}
+            onTimeChange={onTimeChange}
+            disabled={!dueDate}
+          />
+          <RecurrenceSelector
+            recurrence={recurrence}
+            onRecurrenceChange={setRecurrence}
+          />
+        </div>
       </div>
 
       {/* 優先度選択 */}
-      <div style={{ marginBottom: '24px' }}>
+      <div>
         <PrioritySelector
           priority={priority}
           onPriorityChange={setPriority}
@@ -153,26 +152,26 @@ export const TaskFormFields: React.FC<TaskFormFieldsProps> = ({
       </div>
 
       {/* ラベル選択 */}
-      <div style={{ marginBottom: '24px' }}>
-        <FormControl>
-          <FormControl.Label>ラベル</FormControl.Label>
-          <LabelSelector
-            selectedLabels={labels}
-            onLabelsChange={setLabels}
-          />
-        </FormControl>
+      <div className="space-y-2">
+        <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+          ラベル
+        </label>
+        <LabelSelector
+          selectedLabels={labels}
+          onLabelsChange={setLabels}
+        />
       </div>
 
       {/* ファイル添付 */}
-      <div>
-        <FormControl sx={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-          <FormControl.Label>ファイル添付</FormControl.Label>
-          <FileUploader
-            attachments={attachments}
-            onAttachmentsChange={setAttachments}
-            showModeSelector={false}
-          />
-        </FormControl>
+      <div className="flex flex-col space-y-2">
+        <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+          ファイル添付
+        </label>
+        <FileUploader
+          attachments={attachments}
+          onAttachmentsChange={setAttachments}
+          showModeSelector={false}
+        />
       </div>
     </div>
   );

@@ -73,7 +73,7 @@ const getDialogStyles = (variant: DialogVariant, size: DialogSize) => {
         borderRadius: 'var(--borderRadius-large)',
       },
       content: {
-        backgroundColor: 'var(--bgColor-muted)',
+        backgroundColor: 'var(--color-neutral-100)',
         borderRadius: 'var(--borderRadius-medium)',
         padding: '12px'
       }
@@ -116,7 +116,7 @@ const DialogHeader = memo<{
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: 'var(--bgColor-default)',
+    backgroundColor: 'var(--background)',
     borderRadius: 'var(--borderRadius-large) var(--borderRadius-large) 0 0',
     boxShadow: '0 1px 0 var(--borderColor-default,var(--borderColor-default))'
   }}>

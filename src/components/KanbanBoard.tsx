@@ -4,7 +4,6 @@ import {
   pointerWithin,
   type CollisionDetection,
 } from "@dnd-kit/core";
-import { Text } from "@primer/react";
 import React from "react";
 
 import { useBoard } from "../contexts/BoardContext";
@@ -12,7 +11,6 @@ import { useTask } from "../contexts/TaskContext";
 import { useUI } from "../contexts/UIContext";
 import { useDragAndDrop } from "../hooks/useDragAndDrop";
 import { useKeyboardDragAndDrop } from "../hooks/useKeyboardDragAndDrop";
-import { KANBAN_BOARD_STYLES } from "../styles/kanbanBoardStyles";
 import type { Task } from "../types";
 
 import KanbanColumn from "./KanbanColumn";
@@ -43,10 +41,10 @@ const KanbanBoard: React.FC = () => {
 
   if (!currentBoard) {
     return (
-      <div style={KANBAN_BOARD_STYLES.emptyState}>
-        <Text sx={KANBAN_BOARD_STYLES.emptyStateText}>
+      <div className="flex items-center justify-center h-96">
+        <p className="text-base text-gray-500">
           Please select a board
-        </Text>
+        </p>
       </div>
     );
   }
@@ -82,7 +80,7 @@ const KanbanBoard: React.FC = () => {
   };
 
   return (
-    <div className="bg-surface">
+    <div className="bg-neutral-100 w-screen">
       <DndContext
         sensors={sensors}
         collisionDetection={collisionDetectionStrategy}
@@ -90,7 +88,13 @@ const KanbanBoard: React.FC = () => {
         onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
       >
-        <div style={KANBAN_BOARD_STYLES.columnsContainer}>
+        <div
+          className="flex overflow-auto gap-4 p-4"
+          style={{
+            scrollbarWidth: 'thin',
+            scrollbarColor: '#d1d5db #f3f4f6'
+          }}
+        >
           {currentBoard.columns
             .filter(column => column.deletionState !== "deleted")
             .map((column, index) => (

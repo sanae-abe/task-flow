@@ -45,7 +45,7 @@ export const CollapsibleSection = memo<CollapsibleSectionProps>(({
           border: '1px solid var(--borderColor-default)',
           borderRadius: '6px',
           padding: '12px',
-          backgroundColor: 'var(--bgColor-default)'
+          backgroundColor: 'var(--background)'
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>

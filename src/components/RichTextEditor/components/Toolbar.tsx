@@ -47,7 +47,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({
         padding: "8px",
         borderBottom: '1px solid',
         borderColor: 'border.default',
-        background: 'var(--bgColor-muted)',
+        background: 'var(--color-neutral-100)',
       }}
     >
       <div style={{ display: 'flex', gap: "4px" }}>
@@ -87,7 +87,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({
         >
           <StrikethroughIcon />
         </Button>
-        <div style={{ width: '1px', background: 'var(--bgColor-muted)', marginInline: "4px" }} />
+        <div style={{ width: '1px', background: 'var(--color-neutral-100)', marginInline: "4px" }} />
         <Button
           variant="ghost"
           size="sm"
@@ -115,7 +115,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({
         >
           <FileCodeIcon size={16} />
         </Button>
-        <div style={{ width: '1px', background: 'var(--bgColor-muted)', marginInline: "4px" }} />
+        <div style={{ width: '1px', background: 'var(--color-neutral-100)', marginInline: "4px" }} />
         <Button
           variant="ghost"
           size="sm"
@@ -134,7 +134,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({
         >
           <ListOrderedIcon size={16} />
         </Button>
-        <div style={{ width: '1px', background: 'var(--bgColor-muted)', marginInline: "4px" }} />
+        <div style={{ width: '1px', background: 'var(--color-neutral-100)', marginInline: "4px" }} />
         <Button
           ref={emojiButtonRef}
           variant="ghost"

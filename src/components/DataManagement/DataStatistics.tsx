@@ -30,7 +30,7 @@ export const DataStatistics = memo<DataStatisticsProps>(({
       <div
         style={{
           padding: '8px 12px',
-          backgroundColor: 'var(--bgColor-muted)',
+          backgroundColor: 'var(--color-neutral-100)',
           borderRadius: 'var(--borderRadius-medium)',
           border: '1px solid',
           borderColor: 'var(--borderColor-default)'

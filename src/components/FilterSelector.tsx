@@ -1,13 +1,13 @@
 import { ActionList, ActionMenu } from "@primer/react";
 import { Button } from "@/components/ui/button";
 import {
-  AlertIcon,
-  ClockIcon,
-  XCircleIcon,
-  TagIcon,
-  StarIcon,
-  FilterIcon as DefaultFilterIcon,
-} from "@primer/octicons-react";
+  AlertTriangle,
+  Clock,
+  XCircle,
+  Tag,
+  Star,
+  Filter as DefaultFilter,
+} from "lucide-react";
 import { memo, useMemo } from "react";
 
 import type { TaskFilter, FilterConfig, Label, Priority } from "../types";
@@ -61,20 +61,20 @@ const FilterSelector = memo<FilterSelectorProps>(
       [],
     );
 
-    const getFilterIcon = (iconName?: string): typeof DefaultFilterIcon => {
+    const getFilterIcon = (iconName?: string): typeof DefaultFilter => {
       switch (iconName) {
         case "clock":
-          return ClockIcon;
+          return Clock;
         case "alert":
-          return AlertIcon;
+          return AlertTriangle;
         case "x-circle":
-          return XCircleIcon;
+          return XCircle;
         case "tag":
-          return TagIcon;
+          return Tag;
         case "star":
-          return StarIcon;
+          return Star;
         default:
-          return DefaultFilterIcon;
+          return DefaultFilter;
       }
     };
 
@@ -216,7 +216,7 @@ const FilterSelector = memo<FilterSelectorProps>(
                   <ActionMenu.Anchor>
                     <ActionList.Item selected={currentFilter.type === "label"}>
                       <ActionList.LeadingVisual>
-                        <TagIcon />
+                        <Tag />
                       </ActionList.LeadingVisual>
                       ラベルで絞り込み
                     </ActionList.Item>
@@ -265,7 +265,7 @@ const FilterSelector = memo<FilterSelectorProps>(
                 <ActionMenu.Anchor>
                   <ActionList.Item selected={currentFilter.type === "priority"}>
                     <ActionList.LeadingVisual>
-                      <StarIcon />
+                      <Star />
                     </ActionList.LeadingVisual>
                     優先度で絞り込み
                   </ActionList.Item>

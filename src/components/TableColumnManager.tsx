@@ -202,8 +202,8 @@ const TableColumnManager: React.FC = () => {
                       : "var(--borderColor-default)",
                     borderRadius: "var(--borderRadius-medium)",
                     background: column.visible
-                      ? "var(--bgColor-default)"
-                      : "var(--bgColor-muted)",
+                      ? "var(--background)"
+                      : "var(--color-neutral-100)",
                     opacity: isDragging ? 0.5 : 1,
                     cursor: "move",
                     transition: "all 0.2s ease",

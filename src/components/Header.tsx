@@ -17,7 +17,7 @@ const DIVIDER_HEIGHT = "24px";
 const headerStyles = {
   container: {
     padding: "0 24px",
-    background: "var(--bgColor-default)",
+    background: "var(--background)",
     borderBottom: "1px solid",
     borderColor: "var(--borderColor-default)",
     height: HEADER_HEIGHT,
@@ -43,7 +43,7 @@ const headerStyles = {
   divider: {
     height: DIVIDER_HEIGHT,
     width: "1px",
-    backgroundColor: "var(--borderColor-muted)",
+    backgroundColor: "var(--color-gray-200)",
   },
   rightSection: {
     display: "flex",
@@ -51,7 +51,7 @@ const headerStyles = {
     flexShrink: 0,
   },
   createButton: {
-    backgroundColor: "var(--bgColor-accent-emphasis)",
+    backgroundColor: "var(--primary)",
     color: "#ffffff",
     border: "none",
     borderRadius: "var(--borderRadius-medium)",

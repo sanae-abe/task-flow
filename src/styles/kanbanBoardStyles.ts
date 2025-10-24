@@ -1,9 +1,4 @@
 export const KANBAN_BOARD_STYLES = {
-  container: {
-    width: "100vw",
-    bg: "var(--bgColor-muted)",
-  },
-
   columnsContainer: {
     display: "flex" as const,
     overflow: "auto" as const,
@@ -13,7 +8,7 @@ export const KANBAN_BOARD_STYLES = {
       height: "8px",
     },
     "&::WebkitScrollbarTrack": {
-      background: "var(--bgColor-muted)",
+      background: "var(--color-neutral-100)",
     },
     "&::WebkitScrollbarThumb": {
       background: "var(--borderColor-muted)",

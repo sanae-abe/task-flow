@@ -1,5 +1,5 @@
-import { UnderlineNav } from "@primer/react";
 import { useState, memo, useMemo } from "react";
+import { cn } from '@/lib/utils';
 
 import type { TaskTemplate } from "../types/template";
 import type { CreateMode } from "./TaskCreateDialog/types";
@@ -123,33 +123,48 @@ const TaskCreateDialog = memo(() => {
         size="large"
         actions={actions}
       >
-        <div
-          style={{ display: "flex", flexDirection: "column", minHeight: "600px" }}
-        >
+        <div className="flex flex-col min-h-[600px]">
           {/* タブナビゲーション */}
-          <div style={{ marginBottom: "16px" }}>
-            <UnderlineNav
+          <div className="mb-4 -mt-2">
+            <nav
+              role="tablist"
               aria-label="タスク作成モード選択"
-              sx={{ padding: 0, transform: "translateY(-8px)" }}
+              className="flex border-b border-gray-200"
             >
-              <UnderlineNav.Item
+              <button
+                role="tab"
+                aria-selected={createMode === "normal"}
                 aria-current={createMode === "normal" ? "page" : undefined}
-                onSelect={() => setCreateMode("normal")}
+                onClick={() => setCreateMode("normal")}
+                className={cn(
+                  "px-4 py-2 -mb-px text-sm font-medium border-b-2 transition-colors",
+                  createMode === "normal"
+                    ? "border-blue-500 text-blue-600"
+                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                )}
               >
                 通常作成
-              </UnderlineNav.Item>
-              <UnderlineNav.Item
+              </button>
+              <button
+                role="tab"
+                aria-selected={createMode === "template"}
                 aria-current={createMode === "template" ? "page" : undefined}
-                onSelect={() => setCreateMode("template")}
+                onClick={() => setCreateMode("template")}
+                className={cn(
+                  "px-4 py-2 -mb-px text-sm font-medium border-b-2 transition-colors",
+                  createMode === "template"
+                    ? "border-blue-500 text-blue-600"
+                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                )}
               >
                 テンプレートから作成
-              </UnderlineNav.Item>
-            </UnderlineNav>
+              </button>
+            </nav>
           </div>
 
           {/* テンプレート選択モード */}
           {createMode === "template" && (
-            <div style={{ marginBottom: "24px", flex: 1, minHeight: "500px" }}>
+            <div className="mb-6 flex-1 min-h-[500px]">
               <TemplateSelector
                 templates={templateState.templates}
                 onSelect={handleTemplateSelect}

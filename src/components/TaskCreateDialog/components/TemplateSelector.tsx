@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
-import { StarFillIcon } from '@primer/octicons-react';
+import { Star } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import type { TemplateSelectorProps } from '../types';
 import type { TaskTemplate } from '../../../types/template';
 
@@ -28,12 +29,7 @@ export const TemplateSelector: React.FC<TemplateSelectorProps> = ({
 
   if (templates.length === 0) {
     return (
-      <div style={{
-        padding: '32px',
-        textAlign: 'center',
-        color: 'var(--fgColor-muted)',
-        fontSize: '14px'
-      }}>
+      <div className="p-8 text-center text-gray-500 text-sm">
         テンプレートが登録されていません。<br />
         設定画面からテンプレートを作成してください。
       </div>
@@ -41,26 +37,18 @@ export const TemplateSelector: React.FC<TemplateSelectorProps> = ({
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+    <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-6">
         {/* お気に入りテンプレート */}
         {favoriteTemplates.length > 0 && (
           <div>
-            <div style={{
-              display: 'flex',
-              gap: '6px',
-              fontSize: '14px',
-              fontWeight: '600',
-              marginBottom: '12px',
-              color: 'var(--color-attention-fg)',
-              alignItems: 'center'
-            }}>
-              <span style={{ color: 'var(--fgColor-attention)' }}>
-                <StarFillIcon size={16} />
+            <div className="flex gap-1.5 text-sm font-semibold mb-3 text-yellow-600 items-center">
+              <span className="text-yellow-500">
+                <Star size={16} fill="currentColor" />
               </span>
               <span>お気に入りテンプレート</span>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '12px' }}>
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-3">
               {favoriteTemplates.map((template) => (
                 <TemplateCard
                   key={template.id}
@@ -77,16 +65,11 @@ export const TemplateSelector: React.FC<TemplateSelectorProps> = ({
         {otherTemplates.length > 0 && (
           <div>
             {favoriteTemplates.length > 0 && (
-              <div style={{
-                fontSize: '14px',
-                fontWeight: '600',
-                marginBottom: '12px',
-                color: 'var(--fgColor-default)'
-              }}>
+              <div className="text-sm font-semibold mb-3 text-gray-900">
                 その他のテンプレート
               </div>
             )}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '12px' }}>
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-3">
               {otherTemplates.map((template) => (
                 <TemplateCard
                   key={template.id}
@@ -114,38 +97,25 @@ interface TemplateCardProps {
 
 const TemplateCard: React.FC<TemplateCardProps> = ({ template, onSelect, isFavorite }) => (
     <div
-      style={{
-        border: '1px solid var(--borderColor-default)',
-        borderRadius: '6px',
-        padding: '16px',
-        cursor: 'pointer',
-        transition: 'all 0.2s ease',
-        backgroundColor: 'var(--bgColor-default)',
-      }}
+      className={cn(
+        "border border-gray-200 rounded-md p-4 cursor-pointer transition-all duration-200 ease-in-out bg-white",
+        "hover:border-gray-300 hover:bg-gray-50",
+        isFavorite && "bg-yellow-50"
+      )}
       onClick={() => onSelect(template)}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.borderColor = 'var(--borderColor-default)';
-        e.currentTarget.style.backgroundColor = 'var(--control-transparent-bgColor-hover)';
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.borderColor = 'var(--borderColor-default)';
-        e.currentTarget.style.backgroundColor = isFavorite
-          ? 'var(--color-accent-subtle)'
-          : 'var(--bgColor-default)';
-      }}
     >
-      <div style={{ fontSize: '16px', fontWeight: '600', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+      <div className="text-base font-semibold mb-2 flex items-center gap-1.5">
         {isFavorite && (
-          <span style={{ color: 'var(--fgColor-attention)' }}>
-            <StarFillIcon size={16} />
+          <span className="text-yellow-500">
+            <Star size={16} fill="currentColor" />
           </span>
         )}
         <span>{template.name}</span>
       </div>
-      <div style={{ fontSize: '14px', color: 'var(--fgColor-muted)', marginBottom: '8px' }}>
+      <div className="text-sm text-gray-600 mb-2">
         {template.description || template.taskDescription.slice(0, 100)}...
       </div>
-      <div style={{ fontSize: '12px', color: 'var(--fgColor-muted)' }}>
+      <div className="text-xs text-gray-500">
         カテゴリー: {template.category} | 使用回数: {template.usageCount}回
       </div>
     </div>

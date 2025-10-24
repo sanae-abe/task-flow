@@ -29,8 +29,8 @@ const CalendarDay: React.FC<CalendarDayProps> = React.memo(
       () => ({
         minHeight: "120px",
         backgroundColor: isCurrentMonth
-          ? "var(--bgColor-default)"
-          : "var(--bgColor-muted)",
+          ? "var(--background)"
+          : "var(--color-neutral-100)",
         borderRadius: 0,
         padding: "8px",
         position: "relative" as const,
@@ -64,7 +64,7 @@ const CalendarDay: React.FC<CalendarDayProps> = React.memo(
             ? "var(--fg-default)"
             : "var(--fg-muted)",
         ...(isToday && {
-          backgroundColor: "var(--bgColor-accent-emphasis)",
+          backgroundColor: "var(--primary)",
           borderRadius: "50%",
           width: "24px",
           height: "24px",

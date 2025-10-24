@@ -610,7 +610,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
             padding: "8px",
             borderBottom: "1px solid",
             borderColor: "var(--borderColor-default)",
-            background: "var(--bgColor-muted)",
+            background: "var(--color-neutral-100)",
           }}
         >
           <div style={{ display: "flex", gap: "4px" }}>

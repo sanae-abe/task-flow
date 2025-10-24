@@ -37,7 +37,7 @@ const HelpSection: React.FC<HelpSectionProps> = ({
   title,
   icon: Icon,
   children,
-  background = "var(--bgColor-accent-emphasis)",
+  background = "var(--primary)",
 }) => (
   <>
     <div
@@ -69,7 +69,7 @@ const HelpSection: React.FC<HelpSectionProps> = ({
       style={{
         marginBottom: "20px",
         padding: "12px",
-        backgroundColor: "var(--bgColor-muted)",
+        backgroundColor: "var(--color-neutral-100)",
         borderRadius: "var(--borderRadius-medium)",
       }}
     >
@@ -87,7 +87,7 @@ const HelpItem: React.FC<HelpItemProps> = ({ title, description }) => (
   <div
     style={{
       padding: "8px",
-      backgroundColor: "var(--bgColor-muted)",
+      backgroundColor: "var(--color-neutral-100)",
       borderRadius: "var(--borderRadius-medium)",
       display: "flex",
       gap: "12px",
@@ -141,7 +141,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
         right: 0,
         width: SIDEBAR_WIDTH,
         height: "100vh",
-        backgroundColor: "var(--bgColor-default)",
+        backgroundColor: "var(--background)",
         boxShadow: "0 16px 32px rgba(0, 0, 0, 0.24)",
         borderLeft: "1px solid",
         borderColor: "var(--borderColor-default)",
@@ -187,7 +187,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
           <HelpSection
             title="ビュー切り替え"
             icon={DeviceCameraVideoIcon}
-            background="var(--bgColor-accent-emphasis)"
+            background="var(--primary)"
           >
             <HelpItem
               title="カンバンビュー"
@@ -243,7 +243,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
           <HelpSection
             title="タスク管理"
             icon={TasklistIcon}
-            background="var(--bgColor-accent-emphasis)"
+            background="var(--primary)"
           >
             <HelpItem
               title="タスク編集"
@@ -326,7 +326,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
           <HelpSection
             title="テーブルビュー"
             icon={TableIcon}
-            background="var(--bgColor-accent-emphasis)"
+            background="var(--primary)"
           >
             <HelpItem
               title="カラム管理"

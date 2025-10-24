@@ -1,6 +1,11 @@
-import { SortAscIcon } from "@primer/octicons-react";
-import { ActionMenu, ActionList } from "@primer/react";
+import { ArrowUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import React from "react";
 
 import type { SortOption, SortConfig } from "../types";
@@ -28,33 +33,31 @@ const TaskSortSelector: React.FC<TaskSortSelectorProps> = ({
   );
 
   return (
-    <ActionMenu>
-      <ActionMenu.Anchor>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
           size="sm"
           aria-label={`現在のソート: ${currentSortConfig?.label ?? "手動"}`}
           className="flex items-center gap-2"
         >
-          <SortAscIcon size={16} />
+          <ArrowUpDown size={16} />
           {currentSortConfig?.label ?? "手動"}
         </Button>
-      </ActionMenu.Anchor>
+      </DropdownMenuTrigger>
 
-      <ActionMenu.Overlay>
-        <ActionList selectionVariant="single">
-          {SORT_OPTIONS.map((option) => (
-            <ActionList.Item
-              key={option.option}
-              selected={currentSort === option.option}
-              onSelect={() => onSortChange(option.option)}
-            >
-              {option.label}
-            </ActionList.Item>
-          ))}
-        </ActionList>
-      </ActionMenu.Overlay>
-    </ActionMenu>
+      <DropdownMenuContent align="end">
+        {SORT_OPTIONS.map((option) => (
+          <DropdownMenuItem
+            key={option.option}
+            onClick={() => onSortChange(option.option)}
+            className={currentSort === option.option ? "bg-gray-100" : ""}
+          >
+            {option.label}
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };
 

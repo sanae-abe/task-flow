@@ -199,7 +199,7 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
         <div style={{
           padding: '12px',
           borderRadius: 'var(--borderRadius-medium)',
-          background: 'var(--bgColor-muted)',
+          background: 'var(--color-neutral-100)',
           border: '1px solid var(--borderColor-default)',
         }}>
 
@@ -261,7 +261,7 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
         </div>
         <div style={{
           padding: '12px',
-          background: 'var(--bgColor-muted)',
+          background: 'var(--color-neutral-100)',
           borderRadius: 'var(--borderRadius-medium)',
           border: '1px solid var(--borderColor-default)',
         }}>

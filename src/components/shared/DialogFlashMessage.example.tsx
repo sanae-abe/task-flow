@@ -89,7 +89,7 @@ const ExampleDialog: React.FC = () => {
       </div>
 
       {/* 従来のonMessageコールバック形式での使用例 */}
-      <div style={{ marginTop: '16px', padding: '12px', backgroundColor: 'var(--bgColor-muted)', borderRadius: '6px' }}>
+      <div style={{ marginTop: '16px', padding: '12px', backgroundColor: 'var(--color-neutral-100)', borderRadius: '6px' }}>
         <h4>コールバック形式での使用例</h4>
         <pre style={{ fontSize: '12px', overflow: 'auto' }}>
 {`// 子コンポーネントに onMessage コールバックを渡す

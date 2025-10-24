@@ -17,7 +17,7 @@ const RecurrencePreview: React.FC<RecurrencePreviewProps> = ({ config }) => {
       style={{
         marginTop: "20px",
         padding: "8px",
-        background: "var(--bgColor-muted)",
+        background: "var(--color-neutral-100)",
         borderRadius: "var(--borderRadius-medium)",
         border: "1px solid var(--borderColor-muted)",
       }}

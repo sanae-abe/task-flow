@@ -47,7 +47,7 @@ const LabelCreateForm = memo<LabelCreateFormProps>(
       <div
         style={{
           padding: "12px",
-          background: "var(--bgColor-muted)",
+          background: "var(--color-neutral-100)",
           borderRadius: "var(--borderRadius-medium)",
           border: "1px solid",
           borderColor: "border.default",

@@ -85,7 +85,7 @@ export const TaskItemContainer = styled.div`
   border: 1px solid var(--borderColor-default);
   border-radius: 6px;
   padding: 12px;
-  background-color: var(--bgColor-muted);
+  background-color: var(--color-neutral-100);
   opacity: 0.8;
 `;
 

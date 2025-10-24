@@ -77,7 +77,7 @@ const TemplateTableHeader: React.FC<TemplateTableHeaderProps> = ({
       display: 'grid',
       gridTemplateColumns: '1fr 120px 80px 100px',
       gap: '8px',
-      background: 'var(--bgColor-muted)',
+      background: 'var(--color-neutral-100)',
       borderBottom: '1px solid',
       borderColor: 'var(--borderColor-default)',
       fontSize: '12px',

@@ -100,7 +100,7 @@ const TableView: React.FC = () => {
       style={{
         height: "calc(100vh - 120px)",
         overflow: "auto",
-        backgroundColor: "var(--bgColor-muted)",
+        backgroundColor: "var(--color-neutral-100)",
         padding: "32px",
       }}
     >
@@ -110,7 +110,7 @@ const TableView: React.FC = () => {
         style={{
           borderRadius: 2,
           overflow: "auto",
-          backgroundColor: "var(--bgColor-default)",
+          backgroundColor: "var(--background)",
           boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
           minWidth: "fit-content",
         }}

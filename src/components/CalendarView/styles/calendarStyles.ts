@@ -53,7 +53,7 @@ export const calendarStyles = {
 
   weekDay: {
     padding: "8px",
-    backgroundColor: "var(--bgColor-default)",
+    backgroundColor: "var(--background)",
     textAlign: "center" as const,
     fontWeight: "600",
     fontSize: "12px",

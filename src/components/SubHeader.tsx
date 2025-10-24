@@ -1,12 +1,17 @@
 import {
-  PlusIcon,
-  CalendarIcon,
-  ProjectIcon,
-  TriangleDownIcon,
-  TableIcon,
-} from "@primer/octicons-react";
-import { ActionMenu, ActionList } from "@primer/react";
+  Plus,
+  Calendar,
+  Columns3,
+  ChevronDown,
+  Table,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import React from "react";
 
 import { useKanban } from "../contexts/KanbanContext";
@@ -74,23 +79,10 @@ const SubHeader: React.FC = () => {
   }
 
   return (
-    <div
-      style={{
-        background: "var(--bgColor-default)",
-        borderBottom: "1px solid",
-        borderColor: "var(--borderColor-default)",
-        padding: "8px 20px",
-        zIndex: 999,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        width: "100%",
-        overflow: "hidden",
-      }}
-    >
+    <div className="bg-white border-b border-gray-200 px-5 py-2 z-[999] flex items-center justify-between w-full overflow-hidden">
       <TaskStatsDisplay stats={taskStats} />
 
-      <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+      <div className="flex items-center gap-1">
         <FilterSelector
           currentFilter={state.taskFilter}
           onFilterChange={setTaskFilter}
@@ -100,15 +92,9 @@ const SubHeader: React.FC = () => {
           currentSort={state.sortOption}
           onSortChange={setSortOption}
         />
-        <div
-          style={{
-            width: "1px",
-            height: "24px",
-            background: "var(--borderColor-default)",
-          }}
-        />
+        <div className="w-px h-6 bg-gray-200" />
         {state.viewMode === "kanban" && (
-          <SubHeaderButton icon={PlusIcon} onClick={handlers.startCreateColumn}>
+          <SubHeaderButton icon={Plus} onClick={handlers.startCreateColumn}>
             カラム追加
           </SubHeaderButton>
         )}
@@ -122,17 +108,11 @@ const SubHeader: React.FC = () => {
           onClearCompletedTasks={handlers.openClearCompletedConfirm}
         />
 
-        <div
-          style={{
-            width: "1px",
-            height: "24px",
-            background: "var(--borderColor-default)",
-          }}
-        />
+        <div className="w-px h-6 bg-gray-200" />
 
-        {/* View Mode ActionMenu */}
-        <ActionMenu>
-          <ActionMenu.Anchor>
+        {/* View Mode DropdownMenu */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
             <Button
               variant="ghost"
               size="sm"
@@ -140,52 +120,44 @@ const SubHeader: React.FC = () => {
               className="flex items-center gap-2"
             >
               {state.viewMode === "kanban" ? (
-                <ProjectIcon size={16} />
+                <Columns3 size={16} />
               ) : state.viewMode === "calendar" ? (
-                <CalendarIcon size={16} />
+                <Calendar size={16} />
               ) : (
-                <TableIcon size={16} />
+                <Table size={16} />
               )}
               {state.viewMode === "kanban"
                 ? "カンバン"
                 : state.viewMode === "calendar"
                   ? "カレンダー"
                   : "テーブル"}
-              <TriangleDownIcon size={16} />
+              <ChevronDown size={16} />
             </Button>
-          </ActionMenu.Anchor>
-          <ActionMenu.Overlay>
-            <ActionList selectionVariant="single">
-              <ActionList.Item
-                selected={state.viewMode === "kanban"}
-                onSelect={() => navigateToView("kanban")}
-              >
-                <ActionList.LeadingVisual>
-                  <ProjectIcon />
-                </ActionList.LeadingVisual>
-                カンバン
-              </ActionList.Item>
-              <ActionList.Item
-                selected={state.viewMode === "calendar"}
-                onSelect={() => navigateToView("calendar")}
-              >
-                <ActionList.LeadingVisual>
-                  <CalendarIcon />
-                </ActionList.LeadingVisual>
-                カレンダー
-              </ActionList.Item>
-              <ActionList.Item
-                selected={state.viewMode === "table"}
-                onSelect={() => navigateToView("table")}
-              >
-                <ActionList.LeadingVisual>
-                  <TableIcon />
-                </ActionList.LeadingVisual>
-                テーブル
-              </ActionList.Item>
-            </ActionList>
-          </ActionMenu.Overlay>
-        </ActionMenu>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem
+              onClick={() => navigateToView("kanban")}
+              className="flex items-center gap-2"
+            >
+              <Columns3 size={16} />
+              カンバン
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => navigateToView("calendar")}
+              className="flex items-center gap-2"
+            >
+              <Calendar size={16} />
+              カレンダー
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => navigateToView("table")}
+              className="flex items-center gap-2"
+            >
+              <Table size={16} />
+              テーブル
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       <ConfirmDialog
