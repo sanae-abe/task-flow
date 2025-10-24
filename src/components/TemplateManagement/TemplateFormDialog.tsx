@@ -186,7 +186,7 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
       size="large"
       actions={actions}
     >
-      <div style={{ display: 'flex', flexDirection: 'column' }} onKeyDown={handleKeyDown}>
+      <div className="flex flex-col" onKeyDown={handleKeyDown}>
         <div style={{
           marginTop: '8px',
           marginBottom: '12px',

@@ -1,6 +1,6 @@
 import React from "react";
 import { FormControl, Text, TextInput } from "@primer/react";
-import { StopwatchIcon } from "@primer/octicons-react";
+import { Timer } from "lucide-react";
 import type { RecurrenceConfig } from "../types";
 
 interface RecurrenceEndConditionsProps {
@@ -21,7 +21,7 @@ const RecurrenceEndConditions: React.FC<RecurrenceEndConditionsProps> = ({
   }}>
     <div style={{ marginBottom: "8px" }}>
       <Text as="h3" sx={{ fontSize: 1, fontWeight: "600", display: "flex", alignItems: "center", gap: "4px" }}>
-        <StopwatchIcon size={16} />
+        <Timer size={16} />
         <span>終了条件</span>
       </Text>
     </div>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { PlusIcon } from '@primer/octicons-react';
+import { Plus } from 'lucide-react';
 
 import type { TemplateFormData, TaskTemplate } from '../../types/template';
 import type { DialogFlashMessageData } from '../shared/DialogFlashMessage';
@@ -138,7 +138,7 @@ const TemplateManagementPanel: React.FC<TemplateManagementPanelProps> = ({ onMes
       <div className="flex items-center justify-between gap-2 flex-wrap">
         <h2 className="text-lg font-bold">テンプレート管理</h2>
         <Button variant="default" size="sm" onClick={openCreateDialog}>
-          <PlusIcon size={16} className="mr-2" />
+          <Plus size={16} className="mr-2" />
           テンプレートを作成
         </Button>
       </div>

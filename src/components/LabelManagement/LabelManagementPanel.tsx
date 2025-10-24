@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { Button } from '@/components/ui/button';
-import { PlusIcon } from '@primer/octicons-react';
+import { Plus } from 'lucide-react';
 
 import LabelFormDialog from './LabelFormDialog';
 import ConfirmDialog from '../shared/Dialog/ConfirmDialog';
@@ -55,7 +55,7 @@ const LabelManagementPanel: React.FC<LabelManagementPanelProps> = ({ onMessage }
           onClick={handleCreate}
           size="sm"
         >
-          <PlusIcon size={16} className="mr-2" />
+          <Plus size={16} className="mr-2" />
           ラベルを作成
         </Button>
       </div>
