@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { PencilIcon, TrashIcon } from '@primer/octicons-react';
+import { Edit, Trash2 } from 'lucide-react';
 import type { LabelWithInfo } from '../../../types/labelManagement';
 import LabelChip from '../../LabelChip';
 import CounterLabel from './CounterLabel';
@@ -54,7 +54,7 @@ const LabelTableRow: React.FC<LabelTableRowProps> = ({
         onClick={() => onEdit(label)}
         className="p-1 h-auto min-w-0"
       >
-        <PencilIcon size={16} />
+        <Edit size={16} />
       </Button>
       <Button
         variant="ghost"
@@ -63,7 +63,7 @@ const LabelTableRow: React.FC<LabelTableRowProps> = ({
         onClick={() => onDelete(label)}
         className="p-1 h-auto min-w-0"
       >
-        <TrashIcon size={16} />
+        <Trash2 size={16} />
       </Button>
     </div>
   </div>

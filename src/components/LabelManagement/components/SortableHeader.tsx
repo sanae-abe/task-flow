@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChevronUpIcon, ChevronDownIcon } from '@primer/octicons-react';
+import { ChevronUp, ChevronDown } from 'lucide-react';
 import type { SortField, SortDirection } from '../../../types/labelManagement';
 
 interface SortableHeaderProps {
@@ -36,9 +36,9 @@ const SortableHeader: React.FC<SortableHeaderProps> = ({
       <span>{children}</span>
       <span className={`${isActive ? 'opacity-30 text-[10px]' : ''}`}>
         {isActive && sortDirection === 'asc' ? (
-          <ChevronUpIcon size={12} />
+          <ChevronUp size={12} />
         ) : (
-          <ChevronDownIcon size={12} />
+          <ChevronDown size={12} />
         )}
       </span>
     </button>
