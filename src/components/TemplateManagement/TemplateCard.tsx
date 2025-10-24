@@ -199,7 +199,7 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
 
       {/* 説明 */}
       {!compact && template.description && (
-        <div style={{ marginBottom: "8px" }}>
+        <div className="mb-2">
           <p className="text-sm text-gray-600 line-clamp-2">
             {template.description}
           </p>

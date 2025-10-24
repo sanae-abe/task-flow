@@ -35,7 +35,7 @@ const TemplateTableRow: React.FC<TemplateTableRowProps> = ({
     >
       {/* テンプレート名 */}
       <div className="flex flex-col" style={{ gap: "4px" }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: "4px" }}>
+        <div className="flex items-center gap-1">
           {template.isFavorite && (
             <div style={{ color: 'var(--fgColor-attention)' }}>
               <StarFillIcon size={14} />

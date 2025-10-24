@@ -613,7 +613,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
             background: "var(--color-neutral-100)",
           }}
         >
-          <div style={{ display: "flex", gap: "4px" }}>
+          <div className="flex gap-1">
             <Button
               variant="ghost"
               size="sm"

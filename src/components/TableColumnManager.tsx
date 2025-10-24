@@ -173,7 +173,7 @@ const TableColumnManager: React.FC = () => {
             カラムをドラッグして並び替え、幅の調整ができます。幅は50px〜1000pxの範囲で入力してください。
           </div>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+          <div className="flex flex-colum gap-2">
             {columnOrder.map((columnId) => {
               const column = columns.find((col) => col.id === columnId);
               if (!column) {

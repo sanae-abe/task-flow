@@ -93,8 +93,8 @@ const RecurrenceDetailDialog: React.FC<RecurrenceDetailDialogProps> = ({
       onClose={onClose}
       actions={actions}
     >
-      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-        <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+      <div className="flex flex-column gap-3">
+        <div className="flex flex-column gap-2">
           <RecurrencePatternSelector
             config={config}
             onPatternChange={handlePatternChange}

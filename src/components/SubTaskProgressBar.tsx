@@ -16,7 +16,7 @@ const SubTaskProgressBar: React.FC<SubTaskProgressBarProps> = ({
   const progressPercentage = (completedCount / totalCount) * 100;
 
   return (
-    <div style={{ marginBottom: "8px" }}>
+    <div className="mb-2">
       <div
         style={{
           width: "100%",

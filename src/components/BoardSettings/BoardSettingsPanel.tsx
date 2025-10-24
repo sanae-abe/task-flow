@@ -450,10 +450,10 @@ export const BoardSettingsPanel: React.FC = () => {
         </div>
 
         {/* 新しいカラム追加 */}
-        <div style={{ marginBottom: "12px" }}>
+        <div className="mb-3">
           <div style={{ marginBottom: "8px", fontSize: "14px", fontWeight: "bold" }}>新しいカラムを追加</div>
           <div>
-            <div style={{ display: "flex", gap: "8px", width: "100%" }}>
+            <div className="flex gap-2 w-full">
               <Input
                 value={newColumnName}
                 onChange={(e) => setNewColumnName(e.target.value)}
@@ -485,7 +485,7 @@ export const BoardSettingsPanel: React.FC = () => {
 
       {/* 保存ボタン */}
       <div style={{ paddingTop: "12px", borderTop: "1px solid", borderColor: "var(--borderColor-default)" }}>
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", justifyContent: "center", gap: "8px" }}>
+        <div className="flex flex-colum items-end justify-center gap-2">
           <Button
             variant="default"
             onClick={handleSave}
@@ -493,7 +493,7 @@ export const BoardSettingsPanel: React.FC = () => {
             <CheckIcon size={16} className="mr-2" />
             設定を保存
           </Button>
-          <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+          <div className="flex flex-column gap-1">
             {/* 未保存状態メッセージ */}
             {hasUnsavedChanges ? (
               <InlineMessage variant="warning" message="未保存の変更があります（1秒後に自動保存されます）" size="small" />

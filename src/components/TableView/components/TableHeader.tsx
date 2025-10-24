@@ -29,7 +29,7 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
     {visibleColumns.map((column) => (
       <div
         key={column.id}
-        style={{ display: "flex", alignItems: "center", gap: "4px" }}
+        className="flex items-center gap-1"
       >
         <span className="font-bold text-sm">{column.label}</span>
         {column.id === "title" && (

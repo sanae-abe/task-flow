@@ -183,7 +183,7 @@ export const renderLabelsCell = (task: TaskWithColumn) => (
  * サブタスクセルの描画
  */
 export const renderSubTasksCell = (task: TaskWithColumn) => (
-  <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+  <div className="flex items-center gap-1">
     {task.subTasks && task.subTasks.length > 0 ? (
       <>
         <Check size={12} />
@@ -202,7 +202,7 @@ export const renderSubTasksCell = (task: TaskWithColumn) => (
  * ファイルセルの描画
  */
 export const renderFilesCell = (task: TaskWithColumn) => (
-  <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+  <div className="flex items-center gap-1">
     {task.files && task.files.length > 0 ? (
       <>
         <Paperclip size={12} />
@@ -222,7 +222,7 @@ export const renderFilesCell = (task: TaskWithColumn) => (
 export const renderProgressCell = (task: TaskWithColumn) => (
   <div>
     {task.subTasks && task.subTasks.length > 0 ? (
-      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+      <div className="flex items-center gap-2">
         <SubTaskProgressBar
           completedCount={task.subTasks.filter((sub) => sub.completed).length}
           totalCount={task.subTasks.length}

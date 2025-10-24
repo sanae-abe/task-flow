@@ -152,7 +152,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
           "sidebar-slide-in-right 250ms cubic-bezier(0.33, 1, 0.68, 1)",
       }}
     >
-      <div style={{ display: "flex", height: "100%", flexDirection: "column" }}>
+      <div className="flex h-full flex-column">
         {/* Header */}
         <div
           style={{

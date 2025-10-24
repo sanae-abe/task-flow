@@ -30,7 +30,7 @@ const RecurrencePatternSelector: React.FC<RecurrencePatternSelectorProps> = ({
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+    <div className="flex flex-colum gap-2">
       <FormControl sx={{ display: "flex", flexDirection: "row", alignItems: "center", gap: "8px" }}>
         <FormControl.Label sx={{ alignSelf: "center", minWidth: "80px" }}>パターン</FormControl.Label>
         <Select
