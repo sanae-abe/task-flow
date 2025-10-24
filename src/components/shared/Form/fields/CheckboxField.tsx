@@ -5,7 +5,8 @@
  */
 
 import React, { useCallback } from "react";
-import { Checkbox } from "@primer/react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { cn } from '@/lib/utils';
 
 import type { CheckboxFieldProps } from "./types";
 
@@ -32,8 +33,8 @@ export const CheckboxField: React.FC<CheckboxFieldProps> = React.memo(
      * チェック状態変更ハンドラー
      */
     const handleChange = useCallback(
-      (e: React.ChangeEvent<HTMLInputElement>) => {
-        onChange(e.target.checked);
+      (checked: boolean) => {
+        onChange(checked);
       },
       [onChange],
     );
@@ -61,12 +62,16 @@ export const CheckboxField: React.FC<CheckboxFieldProps> = React.memo(
 
     return (
       <Checkbox
+        id={id}
         name={name}
         checked={Boolean(value)}
-        onChange={handleChange}
+        onCheckedChange={handleChange}
         onBlur={handleBlur}
         onFocus={handleFocus}
         disabled={disabled}
+        className={cn(
+          hasError && "border-red-500 focus:border-red-500 focus:ring-red-500"
+        )}
         aria-required={validation?.required}
         aria-invalid={hasError}
         aria-describedby={hasError ? `${id}-error` : undefined}

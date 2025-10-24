@@ -1,5 +1,5 @@
-import { Box } from '@primer/react';
 import { memo } from 'react';
+import { cn } from '@/lib/utils';
 
 import type { FlexDirection, FlexAlign, FlexJustify, FlexWrap } from '../../types/shared';
 
@@ -28,7 +28,7 @@ interface FlexBoxProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'child
 
 /**
  * 統一されたFlexboxレイアウトヘルパーコンポーネント
- * 
+ *
  * 頻繁に使用されるFlexboxパターンを簡潔に記述でき、
  * 一貫したレイアウトコードを提供します。
  */
@@ -43,31 +43,71 @@ const FlexBox = memo<FlexBoxProps>(({
   grow,
   children,
   sx,
+  className,
+  style,
   ...restProps
 }) => {
-  // Flexboxスタイルを構築
-  const flexStyles: Record<string, unknown> = {
-    display: 'flex',
-    flexDirection: direction,
-    alignItems: align,
-    justifyContent: justify,
-    flexWrap: wrap
+  // Flexbox Tailwind クラスをマッピング
+  const getDirectionClass = (dir: FlexDirection): string => {
+    switch (dir) {
+      case 'column': return 'flex-col';
+      case 'column-reverse': return 'flex-col-reverse';
+      case 'row-reverse': return 'flex-row-reverse';
+      default: return 'flex-row';
+    }
+  };
+
+  const getAlignClass = (alignValue: FlexAlign): string => {
+    switch (alignValue) {
+      case 'start': return 'items-start';
+      case 'end': return 'items-end';
+      case 'center': return 'items-center';
+      case 'baseline': return 'items-baseline';
+      case 'stretch': return 'items-stretch';
+      default: return 'items-stretch';
+    }
+  };
+
+  const getJustifyClass = (justifyValue: FlexJustify): string => {
+    switch (justifyValue) {
+      case 'start': return 'justify-start';
+      case 'end': return 'justify-end';
+      case 'center': return 'justify-center';
+      case 'space-between': return 'justify-between';
+      case 'space-around': return 'justify-around';
+      case 'space-evenly': return 'justify-evenly';
+      default: return 'justify-start';
+    }
+  };
+
+  const getWrapClass = (wrapValue: FlexWrap): string => {
+    switch (wrapValue) {
+      case 'wrap': return 'flex-wrap';
+      case 'wrap-reverse': return 'flex-wrap-reverse';
+      default: return 'flex-nowrap';
+    }
+  };
+
+  // 動的スタイルを構築
+  const dynamicStyles: React.CSSProperties = {
+    ...style,
+    ...sx as React.CSSProperties
   };
 
   if (gap !== undefined) {
-    flexStyles['gap'] = gap;
+    dynamicStyles.gap = `${gap * 4}px`; // Primerのスケール値をpxに変換（4px単位）
   }
 
   if (flex !== undefined) {
-    flexStyles['flex'] = flex;
+    dynamicStyles.flex = flex;
   }
 
   if (shrink !== undefined) {
-    flexStyles['flexShrink'] = shrink;
+    dynamicStyles.flexShrink = shrink;
   }
 
   if (grow !== undefined) {
-    flexStyles['flexGrow'] = grow;
+    dynamicStyles.flexGrow = grow;
   }
 
   // カスタムプロパティを除外してDOM要素用のpropsを取得
@@ -85,15 +125,20 @@ const FlexBox = memo<FlexBoxProps>(({
   } = { direction, align, justify, gap, wrap, flex, shrink, grow, sx, ...restProps };
 
   return (
-    <Box
+    <div
       {...domProps}
-      sx={{
-        ...flexStyles,
-        ...sx
-      }}
+      className={cn(
+        'flex',
+        getDirectionClass(direction),
+        getAlignClass(align),
+        getJustifyClass(justify),
+        getWrapClass(wrap),
+        className
+      )}
+      style={dynamicStyles}
     >
       {children}
-    </Box>
+    </div>
   );
 });
 

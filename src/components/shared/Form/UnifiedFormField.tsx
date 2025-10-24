@@ -1,9 +1,8 @@
 import React, { memo } from "react";
-import { FormControl } from "@primer/react";
+import { cn } from '@/lib/utils';
 
 import type { FormFieldConfig } from "../../../types/unified-form";
 import { shouldShowError } from "../../../utils/formHelpers";
-import { UNIFIED_FORM_STYLES } from "./styles";
 import {
   TextField,
   DateTimeField,
@@ -152,30 +151,37 @@ const UnifiedFormField = memo<UnifiedFormFieldProps>(
     };
 
     return (
-      <FormControl
-        id={id}
-        sx={
-          sx
-            ? { ...UNIFIED_FORM_STYLES.container, ...sx }
-            : UNIFIED_FORM_STYLES.container
-        }
+      <div
+        className={cn(
+          "space-y-2",
+          sx && "custom-styles" // 後で処理
+        )}
+        style={sx ? (sx as React.CSSProperties) : undefined}
       >
         {!hideLabel && (
-          <FormControl.Label required={validation?.required}>
+          <label
+            htmlFor={id}
+            className={cn(
+              "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
+              validation?.required && "after:content-['*'] after:ml-0.5 after:text-red-500"
+            )}
+          >
             {label}
-          </FormControl.Label>
+          </label>
         )}
 
         {renderField()}
 
         {helpText && !showError && (
-          <FormControl.Caption>{helpText}</FormControl.Caption>
+          <p className="text-sm text-muted-foreground">
+            {helpText}
+          </p>
         )}
 
         {showError && (
           <InlineMessage variant="critical" message={error || "入力に誤りがあります"} size="small" />
         )}
-      </FormControl>
+      </div>
     );
   },
 );

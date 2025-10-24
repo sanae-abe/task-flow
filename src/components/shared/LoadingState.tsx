@@ -1,5 +1,6 @@
-import { Spinner } from '@primer/react';
+import { Loader2 } from 'lucide-react';
 import { memo } from 'react';
+import { cn } from '@/lib/utils';
 
 import type { LoadingStateSize, LoadingStateVariant } from '../../types/shared';
 import { CenterBox, VBox } from './FlexBox';
@@ -23,7 +24,7 @@ interface LoadingStateProps {
 
 /**
  * 統一されたローディング状態コンポーネント
- * 
+ *
  * ローディング中はスピナーを表示し、完了後は子要素を表示します。
  * 一貫したローディングUXを提供します。
  */
@@ -41,14 +42,14 @@ const LoadingState = memo<LoadingStateProps>(({
   }
 
   // サイズ別のスピナー設定
-  const getSpinnerSize = () => {
+  const getSpinnerConfig = () => {
     switch (size) {
       case 'small':
-        return { size: 'small' as const, fontSize: 1 };
+        return { iconSize: 16, textClass: 'text-sm' };
       case 'large':
-        return { size: 'large' as const, fontSize: 3 };
+        return { iconSize: 32, textClass: 'text-lg' };
       default:
-        return { size: 'medium' as const, fontSize: 2 };
+        return { iconSize: 24, textClass: 'text-base' };
     }
   };
 
@@ -57,50 +58,43 @@ const LoadingState = memo<LoadingStateProps>(({
     switch (variant) {
       case 'overlay':
         return {
-          position: 'absolute' as const,
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          bg: 'canvas.overlay',
-          zIndex: 100
+          className: 'absolute inset-0 bg-white/80 z-[100]',
+          style: {}
         };
       case 'inline':
         return {
-          py: 4,
-          px: 3
+          className: 'py-4 px-3',
+          style: {}
         };
       default:
         return {
-          minHeight,
-          bg: 'canvas.subtle',
-          borderRadius: 2,
-          border: '1px solid',
-          borderColor: 'border.default'
+          className: 'bg-gray-50 rounded-md border border-gray-200',
+          style: { minHeight }
         };
     }
   };
 
-  const spinnerConfig = getSpinnerSize();
+  const spinnerConfig = getSpinnerConfig();
   const variantStyles = getVariantStyles();
 
   return (
     <CenterBox
-      sx={{
-        ...variantStyles,
-        ...sx
+      className={variantStyles.className}
+      style={{
+        ...variantStyles.style,
+        ...sx as React.CSSProperties
       }}
     >
       <VBox align="center" gap={3}>
-        <Spinner size={spinnerConfig.size} />
+        <Loader2
+          size={spinnerConfig.iconSize}
+          className="animate-spin text-gray-600"
+        />
         {loadingText && (
-          <span
-            style={{
-              fontSize: `var(--text-body-size-${spinnerConfig.fontSize})`,
-              color: 'var(--fgColor-muted)',
-              textAlign: 'center'
-            }}
-          >
+          <span className={cn(
+            spinnerConfig.textClass,
+            'text-gray-500 text-center'
+          )}>
             {loadingText}
           </span>
         )}

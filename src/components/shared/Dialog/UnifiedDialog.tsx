@@ -1,7 +1,7 @@
-import { XIcon } from '@primer/octicons-react';
-import { Box, Text, ThemeProvider, BaseStyles } from '@primer/react';
+import { X } from 'lucide-react';
 import React, { useCallback, useEffect, memo } from 'react';
 import { createPortal } from 'react-dom';
+import { cn } from '@/lib/utils';
 
 import type { UnifiedDialogProps, DialogVariant, DialogSize } from '../../../types/unified-dialog';
 import IconButton from '../IconButton';
@@ -15,21 +15,11 @@ const getDialogStyles = (variant: DialogVariant, size: DialogSize) => {
   const variantStyles = {
     modal: {
       backdrop: {
-        position: 'fixed' as const,
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
         zIndex: 9999,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        animation: 'dialog-backdrop-fade-in 200ms cubic-bezier(0.33, 1, 0.68, 1)'
       },
       container: {
         display: 'flex',
         flexDirection: 'column' as const,
-        backgroundColor: 'var(--bgColor-default)',
         boxShadow: 'shadow.large',
         width: '90vw',
         maxHeight: '90vh',
@@ -38,30 +28,17 @@ const getDialogStyles = (variant: DialogVariant, size: DialogSize) => {
       },
       content: {
         padding: '16px',
-        backgroundColor: 'var(--bgColor-default)',
         borderRadius: 'var(--borderRadius-large, var(--borderRadius-large, .75rem))',
         overflowY: 'auto'
       }
     },
     overlay: {
       backdrop: {
-        position: 'fixed' as const,
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: 'var(--overlay-backdrop-bgColor)',
         zIndex: 10000,
-        display: 'flex',
-        alignItems: 'flex-start',
-        justifyContent: 'center',
-        paddingTop: 0,
-        animation: 'dialog-backdrop-fade-in 200ms cubic-bezier(0.33, 1, 0.68, 1)'
       },
       container: {
         display: 'flex',
         flexDirection: 'column' as const,
-        backgroundColor: 'var(--bgColor-default)',
         boxShadow: 'shadow.large',
         padding: '0.5rem',
         maxHeight: '90vh',
@@ -70,7 +47,6 @@ const getDialogStyles = (variant: DialogVariant, size: DialogSize) => {
         animation: 'dialog-scale-fade-in 200ms cubic-bezier(0.33, 1, 0.68, 1)'
       },
       content: {
-        backgroundColor: 'var(--bgColor-default)',
         width: '100%',
         minHeight: '112px',
         display: 'flex',
@@ -89,7 +65,6 @@ const getDialogStyles = (variant: DialogVariant, size: DialogSize) => {
       container: {
         display: 'flex',
         flexDirection: 'column' as const,
-        backgroundColor: 'var(--bgColor-default)',
         boxShadow: 'shadow.large',
         padding: '0.5rem',
         width: '90vw',
@@ -145,21 +120,16 @@ const DialogHeader = memo<{
     borderRadius: 'var(--borderRadius-large) var(--borderRadius-large) 0 0',
     boxShadow: '0 1px 0 var(--borderColor-default,var(--borderColor-default))'
   }}>
-    <Text 
+    <h2
       id={titleId}
-      sx={{
-        fontSize: 'var(--text-body-size-medium,.875rem)', fontWeight: '600',
-        px: '8px',
-        py: '6px',
-        lineHeight: 'var(--text-body-line-height-medium,1.5)'
-      }}
+      className="text-sm font-semibold px-2 py-1.5 leading-6"
     >
       {title}
-    </Text>
+    </h2>
 
     {!hideCloseButton && (
       <IconButton
-        icon={XIcon}
+        icon={X}
         onClick={onClose}
         ariaLabel="ダイアログを閉じる"
         variant="muted"
@@ -255,45 +225,70 @@ const UnifiedDialog = memo<UnifiedDialogProps>(({
   }
 
   const styles = getDialogStyles(variant, size);
-  const titleId = ariaLabelledBy ?? `dialog-title-${Math.random().toString(36).substr(2, 9)}`;
+  const titleId = ariaLabelledBy ?? `dialog-title-${Math.random().toString(36).slice(2, 11)}`;
 
   const dialogContent = (
-    <ThemeProvider>
-      <BaseStyles>
+    <div
+      onMouseDown={handleBackdropMouseDown}
+      onClick={handleBackdropClick}
+      onMouseUp={handleBackdropMouseUp}
+      role="dialog"
+      aria-modal={variant !== 'inline' ? 'true' : undefined}
+      aria-labelledby={titleId}
+      className={cn(
+        "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-black/50 flex",
+        variant === 'overlay' && "items-start justify-center pt-0",
+        variant === 'modal' && "items-center justify-center",
+        variant === 'inline' && "relative bg-transparent z-auto block"
+      )}
+      style={styles.backdrop as React.CSSProperties}
+    >
+      <div
+        style={styles.container as React.CSSProperties}
+        onClick={handleContainerClick}
+        className={cn(
+          "animate-in fade-in-0 zoom-in-95 duration-200",
+          "flex flex-col bg-white rounded-lg shadow-lg",
+          // サイズ別のクラス
+          size === 'small' && "min-w-[296px] max-w-[320px]",
+          size === 'medium' && "min-w-[320px] max-w-[480px]",
+          size === 'large' && "min-w-[480px] max-w-[640px]",
+          size === 'xl' && "min-w-[640px] max-w-[800px]",
+          // バリアント別のクラス
+          variant === 'modal' && "w-[90vw] max-h-[90vh]",
+          variant === 'overlay' && "max-h-[90vh] overflow-y-auto p-2",
+          variant === 'inline' && "w-[90vw] max-h-[90vh] overflow-y-auto p-2"
+        )}
+      >
+        {!hideHeader && (
+          <DialogHeader
+            title={title}
+            onClose={onClose}
+            titleId={titleId}
+            hideCloseButton={variant === 'overlay'}
+          />
+        )}
         <div
-          style={styles.backdrop}
-          onMouseDown={handleBackdropMouseDown}
-          onClick={handleBackdropClick}
-          onMouseUp={handleBackdropMouseUp}
-          role="dialog"
-          aria-modal={variant !== 'inline' ? 'true' : undefined}
-          aria-labelledby={titleId}
+          style={styles.content as React.CSSProperties}
+          className={cn(
+            // 基本スタイル
+            "bg-white rounded-lg overflow-y-auto",
+            // バリアント別のクラス
+            variant === 'modal' && "p-4",
+            variant === 'overlay' && "w-full min-h-[112px] flex items-center justify-center py-1",
+            variant === 'inline' && "bg-gray-50 rounded-md p-3"
+          )}
         >
-          <Box
-            sx={styles.container}
-            onClick={handleContainerClick}
-          >
-            {!hideHeader && (
-              <DialogHeader
-                title={title}
-                onClose={onClose}
-                titleId={titleId}
-                hideCloseButton={variant === 'overlay'}
-              />
-            )}
-            <Box sx={styles.content}>
-              {children}
-            </Box>
-
-            {!hideFooter && actions && actions.length > 0 && (
-              <DialogFooter>
-                <DialogActions actions={actions} layout={actionsLayout} />
-              </DialogFooter>
-            )}
-          </Box>
+          {children}
         </div>
-      </BaseStyles>
-    </ThemeProvider>
+
+        {!hideFooter && actions && actions.length > 0 && (
+          <DialogFooter>
+            <DialogActions actions={actions} layout={actionsLayout} />
+          </DialogFooter>
+        )}
+      </div>
+    </div>
   );
 
   // modal と overlay バリアントの場合はポータル化
