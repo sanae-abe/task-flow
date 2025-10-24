@@ -59,14 +59,13 @@ const MenuTriggerComponent = memo<{
     
     default: // custom
       const mappedVariant = variant === 'invisible' ? 'ghost' : 'default';
-      const mappedSize = size === 'small' ? 'sm' : size === 'large' ? 'lg' : 'default';
 
       return (
         <Button
           variant={mappedVariant}
-          size={mappedSize}
+          size="sm"
           aria-label={ariaLabel ?? label}
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 hover:bg-neutral-200"
         >
           {icon && React.createElement(icon, { size: 16 })}
           {label}

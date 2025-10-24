@@ -37,7 +37,7 @@ export const TaskBoardMover: React.FC<TaskBoardMoverProps> = ({
     type: 'custom',
     customTrigger: (
       <Button
-        variant="default"
+        variant="outline"
         size="default"
         disabled={disabled}
         className="flex-1 flex items-center justify-center gap-2"

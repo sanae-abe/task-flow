@@ -114,6 +114,7 @@ const ColumnActions: React.FC<ColumnActionsProps> = ({
         variant="ghost"
         size="icon"
         aria-label="タスクを作成"
+        className="hover:text-default"
       >
         <Plus size={16} />
       </Button>

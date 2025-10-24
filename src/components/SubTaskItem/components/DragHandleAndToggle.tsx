@@ -38,7 +38,6 @@ export const DragHandleAndToggle: React.FC<DragHandleAndToggleProps> = ({
           subTask.completed ? "未完了" : "完了"
         }にする`}
         variant="success"
-        size="small"
         stopPropagation
       />
     </div>
