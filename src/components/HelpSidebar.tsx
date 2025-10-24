@@ -1,15 +1,16 @@
 import {
-  XIcon,
-  DatabaseIcon,
-  FilterIcon,
-  InfoIcon,
-  CalendarIcon,
-  TableIcon,
-  DeviceCameraVideoIcon,
-  TasklistIcon,
-  PaperclipIcon
-} from "@primer/octicons-react";
-import { MousePointer, FileText } from "react-feather";
+  X,
+  Database,
+  Filter,
+  Info,
+  Calendar,
+  Table,
+  Video,
+  List,
+  Paperclip,
+  MousePointer,
+  FileText
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import React, { useEffect, useCallback } from "react";
@@ -178,7 +179,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
             aria-label="ヘルプを閉じる"
             className="flex-shrink-0 p-1 h-auto min-w-0"
           >
-            <XIcon size={16} />
+            <X size={16} />
           </Button>
         </div>
 
@@ -186,7 +187,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
         <div style={{ flex: "1", padding: "16px", overflowY: "auto" }}>
           <HelpSection
             title="ビュー切り替え"
-            icon={DeviceCameraVideoIcon}
+            icon={Video}
             background="var(--primary)"
           >
             <HelpItem
@@ -242,7 +243,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
 
           <HelpSection
             title="タスク管理"
-            icon={TasklistIcon}
+            icon={List}
             background="var(--primary)"
           >
             <HelpItem
@@ -281,7 +282,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
 
           <HelpSection
             title="ファイル添付"
-            icon={PaperclipIcon}
+            icon={Paperclip}
             background="var(--bgColor-attention-emphasis)"
           >
             <HelpItem
@@ -292,7 +293,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
 
           <HelpSection
             title="カレンダー機能"
-            icon={CalendarIcon}
+            icon={Calendar}
             background="var(--bgColor-done-emphasis)"
           >
             <HelpItem
@@ -303,7 +304,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
 
           <HelpSection
             title="フィルタリング・ソート"
-            icon={FilterIcon}
+            icon={Filter}
             background="var(--bgColor-severe-emphasis)"
           >
             <HelpItem
@@ -325,7 +326,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
 
           <HelpSection
             title="テーブルビュー"
-            icon={TableIcon}
+            icon={Table}
             background="var(--primary)"
           >
             <HelpItem
@@ -336,7 +337,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
 
           <HelpSection
             title="データ管理"
-            icon={DatabaseIcon}
+            icon={Database}
             background="var(--bgColor-sponsors-emphasis)"
           >
             <HelpItem
@@ -379,7 +380,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
 
           <HelpSection
             title="便利なヒント"
-            icon={InfoIcon}
+            icon={Info}
             background="var(--bgColor-success-emphasis)"
           >
             <HelpItem
