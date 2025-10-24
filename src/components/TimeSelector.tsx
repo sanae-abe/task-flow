@@ -1,4 +1,4 @@
-import { ClockIcon } from "@primer/octicons-react";
+import { Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import React, { useState, useCallback } from "react";
 
@@ -51,7 +51,7 @@ const TimeSelector: React.FC<TimeSelectorProps> = ({
         variant="ghost"
         className="flex items-center gap-2"
       >
-        <ClockIcon size={16} />
+        <Clock size={16} />
         {getButtonText()}
       </Button>
 
