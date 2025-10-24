@@ -1,10 +1,10 @@
-import type { Icon } from "@primer/octicons-react";
+import type { LucideIcon } from "lucide-react";
 import { Button, type ButtonProps } from "@/components/ui/button";
 import React from "react";
 import { cn } from "@/lib/utils";
 
 interface SubHeaderButtonProps extends Omit<ButtonProps, "size" | "variant"> {
-  icon: Icon;
+  icon: LucideIcon;
   children: React.ReactNode;
 }
 

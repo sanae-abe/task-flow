@@ -2,9 +2,9 @@ import {
   PlusIcon,
   PencilIcon,
   TrashIcon,
-  KebabHorizontalIcon,
   CheckCircleIcon,
 } from "@primer/octicons-react";
+import { MoreHorizontal } from "lucide-react";
 import { ActionMenu, ActionList } from "@primer/react";
 import { memo } from "react";
 
@@ -41,7 +41,7 @@ const BoardActionMenu = memo<BoardActionMenuProps>(
     <ActionMenu>
       <ActionMenu.Anchor>
         <SubHeaderButton
-          icon={KebabHorizontalIcon}
+          icon={MoreHorizontal}
           aria-label="ボード設定メニューを開く"
         >
           ボード設定
