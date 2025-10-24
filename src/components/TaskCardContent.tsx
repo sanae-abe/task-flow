@@ -1,4 +1,4 @@
-import { CheckCircleIcon, CheckCircleFillIcon } from "@primer/octicons-react";
+import { CheckCircle, CheckCircle2 } from "lucide-react";
 import React from "react";
 
 import type { TaskDisplayProps } from "../types/task";
@@ -23,7 +23,7 @@ const TaskCardContent: React.FC<TaskDisplayProps> = ({
     <div className="flex items-start my-1">
       {onComplete && (
         <IconButton
-          icon={isRightmostColumn ? CheckCircleFillIcon : CheckCircleIcon}
+          icon={isRightmostColumn ? CheckCircle2 : CheckCircle}
           onClick={onComplete}
           ariaLabel={
             isRightmostColumn ? "タスクを未完了にする" : "タスクを完了にする"

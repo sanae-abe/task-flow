@@ -1,7 +1,7 @@
 /**
  * 統合メニューシステムの型定義
  */
-import type { Icon } from "@primer/octicons-react";
+import type { LucideIcon } from "lucide-react";
 
 export type MenuVariant = "default" | "danger" | "invisible";
 export type MenuSize = "small" | "medium" | "large";
@@ -14,7 +14,7 @@ export interface BaseMenuItem {
   /** 表示ラベル */
   label: string;
   /** アイコン（オプション） */
-  icon?: Icon;
+  icon?: LucideIcon;
   /** 無効状態 */
   disabled?: boolean;
   /** 非表示状態 */
@@ -87,7 +87,7 @@ export interface MenuTrigger {
   /** ボタンラベル */
   label?: string;
   /** アイコン */
-  icon?: Icon;
+  icon?: LucideIcon;
   /** ボタンのバリアント */
   variant?: MenuVariant;
   /** ボタンのサイズ */
@@ -133,7 +133,7 @@ export interface SelectorMenuProps<T = unknown> {
     id: string;
     label: string;
     value: T;
-    icon?: Icon;
+    icon?: LucideIcon;
     disabled?: boolean;
   }>;
   /** 現在選択中の値 */

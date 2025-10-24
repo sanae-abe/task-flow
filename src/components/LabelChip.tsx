@@ -1,4 +1,4 @@
-import { XIcon } from "@primer/octicons-react";
+import { X } from "lucide-react";
 import { memo, useCallback, useMemo } from "react";
 import { cn } from "@/lib/utils";
 
@@ -84,7 +84,7 @@ const LabelChip = memo<LabelChipProps>(
         <span className="text-xs">{label.name}</span>
         {showRemove && onRemove && (
           <IconButton
-            icon={XIcon}
+            icon={X}
             onClick={handleRemove}
             ariaLabel={`${label.name}ラベルを削除`}
             variant="muted"

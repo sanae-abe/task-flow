@@ -1,4 +1,4 @@
-import type { Icon } from '@primer/octicons-react';
+import type { LucideIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { memo } from 'react';
 import { cn } from '@/lib/utils';
@@ -7,7 +7,7 @@ import type { IconButtonVariant, IconButtonSize, IconButtonStyle } from '../../t
 
 interface IconButtonProps {
   /** アイコンコンポーネント */
-  icon: Icon;
+  icon: LucideIcon;
   /** クリック時のコールバック */
   onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
   /** アクセシビリティ用のラベル */
