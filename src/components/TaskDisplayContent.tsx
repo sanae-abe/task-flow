@@ -48,11 +48,7 @@ const TaskDisplayContent = React.memo<TaskDisplayContentProps>(
           >
             {task.description && (
               <LinkifiedText
-                sx={{
-                  fontSize: 1,
-                  whiteSpace: "pre-wrap",
-                  overflowWrap: "anywhere",
-                }}
+                className="text-sm whitespace-pre-wrap break-anywhere"
               >
                 {task.description}
               </LinkifiedText>

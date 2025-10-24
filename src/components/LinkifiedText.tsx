@@ -1,10 +1,10 @@
-import { Text } from "@primer/react";
 import React, { useMemo } from "react";
 import DOMPurify from "dompurify";
 
 interface LinkifiedTextProps {
   children: string;
-  sx?: React.ComponentProps<typeof Text>['sx'];
+  className?: string;
+  style?: React.CSSProperties;
 }
 
 /**
@@ -12,7 +12,7 @@ interface LinkifiedTextProps {
  * リッチテキストエディタで作成されたHTMLコンテンツの表示に対応
  * DOMPurifyによるXSS攻撃からの保護機能付き
  */
-const LinkifiedText: React.FC<LinkifiedTextProps> = ({ children, sx }) => {
+const LinkifiedText: React.FC<LinkifiedTextProps> = ({ children, className = "", style = {} }) => {
   const processedContent = useMemo(() => {
     // URL自動リンク化を実行する関数（コード記述を除外）
     const linkifyUrls = (text: string) =>
@@ -311,65 +311,14 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({ children, sx }) => {
     return sanitizedContent;
   }, [children]);
 
-  return (
-    <Text
-      sx={{
-        "& a": {
-          color: "accent.fg",
-          textDecoration: "none",
-          "&:hover": {
-            textDecoration: "underline",
-          },
-        },
-        "& code": {
-          backgroundColor: "#f6f8fa",
-          color: "#e01e5a",
-          padding: "2px 4px",
-          borderRadius: "var(--borderRadius-small)",
-          fontFamily: "mono",
-          fontSize: "0.875em",
-          border: "1px solid",
-          borderColor: "#d0d7de",
-        },
-        "& ul, & ol": {
-          margin: "8px 0",
-          paddingLeft: "24px",
-        },
-        "& li": {
-          margin: "4px 0",
-        },
+  const combinedStyle: React.CSSProperties = {
+    ...style,
+  };
 
-        "& pre": {
-          backgroundColor: "canvas.subtle",
-          color: "fg.default",
-          padding: "8px",
-          borderRadius: "6px",
-          fontFamily: "mono",
-          fontSize: "13px",
-          lineHeight: "1.45",
-          overflowX: "auto",
-          border: "1px solid",
-          borderColor: "border.default",
-          margin: "0 0 8px",
-          whiteSpace: "pre-wrap", // 改行を保持
-          wordBreak: "break-word", // 長い行の折り返し
-          "& code": {
-            backgroundColor: "transparent",
-            color: "inherit",
-            padding: 0,
-            border: "none",
-            whiteSpace: "pre-wrap", // コード内でも改行を保持
-            wordBreak: "break-word",
-          },
-        },
-        "& p": {
-          margin: "0 0 8px",
-          "&:last-child": {
-            margin: 0,
-          },
-        },
-        ...sx,
-      }}
+  return (
+    <span
+      className={`prose prose-sm max-w-none text-foreground ${className}`}
+      style={combinedStyle}
       dangerouslySetInnerHTML={{ __html: processedContent }}
     />
   );
