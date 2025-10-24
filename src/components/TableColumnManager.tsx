@@ -1,14 +1,20 @@
 import React, { useState, useCallback } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
-  Text,
-  IconButton,
-  ActionMenu,
-  ActionList,
-  Button,
-  FormControl,
-  TextInput,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+  DropdownMenuGroup,
+} from "@/components/ui/dropdown-menu";
+import {
   Dialog,
-} from "@primer/react";
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   GearIcon,
   TrashIcon,
@@ -115,59 +121,55 @@ const TableColumnManager: React.FC = () => {
 
   return (
     <>
-      <ActionMenu>
-        <ActionMenu.Anchor>
-          <IconButton
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant="ghost"
+            size="sm"
             aria-label="カラム詳細設定"
-            icon={GearIcon}
-            variant="invisible"
-            size="small"
-          />
-        </ActionMenu.Anchor>
-        <ActionMenu.Overlay>
-          <ActionList>
-            <ActionList.Group title="表示カラム">
-              {columns.map((column) => (
-                <ActionList.Item
-                  key={column.id}
-                  onSelect={() => toggleColumnVisibility(column.id)}
+            className="p-1 h-auto min-w-0"
+          >
+            <GearIcon size={16} />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuGroup>
+            <div className="px-2 py-1.5 text-sm font-semibold text-gray-700">表示カラム</div>
+            {columns.map((column) => (
+              <DropdownMenuItem
+                key={column.id}
+                onClick={() => toggleColumnVisibility(column.id)}
+              >
+                <div
+                  className={`mr-2 ${
+                    column.visible ? 'text-gray-900' : 'text-transparent'
+                  }`}
                 >
-                  <ActionList.LeadingVisual>
-                    <div
-                      style={{
-                        color: column.visible ? "inherit" : "white",
-                      }}
-                    >
-                      <CheckIcon />
-                    </div>
-                  </ActionList.LeadingVisual>
-                  {column.label}
-                </ActionList.Item>
-              ))}
-            </ActionList.Group>
-            <ActionList.Divider />
-            <ActionList.Item onSelect={() => setIsSettingsOpen(true)}>
-              <ActionList.LeadingVisual>
-                <GearIcon />
-              </ActionList.LeadingVisual>
-              詳細設定
-            </ActionList.Item>
-            <ActionList.Divider />
-            <ActionList.Item onSelect={resetToDefaults} variant="danger">
-              デフォルトに戻す
-            </ActionList.Item>
-          </ActionList>
-        </ActionMenu.Overlay>
-      </ActionMenu>
+                  <CheckIcon size={16} />
+                </div>
+                {column.label}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuGroup>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={() => setIsSettingsOpen(true)}>
+            <GearIcon size={16} className="mr-2" />
+            詳細設定
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={resetToDefaults}>
+            デフォルトに戻す
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
 
       {/* 詳細設定ダイアログ */}
-      {isSettingsOpen && (
-        <Dialog
-          title="カラム詳細設定"
-          onClose={() => setIsSettingsOpen(false)}
-          aria-labelledby="column-settings-title"
-        >
-          <div style={{ marginBottom: "20px", color: "fg.muted" }}>
+      <Dialog open={isSettingsOpen} onOpenChange={setIsSettingsOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>カラム詳細設定</DialogTitle>
+          </DialogHeader>
+          <div className="mb-5 text-gray-600">
             カラムをドラッグして並び替え、幅の調整ができます。幅は50px〜1000pxの範囲で入力してください。
           </div>
 
@@ -207,64 +209,55 @@ const TableColumnManager: React.FC = () => {
                     transition: "all 0.2s ease",
                   }}
                 >
-                  <IconButton
+                  <Button
+                    variant="ghost"
+                    size="sm"
                     aria-label="並び替え"
-                    icon={GrabberIcon}
-                    variant="invisible"
-                    size="small"
-                    sx={{
-                      cursor: "grab",
-                      "&:active": { cursor: "grabbing" },
-                    }}
-                  />
+                    className="cursor-grab active:cursor-grabbing p-1 h-auto min-w-0"
+                  >
+                    <GrabberIcon size={16} />
+                  </Button>
 
                   <div style={{ flex: 1 }}>
-                    <Text sx={{ fontWeight: "semibold" }}>{column.label}</Text>
+                    <span className="font-semibold text-gray-900">{column.label}</span>
                   </div>
 
-                  <FormControl>
-                    <FormControl.Label visuallyHidden>
+                  <div className="mr-2">
+                    <label className="sr-only">
                       {column.label}の幅を設定
-                    </FormControl.Label>
-                    <TextInput
+                    </label>
+                    <Input
                       value={column.width}
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                         handleWidthChange(column.id, e.target.value)
                       }
                       placeholder="幅 (50px〜1000px)"
-                      size="small"
-                      sx={{ width: "120px", mr: 1 }}
+                      className="w-30"
                       aria-describedby={`width-help-${column.id}`}
                     />
-                  </FormControl>
+                  </div>
 
                   {isCustomColumn(column.id) && (
-                    <IconButton
+                    <Button
+                      variant="ghost"
+                      size="sm"
                       aria-label="カラムを削除"
-                      icon={TrashIcon}
-                      variant="invisible"
-                      size="small"
                       onClick={() => removeColumn(column.id)}
-                      sx={{ color: "danger.emphasis" }}
-                    />
+                      className="text-red-600 hover:text-red-700 p-1 h-auto min-w-0"
+                    >
+                      <TrashIcon size={16} />
+                    </Button>
                   )}
                 </div>
               );
             })}
           </div>
 
-          <div
-            style={{
-              display: "flex",
-              gap: "8px",
-              marginTop: "16px",
-              justifyContent: "flex-end",
-            }}
-          >
+          <div className="flex gap-2 mt-4 justify-end">
             <Button onClick={() => setIsSettingsOpen(false)}>閉じる</Button>
           </div>
-        </Dialog>
-      )}
+        </DialogContent>
+      </Dialog>
     </>
   );
 };

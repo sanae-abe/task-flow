@@ -1,12 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import {
-  Box,
-  Heading,
-  Button,
-  TextInput,
-  Flash,
-  FormControl
-} from '@primer/react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { PlusIcon, TrashIcon, GrabberIcon, ChevronUpIcon, ChevronDownIcon, CheckIcon } from '@primer/octicons-react';
 import {
   DndContext,
@@ -101,42 +95,28 @@ const SortableColumnItem: React.FC<SortableColumnItemProps> = ({
   };
 
   return (
-    <Box
+    <div
       ref={setNodeRef}
       style={style}
-      sx={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: 2,
-        p: 2,
-        mb: 2,
-        border: '1px solid',
-        borderColor: isDragging ? 'accent.emphasis' : 'border.default',
-        borderRadius: 2,
-        backgroundColor: isDragging ? 'canvas.inset' : 'canvas.subtle',
-        cursor: isDragging ? 'grabbing' : 'grab',
-      }}
+      className={`flex items-center gap-2 p-3 mb-3 border rounded-lg ${
+        isDragging
+          ? 'border-blue-600 bg-gray-100 cursor-grabbing'
+          : 'border-gray-300 bg-gray-50 cursor-grab'
+      }`}
     >
-      <Box
+      <div
         {...attributes}
         {...listeners}
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          cursor: 'grab',
-          '&:active': {
-            cursor: 'grabbing',
-          },
-        }}
+        className="flex items-center cursor-grab active:cursor-grabbing"
       >
         <GrabberIcon size={16} />
-      </Box>
+      </div>
       <div style={{ flex: 1 }}>
-        <TextInput
+        <Input
           value={localName}
           onChange={handleInputChange}
           placeholder="カラム名"
-          sx={{ width: '100%' }}
+          className="w-full"
           aria-label={`カラム「${column.name}」の名前`}
         />
         {error && (
@@ -145,34 +125,37 @@ const SortableColumnItem: React.FC<SortableColumnItemProps> = ({
       </div>
       <div style={{ display: 'flex', gap: "4px" }}>
         <Button
-          variant="invisible"
-          size="small"
-          leadingVisual={ChevronUpIcon}
+          variant="ghost"
+          size="sm"
           onClick={() => onMoveColumn(column.id, 'up')}
           disabled={index === 0}
           aria-label={`${column.name}を上に移動`}
-          sx={{ px: 2 }}
-        />
+          className="px-2"
+        >
+          <ChevronUpIcon size={16} />
+        </Button>
         <Button
-          variant="invisible"
-          size="small"
-          leadingVisual={ChevronDownIcon}
+          variant="ghost"
+          size="sm"
           onClick={() => onMoveColumn(column.id, 'down')}
           disabled={index === totalColumns - 1}
           aria-label={`${column.name}を下に移動`}
-          sx={{ px: 2 }}
-        />
+          className="px-2"
+        >
+          <ChevronDownIcon size={16} />
+        </Button>
         <Button
-          variant="invisible"
-          size="small"
-          leadingVisual={TrashIcon}
+          variant="ghost"
+          size="sm"
           onClick={() => onDeleteColumn(column.id)}
           disabled={totalColumns <= 1}
           aria-label={`${column.name}を削除`}
-          sx={{ color: 'danger.fg' }}
-        />
+          className="text-red-600 hover:text-red-700"
+        >
+          <TrashIcon size={16} />
+        </Button>
       </div>
-    </Box>
+    </div>
   );
 };
 
@@ -423,7 +406,9 @@ export const BoardSettingsPanel: React.FC = () => {
   if (isLoading) {
     return (
       <div style={{ padding: "12px" }}>
-        <Flash>設定を読み込み中...</Flash>
+        <div className="bg-blue-50 border border-blue-200 rounded-md p-3 text-blue-800">
+          設定を読み込み中...
+        </div>
       </div>
     );
   }
@@ -431,7 +416,7 @@ export const BoardSettingsPanel: React.FC = () => {
   return (
     <div style={{ paddingBottom: "16px" }}>
       <div style={{ marginBottom: "16px" }}>
-        <Heading sx={{ fontSize: 2, mb: 2 }}>デフォルトカラム設定</Heading>
+        <h2 className="text-lg font-bold mb-4 text-gray-900">デフォルトカラム設定</h2>
         <div style={{ color: 'var(--fgColor-muted)', fontSize: "14px" }}>
           新しいボード作成時に使用されるデフォルトカラムを設定できます。<br />
           既存のボードには影響しません。
@@ -467,13 +452,13 @@ export const BoardSettingsPanel: React.FC = () => {
         {/* 新しいカラム追加 */}
         <div style={{ marginBottom: "12px" }}>
           <div style={{ marginBottom: "8px", fontSize: "14px", fontWeight: "bold" }}>新しいカラムを追加</div>
-          <FormControl>
+          <div>
             <div style={{ display: "flex", gap: "8px", width: "100%" }}>
-              <TextInput
+              <Input
                 value={newColumnName}
                 onChange={(e) => setNewColumnName(e.target.value)}
                 placeholder="カラム名を入力"
-                sx={{ width: "100%" }}
+                className="w-full"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
                     handleAddColumn();
@@ -482,19 +467,19 @@ export const BoardSettingsPanel: React.FC = () => {
                 aria-label="新しいカラム名"
               />
               <Button
-                variant="primary"
-                size="small"
-                leadingVisual={PlusIcon}
+                variant="default"
+                size="sm"
                 onClick={handleAddColumn}
                 aria-label="新しいカラムを追加"
               >
+                <PlusIcon size={16} className="mr-2" />
                 追加
               </Button>
             </div>
             {addColumnError && (
               <InlineMessage variant="critical" message={addColumnError} size="small" />
             )}
-          </FormControl>
+          </div>
         </div>
       </div>
 
@@ -502,10 +487,10 @@ export const BoardSettingsPanel: React.FC = () => {
       <div style={{ paddingTop: "12px", borderTop: "1px solid", borderColor: "var(--borderColor-default)" }}>
         <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", justifyContent: "center", gap: "8px" }}>
           <Button
-            variant="primary"
-            leadingVisual={CheckIcon}
+            variant="default"
             onClick={handleSave}
           >
+            <CheckIcon size={16} className="mr-2" />
             設定を保存
           </Button>
           <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
