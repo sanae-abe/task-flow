@@ -1,10 +1,12 @@
 import React from "react";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
-  ActionMenu,
-  ActionList,
-  Checkbox,
-  FormControl
-} from "@primer/react";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 import type { RecurrenceConfig } from "../types";
 import { WEEKDAYS } from "../utils/constants";
 
@@ -29,44 +31,37 @@ const WeeklyOptionsSelector: React.FC<WeeklyOptionsSelectorProps> = ({
       : "曜日を選択";
 
   return (
-    <FormControl sx={{ display: "flex", flexDirection: "row", alignItems: "center", gap: "8px" }}>
-      <FormControl.Label sx={{ alignSelf: "center", minWidth: "80px" }}>曜日選択</FormControl.Label>
-      <ActionMenu>
-        <ActionMenu.Button>
-          {selectedDaysText}
-        </ActionMenu.Button>
-        <ActionMenu.Overlay>
-          <ActionList>
-            {WEEKDAYS.map((day) => (
-              <ActionList.Item
-                key={day.value}
-                onSelect={() =>
-                  onDaysOfWeekChange(
-                    day.value,
-                    !config.daysOfWeek?.includes(day.value)
-                  )
-                }
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "8px",
-                    width: "100%",
-                  }}
-                >
-                  <Checkbox
-                    checked={config.daysOfWeek?.includes(day.value) || false}
-                    onChange={() => {}}
-                  />
-                  {day.label}
-                </div>
-              </ActionList.Item>
-            ))}
-          </ActionList>
-        </ActionMenu.Overlay>
-      </ActionMenu>
-    </FormControl>
+    <div className="flex flex-row items-center gap-2">
+      <label className="self-center min-w-[80px] text-sm">曜日選択</label>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline" size="sm">
+            {selectedDaysText}
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="w-56">
+          {WEEKDAYS.map((day) => (
+            <DropdownMenuItem
+              key={day.value}
+              onClick={() =>
+                onDaysOfWeekChange(
+                  day.value,
+                  !config.daysOfWeek?.includes(day.value)
+                )
+              }
+            >
+              <div className="flex items-center gap-2 w-full">
+                <Checkbox
+                  checked={config.daysOfWeek?.includes(day.value) || false}
+                  onChange={() => {}}
+                />
+                {day.label}
+              </div>
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
   );
 };
 
