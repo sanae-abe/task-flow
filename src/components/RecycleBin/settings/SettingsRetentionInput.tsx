@@ -1,5 +1,5 @@
 import React from "react";
-import { FormControl, TextInput } from "@primer/react";
+import { Input } from "@/components/ui/input";
 import { type RecycleBinSettings } from "../../../types/settings";
 import { UI_TEXT } from "../../../constants/recycleBin";
 import { InlineMessage } from "../../shared";
@@ -26,28 +26,29 @@ export const SettingsRetentionInput: React.FC<SettingsRetentionInputProps> = ({
   validationError,
   onChange,
 }) => (
-    <FormControl required>
-      <FormControl.Label>
+    <div className="flex flex-col gap-2">
+      <label className="text-sm font-medium" htmlFor="retention-input">
         {UI_TEXT.PANEL.RETENTION_LABEL}
-      </FormControl.Label>
+      </label>
       <RetentionInputContainer>
-        <TextInput
+        <Input
+          id="retention-input"
           type="number"
           min="1"
           max="365"
           value={settings.retentionDays?.toString() || ""}
           placeholder={settings.retentionDays === null ? "無制限" : ""}
           onChange={(e) => onChange(e.target.value)}
-          style={{ width: '100px' }}
+          className="w-[100px]"
           aria-describedby="retention-help"
         />
         <RetentionUnit>{UI_TEXT.PANEL.RETENTION_UNIT}</RetentionUnit>
       </RetentionInputContainer>
-      <FormControl.Caption id="retention-help">
+      <small id="retention-help" className="text-xs text-muted-foreground">
         {UI_TEXT.PANEL.RETENTION_HELP}
-      </FormControl.Caption>
+      </small>
       {validationError && (
         <InlineMessage variant="critical" message={validationError} size="small" />
       )}
-    </FormControl>
+    </div>
   );
