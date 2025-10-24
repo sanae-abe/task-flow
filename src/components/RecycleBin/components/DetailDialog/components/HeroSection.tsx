@@ -1,8 +1,6 @@
 import React from 'react';
-import { Text, Box } from '@primer/react';
 import type { RecycleBinItem } from '../../../../../types/recycleBin';
 import { useItemTypeInfo } from '../hooks/useItemTypeInfo';
-import { spacing, borderRadius } from '../styles/designTokens';
 
 interface HeroSectionProps {
   item: Pick<RecycleBinItem, 'type' | 'title'>;
@@ -20,80 +18,32 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ item }) => {
   const { typeText, Icon, colors, heroIconProps } = useItemTypeInfo(item.type);
 
   return (
-    <Box
-      as="section"
-      sx={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: spacing.md,
-
-        // レスポンシブ対応
-        '@media (max-width: 543px)': {
-          p: spacing.md,
-          gap: spacing.sm,
-        },
-      }}
-    >
+    <section className="flex items-center gap-4 max-[543px]:p-4 max-[543px]:gap-3">
       {/* アイコン */}
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          width: '40px',
-          height: '40px',
-          bg: colors.background,
-          borderRadius: borderRadius.medium,
-          flexShrink: 0,
-        }}
+      <div
+        className="flex items-center justify-center w-10 h-10 rounded-md flex-shrink-0"
+        style={{ backgroundColor: colors.background }}
       >
         <Icon
           {...heroIconProps}
         />
-      </Box>
+      </div>
 
       {/* タイトル部分 */}
-      <Box
-        sx={{
-          flex: 1,
-          minWidth: 0, // flexで縮小可能にする
-        }}
-      >
+      <div className="flex-1 min-w-0">
         {/* メインタイトル */}
-        <Text
-          as="h2"
-          sx={{
-            fontSize: 2, // レスポンシブフォントサイズ
-            fontWeight: 'bold',
-            lineHeight: 'condensed',
-            color: 'fg.default',
-            wordBreak: 'break-word',
-            margin: 0,
-
-            // 長いタイトルの場合のトランケート
-            overflow: 'hidden',
-            display: '-webkit-box',
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: 'vertical',
-          }}
-          title={item.title} // ツールチップで全文表示
+        <h2
+          className="text-base font-bold leading-tight text-foreground break-words m-0 overflow-hidden line-clamp-2"
+          title={item.title}
         >
           {item.title}
-        </Text>
+        </h2>
 
         {/* タイプ表示 */}
-        <Text
-          sx={{
-            fontSize: 0,
-            color: 'fg.muted',
-            fontWeight: 'normal',
-            margin: 0,
-            mt: spacing.xs,
-          }}
-        >
+        <span className="text-xs text-muted-foreground font-normal m-0 mt-1 block">
           {typeText}
-        </Text>
-      </Box>
-    </Box>
+        </span>
+      </div>
+    </section>
   );
 };

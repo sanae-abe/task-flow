@@ -1,10 +1,9 @@
 import React from "react";
-import { Text } from "@primer/react";
 import {
-  RepoIcon,
-  ClockIcon,
-  ArrowRightIcon,
-} from "@primer/octicons-react";
+  FolderKanban,
+  Clock,
+  ArrowRight,
+} from "lucide-react";
 import { UI_TEXT, MESSAGES } from "../../../constants/recycleBin";
 import { type RecycleBinSettings } from "../../../types/settings";
 import { formatTimeUntilDeletion } from "../../../utils/recycleBin";
@@ -76,20 +75,20 @@ export const RecycleBinTaskItem: React.FC<RecycleBinTaskItemProps> = ({
 
       <TaskMetaContainer>
         <TaskMetaItem>
-          <RepoIcon size={12} />
-          <Text>
-            {task.boardTitle} <ArrowRightIcon size={12} /> {task.columnTitle}
-          </Text>
+          <FolderKanban size={12} />
+          <span>
+            {task.boardTitle} <ArrowRight size={12} /> {task.columnTitle}
+          </span>
         </TaskMetaItem>
         <TaskMetaItem>
-          <ClockIcon size={12} />
-          <Text>
+          <Clock size={12} />
+          <span>
             {UI_TEXT.VIEW.DELETION_SCHEDULE}{" "}
             {task.deletedAt
               ? formatTimeUntilDeletion(task.deletedAt, settings.retentionDays)
               : MESSAGES.RETENTION.UNKNOWN
             }
-          </Text>
+          </span>
         </TaskMetaItem>
       </TaskMetaContainer>
 

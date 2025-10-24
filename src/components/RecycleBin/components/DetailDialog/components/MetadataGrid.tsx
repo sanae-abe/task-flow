@@ -1,8 +1,6 @@
 import React from 'react';
-import { Text, Box } from '@primer/react';
 import type { RecycleBinItem } from '../../../../../types/recycleBin';
 import { useItemMetadata } from '../hooks/useItemTypeInfo';
-import { spacing, borderRadius } from '../styles/designTokens';
 
 interface MetadataGridProps {
   item: Pick<RecycleBinItem, 'type' | 'boardTitle' | 'columnTitle' | 'columnsCount' | 'taskCount' | 'deletedAt'>;
@@ -62,117 +60,43 @@ export const MetadataGrid: React.FC<MetadataGridProps> = ({ item }) => {
   }
 
   return (
-    <Box
-      as="section"
-      sx={{
-        p: spacing.md,
-        bg: 'canvas.default',
-        border: '1px solid',
-        borderColor: 'border.default',
-        borderRadius: borderRadius.medium,
-
-        // レスポンシブ対応
-        '@media (max-width: 543px)': {
-          p: spacing.sm,
-        },
-      }}
-    >
+    <section className="p-4 max-[543px]:p-3 bg-background border border-border rounded-md">
       {/* セクションヘッダー */}
-      <Text
-        sx={{
-          display: 'block',
-          fontSize: 1,
-          fontWeight: 'bold',
-          color: 'fg.default',
-          margin: 0,
-          mb: spacing.md,
-        }}
-      >
+      <span className="block text-sm font-bold text-foreground m-0 mb-4">
         詳細情報
-      </Text>
+      </span>
 
       {/* メタデータリスト */}
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: spacing.sm,
-        }}
-      >
+      <div className="flex flex-col gap-3">
         {/* 削除日時 */}
         {formattedDeletedAt && (
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              py: spacing.sm,
-              borderBottom: '1px solid',
-              borderColor: 'border.muted',
-            }}
-          >
-            <Text
-              sx={{
-                fontSize: 1,
-                color: 'fg.muted',
-                margin: 0,
-              }}
-            >
+          <div className="flex justify-between items-center py-3 border-b border-border">
+            <span className="text-sm text-muted-foreground m-0">
               削除日時
-            </Text>
-            <Text
-              sx={{
-                fontSize: 1,
-                color: 'fg.default',
-                margin: 0,
-                fontWeight: 'semibold',
-              }}
-            >
+            </span>
+            <span className="text-sm text-foreground m-0 font-semibold">
               {formattedDeletedAt}
-            </Text>
-          </Box>
+            </span>
+          </div>
         )}
 
         {/* 動的メタデータ */}
-        {metadata.map((meta) => (
-          <Box
+        {metadata.map((meta, index) => (
+          <div
             key={meta.key}
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              py: spacing.sm,
-              borderBottom: '1px solid',
-              borderColor: 'border.muted',
-
-              '&:last-child': {
-                borderBottom: 'none',
-                paddingBottom: 0,
-              },
-            }}
+            className={`flex justify-between items-center py-3 ${
+              index === metadata.length - 1 ? '' : 'border-b border-border'
+            } ${index === metadata.length - 1 ? 'pb-0' : ''}`}
           >
-            <Text
-              sx={{
-                fontSize: 1,
-                color: 'fg.muted',
-                margin: 0,
-              }}
-            >
+            <span className="text-sm text-muted-foreground m-0">
               {meta.label}
-            </Text>
-            <Text
-              sx={{
-                fontSize: 1,
-                color: 'fg.default',
-                margin: 0,
-                fontWeight: 'semibold',
-              }}
-            >
+            </span>
+            <span className="text-sm text-foreground m-0 font-semibold">
               {meta.value}
-            </Text>
-          </Box>
+            </span>
+          </div>
         ))}
-      </Box>
-    </Box>
+      </div>
+    </section>
   );
 };

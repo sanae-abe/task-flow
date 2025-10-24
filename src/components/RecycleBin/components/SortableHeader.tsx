@@ -1,6 +1,5 @@
 import React from 'react';
-import { Text } from '@primer/react';
-import { ChevronUpIcon, ChevronDownIcon } from '@primer/octicons-react';
+import { ChevronUp, ChevronDown } from 'lucide-react';
 import type { SortField, SortDirection } from '../../../hooks/useRecycleBinSort';
 
 interface SortableHeaderProps {
@@ -29,37 +28,16 @@ export const SortableHeader: React.FC<SortableHeaderProps> = ({
     <button
       onClick={() => onSort(field)}
       aria-label={`${children}でソート${isActive ? (sortDirection === 'asc' ? '（昇順）' : '（降順）') : ''}`}
-      style={{
-        width: '100%',
-        justifyContent: align === 'center' ? 'center' : 'flex-start',
-        fontWeight: 'bold',
-        border: 0,
-        padding: '8px',
-        color: 'var(--fgColor-muted)',
-        fontSize: '12px',
-        background: 'none',
-        appearance: 'none',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '4px',
-        cursor: 'pointer',
-        transition: 'color 0.2s ease',
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.color = 'var(--fgColor-default)';
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.color = 'var(--fgColor-muted)';
-      }}
+      className={`w-full ${align === 'center' ? 'justify-center' : 'justify-start'} font-bold border-0 p-2 text-muted-foreground text-xs bg-transparent appearance-none flex items-center gap-1 cursor-pointer transition-colors duration-200 ease-in-out hover:text-foreground`}
     >
-      <Text sx={{ fontSize: 0, fontWeight: 'bold' }}>
+      <span className="text-xs font-bold">
         {children}
-      </Text>
-      <div style={{ opacity: isActive ? 1 : 0.3 }}>
+      </span>
+      <div className={`${isActive ? 'opacity-100' : 'opacity-30'}`}>
         {isActive && sortDirection === 'asc' ? (
-          <ChevronUpIcon size={12} />
+          <ChevronUp size={12} />
         ) : (
-          <ChevronDownIcon size={12} />
+          <ChevronDown size={12} />
         )}
       </div>
     </button>
