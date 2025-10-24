@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useMemo } from "react";
-import { ActionList, ActionMenu, Button, Text } from "@primer/react";
+import { ActionList, ActionMenu, Text } from "@primer/react";
+import { Button } from "@/components/ui/button";
 import { ArrowRightIcon, ProjectIcon } from "@primer/octicons-react";
 import { useBoard } from "../contexts/BoardContext";
 
@@ -45,18 +46,12 @@ export const TaskBoardMover: React.FC<TaskBoardMoverProps> = ({
       <ActionMenu.Anchor>
         <Button
           variant="default"
-          size="medium"
-          leadingVisual={ArrowRightIcon}
+          size="default"
           disabled={disabled}
           onClick={handleToggle}
-          style={{
-            flex: 1,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: "8px",
-          }}
+          className="flex-1 flex items-center justify-center gap-2"
         >
+          <ArrowRightIcon size={16} />
           移動
         </Button>
       </ActionMenu.Anchor>

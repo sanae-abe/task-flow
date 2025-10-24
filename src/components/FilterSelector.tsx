@@ -1,4 +1,5 @@
-import { ActionList, ActionMenu, Button } from "@primer/react";
+import { ActionList, ActionMenu } from "@primer/react";
+import { Button } from "@/components/ui/button";
 import {
   AlertIcon,
   ClockIcon,
@@ -170,18 +171,16 @@ const FilterSelector = memo<FilterSelectorProps>(
       <ActionMenu>
         <ActionMenu.Anchor>
           <Button
-            variant="invisible"
-            size="small"
-            leadingVisual={FilterIconComponent}
+            variant="ghost"
+            size="sm"
             aria-label="タスクフィルターを選択"
-            style={{
-              color:
-                currentFilter.type !== "all"
-                  ? "var(--fgColor-accent)"
-                  : "var(--fgColor-default)",
-              fontWeight: currentFilter.type !== "all" ? "600" : "normal",
-            }}
+            className={`flex items-center gap-2 ${
+              currentFilter.type !== "all"
+                ? "text-blue-600 font-semibold"
+                : "text-gray-700 font-normal"
+            }`}
           >
+            <FilterIconComponent size={16} />
             {getCurrentFilterLabel()}
           </Button>
         </ActionMenu.Anchor>

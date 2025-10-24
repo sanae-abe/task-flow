@@ -5,7 +5,8 @@ import {
   TriangleDownIcon,
   TableIcon,
 } from "@primer/octicons-react";
-import { ActionMenu, ActionList, Button } from "@primer/react";
+import { ActionMenu, ActionList } from "@primer/react";
+import { Button } from "@/components/ui/button";
 import React from "react";
 
 import { useKanban } from "../contexts/KanbanContext";
@@ -133,23 +134,24 @@ const SubHeader: React.FC = () => {
         <ActionMenu>
           <ActionMenu.Anchor>
             <Button
-              variant="invisible"
-              size="small"
-              leadingVisual={
-                state.viewMode === "kanban"
-                  ? ProjectIcon
-                  : state.viewMode === "calendar"
-                    ? CalendarIcon
-                    : TableIcon
-              }
-              trailingVisual={TriangleDownIcon}
+              variant="ghost"
+              size="sm"
               aria-label="ビューモードを選択"
+              className="flex items-center gap-2"
             >
+              {state.viewMode === "kanban" ? (
+                <ProjectIcon size={16} />
+              ) : state.viewMode === "calendar" ? (
+                <CalendarIcon size={16} />
+              ) : (
+                <TableIcon size={16} />
+              )}
               {state.viewMode === "kanban"
                 ? "カンバン"
                 : state.viewMode === "calendar"
                   ? "カレンダー"
                   : "テーブル"}
+              <TriangleDownIcon size={16} />
             </Button>
           </ActionMenu.Anchor>
           <ActionMenu.Overlay>

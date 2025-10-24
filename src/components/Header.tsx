@@ -1,5 +1,5 @@
 import { PlusIcon, QuestionIcon, GearIcon } from "@primer/octicons-react";
-import { Button } from "@primer/react";
+import { Button } from "@/components/ui/button";
 import React from "react";
 
 import { useKanban } from "../contexts/KanbanContext";
@@ -96,28 +96,29 @@ const RightSection: React.FC<RightSectionProps> = ({
     <OfflineIndicator />
     <Button
       onClick={onCreateClick}
-      variant="primary"
+      variant="default"
       aria-label="タスク作成"
-      leadingVisual={PlusIcon}
-      sx={headerStyles.createButton}
+      className="bg-blue-600 text-white hover:bg-blue-700 flex items-center gap-2"
     >
+      <PlusIcon size={16} />
       タスク作成
     </Button>
     <Button
       onClick={onSettingsClick}
-      variant="invisible"
+      variant="ghost"
       aria-label="設定を開く"
-      leadingVisual={GearIcon}
-      sx={{ ml: 2 }}
+      className="ml-2 flex items-center gap-2"
     >
+      <GearIcon size={16} />
       設定
     </Button>
     <Button
       onClick={onHelpClick}
-      variant="invisible"
+      variant="ghost"
       aria-label="ヘルプを表示"
-      leadingVisual={QuestionIcon}
+      className="flex items-center gap-2"
     >
+      <QuestionIcon size={16} />
       ヘルプ
     </Button>
   </div>
