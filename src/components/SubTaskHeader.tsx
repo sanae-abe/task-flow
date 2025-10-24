@@ -1,4 +1,4 @@
-import { PlusIcon } from "@primer/octicons-react";
+import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import React from "react";
 
@@ -27,7 +27,7 @@ const SubTaskHeader: React.FC<SubTaskHeaderProps> = ({
         aria-label="サブタスクを作成"
         className="flex items-center gap-1"
       >
-        <PlusIcon size={16} />
+        <Plus size={16} />
         追加
       </Button>
     )}

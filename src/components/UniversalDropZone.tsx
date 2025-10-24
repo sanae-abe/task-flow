@@ -1,4 +1,4 @@
-import { UploadIcon } from "@primer/octicons-react";
+import { Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import React from "react";
 import { cn } from "@/lib/utils";
@@ -133,7 +133,7 @@ const UniversalDropZone: React.FC<UniversalDropZoneProps> = ({
       aria-label={getAriaLabel()}
     >
       <div className={cn(isDragOver ? "text-blue-600" : "text-gray-500")}>
-        <UploadIcon size={24} />
+        <Upload size={24} />
       </div>
       <p
         className={cn(

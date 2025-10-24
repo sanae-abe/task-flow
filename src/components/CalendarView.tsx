@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { ChevronLeftIcon, ChevronRightIcon } from "@primer/octicons-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { DndContext, DragOverlay } from "@dnd-kit/core";
 
 import { useKanban } from "../contexts/KanbanContext";
@@ -79,7 +79,7 @@ const CalendarView: React.FC = () => {
               onClick={() => navigateMonth("prev")}
               aria-label="前の月"
             >
-              <ChevronLeftIcon size={16} />
+              <ChevronLeft size={16} />
             </Button>
             <Button size="sm" onClick={goToToday}>
               今日
@@ -90,7 +90,7 @@ const CalendarView: React.FC = () => {
               onClick={() => navigateMonth("next")}
               aria-label="次の月"
             >
-              <ChevronRightIcon size={16} />
+              <ChevronRight size={16} />
             </Button>
           </div>
         </div>

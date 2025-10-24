@@ -1,4 +1,4 @@
-import { TrashIcon } from "@primer/octicons-react";
+import { Trash2 } from "lucide-react";
 import { memo, useMemo, useCallback } from "react";
 
 import { useTaskEdit } from "../hooks/useTaskEdit";
@@ -90,7 +90,7 @@ const TaskEditDialog = memo<TaskEditDialogProps>(
           label: "削除",
           onClick: handleDelete,
           variant: "danger" as const,
-          icon: TrashIcon,
+          icon: Trash2,
           position: "left",
         },
         {
