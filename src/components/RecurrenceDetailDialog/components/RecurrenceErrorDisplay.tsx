@@ -13,7 +13,7 @@ const RecurrenceErrorDisplay: React.FC<RecurrenceErrorDisplayProps> = ({
   }
 
   return (
-    <div style={{ marginTop: "8px" }}>
+    <div className="mt-2">
       {errors.map((error, index) => (
         <InlineMessage
           key={index}

@@ -111,7 +111,7 @@ const SortableColumnItem: React.FC<SortableColumnItemProps> = ({
       >
         <GrabberIcon size={16} />
       </div>
-      <div style={{ flex: 1 }}>
+      <div className="flex-1">
         <Input
           value={localName}
           onChange={handleInputChange}
@@ -415,7 +415,7 @@ export const BoardSettingsPanel: React.FC = () => {
 
   return (
     <div style={{ paddingBottom: "16px" }}>
-      <div style={{ marginBottom: "16px" }}>
+      <div className="mb-4">
         <h2 className="text-lg font-bold mb-4 text-gray-900">デフォルトカラム設定</h2>
         <div style={{ color: 'var(--fgColor-muted)', fontSize: "14px" }}>
           新しいボード作成時に使用されるデフォルトカラムを設定できます。<br />
@@ -423,7 +423,7 @@ export const BoardSettingsPanel: React.FC = () => {
         </div>
       </div>
 
-      <div style={{ marginBottom: "16px" }}>
+      <div className="mb-4">
 
         {/* 現在のカラム一覧 */}
         <div style={{ marginBottom: "20px" }}>

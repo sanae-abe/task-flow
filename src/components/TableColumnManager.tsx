@@ -218,7 +218,7 @@ const TableColumnManager: React.FC = () => {
                     <GripVertical size={16} />
                   </Button>
 
-                  <div style={{ flex: 1 }}>
+                  <div className="flex-1">
                     <span className="font-semibold text-gray-900">{column.label}</span>
                   </div>
 

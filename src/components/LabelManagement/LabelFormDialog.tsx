@@ -230,7 +230,7 @@ const LabelFormDialog: React.FC<LabelFormDialogProps> = ({
         {/* カラーセレクター */}
         <FormControl>
           <FormControl.Label>色</FormControl.Label>
-          <div style={{ marginTop: "8px" }}>
+          <div className="mt-2">
             <ColorSelector
               selectedColor={formData.color}
               onColorSelect={(color: string) => setFormData(prev => ({ ...prev, color }))}

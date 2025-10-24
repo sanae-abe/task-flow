@@ -254,7 +254,7 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
 
       {/* 選択ボタン（コンパクトモード） */}
       {compact && onSelect && (
-        <div style={{ marginTop: "8px" }}>
+        <div className="mt-2">
           <Button variant="default" size="sm" className="w-full">
             このテンプレートを使用
           </Button>

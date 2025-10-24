@@ -88,7 +88,7 @@ const SubTaskList: React.FC<SubTaskListProps> = ({
   );
 
   return (
-    <div style={{ marginBottom: "16px" }}>
+    <div className="mb-4">
       <SubTaskHeader
         completedCount={completedCount}
         totalCount={totalCount}

@@ -63,7 +63,7 @@ const ColumnCreateDialog = memo<ColumnCreateDialogProps>(
         closeOnBackdropClick
       >
         <div>
-          <div style={{ marginBottom: "24px" }}>
+          <div className="mb-6">
             <UnifiedFormField
               id="column-title-input"
               name="column-title-input"
