@@ -1,5 +1,4 @@
 import { memo, useState, useEffect, useCallback, useMemo } from "react";
-import { FormControl, Select } from "@primer/react";
 
 import type { ColumnCreateDialogProps } from "../types/dialog";
 import UnifiedDialog from "./shared/Dialog/UnifiedDialog";
@@ -76,24 +75,25 @@ const ColumnCreateDialog = memo<ColumnCreateDialogProps>(
               validation={{ required: true }}
             />
           </div>
-          <div className="flex flex-column gap-1">
-            <FormControl.Label htmlFor="insert-position-select">
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-medium" htmlFor="insert-position-select">
               挿入位置
-            </FormControl.Label>
-            <Select
+            </label>
+            <select
               id="insert-position-select"
               value={insertIndex.toString()}
               onChange={(e) => setInsertIndex(parseInt(e.target.value, 10))}
+              className="w-full h-10 px-3 py-2 border border-input bg-background rounded-md text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {positionOptions.map((option) => (
-                <Select.Option
+                <option
                   key={option.value}
                   value={option.value.toString()}
                 >
                   {option.label}
-                </Select.Option>
+                </option>
               ))}
-            </Select>
+            </select>
           </div>
         </div>
       </UnifiedDialog>
