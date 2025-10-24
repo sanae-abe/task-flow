@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconButton } from '@primer/react';
+import { Button } from '@/components/ui/button';
 import { HistoryIcon, TrashIcon, EyeIcon } from '@primer/octicons-react';
 import { LoadingButton } from '../../shared/LoadingButton';
 import type { RecycleBinItemWithMeta } from '../../../types/recycleBin';
@@ -40,28 +40,34 @@ export const RecycleBinItemActions: React.FC<RecycleBinItemActionsProps> = ({
   const itemTypeText = item.type === 'board' ? 'ボード' : item.type === 'column' ? 'カラム' : 'タスク';
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', gap: '4px' }}>
-      <IconButton
-        icon={EyeIcon}
+    <div className="flex justify-center gap-1">
+      <Button
+        variant="ghost"
+        size="sm"
         aria-label={`${itemTypeText}「${item.title}」の詳細を表示`}
-        size="small"
-        variant="invisible"
         onClick={() => onShowDetail(item)}
-      />
-      <IconButton
-        icon={HistoryIcon}
+        className="p-1 h-auto min-w-0"
+      >
+        <EyeIcon size={16} />
+      </Button>
+      <Button
+        variant="ghost"
+        size="sm"
         aria-label={`${itemTypeText}「${item.title}」を復元`}
-        size="small"
-        variant="invisible"
         onClick={() => onRestore(item)}
-      />
-      <IconButton
-        icon={TrashIcon}
+        className="p-1 h-auto min-w-0"
+      >
+        <HistoryIcon size={16} />
+      </Button>
+      <Button
+        variant="ghost"
+        size="sm"
         aria-label={`${itemTypeText}「${item.title}」を完全に削除`}
-        size="small"
-        variant="invisible"
         onClick={() => onDelete(item)}
-      />
+        className="p-1 h-auto min-w-0"
+      >
+        <TrashIcon size={16} />
+      </Button>
     </div>
   );
 };

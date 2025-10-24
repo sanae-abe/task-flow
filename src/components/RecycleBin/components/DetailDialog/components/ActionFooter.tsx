@@ -1,8 +1,9 @@
 import React from 'react';
-import { Button, Box, Spinner } from '@primer/react';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import { ReplyIcon, TrashIcon, XIcon } from '@primer/octicons-react';
+import { Loader2 } from 'lucide-react';
 import type { RecycleBinItemWithMeta } from '../../../../../types/recycleBin';
-import { spacing, borderRadius, responsiveLayout, transitions } from '../styles/designTokens';
 
 interface ActionFooterProps {
   item: RecycleBinItemWithMeta;
@@ -62,60 +63,27 @@ export const ActionFooter: React.FC<ActionFooterProps> = ({
   };
 
   return (
-    <Box
-      as="footer"
+    <footer
       role="group"
       aria-label="アクション"
-      sx={{
-        display: 'flex',
-        gap: spacing.sm,
-        p: spacing.lg,
-        borderTop: '1px solid',
-        borderColor: 'border.default',
-        bg: 'canvas.subtle',
-        borderRadius: `0 0 ${borderRadius.medium}px ${borderRadius.medium}px`,
-        position: 'sticky',
-        bottom: 0,
-        zIndex: 1,
-
-        // レスポンシブ対応
-        ...responsiveLayout.actionButtons.sm,
-        '@media (max-width: 543px)': {
-          ...responsiveLayout.actionButtons.xs,
-          p: spacing.md,
-          gap: spacing.xs,
-        },
-      }}
+      className="flex gap-2 p-4 border-t border-gray-200 bg-gray-50 rounded-b-md sticky bottom-0 z-10 max-sm:p-3 max-sm:gap-1"
     >
       {/* 復元ボタン */}
       <Button
-        variant="primary"
-        size="medium"
+        variant="default"
+        size="default"
         disabled={isRestoreDisabled}
         onClick={() => onRestore(item)}
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: spacing.xs,
-          flex: 1,
-          transition: transitions.default,
-
-          // 復元不可能な場合のスタイル調整
-          ...(item.canRestore ? {} : {
-            opacity: 0.6,
-            cursor: 'not-allowed',
-          }),
-
-          '@media (max-width: 543px)': {
-            fontSize: 1,
-            py: spacing.sm,
-          },
-        }}
+        className={cn(
+          "flex items-center gap-1 flex-1 transition-all",
+          !item.canRestore && "opacity-60 cursor-not-allowed",
+          "max-sm:text-sm max-sm:py-2"
+        )}
         aria-label={`${itemTypeText}「${item.title}」を復元`}
         aria-describedby={item.canRestore ? undefined : 'restore-disabled-reason'}
       >
         {loadingAction === 'restore' ? (
-          <Spinner size="small" />
+          <Loader2 size={16} className="animate-spin" />
         ) : (
           <ReplyIcon
             size={16}
@@ -127,26 +95,15 @@ export const ActionFooter: React.FC<ActionFooterProps> = ({
 
       {/* 完全削除ボタン */}
       <Button
-        variant="danger"
-        size="medium"
+        variant="destructive"
+        size="default"
         disabled={isDeleteDisabled}
         onClick={() => onDelete(item)}
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: spacing.xs,
-          flex: 1,
-          transition: transitions.default,
-
-          '@media (max-width: 543px)': {
-            fontSize: 1,
-            py: spacing.sm,
-          },
-        }}
+        className="flex items-center gap-1 flex-1 transition-all max-sm:text-sm max-sm:py-2"
         aria-label={`${itemTypeText}「${item.title}」を完全に削除`}
       >
         {loadingAction === 'delete' ? (
-          <Spinner size="small" />
+          <Loader2 size={16} className="animate-spin" />
         ) : (
           <TrashIcon
             size={16}
@@ -158,110 +115,59 @@ export const ActionFooter: React.FC<ActionFooterProps> = ({
 
       {/* 閉じるボタン */}
       <Button
-        variant="invisible"
-        size="medium"
+        variant="ghost"
+        size="default"
         disabled={isCloseDisabled}
         onClick={onClose}
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: spacing.xs,
-          flexShrink: 0,
-          transition: transitions.default,
-          minWidth: 'auto',
-
-          '@media (max-width: 543px)': {
-            fontSize: 1,
-            py: spacing.sm,
-            px: spacing.md,
-          },
-        }}
+        className="flex items-center gap-1 flex-shrink-0 transition-all min-w-auto max-sm:text-sm max-sm:py-2 max-sm:px-3"
         aria-label="ダイアログを閉じる"
       >
         {loadingAction === 'close' ? (
-          <Spinner size="small" />
+          <Loader2 size={16} className="animate-spin" />
         ) : (
           <XIcon
             size={16}
             aria-hidden="true"
           />
         )}
-        <Box
-          sx={{
-            display: { xs: 'none', sm: 'block' },
-          }}
-        >
+        <span className="hidden sm:block">
           {getButtonText('close')}
-        </Box>
+        </span>
       </Button>
 
       {/* 復元不可能な理由の説明（スクリーンリーダー用） */}
       {!item.canRestore && (
-        <Box
+        <div
           id="restore-disabled-reason"
-          sx={{
-            position: 'absolute',
-            left: '-10000px',
-            width: '1px',
-            height: '1px',
-            overflow: 'hidden',
-          }}
+          className="absolute -left-[10000px] w-px h-px overflow-hidden"
         >
           このアイテムは復元できません。関連するデータが見つからないか、破損している可能性があります。
-        </Box>
+        </div>
       )}
 
       {/* ローディング状態のライブリージョン */}
-      <Box
+      <div
         role="status"
         aria-live="polite"
         aria-atomic="true"
-        sx={{
-          position: 'absolute',
-          left: '-10000px',
-          width: '1px',
-          height: '1px',
-          overflow: 'hidden',
-        }}
+        className="absolute -left-[10000px] w-px h-px overflow-hidden"
       >
         {isLoading && loadingAction && (
           `${loadingAction === 'restore' ? '復元' : loadingAction === 'delete' ? '削除' : '処理'}を実行中です`
         )}
-      </Box>
+      </div>
 
       {/* キーボードナビゲーション用のスキップリンク */}
-      <Box
-        as="a"
+      <a
         href="#dialog-close"
         onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
           e.preventDefault();
           onClose();
         }}
-        sx={{
-          position: 'absolute',
-          left: '-10000px',
-          width: '1px',
-          height: '1px',
-          overflow: 'hidden',
-
-          '&:focus': {
-            position: 'static',
-            left: 'auto',
-            width: 'auto',
-            height: 'auto',
-            overflow: 'visible',
-            p: spacing.xs,
-            bg: 'accent.emphasis',
-            color: 'fg.onEmphasis',
-            borderRadius: borderRadius.small,
-            textDecoration: 'none',
-            fontSize: 0,
-            fontWeight: 'bold',
-          },
-        }}
+        className="absolute -left-[10000px] w-px h-px overflow-hidden focus:static focus:left-auto focus:w-auto focus:h-auto focus:overflow-visible focus:p-1 focus:bg-blue-600 focus:text-white focus:rounded-sm focus:no-underline focus:text-xs focus:font-bold"
       >
         ダイアログを閉じる (Escape)
-      </Box>
-    </Box>
+      </a>
+    </footer>
   );
 };

@@ -1,5 +1,6 @@
 import React from 'react';
-import { Flash, Text, IconButton } from '@primer/react';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import {
   AlertIcon,
   CheckCircleIcon,
@@ -41,22 +42,23 @@ interface DialogFlashMessageProps {
 }
 
 /**
- * メッセージタイプをFlashコンポーネントのvariantに変換
+ * メッセージタイプに応じたアラートスタイルクラスを返す
  */
-export const getFlashVariant = (type: DialogMessageType): "default" | "warning" | "danger" | "success" => {
+export const getAlertStyles = (type: DialogMessageType): string => {
   switch (type) {
     case 'success':
-      return 'success';
+      return 'bg-green-50 border-green-200 text-green-800';
     case 'warning':
-      return 'warning';
+      return 'bg-yellow-50 border-yellow-200 text-yellow-800';
     case 'critical':
     case 'danger':
-      return 'danger';
+      return 'bg-red-50 border-red-200 text-red-800';
     case 'info':
     case 'upsell':
+      return 'bg-blue-50 border-blue-200 text-blue-800';
     case 'default':
     default:
-      return 'default';
+      return 'bg-gray-50 border-gray-200 text-gray-800';
   }
 };
 
@@ -99,42 +101,40 @@ export const DialogFlashMessage: React.FC<DialogFlashMessageProps> = ({
   }
 
   return (
-    <Flash
-      variant={getFlashVariant(message.type)}
-      style={{
-        position: isStatic ? 'static' : 'sticky',
-        top: 0,
-        ...style
-      }}
-      className={className}
+    <div
+      className={cn(
+        "border rounded-md p-4",
+        getAlertStyles(message.type),
+        isStatic ? "static" : "sticky top-0",
+        className
+      )}
+      style={style}
     >
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-        <div style={{ display: 'flex', alignItems: 'flex-start', flex: 1 }}>
-          <div style={{ marginRight: '8px' }}>{getMessageIcon(message.type)}</div>
-          <div style={{ flex: 1 }}>
-            {message.title ?
-              <Text sx={{ fontWeight: 'bold', display: 'block', mb: 1 }}>{message.title}</Text> : null}
-            <Text sx={{ display: 'block' }}>
+      <div className="flex justify-between items-start">
+        <div className="flex items-start flex-1">
+          <div className="mr-2">{getMessageIcon(message.type)}</div>
+          <div className="flex-1">
+            {message.title && (
+              <div className="font-bold block mb-1">{message.title}</div>
+            )}
+            <div className="block">
               {message.text}
-            </Text>
+            </div>
           </div>
         </div>
         {showDismiss && onDismiss && (
-          <IconButton
+          <Button
+            variant="ghost"
+            size="sm"
             aria-label="閉じる"
-            icon={XIcon}
-            size="small"
-            variant="invisible"
             onClick={onDismiss}
-            style={{
-              marginLeft: '8px',
-              flexShrink: 0,
-              alignSelf: 'flex-start'
-            }}
-          />
+            className="ml-2 flex-shrink-0 self-start p-1 h-auto min-w-0"
+          >
+            <XIcon size={16} />
+          </Button>
         )}
       </div>
-    </Flash>
+    </div>
   );
 };
 
