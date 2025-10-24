@@ -1,110 +1,60 @@
-import React from "react";
+import { cn } from "@/lib/utils";
 
 /**
- * 通知コンテナのベーススタイル定義
+ * 通知コンテナのベーススタイル定義（Tailwind CSS版）
  */
-export const containerStyles: React.CSSProperties = {
-  position: "fixed",
-  top: "20px",
-  left: "50%",
-  transform: "translateX(-50%)",
-  zIndex: 15000, // ダイアログ（z-index: 9999/10000）より高く設定
-  pointerEvents: "none",
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  gap: "8px",
-};
+export const containerClasses = "fixed top-5 left-1/2 -translate-x-1/2 z-[15000] pointer-events-none flex flex-col items-center gap-2";
 
 /**
- * 通知ラッパーのベーススタイル定義
+ * 通知ラッパーのベーススタイル定義（Tailwind CSS版）
  */
-export const wrapperStyles: React.CSSProperties = {
-  pointerEvents: "auto",
-  animation: "slideInFromTop 0.3s ease-out",
-  width: "100%",
-  maxWidth: "600px",
-  minWidth: "320px",
-};
+export const wrapperClasses = "pointer-events-auto transition-all duration-300 ease-out w-full max-w-[600px] min-w-[320px]";
 
 /**
- * アイコンコンテナのスタイル定義
+ * アイコンコンテナのスタイル定義（Tailwind CSS版）
  */
-export const iconContainerStyles: React.CSSProperties = {
-  flexShrink: 0,
-  marginTop: "2px",
-};
+export const iconContainerClasses = "flex-shrink-0 mt-0.5";
 
 /**
- * メッセージコンテナのスタイル定義
+ * メッセージコンテナのスタイル定義（Tailwind CSS版）
  */
-export const messageContainerStyles: React.CSSProperties = {
-  flex: 1,
-  minWidth: 0,
-};
+export const messageContainerClasses = "flex-1 min-w-0";
 
 /**
- * メッセージテキストのスタイル定義
+ * メッセージテキストのスタイル定義（Tailwind CSS版）
  */
-export const messageTextStyles: React.CSSProperties = {
-  display: "block",
-  wordBreak: "break-word",
-};
+export const messageTextClasses = "block break-words";
 
 /**
- * 閉じるボタンのスタイル定義
+ * 閉じるボタンのスタイル定義（Tailwind CSS版）
  */
-export const closeButtonStyles: React.CSSProperties = {
-  flexShrink: 0,
-  opacity: 0.7,
-};
+export const closeButtonClasses = "flex-shrink-0 opacity-70";
 
 /**
- * レスポンシブコンテナスタイルを生成する関数
+ * レスポンシブコンテナクラスを生成する関数
  *
  * @param isMobile - モバイル表示かどうか
- * @returns レスポンシブ対応のコンテナスタイル
+ * @returns レスポンシブ対応のコンテナクラス
  */
-export const getResponsiveContainerStyles = (
-  isMobile: boolean,
-): React.CSSProperties => ({
-  ...containerStyles,
-  ...(isMobile && {
-    top: "10px",
-    left: "10px",
-    right: "10px",
-    transform: "none",
-    width: "auto",
-  }),
-});
+export const getResponsiveContainerClasses = (isMobile: boolean): string => cn(
+  containerClasses,
+  isMobile && "top-2.5 left-2.5 right-2.5 transform-none w-auto -translate-x-0"
+);
 
 /**
- * レスポンシブラッパースタイルを生成する関数
+ * レスポンシブラッパークラスを生成する関数
  *
  * @param isMobile - モバイル表示かどうか
- * @returns レスポンシブ対応のラッパースタイル
+ * @returns レスポンシブ対応のラッパークラス
  */
-export const getResponsiveWrapperStyles = (
-  isMobile: boolean,
-): React.CSSProperties => ({
-  ...wrapperStyles,
-  ...(!isMobile && {
-    minWidth: "50vw",
-  }),
-});
+export const getResponsiveWrapperClasses = (isMobile: boolean): string => cn(
+  wrapperClasses,
+  !isMobile && "min-w-[50vw]"
+);
 
 /**
- * 通知アニメーション用のCSS定義
+ * 通知アニメーション（Tailwind CSSカスタムアニメーション）
+ *
+ * 注意: このアニメーションはtailwind.config.jsまたはglobals.cssで定義する必要があります。
+ * 一時的にTailwindの既存アニメーションを使用: animate-fade-in-down または animate-bounce
  */
-export const notificationAnimationCSS = `
-  @keyframes slideInFromTop {
-    from {
-      transform: translateY(-100%);
-      opacity: 0;
-    }
-    to {
-      transform: translateY(0);
-      opacity: 1;
-    }
-  }
-`;

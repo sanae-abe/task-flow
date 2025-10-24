@@ -14,9 +14,14 @@ export type { NotificationItemProps } from "./NotificationItem";
 
 // ユーティリティ関数（他のコンポーネントから利用される可能性がある場合）
 export {
-  getResponsiveContainerStyles,
-  getResponsiveWrapperStyles,
-  notificationAnimationCSS,
+  getResponsiveContainerClasses,
+  getResponsiveWrapperClasses,
+  containerClasses,
+  wrapperClasses,
+  iconContainerClasses,
+  messageContainerClasses,
+  messageTextClasses,
+  closeButtonClasses,
 } from "./styles";
 
 // デフォルトエクスポート（後方互換性のため）

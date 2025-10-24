@@ -1,34 +1,34 @@
 import React from "react";
 import {
-  CheckCircleIcon,
-  InfoIcon,
-  AlertIcon,
-  StopIcon,
-} from "@primer/octicons-react";
+  CheckCircle,
+  Info,
+  AlertTriangle,
+  XCircle,
+} from "lucide-react";
 import type { NotificationType } from "../types";
 
 /**
  * 通知タイプに応じたアイコンを返す
  *
  * @param type - 通知のタイプ
- * @returns 対応するPrimer Reactアイコンコンポーネント
+ * @returns 対応するLucide Reactアイコンコンポーネント
  */
 export const getNotificationIcon = (
   type: NotificationType,
 ): React.ReactElement => {
   switch (type) {
     case "success":
-      return <CheckCircleIcon size={16} aria-hidden="true" />;
+      return <CheckCircle size={16} aria-hidden="true" />;
     case "info":
-      return <InfoIcon size={16} aria-hidden="true" />;
+      return <Info size={16} aria-hidden="true" />;
     case "warning":
-      return <AlertIcon size={16} aria-hidden="true" />;
+      return <AlertTriangle size={16} aria-hidden="true" />;
     case "critical":
-      return <StopIcon size={16} aria-hidden="true" />;
+      return <XCircle size={16} aria-hidden="true" />;
     case "upsell":
-      return <InfoIcon size={16} aria-hidden="true" />;
+      return <Info size={16} aria-hidden="true" />;
     default:
-      return <InfoIcon size={16} aria-hidden="true" />;
+      return <Info size={16} aria-hidden="true" />;
   }
 };
 

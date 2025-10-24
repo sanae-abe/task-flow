@@ -4,9 +4,8 @@ import { useNotifications } from "../../contexts/NotificationContext";
 import { useMediaQuery } from "../../hooks/useMediaQuery";
 import { NotificationItem } from "./NotificationItem";
 import {
-  getResponsiveContainerStyles,
-  getResponsiveWrapperStyles,
-  notificationAnimationCSS,
+  getResponsiveContainerClasses,
+  getResponsiveWrapperClasses,
 } from "./styles";
 
 /**
@@ -55,18 +54,18 @@ export const NotificationContainer: React.FC = () => {
   }, [notifications, removeNotification]);
 
   /**
-   * レスポンシブコンテナスタイルをメモ化
+   * レスポンシブコンテナクラスをメモ化
    */
-  const responsiveContainerStyles = useMemo(
-    () => getResponsiveContainerStyles(isMobile),
+  const responsiveContainerClasses = useMemo(
+    () => getResponsiveContainerClasses(isMobile),
     [isMobile],
   );
 
   /**
-   * レスポンシブラッパースタイルをメモ化
+   * レスポンシブラッパークラスをメモ化
    */
-  const responsiveWrapperStyles = useMemo(
-    () => getResponsiveWrapperStyles(isMobile),
+  const responsiveWrapperClasses = useMemo(
+    () => getResponsiveWrapperClasses(isMobile),
     [isMobile],
   );
 
@@ -76,27 +75,21 @@ export const NotificationContainer: React.FC = () => {
   }
 
   return (
-    <>
-      {/* アニメーション用CSS */}
-      <style>{notificationAnimationCSS}</style>
-
-      {/* 通知コンテナ */}
-      <div
-        style={responsiveContainerStyles}
-        role="region"
-        aria-label="通知"
-        aria-live="polite"
-      >
-        {notifications.map((notification) => (
-          <div key={notification.id} style={responsiveWrapperStyles}>
-            <NotificationItem
-              notification={notification}
-              onClose={handleRemoveNotification}
-            />
-          </div>
-        ))}
-      </div>
-    </>
+    <div
+      className={responsiveContainerClasses}
+      role="region"
+      aria-label="通知"
+      aria-live="polite"
+    >
+      {notifications.map((notification) => (
+        <div key={notification.id} className={responsiveWrapperClasses}>
+          <NotificationItem
+            notification={notification}
+            onClose={handleRemoveNotification}
+          />
+        </div>
+      ))}
+    </div>
   );
 };
 
