@@ -3,6 +3,8 @@ import { Button } from '@/components/ui/button';
 import {
   Bold,
   Italic,
+  Strikethrough,
+  Underline,
   List,
   ListOrdered,
   Link,
@@ -10,7 +12,6 @@ import {
   FileCode,
   Smile
 } from 'lucide-react';
-import { UnderlineIcon, StrikethroughIcon } from './icons/CustomIcons';
 
 interface ToolbarProps {
   onBold: () => void;
@@ -69,7 +70,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({
           aria-label="下線 (Ctrl+U)"
           className="p-1 h-auto min-w-0"
         >
-          <UnderlineIcon />
+          <Underline />
         </Button>
         <Button
           variant="ghost"
@@ -78,7 +79,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({
           aria-label="取り消し線 (Ctrl+Shift+X)"
           className="p-1 h-auto min-w-0"
         >
-          <StrikethroughIcon />
+          <Strikethrough />
         </Button>
         <div className="w-px bg-neutral-100 mx-1" />
         <Button

@@ -24,6 +24,8 @@ interface IconButtonProps {
   sx?: Record<string, unknown>;
   /** クリック伝播を停止するか */
   stopPropagation?: boolean;
+  /** 追加のクラス名 */
+  className?: string;
 }
 
 /**
@@ -40,7 +42,8 @@ const IconButton = memo<IconButtonProps>(({
   size = 'medium',
   disabled = false,
   sx,
-  stopPropagation = false
+  stopPropagation = false,
+  className
 }) => {
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     if (stopPropagation) {
@@ -102,7 +105,8 @@ const IconButton = memo<IconButtonProps>(({
         'hover:bg-gray-100 transition-colors',
         size === 'small' && 'p-1',
         size === 'large' && 'p-3',
-        size === 'medium' && 'p-2'
+        size === 'medium' && 'p-2',
+        className
       )}
       style={sx ? (sx as React.CSSProperties) : undefined}
     >

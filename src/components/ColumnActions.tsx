@@ -37,7 +37,8 @@ const ColumnActions: React.FC<ColumnActionsProps> = ({
     icon: MoreHorizontal,
     variant: 'invisible',
     size: 'medium',
-    ariaLabel: 'カラム設定'
+    ariaLabel: 'カラム設定',
+    className: 'hover:text-default w-6 h-6 p-0 hover:bg-transparent',
   }), []);
 
   // メニューグループ設定
@@ -114,7 +115,7 @@ const ColumnActions: React.FC<ColumnActionsProps> = ({
         variant="ghost"
         size="icon"
         aria-label="タスクを作成"
-        className="hover:text-default"
+        className="hover:text-default w-6 h-6 p-0"
       >
         <Plus size={16} />
       </Button>

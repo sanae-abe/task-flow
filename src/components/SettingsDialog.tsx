@@ -119,7 +119,7 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
         </div>
 
         {/* メインコンテンツエリア */}
-        <div className="flex-1 py-2 pl-2 overflow-auto">
+        <div className="flex-1 py-2 pl-4 overflow-auto">
           <div className="relative flex flex-col gap-3">
             {/* メッセージ表示（全タブ共通） */}
             <DialogFlashMessage message={message} onDismiss={clearMessage} />

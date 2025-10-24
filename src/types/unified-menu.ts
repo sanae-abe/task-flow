@@ -96,6 +96,8 @@ export interface MenuTrigger {
   ariaLabel?: string;
   /** カスタムトリガーコンポーネント */
   customTrigger?: React.ReactNode;
+  /** 追加のスタイル */
+  className?: string;
 }
 
 // 統合メニューコンポーネントのプロパティ

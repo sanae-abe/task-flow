@@ -1,4 +1,6 @@
 import React, { memo, useMemo } from 'react';
+import { cn } from "@/lib/utils";
+
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -19,7 +21,7 @@ const MenuTriggerComponent = memo<{
   trigger: MenuTrigger;
   children?: React.ReactNode;
 }>(({ trigger, children }) => {
-  const { type, label, icon, variant = 'default', size = 'medium', ariaLabel } = trigger;
+  const { type, label, icon, variant = 'default', size = 'medium', ariaLabel, className } = trigger;
 
   if (trigger.customTrigger) {
     return <>{trigger.customTrigger}</>;
@@ -39,6 +41,7 @@ const MenuTriggerComponent = memo<{
           ariaLabel={ariaLabel ?? label ?? 'メニューを開く'}
           variant={variant === 'danger' ? 'danger' : 'default'}
           size={size}
+          className={className}
         />
       );
     
@@ -52,6 +55,7 @@ const MenuTriggerComponent = memo<{
         <SubHeaderButton
           icon={icon}
           aria-label={ariaLabel ?? `${label}メニューを開く`}
+          className={className}
         >
           {label}
         </SubHeaderButton>
@@ -65,7 +69,7 @@ const MenuTriggerComponent = memo<{
           variant={mappedVariant}
           size="sm"
           aria-label={ariaLabel ?? label}
-          className="flex items-center gap-2 hover:bg-neutral-200"
+          className={cn("flex items-center gap-2 hover:bg-neutral-200", className)}
         >
           {icon && React.createElement(icon, { size: 16 })}
           {label}

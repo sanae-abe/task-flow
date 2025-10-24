@@ -48,7 +48,7 @@ const getDialogStyles = (variant: DialogVariant, size: DialogSize) => {
       },
       content: {
         width: '100%',
-        minHeight: '112px',
+        minHeight: '120px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -270,7 +270,7 @@ const UnifiedDialog = memo<UnifiedDialogProps>(({
             "bg-white rounded-lg overflow-y-auto",
             // バリアント別のクラス
             variant === 'modal' && "p-4",
-            variant === 'overlay' && "w-full min-h-[112px] flex items-center justify-center py-1",
+            variant === 'overlay' && "w-full min-h-[120px] flex items-center justify-center py-1",
             variant === 'inline' && "bg-gray-50 rounded-md p-3"
           )}
         >
