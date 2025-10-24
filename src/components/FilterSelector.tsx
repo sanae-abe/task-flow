@@ -1,5 +1,11 @@
-import { ActionList, ActionMenu } from "@primer/react";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 import {
   AlertTriangle,
   Clock,
@@ -168,8 +174,8 @@ const FilterSelector = memo<FilterSelectorProps>(
     );
 
     return (
-      <ActionMenu>
-        <ActionMenu.Anchor>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
           <Button
             variant="ghost"
             size="sm"
@@ -183,122 +189,105 @@ const FilterSelector = memo<FilterSelectorProps>(
             <FilterIconComponent size={16} />
             {getCurrentFilterLabel()}
           </Button>
-        </ActionMenu.Anchor>
-        <ActionMenu.Overlay style={{ zIndex: 150 }}>
-          <ActionList selectionVariant="single">
-            <ActionList.Group
-              title="期限でフィルター"
-              selectionVariant="single"
-            >
-              {filterConfigs.slice(0, 4).map((config) => {
-                const IconComponent = getFilterIcon(config.icon);
-                return (
-                  <ActionList.Item
-                    key={config.type}
-                    onSelect={() => handleFilterSelect(config.type)}
-                    selected={currentFilter.type === config.type}
-                  >
-                    <ActionList.LeadingVisual>
-                      <IconComponent />
-                    </ActionList.LeadingVisual>
-                    {config.label}
-                  </ActionList.Item>
-                );
-              })}
-            </ActionList.Group>
-
-            {availableLabels.length > 0 && (
-              <ActionList.Group
-                title="ラベルでフィルター"
-                selectionVariant="single"
+        </DropdownMenuTrigger>
+        <DropdownMenuContent style={{ zIndex: 150 }} className="w-56">
+          {/* 期限でフィルター */}
+          {filterConfigs.slice(0, 4).map((config) => {
+            const IconComponent = getFilterIcon(config.icon);
+            return (
+              <DropdownMenuItem
+                key={config.type}
+                onClick={() => handleFilterSelect(config.type)}
+                className={currentFilter.type === config.type ? 'bg-accent' : ''}
               >
-                <ActionMenu>
-                  <ActionMenu.Anchor>
-                    <ActionList.Item selected={currentFilter.type === "label"}>
-                      <ActionList.LeadingVisual>
-                        <Tag />
-                      </ActionList.LeadingVisual>
-                      ラベルで絞り込み
-                    </ActionList.Item>
-                  </ActionMenu.Anchor>
-                  <ActionMenu.Overlay style={{ zIndex: 200 }}>
-                    <ActionList selectionVariant="single">
-                      <ActionList.Item
-                        onSelect={() => handleFilterSelect("label")}
-                        selected={currentFilter.type === "has-labels"}
-                      >
-                        すべてのラベル
-                      </ActionList.Item>
-                      <ActionList.Divider />
-                      {availableLabels.map((label) => (
-                        <ActionList.Item
-                          key={label.id}
-                          onSelect={() => handleLabelToggle(label.name)}
-                          selected={currentFilter.selectedLabelNames?.includes(
-                            label.name,
-                          )}
-                        >
-                          <ActionList.LeadingVisual>
-                            <div
-                              style={{
-                                width: "12px",
-                                height: "12px",
-                                borderRadius: "2px",
-                                backgroundColor: label.color,
-                              }}
-                            />
-                          </ActionList.LeadingVisual>
-                          {label.name}
-                        </ActionList.Item>
-                      ))}
-                    </ActionList>
-                  </ActionMenu.Overlay>
-                </ActionMenu>
-              </ActionList.Group>
-            )}
+                <IconComponent size={16} className="mr-2" />
+                {config.label}
+              </DropdownMenuItem>
+            );
+          })}
 
-            <ActionList.Group
-              title="優先度でフィルター"
-              selectionVariant="single"
-            >
-              <ActionMenu>
-                <ActionMenu.Anchor>
-                  <ActionList.Item selected={currentFilter.type === "priority"}>
-                    <ActionList.LeadingVisual>
-                      <Star />
-                    </ActionList.LeadingVisual>
-                    優先度で絞り込み
-                  </ActionList.Item>
-                </ActionMenu.Anchor>
-                <ActionMenu.Overlay style={{ zIndex: 200 }}>
-                  <ActionList selectionVariant="multiple">
-                    {(["critical", "high", "medium", "low"] as Priority[]).map(
-                      (priority) => {
-                        const config = priorityConfig[priority];
-                        const IconComponent = config.icon;
-                        return (
-                          <ActionList.Item
-                            key={priority}
-                            onSelect={() => handlePriorityToggle(priority)}
-                            selected={currentFilter.selectedPriorities?.includes(
-                              priority,
-                            )}
-                          >
-                            <ActionList.LeadingVisual>
-                              <IconComponent size={16} />
-                            </ActionList.LeadingVisual>
-                            {config.label}
-                          </ActionList.Item>
-                        );
-                      },
-                    )}
-                  </ActionList>
-                </ActionMenu.Overlay>
-              </ActionMenu>
-            </ActionList.Group>
-          </ActionList>
-        </ActionMenu.Overlay>
-      </ActionMenu>
+          {availableLabels.length > 0 && (
+            <>
+              <DropdownMenuSeparator />
+              {/* ラベルでフィルター */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <DropdownMenuItem
+                    className={`cursor-pointer ${currentFilter.type === "label" ? 'bg-accent' : ''}`}
+                    onSelect={(e) => e.preventDefault()}
+                  >
+                    <Tag size={16} className="mr-2" />
+                    ラベルで絞り込み
+                    <span className="ml-auto text-xs text-muted-foreground">→</span>
+                  </DropdownMenuItem>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent style={{ zIndex: 200 }} className="w-56">
+                  <DropdownMenuItem
+                    onClick={() => handleFilterSelect("label")}
+                    className={currentFilter.type === "has-labels" ? 'bg-accent' : ''}
+                  >
+                    すべてのラベル
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  {availableLabels.map((label) => (
+                    <DropdownMenuItem
+                      key={label.id}
+                      onClick={() => handleLabelToggle(label.name)}
+                      className={currentFilter.selectedLabelNames?.includes(label.name) ? 'bg-accent' : ''}
+                    >
+                      <div
+                        className="mr-2"
+                        style={{
+                          width: "12px",
+                          height: "12px",
+                          borderRadius: "2px",
+                          backgroundColor: label.color,
+                        }}
+                      />
+                      {label.name}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </>
+          )}
+
+          <DropdownMenuSeparator />
+          {/* 優先度でフィルター */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <DropdownMenuItem
+                className={`cursor-pointer ${currentFilter.type === "priority" ? 'bg-accent' : ''}`}
+                onSelect={(e) => e.preventDefault()}
+              >
+                <Star size={16} className="mr-2" />
+                優先度で絞り込み
+                <span className="ml-auto text-xs text-muted-foreground">→</span>
+              </DropdownMenuItem>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent style={{ zIndex: 200 }} className="w-56">
+              {(["critical", "high", "medium", "low"] as Priority[]).map(
+                (priority) => {
+                  const config = priorityConfig[priority];
+                  const IconComponent = config.icon;
+                  return (
+                    <DropdownMenuItem
+                      key={priority}
+                      onClick={() => handlePriorityToggle(priority)}
+                      className={currentFilter.selectedPriorities?.includes(priority) ? 'bg-accent' : ''}
+                    >
+                      <span className="mr-2">
+                        <IconComponent size={16} />
+                      </span>
+                      {config.label}
+                    </DropdownMenuItem>
+                  );
+                },
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </DropdownMenuContent>
+      </DropdownMenu>
     );
   },
 );
