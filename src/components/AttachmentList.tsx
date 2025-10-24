@@ -1,4 +1,4 @@
-import { XIcon } from "@primer/octicons-react";
+import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import React from "react";
 
@@ -46,7 +46,7 @@ const AttachmentList: React.FC<AttachmentListProps> = ({
             className="p-1 text-red-600 hover:text-red-700 hover:bg-red-50"
             aria-label="ファイルを削除"
           >
-            <XIcon size={16} />
+            <X size={16} />
           </Button>
         </div>
       ))}
