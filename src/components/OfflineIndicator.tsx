@@ -1,5 +1,5 @@
 import React from "react";
-import { CloudOfflineIcon, CheckIcon } from "@primer/octicons-react";
+import { CloudOff, Check } from "lucide-react";
 import { useOffline } from "../hooks/useOffline";
 
 const OfflineIndicator: React.FC = () => {
@@ -23,7 +23,7 @@ const OfflineIndicator: React.FC = () => {
         animation: wasOffline && isOnline ? "slideIn 0.3s ease" : "none",
       }}
     >
-      {isOffline ? <CloudOfflineIcon size={16} /> : <CheckIcon size={16} />}
+      {isOffline ? <CloudOff size={16} /> : <Check size={16} />}
       <span className="text-sm font-bold">
         {isOffline ? "オフライン" : "オンラインに復帰しました"}
       </span>
