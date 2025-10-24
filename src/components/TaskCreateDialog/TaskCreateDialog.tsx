@@ -1,7 +1,6 @@
-import { useState, memo } from 'react';
-import { UnderlineNav } from '@primer/react';
+import { memo } from 'react';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
-import type { CreateMode } from './types';
 import type { TaskTemplate } from '../../types/template';
 import { useKanban } from '../../contexts/KanbanContext';
 import { useNotify } from '../../contexts/NotificationContext';
@@ -31,9 +30,6 @@ const TaskCreateDialog = memo(() => {
   const { state, closeTaskForm, createTask } = useKanban();
   const notify = useNotify();
 
-  // 作成モード
-  const [createMode, setCreateMode] = useState<CreateMode>('normal');
-
   // カスタムフック: フォーム状態管理
   const { formState, formActions, handleTimeChange, isFormValid } = useTaskForm(
     state.isTaskFormOpen,
@@ -58,16 +54,13 @@ const TaskCreateDialog = memo(() => {
     state.taskFormDefaultStatus
   );
 
-  // テンプレート選択時の処理（モード切り替えを含む）
+  // テンプレート選択時の処理
   const handleTemplateSelect = (template: TaskTemplate) => {
     templateActions.handleTemplateSelect(template);
-    // テンプレート選択後は通常作成モードに切り替え
-    setCreateMode('normal');
   };
 
   // ダイアログが閉じられた時の追加処理
   const handleDialogClose = () => {
-    setCreateMode('normal');
     resetTemplateSelection();
     closeTaskForm();
   };
@@ -88,44 +81,34 @@ const TaskCreateDialog = memo(() => {
       actions={actions}
     >
       <div style={{ display: 'flex', flexDirection: 'column', minHeight: '600px' }}>
-        {/* タブナビゲーション */}
-        <div style={{ marginBottom: '16px' }}>
-          <UnderlineNav aria-label="タスク作成モード選択" sx={{ padding: 0, transform: 'translateY(-8px)' }}>
-            <UnderlineNav.Item
-              aria-current={createMode === 'normal' ? 'page' : undefined}
-              onSelect={() => setCreateMode('normal')}
-            >
-              通常作成
-            </UnderlineNav.Item>
-            <UnderlineNav.Item
-              aria-current={createMode === 'template' ? 'page' : undefined}
-              onSelect={() => setCreateMode('template')}
-            >
-              テンプレートから作成
-            </UnderlineNav.Item>
-          </UnderlineNav>
-        </div>
+        <Tabs defaultValue="normal" className="w-full">
+          {/* タブナビゲーション */}
+          <TabsList className="grid w-full grid-cols-2 mb-4">
+            <TabsTrigger value="normal">通常作成</TabsTrigger>
+            <TabsTrigger value="template">テンプレートから作成</TabsTrigger>
+          </TabsList>
 
-        {/* テンプレート選択モード */}
-        {createMode === 'template' && (
-          <div style={{ marginBottom: '24px', flex: 1, minHeight: '500px' }}>
-            <TemplateSelector
-              templates={templateState.templates}
-              onSelect={handleTemplateSelect}
+          {/* 通常作成フォーム */}
+          <TabsContent value="normal">
+            <TaskFormFields
+              formState={formState}
+              formActions={formActions}
+              selectedTemplate={templateState.selectedTemplate}
+              onTimeChange={handleTimeChange}
+              onKeyPress={handleKeyPress}
             />
-          </div>
-        )}
+          </TabsContent>
 
-        {/* 通常作成フォーム */}
-        {createMode === 'normal' && (
-          <TaskFormFields
-            formState={formState}
-            formActions={formActions}
-            selectedTemplate={templateState.selectedTemplate}
-            onTimeChange={handleTimeChange}
-            onKeyPress={handleKeyPress}
-          />
-        )}
+          {/* テンプレート選択モード */}
+          <TabsContent value="template">
+            <div style={{ marginBottom: '24px', flex: 1, minHeight: '500px' }}>
+              <TemplateSelector
+                templates={templateState.templates}
+                onSelect={handleTemplateSelect}
+              />
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
     </UnifiedDialog>
   );
