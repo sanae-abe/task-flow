@@ -114,17 +114,17 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
         right: 0,
         width: SIDEBAR_WIDTH,
         height: "100vh",
-        backgroundColor: "var(--background)",
+        backgroundColor: "hsl(var(--background))",
         boxShadow: "0 16px 32px rgba(0, 0, 0, 0.24)",
         borderLeft: "1px solid",
-        borderColor: "rgb(var(--border))",
+        borderColor: "hsl(var(--border))",
         zIndex: SIDEBAR_Z_INDEX,
         overflowY: "auto",
         animation:
           "sidebar-slide-in-right 250ms cubic-bezier(0.33, 1, 0.68, 1)",
       }}
     >
-      <div className="flex h-full flex-column">
+      <div className="flex h-full flex-col">
         {/* Header */}
         <div className="flex items-start justify-between border-b border-border flex-shrink-0 pt-[17px] pb-4 px-4">
           <h1

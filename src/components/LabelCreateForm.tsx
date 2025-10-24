@@ -45,13 +45,7 @@ const LabelCreateForm = memo<LabelCreateFormProps>(
 
     return (
       <div
-        style={{
-          padding: "12px",
-          background: "var(--color-neutral-100)",
-          borderRadius: "var(--borderRadius-medium)",
-          border: "1px solid",
-          borderColor: "border.default",
-        }}
+        className={`p-3 bg-neutral-100 rounded-md border`}
       >
         <UnifiedForm
           fields={formFields}

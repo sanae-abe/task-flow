@@ -493,7 +493,7 @@ export const BoardSettingsPanel: React.FC = () => {
             <CheckIcon size={16} className="mr-2" />
             設定を保存
           </Button>
-          <div className="flex flex-column gap-1">
+          <div className="flex flex-col gap-1">
             {/* 未保存状態メッセージ */}
             {hasUnsavedChanges ? (
               <InlineMessage variant="warning" message="未保存の変更があります（1秒後に自動保存されます）" size="small" />
