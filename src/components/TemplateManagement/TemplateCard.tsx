@@ -1,6 +1,6 @@
 import React, { memo, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
-import { StarIcon, StarFillIcon, PencilIcon, TrashIcon } from '@primer/octicons-react';
+import { Star, Edit, Trash2 } from 'lucide-react';
 
 import type { TaskTemplate } from '../../types/template';
 import { TEMPLATE_CATEGORIES } from './TemplateCategorySelector';
@@ -123,7 +123,7 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
           <div style={{ display: 'flex', alignItems: 'center', gap: "4px", marginBottom: "4px" }}>
             {template.isFavorite && (
               <div style={{ color: 'var(--fgColor-attention)' }}>
-                <StarFillIcon size={14} />
+                <Star size={14} fill="currentColor" />
               </div>
             )}
             <h3 className={`
@@ -168,7 +168,7 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
                   template.isFavorite ? 'text-yellow-600' : 'text-gray-500'
                 }`}
               >
-                {template.isFavorite ? <StarFillIcon size={16} /> : <StarIcon size={16} />}
+                {template.isFavorite ? <Star size={16} fill="currentColor" /> : <Star size={16} />}
               </Button>
             )}
             {onEdit && (
@@ -179,7 +179,7 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
                 aria-label={`テンプレート「${template.name}」を編集`}
                 className="p-1 h-auto min-w-0 text-gray-500 hover:text-gray-700"
               >
-                <PencilIcon size={16} />
+                <Edit size={16} />
               </Button>
             )}
             {onDelete && (
@@ -190,7 +190,7 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
                 aria-label={`テンプレート「${template.name}」を削除`}
                 className="p-1 h-auto min-w-0 text-gray-500 hover:text-red-600"
               >
-                <TrashIcon size={16} />
+                <Trash2 size={16} />
               </Button>
             )}
           </div>
