@@ -1,24 +1,10 @@
 import React from 'react';
-import { Text } from '@primer/react';
 
 const EmptyState: React.FC = () => (
-  <div
-    style={{
-      textAlign: 'center',
-      paddingBlock: '24px',
-      border: '1px dashed',
-      borderColor: 'var(--borderColor-muted)',
-      borderRadius: 'var(--borderRadius-medium)',
-      display: 'flex',
-      flexDirection: 'column',
-      gap: "8px",
-      justifyContent: 'center',
-      alignItems: 'center'
-    }}
-  >
-    <Text sx={{ color: 'fg.muted' }}>
+  <div className="text-center py-6 border border-dashed border-border rounded-md flex flex-col gap-2 justify-center items-center">
+    <span className="text-muted-foreground">
       まだラベルがありません
-    </Text>
+    </span>
   </div>
 );
 
