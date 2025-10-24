@@ -15,11 +15,11 @@ const OfflineIndicator: React.FC = () => {
       style={{
         right: "10px",
         borderColor: isOffline
-          ? "var(--bgColor-severe-emphasis)"
-          : "var(--fgColor-success)",
+          ? "rgb(218 54 51)"
+          : "rgb(22 163 74)",
         color: isOffline
-          ? "var(--bgColor-severe-emphasis)"
-          : "var(--fgColor-onEmphasis)",
+          ? "rgb(218 54 51)"
+          : "rgb(255 255 255)",
         animation: wasOffline && isOnline ? "slideIn 0.3s ease" : "none",
       }}
     >

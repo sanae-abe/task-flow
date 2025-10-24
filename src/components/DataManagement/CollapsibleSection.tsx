@@ -21,8 +21,8 @@ interface CollapsibleSectionProps {
 export const CollapsibleSection = memo<CollapsibleSectionProps>(({
   icon: Icon,
   title,
-  iconBg = 'var(--bgColor-accent-muted)',
-  iconColor = 'var(--fgColor-accent)',
+  iconBg = 'rgb(219 234 254)',
+  iconColor = 'rgb(37 99 235)',
   children,
   defaultOpen = false
 }) => (
@@ -32,13 +32,7 @@ export const CollapsibleSection = memo<CollapsibleSectionProps>(({
       className="transition-all duration-200 ease"
     >
       <summary
-        className="flex items-center justify-between cursor-pointer list-none outline-none mb-0"
-        style={{
-          border: '1px solid var(--borderColor-default)',
-          borderRadius: '6px',
-          padding: '12px',
-          backgroundColor: 'var(--background)'
-        }}
+        className="flex items-center justify-between cursor-pointer list-none outline-none mb-0 border border-border rounded-md p-3 bg-background"
       >
         <div className="flex items-center gap-2">
           <div
@@ -60,12 +54,7 @@ export const CollapsibleSection = memo<CollapsibleSectionProps>(({
           <path d="M12.78 5.22a.749.749 0 0 1 0 1.06l-4.25 4.25a.749.749 0 0 1-1.06 0L3.22 6.28a.749.749 0 1 1 1.06-1.06L8 8.939l3.72-3.719a.749.749 0 0 1 1.06 0Z" />
         </svg>
       </summary>
-      <div style={{
-        marginTop: '12px',
-        border: '1px solid var(--borderColor-default)',
-        borderRadius: '6px',
-        padding: '12px'
-      }}>
+      <div className="mt-3 border border-border rounded-md p-3">
         {children}
       </div>
     </details>

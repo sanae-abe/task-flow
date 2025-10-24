@@ -28,14 +28,14 @@ const CalendarDay: React.FC<CalendarDayProps> = React.memo(
       () => ({
         minHeight: "120px",
         backgroundColor: isCurrentMonth
-          ? "var(--background)"
-          : "var(--color-neutral-100)",
+          ? "hsl(var(--background))"
+          : "rgb(245 245 245)",
         borderRadius: 0,
         padding: "8px",
         position: "relative" as const,
         overflow: "hidden",
         border: isOver
-          ? "1px dashed var(--fgColor-accent)"
+          ? "1px dashed rgb(37 99 235)"
           : "1px solid transparent",
         transition: "border-color 200ms ease",
       }),

@@ -31,16 +31,16 @@ const CalendarTask: React.FC<CalendarTaskProps> = React.memo(
         padding: "2px 8px",
         borderRadius: "6px",
         backgroundColor: isVirtual
-          ? "var(--bgColor-neutral-muted)"
-          : "var(--bgColor-accent-muted)",
-        color: isVirtual ? "var(--fgColor-muted)" : "var(--fgColor-accent)",
+          ? "rgb(229 231 235)"
+          : "rgb(219 234 254)",
+        color: isVirtual ? "rgb(107 114 128)" : "rgb(37 99 235)",
         cursor: isVirtual ? "pointer" : isDragging ? "grabbing" : "grab",
         whiteSpace: "nowrap" as const,
         overflow: "hidden",
         textOverflow: "ellipsis",
         opacity: isDragging ? 0.5 : isVirtual ? 0.7 : 1,
         transition: "opacity 200ms, transform 200ms",
-        border: isVirtual ? "1px dashed var(--borderColor-muted)" : "none",
+        border: isVirtual ? "1px dashed rgb(209 213 219)" : "none",
       }),
       [isDragging, isVirtual],
     );

@@ -45,11 +45,9 @@ const HelpSection: React.FC<HelpSectionProps> = ({
     <div className="flex items-center gap-2 mb-3">
       <div
         style={{
-          background,
-          borderRadius: "50%",
-          color: "var(--fgColor-onEmphasis)"
+          background
         }}
-        className="p-2 flex items-center justify-center"
+        className="p-2 flex items-center justify-center rounded-full text-white"
       >
         <Icon size={14} />
       </div>
@@ -57,13 +55,7 @@ const HelpSection: React.FC<HelpSectionProps> = ({
         {title}
       </h3>
     </div>
-    <div
-      style={{
-        backgroundColor: "var(--color-neutral-100)",
-        borderRadius: "var(--borderRadius-medium)",
-      }}
-      className="mb-5 p-3"
-    >
+    <div className="mb-5 p-3 bg-neutral-100 rounded-md">
       <div className="pl-0">{children}</div>
     </div>
   </>
@@ -75,13 +67,7 @@ interface HelpItemProps {
 }
 
 const HelpItem: React.FC<HelpItemProps> = ({ title, description }) => (
-  <div
-    style={{
-      backgroundColor: "var(--color-neutral-100)",
-      borderRadius: "var(--borderRadius-medium)",
-    }}
-    className="p-2 flex gap-3 items-start mb-2"
-  >
+  <div className="p-2 flex gap-3 items-start mb-2 bg-neutral-100 rounded-md">
     <span
       className={cn(`text-sm font-semibold text-blue-700 flex-shrink-0 break-words min-w-[${TITLE_MIN_WIDTH}]`)}
     >
@@ -131,7 +117,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
         backgroundColor: "var(--background)",
         boxShadow: "0 16px 32px rgba(0, 0, 0, 0.24)",
         borderLeft: "1px solid",
-        borderColor: "var(--borderColor-default)",
+        borderColor: "rgb(var(--border))",
         zIndex: SIDEBAR_Z_INDEX,
         overflowY: "auto",
         animation:
@@ -140,12 +126,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
     >
       <div className="flex h-full flex-column">
         {/* Header */}
-        <div
-          style={{
-            borderColor: "var(--borderColor-default)"
-          }}
-          className="flex items-start justify-between border-b flex-shrink-0 pt-[17px] pb-4 px-4"
-        >
+        <div className="flex items-start justify-between border-b border-border flex-shrink-0 pt-[17px] pb-4 px-4">
           <h1
             id="help-title"
             className="flex items-center gap-2 text-xl font-medium"
@@ -192,7 +173,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
           <HelpSection
             title="基本操作"
             icon={MousePointer}
-            background="var(--bgColor-success-emphasis)"
+            background="rgb(45 164 78)"
           >
             <HelpItem
               title="ボード作成"
@@ -264,7 +245,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
           <HelpSection
             title="ファイル添付"
             icon={Paperclip}
-            background="var(--bgColor-attention-emphasis)"
+            background="rgb(212 167 44)"
           >
             <HelpItem
               title="ファイル管理"
@@ -275,7 +256,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
           <HelpSection
             title="カレンダー機能"
             icon={Calendar}
-            background="var(--bgColor-done-emphasis)"
+            background="rgb(130 80 223)"
           >
             <HelpItem
               title="月次表示"
@@ -286,7 +267,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
           <HelpSection
             title="フィルタリング・ソート"
             icon={Filter}
-            background="var(--bgColor-severe-emphasis)"
+            background="rgb(218 54 51)"
           >
             <HelpItem
               title="絞り込み・並び替え"
@@ -297,7 +278,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
           <HelpSection
             title="テンプレート管理"
             icon={FileText}
-            background="var(--bgColor-closed-emphasis)"
+            background="rgb(101 109 118)"
           >
             <HelpItem
               title="テンプレート機能"
@@ -319,7 +300,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
           <HelpSection
             title="データ管理"
             icon={Database}
-            background="var(--bgColor-sponsors-emphasis)"
+            background="rgb(219 109 40)"
           >
             <HelpItem
               title="ローカル保存"

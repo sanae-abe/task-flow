@@ -17,16 +17,11 @@ const SubTaskProgressBar: React.FC<SubTaskProgressBarProps> = ({
 
   return (
     <div className="mb-2">
-      <div
-        style={{
-          backgroundColor: "var(--bgColor-neutral-muted)",
-        }}
-        className="w-full h-[6px] rounded-sm overflow-hidden"
-      >
+      <div className="w-full h-[6px] rounded-sm overflow-hidden bg-gray-300">
         <div
           style={{
             width: `${progressPercentage}%`,
-            backgroundColor: "var(--bgColor-success-emphasis)",
+            backgroundColor: "rgb(45 164 78)",
           }}
           className="h-full transition-width duration-200 ease"
         />
