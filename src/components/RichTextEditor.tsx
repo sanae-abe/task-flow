@@ -1,14 +1,14 @@
 import { Button } from "@/components/ui/button";
 import {
-  BoldIcon,
-  ItalicIcon,
-  ListUnorderedIcon,
-  ListOrderedIcon,
-  LinkIcon,
-  CodeIcon,
-  FileCodeIcon,
-  SmileyIcon,
-} from "@primer/octicons-react";
+  Bold,
+  Italic,
+  List,
+  ListOrdered,
+  Link,
+  Code,
+  FileCode,
+  Smile,
+} from "lucide-react";
 import React, { useRef, useCallback, useEffect, useState } from "react";
 import EmojiPicker, { EmojiClickData, EmojiStyle } from "emoji-picker-react";
 
@@ -618,7 +618,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
               aria-label="太字 (Ctrl+B)"
               className="p-1 h-auto min-w-0"
             >
-              <BoldIcon size={16} />
+              <Bold size={16} />
             </Button>
             <Button
               variant="ghost"
@@ -629,7 +629,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
               aria-label="斜体 (Ctrl+I)"
               className="p-1 h-auto min-w-0"
             >
-              <ItalicIcon size={16} />
+              <Italic size={16} />
             </Button>
             <Button
               variant="ghost"
@@ -661,7 +661,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
               aria-label="リンク (Ctrl+K)"
               className="p-1 h-auto min-w-0"
             >
-              <LinkIcon size={16} />
+              <Link size={16} />
             </Button>
             <Button
               variant="ghost"
@@ -670,7 +670,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
               aria-label="インラインコード (Ctrl+`)"
               className="p-1 h-auto min-w-0"
             >
-              <CodeIcon size={16} />
+              <Code size={16} />
             </Button>
             <Button
               variant="ghost"
@@ -679,7 +679,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
               aria-label="コードブロック (Ctrl+Shift+`)"
               className="p-1 h-auto min-w-0"
             >
-              <FileCodeIcon size={16} />
+              <FileCode size={16} />
             </Button>
             <div className="w-px bg-border mx-2" />
             <Button
@@ -693,7 +693,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
               aria-label="箇条書きリスト"
               className="p-1 h-auto min-w-0"
             >
-              <ListUnorderedIcon size={16} />
+              <List size={16} />
             </Button>
             <Button
               variant="ghost"
@@ -706,7 +706,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
               aria-label="番号付きリスト"
               className="p-1 h-auto min-w-0"
             >
-              <ListOrderedIcon size={16} />
+              <ListOrdered size={16} />
             </Button>
             <div className="w-px bg-border mx-2" />
             <Button
@@ -717,7 +717,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
               aria-label="絵文字を挿入"
               className="p-1 h-auto min-w-0"
             >
-              <SmileyIcon size={16} />
+              <Smile size={16} />
             </Button>
           </div>
         </div>
