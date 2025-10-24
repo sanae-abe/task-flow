@@ -14,7 +14,6 @@ import {
 } from "lucide-react";
 import { LoadingButton } from "../../shared/LoadingButton";
 import { MESSAGES } from "../../../constants/recycleBin";
-import { TaskActionsContainer } from "../RecycleBinView.styles";
 
 export interface RecycleBinTaskActionsProps {
   /** タスクID */
@@ -44,7 +43,7 @@ export const RecycleBinTaskActions: React.FC<RecycleBinTaskActionsProps> = ({
 
   if (isLoading) {
     return (
-      <TaskActionsContainer>
+      <div className="flex gap-2">
         <LoadingButton
           disabled
           isLoading
@@ -56,12 +55,12 @@ export const RecycleBinTaskActions: React.FC<RecycleBinTaskActionsProps> = ({
         >
           処理中
         </LoadingButton>
-      </TaskActionsContainer>
+      </div>
     );
   }
 
   return (
-    <TaskActionsContainer>
+    <div className="flex gap-2">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
@@ -84,6 +83,6 @@ export const RecycleBinTaskActions: React.FC<RecycleBinTaskActionsProps> = ({
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-    </TaskActionsContainer>
+    </div>
   );
 };

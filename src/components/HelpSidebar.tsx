@@ -14,6 +14,7 @@ import {
 
 import { Button } from "@/components/ui/button";
 import React, { useEffect, useCallback } from "react";
+import { cn } from "@/lib/utils";
 
 import Logo from "./Logo";
 
@@ -82,8 +83,7 @@ const HelpItem: React.FC<HelpItemProps> = ({ title, description }) => (
     className="p-2 flex gap-3 items-start mb-2"
   >
     <span
-      className="text-sm font-semibold text-blue-700 flex-shrink-0 break-words"
-      style={{ minWidth: TITLE_MIN_WIDTH }}
+      className={cn(`text-sm font-semibold text-blue-700 flex-shrink-0 break-words min-w-[${TITLE_MIN_WIDTH}]`)}
     >
       {title}
     </span>

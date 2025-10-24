@@ -8,16 +8,6 @@ import { UI_TEXT, MESSAGES } from "../../../constants/recycleBin";
 import { type RecycleBinSettings } from "../../../types/settings";
 import { formatTimeUntilDeletion } from "../../../utils/recycleBin";
 import { RecycleBinTaskActions } from "./RecycleBinTaskActions";
-import {
-  TaskItemContainer,
-  TaskHeader,
-  TaskTitleContainer,
-  TaskTitle,
-  TaskMetaContainer,
-  TaskMetaItem,
-  TaskDescription,
-  TaskDescriptionText,
-} from "../RecycleBinView.styles";
 
 export interface DeletedTaskWithMeta {
   id: string;
@@ -57,13 +47,13 @@ export const RecycleBinTaskItem: React.FC<RecycleBinTaskItemProps> = ({
   onRestore,
   onDeleteConfirm,
 }) => (
-    <TaskItemContainer>
-      <TaskHeader>
-        <TaskTitleContainer>
-          <TaskTitle>
+    <div className="bg-background border border-border rounded-md p-4 mb-3 hover:bg-accent/50 transition-colors">
+      <div className="flex items-start justify-between gap-3 mb-3">
+        <div className="flex-1 min-w-0">
+          <h3 className="text-sm font-medium text-foreground m-0 line-clamp-2 break-words">
             {task.title}
-          </TaskTitle>
-        </TaskTitleContainer>
+          </h3>
+        </div>
         <RecycleBinTaskActions
           taskId={task.id}
           restoringTaskId={restoringTaskId}
@@ -71,16 +61,16 @@ export const RecycleBinTaskItem: React.FC<RecycleBinTaskItemProps> = ({
           onRestore={onRestore}
           onDeleteConfirm={onDeleteConfirm}
         />
-      </TaskHeader>
+      </div>
 
-      <TaskMetaContainer>
-        <TaskMetaItem>
+      <div className="flex flex-col gap-2 mb-3">
+        <div className="flex items-center gap-2 text-xs text-muted-foreground">
           <FolderKanban size={12} />
           <span>
             {task.boardTitle} <ArrowRight size={12} /> {task.columnTitle}
           </span>
-        </TaskMetaItem>
-        <TaskMetaItem>
+        </div>
+        <div className="flex items-center gap-2 text-xs text-muted-foreground">
           <Clock size={12} />
           <span>
             {UI_TEXT.VIEW.DELETION_SCHEDULE}{" "}
@@ -89,15 +79,15 @@ export const RecycleBinTaskItem: React.FC<RecycleBinTaskItemProps> = ({
               : MESSAGES.RETENTION.UNKNOWN
             }
           </span>
-        </TaskMetaItem>
-      </TaskMetaContainer>
+        </div>
+      </div>
 
       {task.description && (
-        <TaskDescription>
-          <TaskDescriptionText>
+        <div className="mt-2 pt-2 border-t border-border">
+          <p className="text-xs text-muted-foreground m-0 line-clamp-3 whitespace-pre-wrap">
             {task.description.replace(/<[^>]*>/g, "")} {/* HTMLタグを除去 */}
-          </TaskDescriptionText>
-        </TaskDescription>
+          </p>
+        </div>
       )}
-    </TaskItemContainer>
+    </div>
   );

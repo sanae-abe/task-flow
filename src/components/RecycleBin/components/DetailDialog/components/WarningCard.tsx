@@ -115,11 +115,7 @@ export const WarningCard: React.FC<WarningCardProps> = ({ item, retentionDays })
 
   return (
     <section
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: spacing.sm,
-      }}
+      className={`flex flex-col gap-[${spacing.sm}]`}
     >
       {/* 警告一覧 */}
       {warnings.map((warning, index) => {

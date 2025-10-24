@@ -1,4 +1,4 @@
-import { BaseStyles, ThemeProvider } from '@primer/react';
+// Primer React ThemeProvider と BaseStyles を削除 - Shadcn/UI + Tailwind CSS 完全移行済み
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
@@ -139,13 +139,9 @@ const AppContent: React.FC = () => {
 
 function App() {
   return (
-    <ThemeProvider>
-      <BaseStyles>
-        <AppProviders>
-          <AppContent />
-        </AppProviders>
-      </BaseStyles>
-    </ThemeProvider>
+    <AppProviders>
+      <AppContent />
+    </AppProviders>
   );
 }
 

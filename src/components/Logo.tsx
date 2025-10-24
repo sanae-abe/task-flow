@@ -52,12 +52,7 @@ const Logo: React.FC<LogoProps> = ({ size = "medium" }) => {
     <div
       role="banner"
       aria-label="TaskFlowアプリケーションロゴ"
-      style={{
-        display: "flex",
-        alignItems: "flex-end",
-        gap,
-        userSelect: "none",
-      }}
+      className={`flex items-end gap-[${gap}] select-none`}
     >
       <div className="flex items-center">
         <CustomLogo size={iconSize} />

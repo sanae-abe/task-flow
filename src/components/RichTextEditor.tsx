@@ -747,7 +747,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
       )}
 
       {/* エディタ本体 */}
-      <div style={{ position: "relative", minHeight }}>
+      <div className={`position-relative min-h-[${minHeight}]`}>
         <div
           ref={editorRef}
           contentEditable={!disabled}
