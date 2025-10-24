@@ -1,5 +1,5 @@
 import { FileIcon, ImageIcon, DownloadIcon } from "@primer/octicons-react";
-import { Text, Button } from "@primer/react";
+import { Button } from "@/components/ui/button";
 import React, { useMemo, useCallback } from "react";
 
 import type { FileAttachment } from "../types";
@@ -74,59 +74,6 @@ const downloadFile = (
   }
 };
 
-// スタイル定数
-const styles = {
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "4px",
-  },
-  fileItem: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: "8px",
-    backgroundColor: "var(--bgColor-muted)",
-    borderRadius: "var(--borderRadius-medium)",
-    fontSize: "12px",
-  },
-  fileInfo: {
-    display: "flex",
-    alignItems: "center",
-    gap: "8px",
-    flex: 1,
-    minWidth: 0,
-  },
-  fileDetails: {
-    minWidth: 0,
-    flex: 1,
-    gap: "8px",
-    display: "flex",
-    alignItems: "center",
-  },
-  fileName: {
-    fontSize: 0,
-    fontWeight: "600",
-    wordBreak: "break-word",
-  },
-  fileSize: {
-    fontSize: "10px",
-    color: "var(--fgColor-muted)",
-  },
-  actionButtons: {
-    display: "flex",
-    gap: "4px",
-  },
-  downloadButton: {
-    padding: "4px",
-  },
-  remainingText: {
-    fontSize: "10px",
-    color: "var(--fgColor-muted)",
-    textAlign: "center",
-    marginTop: "4px",
-  },
-} as const;
 
 const FileList: React.FC<FileListProps> = ({
   attachments,
@@ -162,7 +109,7 @@ const FileList: React.FC<FileListProps> = ({
   }
 
   return (
-    <div style={styles.container}>
+    <div className="flex flex-col gap-1">
       {displayAttachments.map((attachment) => (
         <FileListItem
           key={attachment.id}
@@ -174,7 +121,9 @@ const FileList: React.FC<FileListProps> = ({
       ))}
 
       {remainingCount > 0 && (
-        <Text sx={styles.remainingText}>他{remainingCount}個のファイル</Text>
+        <p className="text-xs text-gray-600 text-center mt-1">
+          他{remainingCount}個のファイル
+        </p>
       )}
     </div>
   );
@@ -195,22 +144,26 @@ const FileListItem: React.FC<FileListItemProps> = React.memo(
     }, [attachment, onDownload]);
 
     return (
-      <div style={styles.fileItem}>
-        <div style={styles.fileInfo}>
+      <div className="flex items-center justify-between p-2 bg-gray-50 rounded-md text-xs">
+        <div className="flex items-center gap-2 flex-1 min-w-0">
           {getFileIcon(attachment.type)}
-          <div style={styles.fileDetails}>
-            <Text sx={styles.fileName}>{attachment.name}</Text>
-            <Text sx={styles.fileSize}>{formatFileSize(attachment.size)}</Text>
+          <div className="min-w-0 flex-1 gap-2 flex items-center">
+            <span className="text-xs font-semibold break-words">
+              {attachment.name}
+            </span>
+            <span className="text-[10px] text-gray-600">
+              {formatFileSize(attachment.size)}
+            </span>
           </div>
         </div>
-        <div style={styles.actionButtons}>
+        <div className="flex gap-1">
           {showPreview && <FilePreview attachment={attachment} />}
           {showDownload && (
             <Button
-              variant="invisible"
-              size="small"
+              variant="ghost"
+              size="sm"
               onClick={handleDownloadClick}
-              sx={styles.downloadButton}
+              className="p-1"
               aria-label={`${attachment.name}をダウンロード`}
             >
               <DownloadIcon size={14} />

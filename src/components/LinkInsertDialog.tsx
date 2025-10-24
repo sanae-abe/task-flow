@@ -1,4 +1,7 @@
-import { Button, FormControl, TextInput } from "@primer/react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
 import React, { useState, useCallback, useMemo, useEffect } from "react";
 
 import UnifiedDialog from "./shared/Dialog/UnifiedDialog";
@@ -94,62 +97,48 @@ const LinkInsertDialog: React.FC<LinkInsertDialogProps> = ({
       size="medium"
       hideFooter
     >
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "16px",
-          marginBottom: "24px",
-        }}
-      >
-        <FormControl>
-          <FormControl.Label required>URL</FormControl.Label>
-          <TextInput
+      <div className="flex flex-col gap-4 mb-6">
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="url-input" className="text-sm font-medium">
+            URL <span className="text-red-500">*</span>
+          </Label>
+          <Input
+            id="url-input"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
             placeholder="https://example.com"
             onKeyDown={handleKeyPress}
             autoFocus
-            sx={{
-              width: "100%",
-              ...(url &&
-                !isValidUrl && {
-                  borderColor: "danger.fg",
-                  "&:focus": {
-                    borderColor: "danger.fg",
-                    boxShadow: "0 0 0 2px rgba(248, 81, 73, 0.3)",
-                  },
-                }),
-            }}
+            className={cn(
+              "w-full",
+              url && !isValidUrl && "border-red-500 focus:border-red-500 focus:ring-red-500/30"
+            )}
           />
           {url && !isValidUrl && (
             <InlineMessage variant="critical" message="有効なURLを入力してください" size="small" />
           )}
-        </FormControl>
+        </div>
 
-        <FormControl>
-          <FormControl.Label>表示テキスト</FormControl.Label>
-          <TextInput
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="text-input" className="text-sm font-medium">
+            表示テキスト
+          </Label>
+          <Input
+            id="text-input"
             value={linkText}
             onChange={(e) => setLinkText(e.target.value)}
             placeholder="リンクテキスト（空の場合はURLを使用）"
             onKeyDown={handleKeyPress}
-            sx={{ width: "100%" }}
+            className="w-full"
           />
-        </FormControl>
+        </div>
       </div>
 
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-end",
-          gap: "8px",
-        }}
-      >
-        <Button onClick={handleCancel} variant="default">
+      <div className="flex justify-end gap-2">
+        <Button onClick={handleCancel} variant="outline">
           キャンセル
         </Button>
-        <Button onClick={handleInsert} variant="primary" disabled={!isValidUrl}>
+        <Button onClick={handleInsert} variant="default" disabled={!isValidUrl}>
           挿入
         </Button>
       </div>

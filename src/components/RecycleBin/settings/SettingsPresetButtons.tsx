@@ -1,5 +1,5 @@
 import React from "react";
-import { Button } from "@primer/react";
+import { Button } from "@/components/ui/button";
 import { type RecycleBinSettings } from "../../../types/settings";
 import { RETENTION_PRESETS, UI_TEXT } from "../../../constants/recycleBin";
 import {
@@ -31,7 +31,7 @@ export const SettingsPresetButtons: React.FC<SettingsPresetButtonsProps> = ({
         {RETENTION_PRESETS.map(({ label, days }) => (
           <Button
             key={days?.toString() || 'unlimited'}
-            variant={settings.retentionDays === days ? "primary" : "default"}
+            variant={settings.retentionDays === days ? "default" : "outline"}
             onClick={() => onPresetSelect(days)}
           >
             {label}
