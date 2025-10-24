@@ -16,11 +16,11 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import {
-  GearIcon,
-  TrashIcon,
-  GrabberIcon,
-  CheckIcon,
-} from "@primer/octicons-react";
+  Settings,
+  Trash2,
+  GripVertical,
+  Check,
+} from "lucide-react";
 
 import { useTableColumns } from "../contexts/TableColumnsContext";
 
@@ -129,7 +129,7 @@ const TableColumnManager: React.FC = () => {
             aria-label="カラム詳細設定"
             className="p-1 h-auto min-w-0"
           >
-            <GearIcon size={16} />
+            <Settings size={16} />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
@@ -145,7 +145,7 @@ const TableColumnManager: React.FC = () => {
                     column.visible ? 'text-gray-900' : 'text-transparent'
                   }`}
                 >
-                  <CheckIcon size={16} />
+                  <Check size={16} />
                 </div>
                 {column.label}
               </DropdownMenuItem>
@@ -153,7 +153,7 @@ const TableColumnManager: React.FC = () => {
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => setIsSettingsOpen(true)}>
-            <GearIcon size={16} className="mr-2" />
+            <Settings size={16} className="mr-2" />
             詳細設定
           </DropdownMenuItem>
           <DropdownMenuSeparator />
@@ -215,7 +215,7 @@ const TableColumnManager: React.FC = () => {
                     aria-label="並び替え"
                     className="cursor-grab active:cursor-grabbing p-1 h-auto min-w-0"
                   >
-                    <GrabberIcon size={16} />
+                    <GripVertical size={16} />
                   </Button>
 
                   <div style={{ flex: 1 }}>
@@ -245,7 +245,7 @@ const TableColumnManager: React.FC = () => {
                       onClick={() => removeColumn(column.id)}
                       className="text-red-600 hover:text-red-700 p-1 h-auto min-w-0"
                     >
-                      <TrashIcon size={16} />
+                      <Trash2 size={16} />
                     </Button>
                   )}
                 </div>
