@@ -1,12 +1,10 @@
 import React from "react";
-import { Box } from "@primer/react";
 import type { SubTask } from "../../types";
 import { useSubTaskEdit } from "./hooks/useSubTaskEdit";
 import { useSubTaskDrag } from "./hooks/useSubTaskDrag";
 import { EditingView } from "./components/EditingView";
 import { DisplayView } from "./components/DisplayView";
 import { DragHandleAndToggle } from "./components/DragHandleAndToggle";
-import { subTaskItemStyles } from "./styles/subTaskItemStyles";
 
 interface SubTaskItemProps {
   subTask: SubTask;
@@ -54,10 +52,10 @@ const SubTaskItem: React.FC<SubTaskItemProps> = ({
   };
 
   return (
-    <Box
+    <div
       ref={setNodeRef}
       style={style}
-      sx={subTaskItemStyles.container}
+      className="group flex items-center gap-2 rounded bg-background cursor-pointer relative hover:bg-muted transition-colors"
     >
       {/* ドラッグハンドルとトグルボタン */}
       <DragHandleAndToggle
@@ -84,7 +82,7 @@ const SubTaskItem: React.FC<SubTaskItemProps> = ({
           onDelete={handleDelete}
         />
       )}
-    </Box>
+    </div>
   );
 };
 

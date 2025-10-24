@@ -1,5 +1,4 @@
 import React, { useCallback } from "react";
-import { Text } from "@primer/react";
 import type { TaskWithColumn } from "../../types/table";
 
 import { useKanban } from "../../contexts/KanbanContext";
@@ -89,7 +88,7 @@ const TableView: React.FC = () => {
           color: "var(--fgColor-default)",
         }}
       >
-        <Text>ボードを選択してください</Text>
+        <span className="text-foreground">ボードを選択してください</span>
       </div>
     );
   }

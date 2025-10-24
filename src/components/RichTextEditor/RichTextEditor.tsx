@@ -1,5 +1,4 @@
 import React, { useRef, useCallback } from 'react';
-import { Box } from '@primer/react';
 
 // インポート: カスタムコンポーネント
 import { Toolbar, EmojiPickerModal } from './components';
@@ -151,7 +150,6 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
   }, []);
 
   // 表示制御
-  const showPlaceholder = !value || value.trim() === '';
   const shouldShowToolbar = !disabled && (isEditorFocused || value.trim() !== '' || isToolbarInteraction);
 
   // エディタの値が変更された時にエディタの内容を更新
@@ -162,20 +160,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
   }, [value]);
 
   return (
-    <Box
-      sx={{
-        position: 'relative',
-        border: '1px solid',
-        borderColor: 'border.default',
-        borderRadius: 2,
-        overflow: 'hidden',
-        width: '100%',
-        '&:focus-within': {
-          borderColor: 'accent.fg',
-          boxShadow: '0 0 0 2px rgba(9, 105, 218, 0.3)',
-        },
-      }}
-    >
+    <div className="relative border border-border rounded-md overflow-hidden w-full focus-within:border-ring focus-within:ring-2 focus-within:ring-ring/20">
       {/* ツールバー */}
       {shouldShowToolbar && (
         <Toolbar
@@ -194,7 +179,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
       )}
 
       {/* エディタ本体 */}
-      <Box
+      <div
         ref={editorRef}
         contentEditable={!disabled}
         suppressContentEditableWarning
@@ -204,65 +189,18 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
         onKeyDown={handleKeyDown}
         onPaste={handlePaste}
         onClick={handleLinkClick}
-        sx={{
+        data-placeholder={placeholder}
+        className={`p-3 outline-none text-sm leading-6 ${
+          disabled
+            ? 'text-muted-foreground bg-muted'
+            : 'text-foreground bg-transparent'
+        } ${value.trim() === '' ? 'empty-editor' : ''}`}
+        style={{
           minHeight,
-          p: 3,
-          outline: 'none',
-          fontSize: '14px',
-          lineHeight: '1.5',
-          color: disabled ? 'fg.muted' : 'fg.default',
-          backgroundColor: disabled ? 'canvas.subtle' : 'transparent',
           cursor: disabled ? 'not-allowed' : 'text',
-          '&:empty::before': showPlaceholder ? {
-            content: `"${placeholder}"`,
-            color: 'fg.muted',
-            pointerEvents: 'none',
-          } : {},
-          // リンクスタイル
-          '& a': {
-            color: 'accent.fg',
-            textDecoration: 'underline',
-            cursor: 'pointer',
-            '&:hover': {
-              textDecoration: 'none',
-            },
-          },
-          // リストスタイル
-          '& ul, & ol': {
-            paddingLeft: '20px',
-            margin: '8px 0',
-          },
-          '& li': {
-            margin: '4px 0',
-          },
-          // インラインコードスタイル
-          '& code': {
-            backgroundColor: '#f6f8fa',
-            color: '#e01e5a',
-            padding: '2px 4px',
-            borderRadius: '4px',
-            fontFamily: "'Monaco', 'Menlo', 'Consolas', monospace",
-            fontSize: '0.875em',
-            border: '1px solid #d0d7de',
-          },
-          // コードブロックスタイル（preタグ内）
-          '& pre': {
-            backgroundColor: '#f6f8fa',
-            border: '1px solid #d0d7de',
-            borderRadius: '6px',
-            padding: '16px',
-            overflow: 'auto',
-            fontFamily: "'Monaco', 'Menlo', 'Consolas', monospace",
-            fontSize: '12px',
-            lineHeight: '1.45',
-            margin: '16px 0',
-            '&:focus': {
-              outline: '2px solid #0969da',
-              outlineOffset: '2px',
-            },
-          },
         }}
-      />
+      >
+      </div>
 
       {/* 絵文字ピッカーモーダル */}
       <EmojiPickerModal
@@ -292,6 +230,6 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
       )}
 
       {/* リンクダイアログは別途TaskCreateDialog等から提供される想定 */}
-    </Box>
+    </div>
   );
 };
