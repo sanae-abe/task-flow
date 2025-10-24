@@ -369,6 +369,7 @@ gantt
 - [ ] DialogFlashMessage → Alert 移行
 - [ ] NotificationContainer → Toast 移行
 - [ ] Octicons → Lucide React マッピング表作成
+- [ ] Feather → Lucide React マッピング表作成
 - [ ] アイコン一括置換スクリプト実行
 - [ ] 全アイコン使用箇所確認
 

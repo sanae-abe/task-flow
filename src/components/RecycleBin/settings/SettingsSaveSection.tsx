@@ -1,5 +1,4 @@
 import React from "react";
-import { CheckIcon } from "@primer/octicons-react";
 import { MESSAGES, UI_TEXT } from "../../../constants/recycleBin";
 import { LoadingButton } from "../../shared/LoadingButton";
 import { InlineMessage } from "../../shared";
@@ -31,12 +30,11 @@ export const SettingsSaveSection: React.FC<SettingsSaveSectionProps> = ({
 }) => (
     <SaveSection>
       <LoadingButton
-        variant="primary"
+        primerVariant="primary"
         isLoading={isLoading}
         loadingText={MESSAGES.SAVE.IN_PROGRESS}
         onClick={onSave}
         disabled={hasValidationError}
-        leadingVisual={!isLoading ? CheckIcon : undefined}
       >
         {UI_TEXT.PANEL.SAVE_BUTTON}
       </LoadingButton>

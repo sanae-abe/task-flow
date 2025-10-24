@@ -1,7 +1,10 @@
 import React from "react";
-import { Button, Spinner, type ButtonProps } from "@primer/react";
+import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
+import { MigrationButtonProps, extractShadcnProps } from "@/lib/migration-utils";
 
-export interface LoadingButtonProps extends Omit<ButtonProps, 'children' | 'aria-busy' | 'aria-describedby'> {
+export interface LoadingButtonProps
+  extends Omit<MigrationButtonProps, 'children' | 'aria-busy' | 'aria-describedby'> {
   /** ローディング状態 */
   isLoading: boolean;
   /** ローディング中に表示するテキスト */
@@ -29,10 +32,11 @@ export const LoadingButton: React.FC<LoadingButtonProps> = ({
   disabled,
   loadingDescribedBy,
   liveRegionId,
-  ...buttonProps
+  ...props
 }) => {
   const displayText = isLoading ? (loadingText || children) : children;
   const ariaDescribedBy = isLoading && loadingDescribedBy ? loadingDescribedBy : undefined;
+  const buttonProps = extractShadcnProps(props);
 
   return (
     <Button
@@ -44,11 +48,7 @@ export const LoadingButton: React.FC<LoadingButtonProps> = ({
     >
       {isLoading ? (
         <span
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '4px',
-          }}
+          className="flex items-center gap-1"
           role="status"
           aria-label={typeof loadingText === 'string' ? loadingText : "読み込み中"}
         >

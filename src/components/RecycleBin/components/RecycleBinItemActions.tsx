@@ -30,7 +30,7 @@ export const RecycleBinItemActions: React.FC<RecycleBinItemActionsProps> = ({
         disabled
         isLoading
         loadingText={loadingText || "処理中..."}
-        size="small"
+        primerSize="small"
       >
         処理中
       </LoadingButton>

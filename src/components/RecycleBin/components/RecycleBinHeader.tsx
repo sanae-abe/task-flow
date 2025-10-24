@@ -41,8 +41,8 @@ export const RecycleBinHeader: React.FC<RecycleBinHeaderProps> = ({
           {UI_TEXT.VIEW.TITLE}
         </HeaderTitle>
         <LoadingButton
-          variant="danger"
-          size="small"
+          primerVariant="danger"
+          primerSize="small"
           isLoading={isEmptying}
           loadingText={MESSAGES.EMPTY_BIN.IN_PROGRESS}
           onClick={onEmptyClick}
