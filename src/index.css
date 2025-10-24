@@ -77,31 +77,6 @@ body,
   padding-top: 112px; /* ヘッダー(50px) + サブヘッダー(45px) の高さ分 */
 }
 
-#__primerPortalRoot__ {
-  z-index: 20000;
-}
-
-/* Dialog Animation Keyframes */
-@keyframes dialog-backdrop-fade-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes dialog-scale-fade-in {
-  from {
-    opacity: 0;
-    transform: scale(0.8);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
 /* Sidebar Animation Keyframes */
 @keyframes sidebar-slide-in-right {
   from {

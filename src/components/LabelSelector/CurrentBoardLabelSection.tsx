@@ -1,5 +1,5 @@
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import { CheckIcon } from "@primer/octicons-react";
+import { Check } from "lucide-react";
 import React from "react";
 
 import type { Label } from "../../types";
@@ -33,7 +33,7 @@ export const CurrentBoardLabelSection: React.FC<CurrentBoardLabelSectionProps> =
             <LabelColorCircle color={label.color} />
             <span className="ml-2 flex-1">{label.name}</span>
             {isSelected && (
-              <CheckIcon size={16} className="ml-auto" />
+              <Check size={16} className="ml-auto" />
             )}
           </DropdownMenuItem>
         );

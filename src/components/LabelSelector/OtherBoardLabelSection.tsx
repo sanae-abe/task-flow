@@ -1,5 +1,5 @@
 import { DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import { CopyIcon } from "@primer/octicons-react";
+import { Copy } from "lucide-react";
 import React from "react";
 
 import type { Label } from "../../types";
@@ -29,7 +29,7 @@ export const OtherBoardLabelSection: React.FC<OtherBoardLabelSectionProps> = ({
         >
           <LabelColorCircle color={label.color} />
           <span className="ml-2 flex-1">{label.name}</span>
-          <CopyIcon size={16} className="ml-auto" />
+          <Copy size={16} className="ml-auto" />
         </DropdownMenuItem>
       ))}
     </>
