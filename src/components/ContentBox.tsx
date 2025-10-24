@@ -10,14 +10,14 @@ interface ContentBoxProps {
 const ContentBox = memo<ContentBoxProps>(
   ({
     children,
-    background = "var(--color-neutral-100)",
+    background = "rgb(245 245 245)",
     emptyText,
     isEmpty = false,
   }) => (
     <div
       style={{
         background,
-        borderRadius: "var(--borderRadius-medium)",
+        borderRadius: "0.5rem",
       }}
       className="p-3"
     >
