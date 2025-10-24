@@ -82,7 +82,7 @@ const KanbanBoard: React.FC = () => {
   };
 
   return (
-    <div style={KANBAN_BOARD_STYLES.container}>
+    <div className="bg-surface">
       <DndContext
         sensors={sensors}
         collisionDetection={collisionDetectionStrategy}

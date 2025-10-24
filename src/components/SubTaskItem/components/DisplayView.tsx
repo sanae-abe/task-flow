@@ -1,9 +1,8 @@
 import React from "react";
-import { Box, Text } from "@primer/react";
-import { TrashIcon, PencilIcon } from "@primer/octicons-react";
+import { Trash2, Edit } from "lucide-react";
+import { cn } from '@/lib/utils';
 import type { SubTask } from "../../../types";
 import IconButton from "../../shared/IconButton";
-import { subTaskItemStyles } from "../styles/subTaskItemStyles";
 
 interface DisplayViewProps {
   subTask: SubTask;
@@ -17,31 +16,29 @@ export const DisplayView: React.FC<DisplayViewProps> = ({
   onDelete,
 }) => (
     <>
-      <Text
-        sx={{
-          ...subTaskItemStyles.taskText,
-          opacity: subTask.completed ? 0.6 : 1,
-        }}
+      <span
+        className={cn(
+          "flex-1 text-sm text-gray-900 cursor-pointer",
+          subTask.completed && "opacity-60 line-through"
+        )}
       >
         {subTask.title}
-      </Text>
-      <Box className="action-buttons" sx={subTaskItemStyles.actionButtons}>
+      </span>
+      <div className="action-buttons flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
         <IconButton
-          icon={PencilIcon}
+          icon={Edit}
           onClick={onEdit}
           ariaLabel={`${subTask.title}を編集`}
           size="small"
           stopPropagation
-          sx={subTaskItemStyles.editButton}
         />
         <IconButton
-          icon={TrashIcon}
+          icon={Trash2}
           onClick={onDelete}
           ariaLabel={`${subTask.title}を削除`}
           size="small"
           stopPropagation
-          sx={subTaskItemStyles.deleteButton}
         />
-      </Box>
+      </div>
     </>
   );
