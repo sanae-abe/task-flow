@@ -1,6 +1,6 @@
 import { memo, useMemo, useState, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
-import { DownloadIcon } from '@primer/octicons-react';
+import { Download } from 'lucide-react';
 
 import { useKanban } from '../../contexts/KanbanContext';
 import { calculateDataStatistics, calculateCurrentBoardStatistics } from '../../utils/dataStatistics';
@@ -159,7 +159,7 @@ export const ExportSection = memo<ExportSectionProps>(({
             onClick={handleExport}
             disabled={exportType === 'selected' && !selectedBoard}
           >
-            <DownloadIcon size={16} className="mr-2" />
+            <Download size={16} className="mr-2" />
             エクスポート実行
           </Button>
         </div>

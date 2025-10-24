@@ -1,4 +1,4 @@
-import { SyncIcon } from "@primer/octicons-react";
+import { RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import React, { useState, useCallback } from "react";
 
@@ -51,7 +51,7 @@ const RecurrenceSelector: React.FC<RecurrenceSelectorProps> = ({
         variant="ghost"
         className="flex items-center gap-2"
       >
-        <SyncIcon size={16} />
+        <RotateCcw size={16} />
         {getButtonText()}
       </Button>
 

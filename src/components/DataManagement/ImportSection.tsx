@@ -1,7 +1,6 @@
 import { memo } from 'react';
 import { Button } from '@/components/ui/button';
-import { Loader2 } from 'lucide-react';
-import { Upload, File, X } from 'lucide-react';
+import { Loader2, Upload, File, X } from 'lucide-react';
 
 import { useDataImport } from '../../hooks/useDataImport';
 import { useDataImportDropZone } from '../../hooks/useDataImportDropZone';
