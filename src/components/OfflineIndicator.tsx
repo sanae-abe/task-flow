@@ -9,20 +9,18 @@ const OfflineIndicator: React.FC = () => {
     return null; // オンライン状態で過去にオフラインになったことがない場合は表示しない
   }
 
+  // Dynamic className generation for indicator
+  const indicatorClassName = `
+    flex items-center gap-2 px-3 py-1 mr-1 border rounded-md transition-all duration-300 ease-in-out right-[10px]
+    ${isOffline
+      ? "border-red-600 text-red-600"
+      : "border-green-600 text-white"
+    }
+    ${wasOffline && isOnline ? "animate-slide-in" : ""}
+  `.trim().replace(/\s+/g, ' ');
+
   return (
-    <div
-      className="flex items-center gap-2 px-3 py-1 mr-1 border rounded-md transition-all duration-300 ease-in-out"
-      style={{
-        right: "10px",
-        borderColor: isOffline
-          ? "rgb(218 54 51)"
-          : "rgb(22 163 74)",
-        color: isOffline
-          ? "rgb(218 54 51)"
-          : "rgb(255 255 255)",
-        animation: wasOffline && isOnline ? "slideIn 0.3s ease" : "none",
-      }}
-    >
+    <div className={indicatorClassName}>
       {isOffline ? <CloudOff size={16} /> : <Check size={16} />}
       <span className="text-sm font-bold">
         {isOffline ? "オフライン" : "オンラインに復帰しました"}
@@ -37,6 +35,9 @@ const OfflineIndicator: React.FC = () => {
             opacity: 1;
             transform: translateX(0);
           }
+        }
+        .animate-slide-in {
+          animation: slideIn 0.3s ease;
         }
       `}</style>
     </div>

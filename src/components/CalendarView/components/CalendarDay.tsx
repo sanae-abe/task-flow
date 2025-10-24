@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from "react";
+import React, { useCallback } from "react";
 import { useDroppable } from "@dnd-kit/core";
 
 import type { Task } from "../../../types";
@@ -24,67 +24,29 @@ const CalendarDay: React.FC<CalendarDayProps> = React.memo(
       },
     });
 
-    const dayStyles = useMemo(
-      () => ({
-        minHeight: "120px",
-        backgroundColor: isCurrentMonth
-          ? "hsl(var(--background))"
-          : "rgb(245 245 245)",
-        borderRadius: 0,
-        padding: "8px",
-        position: "relative" as const,
-        overflow: "hidden",
-        border: isOver
-          ? "1px dashed rgb(37 99 235)"
-          : "1px solid transparent",
-        transition: "border-color 200ms ease",
-      }),
-      [isCurrentMonth, isOver],
-    );
+    // Dynamic className generation for day container
+    const dayClassName = `
+      min-h-[120px] rounded-none p-2 relative overflow-hidden transition-colors duration-200 ease
+      ${isCurrentMonth
+        ? "bg-background"
+        : "bg-gray-100"
+      }
+      ${isOver
+        ? "border border-dashed border-blue-600"
+        : "border border-transparent"
+      }
+    `.trim().replace(/\s+/g, ' ');
 
-    const headerStyles = useMemo(
-      () => ({
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        minHeight: "24px",
-        marginBottom: "8px",
-      }),
-      [],
-    );
-
-    const dayNumberStyles = useMemo(
-      () => ({
-        fontSize: "12px",
-        fontWeight: "400",
-        color: isToday
-          ? "white"
-          : isCurrentMonth
-            ? "var(--fg-default)"
-            : "var(--fg-muted)",
-        ...(isToday && {
-          backgroundColor: "var(--primary)",
-          borderRadius: "50%",
-          width: "24px",
-          height: "24px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }),
-      }),
-      [isToday, isCurrentMonth],
-    );
-
-    const tasksContainerStyles = useMemo(
-      () => ({
-        display: "flex",
-        flexDirection: "column" as const,
-        gap: "2px",
-        maxHeight: "80px",
-        overflow: "hidden",
-      }),
-      [],
-    );
+    // Dynamic className generation for day number
+    const dayNumberClassName = `
+      text-xs font-normal
+      ${isToday
+        ? "text-white bg-primary rounded-full w-6 h-6 flex items-center justify-center"
+        : isCurrentMonth
+          ? "text-foreground"
+          : "text-muted-foreground"
+      }
+    `.trim().replace(/\s+/g, ' ');
 
     const handleTaskClick = useCallback(
       (task: Task | VirtualRecurringTask) => {
@@ -104,16 +66,16 @@ const CalendarDay: React.FC<CalendarDayProps> = React.memo(
     );
 
     return (
-      <div ref={setNodeRef} style={dayStyles} onClick={handleDateClick}>
-        <div style={headerStyles}>
-          <span style={dayNumberStyles}>{date.getDate()}</span>
+      <div ref={setNodeRef} className={dayClassName} onClick={handleDateClick}>
+        <div className="flex justify-between items-center min-h-6 mb-2">
+          <span className={dayNumberClassName}>{date.getDate()}</span>
           {tasks.length > 3 && (
             <span className="text-xs text-muted-foreground">
               他 {tasks.length - 3} 件
             </span>
           )}
         </div>
-        <div style={tasksContainerStyles}>
+        <div className="flex flex-col gap-0.5 max-h-20 overflow-hidden">
           {tasks.slice(0, 3).map((task) => (
             <CalendarTask
               key={task.id}

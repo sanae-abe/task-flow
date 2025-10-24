@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { useDraggable } from "@dnd-kit/core";
 import { RotateCcw } from "lucide-react";
 
@@ -25,30 +25,20 @@ const CalendarTask: React.FC<CalendarTaskProps> = React.memo(
       disabled: isVirtual, // 仮想タスクはドラッグ無効
     });
 
-    const taskItemStyles = useMemo(
-      () => ({
-        fontSize: "13px",
-        padding: "2px 8px",
-        borderRadius: "6px",
-        backgroundColor: isVirtual
-          ? "rgb(229 231 235)"
-          : "rgb(219 234 254)",
-        color: isVirtual ? "rgb(107 114 128)" : "rgb(37 99 235)",
-        cursor: isVirtual ? "pointer" : isDragging ? "grabbing" : "grab",
-        whiteSpace: "nowrap" as const,
-        overflow: "hidden",
-        textOverflow: "ellipsis",
-        opacity: isDragging ? 0.5 : isVirtual ? 0.7 : 1,
-        transition: "opacity 200ms, transform 200ms",
-        border: isVirtual ? "1px dashed rgb(209 213 219)" : "none",
-      }),
-      [isDragging, isVirtual],
-    );
+    // Dynamic className generation for task item
+    const taskItemClassName = `
+      text-[13px] px-2 py-0.5 rounded-md whitespace-nowrap overflow-hidden text-ellipsis transition-opacity duration-200
+      ${isVirtual
+        ? "bg-gray-200 text-gray-500 border border-dashed border-gray-300 opacity-70 cursor-pointer"
+        : "bg-blue-100 text-blue-600 border-none cursor-grab"
+      }
+      ${isDragging && !isVirtual ? "opacity-50 cursor-grabbing" : ""}
+    `.trim().replace(/\s+/g, ' ');
 
     return (
       <div
         ref={setNodeRef}
-        style={taskItemStyles}
+        className={taskItemClassName}
         // 仮想タスクの場合はドラッグ関連の属性を無効化
         // eslint-disable-next-line react/jsx-props-no-spreading
         {...(isVirtual ? {} : listeners)}

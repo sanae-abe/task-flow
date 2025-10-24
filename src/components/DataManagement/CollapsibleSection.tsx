@@ -36,7 +36,11 @@ export const CollapsibleSection = memo<CollapsibleSectionProps>(({
       >
         <div className="flex items-center gap-2">
           <div
-            className={`flex items-center justify-center w-6 h-6 rounded-sm bg-[${iconBg}] color-[${iconColor}]`}
+            className="flex items-center justify-center w-6 h-6 rounded-sm"
+            style={{
+              backgroundColor: iconBg,
+              color: iconColor,
+            }}
           >
             <Icon size={14} />
           </div>
