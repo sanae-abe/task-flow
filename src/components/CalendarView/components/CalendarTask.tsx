@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { useDraggable } from "@dnd-kit/core";
-import { SyncIcon } from "@primer/octicons-react";
+import { RotateCcw } from "lucide-react";
 
 import type { Task } from "../../../types";
 import {
@@ -69,7 +69,7 @@ const CalendarTask: React.FC<CalendarTaskProps> = React.memo(
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-          {task.recurrence?.enabled && <SyncIcon size={10} />}
+          {task.recurrence?.enabled && <RotateCcw size={10} />}
           <span style={{ flex: 1, minWidth: 0 }}>{task.title}</span>
         </div>
       </div>
