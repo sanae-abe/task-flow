@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { PlusIcon, TrashIcon, GrabberIcon, ChevronUpIcon, ChevronDownIcon, CheckIcon } from '@primer/octicons-react';
+import { Plus, Trash2, GripVertical, ChevronUp, ChevronDown, Check } from 'lucide-react';
 import {
   DndContext,
   closestCenter,
@@ -109,7 +109,7 @@ const SortableColumnItem: React.FC<SortableColumnItemProps> = ({
         {...listeners}
         className="flex items-center cursor-grab active:cursor-grabbing"
       >
-        <GrabberIcon size={16} />
+        <GripVertical size={16} />
       </div>
       <div className="flex-1">
         <Input
@@ -132,7 +132,7 @@ const SortableColumnItem: React.FC<SortableColumnItemProps> = ({
           aria-label={`${column.name}を上に移動`}
           className="px-2"
         >
-          <ChevronUpIcon size={16} />
+          <ChevronUp size={16} />
         </Button>
         <Button
           variant="ghost"
@@ -142,7 +142,7 @@ const SortableColumnItem: React.FC<SortableColumnItemProps> = ({
           aria-label={`${column.name}を下に移動`}
           className="px-2"
         >
-          <ChevronDownIcon size={16} />
+          <ChevronDown size={16} />
         </Button>
         <Button
           variant="ghost"
@@ -152,7 +152,7 @@ const SortableColumnItem: React.FC<SortableColumnItemProps> = ({
           aria-label={`${column.name}を削除`}
           className="text-red-600 hover:text-red-700"
         >
-          <TrashIcon size={16} />
+          <Trash2 size={16} />
         </Button>
       </div>
     </div>
@@ -472,7 +472,7 @@ export const BoardSettingsPanel: React.FC = () => {
                 onClick={handleAddColumn}
                 aria-label="新しいカラムを追加"
               >
-                <PlusIcon size={16} className="mr-2" />
+                <Plus size={16} className="mr-2" />
                 追加
               </Button>
             </div>
@@ -490,7 +490,7 @@ export const BoardSettingsPanel: React.FC = () => {
             variant="default"
             onClick={handleSave}
           >
-            <CheckIcon size={16} className="mr-2" />
+            <Check size={16} className="mr-2" />
             設定を保存
           </Button>
           <div className="flex flex-col gap-1">

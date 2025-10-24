@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { SearchIcon, StarIcon, StarFillIcon } from '@primer/octicons-react';
+import { Search, Star } from 'lucide-react';
 import type { TemplateCategory } from '../../types/template';
 import { TEMPLATE_CATEGORIES } from './TemplateCategorySelector';
 
@@ -30,7 +30,7 @@ const TemplateSearchFilter: React.FC<TemplateSearchFilterProps> = ({
   <div className="flex gap-2 flex-wrap items-center p-3 bg-gray-50 rounded-md border border-gray-200">
     {/* 検索 */}
     <div className="flex-1 min-w-[200px] relative">
-      <SearchIcon size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+      <Search size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
       <Input
         placeholder="テンプレートを検索..."
         value={searchQuery}
@@ -61,7 +61,7 @@ const TemplateSearchFilter: React.FC<TemplateSearchFilterProps> = ({
       onClick={() => onFilterFavoriteChange(!filterFavorite)}
       className="flex items-center gap-2"
     >
-      {filterFavorite ? <StarFillIcon size={16} /> : <StarIcon size={16} />}
+      <Star size={16} fill={filterFavorite ? "currentColor" : "none"} />
       お気に入り
     </Button>
   </div>

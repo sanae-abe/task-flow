@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { StarIcon, StarFillIcon, PencilIcon, TrashIcon } from '@primer/octicons-react';
+import { Star, Edit, Trash2 } from 'lucide-react';
 import type { TaskTemplate } from '../../types/template';
 import { TEMPLATE_CATEGORIES } from './TemplateCategorySelector';
 
@@ -38,7 +38,7 @@ const TemplateTableRow: React.FC<TemplateTableRowProps> = ({
         <div className="flex items-center gap-1">
           {template.isFavorite && (
             <div className="text-yellow-700">
-              <StarFillIcon size={14} />
+              <Star size={14} fill="currentColor" />
             </div>
           )}
           <span className="font-semibold text-sm">
@@ -83,7 +83,7 @@ const TemplateTableRow: React.FC<TemplateTableRowProps> = ({
             template.isFavorite ? "text-yellow-700" : "text-gray-600"
           )}
         >
-          {template.isFavorite ? <StarFillIcon size={16} /> : <StarIcon size={16} />}
+          <Star size={16} fill={template.isFavorite ? "currentColor" : "none"} />
         </Button>
         <Button
           variant="ghost"
@@ -92,7 +92,7 @@ const TemplateTableRow: React.FC<TemplateTableRowProps> = ({
           onClick={() => onEdit(template)}
           className="p-1 h-auto min-w-0"
         >
-          <PencilIcon size={16} />
+          <Edit size={16} />
         </Button>
         <Button
           variant="ghost"
@@ -101,7 +101,7 @@ const TemplateTableRow: React.FC<TemplateTableRowProps> = ({
           onClick={() => onDelete(template)}
           className="p-1 h-auto min-w-0"
         >
-          <TrashIcon size={16} />
+          <Trash2 size={16} />
         </Button>
       </div>
     </div>
