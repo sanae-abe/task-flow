@@ -8,10 +8,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  KebabHorizontalIcon,
-  HistoryIcon,
-  TrashIcon,
-} from "@primer/octicons-react";
+  MoreHorizontal,
+  RotateCcw,
+  Trash2,
+} from "lucide-react";
 import { LoadingButton } from "../../shared/LoadingButton";
 import { MESSAGES } from "../../../constants/recycleBin";
 import { TaskActionsContainer } from "../RecycleBinView.styles";
@@ -68,18 +68,18 @@ export const RecycleBinTaskActions: React.FC<RecycleBinTaskActionsProps> = ({
             size="sm"
             variant="outline"
           >
-            <KebabHorizontalIcon size={16} className="mr-2" />
+            <MoreHorizontal size={16} className="mr-2" />
             操作
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuItem onClick={() => onRestore(taskId)}>
-            <HistoryIcon size={16} className="mr-2" />
+            <RotateCcw size={16} className="mr-2" />
             復元
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => onDeleteConfirm(taskId)}>
-            <TrashIcon size={16} className="mr-2" />
+            <Trash2 size={16} className="mr-2" />
             完全に削除
           </DropdownMenuItem>
         </DropdownMenuContent>
