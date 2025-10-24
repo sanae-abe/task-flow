@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconButton } from '@primer/react';
+import { Button } from '@/components/ui/button';
 import {
   BoldIcon,
   ItalicIcon,
@@ -51,80 +51,100 @@ export const Toolbar: React.FC<ToolbarProps> = ({
       }}
     >
       <div style={{ display: 'flex', gap: "4px" }}>
-        <IconButton
-          size="small"
-          variant="invisible"
-          icon={BoldIcon}
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={onBold}
           aria-label="太字 (Ctrl+B)"
-        />
-        <IconButton
-          size="small"
-          variant="invisible"
-          icon={ItalicIcon}
+          className="p-1 h-auto min-w-0"
+        >
+          <BoldIcon size={16} />
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={onItalic}
           aria-label="斜体 (Ctrl+I)"
-        />
-        <IconButton
-          size="small"
-          variant="invisible"
-          icon={UnderlineIcon}
+          className="p-1 h-auto min-w-0"
+        >
+          <ItalicIcon size={16} />
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={onUnderline}
           aria-label="下線 (Ctrl+U)"
-        />
-        <IconButton
-          size="small"
-          variant="invisible"
-          icon={StrikethroughIcon}
+          className="p-1 h-auto min-w-0"
+        >
+          <UnderlineIcon />
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={onStrikethrough}
           aria-label="取り消し線 (Ctrl+Shift+X)"
-        />
+          className="p-1 h-auto min-w-0"
+        >
+          <StrikethroughIcon />
+        </Button>
         <div style={{ width: '1px', background: 'var(--bgColor-muted)', marginInline: "4px" }} />
-        <IconButton
-          size="small"
-          variant="invisible"
-          icon={LinkIcon}
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={onLink}
           aria-label="リンク (Ctrl+K)"
-        />
-        <IconButton
-          size="small"
-          variant="invisible"
-          icon={CodeIcon}
+          className="p-1 h-auto min-w-0"
+        >
+          <LinkIcon size={16} />
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={onCode}
           aria-label="インラインコード (Ctrl+`)"
-        />
-        <IconButton
-          size="small"
-          variant="invisible"
-          icon={FileCodeIcon}
+          className="p-1 h-auto min-w-0"
+        >
+          <CodeIcon size={16} />
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={onCodeBlock}
           aria-label="コードブロック (Ctrl+Shift+`)"
-        />
+          className="p-1 h-auto min-w-0"
+        >
+          <FileCodeIcon size={16} />
+        </Button>
         <div style={{ width: '1px', background: 'var(--bgColor-muted)', marginInline: "4px" }} />
-        <IconButton
-          size="small"
-          variant="invisible"
-          icon={ListUnorderedIcon}
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={onUnorderedList}
           aria-label="箇条書きリスト"
-        />
-        <IconButton
-          size="small"
-          variant="invisible"
-          icon={ListOrderedIcon}
+          className="p-1 h-auto min-w-0"
+        >
+          <ListUnorderedIcon size={16} />
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={onOrderedList}
           aria-label="番号付きリスト"
-        />
+          className="p-1 h-auto min-w-0"
+        >
+          <ListOrderedIcon size={16} />
+        </Button>
         <div style={{ width: '1px', background: 'var(--bgColor-muted)', marginInline: "4px" }} />
-        <IconButton
+        <Button
           ref={emojiButtonRef}
-          size="small"
-          variant="invisible"
-          icon={SmileyIcon}
+          variant="ghost"
+          size="sm"
           onClick={onEmoji}
           aria-label="絵文字を挿入"
-        />
+          className="p-1 h-auto min-w-0"
+        >
+          <SmileyIcon size={16} />
+        </Button>
       </div>
     </div>
   );
