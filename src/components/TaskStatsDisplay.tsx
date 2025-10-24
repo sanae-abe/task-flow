@@ -31,7 +31,7 @@ const UrgentLabel: React.FC<UrgentLabelProps> = ({
     variant={variant}
     icon={IconComponent}
     size="small"
-    sx={{ border: "none", bg: "transparent" }}
+    className="border-none bg-transparent"
   >
     {label}: {count}
   </StatusBadge>

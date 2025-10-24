@@ -1,6 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { Box } from '@primer/react';
-import { ReplyIcon, TrashIcon } from '@primer/octicons-react';
+import { RotateCcw, Trash2 } from 'lucide-react';
 import UnifiedDialog from '../../shared/Dialog/UnifiedDialog';
 import type { RecycleBinItemWithMeta } from '../../../types/recycleBin';
 import type { DialogAction } from '../../../types/unified-dialog';
@@ -9,7 +8,6 @@ import { HeroSection } from './DetailDialog/components/HeroSection';
 import { DescriptionCard } from './DetailDialog/components/DescriptionCard';
 import { MetadataGrid } from './DetailDialog/components/MetadataGrid';
 import { WarningCard } from './DetailDialog/components/WarningCard';
-import { spacing } from './DetailDialog/styles/designTokens';
 
 interface RecycleBinItemDetailDialogProps {
   item: RecycleBinItemWithMeta | null;
@@ -79,7 +77,7 @@ export const RecycleBinItemDetailDialog: React.FC<RecycleBinItemDetailDialogProp
       variant: 'primary',
       disabled: !item?.canRestore || isLoading,
       loading: loadingAction === 'restore',
-      icon: ReplyIcon,
+      icon: RotateCcw,
     },
     {
       label: loadingAction === 'delete' ? '削除中...' : '完全に削除',
@@ -87,7 +85,7 @@ export const RecycleBinItemDetailDialog: React.FC<RecycleBinItemDetailDialogProp
       variant: 'danger',
       disabled: isLoading,
       loading: loadingAction === 'delete',
-      icon: TrashIcon,
+      icon: Trash2,
     },
   ], [handleRestore, handleDelete, item?.canRestore, isLoading, loadingAction]);
 
@@ -104,13 +102,7 @@ export const RecycleBinItemDetailDialog: React.FC<RecycleBinItemDetailDialogProp
       size="large"
       actions={actions}
     >
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: spacing.md,
-        }}
-      >
+      <div className="flex flex-col gap-4">
         {/* Hero Section - タイトルエリア */}
         <HeroSection item={item} />
 
@@ -125,7 +117,7 @@ export const RecycleBinItemDetailDialog: React.FC<RecycleBinItemDetailDialogProp
           item={item}
           retentionDays={recycleBinSettings.retentionDays}
         />
-      </Box>
+      </div>
     </UnifiedDialog>
   );
 };
