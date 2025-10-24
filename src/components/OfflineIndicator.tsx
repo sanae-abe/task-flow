@@ -1,5 +1,4 @@
 import React from "react";
-import { Text } from "@primer/react";
 import { CloudOfflineIcon, CheckIcon } from "@primer/octicons-react";
 import { useOffline } from "../hooks/useOffline";
 
@@ -12,33 +11,22 @@ const OfflineIndicator: React.FC = () => {
 
   return (
     <div
+      className="flex items-center gap-2 px-3 py-1 mr-1 border rounded-md transition-all duration-300 ease-in-out"
       style={{
         right: "10px",
-        borderRadius: "6px",
-        border: "1px solid",
         borderColor: isOffline
           ? "var(--bgColor-severe-emphasis)"
           : "var(--fgColor-success)",
         color: isOffline
           ? "var(--bgColor-severe-emphasis)"
           : "var(--fgColor-onEmphasis)",
-        padding: "4px 12px",
-        display: "flex",
-        alignItems: "center",
-        gap: "8px",
-        marginRight: "4px",
-        transition: "all 0.3s ease",
         animation: wasOffline && isOnline ? "slideIn 0.3s ease" : "none",
       }}
     >
       {isOffline ? <CloudOfflineIcon size={16} /> : <CheckIcon size={16} />}
-      <Text
-        fontSize={1}
-        fontWeight="bold"
-        color={isOffline ? "severeEmphasis.fg" : "onEmphasis.fg"}
-      >
+      <span className="text-sm font-bold">
         {isOffline ? "オフライン" : "オンラインに復帰しました"}
-      </Text>
+      </span>
       <style>{`
         @keyframes slideIn {
           from {

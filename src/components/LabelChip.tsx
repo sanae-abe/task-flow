@@ -1,6 +1,6 @@
 import { XIcon } from "@primer/octicons-react";
-import { Box, Text } from "@primer/react";
 import { memo, useCallback, useMemo } from "react";
+import { cn } from "@/lib/utils";
 
 import type { Label } from "../types";
 import { getLabelColors } from "../utils/labelHelpers";
@@ -45,36 +45,12 @@ const LabelChip = memo<LabelChipProps>(
     );
 
     // スタイルオブジェクトをメモ化してパフォーマンス向上
-    const chipStyles = useMemo(
+    const chipStyle = useMemo(
       () => ({
-        display: "inline-flex",
-        alignItems: "center",
-        bg: colors.bg,
+        backgroundColor: colors.bg,
         color: colors.color,
-        px: 2,
-        py: "3px",
-        borderRadius: 1,
-        fontSize: 0,
-        fontWeight: "400",
-        gap: 1,
-        border: "none",
-        cursor: clickable ? "pointer" : "default",
-        outline: "none",
-        "&:hover": clickable
-          ? {
-              opacity: 0.8,
-              transform: "scale(1.02)",
-            }
-          : {},
-        "&:focus-visible": clickable
-          ? {
-              outline: "2px solid",
-              outlineColor: "accent.emphasis",
-              outlineOffset: "2px",
-            }
-          : {},
       }),
-      [colors.bg, colors.color, clickable],
+      [colors.bg, colors.color],
     );
 
     const removeButtonStyles = useMemo(
@@ -88,17 +64,24 @@ const LabelChip = memo<LabelChipProps>(
       [colors.color],
     );
 
+    const Element = clickable ? "button" : "div";
+
     return (
-      <Box
-        as={clickable ? "button" : "div"}
+      <Element
         onClick={handleClick}
         onKeyDown={handleKeyDown}
         tabIndex={clickable ? 0 : undefined}
         role={clickable ? "button" : undefined}
         aria-label={clickable ? `${label.name}ラベル` : undefined}
-        sx={chipStyles}
+        className={cn(
+          "inline-flex items-center px-2 py-1 rounded text-xs font-normal gap-1 border-none outline-none",
+          clickable
+            ? "cursor-pointer hover:opacity-80 hover:scale-[1.02] focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500 focus-visible:outline-offset-2 transition-all duration-150"
+            : "cursor-default"
+        )}
+        style={chipStyle}
       >
-        <Text sx={{ fontSize: 0 }}>{label.name}</Text>
+        <span className="text-xs">{label.name}</span>
         {showRemove && onRemove && (
           <IconButton
             icon={XIcon}
@@ -109,7 +92,7 @@ const LabelChip = memo<LabelChipProps>(
             sx={removeButtonStyles}
           />
         )}
-      </Box>
+      </Element>
     );
   },
 );

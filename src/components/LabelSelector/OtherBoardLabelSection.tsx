@@ -1,4 +1,4 @@
-import { ActionList } from "@primer/react";
+import { DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { CopyIcon } from "@primer/octicons-react";
 import React from "react";
 
@@ -20,23 +20,18 @@ export const OtherBoardLabelSection: React.FC<OtherBoardLabelSectionProps> = ({
 
   return (
     <>
-      <ActionList.Divider />
-      <ActionList.Group title="他のボード">
-        {labels.map((label) => (
-          <ActionList.Item
-            key={label.id}
-            onSelect={() => onCopyAndSelectLabel(label)}
-          >
-            <ActionList.LeadingVisual>
-              <LabelColorCircle color={label.color} />
-            </ActionList.LeadingVisual>
-            {label.name}
-            <ActionList.TrailingVisual>
-              <CopyIcon size={16} />
-            </ActionList.TrailingVisual>
-          </ActionList.Item>
-        ))}
-      </ActionList.Group>
+      <DropdownMenuSeparator />
+      <div className="px-2 py-1.5 text-sm font-semibold text-gray-700">他のボード</div>
+      {labels.map((label) => (
+        <DropdownMenuItem
+          key={label.id}
+          onClick={() => onCopyAndSelectLabel(label)}
+        >
+          <LabelColorCircle color={label.color} />
+          <span className="ml-2 flex-1">{label.name}</span>
+          <CopyIcon size={16} className="ml-auto" />
+        </DropdownMenuItem>
+      ))}
     </>
   );
 };

@@ -1,6 +1,6 @@
 import type { Icon } from '@primer/octicons-react';
-import { Text } from '@primer/react';
 import { memo } from 'react';
+import { cn } from '@/lib/utils';
 
 import type { StatusBadgeVariant, StatusBadgeSize } from '../../types/shared';
 
@@ -21,7 +21,7 @@ interface StatusBadgeProps {
 
 /**
  * 統一された状態表示バッジコンポーネント
- * 
+ *
  * 期限、ラベル、統計表示などの状態を一貫したデザインで表示します。
  * Primerデザインシステムの色トークンを使用してアクセシビリティを確保。
  */
@@ -34,99 +34,71 @@ const StatusBadge = memo<StatusBadgeProps>(({
   sx
 }) => {
   // バリアント別の色定義
-  const getVariantColors = () => {
+  const getVariantColor = (): string => {
     switch (variant) {
       case 'danger':
-        return {
-          color: 'danger.fg',
-          cssColor: '#d1242f'
-        };
+        return '#d1242f';
       case 'warning':
-        return {
-          color: 'attention.fg',
-          cssColor: '#9a6700'
-        };
+        return '#9a6700';
       case 'success':
-        return {
-          color: 'success.fg',
-          cssColor: '#1a7f37'
-        };
+        return '#1a7f37';
       case 'info':
-        return {
-          color: 'accent.fg',
-          cssColor: '#0969da'
-        };
+        return '#0969da';
       case 'neutral':
-        return {
-          color: 'fg.muted',
-          cssColor: '#656d76'
-        };
+        return '#656d76';
       case 'emphasis':
-        return {
-          color: 'fg.onEmphasis',
-          cssColor: '#ffffff'
-        };
+        return '#ffffff';
       default:
-        return {
-          color: 'fg.default',
-          cssColor: '#1f2328'
-        };
+        return '#1f2328';
     }
   };
 
   // サイズ別のスタイル定義
-  const getSizeStyles = () => {
+  const getSizeClasses = (): { containerClass: string; textClass: string; iconSize: number } => {
     switch (size) {
       case 'small':
         return {
-          px: 1,
-          py: 0,
-          fontSize: 0,
+          containerClass: 'px-1 py-0',
+          textClass: 'text-xs',
           iconSize: 10
         };
       case 'large':
         return {
-          px: 3,
-          py: 2,
-          fontSize: 2,
+          containerClass: 'px-3 py-2',
+          textClass: 'text-base',
           iconSize: 16
         };
       default: // medium
         return {
-          px: 2,
-          py: 1,
-          fontSize: 1,
+          containerClass: 'px-2 py-1',
+          textClass: 'text-sm',
           iconSize: 12
         };
     }
   };
 
-  const colors = getVariantColors();
-  const sizeStyles = getSizeStyles();
+  const color = getVariantColor();
+  const { containerClass, textClass, iconSize } = getSizeClasses();
 
   return (
     <div
+      className={cn(
+        'inline-flex items-center self-start',
+        containerClass,
+        IconComponent ? 'gap-1' : ''
+      )}
       style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: IconComponent ? '4px' : 0,
-        color: colors.cssColor,
+        color,
         fontWeight,
-        alignSelf: 'flex-start',
         ...sx
       }}
     >
       {IconComponent && (
-        <IconComponent size={sizeStyles.iconSize} />
+        <IconComponent size={iconSize} />
       )}
-      <Text 
-        sx={{ 
-          fontSize: sizeStyles.fontSize, 
-          color: colors.color,
-        }}
-      >
+      <span className={textClass}>
         {children}
-      </Text>
+      </span>
     </div>
   );
 });

@@ -1,4 +1,4 @@
-import { ActionList } from "@primer/react";
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { CheckIcon } from "@primer/octicons-react";
 import React from "react";
 
@@ -21,26 +21,23 @@ export const CurrentBoardLabelSection: React.FC<CurrentBoardLabelSectionProps> =
   }
 
   return (
-    <ActionList.Group title="現在のボード">
+    <>
+      <div className="px-2 py-1.5 text-sm font-semibold text-gray-700">現在のボード</div>
       {labels.map((label) => {
         const isSelected = selectedLabelIds.has(label.id);
         return (
-          <ActionList.Item
+          <DropdownMenuItem
             key={label.id}
-            onSelect={() => onToggleLabel(label)}
+            onClick={() => onToggleLabel(label)}
           >
-            <ActionList.LeadingVisual>
-              <LabelColorCircle color={label.color} />
-            </ActionList.LeadingVisual>
-            {label.name}
+            <LabelColorCircle color={label.color} />
+            <span className="ml-2 flex-1">{label.name}</span>
             {isSelected && (
-              <ActionList.TrailingVisual>
-                <CheckIcon size={16} />
-              </ActionList.TrailingVisual>
+              <CheckIcon size={16} className="ml-auto" />
             )}
-          </ActionList.Item>
+          </DropdownMenuItem>
         );
       })}
-    </ActionList.Group>
+    </>
   );
 };

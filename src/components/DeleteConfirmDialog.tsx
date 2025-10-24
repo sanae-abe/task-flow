@@ -1,4 +1,3 @@
-import { Text } from "@primer/react";
 import React, { useMemo, useCallback } from "react";
 
 import UnifiedDialog from "./shared/Dialog/UnifiedDialog";
@@ -46,7 +45,7 @@ const DeleteConfirmDialog: React.FC<DeleteConfirmDialogProps> = ({
       variant="modal"
       actions={actions}
     >
-      <Text>「{taskTitle}」を削除しますか？</Text>
+      <p>「{taskTitle}」を削除しますか？</p>
     </UnifiedDialog>
   );
 };

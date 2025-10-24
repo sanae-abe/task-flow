@@ -1,4 +1,3 @@
-import { Text } from "@primer/react";
 import React, { memo } from "react";
 
 interface ContentBoxProps {
@@ -23,9 +22,9 @@ const ContentBox = memo<ContentBoxProps>(
       }}
     >
       {isEmpty && emptyText ? (
-        <Text sx={{ fontSize: 1, color: "fg.muted", fontStyle: "italic" }}>
+        <span className="text-sm text-gray-500 italic">
           {emptyText}
-        </Text>
+        </span>
       ) : (
         children
       )}

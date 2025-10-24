@@ -1,5 +1,4 @@
 import { AlertIcon, ClockIcon, XCircleIcon } from "@primer/octicons-react";
-import { Text } from "@primer/react";
 import { memo } from "react";
 
 import {
@@ -55,47 +54,30 @@ const getBadgeConfig = (
   return null;
 };
 
-const getContainerStyles = (
+const getTextColor = (
   isOverdue: boolean,
   isDueToday: boolean,
   isDueTomorrow: boolean,
-) => ({
-  bg: "transparent",
-  color: isOverdue
-    ? "danger.emphasis"
-    : isDueToday
-      ? "attention.emphasis"
-      : isDueTomorrow
-        ? "accent.emphasis"
-        : "inherit",
-});
+): string => {
+  if (isOverdue) return "text-red-600";
+  if (isDueToday) return "text-yellow-600";
+  if (isDueTomorrow) return "text-blue-600";
+  return "text-inherit";
+};
 
 const DueDateDisplay = memo<DueDateDisplayProps>(
   ({ dueDate, showYear = false }) => {
     const { isOverdue, isDueToday, isDueTomorrow } = getDateStatus(dueDate);
     const badgeConfig = getBadgeConfig(isOverdue, isDueToday, isDueTomorrow);
-    const containerStyles = getContainerStyles(
-      isOverdue,
-      isDueToday,
-      isDueTomorrow,
-    );
+    const textColorClass = getTextColor(isOverdue, isDueToday, isDueTomorrow);
     const formattedDate = showYear
       ? formatDueDateWithYear(dueDate)
       : formatDueDate(dueDate);
 
     return (
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "8px",
-          ...containerStyles,
-        }}
-      >
-        <div
-          style={{ display: "flex", alignItems: "center", gap: "8px", flex: 1 }}
-        >
-          <Text sx={{ fontSize: 1 }}>{formattedDate}</Text>
+      <div className={`flex items-center gap-2 ${textColorClass}`}>
+        <div className="flex items-center gap-2 flex-1">
+          <span className="text-sm">{formattedDate}</span>
         </div>
         {badgeConfig && (
           <StatusBadge
