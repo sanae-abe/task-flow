@@ -26,7 +26,7 @@ export const CollapsibleSection = memo<CollapsibleSectionProps>(({
   children,
   defaultOpen = false
 }) => (
-  <div className="flex flex-col" style={{ gap: '12px' }}>
+  <div className="flex flex-col gap-3">
     <details
       open={defaultOpen}
       style={{
