@@ -168,9 +168,9 @@ const UniversalDropZone: React.FC<UniversalDropZoneProps> = ({
         multiple={multiple}
         accept={allowedTypes.join(",")}
         onChange={onFileInputChange}
-        style={{ display: "none" }}
         disabled={isLoading}
         aria-hidden="true"
+        className="hidden"
       />
     </div>
   );

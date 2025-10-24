@@ -34,10 +34,10 @@ const TemplateTableRow: React.FC<TemplateTableRowProps> = ({
       )}
     >
       {/* テンプレート名 */}
-      <div className="flex flex-col" style={{ gap: "4px" }}>
+      <div className="flex flex-col gap-1">
         <div className="flex items-center gap-1">
           {template.isFavorite && (
-            <div style={{ color: 'var(--fgColor-attention)' }}>
+            <div className="text-yellow-700">
               <StarFillIcon size={14} />
             </div>
           )}
@@ -80,7 +80,7 @@ const TemplateTableRow: React.FC<TemplateTableRowProps> = ({
           onClick={() => onToggleFavorite(template)}
           className={cn(
             "p-1 h-auto min-w-0",
-            template.isFavorite ? "text-yellow-600" : "text-gray-600"
+            template.isFavorite ? "text-yellow-700" : "text-gray-600"
           )}
         >
           {template.isFavorite ? <StarFillIcon size={16} /> : <StarIcon size={16} />}

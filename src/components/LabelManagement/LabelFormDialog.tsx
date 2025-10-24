@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { TextInput, FormControl, Select } from '@primer/react';
+import { Input } from '@/components/ui/input';
 
 import type { Label } from '../../types';
 import { useLabel } from '../../contexts/LabelContext';
@@ -167,18 +167,13 @@ const LabelFormDialog: React.FC<LabelFormDialogProps> = ({
       size="medium"
       actions={actions}
     >
-      <div className="flex flex-col" style={{ gap: "16px" }} onKeyDown={handleKeyDown}>
+      <div className="flex flex-col gap-4" onKeyDown={handleKeyDown}>
         {/* プレビューエリア */}
-        <div className="flex flex-col" style={{ gap: "4px" }}>
-          <FormControl.Label sx={{ display: 'block' }}>
+        <div className="flex flex-col gap-1">
+          <label className="block text-sm font-medium">
             プレビュー
-          </FormControl.Label>
-          <div style={{
-            borderRadius: '8px',
-            padding: '16px',
-            border: '1px solid',
-            borderColor: 'var(--borderColor-muted)'
-          }}>
+          </label>
+          <div className="rounded-lg p-4 border border-gray-200">
             <div className="flex justify-center">
               <LabelChip label={previewLabel} />
             </div>
@@ -186,9 +181,9 @@ const LabelFormDialog: React.FC<LabelFormDialogProps> = ({
         </div>
 
         {/* ラベル名入力 */}
-        <FormControl>
-          <FormControl.Label>ラベル名</FormControl.Label>
-          <TextInput
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-medium">ラベル名</label>
+          <Input
             value={formData.name}
             onChange={(e) => {
               setFormData(prev => ({ ...prev, name: e.target.value }));
@@ -198,45 +193,42 @@ const LabelFormDialog: React.FC<LabelFormDialogProps> = ({
               }
             }}
             placeholder="ラベル名を入力"
-            sx={{ width: '100%' }}
-            validationStatus={errors.name ? 'error' : undefined}
+            className="w-full"
             autoFocus
             disabled={isLoading}
           />
           {errors.name && (
             <InlineMessage variant="critical" message={errors.name} size="small" />
           )}
-        </FormControl>
+        </div>
 
         {/* ボード選択 */}
         {enableBoardSelection && mode === 'create' && (
-          <FormControl>
-            <FormControl.Label>作成先ボード</FormControl.Label>
-            <Select
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-medium">作成先ボード</label>
+            <select
               value={formData.boardId || ''}
               onChange={(e) => setFormData(prev => ({ ...prev, boardId: e.target.value }))}
-              sx={{ width: '100%' }}
+              className="w-full h-10 px-3 py-2 border border-input bg-background rounded-md text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               disabled={isLoading}
             >
               {boardState.boards.map(board => (
-                <Select.Option key={board.id} value={board.id}>
+                <option key={board.id} value={board.id}>
                   {board.title}
-                </Select.Option>
+                </option>
               ))}
-            </Select>
-          </FormControl>
+            </select>
+          </div>
         )}
 
         {/* カラーセレクター */}
-        <FormControl>
-          <FormControl.Label>色</FormControl.Label>
-          <div className="mt-2">
-            <ColorSelector
-              selectedColor={formData.color}
-              onColorSelect={(color: string) => setFormData(prev => ({ ...prev, color }))}
-            />
-          </div>
-        </FormControl>
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-medium">色</label>
+          <ColorSelector
+            selectedColor={formData.color}
+            onColorSelect={(color: string) => setFormData(prev => ({ ...prev, color }))}
+          />
+        </div>
       </div>
     </UnifiedDialog>
   );

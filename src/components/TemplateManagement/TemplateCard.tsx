@@ -122,7 +122,7 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
           {/* テンプレート名 */}
           <div className="flex items-center gap-1 mb-1">
             {template.isFavorite && (
-              <div style={{ color: 'var(--fgColor-attention)' }}>
+              <div className="text-yellow-700">
                 <Star size={14} fill="currentColor" />
               </div>
             )}
@@ -165,7 +165,7 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
                 onClick={handleToggleFavorite}
                 aria-label={template.isFavorite ? 'お気に入りから削除' : 'お気に入りに追加'}
                 className={`p-1 h-auto min-w-0 ${
-                  template.isFavorite ? 'text-yellow-600' : 'text-gray-500'
+                  template.isFavorite ? 'text-yellow-700' : 'text-gray-500'
                 }`}
               >
                 {template.isFavorite ? <Star size={16} fill="currentColor" /> : <Star size={16} />}
