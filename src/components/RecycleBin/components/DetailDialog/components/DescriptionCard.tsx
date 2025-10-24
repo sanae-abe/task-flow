@@ -1,7 +1,5 @@
 import React from 'react';
-import { Text, Box } from '@primer/react';
 import type { RecycleBinItem } from '../../../../../types/recycleBin';
-import { spacing, borderRadius } from '../styles/designTokens';
 import LinkifiedText from '../../../../LinkifiedText';
 
 interface DescriptionCardProps {
@@ -23,34 +21,11 @@ export const DescriptionCard: React.FC<DescriptionCardProps> = ({ item }) => {
   }
 
   return (
-    <Box
-      as="section"
-      sx={{
-        p: spacing.md,
-        bg: 'canvas.subtle',
-        border: '1px solid',
-        borderColor: 'border.default',
-        borderRadius: borderRadius.medium,
-
-        // レスポンシブ対応
-        '@media (max-width: 543px)': {
-          p: spacing.sm,
-        },
-      }}
-    >
+    <section className="p-4 max-[543px]:p-2 bg-background border border-border rounded-md">
       {/* セクションヘッダー */}
-      <Text
-        sx={{
-          display: 'block',
-          fontSize: 1,
-          fontWeight: 'bold',
-          color: 'fg.default',
-          margin: 0,
-          mb: spacing.sm,
-        }}
-      >
+      <span className="block text-sm font-bold text-foreground m-0 mb-2">
         説明
-      </Text>
+      </span>
 
       {/* 説明文本文 */}
       <LinkifiedText
@@ -58,6 +33,6 @@ export const DescriptionCard: React.FC<DescriptionCardProps> = ({ item }) => {
       >
         {item.description}
       </LinkifiedText>
-    </Box>
+    </section>
   );
 };
