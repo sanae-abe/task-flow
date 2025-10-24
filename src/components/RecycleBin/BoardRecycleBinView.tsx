@@ -1,4 +1,12 @@
-import { Button, Text, Box, Spinner, ActionMenu, ActionList } from "@primer/react";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Loader2 } from "lucide-react";
 import {
   HistoryIcon,
   TrashIcon,
@@ -107,78 +115,57 @@ const BoardRecycleBinView: React.FC<BoardRecycleBinViewProps> = ({
 
   if (deletedBoards.length === 0) {
     return (
-      <Box sx={{ p: 4, textAlign: "center" }}>
-        <Text sx={{ color: "fg.muted", fontSize: 1 }}>
+      <div className="p-4 text-center">
+        <p className="text-gray-600 text-sm">
           ゴミ箱にボードはありません
-        </Text>
-      </Box>
+        </p>
+      </div>
     );
   }
 
   return (
-    <Box>
-      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
-        <Text as="h3" sx={{ fontSize: 2, fontWeight: "semibold" }}>
+    <div>
+      <div className="flex justify-between items-center mb-3">
+        <h3 className="text-lg font-semibold">
           削除されたボード ({deletedBoards.length}件)
-        </Text>
+        </h3>
         <Button
-          variant="danger"
-          size="small"
+          variant="destructive"
+          size="sm"
           onClick={() => setShowEmptyConfirm(true)}
           disabled={emptyingRecycleBin || deletedBoards.length === 0}
         >
           {emptyingRecycleBin ? (
             <>
-              <Spinner size="small" sx={{ mr: 1 }} />
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               削除中...
             </>
           ) : (
             "ゴミ箱を空にする"
           )}
         </Button>
-      </Box>
+      </div>
 
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+      <div className="flex flex-col gap-2">
         {deletedBoards.map((board) => (
-          <Box
+          <div
             key={board.id}
-            sx={{
-              p: 3,
-              border: "1px solid",
-              borderColor: "border.default",
-              borderRadius: 2,
-              bg: "canvas.subtle",
-            }}
+            className="p-3 border border-gray-200 rounded-md bg-gray-50"
           >
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "flex-start",
-                gap: 3,
-              }}
-            >
-              <Box sx={{ flex: 1, minWidth: 0 }}>
-                <Text
-                  as="h4"
-                  sx={{
-                    fontSize: 1,
-                    fontWeight: "semibold",
-                    mb: 1,
-                    wordBreak: "break-word",
-                  }}
-                >
+            <div className="flex justify-between items-start gap-3">
+              <div className="flex-1 min-w-0">
+                <h4 className="text-sm font-semibold mb-1 break-words">
                   {board.title}
-                </Text>
-                <Text sx={{ fontSize: 0, color: "fg.muted" }}>
+                </h4>
+                <p className="text-xs text-gray-600">
                   削除日時: {new Date(board.deletedAt || "").toLocaleString("ja-JP")}
-                </Text>
-                <Text sx={{ fontSize: 0, color: "fg.muted", mt: 1 }}>
+                </p>
+                <p className="text-xs text-gray-600 mt-1">
                   カラム数: {board.columns.length}個
-                </Text>
-              </Box>
+                </p>
+              </div>
 
-              <Box sx={{ display: "flex", gap: 2, flexShrink: 0 }}>
+              <div className="flex gap-2 flex-shrink-0">
                 {(restoringBoardId === board.id || deletingBoardId === board.id) ? (
                   <LoadingButton
                     disabled
@@ -192,42 +179,37 @@ const BoardRecycleBinView: React.FC<BoardRecycleBinViewProps> = ({
                     処理中
                   </LoadingButton>
                 ) : (
-                  <ActionMenu>
-                    <ActionMenu.Anchor>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
                       <Button
-                        size="small"
-                        leadingVisual={KebabHorizontalIcon}
+                        size="sm"
+                        variant="outline"
                       >
+                        <KebabHorizontalIcon size={16} className="mr-2" />
                         操作
                       </Button>
-                    </ActionMenu.Anchor>
-                    <ActionMenu.Overlay>
-                      <ActionList>
-                        <ActionList.Item onSelect={() => handleRestore(board.id)}>
-                          <ActionList.LeadingVisual>
-                            <HistoryIcon size={16} />
-                          </ActionList.LeadingVisual>
-                          復元
-                        </ActionList.Item>
-                        <ActionList.Divider />
-                        <ActionList.Item
-                          variant="danger"
-                          onSelect={() => setShowDeleteConfirm(board.id)}
-                        >
-                          <ActionList.LeadingVisual>
-                            <TrashIcon size={16} />
-                          </ActionList.LeadingVisual>
-                          完全に削除
-                        </ActionList.Item>
-                      </ActionList>
-                    </ActionMenu.Overlay>
-                  </ActionMenu>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      <DropdownMenuItem onClick={() => handleRestore(board.id)}>
+                        <HistoryIcon size={16} className="mr-2" />
+                        復元
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        onClick={() => setShowDeleteConfirm(board.id)}
+                        className="text-red-600 focus:text-red-600"
+                      >
+                        <TrashIcon size={16} className="mr-2" />
+                        完全に削除
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 )}
-              </Box>
-            </Box>
-          </Box>
+              </div>
+            </div>
+          </div>
         ))}
-      </Box>
+      </div>
 
       <ConfirmDialog
         isOpen={showEmptyConfirm}
@@ -251,7 +233,7 @@ const BoardRecycleBinView: React.FC<BoardRecycleBinViewProps> = ({
           cancelText="キャンセル"
         />
       )}
-    </Box>
+    </div>
   );
 };
 

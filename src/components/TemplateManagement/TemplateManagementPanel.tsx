@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Heading, Text } from '@primer/react';
+import { Button } from '@/components/ui/button';
 import { PlusIcon } from '@primer/octicons-react';
 
 import type { TemplateFormData, TaskTemplate } from '../../types/template';
@@ -113,19 +113,19 @@ const TemplateManagementPanel: React.FC<TemplateManagementPanelProps> = ({ onMes
   // ローディングやエラー状態の表示
   if (loading) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', padding: '24px' }}>
-        <Text sx={{ color: 'fg.muted' }}>テンプレートを読み込み中...</Text>
+      <div className="flex justify-center p-6">
+        <p className="text-gray-600">テンプレートを読み込み中...</p>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div style={{ textAlign: 'center', padding: '24px' }}>
-        <Text sx={{ color: 'danger.fg', fontSize: 1, fontWeight: 'bold' }}>
+      <div className="text-center p-6">
+        <p className="text-red-600 text-sm font-bold">
           {error}
-        </Text>
-        <Button variant="default" sx={{ mt: 2 }} onClick={() => window.location.reload()}>
+        </p>
+        <Button variant="outline" className="mt-2" onClick={() => window.location.reload()}>
           再読み込み
         </Button>
       </div>
@@ -133,19 +133,12 @@ const TemplateManagementPanel: React.FC<TemplateManagementPanelProps> = ({ onMes
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: "12px", paddingBottom: "16px" }}>
+    <div className="flex flex-col gap-3 pb-4">
       {/* ヘッダー */}
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: "8px",
-          flexWrap: 'wrap'
-        }}
-      >
-        <Heading sx={{ fontSize: 2, fontWeight: 'bold' }}>テンプレート管理</Heading>
-        <Button variant="primary" leadingVisual={PlusIcon} onClick={openCreateDialog} size="small">
+      <div className="flex items-center justify-between gap-2 flex-wrap">
+        <h2 className="text-lg font-bold">テンプレート管理</h2>
+        <Button variant="default" size="sm" onClick={openCreateDialog}>
+          <PlusIcon size={16} className="mr-2" />
           テンプレートを作成
         </Button>
       </div>

@@ -333,12 +333,12 @@ gantt
 ## ✅ チェックリスト
 
 ### Phase 1: 基盤整備
-- [ ] Tailwind CSS インストール・設定
-- [ ] Shadcn/UI CLI セットアップ
-- [ ] 基本テーマ・CSS変数定義
-- [ ] 共通Button コンポーネント移行
-- [ ] 共通Input コンポーネント移行
-- [ ] TypeScript 型定義更新
+- [x] Tailwind CSS インストール・設定
+- [x] Shadcn/UI CLI セットアップ
+- [x] 基本テーマ・CSS変数定義
+- [x] 共通Button コンポーネント移行
+- [x] 共通Input コンポーネント移行
+- [x] TypeScript 型定義更新
 
 ### Phase 2: 基本コンポーネント移行
 - [ ] LoadingButton 移行 (src/components/shared/)
