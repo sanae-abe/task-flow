@@ -198,10 +198,7 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
 
       {/* タスク情報 */}
       {!compact && (
-        <div style={{
-          borderColor: 'var(--borderColor-muted)'
-        }}
-        className="pt-2 border-t flex flex-col gap-1">
+        <div className="pt-2 border-t border-border flex flex-col gap-1">
           {/* タスクタイトル */}
           <h4 className="text-sm font-semibold text-gray-900 truncate">
             {template.taskTitle}

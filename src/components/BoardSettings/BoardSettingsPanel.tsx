@@ -484,7 +484,7 @@ export const BoardSettingsPanel: React.FC = () => {
       </div>
 
       {/* 保存ボタン */}
-      <div style={{ paddingTop: "12px", borderTop: "1px solid", borderColor: "var(--borderColor-default)" }}>
+      <div className="pt-3 border-t border-border">
         <div className="flex flex-colum items-end justify-center gap-2">
           <Button
             variant="default"

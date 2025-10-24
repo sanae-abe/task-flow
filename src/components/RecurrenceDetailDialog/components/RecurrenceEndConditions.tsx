@@ -14,11 +14,7 @@ const RecurrenceEndConditions: React.FC<RecurrenceEndConditionsProps> = ({
   onEndDateChange,
   onMaxOccurrencesChange,
 }) => (
-  <div style={{
-    marginTop: "8px",
-    borderTop: "1px solid var(--borderColor-muted)",
-    paddingTop: "16px",
-  }}>
+  <div className="mt-2 border-t border-border pt-4">
     <div className="mb-2">
       <h3 className="text-sm font-semibold flex items-center gap-1">
         <Timer size={16} />
