@@ -1,5 +1,12 @@
-import { ActionMenu, ActionList, Button } from '@primer/react';
-import { memo, useMemo } from 'react';
+import React, { memo, useMemo } from 'react';
+import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 import type { UnifiedMenuProps, MenuItem, MenuGroup, MenuTrigger } from '../../../types/unified-menu';
 import IconButton from '../IconButton';
@@ -51,13 +58,17 @@ const MenuTriggerComponent = memo<{
       );
     
     default: // custom
+      const mappedVariant = variant === 'invisible' ? 'ghost' : 'default';
+      const mappedSize = size === 'small' ? 'sm' : size === 'large' ? 'lg' : 'default';
+
       return (
         <Button
-          variant={variant === 'invisible' ? 'invisible' : 'default'}
-          size={size}
-          leadingVisual={icon}
+          variant={mappedVariant}
+          size={mappedSize}
           aria-label={ariaLabel ?? label}
+          className="flex items-center gap-2"
         >
+          {icon && React.createElement(icon, { size: 16 })}
           {label}
           {children}
         </Button>
@@ -66,74 +77,56 @@ const MenuTriggerComponent = memo<{
 });
 
 /**
- * メニューアイテムレンダラー
+ * メニューアイテムレンダラー (Shadcn/UI DropdownMenu用)
  */
 const renderMenuItem = (item: MenuItem): React.ReactNode => {
   if (item.type === 'divider') {
-    return <ActionList.Divider key={item.id} />;
+    return <DropdownMenuSeparator key={item.id} />;
   }
 
   if (item.hidden) {
     return null;
   }
 
-  const commonProps = {
-    key: item.id,
-    disabled: item.disabled
-  };
-
   switch (item.type) {
     case 'action':
       return (
-        <ActionList.Item
-          {...commonProps}
-          variant={item.variant}
-          onSelect={item.onSelect}
+        <DropdownMenuItem
+          key={item.id}
+          disabled={item.disabled}
+          onClick={item.onSelect}
+          className={item.variant === 'danger' ? 'text-red-600 focus:text-red-600' : ''}
         >
-          {item.icon && (
-            <ActionList.LeadingVisual>
-              <item.icon size={16} />
-            </ActionList.LeadingVisual>
-          )}
+          {item.icon && React.createElement(item.icon, { size: 16, className: "mr-2" })}
           {item.label}
-        </ActionList.Item>
+        </DropdownMenuItem>
       );
 
     case 'selectable':
       return (
-        <ActionList.Item
-          {...commonProps}
-          selected={item.selected}
-          onSelect={() => item.onSelect(item.id)}
+        <DropdownMenuItem
+          key={item.id}
+          disabled={item.disabled}
+          onClick={() => item.onSelect(item.id)}
+          className={item.selected ? 'bg-accent' : ''}
         >
-          {item.icon && (
-            <ActionList.LeadingVisual>
-              <item.icon size={16} />
-            </ActionList.LeadingVisual>
-          )}
+          {item.icon && React.createElement(item.icon, { size: 16, className: "mr-2" })}
           {item.label}
-        </ActionList.Item>
+        </DropdownMenuItem>
       );
 
     case 'nested':
+      // ネストメニューは将来のバージョンで実装予定
+      // 現在はフラットなアイテムとして表示
       return (
-        <ActionMenu key={item.id}>
-          <ActionMenu.Anchor>
-            <ActionList.Item disabled={item.disabled}>
-              {item.icon && (
-                <ActionList.LeadingVisual>
-                  <item.icon size={16} />
-                </ActionList.LeadingVisual>
-              )}
-              {item.label}
-            </ActionList.Item>
-          </ActionMenu.Anchor>
-          <ActionMenu.Overlay>
-            <ActionList>
-              {item.children.map(renderMenuItem)}
-            </ActionList>
-          </ActionMenu.Overlay>
-        </ActionMenu>
+        <DropdownMenuItem
+          key={item.id}
+          disabled={item.disabled}
+        >
+          {item.icon && React.createElement(item.icon, { size: 16, className: "mr-2" })}
+          {item.label}
+          <span className="ml-auto text-xs text-muted-foreground">→</span>
+        </DropdownMenuItem>
       );
 
     default:
@@ -189,7 +182,7 @@ const UnifiedMenu = memo<UnifiedMenuProps>(({
         if (groupItems.length > 0) {
           // 最初のグループ以外は区切り線を追加
           if (!isFirstGroup) {
-            allItems.push(<ActionList.Divider key={`divider-${group.id}`} />);
+            allItems.push(<DropdownMenuSeparator key={`divider-${group.id}`} />);
           }
           allItems.push(...groupItems);
           isFirstGroup = false;
@@ -203,22 +196,18 @@ const UnifiedMenu = memo<UnifiedMenuProps>(({
     return items.map(renderMenuItem).filter(Boolean);
   }, [items, groups]);
 
-  const overlayStyles = {
-    zIndex,
-    ...overlayProps
-  };
-
   return (
-    <ActionMenu>
-      <ActionMenu.Anchor>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
         <MenuTriggerComponent trigger={trigger} />
-      </ActionMenu.Anchor>
-      <ActionMenu.Overlay sx={overlayStyles}>
-        <ActionList>
-          {menuContent}
-        </ActionList>
-      </ActionMenu.Overlay>
-    </ActionMenu>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        style={{ zIndex, ...overlayProps }}
+        className="w-56"
+      >
+        {menuContent}
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 });
 
