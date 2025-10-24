@@ -1,14 +1,16 @@
 import {
-  PlusIcon,
-  PencilIcon,
-  TrashIcon,
-  KebabHorizontalIcon,
-  ChevronLeftIcon,
-  ChevronRightIcon,
-} from "@primer/octicons-react";
-import { ActionMenu, ActionList } from "@primer/react";
+  Plus,
+  Edit,
+  Trash2,
+  MoreHorizontal,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
-import React from "react";
+import React, { useMemo } from "react";
+
+import type { MenuGroup, MenuTrigger } from "../types/unified-menu";
+import UnifiedMenu from "./shared/Menu/UnifiedMenu";
 
 interface ColumnActionsProps {
   onAddTask: () => void;
@@ -28,65 +30,102 @@ const ColumnActions: React.FC<ColumnActionsProps> = ({
   onMoveRight,
   canMoveLeft = true,
   canMoveRight = true,
-}) => (
-  <div className="flex items-center">
-    <Button
-      onClick={onAddTask}
-      variant="ghost"
-      size="icon"
-      aria-label="タスクを作成"
-    >
-      <PlusIcon size={16} />
-    </Button>
-    <ActionMenu>
-      <ActionMenu.Anchor>
-        <Button
-          variant="ghost"
-          size="icon"
-          aria-label="カラム設定"
-        >
-          <KebabHorizontalIcon size={16} />
-        </Button>
-      </ActionMenu.Anchor>
-      <ActionMenu.Overlay sx={{ zIndex: 150 }}>
-        <ActionList>
-          {/* カラム移動オプション */}
-          {onMoveLeft && (
-            <ActionList.Item onSelect={onMoveLeft} disabled={!canMoveLeft}>
-              <ActionList.LeadingVisual>
-                <ChevronLeftIcon size={16} />
-              </ActionList.LeadingVisual>
-              左に移動
-            </ActionList.Item>
-          )}
-          {onMoveRight && (
-            <ActionList.Item onSelect={onMoveRight} disabled={!canMoveRight}>
-              <ActionList.LeadingVisual>
-                <ChevronRightIcon size={16} />
-              </ActionList.LeadingVisual>
-              右に移動
-            </ActionList.Item>
-          )}
+}) => {
+  // メニュートリガー設定
+  const trigger: MenuTrigger = useMemo(() => ({
+    type: 'custom',
+    icon: MoreHorizontal,
+    variant: 'invisible',
+    size: 'medium',
+    ariaLabel: 'カラム設定'
+  }), []);
 
-          {/* カラム移動と編集・削除の間に区切り線 */}
-          {(onMoveLeft || onMoveRight) && <ActionList.Divider />}
+  // メニューグループ設定
+  const menuGroups: MenuGroup[] = useMemo(() => {
+    const groups: MenuGroup[] = [];
 
-          <ActionList.Item onSelect={onTitleEdit}>
-            <ActionList.LeadingVisual>
-              <PencilIcon size={16} />
-            </ActionList.LeadingVisual>
-            カラム名を編集
-          </ActionList.Item>
-          <ActionList.Item variant="danger" onSelect={onDeleteColumn}>
-            <ActionList.LeadingVisual>
-              <TrashIcon size={16} />
-            </ActionList.LeadingVisual>
-            カラムを削除
-          </ActionList.Item>
-        </ActionList>
-      </ActionMenu.Overlay>
-    </ActionMenu>
-  </div>
-);
+    // カラム移動グループ（条件付き表示）
+    const hasMovementOptions = onMoveLeft || onMoveRight;
+    if (hasMovementOptions) {
+      const moveItems = [];
+
+      if (onMoveLeft) {
+        moveItems.push({
+          id: 'move-left',
+          type: 'action' as const,
+          label: '左に移動',
+          icon: ChevronLeft,
+          disabled: !canMoveLeft,
+          onSelect: onMoveLeft
+        });
+      }
+
+      if (onMoveRight) {
+        moveItems.push({
+          id: 'move-right',
+          type: 'action' as const,
+          label: '右に移動',
+          icon: ChevronRight,
+          disabled: !canMoveRight,
+          onSelect: onMoveRight
+        });
+      }
+
+      if (moveItems.length > 0) {
+        groups.push({
+          id: 'column-movement',
+          label: 'カラム移動',
+          items: moveItems
+        });
+      }
+    }
+
+    // カラム管理グループ
+    groups.push({
+      id: 'column-management',
+      label: 'カラム管理',
+      items: [
+        {
+          id: 'edit-title',
+          type: 'action',
+          label: 'カラム名を編集',
+          icon: Edit,
+          onSelect: onTitleEdit
+        },
+        {
+          id: 'delete-column',
+          type: 'action',
+          label: 'カラムを削除',
+          icon: Trash2,
+          variant: 'danger',
+          onSelect: onDeleteColumn
+        }
+      ]
+    });
+
+    return groups;
+  }, [onMoveLeft, onMoveRight, canMoveLeft, canMoveRight, onTitleEdit, onDeleteColumn]);
+
+  return (
+    <div className="flex items-center">
+      {/* タスク追加ボタン */}
+      <Button
+        onClick={onAddTask}
+        variant="ghost"
+        size="icon"
+        aria-label="タスクを作成"
+      >
+        <Plus size={16} />
+      </Button>
+
+      {/* カラム設定メニュー */}
+      <UnifiedMenu
+        groups={menuGroups}
+        trigger={trigger}
+        zIndex={150}
+      />
+    </div>
+  );
+};
 
 export default ColumnActions;
