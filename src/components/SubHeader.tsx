@@ -1,7 +1,7 @@
 import {
   Plus,
   Calendar,
-  Columns3,
+  SquareKanban,
   ChevronDown,
   Table,
 } from "lucide-react";
@@ -120,7 +120,7 @@ const SubHeader: React.FC = () => {
               className="flex items-center gap-2"
             >
               {state.viewMode === "kanban" ? (
-                <Columns3 size={16} />
+                <SquareKanban size={16} />
               ) : state.viewMode === "calendar" ? (
                 <Calendar size={16} />
               ) : (
@@ -139,7 +139,7 @@ const SubHeader: React.FC = () => {
               onClick={() => navigateToView("kanban")}
               className="flex items-center gap-2"
             >
-              <Columns3 size={16} />
+              <SquareKanban size={16} />
               カンバン
             </DropdownMenuItem>
             <DropdownMenuItem

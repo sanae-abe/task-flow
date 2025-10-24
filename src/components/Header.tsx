@@ -1,4 +1,4 @@
-import { PlusIcon, QuestionIcon, GearIcon } from "@primer/octicons-react";
+import { Plus, HelpCircle, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import React from "react";
 
@@ -8,64 +8,10 @@ import OfflineIndicator from "./OfflineIndicator";
 import BoardSelector from "./BoardSelector";
 import Logo from "./Logo";
 
-// 定数定義
-const HEADER_HEIGHT = "67px";
-const MAX_CONTENT_WIDTH = "100%";
-const DIVIDER_HEIGHT = "24px";
-
-// スタイル定義オブジェクト
-const headerStyles = {
-  container: {
-    padding: "0 24px",
-    background: "var(--background)",
-    borderBottom: "1px solid",
-    borderColor: "var(--borderColor-default)",
-    height: HEADER_HEIGHT,
-  },
-  content: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    maxWidth: MAX_CONTENT_WIDTH,
-    marginInline: "auto",
-    height: "100%",
-  },
-  leftSection: {
-    display: "flex",
-    alignItems: "center",
-    gap: "16px",
-    flex: 1,
-    minWidth: 0,
-    paddingRight: "16px",
-    width: "100%",
-    height: "100%",
-  },
-  divider: {
-    height: DIVIDER_HEIGHT,
-    width: "1px",
-    backgroundColor: "var(--color-gray-200)",
-  },
-  rightSection: {
-    display: "flex",
-    alignItems: "center",
-    flexShrink: 0,
-  },
-  createButton: {
-    backgroundColor: "var(--primary)",
-    color: "#ffffff",
-    border: "none",
-    borderRadius: "var(--borderRadius-medium)",
-    transition: "background-color 0.2s ease",
-    "&:hover": {
-      backgroundColor: "var(--button-outline-bgColor-active)",
-    },
-  },
-};
-
 // 区切り線コンポーネント
 const VerticalDivider: React.FC = () => (
   <div
-    style={headerStyles.divider}
+    className="h-6 w-px bg-gray-200"
     role="separator"
     aria-orientation="vertical"
   />
@@ -73,7 +19,7 @@ const VerticalDivider: React.FC = () => (
 
 // 左側セクションコンポーネント
 const LeftSection: React.FC = () => (
-  <div style={headerStyles.leftSection}>
+  <div className="flex items-center gap-4 flex-1 min-w-0 pr-4 w-full h-full">
     <Logo size="large" />
     <VerticalDivider />
     <BoardSelector />
@@ -92,7 +38,7 @@ const RightSection: React.FC<RightSectionProps> = ({
   onHelpClick,
   onSettingsClick,
 }) => (
-  <div style={headerStyles.rightSection}>
+  <div className="flex items-center flex-shrink-0">
     <OfflineIndicator />
     <Button
       onClick={onCreateClick}
@@ -100,7 +46,7 @@ const RightSection: React.FC<RightSectionProps> = ({
       aria-label="タスク作成"
       className="bg-blue-600 text-white hover:bg-blue-700 flex items-center gap-2"
     >
-      <PlusIcon size={16} />
+      <Plus size={16} />
       タスク作成
     </Button>
     <Button
@@ -109,7 +55,7 @@ const RightSection: React.FC<RightSectionProps> = ({
       aria-label="設定を開く"
       className="ml-2 flex items-center gap-2"
     >
-      <GearIcon size={16} />
+      <Settings size={16} />
       設定
     </Button>
     <Button
@@ -118,7 +64,7 @@ const RightSection: React.FC<RightSectionProps> = ({
       aria-label="ヘルプを表示"
       className="flex items-center gap-2"
     >
-      <QuestionIcon size={16} />
+      <HelpCircle size={16} />
       ヘルプ
     </Button>
   </div>
@@ -137,8 +83,11 @@ const Header: React.FC<HeaderProps> = ({ onHelpClick, onSettingsClick }) => {
   };
 
   return (
-    <header style={headerStyles.container} role="banner">
-      <div style={headerStyles.content}>
+    <header
+      className="px-6 bg-white border-b border-gray-200 h-[67px]"
+      role="banner"
+    >
+      <div className="flex items-center justify-between max-w-full mx-auto h-full">
         <LeftSection />
         <RightSection
           onCreateClick={handleStartCreateTask}

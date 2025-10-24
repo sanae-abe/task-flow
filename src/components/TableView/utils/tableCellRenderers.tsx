@@ -133,9 +133,15 @@ export const renderDueDateCell = (task: TaskWithColumn) => {
 
   // Convert Primer color to Tailwind classes
   const getColorClass = (color: string) => {
-    if (color === "danger.fg") return "text-red-600";
-    if (color === "attention.fg") return "text-yellow-600";
-    if (color === "success.fg") return "text-green-600";
+    if (color === "danger.fg") {
+      return "text-red-600";
+    }
+    if (color === "attention.fg") {
+      return "text-yellow-600";
+    }
+    if (color === "success.fg") {
+      return "text-green-600";
+    }
     return "text-gray-900";
   };
 
