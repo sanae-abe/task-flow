@@ -42,14 +42,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({
   onEmoji,
   emojiButtonRef,
 }) => (
-    <div
-      style={{
-        padding: "8px",
-        borderBottom: '1px solid',
-        borderColor: 'border.default',
-        background: 'var(--color-neutral-100)',
-      }}
-    >
+    <div className="p-2 border-b border-border bg-neutral-100">
       <div className="flex gap-1">
         <Button
           variant="ghost"
@@ -87,7 +80,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({
         >
           <StrikethroughIcon />
         </Button>
-        <div style={{ width: '1px', background: 'var(--color-neutral-100)', marginInline: "4px" }} />
+        <div className="w-px bg-neutral-100 mx-1" />
         <Button
           variant="ghost"
           size="sm"
@@ -115,7 +108,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({
         >
           <FileCode size={16} />
         </Button>
-        <div style={{ width: '1px', background: 'var(--color-neutral-100)', marginInline: "4px" }} />
+        <div className="w-px bg-neutral-100 mx-1" />
         <Button
           variant="ghost"
           size="sm"
@@ -134,7 +127,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({
         >
           <ListOrdered size={16} />
         </Button>
-        <div style={{ width: '1px', background: 'var(--color-neutral-100)', marginInline: "4px" }} />
+        <div className="w-px bg-neutral-100 mx-1" />
         <Button
           ref={emojiButtonRef}
           variant="ghost"

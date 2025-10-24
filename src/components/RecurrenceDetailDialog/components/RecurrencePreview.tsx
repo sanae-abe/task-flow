@@ -12,15 +12,7 @@ const RecurrencePreview: React.FC<RecurrencePreviewProps> = ({ config }) => {
   }
 
   return (
-    <div
-      style={{
-        marginTop: "20px",
-        padding: "8px",
-        background: "var(--color-neutral-100)",
-        borderRadius: "var(--borderRadius-medium)",
-        border: "1px solid var(--borderColor-muted)",
-      }}
-    >
+    <div className="mt-5 p-2 bg-neutral-100 rounded-md border border-border">
       <span className="text-sm text-muted-foreground">
         設定内容: {getRecurrenceDescription(config)}
       </span>

@@ -195,11 +195,11 @@ const TableColumnManager: React.FC = () => {
                   style={{
                     border: "1px solid",
                     borderColor: isDragging
-                      ? "var(--borderColor-accent-emphasis)"
-                      : "var(--borderColor-default)",
+                      ? "rgb(37 99 235)"
+                      : "hsl(var(--border))",
                     background: column.visible
-                      ? "var(--background)"
-                      : "var(--color-neutral-100)",
+                      ? "hsl(var(--background))"
+                      : "rgb(245 245 245)",
                     opacity: isDragging ? 0.5 : 1,
                   }}
                   className="flex items-center py-1 px-0 rounded-md cursor-move transition-all duration-200 ease"

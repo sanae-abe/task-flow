@@ -185,42 +185,15 @@ const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
 
       {/* ゴミ箱一覧 */}
       {allRecycleBinItems.length === 0 ? (
-        <div style={{
-          textAlign: 'center',
-          padding: '24px',
-          border: '1px dashed',
-          borderColor: 'var(--borderColor-muted)',
-          borderRadius: 'var(--borderRadius-medium)',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: "8px",
-          justifyContent: 'center',
-          alignItems: 'center'
-        }}>
+        <div className="text-center p-6 border border-dashed border-border rounded-md flex flex-col gap-2 justify-center items-center">
           <span className="text-gray-500">
             ゴミ箱にアイテムはありません
           </span>
         </div>
       ) : (
-        <div style={{
-          border: '1px solid',
-          borderColor: 'var(--borderColor-default)',
-          borderRadius: "var(--borderRadius-medium)",
-          overflow: 'hidden'
-        }}>
+        <div className="border border-border rounded-md overflow-hidden">
           {/* テーブルヘッダー */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: '80px 1fr 100px 100px',
-            gap: "8px",
-            alignItems: 'center',
-            background: 'var(--color-neutral-100)',
-            borderBottom: '1px solid',
-            borderColor: 'var(--borderColor-default)',
-            fontSize: "14px",
-            fontWeight: 'bold',
-            color: 'hsl(var(--muted-foreground))'
-          }}>
+          <div className="grid grid-cols-[80px_1fr_100px_100px] gap-2 items-center bg-neutral-100 border-b border-border text-sm font-bold text-muted-foreground">
             <SortableHeader
               field="type"
               sortField={sortField}
@@ -259,8 +232,7 @@ const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
                   gridTemplateColumns: '80px 1fr 100px 100px',
                   gap: "8px",
                   padding: "12px 8px",
-                  borderBottom: index === allRecycleBinItems.length - 1 ? 'none' : '1px solid',
-                  borderColor: 'var(--borderColor-muted)',
+                  borderBottom: index === allRecycleBinItems.length - 1 ? 'none' : '1px solid rgb(209 213 219)',
                   alignItems: 'center'
                 }}
               >

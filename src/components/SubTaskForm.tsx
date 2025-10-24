@@ -35,15 +35,7 @@ const SubTaskForm: React.FC<SubTaskFormProps> = ({
   );
 
   return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: "var(--primer-control-small-gap, 0.5rem)",
-        borderRadius: "var(--primer-borderRadius-medium, 6px)",
-        backgroundColor: "var(--primer-canvas-default)",
-      }}
-    >
+    <div className="flex items-center gap-2 rounded-md bg-background">
       <UnifiedForm
         fields={formFields}
         onSubmit={onSubmit}

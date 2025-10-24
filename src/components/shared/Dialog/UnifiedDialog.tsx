@@ -23,12 +23,12 @@ const getDialogStyles = (variant: DialogVariant, size: DialogSize) => {
         boxShadow: 'shadow.large',
         width: '90vw',
         maxHeight: '90vh',
-        borderRadius: 'var(--borderRadius-large, var(--borderRadius-large, .75rem))',
+        borderRadius: '0.75rem',
         animation: 'dialog-scale-fade-in 200ms cubic-bezier(0.33, 1, 0.68, 1)'
       },
       content: {
         padding: '16px',
-        borderRadius: 'var(--borderRadius-large, var(--borderRadius-large, .75rem))',
+        borderRadius: '0.75rem',
         overflowY: 'auto'
       }
     },
@@ -43,7 +43,7 @@ const getDialogStyles = (variant: DialogVariant, size: DialogSize) => {
         padding: '0.5rem',
         maxHeight: '90vh',
         overflowY: 'auto',
-        borderRadius: 'var(--borderRadius-large, var(--borderRadius-large, .75rem))',
+        borderRadius: '0.75rem',
         animation: 'dialog-scale-fade-in 200ms cubic-bezier(0.33, 1, 0.68, 1)'
       },
       content: {
@@ -70,11 +70,11 @@ const getDialogStyles = (variant: DialogVariant, size: DialogSize) => {
         width: '90vw',
         maxHeight: '90vh',
         overflowY: 'auto',
-        borderRadius: 'var(--borderRadius-large)',
+        borderRadius: '0.75rem',
       },
       content: {
-        backgroundColor: 'var(--color-neutral-100)',
-        borderRadius: 'var(--borderRadius-medium)',
+        backgroundColor: 'rgb(245 245 245)',
+        borderRadius: '0.5rem',
         padding: '12px'
       }
     }
@@ -116,9 +116,9 @@ const DialogHeader = memo<{
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: 'var(--background)',
-    borderRadius: 'var(--borderRadius-large) var(--borderRadius-large) 0 0',
-    boxShadow: '0 1px 0 var(--borderColor-default,var(--borderColor-default))'
+    backgroundColor: 'hsl(var(--background))',
+    borderRadius: '0.75rem 0.75rem 0 0',
+    boxShadow: '0 1px 0 hsl(var(--border))'
   }}>
     <h2
       id={titleId}

@@ -46,7 +46,7 @@ const EDITOR_STYLES = {
     backgroundColor: "#f6f8fa",
     color: "#e01e5a",
     padding: "2px 4px",
-    borderRadius: "var(--borderRadius-small)",
+    borderRadius: "0.25rem",
     fontFamily: "'Monaco', 'Menlo', 'Consolas', monospace",
     fontSize: "0.875em",
     border: "1px solid #d0d7de",
@@ -606,12 +606,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
       {/* ツールバー */}
       {shouldShowToolbar && (
         <div
-          style={{
-            padding: "8px",
-            borderBottom: "1px solid",
-            borderColor: "var(--borderColor-default)",
-            background: "var(--color-neutral-100)",
-          }}
+          className="p-2 border-b border-border bg-neutral-100"
         >
           <div className="flex gap-1">
             <Button
@@ -658,13 +653,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
             >
               <StrikethroughIcon />
             </Button>
-            <div
-              style={{
-                width: "1px",
-                background: "var(--borderColor-default)",
-                margin: "0 8px",
-              }}
-            />
+            <div className="w-px bg-border mx-2" />
             <Button
               variant="ghost"
               size="sm"
@@ -692,13 +681,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
             >
               <FileCodeIcon size={16} />
             </Button>
-            <div
-              style={{
-                width: "1px",
-                background: "var(--borderColor-default)",
-                margin: "0 8px",
-              }}
-            />
+            <div className="w-px bg-border mx-2" />
             <Button
               variant="ghost"
               size="sm"
@@ -725,13 +708,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
             >
               <ListOrderedIcon size={16} />
             </Button>
-            <div
-              style={{
-                width: "1px",
-                background: "var(--borderColor-default)",
-                margin: "0 8px",
-              }}
-            />
+            <div className="w-px bg-border mx-2" />
             <Button
               ref={emojiButtonRef}
               variant="ghost"

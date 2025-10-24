@@ -8,14 +8,14 @@ export const KANBAN_BOARD_STYLES = {
       height: "8px",
     },
     "&::WebkitScrollbarTrack": {
-      background: "var(--color-neutral-100)",
+      background: "rgb(245 245 245)",
     },
     "&::WebkitScrollbarThumb": {
-      background: "var(--borderColor-muted)",
-      borderRadius: "var(--borderRadius-small)",
+      background: "rgb(209 213 219)",
+      borderRadius: "0.25rem",
     },
     "&::WebkitScrollbarThumb:hover": {
-      background: "var(--borderColor-default)",
+      background: "hsl(var(--border))",
     },
   },
 

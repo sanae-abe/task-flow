@@ -343,7 +343,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
           <HelpSection
             title="便利なヒント"
             icon={Info}
-            background="var(--bgColor-success-emphasis)"
+            background="rgb(45 164 78)"
           >
             <HelpItem
               title="キーボード操作"
