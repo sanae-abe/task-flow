@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { TextInput, FormControl, Textarea } from '@primer/react';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 
 import type { TaskTemplate, TemplateFormData } from '../../types/template';
 import type { Label, Priority } from '../../types';
@@ -187,28 +188,20 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
       actions={actions}
     >
       <div className="flex flex-col" onKeyDown={handleKeyDown}>
-        <div style={{
-          marginTop: '8px',
-          marginBottom: '12px',
-          fontWeight: 'bold',
-          fontSize: '16px'
-        }}>
+        <div className="mb-3 mt-2 font-bold text-base">
           テンプレート情報
         </div>
         {/* テンプレート基本情報 */}
-        <div style={{
-          padding: '12px',
-          borderRadius: 'var(--borderRadius-medium)',
-          background: 'var(--color-neutral-100)',
-          border: '1px solid var(--borderColor-default)',
-        }}>
+        <div className="p-3 rounded-md bg-neutral-100 border border-border">
 
           {/* テンプレート名 */}
-          <FormControl sx={{ mb: 3 }}>
-            <FormControl.Label required>
-              テンプレート名 
-            </FormControl.Label>
-            <TextInput
+          <div className="mb-3">
+            <label className="text-sm font-medium" htmlFor="template-name">
+              テンプレート名
+              <span className="text-red-500 ml-1">*</span>
+            </label>
+            <Input
+              id="template-name"
               value={formData.name}
               onChange={(e) => {
                 setFormData((prev) => ({ ...prev, name: e.target.value }));
@@ -217,30 +210,32 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
                 }
               }}
               placeholder="例: 週次レポート作成"
-              sx={{ width: '100%' }}
-              validationStatus={errors.name ? 'error' : undefined}
               autoFocus
               disabled={isLoading}
+              className={`w-full ${errors.name ? 'border-red-500' : ''}`}
             />
             {errors.name && (
               <InlineMessage variant="critical" message={errors.name} size="small" />
             )}
-          </FormControl>
+          </div>
 
           {/* テンプレート説明 */}
-          <FormControl sx={{ mb: 3 }}>
-            <FormControl.Label>説明</FormControl.Label>
+          <div className="mb-3">
+            <label className="text-sm font-medium" htmlFor="template-description">
+              説明
+            </label>
             <Textarea
+              id="template-description"
               value={formData.description}
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, description: e.target.value }))
               }
               placeholder="このテンプレートの用途を説明..."
-              sx={{ width: '100%' }}
+              className="w-full"
               rows={2}
               disabled={isLoading}
             />
-          </FormControl>
+          </div>
 
           {/* カテゴリー */}
           <TemplateCategorySelector
@@ -251,26 +246,18 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
         </div>
 
         {/* タスク情報 */}
-        <div style={{
-          marginTop: "24px",
-          marginBottom: "12px",
-          fontWeight: 'bold',
-          fontSize: '16px',
-        }}>
+        <div className="mt-6 mb-3 font-bold text-base">
             作成されるタスク
         </div>
-        <div style={{
-          padding: '12px',
-          background: 'var(--color-neutral-100)',
-          borderRadius: 'var(--borderRadius-medium)',
-          border: '1px solid var(--borderColor-default)',
-        }}>
+        <div className="p-3 bg-neutral-100 rounded-md border border-border">
           {/* タスクタイトル */}
-          <FormControl sx={{ mb: 3 }}>
-            <FormControl.Label required>
+          <div className="mb-3">
+            <label className="text-sm font-medium" htmlFor="task-title">
               タスクタイトル
-            </FormControl.Label>
-            <TextInput
+              <span className="text-red-500 ml-1">*</span>
+            </label>
+            <Input
+              id="task-title"
               value={formData.taskTitle}
               onChange={(e) => {
                 setFormData((prev) => ({ ...prev, taskTitle: e.target.value }));
@@ -279,18 +266,19 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
                 }
               }}
               placeholder="例: 週次レポートを作成する"
-              sx={{ width: '100%' }}
-              validationStatus={errors.taskTitle ? 'error' : undefined}
+              className={`w-full ${errors.taskTitle ? 'border-red-500' : ''}`}
               disabled={isLoading}
             />
             {errors.taskTitle && (
               <InlineMessage variant="critical" message={errors.taskTitle} size="small" />
             )}
-          </FormControl>
+          </div>
 
           {/* タスク説明 */}
-          <FormControl sx={{ mb: 3 }}>
-            <FormControl.Label>タスク説明</FormControl.Label>
+          <div className="mb-3">
+            <label className="text-sm font-medium" htmlFor="task-description">
+              タスク説明
+            </label>
             <RichTextEditor
               value={formData.taskDescription}
               onChange={(value) =>
@@ -300,10 +288,10 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
               disabled={isLoading}
               minHeight="120px"
             />
-          </FormControl>
+          </div>
 
           {/* 優先度 */}
-          <div style={{ marginBottom: '16px' }}>
+          <div className="mb-4">
             <PrioritySelector
               priority={formData.priority}
               onPriorityChange={handlePriorityChange}
@@ -313,13 +301,15 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
           </div>
 
           {/* ラベル */}
-          <FormControl>
-            <FormControl.Label>ラベル</FormControl.Label>
+          <div>
+            <label className="text-sm font-medium">
+              ラベル
+            </label>
             <LabelSelector
               selectedLabels={formData.labels}
               onLabelsChange={handleLabelsChange}
             />
-          </FormControl>
+          </div>
         </div>
       </div>
     </UnifiedDialog>
