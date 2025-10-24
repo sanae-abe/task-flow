@@ -1,15 +1,13 @@
 import {
-  ClockIcon,
-  AlertIcon,
-  CheckCircleIcon,
-  InfoIcon,
-  XCircleIcon,
-} from "@primer/octicons-react";
-import { Text } from "@primer/react";
+  Clock,
+  AlertTriangle,
+  CheckCircle,
+  Info,
+  XCircle,
+} from "lucide-react";
 import React from "react";
 
 import type { TaskStats } from "../hooks/useTaskStats";
-import { HBox } from "./shared/FlexBox";
 import StatusBadge from "./shared/StatusBadge";
 
 interface TaskStatsDisplayProps {
@@ -52,42 +50,37 @@ const TaskStatsDisplay: React.FC<TaskStatsDisplayProps> = ({ stats }) => {
     {
       condition: overdueTasks > 0,
       variant: "danger" as const,
-      icon: XCircleIcon,
+      icon: XCircle,
       count: overdueTasks,
       label: "期限切れ",
     },
     {
       condition: dueTodayTasks > 0,
       variant: "warning" as const,
-      icon: AlertIcon,
+      icon: AlertTriangle,
       count: dueTodayTasks,
       label: "本日期限",
     },
     {
       condition: dueTomorrowTasks > 0,
       variant: "info" as const,
-      icon: ClockIcon,
+      icon: Clock,
       count: dueTomorrowTasks,
       label: "明日期限",
     },
   ].filter((item) => item.condition);
 
   return (
-    <HBox align="center" gap={4} shrink={0}>
-      <HBox
-        align="center"
-        gap={1}
-        shrink={0}
-        sx={{ fontSize: 0, color: "fg.muted" }}
-      >
-        <CheckCircleIcon size={16} />
-        <Text sx={{ fontSize: 0, color: "fg.muted" }}>
+    <div className="flex items-center gap-4 flex-shrink-0">
+      <div className="flex items-center gap-1 flex-shrink-0 text-xs text-muted-foreground">
+        <CheckCircle size={16} />
+        <span className="text-xs text-muted-foreground">
           未完了タスク数: {totalTasks}
-        </Text>
-      </HBox>
+        </span>
+      </div>
 
       {hasUrgentTasks && urgentLabels.length > 0 && (
-        <HBox align="center" gap={2}>
+        <div className="flex items-center gap-2">
           {urgentLabels.map((item, index) => (
             <UrgentLabel
               key={index}
@@ -97,18 +90,18 @@ const TaskStatsDisplay: React.FC<TaskStatsDisplayProps> = ({ stats }) => {
               label={item.label}
             />
           ))}
-        </HBox>
+        </div>
       )}
 
       {!hasUrgentTasks && totalTasks > 0 && (
-        <HBox align="center" gap={1} sx={{ fontSize: 0, color: "fg.muted" }}>
-          <InfoIcon size={16} />
-          <Text sx={{ fontSize: 0, color: "fg.muted" }}>
+        <div className="flex items-center gap-1 text-xs text-muted-foreground">
+          <Info size={16} />
+          <span className="text-xs text-muted-foreground">
             緊急なタスクはありません
-          </Text>
-        </HBox>
+          </span>
+        </div>
       )}
-    </HBox>
+    </div>
   );
 };
 
