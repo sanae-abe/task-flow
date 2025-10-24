@@ -1,5 +1,4 @@
 import React from 'react';
-import { Text } from '@primer/react';
 import type { TaskTemplate, TemplateSortField, TemplateSortDirection } from '../../types/template';
 import TemplateTableHeader from './TemplateTableHeader';
 import TemplateTableRow from './TemplateTableRow';
@@ -32,43 +31,23 @@ const TemplateTable: React.FC<TemplateTableProps> = ({
   // 空状態の表示
   if (templates.length === 0) {
     return (
-      <div
-        style={{
-          textAlign: 'center',
-          padding: '24px',
-          border: '1px dashed',
-          borderColor: 'var(--borderColor-muted)',
-          borderRadius: 'var(--borderRadius-medium)',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: "8px",
-          justifyContent: 'center',
-          alignItems: 'center'
-        }}
-      >
-        <Text sx={{ color: 'fg.muted' }}>
+      <div className="text-center p-6 border border-dashed border-border rounded-md flex flex-col gap-2 justify-center items-center">
+        <span className="text-muted-foreground">
           {hasActiveFilters
             ? '条件に一致するテンプレートが見つかりません'
             : 'まだテンプレートがありません'}
-        </Text>
+        </span>
         {hasActiveFilters && (
-          <Text sx={{ fontSize: 0, color: 'fg.muted' }}>
+          <span className="text-xs text-muted-foreground">
             フィルター条件を変更して再度お試しください
-          </Text>
+          </span>
         )}
       </div>
     );
   }
 
   return (
-    <div
-      style={{
-        border: '1px solid',
-        borderColor: "var(--borderColor-default)",
-        borderRadius: "var(--borderRadius-medium)",
-        overflow: 'hidden'
-      }}
-    >
+    <div className="border border-border rounded-md overflow-hidden">
       {/* テーブルヘッダー */}
       <TemplateTableHeader
         sortField={sortField}
@@ -77,7 +56,7 @@ const TemplateTable: React.FC<TemplateTableProps> = ({
       />
 
       {/* テーブルボディ */}
-      <div style={{ maxHeight: '500px', overflow: 'auto' }}>
+      <div className="max-h-[500px] overflow-auto">
         {templates.map((template, index) => (
           <TemplateTableRow
             key={template.id}
