@@ -118,7 +118,7 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
         gap: "8px",
         marginBottom: compact ? "4px" : "8px"
       }}>
-        <div style={{ flex: 1, minWidth: 0 }}>
+        <div className="flex-1 min-w-0">
           {/* テンプレート名 */}
           <div className="flex items-center gap-1 mb-1">
             {template.isFavorite && (

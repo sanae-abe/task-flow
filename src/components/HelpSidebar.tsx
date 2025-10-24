@@ -74,7 +74,7 @@ const HelpSection: React.FC<HelpSectionProps> = ({
         borderRadius: "var(--borderRadius-medium)",
       }}
     >
-      <div style={{ paddingLeft: 0 }}>{children}</div>
+      <div className="pl-0">{children}</div>
     </div>
   </>
 );

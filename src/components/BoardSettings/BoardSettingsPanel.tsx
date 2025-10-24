@@ -405,7 +405,7 @@ export const BoardSettingsPanel: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div style={{ padding: "12px" }}>
+      <div className="p-3">
         <div className="bg-blue-50 border border-blue-200 rounded-md p-3 text-blue-800">
           設定を読み込み中...
         </div>

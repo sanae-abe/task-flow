@@ -70,7 +70,7 @@ const CalendarTask: React.FC<CalendarTaskProps> = React.memo(
       >
         <div className="flex items-center gap-1">
           {task.recurrence?.enabled && <RotateCcw size={10} />}
-          <span style={{ flex: 1, minWidth: 0 }}>{task.title}</span>
+          <span className="flex-1 min-w-0">{task.title}</span>
         </div>
       </div>
     );

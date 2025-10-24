@@ -1,5 +1,5 @@
-import { TextInput, FormControl } from "@primer/react";
 import React, { useState, useEffect, useCallback, useMemo } from "react";
+import { Input } from "@/components/ui/input";
 
 import UnifiedDialog from "./shared/Dialog/UnifiedDialog";
 import type { DialogAction } from "../types/unified-dialog";
@@ -79,18 +79,18 @@ const TimeSelectorDialog: React.FC<TimeSelectorDialogProps> = ({
       actions={actions}
       actionsLayout="split"
     >
-      <FormControl>
-        <FormControl.Label>
+      <div className="flex flex-col gap-2">
+        <label className="text-sm font-medium">
           時刻
-        </FormControl.Label>
-        <TextInput
+        </label>
+        <Input
           type="time"
           value={localDueTime}
           onChange={(e) => setLocalDueTime(e.target.value)}
-          sx={{ width: "100%" }}
+          className="w-full"
           step="300"
         />
-      </FormControl>
+      </div>
     </UnifiedDialog>
   );
 };

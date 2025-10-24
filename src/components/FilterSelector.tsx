@@ -221,7 +221,7 @@ const FilterSelector = memo<FilterSelectorProps>(
                     <span className="ml-auto text-xs text-muted-foreground">→</span>
                   </DropdownMenuItem>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent style={{ zIndex: 200 }} className="w-56">
+                <DropdownMenuContent className="p-200" className="w-56">
                   <DropdownMenuItem
                     onClick={() => handleFilterSelect("label")}
                     className={currentFilter.type === "has-labels" ? 'bg-accent' : ''}
@@ -265,7 +265,7 @@ const FilterSelector = memo<FilterSelectorProps>(
                 <span className="ml-auto text-xs text-muted-foreground">→</span>
               </DropdownMenuItem>
             </DropdownMenuTrigger>
-            <DropdownMenuContent style={{ zIndex: 200 }} className="w-56">
+            <DropdownMenuContent className="p-200" className="w-56">
               {(["critical", "high", "medium", "low"] as Priority[]).map(
                 (priority) => {
                   const config = priorityConfig[priority];
