@@ -16,7 +16,7 @@ interface StatusBadgeProps {
   /** フォントウェイト */
   fontWeight?: string | number;
   /** 追加のCSS */
-  sx?: Record<string, unknown>;
+  className?: string;
 }
 
 /**
@@ -31,7 +31,7 @@ const StatusBadge = memo<StatusBadgeProps>(({
   icon: IconComponent,
   children,
   fontWeight = '600',
-  sx
+  className
 }) => {
   // バリアント別の色定義
   const getVariantColor = (): string => {
@@ -85,12 +85,11 @@ const StatusBadge = memo<StatusBadgeProps>(({
       className={cn(
         'inline-flex items-center self-start',
         containerClass,
-        IconComponent ? 'gap-1' : ''
-      )}
+        IconComponent ? 'gap-1' : '',
+        className)}
       style={{
         color,
-        fontWeight,
-        ...sx
+        fontWeight
       }}
     >
       {IconComponent && (

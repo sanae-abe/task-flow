@@ -89,11 +89,7 @@ const KanbanBoard: React.FC = () => {
         onDragEnd={handleDragEnd}
       >
         <div
-          className="flex overflow-auto gap-4 p-4"
-          style={{
-            scrollbarWidth: 'thin',
-            scrollbarColor: '#d1d5db #f3f4f6'
-          }}
+          className="flex overflow-auto gap-4 p-4 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
         >
           {currentBoard.columns
             .filter(column => column.deletionState !== "deleted")

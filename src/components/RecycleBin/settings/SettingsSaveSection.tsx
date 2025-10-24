@@ -2,10 +2,6 @@ import React from "react";
 import { MESSAGES, UI_TEXT } from "../../../constants/recycleBin";
 import { LoadingButton } from "../../shared/LoadingButton";
 import { InlineMessage } from "../../shared";
-import {
-  SaveSection,
-  SaveMessageContainer,
-} from "../RecycleBinSettingsPanel.styles";
 
 export interface SettingsSaveSectionProps {
   /** ローディング状態 */
@@ -28,7 +24,7 @@ export const SettingsSaveSection: React.FC<SettingsSaveSectionProps> = ({
   message,
   onSave,
 }) => (
-    <SaveSection>
+    <div className="mt-6">
       <LoadingButton
         primerVariant="primary"
         isLoading={isLoading}
@@ -38,7 +34,7 @@ export const SettingsSaveSection: React.FC<SettingsSaveSectionProps> = ({
       >
         {UI_TEXT.PANEL.SAVE_BUTTON}
       </LoadingButton>
-      <SaveMessageContainer>
+      <div className="mt-3">
         {message && (
           <InlineMessage
             variant={message.type === 'success' ? "success" : "critical"}
@@ -46,6 +42,6 @@ export const SettingsSaveSection: React.FC<SettingsSaveSectionProps> = ({
             size="small"
           />
         )}
-      </SaveMessageContainer>
-    </SaveSection>
+      </div>
+    </div>
   );

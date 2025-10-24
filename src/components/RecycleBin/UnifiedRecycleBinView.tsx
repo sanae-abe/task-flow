@@ -158,14 +158,9 @@ const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
     : null;
 
   return (
-    <div className="flex flex-col" style={{ gap: "12px", paddingBottom: "16px" }}>
+    <div className="flex flex-col gap-3 pb-4">
       {/* ヘッダー */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        gap: '8px'
-      }}>
+      <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <h2 className="text-lg font-bold text-gray-900">
             ゴミ箱 ({allRecycleBinItems.length}件)

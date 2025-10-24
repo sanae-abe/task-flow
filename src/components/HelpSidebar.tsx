@@ -41,24 +41,14 @@ const HelpSection: React.FC<HelpSectionProps> = ({
   background = "var(--primary)",
 }) => (
   <>
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: "8px",
-        marginBottom: "12px",
-      }}
-    >
+    <div className="flex items-center gap-2 mb-3">
       <div
         style={{
-          padding: "8px",
           background,
           borderRadius: "50%",
-          color: "var(--fgColor-onEmphasis)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
+          color: "var(--fgColor-onEmphasis)"
         }}
+        className="p-2 flex items-center justify-center"
       >
         <Icon size={14} />
       </div>
@@ -68,11 +58,10 @@ const HelpSection: React.FC<HelpSectionProps> = ({
     </div>
     <div
       style={{
-        marginBottom: "20px",
-        padding: "12px",
         backgroundColor: "var(--color-neutral-100)",
         borderRadius: "var(--borderRadius-medium)",
       }}
+      className="mb-5 p-3"
     >
       <div className="pl-0">{children}</div>
     </div>
@@ -87,13 +76,10 @@ interface HelpItemProps {
 const HelpItem: React.FC<HelpItemProps> = ({ title, description }) => (
   <div
     style={{
-      padding: "8px",
       backgroundColor: "var(--color-neutral-100)",
       borderRadius: "var(--borderRadius-medium)",
-      display: "flex",
-      gap: "12px",
-      alignItems: "flex-start",
     }}
+    className="p-2 flex gap-3 items-start mb-2"
   >
     <span
       className="text-sm font-semibold text-blue-700 flex-shrink-0 break-words"
@@ -156,14 +142,9 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
         {/* Header */}
         <div
           style={{
-            display: "flex",
-            padding: "17px 16px 16px",
-            alignItems: "flex-start",
-            justifyContent: "space-between",
-            borderBottom: "1px solid",
-            borderColor: "var(--borderColor-default)",
-            flexShrink: 0,
+            borderColor: "var(--borderColor-default)"
           }}
+          className="flex items-start justify-between border-b flex-shrink-0 pt-[17px] pb-4 px-4"
         >
           <h1
             id="help-title"
@@ -184,7 +165,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
         </div>
 
         {/* Content */}
-        <div style={{ flex: "1", padding: "16px", overflowY: "auto" }}>
+        <div className="flex-1 p-4 overflow-y-auto">
           <HelpSection
             title="ビュー切り替え"
             icon={Video}

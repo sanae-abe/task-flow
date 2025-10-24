@@ -80,7 +80,7 @@ const TaskCreateDialog = memo(() => {
       size="large"
       actions={actions}
     >
-      <div className="flex flex-col" style={{ minHeight: '600px' }}>
+      <div className="flex flex-col min-w-[600px]">
         <Tabs defaultValue="normal" className="w-full">
           {/* タブナビゲーション */}
           <TabsList className="grid w-full grid-cols-2 mb-4">
@@ -101,7 +101,7 @@ const TaskCreateDialog = memo(() => {
 
           {/* テンプレート選択モード */}
           <TabsContent value="template">
-            <div style={{ marginBottom: '24px', flex: 1, minHeight: '500px' }}>
+            <div className="mb-6 flex-1 min-h-[500px]">
               <TemplateSelector
                 templates={templateState.templates}
                 onSelect={handleTemplateSelect}

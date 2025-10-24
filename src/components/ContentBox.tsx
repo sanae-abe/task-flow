@@ -16,10 +16,10 @@ const ContentBox = memo<ContentBoxProps>(
   }) => (
     <div
       style={{
-        padding: "12px",
         background,
         borderRadius: "var(--borderRadius-medium)",
       }}
+      className="p-3"
     >
       {isEmpty && emptyText ? (
         <span className="text-sm text-gray-500 italic">

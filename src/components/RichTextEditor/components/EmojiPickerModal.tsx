@@ -1,5 +1,4 @@
 import React from 'react';
-import { Box } from '@primer/react';
 import EmojiPicker, { EmojiClickData, EmojiStyle } from 'emoji-picker-react';
 
 interface EmojiPickerModalProps {
@@ -19,38 +18,14 @@ export const EmojiPickerModal: React.FC<EmojiPickerModalProps> = ({
   }
 
   return (
-    <Box
+    <div
       data-emoji-picker
-      sx={{
-        position: 'fixed',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        zIndex: 9999,
-        border: '1px solid',
-        borderColor: 'border.default',
-        borderRadius: 3,
-        backgroundColor: 'canvas.default',
+      className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[9999] border border-border rounded-lg bg-background animate-in fade-in duration-200"
+      style={{
         boxShadow: '0 20px 80px rgba(0, 0, 0, 0.2), 0 10px 40px rgba(0, 0, 0, 0.15), 0 5px 20px rgba(0, 0, 0, 0.1)',
-        '& h2': {
-          fontSize: '14px'
-        },
-        '& .epr-category-nav': {
-          py: '4px'
-        },
-        // アニメーション効果
-        animation: 'fadeIn 0.2s ease-out',
-        '@keyframes fadeIn': {
-          from: {
-            opacity: 0,
-            transform: 'translate(-50%, -50%) scale(0.95)',
-          },
-          to: {
-            opacity: 1,
-            transform: 'translate(-50%, -50%) scale(1)',
-          },
-        },
-      }}
+        '--epr-category-navigation-button-size': '22px',
+        '--epr-emoji-size': '22px'
+      } as React.CSSProperties}
     >
       <EmojiPicker
         onEmojiClick={onEmojiClick}
@@ -61,11 +36,7 @@ export const EmojiPickerModal: React.FC<EmojiPickerModalProps> = ({
         previewConfig={{
           showPreview: false
         }}
-        style={{
-          '--epr-category-navigation-button-size': '22px',
-          '--epr-emoji-size': '22px'
-        } as React.CSSProperties}
       />
-    </Box>
+    </div>
   );
 };

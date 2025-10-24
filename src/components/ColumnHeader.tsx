@@ -16,15 +16,6 @@ interface ColumnHeaderProps {
   canMoveRight?: boolean;
 }
 
-const headerStyles: React.CSSProperties = {
-  display: "flex",
-  paddingBottom: "12px",
-  justifyContent: "space-between",
-  alignItems: "center",
-  width: "100%",
-  overflow: "hidden",
-};
-
 const ColumnHeader: React.FC<ColumnHeaderProps> = ({
   column,
   onTitleEdit,
@@ -35,7 +26,7 @@ const ColumnHeader: React.FC<ColumnHeaderProps> = ({
   canMoveLeft,
   canMoveRight,
 }) => (
-  <div style={headerStyles}>
+  <div className="flex justify-between items-center pb-3 w-full overflow-hidden">
     <ColumnTitle column={column} />
     <ColumnActions
       onAddTask={onAddTask}

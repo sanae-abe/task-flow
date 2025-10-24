@@ -29,7 +29,7 @@ const DueDateBadge: React.FC<DueDateBadgeProps> = ({
     <StatusBadge
       variant={getVariant()}
       size="small"
-      sx={{ border: "none", bg: "transparent" }}
+      className="border-0 bg-transparent"
     >
       期限: {formatDueDate(dueDate)} {isRecurrence && <RotateCcw size={12} />}
     </StatusBadge>

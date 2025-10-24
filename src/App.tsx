@@ -91,10 +91,7 @@ const AppContent: React.FC = () => {
           uiState.viewMode === 'calendar' ? 'カレンダービュー' :
           'テーブルビュー'
         }
-        style={{
-          transition: 'opacity 0.15s ease-out',
-          willChange: 'opacity',
-        }}
+        className="transition-opacity duration-150 will-change-opacity"
       >
         <Routes>
           <Route path="/" element={<Navigate to="/kanban" replace />} />
@@ -108,30 +105,14 @@ const AppContent: React.FC = () => {
         <>
           {/* オーバーレイ背景 */}
           <div
-            style={{
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              backgroundColor: 'rgba(0, 0, 0, 0.5)',
-              zIndex: 9998,
-              animation: 'fadeIn 0.2s ease-out',
-              cursor: 'pointer'
-            }}
+            className="fixed inset-0 bg-black/50 z-9998 animate-fadeIn duration-200 ease-out cursor-pointer"
             onClick={handleDismissHint}
             role="button"
             aria-label="ヒントを閉じる"
           />
 
           {/* ツールチップ */}
-          <div style={{
-            position: 'fixed',
-            top: '100px',
-            right: '80px',
-            zIndex: 9999,
-            animation: 'fadeInSlide 0.3s ease-out'
-          }}>
+          <div className="fixed top-[100px] right-[80px] z-9999 animate-fadeInSlide duration-300 ease-out">
             <FirstTimeUserHint
               onDismiss={handleDismissHint}
             />

@@ -65,11 +65,9 @@ const ColorSelector = memo<ColorSelectorProps>(
                   "hover:scale-105 hover:shadow-md",
                   "focus:outline-2 focus:outline-blue-500 focus:outline-offset-1",
                   isSelected ? "border-blue-600" : "border-transparent",
-                  "hover:border-gray-600"
+                  "hover:border-gray-600",
+                  `bg-[${colors.bg}]`
                 )}
-                style={{
-                  backgroundColor: colors.bg,
-                }}
               >
                 <span
                   className="text-xs text-center font-semibold pointer-events-none leading-none"

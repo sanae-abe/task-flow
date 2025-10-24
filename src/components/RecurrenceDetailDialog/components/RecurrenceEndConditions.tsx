@@ -25,13 +25,7 @@ const RecurrenceEndConditions: React.FC<RecurrenceEndConditionsProps> = ({
         <span>終了条件</span>
       </h3>
     </div>
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: "12px",
-      }}
-    >
+    <div className="flex flex-col gap-3">
       <div className="flex flex-row items-center gap-2">
         <label className="self-center min-w-[80px] text-sm">終了日</label>
         <Input

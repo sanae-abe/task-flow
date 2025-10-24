@@ -145,12 +145,7 @@ const DialogHeader = memo<{
 const DialogFooter = memo<{
   children: React.ReactNode;
 }>(({ children }) => (
-  <div style={{
-    display: 'flex',
-    justifyContent: 'flex-end',
-    gap: "8px",
-    padding: "12px"
-  }}>
+  <div className="flex justify-end gap-2 p-3">
     {children}
   </div>
 ));

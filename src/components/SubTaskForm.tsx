@@ -53,10 +53,10 @@ const SubTaskForm: React.FC<SubTaskFormProps> = ({
         validateOnChange={false}
         validateOnBlur={false}
         sx={{
-          flex: 1,
           "& > div > div": { mb: 0 }, // フォームコンテナの下マージン削除
           "& form": { display: "flex", alignItems: "center", gap: 2 },
         }}
+        className="flex-1 "
       />
     </div>
   );

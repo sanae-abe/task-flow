@@ -97,11 +97,9 @@ const TableView: React.FC = () => {
     <div
       key={`tableview-${tableColumnsData.forceRender}`}
       style={{
-        height: "calc(100vh - 120px)",
-        overflow: "auto",
-        backgroundColor: "var(--color-neutral-100)",
-        padding: "32px",
+        backgroundColor: "var(--color-neutral-100)"
       }}
+      className="h-[calc(100vh-120px)] overflow-auto p-8"
     >
       {/* メインテーブル */}
       <div

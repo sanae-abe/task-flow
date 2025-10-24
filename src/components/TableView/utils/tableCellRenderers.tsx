@@ -160,14 +160,7 @@ export const renderDueDateCell = (task: TaskWithColumn) => {
  * ラベルセルの描画
  */
 export const renderLabelsCell = (task: TaskWithColumn) => (
-  <div
-    style={{
-      display: "flex",
-      gap: "4px",
-      flexWrap: "wrap",
-      alignItems: "center",
-    }}
-  >
+  <div className="flex flex-wrap items-center gap-1">
     {task.labels?.slice(0, 2).map((label) => (
       <LabelChip key={label.id} label={label} />
     ))}
@@ -294,11 +287,9 @@ export const renderDescriptionCell = (task: TaskWithColumn) => (
 export const renderRecurrenceCell = (task: TaskWithColumn) => (
   <div
     style={{
-      display: "flex",
-      alignItems: "center",
-      gap: "4px",
       color: "var(--fgColor-default)",
     }}
+    className="flex items-center gap-1"
   >
     {task.recurrence?.enabled ? (
       <>

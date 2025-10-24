@@ -52,14 +52,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({
   );
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: "24px",
-        width: "100%",
-      }}
-    >
+    <div className="flex flex-col gap-6 w-full">
       {showModeSelector && (
         <ImportModeSelector
           selectedMode={importMode}

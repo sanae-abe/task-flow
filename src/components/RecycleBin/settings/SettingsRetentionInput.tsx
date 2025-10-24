@@ -3,10 +3,6 @@ import { Input } from "@/components/ui/input";
 import { type RecycleBinSettings } from "../../../types/settings";
 import { UI_TEXT } from "../../../constants/recycleBin";
 import { InlineMessage } from "../../shared";
-import {
-  RetentionInputContainer,
-  RetentionUnit,
-} from "../RecycleBinSettingsPanel.styles";
 
 export interface SettingsRetentionInputProps {
   /** 現在の設定 */
@@ -30,7 +26,7 @@ export const SettingsRetentionInput: React.FC<SettingsRetentionInputProps> = ({
       <label className="text-sm font-medium" htmlFor="retention-input">
         {UI_TEXT.PANEL.RETENTION_LABEL}
       </label>
-      <RetentionInputContainer>
+      <div className="flex items-center gap-2">
         <Input
           id="retention-input"
           type="number"
@@ -42,8 +38,8 @@ export const SettingsRetentionInput: React.FC<SettingsRetentionInputProps> = ({
           className="w-[100px]"
           aria-describedby="retention-help"
         />
-        <RetentionUnit>{UI_TEXT.PANEL.RETENTION_UNIT}</RetentionUnit>
-      </RetentionInputContainer>
+        <span className="text-muted-foreground">{UI_TEXT.PANEL.RETENTION_UNIT}</span>
+      </div>
       <small id="retention-help" className="text-xs text-muted-foreground">
         {UI_TEXT.PANEL.RETENTION_HELP}
       </small>

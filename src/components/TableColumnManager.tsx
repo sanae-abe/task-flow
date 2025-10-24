@@ -193,21 +193,16 @@ const TableColumnManager: React.FC = () => {
                   onDrop={(e: React.DragEvent) => handleDrop(e, column.id)}
                   onDragEnd={handleDragEnd}
                   style={{
-                    display: "flex",
-                    padding: "4px 0",
-                    alignItems: "center",
                     border: "1px solid",
                     borderColor: isDragging
                       ? "var(--borderColor-accent-emphasis)"
                       : "var(--borderColor-default)",
-                    borderRadius: "var(--borderRadius-medium)",
                     background: column.visible
                       ? "var(--background)"
                       : "var(--color-neutral-100)",
                     opacity: isDragging ? 0.5 : 1,
-                    cursor: "move",
-                    transition: "all 0.2s ease",
                   }}
+                  className="flex items-center py-1 px-0 rounded-md cursor-move transition-all duration-200 ease"
                 >
                   <Button
                     variant="ghost"

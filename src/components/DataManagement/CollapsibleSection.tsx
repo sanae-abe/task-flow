@@ -29,19 +29,11 @@ export const CollapsibleSection = memo<CollapsibleSectionProps>(({
   <div className="flex flex-col gap-3">
     <details
       open={defaultOpen}
-      style={{
-        transition: 'all 0.2s ease'
-      }}
+      className="transition-all duration-200 ease"
     >
       <summary
+        className="flex items-center justify-between cursor-pointer list-none outline-none mb-0"
         style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          cursor: 'pointer',
-          listStyle: 'none',
-          outline: 'none',
-          marginBottom: 0,
           border: '1px solid var(--borderColor-default)',
           borderRadius: '6px',
           padding: '12px',
@@ -50,20 +42,11 @@ export const CollapsibleSection = memo<CollapsibleSectionProps>(({
       >
         <div className="flex items-center gap-2">
           <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '24px',
-              height: '24px',
-              borderRadius: '4px',
-              backgroundColor: iconBg,
-              color: iconColor
-            }}
+            className={`flex items-center justify-center w-6 h-6 rounded-sm bg-[${iconBg}] color-[${iconColor}]`}
           >
             <Icon size={14} />
           </div>
-          <span style={{ fontSize: '16px', fontWeight: 'bold' }}>
+          <span className="text-base font-bold">
             {title}
           </span>
         </div>
@@ -72,10 +55,7 @@ export const CollapsibleSection = memo<CollapsibleSectionProps>(({
           height="20"
           viewBox="0 0 16 16"
           fill="currentColor"
-          style={{
-            transform: 'rotate(0deg)',
-            transition: 'transform 0.2s ease',
-          }}
+          className="rotate-0 transition-transform duration-200 ease"
         >
           <path d="M12.78 5.22a.749.749 0 0 1 0 1.06l-4.25 4.25a.749.749 0 0 1-1.06 0L3.22 6.28a.749.749 0 1 1 1.06-1.06L8 8.939l3.72-3.719a.749.749 0 0 1 1.06 0Z" />
         </svg>

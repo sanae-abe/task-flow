@@ -12,10 +12,9 @@ const TemplateManagementDemo: React.FC = () => (
       <BaseStyles>
         <div
           style={{
-            minHeight: '100vh',
-            backgroundColor: 'var(--background)',
-            padding: '16px'
+            backgroundColor: 'var(--background)'
           }}
+          className="min-h-screen p-4"
         >
           <TemplateManagementPanel />
         </div>

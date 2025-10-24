@@ -762,11 +762,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           onBlur={handleBlur}
           onClick={handleLinkClick}
           suppressContentEditableWarning
-          className="min-h-[inherit] p-2 px-3 outline-none text-sm leading-6 bg-white"
-          style={{
-            fontFamily: "inherit",
-            // Keep complex CSS for now - these would need custom CSS classes
-          }}
+          className="min-h-[inherit] p-2 px-3 outline-none text-sm leading-6 bg-white font-[inherit]"
         />
         {showPlaceholder && (
           <span className="absolute top-2 left-3 text-gray-500 pointer-events-none text-sm">

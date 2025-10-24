@@ -25,7 +25,7 @@ const ExampleDialog: React.FC = () => {
   } = useDialogFlashMessage();
 
   return (
-    <div style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+    <div className="p-4 flex flex-col gap-3">
       {/* メッセージ表示エリア */}
       <DialogFlashMessage message={message} />
 

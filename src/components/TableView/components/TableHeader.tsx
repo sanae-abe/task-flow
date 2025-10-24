@@ -39,14 +39,7 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
     ))}
 
     {/* 設定ボタンを固定位置に配置 */}
-    <div
-      style={{
-        position: "absolute",
-        top: "50%",
-        right: "12px",
-        transform: "translateY(-50%)",
-      }}
-    >
+    <div className="absolute top-1/2 right-3 transform -translate-y-1/2">
       <TableColumnManager />
     </div>
   </div>

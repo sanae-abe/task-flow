@@ -451,7 +451,7 @@ export const BoardSettingsPanel: React.FC = () => {
 
         {/* 新しいカラム追加 */}
         <div className="mb-3">
-          <div style={{ marginBottom: "8px", fontSize: "14px", fontWeight: "bold" }}>新しいカラムを追加</div>
+          <div className="mb-2 text-sm font-bold">新しいカラムを追加</div>
           <div>
             <div className="flex gap-2 w-full">
               <Input

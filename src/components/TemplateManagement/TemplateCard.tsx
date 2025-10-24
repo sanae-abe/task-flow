@@ -111,13 +111,7 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
       onClick={onSelect ? handleSelect : undefined}
     >
       {/* ヘッダー部分 */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'flex-start',
-        justifyContent: 'space-between',
-        gap: "8px",
-        marginBottom: compact ? "4px" : "8px"
-      }}>
+      <div className={`flex items-start justify-between gap-2 mb-${compact ? '1' : '2'}`}>
         <div className="flex-1 min-w-0">
           {/* テンプレート名 */}
           <div className="flex items-center gap-1 mb-1">
@@ -150,13 +144,9 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
         {/* アクションボタン */}
         {showActions && (
           <div
-            className="template-actions"
-            style={{
-              display: 'flex',
-              gap: "4px",
-              opacity: compact ? 1 : 0.7,
-              transition: 'opacity 0.2s ease'
-            }}
+            className={`template-actions flex gap-1 transition-opacity duration-200 ease-in-out ${
+              compact ? 'opacity-100' : 'opacity-70'
+            }`}
           >
             {onToggleFavorite && (
               <Button
@@ -209,13 +199,9 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
       {/* タスク情報 */}
       {!compact && (
         <div style={{
-          paddingTop: "8px",
-          borderTop: '1px solid',
-          borderColor: 'var(--borderColor-muted)',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: "4px"
-        }}>
+          borderColor: 'var(--borderColor-muted)'
+        }}
+        className="pt-2 border-t flex flex-col gap-1">
           {/* タスクタイトル */}
           <h4 className="text-sm font-semibold text-gray-900 truncate">
             {template.taskTitle}
