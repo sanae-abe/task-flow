@@ -1,5 +1,6 @@
 import { memo } from 'react';
-import { Text, Button, Spinner, RadioGroup, Radio, FormControl } from '@primer/react';
+import { Button } from '@/components/ui/button';
+import { Loader2 } from 'lucide-react';
 import { UploadIcon, FileIcon, XIcon } from '@primer/octicons-react';
 
 import { useDataImport } from '../../hooks/useDataImport';
@@ -43,27 +44,43 @@ export const ImportSection = memo<ImportSectionProps>(({ onMessage }) => {
   });
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: "12px", width: '100%' }}>
-      {/* インポートモード選択 - 元のRadioGroup維持 */}
-      <FormControl>
-        <FormControl.Label sx={{ fontSize: 1, fontWeight: '600' }}>
+    <div className="flex flex-col gap-3 w-full">
+      {/* インポートモード選択 */}
+      <div>
+        <label className="text-sm font-semibold">
           インポートモード
-        </FormControl.Label>
-        <RadioGroup
-          name="importMode"
-          onChange={(value) => setImportMode(value as 'merge' | 'replace')}
-          sx={{ mt: 1 }}
-        >
-          <FormControl>
-            <Radio checked={state.mode === 'merge'} value="merge" />
-            <FormControl.Label>既存データに追加（推奨）</FormControl.Label>
-          </FormControl>
-          <FormControl>
-            <Radio checked={state.mode === 'replace'} value="replace" />
-            <FormControl.Label>既存データを置換</FormControl.Label>
-          </FormControl>
-        </RadioGroup>
-      </FormControl>
+        </label>
+        <div className="mt-1 space-y-2">
+          <div className="flex items-center space-x-2">
+            <input
+              type="radio"
+              id="merge"
+              name="importMode"
+              value="merge"
+              checked={state.mode === 'merge'}
+              onChange={(e) => setImportMode(e.target.value as 'merge' | 'replace')}
+              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+            />
+            <label htmlFor="merge" className="text-sm text-gray-900">
+              既存データに追加（推奨）
+            </label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <input
+              type="radio"
+              id="replace"
+              name="importMode"
+              value="replace"
+              checked={state.mode === 'replace'}
+              onChange={(e) => setImportMode(e.target.value as 'merge' | 'replace')}
+              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+            />
+            <label htmlFor="replace" className="text-sm text-gray-900">
+              既存データを置換
+            </label>
+          </div>
+        </div>
+      </div>
 
       {/* 警告メッセージ - 置換モード時のみ表示 */}
       {state.mode === 'replace' && (
@@ -100,68 +117,28 @@ export const ImportSection = memo<ImportSectionProps>(({ onMessage }) => {
 
       {/* 選択されたファイル表示 - AttachmentList風スタイル */}
       {state.selectedFile && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: "8px" }}>
-          <Text sx={{ fontSize: 1, fontWeight: "700" }}>
+        <div className="flex flex-col gap-2">
+          <p className="text-sm font-bold">
             選択されたファイル
-          </Text>
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              padding: '8px',
-              backgroundColor: 'var(--bgColor-muted)',
-              borderRadius: 'var(--borderRadius-medium)',
-              border: '1px solid',
-              borderColor: 'var(--borderColor-default)'
-            }}
-          >
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: "8px",
-                flex: 1,
-                minWidth: 0,
-              }}
-            >
+          </p>
+          <div className="flex items-center justify-between p-2 bg-gray-50 rounded-md border border-gray-200">
+            <div className="flex items-center gap-2 flex-1 min-w-0">
               <FileIcon size={24} />
-              <div
-                style={{
-                  minWidth: 0,
-                  flex: 1,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: "4px",
-                }}
-              >
-                <Text
-                  sx={{
-                    fontSize: 1,
-                    fontWeight: '600',
-                    wordBreak: 'break-word',
-                    lineHeight: 1.2,
-                  }}
-                >
+              <div className="min-w-0 flex-1 flex flex-col gap-1">
+                <p className="text-sm font-semibold break-words leading-tight">
                   {state.selectedFile.name}
-                </Text>
-                <Text sx={{ fontSize: 0, color: 'fg.muted' }}>
+                </p>
+                <p className="text-xs text-gray-600">
                   {(state.selectedFile.size / 1024).toFixed(1)} KB
-                </Text>
+                </p>
               </div>
             </div>
             <Button
-              variant="invisible"
-              size="small"
+              variant="ghost"
+              size="sm"
               onClick={clearSelection}
               disabled={state.isLoading}
-              sx={{
-                p: 1,
-                color: 'danger.fg',
-                '&:hover': {
-                  color: 'danger.emphasis',
-                },
-              }}
+              className="p-1 h-auto min-w-0 text-red-600 hover:text-red-700"
               aria-label="ファイルを削除"
             >
               <XIcon size={16} />
@@ -172,21 +149,21 @@ export const ImportSection = memo<ImportSectionProps>(({ onMessage }) => {
 
       {/* ローディング表示 */}
       {state.isLoading && (
-        <div style={{ display: 'flex', alignItems: 'center', gap: "8px" }}>
-          <Spinner size="small" />
-          <Text sx={{ fontSize: 1 }}>処理中...</Text>
+        <div className="flex items-center gap-2">
+          <Loader2 className="h-4 w-4 animate-spin" />
+          <p className="text-sm">処理中...</p>
         </div>
       )}
 
       {/* インポート実行ボタン */}
       {state.selectedFile && (
         <Button
-          variant={state.mode === 'replace' ? 'danger' : 'primary'}
+          variant={state.mode === 'replace' ? 'destructive' : 'default'}
           onClick={executeImport}
           disabled={state.isLoading}
-          leadingVisual={UploadIcon}
-          sx={{ alignSelf: 'flex-start' }}
+          className="self-start"
         >
+          <UploadIcon size={16} className="mr-2" />
           {state.isLoading ? 'インポート中...' : 'インポート実行'}
         </Button>
       )}

@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, Button, IconButton } from "@primer/react";
+import { Button } from "@/components/ui/button";
 import { ChevronLeftIcon, ChevronRightIcon } from "@primer/octicons-react";
 import { DndContext, DragOverlay } from "@dnd-kit/core";
 
@@ -55,7 +55,7 @@ const CalendarView: React.FC = () => {
   if (!state.currentBoard) {
     return (
       <div style={calendarStyles.container}>
-        <Text>ボードが選択されていません</Text>
+        <p>ボードが選択されていません</p>
       </div>
     );
   }
@@ -73,21 +73,25 @@ const CalendarView: React.FC = () => {
             {year}年 {monthNames[month]}
           </span>
           <div style={calendarStyles.navigation}>
-            <IconButton
-              icon={ChevronLeftIcon}
-              aria-label="前の月"
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={() => navigateMonth("prev")}
-              size="small"
-            />
-            <Button size="small" onClick={goToToday}>
+              aria-label="前の月"
+            >
+              <ChevronLeftIcon size={16} />
+            </Button>
+            <Button size="sm" onClick={goToToday}>
               今日
             </Button>
-            <IconButton
-              icon={ChevronRightIcon}
-              aria-label="次の月"
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={() => navigateMonth("next")}
-              size="small"
-            />
+              aria-label="次の月"
+            >
+              <ChevronRightIcon size={16} />
+            </Button>
           </div>
         </div>
 

@@ -1,5 +1,5 @@
 import React, { memo, useCallback } from 'react';
-import { Box, Text, Button, IconButton } from '@primer/react';
+import { Button } from '@/components/ui/button';
 import { StarIcon, StarFillIcon, PencilIcon, TrashIcon } from '@primer/octicons-react';
 
 import type { TaskTemplate } from '../../types/template';
@@ -46,17 +46,17 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
     return labels[priority] || priority;
   };
 
-  const getPriorityColor = (priority: string | undefined) => {
+  const getPriorityColorClass = (priority: string | undefined) => {
     if (!priority) {
-      return 'fg.muted';
+      return 'text-gray-500';
     }
     const colors: Record<string, string> = {
-      low: 'fg.muted',
-      medium: 'attention.fg',
-      high: 'danger.fg',
-      critical: 'danger.fg'
+      low: 'text-gray-500',
+      medium: 'text-yellow-600',
+      high: 'text-red-600',
+      critical: 'text-red-600'
     };
-    return colors[priority] || 'fg.default';
+    return colors[priority] || 'text-gray-900';
   };
 
   // お気に入りトグル
@@ -100,23 +100,14 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
   }, [onSelect, template]);
 
   return (
-    <Box
-      sx={{
-        padding: compact ? "8px" : "12px",
-        border: '1px solid',
-        borderColor: 'border.default',
-        borderRadius: 2,
-        background: 'canvas.default',
-        cursor: onSelect ? 'pointer' : 'default',
-        transition: 'all 0.2s ease',
-        '&:hover': {
-          borderColor: onSelect ? 'accent.fg' : 'border.default',
-          background: onSelect ? 'canvas.subtle' : 'canvas.default',
-          '& .template-actions': {
-            opacity: 1
-          }
-        }
-      }}
+    <div
+      className={`
+        ${compact ? 'p-2' : 'p-3'}
+        border border-gray-200 rounded-lg bg-white
+        ${onSelect ? 'cursor-pointer hover:border-blue-600 hover:bg-gray-50' : 'cursor-default'}
+        transition-all duration-200 ease-in-out
+        hover:[&_.template-actions]:opacity-100
+      `}
       onClick={onSelect ? handleSelect : undefined}
     >
       {/* ヘッダー部分 */}
@@ -135,37 +126,23 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
                 <StarFillIcon size={14} />
               </div>
             )}
-            <Text sx={{
-              fontSize: compact ? 1 : 2,
-              fontWeight: 'bold',
-              color: 'fg.default',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap'
-            }}>
+            <h3 className={`
+              ${compact ? 'text-sm' : 'text-base'}
+              font-bold text-gray-900 truncate
+            `}>
               {template.name}
-            </Text>
+            </h3>
           </div>
 
           {/* カテゴリーと使用回数 */}
           <div style={{ display: 'flex', alignItems: 'center', gap: "8px", flexWrap: 'wrap' }}>
-            <Text sx={{
-              fontSize: 0,
-              color: 'fg.muted',
-              px: 2,
-              py: 1,
-              bg: 'neutral.muted',
-              borderRadius: 2
-            }}>
+            <span className="text-xs text-gray-600 px-2 py-1 bg-gray-100 rounded-md">
               {categoryInfo?.label || template.category}
-            </Text>
+            </span>
             {template.usageCount > 0 && (
-              <Text sx={{
-                fontSize: 0,
-                color: 'fg.muted'
-              }}>
+              <span className="text-xs text-gray-600">
                 使用回数: {template.usageCount}
-              </Text>
+              </span>
             )}
           </div>
         </div>
@@ -182,34 +159,39 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
             }}
           >
             {onToggleFavorite && (
-              <IconButton
-                icon={template.isFavorite ? StarFillIcon : StarIcon}
-                aria-label={template.isFavorite ? 'お気に入りから削除' : 'お気に入りに追加'}
-                size="small"
-                variant="invisible"
+              <Button
+                variant="ghost"
+                size="sm"
                 onClick={handleToggleFavorite}
-                sx={{
-                  color: template.isFavorite ? 'attention.fg' : 'fg.muted'
-                }}
-              />
+                aria-label={template.isFavorite ? 'お気に入りから削除' : 'お気に入りに追加'}
+                className={`p-1 h-auto min-w-0 ${
+                  template.isFavorite ? 'text-yellow-600' : 'text-gray-500'
+                }`}
+              >
+                {template.isFavorite ? <StarFillIcon size={16} /> : <StarIcon size={16} />}
+              </Button>
             )}
             {onEdit && (
-              <IconButton
-                icon={PencilIcon}
-                aria-label={`テンプレート「${template.name}」を編集`}
-                size="small"
-                variant="invisible"
+              <Button
+                variant="ghost"
+                size="sm"
                 onClick={handleEdit}
-              />
+                aria-label={`テンプレート「${template.name}」を編集`}
+                className="p-1 h-auto min-w-0 text-gray-500 hover:text-gray-700"
+              >
+                <PencilIcon size={16} />
+              </Button>
             )}
             {onDelete && (
-              <IconButton
-                icon={TrashIcon}
-                aria-label={`テンプレート「${template.name}」を削除`}
-                size="small"
-                variant="invisible"
+              <Button
+                variant="ghost"
+                size="sm"
                 onClick={handleDelete}
-              />
+                aria-label={`テンプレート「${template.name}」を削除`}
+                className="p-1 h-auto min-w-0 text-gray-500 hover:text-red-600"
+              >
+                <TrashIcon size={16} />
+              </Button>
             )}
           </div>
         )}
@@ -218,16 +200,9 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
       {/* 説明 */}
       {!compact && template.description && (
         <div style={{ marginBottom: "8px" }}>
-          <Text sx={{
-            fontSize: 1,
-            color: 'fg.muted',
-            display: '-webkit-box',
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: 'vertical',
-            overflow: 'hidden'
-          }}>
+          <p className="text-sm text-gray-600 line-clamp-2">
             {template.description}
-          </Text>
+          </p>
         </div>
       )}
 
@@ -242,26 +217,16 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
           gap: "4px"
         }}>
           {/* タスクタイトル */}
-          <Text sx={{
-            fontSize: 1,
-            fontWeight: 'semibold',
-            color: 'fg.default',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap'
-          }}>
+          <h4 className="text-sm font-semibold text-gray-900 truncate">
             {template.taskTitle}
-          </Text>
+          </h4>
 
           {/* タスク詳細情報 */}
           <div style={{ display: 'flex', alignItems: 'center', gap: "8px", flexWrap: 'wrap' }}>
             {/* 優先度 */}
-            <Text sx={{
-              fontSize: 0,
-              color: getPriorityColor(template.priority)
-            }}>
+            <span className={`text-xs ${getPriorityColorClass(template.priority)}`}>
               優先度: {getPriorityLabel(template.priority)}
-            </Text>
+            </span>
 
             {/* ラベル */}
             {template.labels.length > 0 && (
@@ -270,25 +235,18 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
                   <LabelChip key={label.id} label={label} />
                 ))}
                 {template.labels.length > 3 && (
-                  <Text sx={{ fontSize: 0, color: 'fg.muted' }}>
+                  <span className="text-xs text-gray-500">
                     +{template.labels.length - 3}
-                  </Text>
+                  </span>
                 )}
               </div>
             )}
 
             {/* 繰り返し設定 */}
             {template.recurrence?.enabled && (
-              <Text sx={{
-                fontSize: 0,
-                color: 'accent.fg',
-                px: 1,
-                py: 0.5,
-                bg: 'accent.subtle',
-                borderRadius: 1
-              }}>
+              <span className="text-xs text-blue-600 px-1 py-0.5 bg-blue-50 rounded">
                 繰り返し
-              </Text>
+              </span>
             )}
           </div>
         </div>
@@ -297,12 +255,12 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
       {/* 選択ボタン（コンパクトモード） */}
       {compact && onSelect && (
         <div style={{ marginTop: "8px" }}>
-          <Button variant="primary" size="small" sx={{ width: '100%' }}>
+          <Button variant="default" size="sm" className="w-full">
             このテンプレートを使用
           </Button>
         </div>
       )}
-    </Box>
+    </div>
   );
 });
 

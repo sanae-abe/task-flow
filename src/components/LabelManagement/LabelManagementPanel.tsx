@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { Button, Heading, Text } from '@primer/react';
+import { Button } from '@/components/ui/button';
 import { PlusIcon } from '@primer/octicons-react';
 
 import LabelFormDialog from './LabelFormDialog';
@@ -42,25 +42,20 @@ const LabelManagementPanel: React.FC<LabelManagementPanelProps> = ({ onMessage }
   } = useLabelDialogs(handleMessage);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: "12px", paddingBottom: "16px" }}>
+    <div className="flex flex-col gap-3 pb-4">
       {/* ヘッダー */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        gap: '8px'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <Heading sx={{ fontSize: 2, fontWeight: 'bold' }}>
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
+          <h2 className="text-lg font-bold">
             ラベル管理
-          </Heading>
+          </h2>
         </div>
         <Button
-          variant="primary"
-          leadingVisual={PlusIcon}
+          variant="default"
           onClick={handleCreate}
-          size="small"
+          size="sm"
         >
+          <PlusIcon size={16} className="mr-2" />
           ラベルを作成
         </Button>
       </div>
@@ -69,25 +64,9 @@ const LabelManagementPanel: React.FC<LabelManagementPanelProps> = ({ onMessage }
       {allLabelsWithInfo.length === 0 ? (
         <EmptyState />
       ) : (
-        <div style={{
-          border: '1px solid',
-          borderColor: 'var(--borderColor-default)',
-          borderRadius: "var(--borderRadius-medium)",
-          overflow: 'hidden'
-        }}>
+        <div className="border border-gray-200 rounded-md overflow-hidden">
           {/* テーブルヘッダー */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 200px 60px 50px',
-            gap: "8px",
-            padding: "8px",
-            background: 'var(--bgColor-muted)',
-            borderBottom: '1px solid',
-            borderColor: 'var(--borderColor-default)',
-            fontSize: "14px",
-            fontWeight: 'bold',
-            color: 'var(--fgColor-muted)'
-          }}>
+          <div className="grid grid-cols-[1fr_200px_60px_50px] gap-2 p-2 bg-gray-50 border-b border-gray-200 text-sm font-bold text-gray-600">
             <SortableHeader
               field="name"
               currentSortField={sortField}
@@ -113,11 +92,11 @@ const LabelManagementPanel: React.FC<LabelManagementPanelProps> = ({ onMessage }
             >
               使用数
             </SortableHeader>
-            <Text sx={{ textAlign: 'center', fontSize: 0 }}>操作</Text>
+            <div className="text-center text-xs">操作</div>
           </div>
 
           {/* テーブルボディ */}
-          <div style={{ maxHeight: '400px', overflow: 'auto' }}>
+          <div className="max-h-[400px] overflow-auto">
             {allLabelsWithInfo.map((label, index) => (
               <LabelTableRow
                 key={label.id}
