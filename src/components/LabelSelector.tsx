@@ -1,4 +1,4 @@
-import { PlusIcon, TagIcon } from "@primer/octicons-react";
+import { Plus, Tag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -59,7 +59,7 @@ const LabelSelector = memo<LabelSelectorProps>(
                 className="hover:text-gray-900 hover:bg-gray-100"
                 aria-label="ラベル選択メニューを開く"
               >
-                <TagIcon size={16} className="mr-2" />
+                <Tag size={16} className="mr-2" />
                 {SELECT_LABEL_TEXT}
               </Button>
             </DropdownMenuTrigger>
@@ -92,7 +92,7 @@ const LabelSelector = memo<LabelSelectorProps>(
             className="hover:text-gray-900 hover:bg-gray-100"
             aria-label="新しいラベルを作成"
           >
-            <PlusIcon size={16} className="mr-2" />
+            <Plus size={16} className="mr-2" />
             {ADD_LABEL_TEXT}
           </Button>
         </div>

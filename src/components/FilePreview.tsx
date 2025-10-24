@@ -1,4 +1,4 @@
-import { EyeIcon, ImageIcon, XIcon } from "@primer/octicons-react";
+import { Eye, Image, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import React, { useState, memo, useCallback } from "react";
 
@@ -36,7 +36,7 @@ const PreviewButton = memo<PreviewButtonProps>(
       className="p-1"
       aria-label={`${attachment.name}をプレビュー`}
     >
-      {isImage ? <ImageIcon size={14} /> : <EyeIcon size={14} />}
+      {isImage ? <Image size={14} /> : <Eye size={14} />}
     </Button>
   ),
 );
@@ -152,7 +152,7 @@ const FilePreview: React.FC<FilePreviewProps> = ({
                 className="p-1"
                 aria-label="プレビューを閉じる"
               >
-                <XIcon size={16} />
+                <X size={16} />
               </Button>
             </div>
 
