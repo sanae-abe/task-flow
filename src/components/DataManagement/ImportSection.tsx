@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
-import { UploadIcon, FileIcon, XIcon } from '@primer/octicons-react';
+import { Upload, File, X } from 'lucide-react';
 
 import { useDataImport } from '../../hooks/useDataImport';
 import { useDataImportDropZone } from '../../hooks/useDataImportDropZone';
@@ -123,7 +123,7 @@ export const ImportSection = memo<ImportSectionProps>(({ onMessage }) => {
           </p>
           <div className="flex items-center justify-between p-2 bg-gray-50 rounded-md border border-gray-200">
             <div className="flex items-center gap-2 flex-1 min-w-0">
-              <FileIcon size={24} />
+              <File size={24} />
               <div className="min-w-0 flex-1 flex flex-col gap-1">
                 <p className="text-sm font-semibold break-words leading-tight">
                   {state.selectedFile.name}
@@ -141,7 +141,7 @@ export const ImportSection = memo<ImportSectionProps>(({ onMessage }) => {
               className="p-1 h-auto min-w-0 text-red-600 hover:text-red-700"
               aria-label="ファイルを削除"
             >
-              <XIcon size={16} />
+              <X size={16} />
             </Button>
           </div>
         </div>
@@ -163,7 +163,7 @@ export const ImportSection = memo<ImportSectionProps>(({ onMessage }) => {
           disabled={state.isLoading}
           className="self-start"
         >
-          <UploadIcon size={16} className="mr-2" />
+          <Upload size={16} className="mr-2" />
           {state.isLoading ? 'インポート中...' : 'インポート実行'}
         </Button>
       )}
