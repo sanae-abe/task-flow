@@ -1,12 +1,12 @@
 import React, { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
 import {
-  ProjectIcon,
-  TasklistIcon,
-  ColumnsIcon,
-  ClockIcon,
-} from "@primer/octicons-react";
+  Loader2,
+  FolderKanban,
+  List,
+  Columns,
+  Clock,
+} from "lucide-react";
 
 import { useBoard } from "../../contexts/BoardContext";
 import { getAllRecycleBinItems } from "../../utils/recycleBin";
@@ -272,11 +272,11 @@ const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
                 {/* 種別 */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                   {item.type === 'board' ? (
-                    <ProjectIcon size={16} />
+                    <FolderKanban size={16} />
                   ) : item.type === 'column' ? (
-                    <ColumnsIcon size={16} />
+                    <Columns size={16} />
                   ) : (
-                    <TasklistIcon size={16} />
+                    <List size={16} />
                   )}
                   <span
                     className={`text-sm px-2 py-1 rounded text-gray-900 ${
@@ -302,7 +302,7 @@ const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
                   {item.timeUntilDeletion ? (
                     <>
-                      <ClockIcon size={14} />
+                      <Clock size={14} />
                       <span
                         className={`text-sm text-center ${
                           recycleBinSettings.retentionDays === null ? 'text-gray-500' : 'text-gray-900'

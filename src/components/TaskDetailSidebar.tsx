@@ -1,4 +1,4 @@
-import { TrashIcon, XIcon, PencilIcon, CopyIcon } from "@primer/octicons-react";
+import { Trash2, X, Edit, Copy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useEffect, useCallback, memo, useRef } from "react";
 
@@ -114,7 +114,7 @@ const TaskDetailSidebar = memo<TaskDetailSidebarProps>(
               aria-label="タスク詳細を閉じる"
               className="flex-shrink-0 p-1 h-auto min-w-0"
             >
-              <XIcon size={16} />
+              <X size={16} />
             </Button>
           </div>
 
@@ -145,7 +145,7 @@ const TaskDetailSidebar = memo<TaskDetailSidebarProps>(
                 size="default"
                 className="flex-1 flex items-center justify-center gap-2"
               >
-                <PencilIcon size={16} />
+                <Edit size={16} />
                 編集
               </Button>
               <Button
@@ -154,7 +154,7 @@ const TaskDetailSidebar = memo<TaskDetailSidebarProps>(
                 size="default"
                 className="flex-1 flex items-center justify-center gap-2"
               >
-                <CopyIcon size={16} />
+                <Copy size={16} />
                 複製
               </Button>
               <TaskBoardMover onMoveTask={handleMoveToBoard} />
@@ -164,7 +164,7 @@ const TaskDetailSidebar = memo<TaskDetailSidebarProps>(
                 size="default"
                 className="flex-1 flex items-center justify-center gap-2"
               >
-                <TrashIcon size={16} />
+                <Trash2 size={16} />
                 削除
               </Button>
             </div>
