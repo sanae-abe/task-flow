@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import { FormControl, Select } from '@primer/react';
 
 import type { TemplateCategory, TemplateCategoryInfo } from '../../types/template';
 
@@ -66,24 +65,29 @@ const TemplateCategorySelector: React.FC<TemplateCategorySelectorProps> = ({
   );
 
   return (
-    <FormControl required={required}>
-      <FormControl.Label>{label}</FormControl.Label>
-      <Select
+    <div className="flex flex-col gap-2">
+      <label className="text-sm font-medium">
+        {label}
+        {required && <span className="text-red-500 ml-1">*</span>}
+      </label>
+      <select
         value={value}
         onChange={(e) => onChange(e.target.value as TemplateCategory)}
         disabled={disabled}
-        sx={{ width: '100%' }}
+        className="w-full h-10 px-3 py-2 border border-input bg-background rounded-md text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
       >
         {TEMPLATE_CATEGORIES.map((category) => (
-          <Select.Option key={category.id} value={category.id}>
+          <option key={category.id} value={category.id}>
             {category.label}
-          </Select.Option>
+          </option>
         ))}
-      </Select>
+      </select>
       {showDescription && selectedCategory && (
-        <FormControl.Caption>{selectedCategory.description}</FormControl.Caption>
+        <small className="text-xs text-muted-foreground">
+          {selectedCategory.description}
+        </small>
       )}
-    </FormControl>
+    </div>
   );
 };
 
