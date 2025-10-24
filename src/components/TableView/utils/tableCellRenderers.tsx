@@ -1,16 +1,19 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import {
-  ActionMenu,
-  ActionList,
-} from "@primer/react";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 import {
-  XIcon,
-  CheckIcon,
-  PaperclipIcon,
-  TriangleDownIcon,
-  SyncIcon,
-} from "@primer/octicons-react";
+  X,
+  Check,
+  Paperclip,
+  ChevronDown,
+  RotateCcw,
+} from "lucide-react";
 
 import type { TaskWithColumn } from "../../../types/table";
 import type { KanbanBoard } from "../../../types";
@@ -40,7 +43,7 @@ export const renderActionsCell = (
       onClick={() => onDeleteClick(task)}
       className="p-1 h-auto min-w-0 hover:bg-transparent hover:text-red-600"
     >
-      <XIcon size={16} />
+      <X size={16} />
     </Button>
   </div>
 );
@@ -67,8 +70,8 @@ export const renderStatusCell = (
   onStatusChange: (task: TaskWithColumn, newColumnId: string) => void,
 ) => (
   <div onClick={(e: React.MouseEvent) => e.stopPropagation()}>
-    <ActionMenu>
-      <ActionMenu.Anchor>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
           size="sm"
@@ -77,25 +80,23 @@ export const renderStatusCell = (
           <StatusBadge size="medium" variant="default" fontWeight="400">
             {task.status}
           </StatusBadge>
-          <TriangleDownIcon size={12} className="ml-1" />
+          <ChevronDown size={12} className="ml-1" />
         </Button>
-      </ActionMenu.Anchor>
-      <ActionMenu.Overlay>
-        <ActionList selectionVariant="single">
-          <ActionList.Group title="ステータス変更" selectionVariant="single">
-            {currentBoard?.columns.map((column) => (
-              <ActionList.Item
-                key={column.id}
-                onSelect={() => onStatusChange(task, column.id)}
-                selected={task.columnId === column.id}
-              >
-                {column.title}
-              </ActionList.Item>
-            ))}
-          </ActionList.Group>
-        </ActionList>
-      </ActionMenu.Overlay>
-    </ActionMenu>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent>
+        <div className="px-2 py-1.5 text-sm font-semibold">ステータス変更</div>
+        <DropdownMenuSeparator />
+        {currentBoard?.columns.map((column) => (
+          <DropdownMenuItem
+            key={column.id}
+            onClick={() => onStatusChange(task, column.id)}
+            className={task.columnId === column.id ? "bg-accent" : ""}
+          >
+            {column.title}
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
   </div>
 );
 
@@ -150,7 +151,7 @@ export const renderDueDateCell = (task: TaskWithColumn) => {
       className={`flex items-center gap-1 text-sm ${getColorClass(dateColor)}`}
     >
       {formattedDate}
-      {task.recurrence?.enabled && <SyncIcon size={12} />}
+      {task.recurrence?.enabled && <RotateCcw size={12} />}
     </span>
   );
 };
@@ -185,7 +186,7 @@ export const renderSubTasksCell = (task: TaskWithColumn) => (
   <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
     {task.subTasks && task.subTasks.length > 0 ? (
       <>
-        <CheckIcon size={12} />
+        <Check size={12} />
         <span className="text-sm text-gray-900">
           {task.subTasks.filter((sub) => sub.completed).length}/
           {task.subTasks.length}
@@ -204,7 +205,7 @@ export const renderFilesCell = (task: TaskWithColumn) => (
   <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
     {task.files && task.files.length > 0 ? (
       <>
-        <PaperclipIcon size={12} />
+        <Paperclip size={12} />
         <span className="text-sm text-gray-900">
           {task.files.length}
         </span>
@@ -301,7 +302,7 @@ export const renderRecurrenceCell = (task: TaskWithColumn) => (
   >
     {task.recurrence?.enabled ? (
       <>
-        <SyncIcon size={12} />
+        <RotateCcw size={12} />
         <span className="text-sm">
           {task.recurrence.pattern === "daily" && "毎日"}
           {task.recurrence.pattern === "weekly" && "毎週"}

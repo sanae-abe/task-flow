@@ -1,5 +1,4 @@
 import React from "react";
-import { Text, CounterLabel } from "@primer/react";
 import type { TableHeaderProps } from "../types";
 import TableColumnManager from "../../TableColumnManager";
 
@@ -32,9 +31,9 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
         key={column.id}
         style={{ display: "flex", alignItems: "center", gap: "4px" }}
       >
-        <Text sx={{ fontWeight: "bold", fontSize: 1 }}>{column.label}</Text>
+        <span className="font-bold text-sm">{column.label}</span>
         {column.id === "title" && (
-          <CounterLabel sx={{ ml: 1, flexShrink: 0 }}>{taskCount}</CounterLabel>
+          <span className="ml-1 flex-shrink-0 bg-neutral-100 text-neutral-900 text-xs px-1.5 py-0.5 rounded-full">{taskCount}</span>
         )}
       </div>
     ))}

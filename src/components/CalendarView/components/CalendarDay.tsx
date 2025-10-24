@@ -1,5 +1,4 @@
 import React, { useMemo, useCallback } from "react";
-import { Text } from "@primer/react";
 import { useDroppable } from "@dnd-kit/core";
 
 import type { Task } from "../../../types";
@@ -109,9 +108,9 @@ const CalendarDay: React.FC<CalendarDayProps> = React.memo(
         <div style={headerStyles}>
           <span style={dayNumberStyles}>{date.getDate()}</span>
           {tasks.length > 3 && (
-            <Text fontSize="12px" color="fg.muted">
+            <span className="text-xs text-muted-foreground">
               他 {tasks.length - 3} 件
-            </Text>
+            </span>
           )}
         </div>
         <div style={tasksContainerStyles}>
