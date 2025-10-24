@@ -1,5 +1,6 @@
 import { SortAscIcon } from "@primer/octicons-react";
-import { ActionMenu, ActionList, Button } from "@primer/react";
+import { ActionMenu, ActionList } from "@primer/react";
+import { Button } from "@/components/ui/button";
 import React from "react";
 
 import type { SortOption, SortConfig } from "../types";
@@ -30,11 +31,12 @@ const TaskSortSelector: React.FC<TaskSortSelectorProps> = ({
     <ActionMenu>
       <ActionMenu.Anchor>
         <Button
-          variant="invisible"
-          size="small"
-          leadingVisual={SortAscIcon}
+          variant="ghost"
+          size="sm"
           aria-label={`現在のソート: ${currentSortConfig?.label ?? "手動"}`}
+          className="flex items-center gap-2"
         >
+          <SortAscIcon size={16} />
           {currentSortConfig?.label ?? "手動"}
         </Button>
       </ActionMenu.Anchor>

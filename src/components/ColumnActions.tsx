@@ -6,7 +6,8 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
 } from "@primer/octicons-react";
-import { Button, ActionMenu, ActionList } from "@primer/react";
+import { ActionMenu, ActionList } from "@primer/react";
+import { Button } from "@/components/ui/button";
 import React from "react";
 
 interface ColumnActionsProps {
@@ -28,22 +29,24 @@ const ColumnActions: React.FC<ColumnActionsProps> = ({
   canMoveLeft = true,
   canMoveRight = true,
 }) => (
-  <div style={{ display: "flex", alignItems: "center" }}>
+  <div className="flex items-center">
     <Button
       onClick={onAddTask}
-      variant="invisible"
-      size="small"
-      leadingVisual={PlusIcon}
+      variant="ghost"
+      size="icon"
       aria-label="タスクを作成"
-    />
+    >
+      <PlusIcon size={16} />
+    </Button>
     <ActionMenu>
       <ActionMenu.Anchor>
         <Button
-          variant="invisible"
-          size="small"
-          leadingVisual={KebabHorizontalIcon}
+          variant="ghost"
+          size="icon"
           aria-label="カラム設定"
-        />
+        >
+          <KebabHorizontalIcon size={16} />
+        </Button>
       </ActionMenu.Anchor>
       <ActionMenu.Overlay sx={{ zIndex: 150 }}>
         <ActionList>

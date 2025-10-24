@@ -1,6 +1,7 @@
 import type { Icon } from '@primer/octicons-react';
-import { Button, IconButton as PrimerIconButton } from '@primer/react';
+import { Button } from '@/components/ui/button';
 import { memo } from 'react';
+import { cn } from '@/lib/utils';
 
 import type { IconButtonVariant, IconButtonSize, IconButtonStyle } from '../../types/shared';
 
@@ -37,7 +38,6 @@ const IconButton = memo<IconButtonProps>(({
   ariaLabel,
   variant = 'default',
   size = 'medium',
-  style = 'primer',
   disabled = false,
   sx,
   stopPropagation = false
@@ -49,44 +49,19 @@ const IconButton = memo<IconButtonProps>(({
     onClick(event);
   };
 
-  // バリアント別の色定義
-  const getVariantColors = () => {
+  // バリアント別のTailwindクラス定義
+  const getVariantClasses = () => {
     switch (variant) {
       case 'danger':
-        return {
-          color: 'danger.fg',
-          '&:hover': {
-            color: 'danger.fg'
-          }
-        };
+        return 'text-red-600 hover:text-red-700';
       case 'success':
-        return {
-          color: 'success.fg',
-          '&:hover': {
-            color: 'success.fg'
-          }
-        };
+        return 'text-green-600 hover:text-green-700';
       case 'warning':
-        return {
-          color: 'attention.fg',
-          '&:hover': {
-            color: 'attention.fg'
-          }
-        };
+        return 'text-yellow-600 hover:text-yellow-700';
       case 'muted':
-        return {
-          color: 'fg.muted',
-          '&:hover': {
-            color: 'fg.default'
-          }
-        };
+        return 'text-gray-500 hover:text-gray-700';
       default:
-        return {
-          color: 'fg.default',
-          '&:hover': {
-            color: 'fg.default'
-          }
-        };
+        return 'text-gray-900 hover:text-gray-700';
     }
   };
 
@@ -102,43 +77,34 @@ const IconButton = memo<IconButtonProps>(({
     }
   };
 
-  // Primerスタイルを使用する場合
-  if (style === 'primer') {
-    return (
-      <PrimerIconButton
-        aria-label={ariaLabel}
-        icon={IconComponent}
-        size={size}
-        onClick={handleClick}
-        variant="invisible"
-        disabled={disabled}
-        sx={{
-          ...getVariantColors(),
-          '&:hover': {
-            bg: 'transparent',
-            ...getVariantColors()['&:hover']
-          },
-          ...sx
-        }}
-      />
-    );
-  }
-
-  // カスタムスタイルを使用する場合
-  const buttonSx = {
-    p: size === 'small' ? 1 : 2,
-    minHeight: 'auto',
-    ...getVariantColors(),
-    ...sx
+  // Shadcn/UIサイズマッピング
+  const getShadcnSize = () => {
+    switch (size) {
+      case 'small':
+        return 'sm';
+      case 'large':
+        return 'lg';
+      default:
+        return 'icon';
+    }
   };
 
+  // 統一されたShadcn/UI実装
   return (
     <Button
       onClick={handleClick}
-      variant="invisible"
+      variant="ghost"
+      size={getShadcnSize()}
       disabled={disabled}
       aria-label={ariaLabel}
-      sx={buttonSx}
+      className={cn(
+        getVariantClasses(),
+        'hover:bg-gray-100 transition-colors',
+        size === 'small' && 'p-1',
+        size === 'large' && 'p-3',
+        size === 'medium' && 'p-2'
+      )}
+      style={sx ? (sx as React.CSSProperties) : undefined}
     >
       <IconComponent size={getIconSize()} />
     </Button>
