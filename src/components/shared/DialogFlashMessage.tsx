@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { cn } from '@/lib/utils';
 import {
   AlertTriangle,
@@ -42,23 +43,23 @@ interface DialogFlashMessageProps {
 }
 
 /**
- * メッセージタイプに応じたアラートスタイルクラスを返す
+ * DialogMessageTypeをshadcn/ui Alertのvariantにマッピング
  */
-export const getAlertStyles = (type: DialogMessageType): string => {
+const getAlertVariant = (type: DialogMessageType): "default" | "destructive" | "warning" | "success" | "info" => {
   switch (type) {
     case 'success':
-      return 'bg-green-50 border-green-200 text-green-800';
+      return 'success';
     case 'warning':
-      return 'bg-yellow-50 border-yellow-200 text-yellow-800';
+      return 'warning';
     case 'critical':
     case 'danger':
-      return 'bg-red-50 border-red-200 text-red-800';
+      return 'destructive';
     case 'info':
     case 'upsell':
-      return 'bg-blue-50 border-blue-200 text-blue-800';
+      return 'info';
     case 'default':
     default:
-      return 'bg-gray-50 border-gray-200 text-gray-800';
+      return 'default';
   }
 };
 
@@ -68,25 +69,25 @@ export const getAlertStyles = (type: DialogMessageType): string => {
 export const getMessageIcon = (type: DialogMessageType): React.ReactElement => {
   switch (type) {
     case 'success':
-      return <CheckCircle size={16} />;
+      return <CheckCircle className="h-4 w-4" />;
     case 'info':
     case 'upsell':
-      return <Info size={16} />;
+      return <Info className="h-4 w-4" />;
     case 'warning':
-      return <AlertTriangle size={16} />;
+      return <AlertTriangle className="h-4 w-4" />;
     case 'critical':
-      return <XCircle size={16} />;
+      return <XCircle className="h-4 w-4" />;
     case 'danger':
-      return <AlertTriangle size={16} />;
+      return <AlertTriangle className="h-4 w-4" />;
     case 'default':
     default:
-      return <Info size={16} />;
+      return <Info className="h-4 w-4" />;
   }
 };
 
 /**
  * ダイアログ内でFlashメッセージを表示するコンポーネント
- * メッセージタイプに応じて適切なvariantとアイコンを表示します
+ * shadcn/ui Alertを使用してメッセージタイプに応じて適切なvariantとアイコンを表示します
  */
 export const DialogFlashMessage: React.FC<DialogFlashMessageProps> = ({
   message,
@@ -101,40 +102,36 @@ export const DialogFlashMessage: React.FC<DialogFlashMessageProps> = ({
   }
 
   return (
-    <div
+    <Alert
+      variant={getAlertVariant(message.type)}
       className={cn(
-        "border rounded-md p-4",
-        getAlertStyles(message.type),
         isStatic ? "static" : "sticky top-0",
+        "relative",
         className
       )}
       style={style}
     >
-      <div className="flex justify-between items-start">
-        <div className="flex items-start flex-1">
-          <div className="mr-2">{getMessageIcon(message.type)}</div>
-          <div className="flex-1">
-            {message.title && (
-              <div className="font-bold block mb-1">{message.title}</div>
-            )}
-            <div className="block">
-              {message.text}
-            </div>
-          </div>
-        </div>
-        {showDismiss && onDismiss && (
-          <Button
-            variant="ghost"
-            size="sm"
-            aria-label="閉じる"
-            onClick={onDismiss}
-            className="ml-2 flex-shrink-0 self-start p-1 h-auto min-w-0"
-          >
-            <X size={16} />
-          </Button>
+      {getMessageIcon(message.type)}
+      <div className="flex-1">
+        {message.title && (
+          <AlertTitle>{message.title}</AlertTitle>
         )}
+        <AlertDescription>
+          {message.text}
+        </AlertDescription>
       </div>
-    </div>
+      {showDismiss && onDismiss && (
+        <Button
+          variant="ghost"
+          size="sm"
+          aria-label="閉じる"
+          onClick={onDismiss}
+          className="absolute right-2 top-2 h-auto p-1 min-w-0"
+        >
+          <X className="h-4 w-4" />
+        </Button>
+      )}
+    </Alert>
   );
 };
 

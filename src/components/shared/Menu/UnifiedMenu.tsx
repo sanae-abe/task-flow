@@ -37,7 +37,6 @@ const MenuTriggerComponent = memo<{
       return (
         <IconButton
           icon={icon}
-          onClick={() => {}} // ActionMenuが制御
           ariaLabel={ariaLabel ?? label ?? 'メニューを開く'}
           variant={variant === 'danger' ? 'danger' : 'default'}
           size={size}

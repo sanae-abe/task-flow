@@ -236,7 +236,8 @@ const FilterSelector = memo<FilterSelectorProps>(
                       className={currentFilter.selectedLabelNames?.includes(label.name) ? 'bg-accent' : ''}
                     >
                       <div
-                        className={`mr-2 w-3 h-3 rounded-xs bg-[${label.color}]`}
+                        style={{ backgroundColor: label.color }}
+                        className="mr-2 w-3 h-3 rounded-xs"
                       />
                       {label.name}
                     </DropdownMenuItem>

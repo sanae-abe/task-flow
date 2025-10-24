@@ -34,12 +34,15 @@ const PriorityBadge: React.FC<PriorityBadgeProps> = ({
 
   return (
     <div
+      style={{
+        backgroundColor: colors.bg,
+        color: colors.text
+      }}
       className={cn(
         `inline-flex items-center gap-1 text-[12px]`,
         showLabel ? "font-medium" : "font-normal",
         `line-height-[1.5]`,
         `px-2 py-[3px] rounded-[3px]`,
-        `bg-[${colors.bg}] text-[${colors.text}]`,
         `cursor-default`
       )}
       aria-label={`優先度: ${displayLabel} - ${config.description}`}

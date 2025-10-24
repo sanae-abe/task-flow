@@ -58,6 +58,7 @@ const ColorSelector = memo<ColorSelectorProps>(
                 tabIndex={isSelected ? 0 : -1}
                 variant="ghost"
                 size="icon"
+                style={{ backgroundColor: colors.bg }}
                 className={cn(
                   "w-8 h-8 min-h-8 p-0 border-2 rounded-md",
                   "flex items-center justify-center relative cursor-pointer",
@@ -65,8 +66,7 @@ const ColorSelector = memo<ColorSelectorProps>(
                   "hover:scale-105 hover:shadow-md",
                   "focus:outline-2 focus:outline-blue-500 focus:outline-offset-1",
                   isSelected ? "border-blue-600" : "border-transparent",
-                  "hover:border-gray-600",
-                  `bg-[${colors.bg}]`
+                  "hover:border-gray-600"
                 )}
               >
                 <span

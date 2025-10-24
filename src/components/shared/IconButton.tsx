@@ -8,8 +8,8 @@ import type { IconButtonVariant, IconButtonSize, IconButtonStyle } from '../../t
 interface IconButtonProps {
   /** アイコンコンポーネント */
   icon: LucideIcon;
-  /** クリック時のコールバック */
-  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  /** クリック時のコールバック（DropdownMenuTrigger内で使用する場合は省略可能） */
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   /** アクセシビリティ用のラベル */
   ariaLabel: string;
   /** ボタンのバリアント */
@@ -49,7 +49,9 @@ const IconButton = memo<IconButtonProps>(({
     if (stopPropagation) {
       event.stopPropagation();
     }
-    onClick(event);
+    if (onClick) {
+      onClick(event);
+    }
   };
 
   // バリアント別のTailwindクラス定義
