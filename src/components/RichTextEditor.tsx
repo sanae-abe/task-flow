@@ -769,7 +769,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           {/* 絵文字ピッカー本体 */}
           <div
             data-emoji-picker
-            className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[9999] border border-gray-200 rounded-xl bg-white shadow-[0_20px_80px_rgba(0,0,0,0.2),0_10px_40px_rgba(0,0,0,0.15),0_5px_20px_rgba(0,0,0,0.1)] animate-[fadeIn_0.2s_ease-out]"
+            className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[400] border border-gray-200 rounded-xl bg-white shadow-[0_20px_80px_rgba(0,0,0,0.2),0_10px_40px_rgba(0,0,0,0.15),0_5px_20px_rgba(0,0,0,0.1)] animate-[fadeIn_0.2s_ease-out]"
             style={{
               // Custom animation keyframes - would need to be defined in CSS
               animation: "fadeIn 0.2s ease-out",

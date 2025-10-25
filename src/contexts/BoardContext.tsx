@@ -10,7 +10,7 @@ import React, {
 import { v4 as uuidv4 } from "uuid";
 
 import type { KanbanBoard, Column, Label } from "../types";
-import { saveBoards, loadBoards } from "../utils/storage";
+import { saveBoards, loadBoards, protectDemoBoard } from "../utils/storage";
 import { loadSettings } from "../utils/settingsStorage";
 import { useSonnerNotify } from "../hooks/useSonnerNotify";
 import { logger } from "../utils/logger";
@@ -139,8 +139,9 @@ const getCurrentBoardId = (): string | null => {
 const boardReducer = (state: BoardState, action: BoardAction): BoardState => {
   switch (action.type) {
     case "LOAD_BOARDS": {
-      const boards = action.payload;
-      const activeBoards = getActiveBoards(boards);
+      // デモデータ保護機能を適用
+      const protectedBoards = protectDemoBoard(action.payload);
+      const activeBoards = getActiveBoards(protectedBoards);
 
       // 保存された現在のボードIDを取得
       const savedCurrentBoardId = getCurrentBoardId();
@@ -157,7 +158,7 @@ const boardReducer = (state: BoardState, action: BoardAction): BoardState => {
 
       return {
         ...state,
-        boards,
+        boards: protectedBoards,
         currentBoard: currentBoard as KanbanBoard | null,
       };
     }
@@ -971,5 +972,3 @@ export const useBoard = (): BoardContextType => {
   }
   return context;
 };
-
-export default BoardContext;

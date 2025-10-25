@@ -58,7 +58,7 @@ const SortableBoardTab: React.FC<SortableBoardTabProps> = memo(
           isSelected
             ? "py-3 border-b-2 border-blue-600"
             : "py-3 border-b-0",
-          isDragging && "opacity-50 rotate-[5deg] z-[1000]"
+          isDragging && "opacity-50 rotate-[5deg] z-[900]"
         )}
         aria-selected={isSelected}
         {...attributes}

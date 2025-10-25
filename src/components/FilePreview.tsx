@@ -128,7 +128,7 @@ const FilePreview: React.FC<FilePreviewProps> = ({
 
       {isPreviewOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-[1000] flex items-center justify-center"
+          className="fixed inset-0 bg-black/50 z-[400] flex items-center justify-center"
           onClick={handleClosePreview}
         >
           <div

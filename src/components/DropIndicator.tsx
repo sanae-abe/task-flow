@@ -24,7 +24,7 @@ const DropIndicator: React.FC<DropIndicatorProps> = ({ isVisible }) => {
       style={{
         backgroundColor: "rgb(37 99 235)"
       }}
-      className="h-2 mx-1 my-2 rounded-[1px] transition-all duration-200 ease relative z-10"
+      className="h-2 mx-1 my-2 rounded-[1px] transition-all duration-200 ease relative z-[250]"
     >
       <style>
         {`

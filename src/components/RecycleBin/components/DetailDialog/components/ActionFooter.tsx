@@ -66,7 +66,7 @@ export const ActionFooter: React.FC<ActionFooterProps> = ({
     <footer
       role="group"
       aria-label="アクション"
-      className="flex gap-2 p-4 border-t border-gray-200 bg-gray-50 rounded-b-md sticky bottom-0 z-10 max-sm:p-3 max-sm:gap-1"
+      className="flex gap-2 p-4 border-t border-gray-200 bg-gray-50 rounded-b-md sticky bottom-0 z-[210] max-sm:p-3 max-sm:gap-1"
     >
       {/* 復元ボタン */}
       <Button

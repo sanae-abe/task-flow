@@ -190,7 +190,7 @@ const FilterSelector = memo<FilterSelectorProps>(
             {getCurrentFilterLabel()}
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="z-150 w-56">
+        <DropdownMenuContent className="z-[400] w-56">
           {/* 期限でフィルター */}
           {filterConfigs.slice(0, 4).map((config) => {
             const IconComponent = getFilterIcon(config.icon);
@@ -221,7 +221,7 @@ const FilterSelector = memo<FilterSelectorProps>(
                     <span className="ml-auto text-xs text-muted-foreground">→</span>
                   </DropdownMenuItem>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="z-200 w-56">
+                <DropdownMenuContent className="z-[400] w-56">
                   <DropdownMenuItem
                     onClick={() => handleFilterSelect("label")}
                     className={currentFilter.type === "has-labels" ? 'bg-accent' : ''}
@@ -260,7 +260,7 @@ const FilterSelector = memo<FilterSelectorProps>(
                 <span className="ml-auto text-xs text-muted-foreground">→</span>
               </DropdownMenuItem>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="z-200 w-56">
+            <DropdownMenuContent className="z-[400] w-56">
               {(["critical", "high", "medium", "low"] as Priority[]).map(
                 (priority) => {
                   const config = priorityConfig[priority];

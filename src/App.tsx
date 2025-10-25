@@ -23,7 +23,7 @@ import { useFirstTimeUser } from './hooks/useFirstTimeUser';
 import { useSubHeader } from './hooks/useSubHeader';
 
 // 定数定義
-const Z_INDEX = 1000;
+const Z_INDEX = 100;
 
 // スタイル定義
 const styles = {
@@ -113,14 +113,14 @@ const AppContent: React.FC = () => {
         <>
           {/* オーバーレイ背景 */}
           <div
-            className="fixed inset-0 bg-black/50 z-9998 animate-fadeIn duration-200 ease-out cursor-pointer"
+            className="fixed inset-0 bg-black/50 z-[600] animate-fadeIn duration-200 ease-out cursor-pointer"
             onClick={handleDismissHint}
             role="button"
             aria-label="ヒントを閉じる"
           />
 
           {/* ツールチップ */}
-          <div className="fixed top-[100px] right-[80px] z-9999 animate-fadeInSlide duration-300 ease-out">
+          <div className="fixed top-[100px] right-[80px] z-[601] animate-fadeInSlide duration-300 ease-out">
             <FirstTimeUserHint
               onDismiss={handleDismissHint}
             />

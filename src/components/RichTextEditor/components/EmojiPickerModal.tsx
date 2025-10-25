@@ -20,7 +20,7 @@ export const EmojiPickerModal: React.FC<EmojiPickerModalProps> = ({
   return (
     <div
       data-emoji-picker
-      className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[9999] border border-border rounded-lg bg-background animate-in fade-in duration-200"
+      className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[500] border border-border rounded-lg bg-background animate-in fade-in duration-200"
       style={{
         boxShadow: '0 20px 80px rgba(0, 0, 0, 0.2), 0 10px 40px rgba(0, 0, 0, 0.15), 0 5px 20px rgba(0, 0, 0, 0.1)',
         '--epr-category-navigation-button-size': '22px',

@@ -20,7 +20,7 @@ import Logo from "./Logo";
 
 // 定数定義
 const SIDEBAR_WIDTH = "440px";
-const SIDEBAR_Z_INDEX = 1001;
+const SIDEBAR_Z_INDEX = 400;
 const TITLE_MIN_WIDTH = "120px";
 
 interface HelpSidebarProps {

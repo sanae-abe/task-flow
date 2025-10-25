@@ -166,7 +166,7 @@ const UnifiedMenu = memo<UnifiedMenuProps>(({
   groups = [],
   trigger,
   placement: _placement,
-  zIndex = 100,
+  zIndex = 500,
   overlayProps = {}
 }) => {
   const menuContent = useMemo(() => {

@@ -15,7 +15,7 @@ const getDialogStyles = (variant: DialogVariant, size: DialogSize) => {
   const variantStyles = {
     modal: {
       backdrop: {
-        zIndex: 9999,
+        zIndex: 300,
       },
       container: {
         display: 'flex',
@@ -34,7 +34,7 @@ const getDialogStyles = (variant: DialogVariant, size: DialogSize) => {
     },
     overlay: {
       backdrop: {
-        zIndex: 10000,
+        zIndex: 300,
       },
       container: {
         display: 'flex',
@@ -230,8 +230,15 @@ const UnifiedDialog = memo<UnifiedDialogProps>(({
       role="dialog"
       aria-modal={variant !== 'inline' ? 'true' : undefined}
       aria-labelledby={titleId}
+      data-state={isOpen ? 'open' : 'closed'}
       className={cn(
-        "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-black/50 flex",
+        // ベースアニメーション - Shadcn/UI Dialog準拠
+        "data-[state=open]:animate-in data-[state=closed]:animate-out",
+        "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+        "data-[state=closed]:duration-300 data-[state=open]:duration-300",
+        // ベースレイアウト
+        "fixed inset-0 z-[400] bg-black/50 flex",
+        // バリアント別のレイアウト
         variant === 'overlay' && "items-start justify-center pt-0",
         variant === 'modal' && "items-center justify-center",
         variant === 'inline' && "relative bg-transparent z-auto block"
@@ -241,8 +248,15 @@ const UnifiedDialog = memo<UnifiedDialogProps>(({
       <div
         style={styles.container as React.CSSProperties}
         onClick={handleContainerClick}
+        data-state={isOpen ? 'open' : 'closed'}
         className={cn(
-          "animate-in fade-in-0 zoom-in-95 duration-200",
+          // Shadcn/UI Dialog準拠の豊富なアニメーション
+          "data-[state=open]:animate-in data-[state=closed]:animate-out",
+          "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+          "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
+          "data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-top-[48%]",
+          "data-[state=closed]:duration-300 data-[state=open]:duration-300",
+          // ベースレイアウト
           "flex flex-col bg-white rounded-lg shadow-lg",
           // サイズ別のクラス
           size === 'small' && "min-w-[296px] max-w-[320px]",
@@ -288,10 +302,11 @@ const UnifiedDialog = memo<UnifiedDialogProps>(({
 
   // modal と overlay バリアントの場合はポータル化
   if (variant === 'modal' || variant === 'overlay') {
-    return createPortal(dialogContent, document.body);
+    const portalContainer = document.getElementById('portal-root') || document.body;
+    return createPortal(dialogContent, portalContainer);
   }
 
-  // inline バリアントの場合は通常通りレンダリング（ポータル化しない）
+  // inline バリアントの場合は通常のレンダリング
   return dialogContent;
 });
 

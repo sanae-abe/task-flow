@@ -218,7 +218,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
             right: 0,
             bottom: 0,
             backgroundColor: 'rgba(0, 0, 0, 0.1)',
-            zIndex: 9998,
+            zIndex: 400,
             backdropFilter: 'blur(2px)',
           }}
           onClick={() => {

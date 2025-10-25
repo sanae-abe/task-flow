@@ -41,9 +41,9 @@ const AttachmentList: React.FC<AttachmentListProps> = ({
           </div>
           <Button
             variant="ghost"
-            size="sm"
+            size="icon"
             onClick={() => onRemoveAttachment(attachment.id)}
-            className="p-1 text-red-600 hover:text-red-700 hover:bg-red-50"
+            className="w-8 h-8"
             aria-label="ファイルを削除"
           >
             <X size={16} />
