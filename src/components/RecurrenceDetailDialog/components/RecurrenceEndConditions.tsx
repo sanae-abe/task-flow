@@ -27,7 +27,7 @@ const RecurrenceEndConditions: React.FC<RecurrenceEndConditionsProps> = ({
         <label className="self-center min-w-[80px] text-sm">終了日</label>
         <DatePicker
           value={config.endDate || ""}
-          onChange={(e) => onEndDateChange(e.target.value)}
+          onChange={onEndDateChange}
           placeholder="期限を選択"
           className="w-full"
         />

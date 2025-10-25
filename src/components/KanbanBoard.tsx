@@ -89,7 +89,7 @@ const KanbanBoard: React.FC = () => {
         onDragEnd={handleDragEnd}
       >
         <div
-          className="flex overflow-auto gap-4 p-4 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
+          className="flex overflow-auto gap-4 p-5 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
           style={{
             willChange: 'scroll-position',
             contain: 'layout style paint',

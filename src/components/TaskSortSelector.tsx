@@ -3,8 +3,9 @@ import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem
 } from "@/components/ui/dropdown-menu";
 import React from "react";
 
@@ -39,7 +40,7 @@ const TaskSortSelector: React.FC<TaskSortSelectorProps> = ({
           variant="ghost"
           size="sm"
           aria-label={`現在のソート: ${currentSortConfig?.label ?? "手動"}`}
-          className="flex items-center gap-2"
+          className="flex items-center gap-1 text-muted-foreground"
         >
           <ArrowUpDown size={16} />
           {currentSortConfig?.label ?? "手動"}
@@ -47,15 +48,17 @@ const TaskSortSelector: React.FC<TaskSortSelectorProps> = ({
       </DropdownMenuTrigger>
 
       <DropdownMenuContent align="end">
-        {SORT_OPTIONS.map((option) => (
-          <DropdownMenuItem
-            key={option.option}
-            onClick={() => onSortChange(option.option)}
-            className={currentSort === option.option ? "bg-gray-100" : ""}
-          >
-            {option.label}
-          </DropdownMenuItem>
-        ))}
+        <DropdownMenuRadioGroup value={currentSort} onValueChange={(value) => onSortChange(value as SortOption)}>
+          {SORT_OPTIONS.map((option) => (
+            <DropdownMenuRadioItem
+              key={option.option}
+              value={option.option}
+              className={currentSort === option.option ? "bg-gray-100" : ""}
+            >
+              {option.label}
+            </DropdownMenuRadioItem>
+          ))}
+        </DropdownMenuRadioGroup>
       </DropdownMenuContent>
     </DropdownMenu>
   );

@@ -3,8 +3,15 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
-  DropdownMenuItem,
+  DropdownMenuGroup,
+  DropdownMenuPortal,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuSubContent,
   DropdownMenuSeparator,
+  DropdownMenuRadioItem,
+  DropdownMenuRadioGroup,
+  DropdownMenuCheckboxItem
 } from "@/components/ui/dropdown-menu";
 import {
   AlertTriangle,
@@ -180,107 +187,114 @@ const FilterSelector = memo<FilterSelectorProps>(
             variant="ghost"
             size="sm"
             aria-label="タスクフィルターを選択"
-            className={`flex items-center gap-2 ${
-              currentFilter.type !== "all"
-                ? "text-blue-600 font-semibold"
-                : "text-gray-700 font-normal"
-            }`}
+            className={`flex items-center gap-1 ${currentFilter.type !== "all"
+              ? "text-blue-600 font-semibold"
+              : "text-muted-foreground font-normal"
+              }`}
           >
             <FilterIconComponent size={16} />
             {getCurrentFilterLabel()}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="z-[400] w-56">
-          {/* 期限でフィルター */}
-          {filterConfigs.slice(0, 4).map((config) => {
-            const IconComponent = getFilterIcon(config.icon);
-            return (
-              <DropdownMenuItem
-                key={config.type}
-                onClick={() => handleFilterSelect(config.type)}
-                className={currentFilter.type === config.type ? 'bg-accent' : ''}
-              >
-                <IconComponent size={16} className="mr-2" />
-                {config.label}
-              </DropdownMenuItem>
-            );
-          })}
+          <DropdownMenuRadioGroup value={currentFilter.type} onValueChange={(value) => handleFilterSelect(value)}>
+            {/* 期限でフィルター */}
+            {filterConfigs.slice(0, 4).map((config) => {
+              const IconComponent = getFilterIcon(config.icon);
+              return (
+                <DropdownMenuRadioItem
+                  key={config.type}
+                  value={config.type}
+                >
+                  <IconComponent size={16} className="mr-2" />
+                  {config.label}
+                </DropdownMenuRadioItem>
+              );
+            })}
 
-          {availableLabels.length > 0 && (
-            <>
-              <DropdownMenuSeparator />
-              {/* ラベルでフィルター */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <DropdownMenuItem
-                    className={`cursor-pointer ${currentFilter.type === "label" ? 'bg-accent' : ''}`}
+            {availableLabels.length > 0 && (
+              <>
+                <DropdownMenuSeparator />
+                {/* ラベルでフィルター */}
+                <DropdownMenuRadioGroup>
+                  <DropdownMenuTrigger asChild>
+                    <DropdownMenuSub>
+                      <DropdownMenuSubTrigger
+                        className={`cursor-pointer ${currentFilter.type === "label" ? 'bg-accent' : ''}`}
+                        onSelect={(e) => e.preventDefault()}
+                      >
+                        <Tag size={16} className="mr-2" />
+                        ラベルで絞り込み
+                      </DropdownMenuSubTrigger>
+                      <DropdownMenuPortal>
+                        <DropdownMenuSubContent>
+                          <DropdownMenuCheckboxItem
+                            checked={currentFilter.type === "has-labels"}
+                            onCheckedChange={() => handleFilterSelect("label")}
+                            className={currentFilter.type === "has-labels" ? 'bg-accent' : ''}
+                          >
+                            すべてのラベル
+                          </DropdownMenuCheckboxItem>
+                          <DropdownMenuSeparator />
+                          {availableLabels.map((label) => (
+                            <DropdownMenuCheckboxItem
+                              key={label.id}
+                              checked={currentFilter.selectedLabelNames?.includes(label.name) || false}
+                              onCheckedChange={() => handleLabelToggle(label.name)}
+                            >
+                              <div
+                                style={{ backgroundColor: label.color }}
+                                className="mr-2 w-3 h-3 rounded-xs"
+                              />
+                              {label.name}
+                            </DropdownMenuCheckboxItem>
+                          ))}
+                        </DropdownMenuSubContent>
+                      </DropdownMenuPortal>
+                    </DropdownMenuSub>
+                  </DropdownMenuTrigger>
+                </DropdownMenuRadioGroup>
+              </>
+            )}
+
+            <DropdownMenuSeparator />
+            {/* 優先度でフィルター */}
+            {/* ラベルでフィルター */}
+            <DropdownMenuGroup>
+              <DropdownMenuTrigger asChild>
+                <DropdownMenuSub>
+                  <DropdownMenuSubTrigger className={`cursor-pointer ${currentFilter.type === "priority" ? 'bg-accent' : ''}`}
                     onSelect={(e) => e.preventDefault()}
                   >
-                    <Tag size={16} className="mr-2" />
-                    ラベルで絞り込み
-                    <span className="ml-auto text-xs text-muted-foreground">→</span>
-                  </DropdownMenuItem>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="z-[400] w-56">
-                  <DropdownMenuItem
-                    onClick={() => handleFilterSelect("label")}
-                    className={currentFilter.type === "has-labels" ? 'bg-accent' : ''}
-                  >
-                    すべてのラベル
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  {availableLabels.map((label) => (
-                    <DropdownMenuItem
-                      key={label.id}
-                      onClick={() => handleLabelToggle(label.name)}
-                      className={currentFilter.selectedLabelNames?.includes(label.name) ? 'bg-accent' : ''}
-                    >
-                      <div
-                        style={{ backgroundColor: label.color }}
-                        className="mr-2 w-3 h-3 rounded-xs"
-                      />
-                      {label.name}
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </>
-          )}
-
-          <DropdownMenuSeparator />
-          {/* 優先度でフィルター */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <DropdownMenuItem
-                className={`cursor-pointer ${currentFilter.type === "priority" ? 'bg-accent' : ''}`}
-                onSelect={(e) => e.preventDefault()}
-              >
-                <Star size={16} className="mr-2" />
-                優先度で絞り込み
-                <span className="ml-auto text-xs text-muted-foreground">→</span>
-              </DropdownMenuItem>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="z-[400] w-56">
-              {(["critical", "high", "medium", "low"] as Priority[]).map(
-                (priority) => {
-                  const config = priorityConfig[priority];
-                  const IconComponent = config.icon;
-                  return (
-                    <DropdownMenuItem
-                      key={priority}
-                      onClick={() => handlePriorityToggle(priority)}
-                      className={currentFilter.selectedPriorities?.includes(priority) ? 'bg-accent' : ''}
-                    >
-                      <span className="mr-2">
-                        <IconComponent size={16} />
-                      </span>
-                      {config.label}
-                    </DropdownMenuItem>
-                  );
-                },
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
+                    <Star size={16} className="mr-2" />
+                    優先度で絞り込み
+                  </DropdownMenuSubTrigger>
+                  <DropdownMenuPortal>
+                    <DropdownMenuSubContent>
+                      {(["critical", "high", "medium", "low"] as Priority[]).map(
+                        (priority) => {
+                          const config = priorityConfig[priority];
+                          const IconComponent = config.icon;
+                          return (
+                            <DropdownMenuCheckboxItem
+                              key={priority}
+                              checked={currentFilter.selectedPriorities?.includes(priority) || false}
+                              onCheckedChange={() => handlePriorityToggle(priority)}
+                            >
+                              <span className="mr-2">
+                                <IconComponent size={16} />
+                              </span>
+                              {config.label}
+                            </DropdownMenuCheckboxItem>
+                          );
+                        },
+                      )}
+                    </DropdownMenuSubContent>
+                  </DropdownMenuPortal>
+                </DropdownMenuSub>
+              </DropdownMenuTrigger>
+            </DropdownMenuGroup>
+          </DropdownMenuRadioGroup>
         </DropdownMenuContent>
       </DropdownMenu>
     );

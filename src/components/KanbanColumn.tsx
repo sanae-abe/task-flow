@@ -20,11 +20,11 @@ import TaskCard from "./TaskCard";
 
 const COLUMN_CONFIG = {
   WIDTH: "320px",
-  MIN_HEIGHT: "calc(100vh - 120px - 48px)", // ヘッダーとフッターの高さとpaddingBlockを考慮
+  MIN_HEIGHT: "calc(100vh - 112px - 48px)", // ヘッダーとフッターの高さとpaddingBlockを考慮
   PADDING_BOTTOM: "100px", // 下に100pxの余白を追加
-  TASK_LIST_MIN_HEIGHT: "calc(100vh - 120px - 48px -40px)", // ヘッダーとフッターとカラムヘッダーの高さとpaddingBlockを考慮
+  TASK_LIST_MIN_HEIGHT: "calc(100vh - 112px - 48px -40px)", // ヘッダーとフッターとカラムヘッダーの高さとpaddingBlockを考慮
   HORIZONTAL_PADDING: "8px",
-  TASK_GAP: "12px",
+  TASK_GAP: "16px",
 } as const;
 
 const COLUMN_STYLES = {

@@ -84,10 +84,10 @@ const TaskCard: React.FC<TaskCardProps> = React.memo(
         <div
           ref={setNodeRef}
           className={cn(
-            "bg-white p-3 rounded-md cursor-grab shadow-sm transition-all duration-200 ease-out",
+            "bg-white p-3 rounded-md cursor-grab shadow-[0px_1px_3px_rgba(0,0,0,0.1)] transition-all duration-200 ease-out",
             "w-full max-w-full min-w-0 min-h-fit h-auto",
             "break-words overflow-wrap-break-word flex flex-col",
-            "hover:shadow-lg active:cursor-grabbing"
+            "hover:shadow-[0px_1px_8px_rgba(0,0,0,0.15)] active:cursor-grabbing"
           )}
           style={{
             ...getCardDynamicStyles(

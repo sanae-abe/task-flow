@@ -26,7 +26,7 @@ const ColumnHeader: React.FC<ColumnHeaderProps> = ({
   canMoveLeft,
   canMoveRight,
 }) => (
-  <div className="flex justify-between items-center pb-3 w-full overflow-hidden">
+  <div className="flex justify-between items-center pb-4 w-full overflow-hidden">
     <ColumnTitle column={column} />
     <ColumnActions
       onAddTask={onAddTask}

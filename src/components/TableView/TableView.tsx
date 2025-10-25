@@ -84,7 +84,7 @@ const TableView: React.FC = () => {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          height: "calc(100vh - 120px)",
+          height: "calc(100vh - 112px)",
           color: "hsl(var(--foreground))",
         }}
       >
