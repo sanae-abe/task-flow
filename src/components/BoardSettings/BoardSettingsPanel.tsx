@@ -98,7 +98,7 @@ const SortableColumnItem: React.FC<SortableColumnItemProps> = ({
     <div
       ref={setNodeRef}
       style={style}
-      className={`flex items-center gap-2 p-3 mb-3 border rounded-lg ${
+      className={`flex items-center gap-2 p-2 mb-3 border rounded-lg ${
         isDragging
           ? 'border-blue-600 bg-gray-100 cursor-grabbing'
           : 'border-gray-300 bg-gray-50 cursor-grab'
@@ -212,7 +212,7 @@ export const BoardSettingsPanel: React.FC = () => {
   // カラムIDの配列を取得（memoized）
   const columnIds = useMemo(() => columns.map(col => col.id), [columns]);
 
-  // 設定読み込み
+  // 設定読み込み（初期化時のみ実行）
   useEffect(() => {
     try {
       const settings = loadSettings();
@@ -222,7 +222,8 @@ export const BoardSettingsPanel: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [notify]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // 初期化時のみ実行。notifyは安定した参照ではないため依存配列から除外
 
   // 自動保存機能
   useEffect(() => {
@@ -414,96 +415,83 @@ export const BoardSettingsPanel: React.FC = () => {
   }
 
   return (
-    <div className="pb-4">
-      <div className="mb-4">
-        <h2 className="text-lg font-bold mb-4 text-gray-900">デフォルトカラム設定</h2>
-        <div style={{ color: 'hsl(var(--muted-foreground))', fontSize: "14px" }}>
-          新しいボード作成時に使用されるデフォルトカラムを設定できます。<br />
-          既存のボードには影響しません。
+    <div className="p-3">
+      <h2 className="text-base font-bold m-0 mb-2">デフォルトカラム設定</h2>
+      <span className="text-sm text-muted-foreground mb-5 block">
+        新しいボードを作成する際のデフォルトカラムを設定できます。
+      </span>
+
+      {/* メッセージ表示 */}
+      {saveMessage && (
+        <div className="mb-4">
+          <InlineMessage
+            variant={saveMessageType === 'success' ? 'success' : 'critical'}
+            message={saveMessage}
+            size="small"
+          />
         </div>
-      </div>
+      )}
 
+      {/* カラム追加フォーム */}
       <div className="mb-4">
-
-        {/* 現在のカラム一覧 */}
-        <div className="mb-6">
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
+        <div className="flex items-center gap-2 mb-3">
+          <Input
+            value={newColumnName}
+            onChange={(e) => setNewColumnName(e.target.value)}
+            placeholder="新しいカラム名"
+            className="flex-1"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                handleAddColumn();
+              }
+            }}
+            aria-label="新しいカラム名"
+          />
+          <Button
+            onClick={handleAddColumn}
+            disabled={!newColumnName.trim()}
+            className="px-3"
           >
-            <SortableContext items={columnIds} strategy={verticalListSortingStrategy}>
-              {columns.map((column, index) => (
-                <SortableColumnItem
-                  key={column.id}
-                  column={column}
-                  index={index}
-                  totalColumns={columns.length}
-                  onUpdateName={handleUpdateColumnName}
-                  onMoveColumn={handleMoveColumn}
-                  onDeleteColumn={handleDeleteColumn}
-                  error={columnErrors[column.id] || null}
-                />
-              ))}
-            </SortableContext>
-          </DndContext>
+            <Plus size={16} />
+          </Button>
         </div>
-
-        {/* 新しいカラム追加 */}
-        <div className="mb-3">
-          <div className="mb-2 text-sm font-bold">新しいカラムを追加</div>
-          <div>
-            <div className="flex gap-2 w-full">
-              <Input
-                value={newColumnName}
-                onChange={(e) => setNewColumnName(e.target.value)}
-                placeholder="カラム名を入力"
-                className="w-full"
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    handleAddColumn();
-                  }
-                }}
-                aria-label="新しいカラム名"
-              />
-              <Button
-                variant="default"
-                size="sm"
-                onClick={handleAddColumn}
-                aria-label="新しいカラムを追加"
-              >
-                <Plus size={16} className="mr-2" />
-                追加
-              </Button>
-            </div>
-            {addColumnError && (
-              <InlineMessage variant="critical" message={addColumnError} size="small" />
-            )}
-          </div>
-        </div>
+        {addColumnError && (
+          <InlineMessage variant="critical" message={addColumnError} size="small" />
+        )}
       </div>
+
+      {/* カラムリスト */}
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+      >
+        <SortableContext items={columnIds} strategy={verticalListSortingStrategy}>
+          {columns.map((column, index) => (
+            <SortableColumnItem
+              key={column.id}
+              column={column}
+              index={index}
+              totalColumns={columns.length}
+              onUpdateName={handleUpdateColumnName}
+              onMoveColumn={handleMoveColumn}
+              onDeleteColumn={handleDeleteColumn}
+              error={columnErrors[column.id]}
+            />
+          ))}
+        </SortableContext>
+      </DndContext>
 
       {/* 保存ボタン */}
-      <div className="pt-3 border-t border-border">
-        <div className="flex flex-colum items-end justify-end gap-2">
-          <Button
-            variant="default"
-            onClick={handleSave}
-          >
-            <Check size={16} className="mr-2" />
-            設定を保存
-          </Button>
-          <div className="flex flex-col gap-1">
-            {/* 未保存状態メッセージ */}
-            {hasUnsavedChanges ? (
-              <InlineMessage variant="warning" message="未保存の変更があります（1秒後に自動保存されます）" size="small" />
-            ) : (
-              saveMessage && (
-                <InlineMessage variant={saveMessageType === 'success' ? 'success' : 'critical'} message={saveMessage} size="small" />
-              )
-            )}
-          </div>
-        </div>
+      <div className="flex justify-end mt-4">
+        <Button
+          onClick={handleSave}
+          disabled={!hasUnsavedChanges || columns.length === 0}
+          className="px-4"
+        >
+          <Check size={16} />
+          保存
+        </Button>
       </div>
     </div>
   );
