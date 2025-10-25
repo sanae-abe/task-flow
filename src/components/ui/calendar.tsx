@@ -8,6 +8,40 @@ import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 import IconButton from "../shared/IconButton"
 
+// NativeSelect コンポーネント
+const NativeSelect = React.forwardRef<
+  HTMLSelectElement,
+  React.SelectHTMLAttributes<HTMLSelectElement>
+>(({ className, children, ...props }, ref) => (
+  <select
+    ref={ref}
+    className={cn(
+      "flex h-8 w-fit items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+      className
+    )}
+    {...props}
+  >
+    {children}
+  </select>
+))
+NativeSelect.displayName = "NativeSelect"
+
+// NativeSelectOption コンポーネント
+const NativeSelectOption = React.forwardRef<
+  HTMLOptionElement,
+  React.OptionHTMLAttributes<HTMLOptionElement>
+>(({ className, children, ...props }, ref) => (
+  <option
+    ref={ref}
+    className={cn("", className)}
+    {...props}
+  >
+    {children}
+  </option>
+))
+NativeSelectOption.displayName = "NativeSelectOption"
+
+
 export type CalendarProps = React.ComponentProps<typeof DayPicker>
 
 function Calendar({
@@ -19,6 +53,9 @@ function Calendar({
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
+      captionLayout="dropdown"
+      startMonth={new Date(2020, 0)}
+      endMonth={new Date(2030, 11)}
       className={cn("p-3", className)}
       classNames={{
         months: "flex flex-col space-y-4 sm:space-x-4 sm:space-y-0",
@@ -56,6 +93,23 @@ function Calendar({
       components={{
         PreviousMonthButton: () => <IconButton icon={ChevronLeft} ariaLabel="Previous month" className="hover:bg-gray-100 hover:text-gray-900" />,
         NextMonthButton: () => <IconButton icon={ChevronRight} ariaLabel="Next month" className="hover:bg-gray-100 hover:text-gray-900" />,
+        Dropdown: ({ options, value, onChange }) => (
+          <NativeSelect
+            value={value}
+            onChange={onChange}
+            {...props}
+          >
+            {options?.map((option) => (
+              <NativeSelectOption
+                key={option.value}
+                value={option.value.toString()}
+                disabled={option.disabled}
+              >
+                {option.label}
+              </NativeSelectOption>
+            ))}
+          </NativeSelect>
+        )
       }}
       {...props}
     />
@@ -63,4 +117,4 @@ function Calendar({
 }
 Calendar.displayName = "Calendar"
 
-export { Calendar }
+export { Calendar, NativeSelect, NativeSelectOption }
