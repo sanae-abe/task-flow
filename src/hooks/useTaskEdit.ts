@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 
 import { useKanban } from "../contexts/KanbanContext";
 import type {
@@ -78,63 +78,80 @@ export const useTaskEdit = ({
   const [priority, setPriority] = useState<Priority | undefined>(undefined);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
+  // 前の値を追跡するためのref
+  const prevIsOpenRef = useRef(isOpen);
+  const prevTaskIdRef = useRef(task?.id);
+
   useEffect(() => {
-    if (isOpen && task) {
-      setTitle(task.title);
-      setDescription(task.description ?? "");
+    const prevIsOpen = prevIsOpenRef.current;
+    const prevTaskId = prevTaskIdRef.current;
 
-      // 期限の処理
-      if (task.dueDate) {
-        const dueDate = new Date(task.dueDate);
-        const dateStr = dueDate.toISOString().split("T")[0]; // YYYY-MM-DD形式
-        setDueDate(dateStr || "");
+    // 値が変更された場合のみ実行
+    const isOpenChanged = prevIsOpen !== isOpen;
+    const taskChanged = prevTaskId !== task?.id;
 
-        // 時刻チェック（23:59:59以外の場合は時刻を設定）
-        const is23_59_59 =
-          dueDate.getHours() === 23 &&
-          dueDate.getMinutes() === 59 &&
-          dueDate.getSeconds() === 59;
-        if (!is23_59_59) {
-          setHasTime(true);
-          const timeStr = `${String(dueDate.getHours()).padStart(2, "0")}:${String(dueDate.getMinutes()).padStart(2, "0")}`;
-          setDueTime(timeStr);
+    if (isOpenChanged || taskChanged) {
+      if (isOpen && task) {
+        setTitle(task.title);
+        setDescription(task.description ?? "");
+
+        // 期限の処理
+        if (task.dueDate) {
+          const dueDate = new Date(task.dueDate);
+          const dateStr = dueDate.toISOString().split("T")[0]; // YYYY-MM-DD形式
+          setDueDate(dateStr || "");
+
+          // 時刻チェック（23:59:59以外の場合は時刻を設定）
+          const is23_59_59 =
+            dueDate.getHours() === 23 &&
+            dueDate.getMinutes() === 59 &&
+            dueDate.getSeconds() === 59;
+          if (!is23_59_59) {
+            setHasTime(true);
+            const timeStr = `${String(dueDate.getHours()).padStart(2, "0")}:${String(dueDate.getMinutes()).padStart(2, "0")}`;
+            setDueTime(timeStr);
+          } else {
+            setHasTime(false);
+            setDueTime("");
+          }
         } else {
-          setHasTime(false);
+          setDueDate("");
           setDueTime("");
+          setHasTime(false);
         }
-      } else {
+
+        // completedAtをdatetime-local形式（YYYY-MM-DDTHH:mm）にフォーマット
+        const completedAtValue = task.completedAt
+          ? toDateTimeLocalString(new Date(task.completedAt))
+          : "";
+        setCompletedAt(completedAtValue);
+
+        setAttachments(task.files ?? []);
+
+        // 繰り返し設定の初期化
+        setRecurrence(task.recurrence);
+
+        // 優先度の初期化
+        setPriority(task.priority);
+      } else if (!isOpen && prevIsOpen) {
+        // ダイアログが閉じられた時にフォームをリセット（前回開いていた場合のみ）
+        setTitle("");
+        setDescription("");
         setDueDate("");
         setDueTime("");
         setHasTime(false);
+        setCompletedAt("");
+        setLabels([]);
+        setAttachments([]);
+        setRecurrence(undefined);
+        setPriority(undefined);
+        setColumnId("");
       }
-
-      // completedAtをdatetime-local形式（YYYY-MM-DDTHH:mm）にフォーマット
-      const completedAtValue = task.completedAt
-        ? toDateTimeLocalString(new Date(task.completedAt))
-        : "";
-      setCompletedAt(completedAtValue);
-
-      setAttachments(task.files ?? []);
-
-      // 繰り返し設定の初期化
-      setRecurrence(task.recurrence);
-
-      // 優先度の初期化
-      setPriority(task.priority);
-    } else if (!isOpen) {
-      // ダイアログが閉じられた時にフォームをリセット
-      setTitle("");
-      setDescription("");
-      setDueDate("");
-      setDueTime("");
-      setHasTime(false);
-      setCompletedAt("");
-      setLabels([]);
-      setAttachments([]);
-      setRecurrence(undefined);
-      setPriority(undefined);
-      setColumnId("");
     }
+
+    // refを更新
+    prevIsOpenRef.current = isOpen;
+    prevTaskIdRef.current = task?.id;
   }, [isOpen, task]);
 
   // カラム情報の初期化（別のuseEffectで処理）
