@@ -97,7 +97,6 @@ function Calendar({
           <NativeSelect
             value={value}
             onChange={onChange}
-            {...props}
           >
             {options?.map((option) => (
               <NativeSelectOption
