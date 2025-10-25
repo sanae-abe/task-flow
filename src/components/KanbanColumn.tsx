@@ -42,6 +42,7 @@ const COLUMN_STYLES = {
     overflow: "hidden",
     display: "flex",
     flexDirection: "column",
+    contain: "layout style", // レンダリング最適化
   },
   taskList: {
     minHeight: COLUMN_CONFIG.TASK_LIST_MIN_HEIGHT,
@@ -49,6 +50,8 @@ const COLUMN_STYLES = {
     flexDirection: "column",
     gap: COLUMN_CONFIG.TASK_GAP,
     flex: 1, // 残り空間を最大限活用
+    contain: "layout style", // レンダリング最適化
+    willChange: "contents", // タスクの追加・削除・移動を最適化
   },
 } as const;
 

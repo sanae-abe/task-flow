@@ -132,7 +132,7 @@ export const useTaskSubmission = (
     {
       label: 'キャンセル',
       onClick: closeTaskForm,
-      variant: 'default'
+      variant: 'outline'
     },
     {
       label: '追加',

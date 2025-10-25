@@ -90,6 +90,10 @@ const KanbanBoard: React.FC = () => {
       >
         <div
           className="flex overflow-auto gap-4 p-4 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
+          style={{
+            willChange: 'scroll-position',
+            contain: 'layout style paint',
+          }}
         >
           {currentBoard.columns
             .filter(column => column.deletionState !== "deleted")
