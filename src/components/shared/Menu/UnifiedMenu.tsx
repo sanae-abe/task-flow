@@ -174,7 +174,7 @@ const UnifiedMenu = memo<UnifiedMenuProps>(({
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className={cn("flex items-center gap-2", trigger.className)}>
+      <DropdownMenuTrigger className={cn("flex items-center gap-1", trigger.className)}>
         <MenuTriggerContent trigger={trigger} />
       </DropdownMenuTrigger>
       <DropdownMenuContent

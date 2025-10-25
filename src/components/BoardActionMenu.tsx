@@ -43,7 +43,8 @@ const BoardActionMenu = memo<BoardActionMenuProps>(
       type: 'button',
       label: 'ボード設定',
       icon: MoreHorizontal,
-      ariaLabel: 'ボード設定メニューを開く'
+      ariaLabel: 'ボード設定メニューを開く',
+      className: 'text-sm text-muted-default'
     }), []);
 
     // メニューグループ設定
@@ -108,7 +109,7 @@ const BoardActionMenu = memo<BoardActionMenuProps>(
         trigger={trigger}
       />
     );
-  },
+  }
 );
 
 BoardActionMenu.displayName = "BoardActionMenu";
