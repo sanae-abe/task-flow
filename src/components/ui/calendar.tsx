@@ -58,26 +58,26 @@ function Calendar({
       endMonth={new Date(2030, 11)}
       className={cn("p-3", className)}
       classNames={{
-        months: "flex flex-col space-y-4 sm:space-x-4 sm:space-y-0",
-        month: "!ml-0",
-        month_caption: "flex items-center justify-center h-(--cell-size) w-full px-(--cell-size)",
+        months: "flex flex space-y-4 sm:space-x-4 sm:space-y-0 relative",
+        month: "!ml-0 flex flex-col gap-4",
+        month_caption: "flex items-center justify-center h-8 w-full px-8",
         caption_label: "text-sm font-medium",
-        nav: "flex items-center gap-1 w-full absolute top-0 inset-x-0 justify-between",
+        nav: "flex items-center gap-1 w-full h-8 justify-between absolute top-0",
         nav_button: cn(
           buttonVariants({ variant: "outline" }),
           "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100"
         ),
         nav_button_previous: "absolute left-1",
         nav_button_next: "absolute right-1",
-        dropdowns: "w-full flex items-center text-sm font-medium justify-center h-(--cell-size) gap-1.5",
+        dropdowns: "w-full flex items-center text-sm font-medium justify-center h-8 gap-1.5 absolute z-10",
         month_grid: "w-full border-collapse space-y-1",
         weekdays: "flex",
         weekday:
-          "text-muted-foreground rounded-md w-9 font-normal text-[0.8rem]",
+          "text-muted-foreground rounded-md w-8 font-normal text-[0.8rem]",
         week: "flex w-full mt-2",
         day: cn(
           buttonVariants({ variant: "ghost" }),
-          "h-9 w-9 p-0 font-normal aria-selected:opacity-100"
+          "h-8 w-8 p-0 font-normal aria-selected:opacity-100"
         ),
         range_end: "day-range-end",
         selected:
@@ -91,12 +91,13 @@ function Calendar({
         ...classNames,
       }}
       components={{
-        PreviousMonthButton: () => <IconButton icon={ChevronLeft} ariaLabel="Previous month" className="hover:bg-gray-100 hover:text-gray-900" />,
-        NextMonthButton: () => <IconButton icon={ChevronRight} ariaLabel="Next month" className="hover:bg-gray-100 hover:text-gray-900" />,
+        PreviousMonthButton: ({ onClick }) => <IconButton icon={ChevronLeft} ariaLabel="Previous month" className="hover:bg-gray-100 hover:text-gray-900 w-8 h-8 select-none focus-visible:ring-[3px] absolute left-0 z-[400]" onClick={onClick} />,
+        NextMonthButton: ({ onClick }) => <IconButton icon={ChevronRight} ariaLabel="Next month" className="shadow-xs hover:bg-gray-100 hover:text-gray-900 w-8 h-8 select-none focus-visible:ring-[3px] absolute right-0 z-[400]" onClick={onClick} />,
         Dropdown: ({ options, value, onChange }) => (
           <NativeSelect
             value={value}
             onChange={onChange}
+            className="py-0 px-1 relative"
           >
             {options?.map((option) => (
               <NativeSelectOption
