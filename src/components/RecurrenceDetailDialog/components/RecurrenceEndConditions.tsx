@@ -1,5 +1,6 @@
 import React from "react";
 import { Input } from "@/components/ui/input";
+import { DatePicker } from "@/components/ui/date-picker";
 import { Timer } from "lucide-react";
 import type { RecurrenceConfig } from "../types";
 
@@ -24,11 +25,11 @@ const RecurrenceEndConditions: React.FC<RecurrenceEndConditionsProps> = ({
     <div className="flex flex-col gap-3">
       <div className="flex flex-row items-center gap-2">
         <label className="self-center min-w-[80px] text-sm">終了日</label>
-        <Input
-          type="date"
+        <DatePicker
           value={config.endDate || ""}
           onChange={(e) => onEndDateChange(e.target.value)}
-          className="w-[150px]"
+          placeholder="期限を選択"
+          className="w-full"
         />
       </div>
       <div className="flex flex-row items-center gap-2">

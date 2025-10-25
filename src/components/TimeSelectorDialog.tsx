@@ -87,7 +87,7 @@ const TimeSelectorDialog: React.FC<TimeSelectorDialogProps> = ({
           type="time"
           value={localDueTime}
           onChange={(e) => setLocalDueTime(e.target.value)}
-          className="w-full"
+          className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
           step="300"
         />
       </div>
