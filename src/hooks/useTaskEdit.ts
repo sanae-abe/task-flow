@@ -121,12 +121,6 @@ export const useTaskEdit = ({
 
       // 優先度の初期化
       setPriority(task.priority);
-
-      // 現在のタスクがどのカラムにあるかを特定
-      const currentColumn = state.currentBoard?.columns.find((column) =>
-        column.tasks.some((t) => t.id === task.id),
-      );
-      setColumnId(currentColumn?.id ?? "");
     } else if (!isOpen) {
       // ダイアログが閉じられた時にフォームをリセット
       setTitle("");
@@ -140,6 +134,16 @@ export const useTaskEdit = ({
       setRecurrence(undefined);
       setPriority(undefined);
       setColumnId("");
+    }
+  }, [isOpen, task]);
+
+  // カラム情報の初期化（別のuseEffectで処理）
+  useEffect(() => {
+    if (isOpen && task && state.currentBoard?.columns) {
+      const currentColumn = state.currentBoard.columns.find((column) =>
+        column.tasks.some((t) => t.id === task.id),
+      );
+      setColumnId(currentColumn?.id ?? "");
     }
   }, [isOpen, task, state.currentBoard?.columns]);
 
