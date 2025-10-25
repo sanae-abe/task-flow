@@ -17,7 +17,7 @@ const SubHeaderButton: React.FC<SubHeaderButtonProps> = ({
   <Button
     size="sm"
     variant="ghost"
-    className={cn("flex items-center gap-1", className)}
+    className={cn("flex items-center gap-1 text-neutral-600", className)}
     {...props}
   >
     <IconComponent size={16} />
