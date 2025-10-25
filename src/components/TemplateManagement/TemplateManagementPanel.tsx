@@ -133,7 +133,7 @@ const TemplateManagementPanel: React.FC<TemplateManagementPanelProps> = ({ onMes
   }
 
   return (
-    <div className="flex flex-col gap-3 pb-4">
+    <div className="flex flex-col gap-3">
       {/* ヘッダー */}
       <div className="flex items-center justify-between gap-2 flex-wrap">
         <h2 className="text-lg font-bold">テンプレート管理</h2>

@@ -68,10 +68,12 @@ export function DatePicker({
       <PopoverContent className="w-auto p-0" align="start">
         <Calendar
           mode="single"
+          captionLayout="dropdown"
           selected={selectedDate}
           onSelect={handleSelect}
-          initialFocus
           locale={ja}
+          startMonth={new Date(2020, 0)}
+          endMonth={new Date(2030, 11)}
         />
       </PopoverContent>
     </Popover>

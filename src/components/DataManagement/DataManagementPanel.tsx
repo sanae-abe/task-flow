@@ -25,7 +25,7 @@ export const DataManagementPanel = memo<DataManagementPanelProps>(({
   const [activeTab, setActiveTab] = useState<'export' | 'import'>('export');
 
   return (
-    <div className="flex flex-col gap-3 pb-4">
+    <div className="flex flex-col gap-3">
       {/* ヘッダー */}
       <div className="flex items-center gap-2">
         <h2 className="text-base font-bold m-0">
