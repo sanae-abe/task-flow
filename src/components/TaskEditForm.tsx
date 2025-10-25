@@ -22,7 +22,7 @@ interface TaskEditFormProps {
   description: string;
   setDescription: (value: string) => void;
   dueDate: string;
-  setDueDate: (value: string) => void;
+  setDueDate: (value: string | null) => void;
   dueTime: string;
   setDueTime: (value: string) => void;
   hasTime: boolean;
@@ -107,7 +107,7 @@ const TaskEditForm = memo<TaskEditFormProps>(
             </label>
             <DatePicker
               value={dueDate}
-              onChange={setDueDate}
+              onChange={(date) => setDueDate(date || '')}
               placeholder="期限を選択"
               className="w-full"
             />

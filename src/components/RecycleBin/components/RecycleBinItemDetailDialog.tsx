@@ -38,14 +38,15 @@ export const RecycleBinItemDetailDialog: React.FC<RecycleBinItemDetailDialogProp
   const itemTypeText = item?.type === 'board' ? 'ボード' : item?.type === 'column' ? 'カラム' : 'タスク';
 
   // 復元処理
-  const handleRestore = useCallback(async () => {
+  const handleRestore = useCallback(() => {
     if (!item) { return; }
     setIsLoading(true);
     setLoadingAction('restore');
     try {
-      await onRestore(item);
+      onRestore(item);
       onClose();
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('復元に失敗:', error);
     } finally {
       setIsLoading(false);
@@ -54,14 +55,15 @@ export const RecycleBinItemDetailDialog: React.FC<RecycleBinItemDetailDialogProp
   }, [item, onRestore, onClose]);
 
   // 削除処理
-  const handleDelete = useCallback(async () => {
+  const handleDelete = useCallback(() => {
     if (!item) { return; }
     setIsLoading(true);
     setLoadingAction('delete');
     try {
       onClose();
-      await onDelete(item);
+      onDelete(item);
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('削除に失敗:', error);
     } finally {
       setIsLoading(false);

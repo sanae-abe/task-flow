@@ -199,8 +199,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
           minHeight,
           cursor: disabled ? 'not-allowed' : 'text',
         }}
-      >
-      </div>
+       />
 
       {/* 絵文字ピッカーモーダル */}
       <EmojiPickerModal

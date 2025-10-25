@@ -6,8 +6,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Loader2 } from "lucide-react";
 import {
+  Loader2,
   RotateCcw,
   Trash2,
   MoreHorizontal
@@ -52,6 +52,7 @@ const BoardRecycleBinView: React.FC<BoardRecycleBinViewProps> = ({
         text: `ボード「${boardTitle}」を復元しました`,
       });
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('Board restore failed:', error);
       onMessage?.({
         type: "danger",
@@ -77,6 +78,7 @@ const BoardRecycleBinView: React.FC<BoardRecycleBinViewProps> = ({
         text: `ボード「${boardTitle}」を完全に削除しました`,
       });
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('Board permanent delete failed:', error);
       onMessage?.({
         type: "danger",
@@ -102,6 +104,7 @@ const BoardRecycleBinView: React.FC<BoardRecycleBinViewProps> = ({
         text: `${boardCount}件のボードを完全に削除しました`,
       });
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('Empty recycle bin failed:', error);
       onMessage?.({
         type: "danger",

@@ -63,37 +63,33 @@ export const useSonnerNotify = (): NotifyAPI => {
     }
   };
 
+  // 型化されたトースト作成関数ファクトリー
+  const createTypedToast = (type: 'success' | 'error' | 'info' | 'warning' | 'loading', defaultOptions: AddNotificationOptions = {}) =>
+    (message: string, options?: AddNotificationOptions) =>
+      createToast(type, message, { ...defaultOptions, ...options });
+
+  // 永続化トースト作成関数ファクトリー
+  const createPersistentToast = (type: 'success' | 'error' | 'info' | 'warning') =>
+    (message: string, options?: Omit<AddNotificationOptions, "persistent">) =>
+      createToast(type, message, { ...options, persistent: true });
+
   return {
-    success: (message: string, options?: AddNotificationOptions) =>
-      createToast('success', message, options),
-
-    error: (message: string, options?: AddNotificationOptions) =>
-      createToast('error', message, { duration: 5000, ...options }),
-
-    info: (message: string, options?: AddNotificationOptions) =>
-      createToast('info', message, options),
-
-    warning: (message: string, options?: AddNotificationOptions) =>
-      createToast('warning', message, options),
+    success: createTypedToast('success'),
+    error: createTypedToast('error', { duration: 5000 }),
+    info: createTypedToast('info'),
+    warning: createTypedToast('warning'),
 
     toast: {
-      success: (message: string, options?: AddNotificationOptions) =>
-        createToast('success', message, options),
-      error: (message: string, options?: AddNotificationOptions) =>
-        createToast('error', message, { duration: 5000, ...options }),
-      loading: (message: string, options?: AddNotificationOptions) =>
-        createToast('loading', message, { persistent: true, ...options }),
+      success: createTypedToast('success'),
+      error: createTypedToast('error', { duration: 5000 }),
+      loading: createTypedToast('loading', { persistent: true }),
     },
 
     persistent: {
-      success: (message: string, options?: Omit<AddNotificationOptions, "persistent">) =>
-        createToast('success', message, { ...options, persistent: true }),
-      info: (message: string, options?: Omit<AddNotificationOptions, "persistent">) =>
-        createToast('info', message, { ...options, persistent: true }),
-      warning: (message: string, options?: Omit<AddNotificationOptions, "persistent">) =>
-        createToast('warning', message, { ...options, persistent: true }),
-      error: (message: string, options?: Omit<AddNotificationOptions, "persistent">) =>
-        createToast('error', message, { ...options, persistent: true }),
+      success: createPersistentToast('success'),
+      info: createPersistentToast('info'),
+      warning: createPersistentToast('warning'),
+      error: createPersistentToast('error'),
     },
   };
 };

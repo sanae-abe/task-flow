@@ -3,13 +3,14 @@ import React from 'react';
 interface CircleCheck2IconProps {
   size?: number;
   className?: string;
+  color?: string;
 }
 
 /**
  * 色反転版のCircleCheckアイコン - 緑い背景に白いチェックマーク
  * lucide-reactのCircleCheckの反転バージョン
  */
-const CircleCheck2Icon: React.FC<CircleCheck2IconProps> = ({ size = 16, className }) => (
+const CircleCheck2Icon: React.FC<CircleCheck2IconProps> = ({ size = 16, className, color = "var(--success-color, rgb(22 163 74))" }) => (
     <svg
       width={size}
       height={size}
@@ -18,12 +19,12 @@ const CircleCheck2Icon: React.FC<CircleCheck2IconProps> = ({ size = 16, classNam
       className={className}
       aria-hidden="true"
     >
-      {/* 緑い背景の円 */}
+      {/* 背景の円 */}
       <circle
         cx="12"
         cy="12"
         r="12"
-        fill="rgb(22 163 74)"
+        fill={color}
       />
       {/* 白いチェックマーク */}
       <path

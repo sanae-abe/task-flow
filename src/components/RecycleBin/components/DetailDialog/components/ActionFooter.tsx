@@ -1,8 +1,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { RotateCcw, Trash2, X } from 'lucide-react';
-import { Loader2 } from 'lucide-react';
+import { RotateCcw, Trash2, X, Loader2 } from 'lucide-react';
 import type { RecycleBinItemWithMeta } from '../../../../../types/recycleBin';
 
 interface ActionFooterProps {

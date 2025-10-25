@@ -36,7 +36,7 @@ export interface TemplateState {
 export interface TaskFormActions {
   setTitle: (title: string) => void;
   setDescription: (description: string) => void;
-  setDueDate: (date: string) => void;
+  setDueDate: (date: string | null) => void;
   setDueTime: (time: string) => void;
   setHasTime: (hasTime: boolean) => void;
   setLabels: (labels: LabelType[]) => void;

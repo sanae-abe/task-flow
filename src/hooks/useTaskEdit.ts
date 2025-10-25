@@ -27,7 +27,7 @@ interface UseTaskEditReturn {
   description: string;
   setDescription: (value: string) => void;
   dueDate: string;
-  setDueDate: (value: string) => void;
+  setDueDate: (value: string | null) => void;
   dueTime: string;
   setDueTime: (value: string) => void;
   hasTime: boolean;
@@ -208,6 +208,7 @@ export const useTaskEdit = ({
         return currentCompletedAt;
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [columnId, state.currentBoard?.columns?.length]);
 
   // 期限が削除された場合、繰り返し設定を無効化
@@ -337,6 +338,11 @@ export const useTaskEdit = ({
 
   const isValid = useMemo(() => title.trim().length > 0, [title]);
 
+  // DatePicker対応のラッパー関数
+  const handleSetDueDate = useCallback((date: string | null) => {
+    setDueDate(date || '');
+  }, []);
+
   // タスクが完了状態（一番右のカラム）にあるかどうかを判定
   const isCompleted = useMemo(() => {
     if (!task || !state.currentBoard?.columns.length) {
@@ -372,7 +378,7 @@ export const useTaskEdit = ({
     description,
     setDescription,
     dueDate,
-    setDueDate,
+    setDueDate: handleSetDueDate,
     dueTime,
     setDueTime,
     hasTime,

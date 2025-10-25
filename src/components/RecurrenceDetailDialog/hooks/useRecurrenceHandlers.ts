@@ -10,7 +10,7 @@ export interface RecurrenceHandlers {
   handleIntervalChange: (value: string) => void;
   handleDaysOfWeekChange: (day: number, checked: boolean) => void;
   handleDayOfMonthChange: (value: string) => void;
-  handleEndDateChange: (value: string) => void;
+  handleEndDateChange: (value: string | null) => void;
   handleMaxOccurrencesChange: (value: string) => void;
 }
 
@@ -64,7 +64,7 @@ export const useRecurrenceHandlers = ({
   );
 
   const handleEndDateChange = useCallback(
-    (value: string) => {
+    (value: string | null) => {
       setConfig((prev) => ({
         ...prev,
         endDate: value || undefined,

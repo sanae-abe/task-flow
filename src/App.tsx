@@ -47,6 +47,7 @@ const AppContent: React.FC = () => {
 
   // デバッグ: isSettingsOpenの状態変化を監視
   useEffect(() => {
+    // eslint-disable-next-line no-console
     console.log('isSettingsOpen changed:', isSettingsOpen);
   }, [isSettingsOpen]);
 
@@ -75,6 +76,7 @@ const AppContent: React.FC = () => {
 
   // 設定ダイアログの処理
   const openSettings = () => {
+    // eslint-disable-next-line no-console
     console.log('openSettings called');
     setIsSettingsOpen(true);
   };

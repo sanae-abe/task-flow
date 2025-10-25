@@ -331,6 +331,7 @@ export const TemplateProvider: React.FC<TemplateProviderProps> = ({
     };
 
     loadTemplates();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   /**

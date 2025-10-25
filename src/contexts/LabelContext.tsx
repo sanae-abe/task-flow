@@ -164,6 +164,7 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
             try {
               callback(messageToSend);
             } catch (error) {
+              // eslint-disable-next-line no-console
               console.error(`💬 createLabel: Error sending message to callback ${callbackIndex}:`, error);
             }
           });
@@ -196,6 +197,7 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
               try {
                 callback(messageToSend);
               } catch (error) {
+                // eslint-disable-next-line no-console
                 console.error(`💬 createLabelInBoard: Error sending message to callback ${callbackIndex}:`, error);
               }
             });
@@ -245,6 +247,7 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
             try {
               callback(messageToSend);
             } catch (error) {
+              // eslint-disable-next-line no-console
               console.error(`📬 updateLabel: Error sending message to callback ${callbackIndex}:`, error);
             }
           });
@@ -278,6 +281,7 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
             try {
               callback(messageToSend);
             } catch (error) {
+              // eslint-disable-next-line no-console
               console.error(`💬 deleteLabel: Error sending message to callback ${callbackIndex}:`, error);
             }
           });
@@ -308,6 +312,7 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
             try {
               callback(messageToSend);
             } catch (error) {
+              // eslint-disable-next-line no-console
               console.error(`💬 deleteLabelFromAllBoards: Error sending message to callback ${callbackIndex}:`, error);
             }
           });

@@ -124,7 +124,7 @@ export const TaskFormFields: React.FC<TaskFormFieldsProps> = ({
           </label>
           <DatePicker
             value={dueDate}
-            onChange={setDueDate}
+            onChange={(date) => setDueDate(date || '')}
             placeholder="期限を選択"
             className="w-full"
           />

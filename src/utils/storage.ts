@@ -193,7 +193,7 @@ const createDemoBoard = (): KanbanBoard[] => {
             updatedAt: new Date().toISOString(),
             dueDate: yesterday.toISOString(), // 昨日の17:00(期限切れ)
             priority: 'high' as Priority,
-            labels: [labels[1]!, labels[2]!], // 機能改善 + バグ修正
+            labels: [labels[1], labels[2]].filter((label): label is Label => Boolean(label)), // 機能改善 + バグ修正
             files: [],
             subTasks: [
               { id: uuidv4(), title: 'Lexical vs Quill 技術調査', completed: true, createdAt: new Date().toISOString() },
@@ -221,7 +221,7 @@ const generateWeeklyReport = () => {
             updatedAt: new Date().toISOString(),
             dueDate: todayEvening.toISOString(), // 今日の18:00
             priority: 'medium' as Priority,
-            labels: [labels[3]!], // ドキュメント
+            labels: [labels[3]].filter((label): label is Label => Boolean(label)), // ドキュメント
             files: [],
             subTasks: [
               { id: uuidv4(), title: 'タスク完了状況の集計', completed: true, createdAt: new Date().toISOString() },
@@ -252,7 +252,7 @@ const generateWeeklyReport = () => {
             updatedAt: new Date().toISOString(),
             dueDate: tomorrowMorning.toISOString(), // 明日の10:00
             priority: 'medium' as Priority,
-            labels: [labels[1]!, labels[3]!], // 機能改善 + ドキュメント
+            labels: [labels[1], labels[3]].filter((label): label is Label => Boolean(label)), // 機能改善 + ドキュメント
             files: [],
             subTasks: [
               { id: uuidv4(), title: 'ユーザビリティテスト分析', completed: true, createdAt: new Date().toISOString() },
@@ -282,7 +282,7 @@ const optimizedQuery = await db.task.findMany({
             updatedAt: new Date().toISOString(),
             dueDate: null, // 期限なし
             priority: 'high' as Priority,
-            labels: [labels[1]!, labels[2]!], // 機能改善 + バグ修正
+            labels: [labels[1], labels[2]].filter((label): label is Label => Boolean(label)), // 機能改善 + バグ修正
             files: [],
             subTasks: [],
             completedAt: null,
@@ -314,7 +314,7 @@ const authenticateUser = async (email, password) => {
             updatedAt: new Date(today.getTime() - 86400000 * 2).toISOString(), // 2日前
             dueDate: new Date(today.getTime() - 86400000 * 3).toISOString(),
             priority: 'high' as Priority,
-            labels: [labels[0]!], // セキュリティ
+            labels: [labels[0]].filter((label): label is Label => Boolean(label)), // セキュリティ
             files: [],
             subTasks: [
               { id: uuidv4(), title: 'JWT ライブラリ選定', completed: true, createdAt: new Date().toISOString() },
@@ -332,7 +332,7 @@ const authenticateUser = async (email, password) => {
             updatedAt: new Date(today.getTime() - 86400000 * 1).toISOString(), // 1日前
             dueDate: null, // 期限なし
             priority: 'medium' as Priority,
-            labels: [labels[3]!],
+            labels: [labels[3]].filter((label): label is Label => Boolean(label)),
             files: [
               {
                 id: uuidv4(),
