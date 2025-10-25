@@ -1,6 +1,6 @@
-import type { Icon } from '@primer/octicons-react';
 import { memo } from 'react';
 import { cn } from '@/lib/utils';
+import type { LucideIcon } from 'lucide-react';
 
 import type { StatusBadgeVariant, StatusBadgeSize } from '../../types/shared';
 
@@ -10,7 +10,7 @@ interface StatusBadgeProps {
   /** バッジのサイズ */
   size?: StatusBadgeSize;
   /** アイコン（オプション） */
-  icon?: Icon | React.ComponentType<{ size: number }>;
+  icon?: LucideIcon | React.ComponentType<{ size: number }>;
   /** バッジのテキスト */
   children: React.ReactNode;
   /** フォントウェイト */

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Info } from 'lucide-react';
 
 interface InfoFillIconProps {
   size?: number;
@@ -7,32 +8,23 @@ interface InfoFillIconProps {
 
 /**
  * 反転色版のInfoIcon - 青い背景に白いアイコン
- * Primer OcticonsのInfoIconの反転バージョン
+ * Lucide React InfoアイコンベースのFill反転バージョン
  */
 const InfoFillIcon: React.FC<InfoFillIconProps> = ({ size = 16, className }) => (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 16 16"
-      fill="currentColor"
-      className={className}
-      aria-hidden="true"
-    >
-      {/* 青い背景の円 */}
-      <circle
-        cx="8"
-        cy="8"
-        r="8"
-        fill="rgb(37 99 235)"
-      />
-      {/* 白い情報アイコン */}
-      <g fill="white">
-        {/* 上部の点 */}
-        <circle cx="8" cy="5.5" r="1" />
-        {/* 下部の縦線 */}
-        <rect x="7" y="7.5" width="2" height="5" rx="1" />
-      </g>
-    </svg>
-  );
+  <div
+    className={`inline-flex items-center justify-center rounded-full ${className || ''}`}
+    style={{
+      width: size,
+      height: size,
+      backgroundColor: 'rgb(37 99 235)', // blue-600
+    }}
+  >
+    <Info
+      size={Math.round(size * 0.6)} // アイコンサイズを背景の60%に調整
+      color="white"
+      strokeWidth={2.5} // より太い線で視認性向上
+    />
+  </div>
+);
 
 export default InfoFillIcon;

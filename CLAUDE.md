@@ -11,7 +11,7 @@ React + TypeScriptで構築されたモダンなタスク管理アプリケー�
 - Build Tool: Create React App (CRA)
 - Package Manager: npm
 - Drag & Drop: @dnd-kit
-- Icons: @primer/octicons-react + react-feather
+- Icons: lucide-react (統一済み)
 - Emoji Picker: emoji-picker-react
 - Rich Text Editor: Lexical 0.35.0
 - Date Utilities: date-fns 4.1.0
