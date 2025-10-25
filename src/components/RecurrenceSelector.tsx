@@ -48,8 +48,8 @@ const RecurrenceSelector: React.FC<RecurrenceSelectorProps> = ({
       <Button
         onClick={handleButtonClick}
         disabled={disabled}
-        variant="ghost"
-        className="flex items-center gap-2"
+        variant="outline"
+        className="flex items-center gap-1"
       >
         <RotateCcw size={16} />
         {getButtonText()}

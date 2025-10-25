@@ -1,9 +1,9 @@
 import React from "react";
 import {
-  CheckCircle,
-  CheckCircle2,
+  CircleCheck,
   GripVertical,
 } from "lucide-react";
+import CircleCheck2Icon from "../../shared/icons/CircleCheck2Icon";
 import type { DraggableAttributes } from "@dnd-kit/core";
 import type { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
 import type { SubTask } from "../../../types";
@@ -26,13 +26,13 @@ export const DragHandleAndToggle: React.FC<DragHandleAndToggleProps> = ({
       <div
         {...dragAttributes}
         {...dragListeners}
-        className="drag-handle p-1 cursor-grab hover:bg-gray-100 rounded"
+        className="drag-handle p-1 cursor-grab"
       >
         <GripVertical size={16} className="text-gray-500" />
       </div>
 
       <IconButton
-        icon={subTask.completed ? CheckCircle2 : CheckCircle}
+        icon={subTask.completed ? CircleCheck2Icon : CircleCheck}
         onClick={onToggle}
         ariaLabel={`${subTask.title}を${
           subTask.completed ? "未完了" : "完了"

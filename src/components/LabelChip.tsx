@@ -74,7 +74,7 @@ const LabelChip = memo<LabelChipProps>(
         role={clickable ? "button" : undefined}
         aria-label={clickable ? `${label.name}ラベル` : undefined}
         className={cn(
-          "inline-flex items-center px-2 py-1 rounded text-xs font-normal gap-1 border-none outline-none",
+          "inline-flex items-center px-2 py-1 rounded text-xs font-normal border-none outline-none",
           clickable
             ? "cursor-pointer hover:opacity-80 hover:scale-[1.02] focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500 focus-visible:outline-offset-2 transition-all duration-150"
             : "cursor-default"
@@ -90,6 +90,7 @@ const LabelChip = memo<LabelChipProps>(
             variant="muted"
             size="small"
             sx={removeButtonStyles}
+            className="h-4 w-4 p-0"
           />
         )}
       </Element>

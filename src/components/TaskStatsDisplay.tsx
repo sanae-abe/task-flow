@@ -1,7 +1,7 @@
 import {
   Clock,
   AlertTriangle,
-  CheckCircle,
+  CircleCheck,
   Info,
   XCircle,
 } from "lucide-react";
@@ -73,7 +73,7 @@ const TaskStatsDisplay: React.FC<TaskStatsDisplayProps> = ({ stats }) => {
   return (
     <div className="flex items-center gap-4 flex-shrink-0">
       <div className="flex items-center gap-1 flex-shrink-0 text-xs text-muted-foreground">
-        <CheckCircle size={16} />
+        <CircleCheck size={16} />
         <span className="text-xs text-muted-foreground">
           未完了タスク数: {totalTasks}
         </span>

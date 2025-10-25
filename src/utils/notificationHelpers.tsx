@@ -1,6 +1,6 @@
 import React from "react";
 import {
-  CheckCircle,
+  CircleCheck,
   Info,
   AlertTriangle,
   XCircle,
@@ -18,7 +18,7 @@ export const getNotificationIcon = (
 ): React.ReactElement => {
   switch (type) {
     case "success":
-      return <CheckCircle size={16} aria-hidden="true" />;
+      return <CircleCheck size={16} aria-hidden="true" />;
     case "info":
       return <Info size={16} aria-hidden="true" />;
     case "warning":

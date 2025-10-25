@@ -1,5 +1,6 @@
-import { CheckCircle, CheckCircle2 } from "lucide-react";
+import { CircleCheck } from "lucide-react";
 import React from "react";
+import CircleCheck2Icon from "./shared/icons/CircleCheck2Icon";
 
 import type { TaskDisplayProps } from "../types/task";
 import IconButton from "./shared/IconButton";
@@ -16,20 +17,25 @@ const TaskCardContent: React.FC<TaskDisplayProps> = ({
   isDueTomorrow,
   formatDueDate,
   onComplete,
-  isRightmostColumn = false,
+  isRightmostColumn: _isRightmostColumn = false,
+  useInvertedIcon = false,
 }) => (
   <div className="flex-1 flex flex-col min-h-0 gap-2">
     {/* タイトル行 */}
-    <div className="flex items-start my-1">
+    <div className="flex items-start my-1 gap-1">
       {onComplete && (
         <IconButton
-          icon={isRightmostColumn ? CheckCircle2 : CheckCircle}
+          icon={
+            useInvertedIcon
+              ? CircleCheck2Icon
+              : (task.completedAt ? CircleCheck2Icon : CircleCheck)  // 完了状態に応じてアイコンを切り替え
+          }
           onClick={onComplete}
           ariaLabel={
-            isRightmostColumn ? "タスクを未完了にする" : "タスクを完了にする"
+            task.completedAt ? "タスクを未完了にする" : "タスクを完了にする"
           }
           variant="success"
-          size="small"
+          size="icon"
           sx={{
             pl: 0,
             pt: 0,

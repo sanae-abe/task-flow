@@ -4,7 +4,7 @@ import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { cn } from '@/lib/utils';
 import {
   AlertTriangle,
-  CheckCircle,
+  CircleCheck,
   Info,
   XCircle,
   X,
@@ -69,7 +69,7 @@ const getAlertVariant = (type: DialogMessageType): "default" | "destructive" | "
 export const getMessageIcon = (type: DialogMessageType): React.ReactElement => {
   switch (type) {
     case 'success':
-      return <CheckCircle className="h-4 w-4" />;
+      return <CircleCheck className="h-4 w-4" />;
     case 'info':
     case 'upsell':
       return <Info className="h-4 w-4" />;

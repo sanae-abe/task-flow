@@ -1,14 +1,16 @@
 import React from "react";
-import { Info, CheckCircle, CheckCircle2, AlertTriangle } from 'lucide-react';
+import { Info, CircleCheck, AlertTriangle } from 'lucide-react';
 import InfoFillIcon from './icons/InfoFillIcon';
+import CircleCheck2Icon from './icons/CircleCheck2Icon';
 
 interface InlineMessageProps {
   message: string | null;
   variant?: "success" | "warning" | "critical" | "info" | "unavailable";
   size?: "small" | "medium";
+  useInvertedIcon?: boolean; // 色反転アイコンを使用するかどうか
 }
 
-const InlineMessage: React.FC<InlineMessageProps> = ({ message, variant = "info", size = "medium" }) => {
+const InlineMessage: React.FC<InlineMessageProps> = ({ message, variant = "info", size = "medium", useInvertedIcon = false }) => {
   if (!message) {
     return null;
   }
@@ -19,7 +21,12 @@ const InlineMessage: React.FC<InlineMessageProps> = ({ message, variant = "info"
   const fontWeight = size === "small" ? '700' : '400';
 
   if (variant === "success") {
-    const SuccessIconComponent = size === "small" ? CheckCircle2 : CheckCircle;
+    let SuccessIconComponent;
+    if (useInvertedIcon) {
+      SuccessIconComponent = CircleCheck2Icon;
+    } else {
+      SuccessIconComponent = CircleCheck; // CircleCheckのみ使用
+    }
     return (
       <div style={{ display: 'flex', alignItems: 'flex-start', gap, color: 'rgb(22 163 74)' }}>
         <span style={{ display: 'flex', alignItems: 'center', paddingTop: '0.25em' }}><SuccessIconComponent size={iconSize} /></span>

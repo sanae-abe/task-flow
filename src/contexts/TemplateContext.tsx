@@ -331,7 +331,7 @@ export const TemplateProvider: React.FC<TemplateProviderProps> = ({
     };
 
     loadTemplates();
-  }, [notify]);
+  }, []);
 
   /**
    * テンプレートを作成

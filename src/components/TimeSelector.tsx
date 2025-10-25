@@ -48,7 +48,7 @@ const TimeSelector: React.FC<TimeSelectorProps> = ({
       <Button
         onClick={handleButtonClick}
         disabled={disabled}
-        variant="ghost"
+        variant="outline"
         className="flex items-center gap-2"
       >
         <Clock size={16} />

@@ -2,7 +2,7 @@ import {
   Plus,
   Edit,
   Trash2,
-  CheckCircle,
+  CircleCheck,
   MoreHorizontal,
 } from "lucide-react";
 import { memo, useMemo } from "react";
@@ -79,7 +79,7 @@ const BoardActionMenu = memo<BoardActionMenuProps>(
             id: 'clear-completed',
             type: 'action',
             label: '完了したタスクをクリア',
-            icon: CheckCircle,
+            icon: CircleCheck,
             onSelect: onClearCompletedTasks
           }
         ]

@@ -6,8 +6,8 @@ import { cn } from '@/lib/utils';
 import type { IconButtonVariant, IconButtonSize, IconButtonStyle } from '../../types/shared';
 
 interface IconButtonProps {
-  /** アイコンコンポーネント */
-  icon: LucideIcon;
+  /** アイコンコンポーネント（Lucide Reactアイコンまたはカスタムアイコン） */
+  icon: LucideIcon | React.ComponentType<{ size?: number; className?: string }>;
   /** クリック時のコールバック（DropdownMenuTrigger内で使用する場合は省略可能） */
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   /** アクセシビリティ用のラベル */

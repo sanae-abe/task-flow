@@ -111,7 +111,7 @@ const SortableColumnItem: React.FC<SortableColumnItemProps> = ({
       >
         <GripVertical size={16} />
       </div>
-      <div className="flex-1">
+      <div className="flex-1 gap-1">
         <Input
           value={localName}
           onChange={handleInputChange}
@@ -123,34 +123,34 @@ const SortableColumnItem: React.FC<SortableColumnItemProps> = ({
           <InlineMessage variant="critical" message={error} size="small" />
         )}
       </div>
-      <div className="flex gap-1">
+      <div className="flex">
         <Button
           variant="ghost"
-          size="sm"
+          size="icon"
           onClick={() => onMoveColumn(column.id, 'up')}
           disabled={index === 0}
           aria-label={`${column.name}を上に移動`}
-          className="px-2"
+          className="w-8 h-8"
         >
           <ChevronUp size={16} />
         </Button>
         <Button
           variant="ghost"
-          size="sm"
+          size="icon"
           onClick={() => onMoveColumn(column.id, 'down')}
           disabled={index === totalColumns - 1}
           aria-label={`${column.name}を下に移動`}
-          className="px-2"
+          className="w-8 h-8"
         >
           <ChevronDown size={16} />
         </Button>
         <Button
           variant="ghost"
-          size="sm"
+          size="icon"
           onClick={() => onDeleteColumn(column.id)}
           disabled={totalColumns <= 1}
           aria-label={`${column.name}を削除`}
-          className="text-red-600 hover:text-red-700"
+          className="w-8 h-8"
         >
           <Trash2 size={16} />
         </Button>
