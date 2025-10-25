@@ -755,7 +755,8 @@ export const BoardProvider: React.FC<BoardProviderProps> = ({ children }) => {
     };
 
     loadInitialData();
-  }, [notify]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // 依存配列からnotifyを削除（初期化は1回のみ）
 
   // ボード変更時の自動保存
   useEffect(() => {
