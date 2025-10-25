@@ -1,5 +1,5 @@
 import React from 'react';
-import { Input } from "@/components/ui/input";
+import { DatePicker } from "@/components/ui/date-picker";
 
 import type { TaskFormFieldsProps } from '../types';
 import { UnifiedFormField } from '../../shared/Form';
@@ -122,10 +122,10 @@ export const TaskFormFields: React.FC<TaskFormFieldsProps> = ({
           <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
             期限
           </label>
-          <Input
-            type="date"
+          <DatePicker
             value={dueDate}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDueDate(e.target.value)}
+            onChange={setDueDate}
+            placeholder="期限を選択"
             className="w-full"
           />
         </div>
@@ -163,14 +163,13 @@ export const TaskFormFields: React.FC<TaskFormFieldsProps> = ({
       </div>
 
       {/* ファイル添付 */}
-      <div className="flex flex-col space-y-2">
+      <div className="space-y-2">
         <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
           ファイル添付
         </label>
         <FileUploader
           attachments={attachments}
           onAttachmentsChange={setAttachments}
-          showModeSelector={false}
         />
       </div>
     </div>

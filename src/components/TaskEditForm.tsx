@@ -1,5 +1,5 @@
 import React, { memo, useCallback } from "react";
-import { Input } from "@/components/ui/input";
+import { DatePicker } from "@/components/ui/date-picker";
 
 import type {
   Label,
@@ -105,11 +105,10 @@ const TaskEditForm = memo<TaskEditFormProps>(
             <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
               期限
             </label>
-            <Input
-              type="date"
+            <DatePicker
               value={dueDate}
-              onChange={(e) => setDueDate(e.target.value)}
-              onKeyDown={onKeyPress}
+              onChange={setDueDate}
+              placeholder="期限を選択"
               className="w-full"
             />
           </div>
