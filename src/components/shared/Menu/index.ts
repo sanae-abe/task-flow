@@ -11,9 +11,6 @@
 // ベースメニュー
 export { default as UnifiedMenu } from './UnifiedMenu';
 
-// 特化メニュー
-export { default as ActionMenu } from './ActionMenu';
-
 // 型定義をre-export
 export type {
   UnifiedMenuProps,

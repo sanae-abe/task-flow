@@ -1,6 +1,6 @@
 import type { LucideIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { memo } from 'react';
+import { forwardRef } from 'react';
 import { cn } from '@/lib/utils';
 
 import type { IconButtonVariant, IconButtonSize, IconButtonStyle } from '../../types/shared';
@@ -30,11 +30,11 @@ interface IconButtonProps {
 
 /**
  * 統一されたアイコンボタンコンポーネント
- * 
+ *
  * バリアントに応じて適切な色とスタイルを適用し、
  * アクセシビリティとユーザビリティを向上させます。
  */
-const IconButton = memo<IconButtonProps>(({
+const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(({
   icon: IconComponent,
   onClick,
   ariaLabel,
@@ -44,7 +44,7 @@ const IconButton = memo<IconButtonProps>(({
   sx,
   stopPropagation = false,
   className
-}) => {
+}, ref) => {
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     if (stopPropagation) {
       event.stopPropagation();
@@ -99,6 +99,7 @@ const IconButton = memo<IconButtonProps>(({
   // 統一されたShadcn/UI実装
   return (
     <Button
+      ref={ref}
       onClick={handleClick}
       variant="ghost"
       size={getShadcnSize()}

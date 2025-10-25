@@ -1,7 +1,6 @@
 import React, { memo, useMemo } from 'react';
 import { cn } from "@/lib/utils";
 
-import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,71 +10,31 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 import type { UnifiedMenuProps, MenuItem, MenuGroup, MenuTrigger } from '../../../types/unified-menu';
-import IconButton from '../IconButton';
-import SubHeaderButton from '../../SubHeaderButton';
 
 /**
- * メニュートリガーコンポーネント
+ * メニュートリガー内容コンポーネント（ボタン要素は含まない）
  */
-const MenuTriggerComponent = memo<{
+const MenuTriggerContent = React.forwardRef<HTMLElement, {
   trigger: MenuTrigger;
   children?: React.ReactNode;
-}>(({ trigger, children }) => {
-  const { type, label, icon, variant = 'default', size = 'medium', ariaLabel, className } = trigger;
+}>(({ trigger, children }, ref) => {
+  const { label, icon, className } = trigger;
 
   if (trigger.customTrigger) {
+    if (React.isValidElement(trigger.customTrigger)) {
+      return React.cloneElement(trigger.customTrigger, { ref } as React.HTMLAttributes<HTMLElement>);
+    }
     return <>{trigger.customTrigger}</>;
   }
 
-  switch (type) {
-    case 'icon-button':
-      if (!icon) {
-        // eslint-disable-next-line no-console
-        console.warn('IconButton requires an icon');
-        return null;
-      }
-      return (
-        <IconButton
-          icon={icon}
-          ariaLabel={ariaLabel ?? label ?? 'メニューを開く'}
-          variant={variant === 'danger' ? 'danger' : 'default'}
-          size={size}
-          className={className}
-        />
-      );
-    
-    case 'button':
-      if (!icon) {
-        // eslint-disable-next-line no-console
-        console.warn('SubHeaderButton requires an icon');
-        return null;
-      }
-      return (
-        <SubHeaderButton
-          icon={icon}
-          aria-label={ariaLabel ?? `${label}メニューを開く`}
-          className={className}
-        >
-          {label}
-        </SubHeaderButton>
-      );
-    
-    default: // custom
-      const mappedVariant = variant === 'invisible' ? 'ghost' : 'default';
-
-      return (
-        <Button
-          variant={mappedVariant}
-          size="sm"
-          aria-label={ariaLabel ?? label}
-          className={cn("flex items-center gap-2 hover:bg-neutral-200", className)}
-        >
-          {icon && React.createElement(icon, { size: 16 })}
-          {label}
-          {children}
-        </Button>
-      );
-  }
+  // DropdownMenuTrigger内で使用するため、ボタン要素は含まずコンテンツのみ返す
+  return (
+    <span ref={ref} className={cn("flex items-center gap-2", className)}>
+      {icon && React.createElement(icon, { size: 16 })}
+      {label}
+      {children}
+    </span>
+  );
 });
 
 /**
@@ -96,7 +55,14 @@ const renderMenuItem = (item: MenuItem): React.ReactNode => {
         <DropdownMenuItem
           key={item.id}
           disabled={item.disabled}
-          onClick={item.onSelect}
+          onSelect={item.onSelect}
+          onClick={(event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            if (item.onSelect) {
+              item.onSelect();
+            }
+          }}
           className={item.variant === 'danger' ? 'text-red-600 focus:text-red-600' : ''}
         >
           {item.icon && React.createElement(item.icon, { size: 16, className: "mr-2" })}
@@ -109,7 +75,14 @@ const renderMenuItem = (item: MenuItem): React.ReactNode => {
         <DropdownMenuItem
           key={item.id}
           disabled={item.disabled}
-          onClick={() => item.onSelect(item.id)}
+          onSelect={() => item.onSelect(item.id)}
+          onClick={(event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            if (item.onSelect) {
+              item.onSelect(item.id);
+            }
+          }}
           className={item.selected ? 'bg-accent' : ''}
         >
           {item.icon && React.createElement(item.icon, { size: 16, className: "mr-2" })}
@@ -198,14 +171,14 @@ const UnifiedMenu = memo<UnifiedMenuProps>(({
     return items.map(renderMenuItem).filter(Boolean);
   }, [items, groups]);
 
+
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <MenuTriggerComponent trigger={trigger} />
+      <DropdownMenuTrigger className={cn("flex items-center gap-2", trigger.className)}>
+        <MenuTriggerContent trigger={trigger} />
       </DropdownMenuTrigger>
       <DropdownMenuContent
         style={{ zIndex, ...overlayProps }}
-        className="w-56"
       >
         {menuContent}
       </DropdownMenuContent>
@@ -214,6 +187,6 @@ const UnifiedMenu = memo<UnifiedMenuProps>(({
 });
 
 UnifiedMenu.displayName = 'UnifiedMenu';
-MenuTriggerComponent.displayName = 'MenuTriggerComponent';
+MenuTriggerContent.displayName = 'MenuTriggerContent';
 
 export default UnifiedMenu;

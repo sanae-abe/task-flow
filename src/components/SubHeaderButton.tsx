@@ -8,13 +8,14 @@ interface SubHeaderButtonProps extends Omit<ButtonProps, "size" | "variant"> {
   children: React.ReactNode;
 }
 
-const SubHeaderButton: React.FC<SubHeaderButtonProps> = ({
+const SubHeaderButton = React.forwardRef<HTMLButtonElement, SubHeaderButtonProps>(({
   icon: IconComponent,
   children,
   className,
   ...props
-}) => (
+}, ref) => (
   <Button
+    ref={ref}
     size="sm"
     variant="ghost"
     className={cn("flex items-center gap-1 text-neutral-600", className)}
@@ -23,6 +24,8 @@ const SubHeaderButton: React.FC<SubHeaderButtonProps> = ({
     <IconComponent size={16} />
     {children}
   </Button>
-);
+));
+
+SubHeaderButton.displayName = 'SubHeaderButton';
 
 export default SubHeaderButton;
