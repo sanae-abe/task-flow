@@ -4,7 +4,7 @@
 import type { LucideIcon } from "lucide-react";
 
 export type MenuVariant = "default" | "danger" | "invisible";
-export type MenuSize = "small" | "medium" | "large";
+export type MenuSize = "small" | "medium" | "large" | "icon";
 export type TriggerType = "button" | "icon-button" | "custom";
 
 // ベースメニューアイテム

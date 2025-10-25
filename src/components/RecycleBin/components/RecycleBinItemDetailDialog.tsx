@@ -74,7 +74,7 @@ export const RecycleBinItemDetailDialog: React.FC<RecycleBinItemDetailDialogProp
     {
       label: loadingAction === 'restore' ? '復元中...' : '復元',
       onClick: handleRestore,
-      variant: 'primary',
+      variant: 'default',
       disabled: !item?.canRestore || isLoading,
       loading: loadingAction === 'restore',
       icon: RotateCcw,
@@ -82,7 +82,7 @@ export const RecycleBinItemDetailDialog: React.FC<RecycleBinItemDetailDialogProp
     {
       label: loadingAction === 'delete' ? '削除中...' : '完全に削除',
       onClick: handleDelete,
-      variant: 'danger',
+      variant: 'destructive',
       disabled: isLoading,
       loading: loadingAction === 'delete',
       icon: Trash2,

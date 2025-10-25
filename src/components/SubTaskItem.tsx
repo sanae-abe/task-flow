@@ -55,7 +55,7 @@ const SubTaskItem: React.FC<SubTaskItemProps> = ({
     <div
       ref={setNodeRef}
       style={style}
-      className="group flex items-center gap-2 p-2 bg-white border border-gray-200 rounded-md hover:border-gray-300 transition-colors"
+      className="group flex items-center gap-2 p-0 bg-white border border-gray-200 rounded-md hover:border-gray-300 transition-colors"
     >
       {/* ドラッグハンドルとトグルボタン */}
       <DragHandleAndToggle

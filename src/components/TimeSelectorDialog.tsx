@@ -46,13 +46,13 @@ const TimeSelectorDialog: React.FC<TimeSelectorDialogProps> = ({
       {
         label: "キャンセル",
         onClick: handleCancel,
-        variant: "default",
+        variant: "outline",
         position: "right",
       },
       {
         label: "保存",
         onClick: handleSave,
-        variant: "primary",
+        variant: "default",
         position: "right",
       },
     ];
@@ -62,7 +62,7 @@ const TimeSelectorDialog: React.FC<TimeSelectorDialogProps> = ({
       actionList.splice(1, 0, {
         label: "時刻設定を削除",
         onClick: handleRemove,
-        variant: "danger",
+        variant: "destructive",
         position: "left",
       });
     }

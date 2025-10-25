@@ -24,19 +24,21 @@ export const DisplayView: React.FC<DisplayViewProps> = ({
       >
         {subTask.title}
       </span>
-      <div className="action-buttons flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+      <div className="action-buttons flex items-center opacity-0 group-hover:opacity-100 transition-opacity">
         <IconButton
           icon={Edit}
+          size="icon"
           onClick={onEdit}
           ariaLabel={`${subTask.title}を編集`}
-          size="small"
+          className="w-6 h-6"
           stopPropagation
         />
         <IconButton
           icon={Trash2}
+          size="icon"
           onClick={onDelete}
           ariaLabel={`${subTask.title}を削除`}
-          size="small"
+          className="w-6 h-6 mr-2"
           stopPropagation
         />
       </div>

@@ -28,19 +28,21 @@ export const EditingView: React.FC<EditingViewProps> = ({
         onKeyDown={onKeyDown}
         className="flex-1 h-8 text-sm"
       />
-      <div className="flex items-center gap-1">
+      <div className="flex items-center opacity-0 group-hover:opacity-100 transition-opacity">
         <IconButton
           icon={Check}
+          size="icon"
           onClick={onSave}
           ariaLabel="編集を保存"
-          size="small"
+          className="w-6 h-6"
           stopPropagation
         />
         <IconButton
           icon={X}
+          size="icon"
           onClick={onCancel}
           ariaLabel="編集をキャンセル"
-          size="small"
+          className="w-6 h-6 mr-2"
           stopPropagation
         />
       </div>

@@ -147,12 +147,12 @@ const LabelFormDialog: React.FC<LabelFormDialogProps> = ({
   const actions = [
     {
       label: 'キャンセル',
-      variant: 'default' as const,
+      variant: 'outline' as const,
       onClick: handleCancel
     },
     {
       label: mode === 'create' ? '作成' : '更新',
-      variant: 'primary' as const,
+      variant: 'default' as const,
       onClick: handleSave,
       disabled: !formData.name.trim() || isLoading
     }

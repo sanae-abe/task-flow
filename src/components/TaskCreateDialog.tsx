@@ -5,7 +5,7 @@ import type { TaskTemplate } from "../types/template";
 import type { CreateMode } from "./TaskCreateDialog/types";
 import { useKanban } from "../contexts/KanbanContext";
 import { useBoard } from "../contexts/BoardContext";
-import { useNotify } from "../contexts/NotificationContext";
+import { useSonnerNotify } from "../hooks/useSonnerNotify";
 import { useFormChangeDetector } from "../hooks/useFormChangeDetector";
 
 import UnifiedDialog from "./shared/Dialog/UnifiedDialog";
@@ -42,7 +42,7 @@ import {
 const TaskCreateDialog = memo(() => {
   const { state, closeTaskForm, createTask } = useKanban();
   const { state: boardState, setCurrentBoard } = useBoard();
-  const notify = useNotify();
+  const notify = useSonnerNotify();
 
   // 作成モード
   const [createMode, setCreateMode] = useState<CreateMode>("normal");

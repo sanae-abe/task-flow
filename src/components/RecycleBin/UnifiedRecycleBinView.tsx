@@ -167,7 +167,7 @@ const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
           </h2>
         </div>
         <Button
-          variant="destructive"
+          variant="outline"
           size="sm"
           onClick={() => setShowEmptyConfirm(true)}
           disabled={emptyingRecycleBin || isEmptying || allRecycleBinItems.length === 0}

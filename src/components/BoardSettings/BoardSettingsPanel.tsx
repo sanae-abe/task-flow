@@ -21,7 +21,7 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import type { DefaultColumnConfig } from '../../types/settings';
 import { loadSettings, updateDefaultColumns } from '../../utils/settingsStorage';
-import { useNotify } from '../../contexts/NotificationContext';
+import { useSonnerNotify } from '../../hooks/useSonnerNotify';
 import { v4 as uuidv4 } from 'uuid';
 import InlineMessage from '../shared/InlineMessage';
 
@@ -169,7 +169,7 @@ export const BoardSettingsPanel: React.FC = () => {
   const [addColumnError, setAddColumnError] = useState<string | null>(null);
   const [columnErrors, setColumnErrors] = useState<Record<string, string>>({});
   const [erroredColumnName, setErroredColumnName] = useState<string>('');
-  const notify = useNotify();
+  const notify = useSonnerNotify();
   const messageTimerRef = React.useRef<NodeJS.Timeout | null>(null);
 
   // メッセージ表示用の共通関数
@@ -485,7 +485,7 @@ export const BoardSettingsPanel: React.FC = () => {
 
       {/* 保存ボタン */}
       <div className="pt-3 border-t border-border">
-        <div className="flex flex-colum items-end justify-center gap-2">
+        <div className="flex flex-colum items-end justify-end gap-2">
           <Button
             variant="default"
             onClick={handleSave}

@@ -60,7 +60,7 @@ const StatusBadge = memo<StatusBadgeProps>(({
         return {
           containerClass: 'px-1 py-0',
           textClass: 'text-xs',
-          iconSize: 10
+          iconSize: 16
         };
       case 'large':
         return {
@@ -72,7 +72,7 @@ const StatusBadge = memo<StatusBadgeProps>(({
         return {
           containerClass: 'px-2 py-1',
           textClass: 'text-sm',
-          iconSize: 12
+          iconSize: 16
         };
     }
   };
@@ -83,10 +83,11 @@ const StatusBadge = memo<StatusBadgeProps>(({
   return (
     <div
       className={cn(
-        'inline-flex items-center self-start',
+        'inline-flex items-center self-start gap-1',
         containerClass,
-        IconComponent ? 'gap-1' : '',
-        className)}
+        textClass,
+        className
+      )}
       style={{
         color,
         fontWeight
@@ -95,9 +96,7 @@ const StatusBadge = memo<StatusBadgeProps>(({
       {IconComponent && (
         <IconComponent size={iconSize} />
       )}
-      <span className={textClass}>
         {children}
-      </span>
     </div>
   );
 });

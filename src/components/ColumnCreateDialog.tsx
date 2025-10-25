@@ -41,12 +41,12 @@ const ColumnCreateDialog = memo<ColumnCreateDialogProps>(
       {
         label: "キャンセル",
         onClick: onCancel,
-        variant: "default" as const,
+        variant: "outline" as const,
       },
       {
         label: "追加",
         onClick: handleSave,
-        variant: "primary" as const,
+        variant: "default" as const,
         disabled: !title.trim(),
       },
     ];

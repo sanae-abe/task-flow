@@ -77,6 +77,8 @@ const IconButton = memo<IconButtonProps>(({
         return 12;
       case 'large':
         return 20;
+      case 'icon':
+        return 24;
       default:
         return 16;
     }
@@ -104,10 +106,11 @@ const IconButton = memo<IconButtonProps>(({
       aria-label={ariaLabel}
       className={cn(
         getVariantClasses(),
-        'hover:bg-gray-100 transition-colors',
+        'hover:bg-transparent transition-colors',
         size === 'small' && 'p-1',
         size === 'large' && 'p-3',
         size === 'medium' && 'p-2',
+        size === 'icon' && 'p-1',
         className
       )}
       style={sx ? (sx as React.CSSProperties) : undefined}

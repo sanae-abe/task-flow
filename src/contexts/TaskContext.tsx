@@ -16,7 +16,7 @@ import type {
   RecurrenceConfig,
   Priority,
 } from "../types";
-import { useNotify } from "./NotificationContext";
+import { useSonnerNotify } from "../hooks/useSonnerNotify";
 import { useBoard } from "./BoardContext";
 import {
   calculateNextDueDate,
@@ -83,7 +83,7 @@ interface TaskProviderProps {
 }
 
 export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
-  const notify = useNotify();
+  const notify = useSonnerNotify();
   const { state: boardState, dispatch: boardDispatch } = useBoard();
 
   const [state] = useReducer(taskReducer, {

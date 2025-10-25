@@ -55,7 +55,7 @@ const LabelSelector = memo<LabelSelectorProps>(
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
-                variant="ghost"
+                variant="outline"
                 className="hover:text-gray-900 hover:bg-gray-100"
                 aria-label="ラベル選択メニューを開く"
               >
@@ -87,7 +87,7 @@ const LabelSelector = memo<LabelSelectorProps>(
 
           {/* ラベル追加 */}
           <Button
-            variant="ghost"
+            variant="outline"
             onClick={handleAddDialogOpen}
             className="hover:text-gray-900 hover:bg-gray-100"
             aria-label="新しいラベルを作成"

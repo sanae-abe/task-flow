@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import React, { useMemo, useCallback } from "react";
 
 import type { FileAttachment } from "../types";
-import { useNotify } from "../contexts/NotificationContext";
+import { useSonnerNotify } from "../hooks/useSonnerNotify";
 
 import FilePreview from "./FilePreview";
 
@@ -47,7 +47,7 @@ const getFileIcon = (type: string) => {
 
 const downloadFile = (
   attachment: FileAttachment,
-  notify: ReturnType<typeof useNotify>,
+  notify: ReturnType<typeof useSonnerNotify>,
 ): void => {
   try {
     if (!attachment?.type || !attachment?.data || !attachment?.name) {
@@ -81,7 +81,7 @@ const FileList: React.FC<FileListProps> = ({
   showPreview = true,
   maxFiles,
 }) => {
-  const notify = useNotify();
+  const notify = useSonnerNotify();
 
   const { displayAttachments, remainingCount } = useMemo(() => {
     if (!attachments?.length) {

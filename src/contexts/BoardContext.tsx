@@ -9,10 +9,10 @@ import React, {
 } from "react";
 import { v4 as uuidv4 } from "uuid";
 
-import type { KanbanBoard, Column, Priority, Label } from "../types";
+import type { KanbanBoard, Column, Label } from "../types";
 import { saveBoards, loadBoards } from "../utils/storage";
 import { loadSettings } from "../utils/settingsStorage";
-import { useNotify } from "./NotificationContext";
+import { useSonnerNotify } from "../hooks/useSonnerNotify";
 import { logger } from "../utils/logger";
 import {
   moveBoardToRecycleBin,
@@ -733,351 +733,23 @@ interface BoardProviderProps {
 }
 
 export const BoardProvider: React.FC<BoardProviderProps> = ({ children }) => {
-  const notify = useNotify();
-
+  const notify = useSonnerNotify();
   const [state, dispatch] = useReducer(boardReducer, {
     boards: [],
     currentBoard: null,
   });
 
-  // 初期データの読み込み
+  // 現在のボードを取得
+  const currentBoard = useMemo(() => state.currentBoard, [state.currentBoard]);
+
+  // ボードデータの初期化
   useEffect(() => {
-    const loadInitialData = () => {
+    const loadInitialData = async () => {
       try {
-        const boards = loadBoards();
-
-        // ボードが空の場合はデフォルトボードを作成
-        if (boards.length === 0) {
-          const today = new Date();
-
-          // 昨日の17:00
-          const yesterday = new Date(today);
-          yesterday.setDate(today.getDate() - 1);
-          yesterday.setHours(17, 0, 0, 0);
-
-          // 今日の18:00
-          const todayEvening = new Date(today);
-          todayEvening.setHours(18, 0, 0, 0);
-
-          // 明日の10:00
-          const tomorrowMorning = new Date(today);
-          tomorrowMorning.setDate(today.getDate() + 1);
-          tomorrowMorning.setHours(10, 0, 0, 0);
-
-          // 3日後の15:00
-          const threeDaysLater = new Date(today);
-          threeDaysLater.setDate(today.getDate() + 3);
-          threeDaysLater.setHours(15, 0, 0, 0);
-
-          // 来週の14:00
-          const nextWeek = new Date(today);
-          nextWeek.setDate(today.getDate() + 7);
-          nextWeek.setHours(14, 0, 0, 0);
-
-          // デモ用ラベル
-          const labels = [
-            { id: uuidv4(), name: "セキュリティ", color: "#d1242f" },
-            { id: uuidv4(), name: "機能改善", color: "#1a7f37" },
-            { id: uuidv4(), name: "バグ修正", color: "#656d76" },
-            { id: uuidv4(), name: "ドキュメント", color: "#0969da" },
-          ];
-
-          const defaultBoard: KanbanBoard = {
-            id: uuidv4(),
-            title: "TaskFlow デモプロジェクト",
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-            labels,
-            deletionState: "active",
-            deletedAt: null,
-            columns: [
-              {
-                id: uuidv4(),
-                title: "📝 未着手",
-                tasks: [
-                  {
-                    id: uuidv4(),
-                    title: "TaskFlow リッチテキスト機能の実装",
-                    description: `<p>TaskFlowアプリにリッチテキスト編集機能を追加する。</p><p><strong>要件：</strong></p><ul><li>太字、斜体、下線のサポート</li><li>リンク挿入機能</li><li>コードブロック対応</li><li>HTML出力とMarkdown変換</li></ul><p><strong>技術調査：</strong></p><ul><li><a href="https://lexical.dev/" target="_blank" rel="noopener noreferrer">Lexical Editor</a> - Meta製の高性能エディタ</li><li><a href="https://quilljs.com/" target="_blank" rel="noopener noreferrer">React Quill</a> - 軽量なリッチテキストエディタ</li></ul><p><code style="background-color: #f6f8fa; color: #e01e5a; padding: 2px 4px; border-radius: 4px; font-family: 'Monaco', 'Menlo', 'Consolas', monospace; font-size: 0.875em; border: 1px solid #d0d7de;">npm install @lexical/react lexical</code></p><div style="margin: 0 0 8px; border: 1px solid #d0d7de !important; border-radius: 6px; padding: 8px; font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', 'Menlo', monospace; font-size: 13px; line-height: 1.45; overflow-x: auto; color: #24292f; background-color: #f6f8fa;"><pre style="margin: 0 !important; white-space: pre; overflow-wrap: normal; color: inherit; background: transparent; border: none; padding: 0;" contenteditable="true" spellcheck="false">// エディタコンポーネントの基本実装<br>import { LexicalComposer } from '@lexical/react/LexicalComposer';<br>import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';<br><br>const RichTextEditor = () =&gt; {<br>  return (<br>    &lt;LexicalComposer initialConfig={config}&gt;<br>      &lt;RichTextPlugin /&gt;<br>    &lt;/LexicalComposer&gt;<br>  );<br>};</pre></div>`,
-                    createdAt: new Date().toISOString(),
-                    updatedAt: new Date().toISOString(),
-                    dueDate: yesterday.toISOString(), // 昨日の17:00(期限切れ)
-                    priority: "high" as Priority,
-                    labels: [labels[1], labels[2]].filter(
-                      (label): label is NonNullable<typeof label> =>
-                        Boolean(label),
-                    ), // 機能改善 + バグ修正
-                    files: [],
-                    subTasks: [
-                      {
-                        id: uuidv4(),
-                        title: "Lexical vs Quill 技術調査",
-                        completed: true,
-                        createdAt: new Date().toISOString(),
-                      },
-                      {
-                        id: uuidv4(),
-                        title: "プロトタイプ作成",
-                        completed: false,
-                        createdAt: new Date().toISOString(),
-                      },
-                      {
-                        id: uuidv4(),
-                        title: "ユニットテスト作成",
-                        completed: false,
-                        createdAt: new Date().toISOString(),
-                      },
-                    ],
-                    completedAt: null,
-                  },
-                  {
-                    id: uuidv4(),
-                    title: "週次レポートの作成",
-                    description: `<p>チーム進捗と課題を整理した週次レポートの作成と共有。</p><p><strong>レポート内容：</strong></p><ul><li>完了タスクと進捗状況</li><li>発生した課題と解決策</li><li>来週の計画と目標</li></ul><p><strong>共有方法：</strong></p><div style="margin: 0 0 8px; border: 1px solid #d0d7de !important; border-radius: 6px; padding: 8px; font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', 'Menlo', monospace; font-size: 13px; line-height: 1.45; overflow-x: auto; color: #24292f; background-color: #f6f8fa;"><pre style="margin: 0 !important; white-space: pre; overflow-wrap: normal; color: inherit; background: transparent; border: none; padding: 0;" contenteditable="true" spellcheck="false">// レポート自動生成スクリプト例
-const generateWeeklyReport = () => {
-  const completedTasks = getCompletedTasks(lastWeek);
-  const upcomingTasks = getUpcomingTasks(nextWeek);
-
-  return {
-    period: getWeekRange(),
-    completed: completedTasks,
-    upcoming: upcomingTasks,
-    issues: getIssues()
-  };
-};</pre></div>`,
-                    createdAt: new Date().toISOString(),
-                    updatedAt: new Date().toISOString(),
-                    dueDate: todayEvening.toISOString(), // 今日の18:00
-                    priority: "medium" as Priority,
-                    labels: [labels[3]].filter(
-                      (label): label is NonNullable<typeof label> =>
-                        Boolean(label),
-                    ), // ドキュメント
-                    files: [],
-                    subTasks: [
-                      {
-                        id: uuidv4(),
-                        title: "タスク完了状況の集計",
-                        completed: true,
-                        createdAt: new Date().toISOString(),
-                      },
-                      {
-                        id: uuidv4(),
-                        title: "課題とブロッカーの整理",
-                        completed: false,
-                        createdAt: new Date().toISOString(),
-                      },
-                      {
-                        id: uuidv4(),
-                        title: "レポート作成と共有",
-                        completed: false,
-                        createdAt: new Date().toISOString(),
-                      },
-                    ],
-                    completedAt: null,
-                    recurrence: {
-                      enabled: true,
-                      pattern: "weekly",
-                      interval: 1,
-                      endDate: undefined,
-                    },
-                  },
-                ],
-              },
-              {
-                id: uuidv4(),
-                title: "🚀 進行中",
-                tasks: [
-                  {
-                    id: uuidv4(),
-                    title: "UI/UXデザイン改善",
-                    description: `<p>ユーザビリティテストの結果を基にインターフェースを改善。</p><p><strong>改善対象：</strong></p><ul><li>タスク作成フローの簡素化</li><li>ナビゲーションの直感性向上</li><li>レスポンシブデザインの最適化</li></ul><p><strong>参考：</strong></p><ul><li><a href="https://material.io/design" target="_blank" rel="noopener noreferrer">Material Design</a></li><li><a href="https://primer.style/" target="_blank" rel="noopener noreferrer">Primer Design System</a></li></ul>`,
-                    createdAt: new Date().toISOString(),
-                    updatedAt: new Date().toISOString(),
-                    dueDate: tomorrowMorning.toISOString(), // 明日の10:00
-                    priority: "medium" as Priority,
-                    labels: [labels[1], labels[3]].filter(
-                      (label): label is NonNullable<typeof label> =>
-                        Boolean(label),
-                    ), // 機能改善 + ドキュメント
-                    files: [],
-                    subTasks: [
-                      {
-                        id: uuidv4(),
-                        title: "ユーザビリティテスト分析",
-                        completed: true,
-                        createdAt: new Date().toISOString(),
-                      },
-                      {
-                        id: uuidv4(),
-                        title: "ワイヤーフレーム作成",
-                        completed: true,
-                        createdAt: new Date().toISOString(),
-                      },
-                      {
-                        id: uuidv4(),
-                        title: "プロトタイプ実装",
-                        completed: false,
-                        createdAt: new Date().toISOString(),
-                      },
-                    ],
-                    completedAt: null,
-                  },
-                  {
-                    id: uuidv4(),
-                    title: "API エンドポイント最適化",
-                    description: `<p>データベースクエリの最適化とAPIレスポンス時間の改善。</p><p><strong>対象エンドポイント：</strong></p><ul><li>/api/tasks - タスク一覧取得</li><li>/api/boards - ボード情報取得</li><li>/api/search - 検索機能</li></ul><div style="margin: 0 0 8px; border: 1px solid #d0d7de !important; border-radius: 6px; padding: 8px; font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', 'Menlo', monospace; font-size: 13px; line-height: 1.45; overflow-x: auto; color: #24292f; background-color: #f6f8fa;"><pre style="margin: 0 !important; white-space: pre; overflow-wrap: normal; color: inherit; background: transparent; border: none; padding: 0;" contenteditable="true" spellcheck="false">// クエリ最適化例
-const optimizedQuery = await db.task.findMany({
-  select: {
-    id: true,
-    title: true,
-    description: true,
-    dueDate: true,
-    priority: true,
-    labels: { select: { id: true, name: true, color: true } },
-    _count: { select: { subTasks: true } }
-  },
-  where: filters,
-  orderBy: { updatedAt: 'desc' }
-});</pre></div>`,
-                    createdAt: new Date().toISOString(),
-                    updatedAt: new Date().toISOString(),
-                    dueDate: null, // 期限なし
-                    priority: "high" as Priority,
-                    labels: [labels[1], labels[2]].filter(
-                      (label): label is NonNullable<typeof label> =>
-                        Boolean(label),
-                    ), // 機能改善 + バグ修正
-                    files: [],
-                    subTasks: [],
-                    completedAt: null,
-                  },
-                ],
-              },
-              {
-                id: uuidv4(),
-                title: "✅ 完了",
-                tasks: [
-                  {
-                    id: uuidv4(),
-                    title: "ユーザー認証システムの実装",
-                    description: `<p>JWT ベースの認証システムを実装完了。</p><p><strong>実装内容：</strong></p><ul><li>ログイン・ログアウト機能</li><li>トークンベース認証</li><li>パスワードハッシュ化</li></ul><p><strong>使用技術：</strong></p><ul><li><a href="https://jwt.io/" target="_blank" rel="noopener noreferrer">JSON Web Tokens</a></li><li><a href="https://github.com/kelektiv/node.bcrypt.js" target="_blank" rel="noopener noreferrer">bcrypt</a> - パスワードハッシュ化</li></ul><div style="margin: 0 0 8px; border: 1px solid #d0d7de !important; border-radius: 6px; padding: 8px; font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', 'Menlo', monospace; font-size: 13px; line-height: 1.45; overflow-x: auto; color: #24292f; background-color: #f6f8fa;"><pre style="margin: 0 !important; white-space: pre; overflow-wrap: normal; color: inherit; background: transparent; border: none; padding: 0;" contenteditable="true" spellcheck="false">// JWT 認証の実装例
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
-
-const authenticateUser = async (email, password) => {
-  const user = await User.findOne({ email });
-  const isValid = await bcrypt.compare(password, user.password);
-  if (isValid) {
-    return jwt.sign({ userId: user.id }, process.env.JWT_SECRET);
-  }
-  throw new Error('Invalid credentials');
-};</pre></div>`,
-                    createdAt: new Date(
-                      today.getTime() - 86400000 * 5,
-                    ).toISOString(), // 5日前
-                    updatedAt: new Date(
-                      today.getTime() - 86400000 * 2,
-                    ).toISOString(), // 2日前
-                    dueDate: new Date(
-                      today.getTime() - 86400000 * 3,
-                    ).toISOString(),
-                    priority: "high" as Priority,
-                    labels: [labels[0]].filter(
-                      (label): label is NonNullable<typeof label> =>
-                        Boolean(label),
-                    ), // セキュリティ
-                    files: [],
-                    subTasks: [
-                      {
-                        id: uuidv4(),
-                        title: "JWT ライブラリ選定",
-                        completed: true,
-                        createdAt: new Date().toISOString(),
-                      },
-                      {
-                        id: uuidv4(),
-                        title: "ログイン画面作成",
-                        completed: true,
-                        createdAt: new Date().toISOString(),
-                      },
-                      {
-                        id: uuidv4(),
-                        title: "認証ミドルウェア実装",
-                        completed: true,
-                        createdAt: new Date().toISOString(),
-                      },
-                      {
-                        id: uuidv4(),
-                        title: "セキュリティテスト",
-                        completed: true,
-                        createdAt: new Date().toISOString(),
-                      },
-                    ],
-                    completedAt: new Date(
-                      today.getTime() - 86400000 * 2,
-                    ).toISOString(),
-                  },
-                  {
-                    id: uuidv4(),
-                    title: "Git ワークフロー標準化",
-                    description: `<p>チーム開発効率化のためのGitワークフロー策定。</p><p><strong>策定内容：</strong></p><ul><li>ブランチ戦略（GitHub Flow）</li><li>コミットメッセージ規約</li><li>PR レビュー制度</li></ul><p><strong>参考：</strong></p><ul><li><a href="https://guides.github.com/introduction/flow/" target="_blank" rel="noopener noreferrer">GitHub Flow</a></li><li><a href="https://www.conventionalcommits.org/" target="_blank" rel="noopener noreferrer">Conventional Commits</a></li></ul>`,
-                    createdAt: new Date(
-                      today.getTime() - 86400000 * 7,
-                    ).toISOString(), // 1週間前
-                    updatedAt: new Date(
-                      today.getTime() - 86400000 * 1,
-                    ).toISOString(), // 1日前
-                    dueDate: null, // 期限なし
-                    priority: "medium" as Priority,
-                    labels: [labels[3]].filter(
-                      (label): label is NonNullable<typeof label> =>
-                        Boolean(label),
-                    ),
-                    files: [
-                      {
-                        id: uuidv4(),
-                        name: "git-workflow-guide.pdf",
-                        size: 245760,
-                        type: "application/pdf",
-                        data: "",
-                        uploadedAt: new Date().toISOString(),
-                      },
-                    ],
-                    subTasks: [
-                      {
-                        id: uuidv4(),
-                        title: "ブランチ戦略ドキュメント作成",
-                        completed: true,
-                        createdAt: new Date().toISOString(),
-                      },
-                      {
-                        id: uuidv4(),
-                        title: "PRテンプレート作成",
-                        completed: true,
-                        createdAt: new Date().toISOString(),
-                      },
-                    ],
-                    completedAt: new Date(
-                      today.getTime() - 86400000 * 1,
-                    ).toISOString(),
-                  },
-                ],
-              },
-            ],
-          };
-
-          dispatch({ type: "LOAD_BOARDS", payload: [defaultBoard] });
-          dispatch({ type: "SET_CURRENT_BOARD", payload: defaultBoard.id });
-        } else {
-          dispatch({ type: "LOAD_BOARDS", payload: boards });
-          // 最初のボードを現在のボードに設定
-          if (boards.length > 0 && boards[0]) {
-            dispatch({ type: "SET_CURRENT_BOARD", payload: boards[0].id });
-          }
-        }
+        const boardsData = loadBoards();
+        dispatch({ type: "LOAD_BOARDS", payload: boardsData });
       } catch (error) {
-        logger.error("Failed to load initial board data:", error);
+        logger.error("Failed to load boards:", error);
         notify.error("ボードデータの読み込みに失敗しました");
       }
     };
@@ -1085,195 +757,138 @@ const authenticateUser = async (email, password) => {
     loadInitialData();
   }, [notify]);
 
-  // データの永続化
+  // ボード変更時の自動保存
   useEffect(() => {
     if (state.boards.length > 0) {
       try {
-        saveBoards(state.boards, state.currentBoard?.id);
+        saveBoards(state.boards);
       } catch (error) {
-        logger.error("Failed to save board data:", error);
+        logger.error("Failed to save boards:", error);
         notify.error("ボードデータの保存に失敗しました");
       }
     }
-  }, [state.boards, state.currentBoard, notify]);
+  }, [state.boards, notify]);
 
-  // メモ化されたアクション関数
+  // アクション関数群の定義
   const createBoard = useCallback(
     (title: string) => {
       dispatch({ type: "CREATE_BOARD", payload: { title } });
-      notify.success(`ボード「${title}」を作成しました`);
+      notify.success("新しいボードを作成しました");
     },
     [notify],
   );
 
-  const setCurrentBoard = useCallback((boardId: string) => {
-    dispatch({ type: "SET_CURRENT_BOARD", payload: boardId });
-  }, []);
+  const setCurrentBoard = useCallback(
+    (boardId: string) => {
+      dispatch({ type: "SET_CURRENT_BOARD", payload: boardId });
+    },
+    [],
+  );
 
   const updateBoard = useCallback(
     (boardId: string, updates: Partial<KanbanBoard>) => {
       dispatch({ type: "UPDATE_BOARD", payload: { boardId, updates } });
-      notify.success("ボードを更新しました");
     },
-    [notify],
+    [],
   );
 
   const deleteBoard = useCallback(
     (boardId: string) => {
-      const boardToDelete = state.boards.find((board) => board.id === boardId);
-      if (boardToDelete) {
-        dispatch({ type: "DELETE_BOARD", payload: { boardId } });
-        notify.success(`ボード「${boardToDelete.title}」をゴミ箱に移動しました`);
-      }
+      dispatch({ type: "DELETE_BOARD", payload: { boardId } });
+      notify.success("ボードをごみ箱に移動しました");
     },
-    [state.boards, notify],
+    [notify],
   );
 
   const restoreBoard = useCallback(
     (boardId: string) => {
-      const boardToRestore = state.boards.find((board) => board.id === boardId);
-      if (boardToRestore) {
-        dispatch({ type: "RESTORE_BOARD", payload: { boardId } });
-        notify.success(`ボード「${boardToRestore.title}」を復元しました`);
-      }
+      dispatch({ type: "RESTORE_BOARD", payload: { boardId } });
+      notify.success("ボードを復元しました");
     },
-    [state.boards, notify],
+    [notify],
   );
 
   const permanentlyDeleteBoard = useCallback(
     (boardId: string) => {
-      const boardToDelete = state.boards.find((board) => board.id === boardId);
-      if (boardToDelete) {
-        dispatch({ type: "PERMANENTLY_DELETE_BOARD", payload: { boardId } });
-        notify.success(`ボード「${boardToDelete.title}」を完全削除しました`);
-      }
+      dispatch({ type: "PERMANENTLY_DELETE_BOARD", payload: { boardId } });
+      notify.success("ボードを完全に削除しました");
     },
-    [state.boards, notify],
+    [notify],
   );
 
   const emptyBoardRecycleBin = useCallback(() => {
-    const deletedBoards = state.boards.filter(board => board.deletionState === "deleted");
-    if (deletedBoards.length > 0) {
-      dispatch({ type: "EMPTY_BOARD_RECYCLE_BIN" });
-      notify.success(`${deletedBoards.length}件のボードを完全削除しました`);
-    }
-  }, [state.boards, notify]);
+    dispatch({ type: "EMPTY_BOARD_RECYCLE_BIN" });
+    notify.success("ボードのごみ箱を空にしました");
+  }, [notify]);
 
   const createColumn = useCallback(
     (title: string, insertIndex?: number) => {
-      if (!state.currentBoard) {
+      if (!currentBoard) {
         notify.error("ボードが選択されていません");
         return;
       }
       dispatch({
         type: "CREATE_COLUMN",
-        payload: { boardId: state.currentBoard.id, title, insertIndex },
+        payload: { boardId: currentBoard.id, title, insertIndex },
       });
-      notify.success(`カラム「${title}」を作成しました`);
+      notify.success("新しいカラムを作成しました");
     },
-    [state.currentBoard, notify],
+    [currentBoard, notify],
   );
 
   const deleteColumn = useCallback(
     (columnId: string) => {
-      const columnToDelete = state.currentBoard?.columns.find(column => column.id === columnId);
-      if (columnToDelete) {
-        dispatch({ type: "DELETE_COLUMN", payload: { columnId } });
-        notify.success(`カラム「${columnToDelete.title}」をゴミ箱に移動しました`);
-      }
+      dispatch({ type: "DELETE_COLUMN", payload: { columnId } });
+      notify.success("カラムをごみ箱に移動しました");
     },
-    [state.currentBoard, notify],
+    [notify],
   );
 
   const restoreColumn = useCallback(
     (columnId: string) => {
-      // 削除されたカラムを探す
-      let columnToRestore: Column | undefined;
-      for (const board of state.boards) {
-        columnToRestore = board.columns.find(column =>
-          column.id === columnId && column.deletionState === "deleted"
-        );
-        if (columnToRestore) {break;}
-      }
-
-      if (columnToRestore) {
-        dispatch({ type: "RESTORE_COLUMN", payload: { columnId } });
-        notify.success(`カラム「${columnToRestore.title}」を復元しました`);
-      }
+      dispatch({ type: "RESTORE_COLUMN", payload: { columnId } });
+      notify.success("カラムを復元しました");
     },
-    [state.boards, notify],
+    [notify],
   );
 
   const permanentlyDeleteColumn = useCallback(
     (columnId: string) => {
-      // 削除されたカラムを探す
-      let columnToDelete: Column | undefined;
-      for (const board of state.boards) {
-        columnToDelete = board.columns.find(column => column.id === columnId);
-        if (columnToDelete) {break;}
-      }
-
-      if (columnToDelete) {
-        dispatch({ type: "PERMANENTLY_DELETE_COLUMN", payload: { columnId } });
-        notify.success(`カラム「${columnToDelete.title}」を完全削除しました`);
-      }
+      dispatch({ type: "PERMANENTLY_DELETE_COLUMN", payload: { columnId } });
+      notify.success("カラムを完全に削除しました");
     },
-    [state.boards, notify],
+    [notify],
   );
 
   const updateColumn = useCallback(
     (columnId: string, updates: Partial<Column>) => {
       dispatch({ type: "UPDATE_COLUMN", payload: { columnId, updates } });
-      notify.success("カラムを更新しました");
     },
-    [notify],
+    [],
   );
 
   const moveColumn = useCallback(
     (columnId: string, direction: "left" | "right") => {
-      if (!state.currentBoard) {
-        notify.error("ボードが選択されていません");
-        return;
-      }
-
-      const columns = state.currentBoard.columns;
-      const currentIndex = columns.findIndex(
-        (column) => column.id === columnId,
-      );
-
-      if (currentIndex === -1) {
-        notify.error("カラムが見つかりません");
-        return;
-      }
-
-      const isFirstColumn = currentIndex === 0;
-      const isLastColumn = currentIndex === columns.length - 1;
-
-      if (
-        (direction === "left" && isFirstColumn) ||
-        (direction === "right" && isLastColumn)
-      ) {
-        const directionText = direction === "left" ? "左" : "右";
-        notify.error(`これ以上${directionText}に移動できません`);
-        return;
-      }
-
       dispatch({ type: "MOVE_COLUMN", payload: { columnId, direction } });
-      const directionText = direction === "left" ? "左" : "右";
-      notify.success(`カラムを${directionText}に移動しました`);
     },
-    [state.currentBoard, notify],
+    [],
   );
 
   const importBoards = useCallback(
     (boards: KanbanBoard[], replaceAll = false) => {
       dispatch({ type: "IMPORT_BOARDS", payload: { boards, replaceAll } });
+      const message = replaceAll
+        ? "ボードデータを置き換えました"
+        : "ボードデータをインポートしました";
+      notify.success(message);
     },
-    [],
+    [notify],
   );
+
   const reorderBoards = useCallback((boards: KanbanBoard[]) => {
     dispatch({ type: "REORDER_BOARDS", payload: { boards } });
   }, []);
+
   const moveTaskToBoard = useCallback(
     (
       taskId: string,
@@ -1282,36 +897,6 @@ const authenticateUser = async (email, password) => {
       targetBoardId: string,
       targetColumnId?: string,
     ) => {
-      // ソースボードとターゲットボードが同じ場合は何もしない
-      if (sourceBoardId === targetBoardId) {
-        notify.error("同じボード内でのタスク移動はできません");
-        return;
-      }
-
-      // ソースボードとターゲットボードの存在確認
-      const sourceBoard = state.boards.find(
-        (board) => board.id === sourceBoardId,
-      );
-      const targetBoard = state.boards.find(
-        (board) => board.id === targetBoardId,
-      );
-
-      if (!sourceBoard || !targetBoard) {
-        notify.error("移動先のボードが見つかりません");
-        return;
-      }
-
-      // タスクの存在確認
-      const sourceColumn = sourceBoard.columns.find(
-        (col) => col.id === sourceColumnId,
-      );
-      const taskToMove = sourceColumn?.tasks.find((task) => task.id === taskId);
-
-      if (!taskToMove) {
-        notify.error("移動するタスクが見つかりません");
-        return;
-      }
-
       dispatch({
         type: "MOVE_TASK_TO_BOARD",
         payload: {
@@ -1322,31 +907,15 @@ const authenticateUser = async (email, password) => {
           targetColumnId,
         },
       });
-
-      const wasCompleted = taskToMove.completedAt !== null;
-      const baseMessage = `タスク「${taskToMove.title}」を「${targetBoard.title}」に移動しました`;
-      const resetMessage = wasCompleted
-        ? `${baseMessage}（未完了状態にリセット）`
-        : baseMessage;
-      notify.success(resetMessage);
+      notify.success("タスクを他のボードに移動しました");
     },
-    [state.boards, notify],
+    [notify],
   );
 
-  const exportData = useCallback(
-    () => ({
-      boards: state.boards,
-      currentBoardId: state.currentBoard?.id || null,
-      exportedAt: new Date().toISOString(),
-      version: "1.0",
-    }),
-    [state.boards, state.currentBoard],
-  );
-
-  const value = useMemo(
+  const contextValue = useMemo(
     () => ({
       state,
-      currentBoard: state.currentBoard,
+      currentBoard,
       dispatch,
       createBoard,
       setCurrentBoard,
@@ -1364,11 +933,10 @@ const authenticateUser = async (email, password) => {
       importBoards,
       reorderBoards,
       moveTaskToBoard,
-      exportData,
     }),
     [
       state,
-      dispatch,
+      currentBoard,
       createBoard,
       setCurrentBoard,
       updateBoard,
@@ -1385,12 +953,13 @@ const authenticateUser = async (email, password) => {
       importBoards,
       reorderBoards,
       moveTaskToBoard,
-      exportData,
     ],
   );
 
   return (
-    <BoardContext.Provider value={value}>{children}</BoardContext.Provider>
+    <BoardContext.Provider value={contextValue}>
+      {children}
+    </BoardContext.Provider>
   );
 };
 

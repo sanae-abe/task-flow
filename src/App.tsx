@@ -7,7 +7,7 @@ import SubHeader from './components/SubHeader';
 import KanbanBoard from './components/KanbanBoard';
 import CalendarView from './components/CalendarView';
 import TableView from './components/TableView';
-import NotificationContainer from './components/NotificationContainer';
+import { Toaster } from '@/components/ui/sonner';
 import HelpSidebar from './components/HelpSidebar';
 import TaskDetailSidebar from './components/TaskDetailSidebar';
 import TaskCreateDialog from './components/TaskCreateDialog';
@@ -45,6 +45,11 @@ const AppContent: React.FC = () => {
   const { handlers } = useSubHeader();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
+  // デバッグ: isSettingsOpenの状態変化を監視
+  useEffect(() => {
+    console.log('isSettingsOpen changed:', isSettingsOpen);
+  }, [isSettingsOpen]);
+
   // データ同期の初期化
   useDataSync();
 
@@ -69,7 +74,10 @@ const AppContent: React.FC = () => {
   };
 
   // 設定ダイアログの処理
-  const openSettings = () => setIsSettingsOpen(true);
+  const openSettings = () => {
+    console.log('openSettings called');
+    setIsSettingsOpen(true);
+  };
   const closeSettings = () => setIsSettingsOpen(false);
 
   // 排他制御はUIContext内で処理されるため、シンプルに呼び出すだけ
@@ -119,7 +127,7 @@ const AppContent: React.FC = () => {
           </div>
         </>
       )}
-      <NotificationContainer />
+      <Toaster position="top-right" richColors closeButton />
       <HelpSidebar isOpen={uiState.isHelpOpen} onClose={closeHelp} />
       <TaskDetailSidebar
         task={selectedTask}

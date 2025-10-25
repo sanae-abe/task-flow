@@ -26,7 +26,7 @@ const FormDialog = memo<FormDialogProps>(({
     {
       label: cancelText,
       onClick: onCancel,
-      variant: 'default' as const
+      variant: 'outline' as const
     },
     {
       label: saveText,

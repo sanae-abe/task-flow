@@ -18,7 +18,7 @@ import {
   TemplateStorage,
   TemplateStorageError,
 } from "../utils/templateStorage";
-import { useNotify } from "./NotificationContext";
+import { useSonnerNotify } from "../hooks/useSonnerNotify";
 import { logger } from "../utils/logger";
 
 /**
@@ -304,7 +304,7 @@ interface TemplateProviderProps {
 export const TemplateProvider: React.FC<TemplateProviderProps> = ({
   children,
 }) => {
-  const notify = useNotify();
+  const notify = useSonnerNotify();
   const [state, dispatch] = useReducer(templateReducer, initialState);
 
   /**

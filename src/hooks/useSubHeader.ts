@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback } from "react";
 
 import { useKanban } from "../contexts/KanbanContext";
-import { useNotify } from "../contexts/NotificationContext";
+import { useSonnerNotify } from "../hooks/useSonnerNotify";
 import { exportData, exportBoard } from "../utils/dataExport";
 import type { KanbanBoard } from "../types";
 
@@ -53,7 +53,7 @@ export const useSubHeader = (): UseSubHeaderReturn => {
     deleteBoard,
     clearCompletedTasks,
   } = useKanban();
-  const notify = useNotify();
+  const notify = useSonnerNotify();
 
   const [dialogState, setDialogState] = useState<SubHeaderDialogState>({
     isCreatingColumn: false,

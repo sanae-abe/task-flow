@@ -89,20 +89,20 @@ const TaskEditDialog = memo<TaskEditDialogProps>(
         {
           label: "削除",
           onClick: handleDelete,
-          variant: "danger" as const,
+          variant: "destructive" as const,
           icon: Trash2,
           position: "left",
         },
         {
           label: "キャンセル",
           onClick: handleDialogClose,
-          variant: "default" as const,
+          variant: "outline" as const,
           position: "right",
         },
         {
           label: "保存",
           onClick: handleSave,
-          variant: "primary" as const,
+          variant: "default" as const,
           disabled: !isValid,
           position: "right",
         },

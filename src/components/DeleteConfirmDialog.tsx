@@ -26,12 +26,12 @@ const DeleteConfirmDialog: React.FC<DeleteConfirmDialogProps> = ({
       {
         label: "キャンセル",
         onClick: onClose,
-        variant: "default",
+        variant: "outline",
       },
       {
         label: "削除",
         onClick: handleConfirm,
-        variant: "danger",
+        variant: "destructive",
       },
     ],
     [onClose, handleConfirm],

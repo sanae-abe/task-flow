@@ -11,6 +11,20 @@ interface DialogActionsProps {
 }
 
 /**
+ * DialogActionのvariantをButtonのvariantにマッピングする
+ */
+const mapVariantToButton = (variant?: DialogAction['variant']) => {
+  switch (variant) {
+    case 'primary':
+      return 'default';
+    case 'danger':
+      return 'destructive';
+    default:
+      return variant;
+  }
+};
+
+/**
  * ダイアログアクションボタン群コンポーネント
  *
  * 統一されたダイアログアクションを提供し、
@@ -30,7 +44,7 @@ const DialogActions = memo<DialogActionsProps>(({ actions, layout = 'standard' }
             <Button
               key={index}
               onClick={action.onClick}
-              variant={action.variant === 'primary' ? 'default' : action.variant === 'danger' ? 'destructive' : action.variant === 'invisible' ? 'ghost' : action.variant ?? 'outline'}
+              variant={mapVariantToButton(action.variant)}
               disabled={action.disabled}
             >
               {action.icon && <span className="mr-2"><action.icon size={16} /></span>}
@@ -43,7 +57,7 @@ const DialogActions = memo<DialogActionsProps>(({ actions, layout = 'standard' }
             <Button
               key={index}
               onClick={action.onClick}
-              variant={action.variant === 'primary' ? 'default' : action.variant === 'danger' ? 'destructive' : action.variant === 'invisible' ? 'ghost' : action.variant ?? 'outline'}
+              variant={mapVariantToButton(action.variant)}
               disabled={action.disabled}
             >
               {action.icon && <span className="mr-2"><action.icon size={16} /></span>}
@@ -62,7 +76,7 @@ const DialogActions = memo<DialogActionsProps>(({ actions, layout = 'standard' }
         <Button
           key={index}
           onClick={action.onClick}
-          variant={action.variant === 'primary' ? 'default' : action.variant === 'danger' ? 'destructive' : action.variant === 'invisible' ? 'ghost' : action.variant ?? 'outline'}
+          variant={mapVariantToButton(action.variant)}
           disabled={action.disabled}
         >
           {action.icon && <span className="mr-2"><action.icon size={16} /></span>}

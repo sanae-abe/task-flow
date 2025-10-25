@@ -41,7 +41,7 @@ export const renderActionsCell = (
       variant="ghost"
       size="sm"
       onClick={() => onDeleteClick(task)}
-      className="p-1 h-auto min-w-0 hover:bg-transparent hover:text-red-600"
+      className="p-1 h-auto min-w-0 hover:text-red-600"
     >
       <X size={16} />
     </Button>
@@ -75,7 +75,7 @@ export const renderStatusCell = (
         <Button
           variant="ghost"
           size="sm"
-          className="p-0 h-auto min-h-0 border-none hover:bg-transparent"
+          className="p-0 h-auto min-h-0 border-none"
         >
           <StatusBadge size="medium" variant="default" fontWeight="400">
             {task.status}

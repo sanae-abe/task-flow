@@ -3,7 +3,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
 import type { TaskTemplate } from '../../types/template';
 import { useKanban } from '../../contexts/KanbanContext';
-import { useNotify } from '../../contexts/NotificationContext';
+import { useSonnerNotify } from '../../hooks/useSonnerNotify';
 import UnifiedDialog from '../shared/Dialog/UnifiedDialog';
 
 // カスタムフック
@@ -28,7 +28,7 @@ import { TemplateSelector, TaskFormFields } from './components';
  */
 const TaskCreateDialog = memo(() => {
   const { state, closeTaskForm, createTask } = useKanban();
-  const notify = useNotify();
+  const notify = useSonnerNotify();
 
   // カスタムフック: フォーム状態管理
   const { formState, formActions, handleTimeChange, isFormValid } = useTaskForm(

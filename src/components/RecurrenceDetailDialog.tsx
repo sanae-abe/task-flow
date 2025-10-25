@@ -57,12 +57,12 @@ const RecurrenceDetailDialog: React.FC<RecurrenceDetailDialogProps> = ({
       {
         label: "キャンセル",
         onClick: handleCancel,
-        variant: "default",
+        variant: "outline",
       },
       {
         label: "保存",
         onClick: handleSave,
-        variant: "primary",
+        variant: "default",
         disabled: !isFormValid,
       },
     ];
@@ -72,7 +72,7 @@ const RecurrenceDetailDialog: React.FC<RecurrenceDetailDialogProps> = ({
       actionList.splice(1, 0, {
         label: "削除",
         onClick: handleDelete,
-        variant: "danger",
+        variant: "destructive",
       });
     }
 

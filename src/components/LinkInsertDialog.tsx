@@ -135,7 +135,7 @@ const LinkInsertDialog: React.FC<LinkInsertDialogProps> = ({
       </div>
 
       <div className="flex justify-end gap-2">
-        <Button onClick={handleCancel} variant="outline">
+        <Button onClick={handleCancel} variant="ghost">
           キャンセル
         </Button>
         <Button onClick={handleInsert} variant="default" disabled={!isValidUrl}>

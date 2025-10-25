@@ -29,7 +29,7 @@ export interface DialogAction {
   /** クリック時のコールバック */
   onClick: () => void;
   /** ボタンのバリアント */
-  variant?: "primary" | "danger" | "default" | "invisible";
+  variant?: "default" | "primary" | "danger" | "outline" | "secondary" | "destructive" | "ghost" | "link";
   /** 無効状態 */
   disabled?: boolean;
   /** ローディング状態 */
@@ -53,7 +53,7 @@ export interface ConfirmDialogProps extends BaseUnifiedDialogProps {
   /** キャンセルボタンのテキスト */
   cancelText?: string;
   /** 確認ボタンのバリアント */
-  confirmVariant?: "primary" | "danger";
+  confirmVariant?: "default" | "primary" | "danger" | "outline" | "secondary" | "destructive" | "ghost" | "link";
 }
 
 // フォームダイアログ

@@ -1,4 +1,5 @@
 import React from "react";
+import { Progress } from "@/components/ui/progress";
 
 interface SubTaskProgressBarProps {
   completedCount: number;
@@ -17,15 +18,10 @@ const SubTaskProgressBar: React.FC<SubTaskProgressBarProps> = ({
 
   return (
     <div className="mb-2">
-      <div className="w-full h-[6px] rounded-sm overflow-hidden bg-gray-300">
-        <div
-          style={{
-            width: `${progressPercentage}%`,
-            backgroundColor: "rgb(45 164 78)",
-          }}
-          className="h-full transition-width duration-200 ease"
-        />
-      </div>
+      <Progress
+        value={progressPercentage}
+        className="h-[6px] bg-gray-300"
+      />
     </div>
   );
 };

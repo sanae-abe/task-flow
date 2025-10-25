@@ -36,7 +36,7 @@ const PrioritySelector: React.FC<PrioritySelectorProps> = ({
         aria-labelledby="priority-label"
         className={cn(
           "flex flex-col space-y-2",
-          variant === "compact" && "flex-row space-y-0 space-x-3"
+          "flex-row space-y-0 space-x-3"
         )}
       >
         {prioritySelectorOptions.map((option) => (

@@ -9,7 +9,7 @@ export type IconButtonVariant =
   | "warning"
   | "muted";
 
-export type IconButtonSize = "small" | "medium" | "large";
+export type IconButtonSize = "small" | "medium" | "large" | "icon";
 
 export type IconButtonStyle = "primer" | "custom";
 

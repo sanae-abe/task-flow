@@ -18,14 +18,14 @@ const ConfirmDialog = memo<ConfirmDialogProps>(({
   onCancel,
   confirmText = '確認',
   cancelText = 'キャンセル',
-  confirmVariant = 'primary',
+  confirmVariant = 'default',
   ...dialogProps
 }) => {
   const actions = [
     {
       label: cancelText,
       onClick: onCancel,
-      variant: 'default' as const
+      variant: 'outline' as const
     },
     {
       label: confirmText,
