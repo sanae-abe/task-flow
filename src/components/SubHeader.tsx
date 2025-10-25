@@ -117,7 +117,7 @@ const SubHeader: React.FC = () => {
               variant="ghost"
               size="sm"
               aria-label="ビューモードを選択"
-              className="flex items-center gap-2 text-neutral-600"
+              className="flex items-center gap-1 text-neutral-600"
             >
               {state.viewMode === "kanban" ? (
                 <SquareKanban size={16} />
