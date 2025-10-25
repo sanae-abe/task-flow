@@ -90,11 +90,12 @@ export const useTaskCard = (
   }, []);
 
   const handleComplete = useCallback(() => {
-    if (!state.currentBoard?.columns.length) {
+    const currentBoard = state.currentBoard;
+    if (!currentBoard?.columns.length) {
       return;
     }
 
-    const { columns } = state.currentBoard;
+    const { columns } = currentBoard;
     const currentIndex = columns.findIndex((col) => col.id === columnId);
 
     if (currentIndex === -1) {

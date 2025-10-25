@@ -141,7 +141,7 @@ export const useTaskEdit = ({
       setPriority(undefined);
       setColumnId("");
     }
-  }, [isOpen, task, state.currentBoard]);
+  }, [isOpen, task, state.currentBoard?.columns]);
 
   // ラベルの初期化は別のuseEffectで処理（一度だけ実行）
   useEffect(() => {
@@ -161,29 +161,38 @@ export const useTaskEdit = ({
         state.currentBoard.columns.indexOf(targetColumn) ===
           state.currentBoard.columns.length - 1;
 
-      // 完了カラムに移動した場合で、現在完了日時が空の場合
-      if (isLastColumn && !completedAt) {
-        const now = new Date();
-        now.setHours(23, 59, 59, 999);
-        const timeString = toDateTimeLocalString(now);
-        setCompletedAt(timeString);
-      }
-      // 完了カラム以外に移動した場合で、完了日時が設定されている場合
-      else if (!isLastColumn && completedAt) {
-        setCompletedAt("");
-      }
+      // 関数型更新を使って現在の値を取得し、必要な場合のみ更新
+      setCompletedAt((currentCompletedAt) => {
+        // 完了カラムに移動した場合で、現在完了日時が空の場合
+        if (isLastColumn && !currentCompletedAt) {
+          const now = new Date();
+          now.setHours(23, 59, 59, 999);
+          return toDateTimeLocalString(now);
+        }
+        // 完了カラム以外に移動した場合で、完了日時が設定されている場合
+        else if (!isLastColumn && currentCompletedAt) {
+          return "";
+        }
+        // 変更が不要な場合は現在の値をそのまま返す
+        return currentCompletedAt;
+      });
     }
-  }, [columnId, state.currentBoard, completedAt]);
+  }, [columnId, state.currentBoard?.columns]);
 
   // 期限が削除された場合、繰り返し設定を無効化
   useEffect(() => {
-    if (!dueDate && recurrence && recurrence.enabled) {
-      setRecurrence({
-        ...recurrence,
-        enabled: false,
+    if (!dueDate) {
+      setRecurrence((currentRecurrence) => {
+        if (currentRecurrence && currentRecurrence.enabled) {
+          return {
+            ...currentRecurrence,
+            enabled: false,
+          };
+        }
+        return currentRecurrence;
       });
     }
-  }, [dueDate, recurrence]);
+  }, [dueDate]);
 
   // 時刻設定がオフになった場合、時刻をクリア
   useEffect(() => {
