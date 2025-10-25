@@ -81,6 +81,8 @@ export const useTaskEdit = ({
   // 前の値を追跡するためのref
   const prevIsOpenRef = useRef(isOpen);
   const prevTaskIdRef = useRef(task?.id);
+  // columns配列の変更を追跡するためのref
+  const prevColumnsLengthRef = useRef(state.currentBoard?.columns.length || 0);
 
   useEffect(() => {
     const prevIsOpen = prevIsOpenRef.current;
@@ -154,15 +156,23 @@ export const useTaskEdit = ({
     prevTaskIdRef.current = task?.id;
   }, [isOpen, task]);
 
-  // カラム情報の初期化（別のuseEffectで処理）
+  // カラム情報の初期化（columns配列の長さが変わった場合のみ実行）
   useEffect(() => {
     if (isOpen && task && state.currentBoard?.columns) {
-      const currentColumn = state.currentBoard.columns.find((column) =>
-        column.tasks.some((t) => t.id === task.id),
-      );
-      setColumnId(currentColumn?.id ?? "");
+      const currentColumnsLength = state.currentBoard.columns.length;
+      const prevColumnsLength = prevColumnsLengthRef.current;
+      
+      // カラム数が変更された場合、またはタスクが開かれた場合のみ実行
+      if (currentColumnsLength !== prevColumnsLength || columnId === "") {
+        const currentColumn = state.currentBoard.columns.find((column) =>
+          column.tasks.some((t) => t.id === task.id),
+        );
+        setColumnId(currentColumn?.id ?? "");
+        prevColumnsLengthRef.current = currentColumnsLength;
+      }
     }
-  }, [isOpen, task, state.currentBoard?.columns]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, task?.id, state.currentBoard?.columns?.length]);
 
   // ラベルの初期化は別のuseEffectで処理（一度だけ実行）
   useEffect(() => {
@@ -198,7 +208,7 @@ export const useTaskEdit = ({
         return currentCompletedAt;
       });
     }
-  }, [columnId, state.currentBoard?.columns]);
+  }, [columnId, state.currentBoard?.columns?.length]);
 
   // 期限が削除された場合、繰り返し設定を無効化
   useEffect(() => {
@@ -389,4 +399,4 @@ export const useTaskEdit = ({
     handleKeyPress,
     isValid,
   };
-};;
+};;;
