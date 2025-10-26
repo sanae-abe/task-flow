@@ -1,9 +1,9 @@
 import { X } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import React from "react";
 
 import type { FileAttachment } from "../types";
 import { formatFileSize, getFileIcon } from "../utils/fileUtils";
+import IconButton from "../components/shared/IconButton";
 
 interface AttachmentListProps {
   attachments: FileAttachment[];
@@ -39,15 +39,13 @@ const AttachmentList: React.FC<AttachmentListProps> = ({
               </span>
             </div>
           </div>
-          <Button
-            variant="ghost"
+          <IconButton
+            icon={X}
             size="icon"
             onClick={() => onRemoveAttachment(attachment.id)}
-            className="w-8 h-8"
-            aria-label="ファイルを削除"
-          >
-            <X size={16} />
-          </Button>
+            ariaLabel="ファイルを削除"
+            className="p-2"
+          />
         </div>
       ))}
     </div>

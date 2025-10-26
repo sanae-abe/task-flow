@@ -20,7 +20,7 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
       background: "hsl(var(--background))",
       borderBottom: "1px solid hsl(var(--border))",
       boxShadow: "0 0 2px rgba(0,0,0,0.05)",
-      padding: "8px 12px",
+      padding: "8px 50px 8px 12px",
       gap: "8px",
       minWidth: "fit-content",
       position: "relative",

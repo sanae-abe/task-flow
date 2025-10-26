@@ -24,6 +24,7 @@ import { loadSettings, updateDefaultColumns } from '../../utils/settingsStorage'
 import { useSonnerNotify } from '../../hooks/useSonnerNotify';
 import { v4 as uuidv4 } from 'uuid';
 import InlineMessage from '../shared/InlineMessage';
+import IconButton from '../shared/IconButton';
 
 // デバウンス機能
 const useDebounce = <T extends unknown[]>(callback: (...args: T) => void, delay: number) => {
@@ -124,36 +125,27 @@ const SortableColumnItem: React.FC<SortableColumnItemProps> = ({
         )}
       </div>
       <div className="flex">
-        <Button
-          variant="ghost"
+        <IconButton
+          icon={ChevronUp}
           size="icon"
           onClick={() => onMoveColumn(column.id, 'up')}
           disabled={index === 0}
-          aria-label={`${column.name}を上に移動`}
-          className="w-8 h-8"
-        >
-          <ChevronUp size={16} />
-        </Button>
-        <Button
-          variant="ghost"
+          ariaLabel={`${column.name}を上に移動`}
+        />
+        <IconButton
+          icon={ChevronDown}
           size="icon"
           onClick={() => onMoveColumn(column.id, 'down')}
           disabled={index === totalColumns - 1}
-          aria-label={`${column.name}を下に移動`}
-          className="w-8 h-8"
-        >
-          <ChevronDown size={16} />
-        </Button>
-        <Button
-          variant="ghost"
+          ariaLabel={`${column.name}を下に移動`}
+        />
+        <IconButton
           size="icon"
+          icon={Trash2}
           onClick={() => onDeleteColumn(column.id)}
           disabled={totalColumns <= 1}
-          aria-label={`${column.name}を削除`}
-          className="w-8 h-8"
-        >
-          <Trash2 size={16} />
-        </Button>
+          ariaLabel={`${column.name}を削除`}
+        />
       </div>
     </div>
   );
@@ -436,13 +428,13 @@ export const BoardSettingsPanel: React.FC = () => {
             }}
             aria-label="新しいカラム名"
           />
-          <Button
+          <IconButton
+            icon={Plus}
+            size="icon"
+            ariaLabel="カラムを追加"
             onClick={handleAddColumn}
             disabled={!newColumnName.trim()}
-            className="px-3"
-          >
-            <Plus size={16} />
-          </Button>
+          />
         </div>
         {addColumnError && (
           <InlineMessage variant="critical" message={addColumnError} size="small" />

@@ -1,8 +1,8 @@
 import React from 'react';
-import { Button } from '@/components/ui/button';
 import { RotateCcw, Trash2, Eye } from 'lucide-react';
 import { LoadingButton } from '../../shared/LoadingButton';
 import type { RecycleBinItemWithMeta } from '../../../types/recycleBin';
+import IconButton from "../../shared/IconButton";
 
 interface RecycleBinItemActionsProps {
   item: RecycleBinItemWithMeta;
@@ -41,33 +41,23 @@ export const RecycleBinItemActions: React.FC<RecycleBinItemActionsProps> = ({
 
   return (
     <div className="flex justify-center">
-      <Button
-        variant="ghost"
-        size="icon"
-        aria-label={`${itemTypeText}「${item.title}」の詳細を表示`}
+      <IconButton
+        icon={Eye}
+        ariaLabel={`${itemTypeText}「${item.title}」の詳細を表示`}
         onClick={() => onShowDetail(item)}
-        className="w-8 -h-8 hover:bg-transparent"
-      >
-        <Eye size={16} />
-      </Button>
-      <Button
-        variant="ghost"
+      />
+      <IconButton
+        icon={RotateCcw}
         size="icon"
-        aria-label={`${itemTypeText}「${item.title}」を復元`}
+        ariaLabel={`${itemTypeText}「${item.title}」を復元`}
         onClick={() => onRestore(item)}
-        className="w-8 -h-8 hover:bg-transparent"
-      >
-        <RotateCcw size={16} />
-      </Button>
-      <Button
-        variant="ghost"
+      />
+      <IconButton
+        icon={Trash2}
         size="icon"
-        aria-label={`${itemTypeText}「${item.title}」を完全に削除`}
+        ariaLabel={`${itemTypeText}「${item.title}」を完全に削除`}
         onClick={() => onDelete(item)}
-        className="w-8 -h-8 hover:bg-transparent"
-      >
-        <Trash2 size={16} />
-      </Button>
+      />
     </div>
   );
 };

@@ -5,6 +5,7 @@ import { Star, Edit, Trash2 } from 'lucide-react';
 import type { TaskTemplate } from '../../types/template';
 import { TEMPLATE_CATEGORIES } from './TemplateCategorySelector';
 import LabelChip from '../LabelChip';
+import IconButton from "../shared/IconButton";
 
 interface TemplateCardProps {
   template: TaskTemplate;
@@ -162,26 +163,22 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
               </Button>
             )}
             {onEdit && (
-              <Button
-                variant="ghost"
-                size="sm"
+              <IconButton
+                icon={Edit}
+                size="icon"
                 onClick={handleEdit}
-                aria-label={`テンプレート「${template.name}」を編集`}
-                className="p-1 h-auto min-w-0 text-gray-500 hover:text-gray-700"
-              >
-                <Edit size={16} />
-              </Button>
+                ariaLabel={`テンプレート「${template.name}」を編集`}
+                className="p-1"
+              />
             )}
             {onDelete && (
-              <Button
-                variant="ghost"
-                size="sm"
+              <IconButton
+                icon={Trash2}
+                size="icon"
                 onClick={handleDelete}
-                aria-label={`テンプレート「${template.name}」を削除`}
-                className="p-1 h-auto min-w-0 text-gray-500 hover:text-red-600"
-              >
-                <Trash2 size={16} />
-              </Button>
+                ariaLabel={`テンプレート「${template.name}」を削除`}
+                className="p-1"
+              />
             )}
           </div>
         )}

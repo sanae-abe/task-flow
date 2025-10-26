@@ -52,6 +52,11 @@ const TableView: React.FC = () => {
     setDeleteConfirmDialog,
   );
 
+  // タスク編集ハンドラー
+  const handleTaskEdit = useCallback((task: TaskWithColumn) => {
+    openTaskDetail(task.id);
+  }, [openTaskDetail]);
+
   // セル描画関数
   const renderCell = useCallback(
     (task: TaskWithColumn, columnId: string) => (
@@ -61,6 +66,7 @@ const TableView: React.FC = () => {
         currentBoard={state.currentBoard}
         onStatusChange={tableActions.handleStatusChange}
         onDeleteClick={tableActions.handleTaskDeleteClick}
+        onEditClick={handleTaskEdit}
         getCompletionRate={getCompletionRate}
       />
     ),
@@ -68,6 +74,7 @@ const TableView: React.FC = () => {
       state.currentBoard,
       tableActions.handleStatusChange,
       tableActions.handleTaskDeleteClick,
+      handleTaskEdit,
     ],
   );
 

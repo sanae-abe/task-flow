@@ -5,7 +5,6 @@
  */
 
 import React from 'react';
-import { Button } from '@/components/ui/button';
 import {
   Bold,
   Italic,
@@ -20,6 +19,7 @@ import {
 import { UnderlineIcon, StrikethroughIcon } from './icons';
 import { getCurrentFormatState } from '../utils/formatting';
 import type { ToolbarButton } from '../types';
+import IconButton from '../../shared/IconButton';
 
 interface ToolbarProps {
   onButtonClick: (command: string) => void;
@@ -110,18 +110,16 @@ const Toolbar: React.FC<ToolbarProps> = ({
         const isEmojiButton = button.id === 'emoji';
 
         return (
-          <Button
+          <IconButton
+            icon={IconComponent}
             key={button.id}
             ref={isEmojiButton ? emojiButtonRef : undefined}
-            variant={button.isActive ? "default" : "ghost"}
             size="icon"
             onClick={button.action}
             disabled={disabled}
-            title={button.title}
-            className="h-8 w-8 p-0"
-          >
-            <IconComponent size={14} />
-          </Button>
+            ariaLabel={button.title}
+            className={button.isActive ? "bg-gray-200" : "bg-transparent"}
+          />
         );
       })}
     </div>

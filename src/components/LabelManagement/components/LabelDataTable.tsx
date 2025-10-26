@@ -8,9 +8,9 @@ import React from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { Edit, Trash2 } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data-table";
 import type { LabelWithInfo } from "../../../types/labelManagement";
+import IconButton from "../../shared/IconButton";
 
 interface LabelDataTableProps {
   labels: LabelWithInfo[];
@@ -73,24 +73,20 @@ export const LabelDataTable: React.FC<LabelDataTableProps> = ({
         const label = row.original;
         return (
           <div className="flex items-center justify-center gap-1">
-            <Button
-              variant="ghost"
+            <IconButton
+              icon={Edit}
               size="icon"
               onClick={() => onEdit(label)}
               className="h-8 w-8 p-0"
-              title="編集"
-            >
-              <Edit className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="ghost"
+              ariaLabel="編集"
+            />
+            <IconButton
+              icon={Trash2}
               size="icon"
               onClick={() => onDelete(label)}
               className="h-8 w-8 p-0"
-              title="削除"
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
+              ariaLabel="削除"
+            />
           </div>
         );
       },

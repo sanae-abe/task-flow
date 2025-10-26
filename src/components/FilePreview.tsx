@@ -4,6 +4,7 @@ import React, { useState, memo, useCallback } from "react";
 
 import type { FileAttachment } from "../types";
 import { isImageFile, isTextFile, formatFileSize } from "../utils/fileUtils";
+import IconButton from "../components/shared/IconButton";
 
 interface FilePreviewProps {
   attachment: FileAttachment;
@@ -145,15 +146,12 @@ const FilePreview: React.FC<FilePreviewProps> = ({
               >
                 {attachment.name}
               </h2>
-              <Button
-                variant="ghost"
+              <IconButton
+                icon={X}
                 size="icon"
                 onClick={handleClosePreview}
-                className="p-1"
-                aria-label="プレビューを閉じる"
-              >
-                <X size={16} />
-              </Button>
+                ariaLabel="プレビューを閉じる"
+              />
             </div>
 
             <div className="p-3 flex-1 overflow-auto">

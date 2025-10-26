@@ -37,6 +37,7 @@ export interface TableCellProps {
   currentBoard: KanbanBoard | null;
   onStatusChange: (task: TaskWithColumn, newColumnId: string) => void;
   onDeleteClick: (task: TaskWithColumn) => void;
+  onEditClick: (task: TaskWithColumn) => void;
   getCompletionRate: (task: Task) => number;
 }
 

@@ -77,8 +77,6 @@ const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(({
         return 12;
       case 'large':
         return 20;
-      case 'icon':
-        return 24;
       default:
         return 16;
     }
@@ -107,7 +105,7 @@ const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(({
       aria-label={ariaLabel}
       className={cn(
         getVariantClasses(),
-        'hover:bg-transparent transition-colors',
+        'transition-all duration-150',
         size === 'small' && 'p-1',
         size === 'large' && 'p-3',
         size === 'medium' && 'p-2',

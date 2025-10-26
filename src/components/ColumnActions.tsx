@@ -6,11 +6,11 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import React, { useMemo } from "react";
 
 import type { MenuGroup, MenuTrigger } from "../types/unified-menu";
 import UnifiedMenu from "./shared/Menu/UnifiedMenu";
+import IconButton from "./shared/IconButton";
 
 interface ColumnActionsProps {
   onAddTask: () => void;
@@ -110,15 +110,13 @@ const ColumnActions: React.FC<ColumnActionsProps> = ({
   return (
     <div className="flex items-center">
       {/* タスク追加ボタン */}
-      <Button
+      <IconButton
+        icon={Plus}
         onClick={onAddTask}
-        variant="ghost"
         size="icon"
-        aria-label="タスクを作成"
+        ariaLabel="タスクを作成"
         className="hover:text-default w-6 h-6 p-0"
-      >
-        <Plus size={16} />
-      </Button>
+      />
 
       {/* カラム設定メニュー */}
       <UnifiedMenu

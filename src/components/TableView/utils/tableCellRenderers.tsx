@@ -9,11 +9,12 @@ import {
   DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
 import {
-  X,
+  Trash2,
   Check,
   Paperclip,
   ChevronDown,
   RotateCcw,
+  Edit,
 } from "lucide-react";
 
 import type { TaskWithColumn } from "../../../types/table";
@@ -28,6 +29,7 @@ import {
   getCompletionRate,
   getDateColor,
 } from "./tableHelpers";
+import IconButton from "@/components/shared/IconButton";
 
 /**
  * アクションセル（削除ボタン）の描画
@@ -37,15 +39,31 @@ export const renderActionsCell = (
   onDeleteClick: (task: TaskWithColumn) => void,
 ) => (
   <div onClick={(e: React.MouseEvent) => e.stopPropagation()}>
-    <Button
-      aria-label="タスクを削除"
-      variant="ghost"
-      size="sm"
+    <IconButton
+      icon={Trash2}
+      size="icon"
+      ariaLabel="タスクを削除"
       onClick={() => onDeleteClick(task)}
-      className="p-1 h-auto min-w-0 hover:text-red-600"
-    >
-      <X size={16} />
-    </Button>
+      className="w-8 h-8 p-2 hover:bg-gray-200"
+    />
+  </div>
+);
+
+/**
+ * 編集セル（編集ボタン）の描画
+ */
+export const renderEditCell = (
+  task: TaskWithColumn,
+  onEditClick: (task: TaskWithColumn) => void,
+) => (
+  <div onClick={(e: React.MouseEvent) => e.stopPropagation()}>
+    <IconButton
+      icon={Edit}
+      size="icon"
+      ariaLabel="タスクを編集"
+      onClick={() => onEditClick(task)}
+      className="w-8 h-8 p-2 hover:bg-gray-200"
+    />
   </div>
 );
 
@@ -149,10 +167,9 @@ export const renderDueDateCell = (task: TaskWithColumn) => {
 
   return (
     <span
-      className={`flex items-center gap-1 text-sm ${getColorClass(dateColor)}`}
+      className={`flex items-center gap-2 text-sm ${getColorClass(dateColor)}`}
     >
       {formattedDate}
-      {task.recurrence?.enabled && <RotateCcw size={12} />}
     </span>
   );
 };

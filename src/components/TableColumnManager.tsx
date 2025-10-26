@@ -5,6 +5,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuCheckboxItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
   DropdownMenuGroup,
@@ -23,7 +24,8 @@ import {
 
 import { useTableColumns } from "../contexts/TableColumnsContext";
 import UnifiedDialog from "./shared/Dialog/UnifiedDialog";
-import { InlineMessage } from "./shared";
+import { IconButton, InlineMessage } from "./shared";
+import { cn } from '@/lib/utils';
 
 interface TempColumn {
   id: string;
@@ -237,39 +239,38 @@ const TableColumnManager: React.FC = () => {
             <Settings size={16} />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent>
+        <DropdownMenuContent className="w-64 max-h-80 overflow-y-auto">
           <DropdownMenuGroup>
-            <div className="px-2 py-1.5 text-sm font-semibold text-gray-700">表示カラム</div>
-            {(isSettingsOpen ? tempColumns : columns).map((column) => (
-              <DropdownMenuItem
-                key={column.id}
-                onSelect={(e) => {
-                  e.preventDefault(); // メニューが閉じるのを防ぐ
-                  if (isSettingsOpen) {
-                    handleTempToggleVisibility(column.id);
-                  } else {
-                    toggleColumnVisibility(column.id);
-                  }
-                }}
-              >
-                <div
-                  className={`mr-2 ${
-                    column.visible ? 'text-gray-900' : 'text-transparent'
-                  }`}
+            <div className="px-2 py-1.5 text-sm font-semibold text-gray-700 sticky top-0 bg-white border-b border-gray-100">
+              表示カラム
+            </div>
+            <div className="max-h-48 overflow-y-auto">
+              {(isSettingsOpen ? tempColumns : columns).map((column) => (
+                <DropdownMenuCheckboxItem
+                  checked={column.visible}
+                  key={column.id}
+                  onCheckedChange={() => {
+                    // e.preventDefault(); // メニューが閉じるのを防ぐ
+                    if (isSettingsOpen) {
+                      handleTempToggleVisibility(column.id);
+                    } else {
+                      toggleColumnVisibility(column.id);
+                    }
+                  }}
+                  className="cursor-pointer hover:bg-gray-50"
                 >
-                  <Check size={16} />
-                </div>
-                {column.label}
-              </DropdownMenuItem>
-            ))}
+                  <span className="text-sm truncate">{column.label}</span>
+                </DropdownMenuCheckboxItem>
+              ))}
+            </div>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => setIsSettingsOpen(true)}>
+          <DropdownMenuItem onClick={() => setIsSettingsOpen(true)} className="cursor-pointer">
             <Settings size={16} className="mr-2" />
             詳細設定
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={resetToDefaults}>
+          <DropdownMenuItem onClick={resetToDefaults} className="cursor-pointer">
             デフォルトに戻す
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -306,7 +307,7 @@ const TableColumnManager: React.FC = () => {
           )}
         </div>
 
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-3 max-h-96 overflow-y-auto">
           {tempColumnOrder.map((columnId, index) => {
             const column = tempColumns.find((col) => col.id === columnId);
             if (!column) {
@@ -327,95 +328,85 @@ const TableColumnManager: React.FC = () => {
                 onDragOver={handleDragOver}
                 onDrop={(e: React.DragEvent) => handleDrop(e, column.id)}
                 onDragEnd={handleDragEnd}
-                className={`flex items-center gap-2 p-1 border rounded-lg transition-all duration-200 ease ${
+                className={`flex flex-wrap items-center gap-1 p-2 border rounded-lg transition-all duration-200 ease ${
                   isDragging
-                    ? 'border-blue-600 bg-gray-100 cursor-grabbing opacity-50'
-                    : column.visible
-                    ? 'border-gray-300 bg-gray-50 cursor-grab hover:bg-gray-100'
-                    : 'border-gray-200 bg-gray-100 cursor-grab hover:bg-gray-200'
+                    ? 'border-blue-600 bg-blue-50 cursor-grabbing opacity-50'
+                    : 'border-gray-300 bg-gray-50 cursor-grab hover:bg-gray-100'
                 }`}
               >
-                <div className="flex items-center cursor-grab active:cursor-grabbing">
-                  <GripVertical size={16} className="text-gray-500" />
-                </div>
-
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  aria-label={column.visible ? 'カラムを非表示にする' : 'カラムを表示する'}
-                  onClick={(e) => {
+                {/* ドラッグハンドルと表示切り替え */}
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center cursor-grab active:cursor-grabbing">
+                    <GripVertical size={16} />
+                  </div>
+                  <IconButton
+                    icon={column.visible ? Eye : EyeOff}
+                    size="icon"
+                    ariaLabel={column.visible ? 'カラムを非表示にする' : 'カラムを表示する'}
+                    onClick={(e) => {
                     e.stopPropagation();
                     handleTempToggleVisibility(column.id);
-                  }}
-                  className="w-8 h-8 p-0"
-                >
-                  {column.visible ? (
-                    <Eye size={16} className="text-green-600" />
-                  ) : (
-                    <EyeOff size={16} className="text-gray-400" />
-                  )}
-                </Button>
-
-                <div className="flex-1">
-                  <span className="text-sm">{column.label}</span>
+                    }}
+                    className="p-2 hover:bg-gray-200"
+                  />
                 </div>
 
-                <div>
-                  <label className="sr-only">
-                    {column.label}の幅を設定
-                  </label>
+                {/* カラム名 */}
+                <div className="flex-1 min-w-0">
+                  <span className="text-sm font-medium truncate">{column.label}</span>
+                </div>
+
+                {/* 幅設定 */}
+                <div className="flex items-center gap-1">
+                  <label className="text-sm text-gray-500 hidden sm:block">幅:</label>
                   <Input
                     value={column.width}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                       handleTempWidthChange(column.id, e.target.value)
                     }
-                    placeholder="幅 (50px〜1000px)"
-                    className="w-30"
+                    placeholder="幅"
+                    className="w-20 h-8 text-xs"
                     aria-describedby={`width-help-${column.id}`}
                   />
                 </div>
 
-                {/* 上下移動ボタン */}
-                <div className="flex flex-col gap-1">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    aria-label="カラムを上に移動"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleMoveUp(column.id);
-                    }}
-                    disabled={isFirst}
-                    className="w-6 h-6 p-0"
-                  >
-                    <ChevronUp size={12} className={isFirst ? "text-gray-300" : "text-gray-600"} />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    aria-label="カラムを下に移動"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleMoveDown(column.id);
-                    }}
-                    disabled={isLast}
-                    className="w-6 h-6 p-0"
-                  >
-                    <ChevronDown size={12} className={isLast ? "text-gray-300" : "text-gray-600"} />
-                  </Button>
-                </div>
+                {/* 上下移動と削除ボタン */}
+                <div className="flex items-center gap-1">
+                  <div className="flex gap-0.5">
+                    <IconButton
+                      icon={ChevronUp}
+                      size="icon"
+                      ariaLabel="カラムを上に移動"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleMoveUp(column.id);
+                      }}
+                      disabled={isFirst}
+                      className={cn("p-2 hover:bg-gray-200", isFirst ? "text-gray-300" : "text-default")}
+                    />
+                    <IconButton
+                      icon={ChevronDown}
+                      size="icon"
+                      ariaLabel="カラムを下に移動"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleMoveDown(column.id);
+                      }}
+                      disabled={isLast}
+                      className={cn("p-2 hover:bg-gray-200", isLast ? "text-gray-300" : "text-default")}
+                    />
+                  </div>
 
-                {isCustomColumn(column.id) && (
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    aria-label="カラムを削除"
-                    onClick={() => handleTempRemoveColumn(column.id)}
-                    className="w-8 h-8 text-red-600 hover:text-red-700"
-                  >
-                    <Trash2 size={16} />
-                  </Button>
-                )}
+                  {isCustomColumn(column.id) && (
+                    <IconButton
+                      icon={Trash2}
+                      size="icon"
+                      ariaLabel="カラムを削除"
+                      onClick={() => handleTempRemoveColumn(column.id)}
+                      className="w-8 h-8 p-2 hover:bg-gray-200"
+                    />
+                  )}
+                </div>
               </div>
             );
           })}

@@ -11,6 +11,7 @@ import { Star, Edit, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data-table";
 import type { TaskTemplate, TemplateSortField, TemplateSortDirection } from "../../../types/template";
+import IconButton from "../../shared/IconButton";
 
 interface TemplateDataTableProps {
   templates: TaskTemplate[];
@@ -113,24 +114,18 @@ export const TemplateDataTable: React.FC<TemplateDataTableProps> = ({
         const template = row.original;
         return (
           <div className="flex items-center justify-center gap-1">
-            <Button
-              variant="ghost"
+            <IconButton
+              icon={Edit}
               size="icon"
+              ariaLabel={`テンプレート「${template.name}」を編集`}
               onClick={() => onEdit(template)}
-              className="h-8 w-8 p-0"
-              title="編集"
-            >
-              <Edit className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="ghost"
+            />
+            <IconButton
+              icon={Trash2}
               size="icon"
+              ariaLabel={`テンプレート「${template.name}」を削除`}
               onClick={() => onDelete(template)}
-              className="h-8 w-8 p-0"
-              title="削除"
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
+            />
           </div>
         );
       },
