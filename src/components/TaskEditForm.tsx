@@ -83,6 +83,7 @@ const TaskEditForm = memo<TaskEditFormProps>(
       setRecurrence={setRecurrence}
       priority={priority}
       setPriority={setPriority}
+      // eslint-disable-next-line arrow-body-style
       onTimeChange={(newHasTime, newTime) => {
         setHasTime(newHasTime);
         setDueTime(newTime);
