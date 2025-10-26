@@ -35,7 +35,7 @@ export const DataManagementPanel = memo<DataManagementPanelProps>(({
 
       {/* タブナビゲーション */}
       <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'export' | 'import')}>
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-2 mb-4">
           <TabsTrigger value="export">エクスポート</TabsTrigger>
           <TabsTrigger value="import">インポート</TabsTrigger>
         </TabsList>

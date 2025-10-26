@@ -10,7 +10,7 @@ import TableView from './components/TableView';
 import { Toaster } from '@/components/ui/sonner';
 import HelpSidebar from './components/HelpSidebar';
 import TaskDetailSidebar from './components/TaskDetailSidebar';
-import TaskCreateDialog from './components/TaskCreateDialog';
+import TaskCreateDialog from './components/TaskCreateDialog/TaskCreateDialog';
 import FirstTimeUserHint from './components/FirstTimeUserHint';
 import SettingsDialog from './components/SettingsDialog';
 import { useKanban } from './contexts/KanbanContext';

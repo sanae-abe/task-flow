@@ -147,7 +147,7 @@ const FilePreview: React.FC<FilePreviewProps> = ({
               </h2>
               <Button
                 variant="ghost"
-                size="sm"
+                size="icon"
                 onClick={handleClosePreview}
                 className="p-1"
                 aria-label="プレビューを閉じる"

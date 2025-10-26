@@ -19,7 +19,7 @@ import type { SubTask } from "../types";
 
 import SubTaskForm from "./SubTaskForm";
 import SubTaskHeader from "./SubTaskHeader";
-import SubTaskItem from "./SubTaskItem";
+import SubTaskItem from "./SubTaskItem/SubTaskItem";
 import SubTaskProgressBar from "./SubTaskProgressBar";
 
 interface SubTaskListProps {

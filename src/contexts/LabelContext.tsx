@@ -8,7 +8,6 @@ import React, {
 
 import type { Label } from "../types";
 import { useBoard } from "./BoardContext";
-// import { useNotify } from "./NotificationContext"; // 将来的にメッセージ機能で使用予定
 
 interface LabelContextType {
   // 現在のボード対象
@@ -55,7 +54,6 @@ interface LabelProviderProps {
 export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
   // 基本的な依存関係を安全に取得
   const { state: boardState, dispatch: boardDispatch } = useBoard();
-  // const _notify = useNotify(); // 将来的にメッセージ機能で使用予定
 
   // 複数のメッセージコールバックを管理する配列
   const _messageCallbacksRef = useRef<Set<MessageCallback>>(new Set());
