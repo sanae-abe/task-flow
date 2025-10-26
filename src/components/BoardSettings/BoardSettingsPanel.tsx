@@ -106,7 +106,9 @@ const SortableColumnItem: React.FC<SortableColumnItemProps> = ({
       }`}
     >
       <div
+        // eslint-disable-next-line react/jsx-props-no-spreading
         {...attributes}
+        // eslint-disable-next-line react/jsx-props-no-spreading
         {...listeners}
         className="flex items-center cursor-grab active:cursor-grabbing"
       >

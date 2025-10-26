@@ -93,14 +93,16 @@ export const useTaskColumnSync = ({
         return currentRecurrence;
       });
     }
-  }, [formState.dueDate, formState.setRecurrence]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formState.dueDate, formState.setRecurrence]); // formState is intentionally omitted to prevent infinite loops
 
   // 時刻設定がオフになった場合、時刻をクリア
   useEffect(() => {
     if (!formState.hasTime) {
       formState.setDueTime("");
     }
-  }, [formState.hasTime, formState.setDueTime]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formState.hasTime, formState.setDueTime]); // formState is intentionally omitted to prevent infinite loops
 
   // タスクが完了状態（一番右のカラム）にあるかどうかを判定
   const isCompleted = useMemo(() => {

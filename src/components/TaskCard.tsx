@@ -98,7 +98,9 @@ const TaskCard: React.FC<TaskCardProps> = React.memo(
             ),
             ...keyboardDragStyles,
           }}
+          // eslint-disable-next-line react/jsx-props-no-spreading
           {...attributes}
+          // eslint-disable-next-line react/jsx-props-no-spreading
           {...listeners}
           onClick={handleTaskClick}
           onKeyDown={handleKeyDown}

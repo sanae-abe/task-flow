@@ -71,7 +71,13 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
       document.removeEventListener("mousedown", handleClickOutside);
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [editorState.showEmojiPicker]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    editorState.showEmojiPicker,
+    editorState.emojiButtonRef,
+    editorState.setShowEmojiPicker
+    // editorState is intentionally omitted to prevent unnecessary re-renders
+  ]);
 
   // Handle emoji selection
   const handleEmojiSelect = (emoji: string) => {

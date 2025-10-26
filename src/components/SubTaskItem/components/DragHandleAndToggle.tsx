@@ -24,7 +24,9 @@ export const DragHandleAndToggle: React.FC<DragHandleAndToggleProps> = ({
 }) => (
     <div className="flex items-center">
       <div
+        // eslint-disable-next-line react/jsx-props-no-spreading
         {...dragAttributes}
+        // eslint-disable-next-line react/jsx-props-no-spreading
         {...dragListeners}
         className="drag-handle p-1 cursor-grab"
       >

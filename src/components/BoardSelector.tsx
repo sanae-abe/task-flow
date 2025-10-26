@@ -61,7 +61,9 @@ const SortableBoardTab: React.FC<SortableBoardTabProps> = memo(
           isDragging && "opacity-50 rotate-[5deg] z-[900]"
         )}
         aria-selected={isSelected}
+        // eslint-disable-next-line react/jsx-props-no-spreading
         {...attributes}
+        // eslint-disable-next-line react/jsx-props-no-spreading
         {...listeners}
       >
         <Button

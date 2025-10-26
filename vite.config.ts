@@ -62,7 +62,6 @@ export default defineConfig({
           'icons-lucide': ['lucide-react'],
 
           // UI components (分割)
-          'color-picker': ['@uiw/react-color'],
           'emoji-picker': ['emoji-picker-react'],
 
           // Drag & Drop

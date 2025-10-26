@@ -113,10 +113,13 @@ const TableColumnManager: React.FC = () => {
     if (currentIndex > 0 && currentIndex < tempColumnOrder.length) {
       const newOrder = [...tempColumnOrder];
       // 現在のアイテムと前のアイテムを入れ替え
-      const temp = newOrder[currentIndex - 1]!;
-      newOrder[currentIndex - 1] = newOrder[currentIndex]!;
-      newOrder[currentIndex] = temp;
-      handleTempReorderColumns(newOrder);
+      const prevItem = newOrder[currentIndex - 1];
+      const currentItem = newOrder[currentIndex];
+      if (prevItem !== undefined && currentItem !== undefined) {
+        newOrder[currentIndex - 1] = currentItem;
+        newOrder[currentIndex] = prevItem;
+        handleTempReorderColumns(newOrder);
+      }
     }
   }, [tempColumnOrder, handleTempReorderColumns]);
 
@@ -125,10 +128,13 @@ const TableColumnManager: React.FC = () => {
     if (currentIndex >= 0 && currentIndex < tempColumnOrder.length - 1) {
       const newOrder = [...tempColumnOrder];
       // 現在のアイテムと次のアイテムを入れ替え
-      const temp = newOrder[currentIndex]!;
-      newOrder[currentIndex] = newOrder[currentIndex + 1]!;
-      newOrder[currentIndex + 1] = temp;
-      handleTempReorderColumns(newOrder);
+      const currentItem = newOrder[currentIndex];
+      const nextItem = newOrder[currentIndex + 1];
+      if (currentItem !== undefined && nextItem !== undefined) {
+        newOrder[currentIndex] = nextItem;
+        newOrder[currentIndex + 1] = currentItem;
+        handleTempReorderColumns(newOrder);
+      }
     }
   }, [tempColumnOrder, handleTempReorderColumns]);
 
