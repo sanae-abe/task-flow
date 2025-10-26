@@ -52,10 +52,44 @@ const EmojiPickerWrapper: React.FC<EmojiPickerWrapperProps> = ({
         top: position.top,
         left: position.left,
         boxShadow: '0 20px 80px rgba(0, 0, 0, 0.2), 0 10px 40px rgba(0, 0, 0, 0.15), 0 5px 20px rgba(0, 0, 0, 0.1)',
-        '--epr-category-navigation-button-size': '16px',
-        '--epr-emoji-size': '16px'
+        // Emoji Picker CSS variables - 24px強制適用
+        '--epr-emoji-size': '22px !important',
+        '--epr-category-navigation-button-size': '32px !important',
       } as React.CSSProperties}
     >
+      <style>
+        {`
+          [data-emoji-picker] .epr-btn {
+            width: 32px !important;
+            height: 32px !important;
+            font-size: 32px !important;
+          }
+          [data-emoji-picker] .epr-emoji > span {
+            padding :0 !important;
+            width: 22px !important;
+            height: 22px !important;
+            font-size: 22px !important;
+          }
+          [data-emoji-picker] .epr-cat-btn {
+            width: 32px !important;
+            height: 32px !important;
+          }
+          [data-emoji-picker] .epr-emoji-variation-picker {
+            width: 32px !important;
+            height: 32px !important;
+          }
+          [data-emoji-picker] .epr-category-nav {
+            padding-top: 4px !important;
+            padding-bottom: 4px !important;
+          }
+          [data-emoji-picker] .epr-emoji-category-label {
+            font-size: 14px !important;
+            height: auto !important;
+            margin-top: 8px !important;
+            margin-bottom: 4px !important;
+          }
+        `}
+      </style>
       <EmojiPicker
         onEmojiClick={handleEmojiClick}
         emojiStyle={EmojiStyle.NATIVE}

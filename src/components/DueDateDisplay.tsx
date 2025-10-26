@@ -60,10 +60,10 @@ const getTextColor = (
   isDueTomorrow: boolean,
 ): string => {
   if (isOverdue) {
-    return "text-red-600";
+    return "text-destructive";
   }
   if (isDueToday) {
-    return "text-yellow-600";
+    return "text-yellow-700";
   }
   if (isDueTomorrow) {
     return "text-blue-600";
