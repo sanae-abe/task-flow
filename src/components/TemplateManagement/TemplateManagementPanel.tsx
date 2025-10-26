@@ -7,7 +7,7 @@ import type { DialogFlashMessageData } from '../shared/DialogFlashMessage';
 import TemplateFormDialog from './TemplateFormDialog';
 import ConfirmDialog from '../shared/Dialog/ConfirmDialog';
 import TemplateSearchFilter from './TemplateSearchFilter';
-import TemplateTable from './TemplateTable';
+import { TemplateDataTable } from './components/TemplateDataTable';
 
 // カスタムフック
 import { useTemplateManagement } from '../../hooks/useTemplateManagement';
@@ -155,7 +155,7 @@ const TemplateManagementPanel: React.FC<TemplateManagementPanelProps> = ({ onMes
       />
 
       {/* テンプレート一覧テーブル */}
-      <TemplateTable
+      <TemplateDataTable
         templates={filteredTemplates}
         sortField={sortField}
         sortDirection={sortDirection}

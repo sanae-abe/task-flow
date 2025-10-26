@@ -4,8 +4,9 @@ import { Plus } from 'lucide-react';
 
 import LabelFormDialog from './LabelFormDialog';
 import ConfirmDialog from '../shared/Dialog/ConfirmDialog';
-import { EmptyState, SortableHeader, LabelTableRow } from './components';
-import { useLabelSort, useLabelDialogs, useLabelData } from './hooks';
+import { EmptyState } from './components';
+import { LabelDataTable } from './components/LabelDataTable';
+import { useLabelDialogs, useLabelData } from './hooks';
 
 interface LabelManagementPanelProps {
   /** メッセージ表示時のコールバック */
@@ -13,8 +14,7 @@ interface LabelManagementPanelProps {
 }
 
 const LabelManagementPanel: React.FC<LabelManagementPanelProps> = ({ onMessage }) => {
-  const { sortField, sortDirection, handleSort } = useLabelSort();
-  const { allLabelsWithInfo } = useLabelData(sortField, sortDirection);
+  const { allLabelsWithInfo } = useLabelData('name', 'asc');
 
   // メッセージコールバック
   const handleMessage = useCallback((message: { type: 'success' | 'danger' | 'warning' | 'critical' | 'default' | 'info' | 'upsell'; text: string } | null) => {
@@ -64,51 +64,11 @@ const LabelManagementPanel: React.FC<LabelManagementPanelProps> = ({ onMessage }
       {allLabelsWithInfo.length === 0 ? (
         <EmptyState />
       ) : (
-        <div className="border border-gray-200 rounded-md overflow-hidden">
-          {/* テーブルヘッダー */}
-          <div className="grid grid-cols-[1fr_200px_60px_50px] gap-2 p-2 bg-gray-50 border-b border-gray-200 text-sm font-bold text-gray-600">
-            <SortableHeader
-              field="name"
-              currentSortField={sortField}
-              sortDirection={sortDirection}
-              onSort={handleSort}
-            >
-              ラベル
-            </SortableHeader>
-            <SortableHeader
-              field="boardName"
-              currentSortField={sortField}
-              sortDirection={sortDirection}
-              onSort={handleSort}
-            >
-              所属ボード
-            </SortableHeader>
-            <SortableHeader
-              field="usageCount"
-              currentSortField={sortField}
-              sortDirection={sortDirection}
-              onSort={handleSort}
-              align="center"
-            >
-              使用数
-            </SortableHeader>
-            <div className="text-center text-xs">操作</div>
-          </div>
-
-          {/* テーブルボディ */}
-          <div className="max-h-[400px] overflow-auto">
-            {allLabelsWithInfo.map((label, index) => (
-              <LabelTableRow
-                key={label.id}
-                label={label}
-                index={index}
-                totalCount={allLabelsWithInfo.length}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-              />
-            ))}
-          </div>
-        </div>
+        <LabelDataTable
+          labels={allLabelsWithInfo}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+        />
       )}
 
       {/* フォームダイアログ */}

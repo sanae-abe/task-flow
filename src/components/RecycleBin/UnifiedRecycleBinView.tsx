@@ -1,12 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Loader2,
-  FolderKanban,
-  List,
-  Columns,
-  Clock,
-} from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 import { useBoard } from "../../contexts/BoardContext";
 import { getAllRecycleBinItems } from "../../utils/recycleBin";
@@ -14,8 +8,7 @@ import { useRecycleBinSettingsReadOnly } from "../../hooks/useRecycleBinSettings
 import { useRecycleBinOperations } from "../../hooks/useRecycleBinOperations";
 import { useRecycleBinSort } from "../../hooks/useRecycleBinSort";
 import ConfirmDialog from "../ConfirmDialog";
-import { SortableHeader } from "./components/SortableHeader";
-import { RecycleBinItemActions } from "./components/RecycleBinItemActions";
+import { RecycleBinDataTable } from "./components/RecycleBinDataTable";
 import { RecycleBinItemDetailDialog } from "./components/RecycleBinItemDetailDialog";
 import type { DialogFlashMessageData } from "../shared/DialogFlashMessage";
 import type { RecycleBinItemWithMeta } from "../../types/recycleBin";
@@ -184,123 +177,17 @@ const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
       </div>
 
       {/* ゴミ箱一覧 */}
-      {allRecycleBinItems.length === 0 ? (
-        <div className="text-center p-6 border border-dashed border-border rounded-md flex flex-col gap-2 justify-center items-center">
-          <span className="text-gray-500">
-            ゴミ箱にアイテムはありません
-          </span>
-        </div>
-      ) : (
-        <div className="border border-border rounded-md overflow-hidden">
-          {/* テーブルヘッダー */}
-          <div className="grid grid-cols-[80px_1fr_100px_100px] gap-2 items-center bg-neutral-100 border-b border-border text-sm font-bold text-muted-foreground">
-            <SortableHeader
-              field="type"
-              sortField={sortField}
-              sortDirection={sortDirection}
-              onSort={handleSort}
-            >
-              種別
-            </SortableHeader>
-            <SortableHeader
-              field="title"
-              sortField={sortField}
-              sortDirection={sortDirection}
-              onSort={handleSort}
-            >
-              タイトル
-            </SortableHeader>
-            <SortableHeader
-              field="timeUntilDeletion"
-              align="center"
-              sortField={sortField}
-              sortDirection={sortDirection}
-              onSort={handleSort}
-            >
-              削除予定
-            </SortableHeader>
-            <span className="text-center text-sm p-2 text-gray-600">操作</span>
-          </div>
-
-          {/* テーブルボディ */}
-          <div style={{ maxHeight: '500px', overflow: 'auto' }}>
-            {allRecycleBinItems.map((item, index) => (
-              <div
-                key={`${item.type}-${item.id}`}
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: '80px 1fr 100px 100px',
-                  gap: "8px",
-                  padding: "12px 8px",
-                  borderBottom: index === allRecycleBinItems.length - 1 ? 'none' : '1px solid rgb(209 213 219)',
-                  alignItems: 'center'
-                }}
-              >
-                {/* 種別 */}
-                <div className="flex items-center gap-1">
-                  {item.type === 'board' ? (
-                    <FolderKanban size={16} />
-                  ) : item.type === 'column' ? (
-                    <Columns size={16} />
-                  ) : (
-                    <List size={16} />
-                  )}
-                  <span
-                    className={`text-sm px-2 py-1 rounded text-gray-900 ${
-                      item.type === 'board'
-                        ? 'bg-yellow-100'
-                        : item.type === 'column'
-                        ? 'bg-green-100'
-                        : 'bg-blue-100'
-                    }`}
-                  >
-                    {item.type === 'board' ? 'ボード' : item.type === 'column' ? 'カラム' : 'タスク'}
-                  </span>
-                </div>
-
-                {/* タイトル */}
-                <div>
-                  <span className="text-base font-semibold break-words text-gray-900">
-                    {item.title}
-                  </span>
-                </div>
-
-                {/* 削除予定 */}
-                <div className="flex justify-center gap-1">
-                  {item.timeUntilDeletion ? (
-                    <>
-                      <Clock size={14} />
-                      <span
-                        className={`text-sm text-center ${
-                          recycleBinSettings.retentionDays === null ? 'text-gray-500' : 'text-gray-900'
-                        }`}
-                      >
-                        {item.timeUntilDeletion}
-                      </span>
-                    </>
-                  ) : (
-                    <span className="text-sm text-gray-500 text-center">
-                      未設定
-                    </span>
-                  )}
-                </div>
-
-                {/* 操作 */}
-                <div>
-                  <RecycleBinItemActions
-                    item={item}
-                    isLoading={getItemLoadingState(item).isLoading}
-                    loadingText={getItemLoadingState(item).loadingText}
-                    onRestore={handleRestore}
-                    onDelete={(item) => setShowDeleteConfirm(item.id)}
-                    onShowDetail={(item) => setShowDetailDialog(item.id)}
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      <RecycleBinDataTable
+        items={allRecycleBinItems}
+        recycleBinSettings={recycleBinSettings}
+        getItemLoadingState={getItemLoadingState}
+        onRestore={handleRestore}
+        onDelete={(item) => setShowDeleteConfirm(item.id)}
+        onShowDetail={(item) => setShowDetailDialog(item.id)}
+        sortField={sortField}
+        sortDirection={sortDirection}
+        onSort={handleSort}
+      />
 
       {/* ゴミ箱を空にする確認ダイアログ */}
       <ConfirmDialog
