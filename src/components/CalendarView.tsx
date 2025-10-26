@@ -80,7 +80,7 @@ const CalendarView: React.FC = () => {
             >
               <ChevronLeft size={16} />
             </Button>
-            <Button size="sm" onClick={goToToday}>
+            <Button variant="outline" size="sm" onClick={goToToday}>
               今日
             </Button>
             <Button
