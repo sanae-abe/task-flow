@@ -72,9 +72,6 @@ const EditorContent: React.FC<EditorContentProps> = ({
           [&_code]:bg-muted [&_code]:px-1 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-sm [&_code]:font-mono
           [&_pre]:bg-muted [&_pre]:p-3 [&_pre]:rounded [&_pre]:overflow-x-auto [&_pre]:border
           [&_a]:text-primary [&_a]:underline hover:[&_a]:text-primary/80
-          [&_ul]:list-disc [&_ul]:ml-6
-          [&_ol]:list-decimal [&_ol]:ml-6
-          [&_li]:my-1
         `}
         style={{
           minHeight,
