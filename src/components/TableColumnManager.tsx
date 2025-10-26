@@ -16,11 +16,14 @@ import {
   Check,
   Eye,
   EyeOff,
-  X
+  X,
+  ChevronUp,
+  ChevronDown
 } from "lucide-react";
 
 import { useTableColumns } from "../contexts/TableColumnsContext";
 import UnifiedDialog from "./shared/Dialog/UnifiedDialog";
+import { InlineMessage } from "./shared";
 
 interface TempColumn {
   id: string;
@@ -103,6 +106,31 @@ const TableColumnManager: React.FC = () => {
     setTempColumnOrder(prev => prev.filter(id => id !== columnId));
     setHasUnsavedChanges(true);
   }, []);
+
+  // 上下移動のハンドラー関数
+  const handleMoveUp = useCallback((columnId: string) => {
+    const currentIndex = tempColumnOrder.indexOf(columnId);
+    if (currentIndex > 0 && currentIndex < tempColumnOrder.length) {
+      const newOrder = [...tempColumnOrder];
+      // 現在のアイテムと前のアイテムを入れ替え
+      const temp = newOrder[currentIndex - 1]!;
+      newOrder[currentIndex - 1] = newOrder[currentIndex]!;
+      newOrder[currentIndex] = temp;
+      handleTempReorderColumns(newOrder);
+    }
+  }, [tempColumnOrder, handleTempReorderColumns]);
+
+  const handleMoveDown = useCallback((columnId: string) => {
+    const currentIndex = tempColumnOrder.indexOf(columnId);
+    if (currentIndex >= 0 && currentIndex < tempColumnOrder.length - 1) {
+      const newOrder = [...tempColumnOrder];
+      // 現在のアイテムと次のアイテムを入れ替え
+      const temp = newOrder[currentIndex]!;
+      newOrder[currentIndex] = newOrder[currentIndex + 1]!;
+      newOrder[currentIndex + 1] = temp;
+      handleTempReorderColumns(newOrder);
+    }
+  }, [tempColumnOrder, handleTempReorderColumns]);
 
   // 保存処理
   const handleSave = useCallback(() => {
@@ -274,20 +302,20 @@ const TableColumnManager: React.FC = () => {
           カラムをドラッグして並び替え、表示切り替え、幅の調整ができます。<br />
           幅は50px〜1000pxの範囲で入力してください。
           {hasUnsavedChanges && (
-            <div className="mt-2 text-amber-600 text-xs font-medium">
-              ⚠️ 未保存の変更があります
-            </div>
+            <InlineMessage variant="warning" message="未保存の変更があります" className="mt-2" />
           )}
         </div>
 
         <div className="flex flex-col gap-3">
-          {tempColumnOrder.map((columnId) => {
+          {tempColumnOrder.map((columnId, index) => {
             const column = tempColumns.find((col) => col.id === columnId);
             if (!column) {
               return null;
             }
 
             const isDragging = draggedColumnId === column.id;
+            const isFirst = index === 0;
+            const isLast = index === tempColumnOrder.length - 1;
 
             return (
               <div
@@ -299,7 +327,7 @@ const TableColumnManager: React.FC = () => {
                 onDragOver={handleDragOver}
                 onDrop={(e: React.DragEvent) => handleDrop(e, column.id)}
                 onDragEnd={handleDragEnd}
-                className={`flex items-center gap-2 p-2 border rounded-lg transition-all duration-200 ease ${
+                className={`flex items-center gap-2 p-1 border rounded-lg transition-all duration-200 ease ${
                   isDragging
                     ? 'border-blue-600 bg-gray-100 cursor-grabbing opacity-50'
                     : column.visible
@@ -345,6 +373,36 @@ const TableColumnManager: React.FC = () => {
                     className="w-30"
                     aria-describedby={`width-help-${column.id}`}
                   />
+                </div>
+
+                {/* 上下移動ボタン */}
+                <div className="flex flex-col gap-1">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    aria-label="カラムを上に移動"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleMoveUp(column.id);
+                    }}
+                    disabled={isFirst}
+                    className="w-6 h-6 p-0"
+                  >
+                    <ChevronUp size={12} className={isFirst ? "text-gray-300" : "text-gray-600"} />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    aria-label="カラムを下に移動"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleMoveDown(column.id);
+                    }}
+                    disabled={isLast}
+                    className="w-6 h-6 p-0"
+                  >
+                    <ChevronDown size={12} className={isLast ? "text-gray-300" : "text-gray-600"} />
+                  </Button>
                 </div>
 
                 {isCustomColumn(column.id) && (
