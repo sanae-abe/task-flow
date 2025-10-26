@@ -22,7 +22,7 @@ const DropIndicator: React.FC<DropIndicatorProps> = ({ isVisible }) => {
       role="separator"
       aria-label="ドロップ位置インジケーター"
       style={{
-        backgroundColor: "rgb(37 99 235)"
+        backgroundColor: "hsl(var(--primary))"
       }}
       className="h-2 mx-1 my-2 rounded-[1px] transition-all duration-200 ease relative z-[250]"
     >
@@ -46,7 +46,7 @@ const DropIndicator: React.FC<DropIndicatorProps> = ({ isVisible }) => {
       </style>
       <div
         style={{
-          backgroundColor: "rgb(219 234 254)",
+          backgroundColor: "hsl(var(--accent))",
           animation: "drop-indicator-pulse 1.2s ease-in-out infinite",
         }}
         className="content-[''] absolute top-[-1px] left-[-4px] right-[-4px] bottom-[-1px] rounded-[2px] opacity-30"

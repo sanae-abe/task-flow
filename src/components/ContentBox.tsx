@@ -10,7 +10,7 @@ interface ContentBoxProps {
 const ContentBox = memo<ContentBoxProps>(
   ({
     children,
-    background = "rgb(245 245 245)",
+    background = "hsl(var(--muted))",
     emptyText,
     isEmpty = false,
   }) => (

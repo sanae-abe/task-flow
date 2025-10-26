@@ -41,7 +41,7 @@ export const TableRow: React.FC<TableRowProps> = ({
         minWidth: "fit-content",
       }}
       onMouseEnter={(e) => {
-        e.currentTarget.style.backgroundColor = "rgb(245 245 245)";
+        e.currentTarget.style.backgroundColor = "hsl(var(--muted))";
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.backgroundColor = "";

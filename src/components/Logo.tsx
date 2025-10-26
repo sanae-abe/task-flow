@@ -67,7 +67,7 @@ const Logo: React.FC<LogoProps> = ({ size = "medium" }) => {
         }}
         className="font-semibold m-0 leading-[condensed] translate-[0 -2px]"
       >
-        Task<span style={{ color: "rgb(37 99 235)" }}>Flow</span>
+        Task<span style={{ color: "hsl(var(--primary))" }}>Flow</span>
       </h1>
     </div>
   );

@@ -14,10 +14,8 @@ import {
   Settings,
   Trash2,
   GripVertical,
-  Check,
   Eye,
   EyeOff,
-  X,
   ChevronUp,
   ChevronDown
 } from "lucide-react";
@@ -288,13 +286,11 @@ const TableColumnManager: React.FC = () => {
             label: "キャンセル",
             onClick: handleCancel,
             variant: "outline",
-            icon: X
           },
           {
             label: "保存",
             onClick: handleSave,
             variant: "default",
-            icon: Check,
             disabled: !hasUnsavedChanges
           }
         ]}

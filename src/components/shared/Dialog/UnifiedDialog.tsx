@@ -73,7 +73,7 @@ const getDialogStyles = (variant: DialogVariant, size: DialogSize) => {
         borderRadius: '0.75rem',
       },
       content: {
-        backgroundColor: 'rgb(245 245 245)',
+        backgroundColor: 'hsl(var(--muted))',
         borderRadius: '0.5rem',
         padding: '12px'
       }

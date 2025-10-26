@@ -16,7 +16,7 @@ const InfoFillIcon: React.FC<InfoFillIconProps> = ({ size = 16, className }) => 
     style={{
       width: size,
       height: size,
-      backgroundColor: 'rgb(37 99 235)', // blue-600
+      backgroundColor: 'hsl(var(--primary))', // primary blue
     }}
   >
     <Info

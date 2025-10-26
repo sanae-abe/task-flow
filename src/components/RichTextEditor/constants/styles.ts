@@ -9,7 +9,7 @@ import type { EditorStyles } from '../types';
 // Main editor style constants
 export const EDITOR_STYLES: EditorStyles = {
   code: {
-    backgroundColor: "rgb(245 245 245)",
+    backgroundColor: "hsl(var(--muted))",
     color: "#e01e5a",
     padding: "2px 4px",
     borderRadius: "0.25rem",
@@ -21,7 +21,7 @@ export const EDITOR_STYLES: EditorStyles = {
     textDecoration: "underline",
   },
   codeBlock: {
-    backgroundColor: "rgb(245 245 245)",
+    backgroundColor: "hsl(var(--muted))",
     padding: "8px",
     borderRadius: "0.5rem",
     border: "1px solid #d0d7de",
@@ -31,7 +31,7 @@ export const EDITOR_STYLES: EditorStyles = {
     margin: "0 0 8px",
     display: 'block',
   },
-} as const;
+} as const;;
 
 // Utility function to create inline style strings
 export const createInlineStyleString = (styles: Record<string, string | number>): string =>
@@ -50,7 +50,7 @@ export const TOOLBAR_STYLES = {
     gap: '4px',
     padding: '8px',
     borderBottom: '1px solid #d0d7de',
-    backgroundColor: 'rgb(245 245 245)',
+    backgroundColor: 'hsl(var(--muted))',
     borderTopLeftRadius: '0.5rem',
     borderTopRightRadius: '0.5rem',
   },
