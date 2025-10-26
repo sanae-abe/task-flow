@@ -130,14 +130,13 @@ export const ExportSection = memo<ExportSectionProps>(({
   const statisticsTitle = currentExportType === 'all' ? 'エクスポートされるデータ' : `「${selectedBoard?.title}」のデータ`;
 
   // 表示するフィールドをフィルタリング
-  const visibleFields = useMemo(() => {
-    return fields.filter(field => {
+  const visibleFields = useMemo(() =>
+    fields.filter(field => {
       if (field.name === 'selectedBoardId') {
         return currentExportType === 'selected';
       }
       return true;
-    });
-  }, [fields, currentExportType]);
+    }), [fields, currentExportType]);
 
   return (
     <div className="flex flex-col gap-4">

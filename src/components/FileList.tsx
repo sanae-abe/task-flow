@@ -1,11 +1,11 @@
 import { File, Image, Download } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import React, { useMemo, useCallback } from "react";
 
 import type { FileAttachment } from "../types";
 import { useSonnerNotify } from "../hooks/useSonnerNotify";
 
 import FilePreview from "./FilePreview";
+import { IconButton } from "./shared";
 
 interface FileListProps {
   attachments: FileAttachment[] | null | undefined;
@@ -159,15 +159,13 @@ const FileListItem: React.FC<FileListItemProps> = React.memo(
         <div className="flex gap-1">
           {showPreview && <FilePreview attachment={attachment} />}
           {showDownload && (
-            <Button
-              variant="ghost"
-              size="sm"
+            <IconButton
+              icon={Download}
+              size="icon"
               onClick={handleDownloadClick}
               className="p-1"
-              aria-label={`${attachment.name}をダウンロード`}
-            >
-              <Download size={14} />
-            </Button>
+              ariaLabel={`${attachment.name}をダウンロード`}
+            />
           )}
         </div>
       </div>

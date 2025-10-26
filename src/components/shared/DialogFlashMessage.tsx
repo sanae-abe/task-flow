@@ -1,5 +1,4 @@
 import React from 'react';
-import { Button } from '@/components/ui/button';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { cn } from '@/lib/utils';
 import {
@@ -7,8 +6,9 @@ import {
   CircleCheck,
   Info,
   XCircle,
-  X,
+  X
 } from 'lucide-react';
+import IconButton from './IconButton';
 
 /**
  * ダイアログ内でFlashメッセージを表示するためのメッセージタイプ
@@ -121,15 +121,13 @@ export const DialogFlashMessage: React.FC<DialogFlashMessageProps> = ({
         </AlertDescription>
       </div>
       {showDismiss && onDismiss && (
-        <Button
-          variant="ghost"
-          size="sm"
-          aria-label="閉じる"
+        <IconButton
+          icon={X}
+          size="icon"
+          ariaLabel="閉じる"
           onClick={onDismiss}
           className="absolute right-2 top-2 h-auto p-1 min-w-0"
-        >
-          <X className="h-4 w-4" />
-        </Button>
+        />
       )}
     </Alert>
   );

@@ -13,7 +13,7 @@ import ConfirmDialog from '../ConfirmDialog';
 import { useTaskForm, useTemplateSelection, useTaskSubmission } from './hooks';
 
 // コンポーネント
-import { TemplateSelector, TaskFormFields } from './components';
+import { TemplateSelector, TaskCreateForm } from './components';
 
 /**
  * タスク作成ダイアログコンポーネント
@@ -27,7 +27,7 @@ import { TemplateSelector, TaskFormFields } from './components';
  * - useTemplateSelection：テンプレート選択管理
  * - useTaskSubmission：保存・送信処理
  * - TemplateSelector：テンプレート選択UI
- * - TaskFormFields：フォームフィールド群
+ * - TaskCreateForm：フォームフィールド群
  */
 const TaskCreateDialog = memo(() => {
   const { state, closeTaskForm, createTask } = useKanban();
@@ -144,7 +144,7 @@ const TaskCreateDialog = memo(() => {
 
             {/* 通常作成フォーム */}
             <TabsContent value="normal">
-              <TaskFormFields
+              <TaskCreateForm
                 formState={formState}
                 formActions={formActions}
                 selectedTemplate={templateState.selectedTemplate}

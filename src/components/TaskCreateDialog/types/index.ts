@@ -66,9 +66,9 @@ export interface TemplateSelectorProps {
 }
 
 /**
- * TaskFormFieldsコンポーネントのProps
+ * TaskCreateFormコンポーネントのProps
  */
-export interface TaskFormFieldsProps {
+export interface TaskCreateFormProps {
   formState: TaskFormState;
   formActions: TaskFormActions;
   selectedTemplate?: TaskTemplate;

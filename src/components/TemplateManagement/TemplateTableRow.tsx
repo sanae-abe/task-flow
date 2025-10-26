@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils';
 import { Star, Edit, Trash2 } from 'lucide-react';
 import type { TaskTemplate } from '../../types/template';
 import { TEMPLATE_CATEGORIES } from './TemplateCategorySelector';
+import IconButton from '../shared/IconButton';
 
 interface TemplateTableRowProps {
   template: TaskTemplate;
@@ -85,24 +86,20 @@ const TemplateTableRow: React.FC<TemplateTableRowProps> = ({
         >
           <Star size={16} fill={template.isFavorite ? "currentColor" : "none"} />
         </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          aria-label={`テンプレート「${template.name}」を編集`}
+        <IconButton
+          icon={Edit}
+          size="icon"
+          ariaLabel={`テンプレート「${template.name}」を編集`}
           onClick={() => onEdit(template)}
           className="p-1 h-auto min-w-0"
-        >
-          <Edit size={16} />
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          aria-label={`テンプレート「${template.name}」を削除`}
+        />
+        <IconButton
+          icon={Trash2}
+          size="icon"
+          ariaLabel={`テンプレート「${template.name}」を削除`}
           onClick={() => onDelete(template)}
           className="p-1 h-auto min-w-0"
-        >
-          <Trash2 size={16} />
-        </Button>
+        />
       </div>
     </div>
   );
