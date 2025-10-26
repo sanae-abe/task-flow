@@ -28,8 +28,8 @@ const InlineMessage: React.FC<InlineMessageProps> = ({ message, variant = "info"
       SuccessIconComponent = CircleCheck; // CircleCheckのみ使用
     }
     return (
-      <div style={{ display: 'flex', alignItems: 'flex-start', gap, color: 'rgb(22 163 74)' }}>
-        <span style={{ display: 'flex', alignItems: 'center', paddingTop: '0.25em' }}><SuccessIconComponent size={iconSize} /></span>
+      <div className="flex items-start text-green-800" style={{ gap }}>
+        <span className="flex items-center pt-1"><SuccessIconComponent size={iconSize} /></span>
         <span style={{ fontSize, fontWeight }}>
           {message}
         </span>
@@ -40,8 +40,8 @@ const InlineMessage: React.FC<InlineMessageProps> = ({ message, variant = "info"
   if (variant === "warning") {
     const WarningIconComponent = AlertTriangle;
     return (
-      <div style={{ display: 'flex', alignItems: 'flex-start', gap, color: 'rgb(212 167 44)' }}>
-        <span style={{ display: 'flex', alignItems: 'center', paddingTop: "0.25em" }}><WarningIconComponent size={iconSize} /></span>
+      <div className="flex items-start gap-2 text-yellow-800" style={{ gap }}>
+        <span className="flex items-center pt-1"><WarningIconComponent size={iconSize} /></span>
         <span style={{ fontSize, fontWeight }}>
           {message}
         </span>
@@ -52,8 +52,8 @@ const InlineMessage: React.FC<InlineMessageProps> = ({ message, variant = "info"
   if (variant === "critical") {
     const CriticalIconComponent = AlertTriangle;
     return (
-      <div style={{ display: 'flex', alignItems: 'flex-start', gap, color: 'hsl(var(--foreground))' }}>
-        <span style={{ display: 'flex', alignItems: 'center', paddingTop: '0.25em' }}><CriticalIconComponent size={iconSize} /></span>
+      <div className="flex items-start gap-2 text-destructive" style={{ gap }}>
+        <span className="flex items-center pt-1"><CriticalIconComponent size={iconSize} /></span>
         <span style={{ fontSize, fontWeight }}>
           {message}
         </span>
@@ -64,8 +64,8 @@ const InlineMessage: React.FC<InlineMessageProps> = ({ message, variant = "info"
   if (variant === "info") {
     const InfoIconComponent = size === "small" ? InfoFillIcon : Info;
     return (
-      <div style={{ display: 'flex', alignItems: 'flex-start', gap, color: 'rgb(37 99 235)' }}>
-        <span style={{ display: 'flex', alignItems: 'center', paddingTop: '0.25em' }}><InfoIconComponent size={iconSize} /></span>
+      <div className="flex items-start gap-2 text-blue-600" style={{ gap }}>
+        <span className="flex items-center pt-1"><InfoIconComponent size={iconSize} /></span>
         <span style={{ fontSize, fontWeight }}>
           {message}
         </span>
@@ -75,8 +75,8 @@ const InlineMessage: React.FC<InlineMessageProps> = ({ message, variant = "info"
 
   const UnavailableIconComponent = AlertTriangle;
   return (
-    <div style={{ display: 'flex', alignItems: 'flex-start', gap, color: 'hsl(var(--muted-foreground))' }}>
-      <span style={{ display: 'flex', alignItems: 'center', paddingTop: '0.25em' }}><UnavailableIconComponent size={iconSize} /></span>
+    <div className="flex items-start gap-2 text-muted-foreground" style={{ gap }}>
+      <span className="flex items-center pt-1"><UnavailableIconComponent size={iconSize} /></span>
       <span style={{ fontSize, fontWeight }}>
         {message}
       </span>
