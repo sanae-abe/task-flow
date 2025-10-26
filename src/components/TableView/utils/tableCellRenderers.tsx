@@ -3,9 +3,10 @@ import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuTrigger,
-  DropdownMenuSeparator,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
 import {
   X,
@@ -84,17 +85,17 @@ export const renderStatusCell = (
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <div className="px-2 py-1.5 text-sm font-semibold">ステータス変更</div>
-        <DropdownMenuSeparator />
-        {currentBoard?.columns.map((column) => (
-          <DropdownMenuItem
-            key={column.id}
-            onClick={() => onStatusChange(task, column.id)}
-            className={task.columnId === column.id ? "bg-accent" : ""}
-          >
-            {column.title}
-          </DropdownMenuItem>
-        ))}
+        <DropdownMenuRadioGroup value={task.columnId} onValueChange={(value) => onStatusChange(task, value)}>
+          <DropdownMenuLabel>ステータス変更</DropdownMenuLabel>
+          {currentBoard?.columns.map((column) => (
+            <DropdownMenuRadioItem
+              value={column.id}
+              key={column.id}
+            >
+              {column.title}
+            </DropdownMenuRadioItem>
+          ))}
+        </DropdownMenuRadioGroup>
       </DropdownMenuContent>
     </DropdownMenu>
   </div>

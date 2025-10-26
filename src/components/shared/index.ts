@@ -4,7 +4,6 @@ export type { DialogFlashMessageData, DialogMessageType } from './DialogFlashMes
 export { default as InlineMessage } from './InlineMessage';
 export { default as StatusBadge } from './StatusBadge';
 export { default as IconButton } from './IconButton';
-export { default as FlexBox } from './FlexBox';
 export { default as LoadingState } from './LoadingState';
 
 // Hooks

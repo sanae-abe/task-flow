@@ -30,7 +30,9 @@ export const createCodeBlock = (content: string): string => {
  */
 export const insertCodeBlock = (): void => {
   const selection = window.getSelection();
-  if (!selection) return;
+  if (!selection) {
+    return;
+  }
 
   const selectedText = selection.toString();
   const content = selectedText || 'コードをここに入力';
@@ -44,7 +46,9 @@ export const insertCodeBlock = (): void => {
  */
 export const applyInlineCode = (): void => {
   const selection = window.getSelection();
-  if (!selection || selection.rangeCount === 0) return;
+  if (!selection || selection.rangeCount === 0) {
+    return;
+  }
 
   const selectedText = selection.toString();
   if (selectedText) {
@@ -64,14 +68,12 @@ export const createLink = (text: string, url: string): string => {
 /**
  * Get current format state for toolbar buttons
  */
-export const getCurrentFormatState = (): FormatState => {
-  return {
-    bold: isCommandActive('bold'),
-    italic: isCommandActive('italic'),
-    underline: isCommandActive('underline'),
-    strikethrough: isCommandActive('strikeThrough'),
-  };
-};
+export const getCurrentFormatState = (): FormatState => ({
+  bold: isCommandActive('bold'),
+  italic: isCommandActive('italic'),
+  underline: isCommandActive('underline'),
+  strikethrough: isCommandActive('strikeThrough'),
+});
 
 /**
  * Check if a command is currently active
@@ -92,6 +94,7 @@ export const toggleList = (type: 'unordered' | 'ordered'): void => {
   try {
     document.execCommand(command, false);
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.warn(`Failed to toggle ${type} list:`, error);
   }
 };
@@ -103,6 +106,7 @@ export const removeFormatting = (): void => {
   try {
     document.execCommand('removeFormat', false);
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.warn('Failed to remove formatting:', error);
   }
 };
@@ -119,7 +123,9 @@ export const insertEmoji = (emoji: string): void => {
  */
 export const getCurrentLink = (): HTMLAnchorElement | null => {
   const selection = window.getSelection();
-  if (!selection || selection.rangeCount === 0) return null;
+  if (!selection || selection.rangeCount === 0) {
+    return null;
+  }
 
   let node = selection.getRangeAt(0).commonAncestorContainer;
 
@@ -129,7 +135,9 @@ export const getCurrentLink = (): HTMLAnchorElement | null => {
       return node as HTMLAnchorElement;
     }
     const parentNode = node.parentNode;
-    if (!parentNode) break;
+    if (!parentNode) {
+      break;
+    }
     node = parentNode;
   }
 

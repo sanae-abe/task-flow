@@ -13,7 +13,7 @@ import { UnifiedFormField } from "./shared/Form";
 import LabelSelector from "./LabelSelector";
 import PrioritySelector from "./PrioritySelector";
 import RecurrenceSelector from "./RecurrenceSelector";
-import RichTextEditor from "./RichTextEditor";
+import RichTextEditor from "./RichTextEditor/";
 import TimeSelector from "./TimeSelector";
 
 interface TaskEditFormProps {

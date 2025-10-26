@@ -42,14 +42,7 @@ const EditorContent: React.FC<EditorContentProps> = ({
     <div className="relative">
       {/* Placeholder */}
       {showPlaceholder && (
-        <div
-          className="absolute top-0 left-0 pointer-events-none text-muted-foreground p-3"
-          style={{
-            minHeight,
-            fontSize: '14px',
-            lineHeight: '1.5',
-          }}
-        >
+        <div className="absolute top-0 left-0 pointer-events-none text-muted-foreground p-3 text-sm">
           {placeholder}
         </div>
       )}
@@ -58,7 +51,7 @@ const EditorContent: React.FC<EditorContentProps> = ({
       <div
         ref={editorRef}
         contentEditable={!disabled}
-        suppressContentEditableWarning={true}
+        suppressContentEditableWarning
         onInput={handleInput}
         onFocus={handleFocus}
         onBlur={handleBlur}
@@ -68,11 +61,7 @@ const EditorContent: React.FC<EditorContentProps> = ({
         className={`
           outline-none p-3 rounded-b-md
           ${disabled ? 'bg-muted cursor-not-allowed' : 'bg-background'}
-          prose prose-sm max-w-none
-          [&_code]:bg-muted [&_code]:px-1 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-sm [&_code]:font-mono
-          [&_pre]:bg-muted [&_pre]:p-3 [&_pre]:rounded [&_pre]:overflow-x-auto [&_pre]:border
-          [&_a]:text-primary [&_a]:underline hover:[&_a]:text-primary/80
-        `}
+          prose prose-sm max-w-none text-foreground [&_a]:font-normal`}
         style={{
           minHeight,
           fontSize: '14px',

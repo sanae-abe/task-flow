@@ -56,23 +56,6 @@ export interface ConfirmDialogProps extends BaseUnifiedDialogProps {
   confirmVariant?: "default" | "primary" | "danger" | "outline" | "secondary" | "destructive" | "ghost" | "link";
 }
 
-// フォームダイアログ
-export interface FormDialogProps extends BaseUnifiedDialogProps {
-  /** フォームの子要素 */
-  children: React.ReactNode;
-  /** 保存時のコールバック */
-  onSave: () => void;
-  /** キャンセル時のコールバック */
-  onCancel: () => void;
-  /** 保存ボタンのテキスト */
-  saveText?: string;
-  /** キャンセルボタンのテキスト */
-  cancelText?: string;
-  /** 保存ボタンの無効状態 */
-  isSaveDisabled?: boolean;
-  /** フォームのバリデーション状態 */
-  isValid?: boolean;
-}
 
 // シンプルフォームダイアログ（単一入力フィールド）
 export interface SimpleFormDialogProps extends BaseUnifiedDialogProps {

@@ -7,7 +7,7 @@ import type { Label, Priority } from '../../types';
 import UnifiedDialog from '../shared/Dialog/UnifiedDialog';
 import TemplateCategorySelector from './TemplateCategorySelector';
 import LabelSelector from '../LabelSelector';
-import RichTextEditor from '../RichTextEditor';
+import RichTextEditor from '../RichTextEditor/';
 import PrioritySelector from '../PrioritySelector';
 import InlineMessage from '../shared/InlineMessage';
 

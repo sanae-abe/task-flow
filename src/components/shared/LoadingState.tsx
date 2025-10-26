@@ -3,7 +3,6 @@ import { memo } from 'react';
 import { cn } from '@/lib/utils';
 
 import type { LoadingStateSize, LoadingStateVariant } from '../../types/shared';
-import { CenterBox, VBox } from './FlexBox';
 
 interface LoadingStateProps {
   /** ローディング状態 */
@@ -78,14 +77,14 @@ const LoadingState = memo<LoadingStateProps>(({
   const variantStyles = getVariantStyles();
 
   return (
-    <CenterBox
-      className={variantStyles.className}
+    <div
+      className={cn('flex items-center justify-center', variantStyles.className)}
       style={{
         ...variantStyles.style,
         ...sx as React.CSSProperties
       }}
     >
-      <VBox align="center" gap={3}>
+      <div className="flex flex-col items-center gap-3">
         <Loader2
           size={spinnerConfig.iconSize}
           className="animate-spin text-gray-600"
@@ -98,8 +97,8 @@ const LoadingState = memo<LoadingStateProps>(({
             {loadingText}
           </span>
         )}
-      </VBox>
-    </CenterBox>
+      </div>
+    </div>
   );
 });
 

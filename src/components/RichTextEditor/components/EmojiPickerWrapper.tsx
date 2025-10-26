@@ -20,16 +20,20 @@ const EmojiPickerWrapper: React.FC<EmojiPickerWrapperProps> = ({
   onEmojiSelect,
   buttonRef,
 }) => {
-  if (!isOpen) return null;
+  if (!isOpen) {
+    return null;
+  }
 
   // Calculate position relative to the emoji button
   const getPickerPosition = () => {
-    if (!buttonRef.current) return { top: 0, left: 0 };
+    if (!buttonRef.current) {
+      return { top: 0, left: 0 };
+    }
 
     const rect = buttonRef.current.getBoundingClientRect();
     return {
       top: rect.bottom + 5,
-      left: Math.max(10, rect.left - 250), // Ensure it doesn't go off-screen
+      left: Math.max(10, rect.left - 270), // Adjusted for new width (350px)
     };
   };
 
@@ -41,36 +45,29 @@ const EmojiPickerWrapper: React.FC<EmojiPickerWrapperProps> = ({
   };
 
   return (
-    <>
-      {/* Backdrop */}
-      <div
-        className="fixed inset-0 z-40"
-        onClick={onClose}
-      />
-
-      {/* Emoji Picker */}
-      <div
-        className="fixed z-50"
-        style={{
-          top: position.top,
-          left: position.left,
+    <div
+      data-emoji-picker
+      className="fixed z-[500] border border-border rounded-lg bg-background animate-in fade-in duration-200"
+      style={{
+        top: position.top,
+        left: position.left,
+        boxShadow: '0 20px 80px rgba(0, 0, 0, 0.2), 0 10px 40px rgba(0, 0, 0, 0.15), 0 5px 20px rgba(0, 0, 0, 0.1)',
+        '--epr-category-navigation-button-size': '16px',
+        '--epr-emoji-size': '16px'
+      } as React.CSSProperties}
+    >
+      <EmojiPicker
+        onEmojiClick={handleEmojiClick}
+        emojiStyle={EmojiStyle.NATIVE}
+        width={350}
+        height={400}
+        searchDisabled={false}
+        skinTonesDisabled
+        previewConfig={{
+          showPreview: false
         }}
-      >
-        <EmojiPicker
-          onEmojiClick={handleEmojiClick}
-          emojiStyle={EmojiStyle.NATIVE}
-          width={300}
-          height={400}
-          searchDisabled={false}
-          skinTonesDisabled={false}
-          previewConfig={{
-            defaultEmoji: "1f60a",
-            defaultCaption: "絵文字を選択してください",
-            showPreview: true,
-          }}
-        />
-      </div>
-    </>
+      />
+    </div>
   );
 };
 

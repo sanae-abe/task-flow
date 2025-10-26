@@ -40,6 +40,7 @@ export const insertHtmlAtCursor = (html: string): void => {
       document.execCommand("insertHTML", false, html);
     } catch (fallbackError) {
       // Silently fail in production - both approaches failed
+      // eslint-disable-next-line no-console
       console.warn('Failed to insert HTML:', fallbackError);
     }
   }
@@ -92,6 +93,7 @@ export const executeEditorCommand = (
       }
       onInput?.();
     } catch (fallbackError) {
+      // eslint-disable-next-line no-console
       console.warn('Failed to execute editor command:', fallbackError);
     }
   }

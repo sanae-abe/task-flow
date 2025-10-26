@@ -72,7 +72,9 @@ export const useEditorHandlers = ({
 
   // Handle keyboard shortcuts
   const handleKeyDown = useCallback((event: React.KeyboardEvent) => {
-    if (disabled) return;
+    if (disabled) {
+      return;
+    }
 
     const { ctrlKey, metaKey, key } = event;
     const isCmd = ctrlKey || metaKey;
@@ -125,7 +127,9 @@ export const useEditorHandlers = ({
             }
           }
           const parentNode = node.parentNode;
-          if (!parentNode) break;
+          if (!parentNode) {
+            break;
+          }
           node = parentNode;
         }
       }
@@ -134,7 +138,9 @@ export const useEditorHandlers = ({
 
   // Handle paste events
   const handlePaste = useCallback((event: React.ClipboardEvent) => {
-    if (disabled) return;
+    if (disabled) {
+      return;
+    }
 
     event.preventDefault();
     const text = event.clipboardData.getData('text/plain');
@@ -146,7 +152,9 @@ export const useEditorHandlers = ({
 
   // Handle link clicks in editor
   const handleLinkClick = useCallback((event: React.MouseEvent) => {
-    if (disabled) return;
+    if (disabled) {
+      return;
+    }
 
     const target = event.target as HTMLElement;
     if (target.tagName === 'A') {
@@ -159,7 +167,9 @@ export const useEditorHandlers = ({
 
   // Handle toolbar button clicks
   const handleToolbarButtonClick = useCallback((command: string) => {
-    if (disabled || !editorRef.current) return;
+    if (disabled || !editorRef.current) {
+      return;
+    }
 
     setIsToolbarInteraction(true);
     editorRef.current.focus();

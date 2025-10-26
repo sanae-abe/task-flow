@@ -104,7 +104,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
   ];
 
   return (
-    <div className={`flex gap-1 p-2 border-b border-border bg-muted/50 rounded-t-md ${className}`}>
+    <div className={`flex gap-1 p-1 border-b border-border bg-muted/50 rounded-t-md ${className}`}>
       {toolbarButtons.map((button) => {
         const IconComponent = button.icon;
         const isEmojiButton = button.id === 'emoji';
@@ -114,7 +114,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
             key={button.id}
             ref={isEmojiButton ? emojiButtonRef : undefined}
             variant={button.isActive ? "default" : "ghost"}
-            size="sm"
+            size="icon"
             onClick={button.action}
             disabled={disabled}
             title={button.title}
