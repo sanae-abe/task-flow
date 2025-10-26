@@ -138,7 +138,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       priority?: Priority,
     ) => {
       if (!boardState.currentBoard) {
-        notify.error("ボードが選択されていません");
+        notify._error("ボードが選択されていません");
         return;
       }
 
@@ -187,7 +187,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       targetIndex: number,
     ) => {
       if (!boardState.currentBoard) {
-        notify.error("ボードが選択されていません");
+        notify._error("ボードが選択されていません");
         return;
       }
 
@@ -318,7 +318,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   const updateTask = useCallback(
     (taskId: string, updates: Partial<Task>) => {
       if (!boardState.currentBoard) {
-        notify.error("ボードが選択されていません");
+        notify._error("ボードが選択されていません");
         return;
       }
 
@@ -349,7 +349,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   const deleteTask = useCallback(
     (taskId: string, columnId: string) => {
       if (!boardState.currentBoard) {
-        notify.error("ボードが選択されていません");
+        notify._error("ボードが選択されていません");
         return;
       }
 
@@ -388,19 +388,19 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   const duplicateTask = useCallback(
     (taskId: string) => {
       if (!boardState.currentBoard) {
-        notify.error("ボードが選択されていません");
+        notify._error("ボードが選択されていません");
         return;
       }
 
       const originalTask = findTaskById(taskId);
       if (!originalTask) {
-        notify.error("複製するタスクが見つかりません");
+        notify._error("複製するタスクが見つかりません");
         return;
       }
 
       const sourceColumnId = findTaskColumnId(taskId);
       if (!sourceColumnId) {
-        notify.error("タスクのカラムが見つかりません");
+        notify._error("タスクのカラムが見つかりません");
         return;
       }
 
@@ -454,7 +454,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   // 完了済みタスクのクリア
   const clearCompletedTasks = useCallback(() => {
     if (!boardState.currentBoard) {
-      notify.error("ボードが選択されていません");
+      notify._error("ボードが選択されていません");
       return;
     }
 
@@ -464,7 +464,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       boardState.currentBoard.columns[rightmostColumnIndex];
 
     if (!rightmostColumn) {
-      notify.error("完了カラムが見つかりません");
+      notify._error("完了カラムが見つかりません");
       return;
     }
 
@@ -519,7 +519,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
 
       const task = findTaskById(taskId);
       if (!task) {
-        notify.error("タスクが見つかりません");
+        notify._error("タスクが見つかりません");
         return;
       }
 
@@ -535,7 +535,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     (taskId: string, subTaskId: string) => {
       const task = findTaskById(taskId);
       if (!task || !task.subTasks) {
-        notify.error("タスクまたはサブタスクが見つかりません");
+        notify._error("タスクまたはサブタスクが見つかりません");
         return;
       }
 
@@ -555,7 +555,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     (taskId: string, subTaskId: string) => {
       const task = findTaskById(taskId);
       if (!task || !task.subTasks) {
-        notify.error("タスクまたはサブタスクが見つかりません");
+        notify._error("タスクまたはサブタスクが見つかりません");
         return;
       }
 
@@ -570,7 +570,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     (taskId: string, subTaskId: string, title: string) => {
       const task = findTaskById(taskId);
       if (!task || !task.subTasks) {
-        notify.error("タスクまたはサブタスクが見つかりません");
+        notify._error("タスクまたはサブタスクが見つかりません");
         return;
       }
 
@@ -589,7 +589,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     (taskId: string, oldIndex: number, newIndex: number) => {
       const task = findTaskById(taskId);
       if (!task || !task.subTasks) {
-        notify.error("タスクまたはサブタスクが見つかりません");
+        notify._error("タスクまたはサブタスクが見つかりません");
         return;
       }
 

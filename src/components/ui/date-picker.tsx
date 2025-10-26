@@ -33,7 +33,7 @@ interface DatePickerProps {
   disabled?: boolean
   className?: string
   validator?: (date: Date) => boolean
-  onError?: (error: string) => void
+  onError?: (_error: string) => void
 }
 
 export function DatePicker({
@@ -86,10 +86,10 @@ export function DatePicker({
         _setError(null) // エラーをクリア
         return isoDate
       }
-    } catch (error) {
+    } catch (_error) {
       if (process.env.NODE_ENV === 'development') {
         // eslint-disable-next-line no-console
-        console.warn('ISO date parsing failed:', error)
+        console.warn('ISO date parsing failed:', _error)
       }
     }
 
@@ -110,10 +110,10 @@ export function DatePicker({
           _setError(null) // エラーをクリア
           return parsed
         }
-      } catch (error) {
+      } catch (_error) {
         if (process.env.NODE_ENV === 'development') {
           // eslint-disable-next-line no-console
-          console.warn(`Date parsing failed for format ${formatStr}:`, error)
+          console.warn(`Date parsing failed for format ${formatStr}:`, _error)
         }
       }
     }
@@ -247,7 +247,7 @@ export function DatePicker({
 
       {/* エラーメッセージ */}
       {_error && (
-        <div id="date-picker-error" className="text-xs text-destructive" role="alert">
+        <div id="date-picker-_error" className="text-xs text-destructive" role="alert">
           {_error}
         </div>
       )}

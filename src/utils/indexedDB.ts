@@ -82,7 +82,7 @@ class IndexedDBManager {
     return new Promise((resolve, reject) => {
       const request = store.getAll();
       request.onsuccess = () => resolve(request.result);
-      request.onerror = () => reject(request.error);
+      request.onerror = () => reject(request._error);
     });
   }
 
@@ -91,7 +91,7 @@ class IndexedDBManager {
     return new Promise((resolve, reject) => {
       const request = store.get(id);
       request.onsuccess = () => resolve(request.result);
-      request.onerror = () => reject(request.error);
+      request.onerror = () => reject(request._error);
     });
   }
 
@@ -100,7 +100,7 @@ class IndexedDBManager {
     return new Promise((resolve, reject) => {
       const request = store.put(task);
       request.onsuccess = () => resolve();
-      request.onerror = () => reject(request.error);
+      request.onerror = () => reject(request._error);
     });
   }
 
@@ -109,7 +109,7 @@ class IndexedDBManager {
     return new Promise((resolve, reject) => {
       const request = store.delete(id);
       request.onsuccess = () => resolve();
-      request.onerror = () => reject(request.error);
+      request.onerror = () => reject(request._error);
     });
   }
 
@@ -119,7 +119,7 @@ class IndexedDBManager {
     return new Promise((resolve, reject) => {
       const request = store.getAll();
       request.onsuccess = () => resolve(request.result);
-      request.onerror = () => reject(request.error);
+      request.onerror = () => reject(request._error);
     });
   }
 
@@ -128,7 +128,7 @@ class IndexedDBManager {
     return new Promise((resolve, reject) => {
       const request = store.put(column);
       request.onsuccess = () => resolve();
-      request.onerror = () => reject(request.error);
+      request.onerror = () => reject(request._error);
     });
   }
 
@@ -137,7 +137,7 @@ class IndexedDBManager {
     return new Promise((resolve, reject) => {
       const request = store.delete(id);
       request.onsuccess = () => resolve();
-      request.onerror = () => reject(request.error);
+      request.onerror = () => reject(request._error);
     });
   }
 
@@ -147,7 +147,7 @@ class IndexedDBManager {
     return new Promise((resolve, reject) => {
       const request = store.getAll();
       request.onsuccess = () => resolve(request.result);
-      request.onerror = () => reject(request.error);
+      request.onerror = () => reject(request._error);
     });
   }
 
@@ -156,7 +156,7 @@ class IndexedDBManager {
     return new Promise((resolve, reject) => {
       const request = store.put(board);
       request.onsuccess = () => resolve();
-      request.onerror = () => reject(request.error);
+      request.onerror = () => reject(request._error);
     });
   }
 
@@ -165,7 +165,7 @@ class IndexedDBManager {
     return new Promise((resolve, reject) => {
       const request = store.delete(id);
       request.onsuccess = () => resolve();
-      request.onerror = () => reject(request.error);
+      request.onerror = () => reject(request._error);
     });
   }
 
@@ -175,7 +175,7 @@ class IndexedDBManager {
     return new Promise((resolve, reject) => {
       const request = store.getAll();
       request.onsuccess = () => resolve(request.result);
-      request.onerror = () => reject(request.error);
+      request.onerror = () => reject(request._error);
     });
   }
 
@@ -184,7 +184,7 @@ class IndexedDBManager {
     return new Promise((resolve, reject) => {
       const request = store.put(label);
       request.onsuccess = () => resolve();
-      request.onerror = () => reject(request.error);
+      request.onerror = () => reject(request._error);
     });
   }
 
@@ -193,7 +193,7 @@ class IndexedDBManager {
     return new Promise((resolve, reject) => {
       const request = store.delete(id);
       request.onsuccess = () => resolve();
-      request.onerror = () => reject(request.error);
+      request.onerror = () => reject(request._error);
     });
   }
 
@@ -215,7 +215,7 @@ class IndexedDBManager {
 
     return new Promise((resolve, reject) => {
       transaction.oncomplete = () => resolve();
-      transaction.onerror = () => reject(transaction.error);
+      transaction.onerror = () => reject(transaction._error);
 
       // Clear existing data
       transaction.objectStore("tasks").clear();
@@ -265,7 +265,7 @@ class IndexedDBManager {
 
     return new Promise((resolve, reject) => {
       transaction.oncomplete = () => resolve();
-      transaction.onerror = () => reject(transaction.error);
+      transaction.onerror = () => reject(transaction._error);
 
       transaction.objectStore("tasks").clear();
       transaction.objectStore("columns").clear();

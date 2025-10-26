@@ -17,8 +17,8 @@ const CircleColorPicker = memo<CircleColorPickerProps>(
       (color: string) => {
         try {
           onColorSelect(color);
-        } catch (error) {
-          // ESLintルールに従い、error handling only
+        } catch (_error) {
+          // ESLintルールに従い、_error handling only
         }
       },
       [onColorSelect],

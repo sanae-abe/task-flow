@@ -37,7 +37,7 @@ export const useTableColumns = (): TableColumnsHookReturn => {
         };
         return result;
       }
-    } catch (error) {
+    } catch (_error) {
       // Failed to load settings, will use defaults
     }
 
@@ -75,8 +75,8 @@ export const useTableColumns = (): TableColumnsHookReturn => {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(newSettings));
         debugLog("💾 Settings saved to localStorage");
-      } catch (error) {
-        debugLog("❌ Failed to save settings:", error);
+      } catch (_error) {
+        debugLog("❌ Failed to save settings:", _error);
       }
 
       // 強制再レンダリングを発生させる
@@ -113,8 +113,8 @@ export const useTableColumns = (): TableColumnsHookReturn => {
       // localStorageに保存
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(newSettings));
-      } catch (error) {
-        debugLog("❌ Failed to save settings:", error);
+      } catch (_error) {
+        debugLog("❌ Failed to save settings:", _error);
       }
 
       return newSettings;
@@ -132,8 +132,8 @@ export const useTableColumns = (): TableColumnsHookReturn => {
       // localStorageに保存
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(newSettings));
-      } catch (error) {
-        debugLog("❌ Failed to save settings:", error);
+      } catch (_error) {
+        debugLog("❌ Failed to save settings:", _error);
       }
 
       return newSettings;
@@ -165,8 +165,8 @@ export const useTableColumns = (): TableColumnsHookReturn => {
       // localStorageに保存
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(newSettings));
-      } catch (error) {
-        debugLog("❌ Failed to save settings:", error);
+      } catch (_error) {
+        debugLog("❌ Failed to save settings:", _error);
       }
 
       return newSettings;
@@ -196,8 +196,8 @@ export const useTableColumns = (): TableColumnsHookReturn => {
       // localStorageに保存
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(newSettings));
-      } catch (error) {
-        debugLog("❌ Failed to save settings:", error);
+      } catch (_error) {
+        debugLog("❌ Failed to save settings:", _error);
       }
 
       return newSettings;

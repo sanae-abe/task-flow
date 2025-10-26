@@ -34,14 +34,14 @@ export const insertHtmlAtCursor = (html: string): void => {
     range.collapse(false);
     selection.removeAllRanges();
     selection.addRange(range);
-  } catch (error) {
+  } catch (_error) {
     // Fallback to execCommand if modern approach fails
     try {
       document.execCommand("insertHTML", false, html);
-    } catch (fallbackError) {
+    } catch (_fallbackError) {
       // Silently fail in production - both approaches failed
       // eslint-disable-next-line no-console
-      console.warn('Failed to insert HTML:', fallbackError);
+      console.warn('Failed to insert HTML:', _fallbackError);
     }
   }
 };
@@ -83,7 +83,7 @@ export const executeEditorCommand = (
         }
     }
     onInput?.();
-  } catch (error) {
+  } catch (_error) {
     // Command execution failed, try fallback
     try {
       if (value) {
@@ -92,9 +92,9 @@ export const executeEditorCommand = (
         document.execCommand(command);
       }
       onInput?.();
-    } catch (fallbackError) {
+    } catch (_fallbackError) {
       // eslint-disable-next-line no-console
-      console.warn('Failed to execute editor command:', fallbackError);
+      console.warn('Failed to execute editor command:', _fallbackError);
     }
   }
 };

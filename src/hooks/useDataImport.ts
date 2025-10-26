@@ -117,12 +117,12 @@ export const useDataImport = (options?: UseDataImportOptions) => {
       });
 
       options?.onSuccess?.();
-    } catch (error) {
+    } catch (_error) {
       let errorMessage = "インポートに失敗しました";
-      if (error instanceof SyntaxError) {
+      if (_error instanceof SyntaxError) {
         errorMessage = "JSONファイルの形式が正しくありません";
-      } else if (error instanceof Error) {
-        errorMessage = error.message;
+      } else if (_error instanceof Error) {
+        errorMessage = _error.message;
       }
 
       setState((prev) => ({

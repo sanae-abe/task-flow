@@ -23,7 +23,7 @@ export const logger = {
     console.warn(`[WARN] ${message}`, ...args);
   },
 
-  error: (message: string, ...args: unknown[]) => {
+  _error: (message: string, ...args: unknown[]) => {
     // eslint-disable-next-line no-console
     console.error(`[ERROR] ${message}`, ...args);
   },

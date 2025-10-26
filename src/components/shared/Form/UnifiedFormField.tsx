@@ -18,7 +18,7 @@ import {
 import InlineMessage from "../InlineMessage";
 
 interface UnifiedFormFieldProps extends FormFieldConfig {
-  error?: string | null;
+  _error?: string | null;
   touched?: boolean;
   onBlur?: () => void;
   onFocus?: () => void;
@@ -50,7 +50,7 @@ const UnifiedFormField = memo<UnifiedFormFieldProps>(
     onKeyDown,
     onBlur,
     onFocus,
-    error,
+    _error,
     touched,
     helpText,
     step,
@@ -58,7 +58,7 @@ const UnifiedFormField = memo<UnifiedFormFieldProps>(
     max,
   }) => {
     // エラー表示判定
-    const showError = shouldShowError(touched, error);
+    const showError = shouldShowError(touched, _error);
 
     /**
      * フィールドタイプに応じたコンポーネントをレンダリング
@@ -77,7 +77,7 @@ const UnifiedFormField = memo<UnifiedFormFieldProps>(
         autoFocus,
         disabled,
         validation,
-        error,
+        _error,
         touched,
         sx,
       };
@@ -179,7 +179,7 @@ const UnifiedFormField = memo<UnifiedFormFieldProps>(
         )}
 
         {showError && (
-          <InlineMessage variant="critical" message={error || "入力に誤りがあります"} size="small" />
+          <InlineMessage variant="critical" message={_error || "入力に誤りがあります"} size="small" />
         )}
       </div>
     );

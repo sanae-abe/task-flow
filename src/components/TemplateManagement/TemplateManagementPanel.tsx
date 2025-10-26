@@ -27,7 +27,7 @@ const TemplateManagementPanel: React.FC<TemplateManagementPanelProps> = ({ onMes
   const {
     templates,
     loading,
-    error,
+    _error,
     createTemplate,
     updateTemplate,
     deleteTemplate,
@@ -119,11 +119,11 @@ const TemplateManagementPanel: React.FC<TemplateManagementPanelProps> = ({ onMes
     );
   }
 
-  if (error) {
+  if (_error) {
     return (
       <div className="text-center p-6">
         <p className="text-red-600 text-sm font-bold">
-          {error}
+          {_error}
         </p>
         <Button variant="outline" className="mt-2" onClick={() => window.location.reload()}>
           再読み込み

@@ -22,7 +22,7 @@ export const useTemplateSelection = (
     try {
       const loadedTemplates = TemplateStorage.load();
       setTemplates(loadedTemplates);
-    } catch (error) {
+    } catch (_error) {
       // テンプレート読み込み失敗 - プロダクションではサイレント
       setTemplates([]);
     }
@@ -55,7 +55,7 @@ export const useTemplateSelection = (
       TemplateStorage.incrementUsage(template.id);
       // 使用回数更新後にテンプレート一覧を再読み込み
       loadTemplates();
-    } catch (error) {
+    } catch (_error) {
       // テンプレート使用回数更新失敗 - プロダクションではサイレント
     }
   }, [formActions, loadTemplates]);

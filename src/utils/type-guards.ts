@@ -17,10 +17,10 @@ export type LabelId = string & { readonly __brand: "LabelId" };
 export type BoardId = string & { readonly __brand: "BoardId" };
 export type ColumnId = string & { readonly __brand: "ColumnId" };
 
-// Result type for error handling
+// Result type for _error handling
 export type Result<T, E = Error> =
   | { success: true; data: T }
-  | { success: false; error: E };
+  | { success: false; _error: E };
 
 // TypedStorage interface
 export interface TypedStorage {
@@ -29,7 +29,7 @@ export interface TypedStorage {
   removeItem(key: string): void;
 }
 
-// Storage error class
+// Storage _error class
 export class StorageError extends Error {
   constructor(
     message: string,

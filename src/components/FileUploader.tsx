@@ -32,7 +32,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({
   const [importMode, setImportMode] = useState<ImportMode>(defaultImportMode);
   const {
     isDragOver,
-    error,
+    _error,
     fileInputRef,
     handleDragOver,
     handleDragLeave,
@@ -80,7 +80,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({
         onRemoveAttachment={handleRemoveAttachment}
       />
 
-      <InlineMessage variant="critical" message={error} size="small" />
+      <InlineMessage variant="critical" message={_error} size="small" />
     </div>
   );
 };

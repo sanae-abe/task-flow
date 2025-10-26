@@ -51,7 +51,7 @@ interface SortableColumnItemProps {
   onUpdateName: (columnId: string, newName: string) => void;
   onMoveColumn: (columnId: string, direction: 'up' | 'down') => void;
   onDeleteColumn: (columnId: string) => void;
-  error?: string | null;
+  _error?: string | null;
 }
 
 const SortableColumnItem: React.FC<SortableColumnItemProps> = ({
@@ -61,7 +61,7 @@ const SortableColumnItem: React.FC<SortableColumnItemProps> = ({
   onUpdateName,
   onMoveColumn,
   onDeleteColumn,
-  error,
+  _error,
 }) => {
   const {
     attributes,
@@ -122,8 +122,8 @@ const SortableColumnItem: React.FC<SortableColumnItemProps> = ({
           className="w-full"
           aria-label={`カラム「${column.name}」の名前`}
         />
-        {error && (
-          <InlineMessage variant="critical" message={error} size="small" />
+        {_error && (
+          <InlineMessage variant="critical" message={_error} size="small" />
         )}
       </div>
       <div className="flex">
@@ -159,7 +159,7 @@ export const BoardSettingsPanel: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
-  const [saveMessageType, setSaveMessageType] = useState<'success' | 'error' | null>(null);
+  const [saveMessageType, setSaveMessageType] = useState<'success' | '_error' | null>(null);
   const [addColumnError, setAddColumnError] = useState<string | null>(null);
   const [columnErrors, setColumnErrors] = useState<Record<string, string>>({});
   const [erroredColumnName, setErroredColumnName] = useState<string>('');
@@ -167,7 +167,7 @@ export const BoardSettingsPanel: React.FC = () => {
   const messageTimerRef = React.useRef<NodeJS.Timeout | null>(null);
 
   // メッセージ表示用の共通関数
-  const showMessage = useCallback((message: string, type: 'success' | 'error') => {
+  const showMessage = useCallback((message: string, type: 'success' | '_error') => {
     // 既存のタイマーをクリア
     if (messageTimerRef.current) {
       clearTimeout(messageTimerRef.current);
@@ -185,13 +185,13 @@ export const BoardSettingsPanel: React.FC = () => {
   }, []);
 
   // カラムエラー設定用の関数
-  const setColumnError = useCallback((columnId: string, error: string | null) => {
+  const setColumnError = useCallback((columnId: string, _error: string | null) => {
     setColumnErrors(prev => {
-      if (error === null) {
+      if (_error === null) {
         const { [columnId]: _, ...rest } = prev;
         return rest;
       }
-      return { ...prev, [columnId]: error };
+      return { ...prev, [columnId]: _error };
     });
   }, []);
 
@@ -211,8 +211,8 @@ export const BoardSettingsPanel: React.FC = () => {
     try {
       const settings = loadSettings();
       setColumns(settings.defaultColumns);
-    } catch (error) {
-      notify.error('設定の読み込みに失敗しました');
+    } catch (_error) {
+      notify._error('設定の読み込みに失敗しました');
     } finally {
       setIsLoading(false);
     }
@@ -227,8 +227,8 @@ export const BoardSettingsPanel: React.FC = () => {
           updateDefaultColumns(columns);
           setHasUnsavedChanges(false);
           showMessage('設定を自動保存しました', 'success');
-        } catch (error) {
-          showMessage('自動保存に失敗しました', 'error');
+        } catch (_error) {
+          showMessage('自動保存に失敗しました', '_error');
         }
       }, 1000);
 
@@ -280,7 +280,7 @@ export const BoardSettingsPanel: React.FC = () => {
   // 設定保存
   const handleSave = useCallback(async () => {
     if (columns.length === 0) {
-      showMessage('最低1つのカラムが必要です', 'error');
+      showMessage('最低1つのカラムが必要です', '_error');
       return;
     }
 
@@ -288,8 +288,8 @@ export const BoardSettingsPanel: React.FC = () => {
       updateDefaultColumns(columns);
       setHasUnsavedChanges(false);
       showMessage('設定を保存しました', 'success');
-    } catch (error) {
-      showMessage('設定の保存に失敗しました', 'error');
+    } catch (_error) {
+      showMessage('設定の保存に失敗しました', '_error');
     }
   }, [columns, showMessage]);
 
@@ -334,7 +334,7 @@ export const BoardSettingsPanel: React.FC = () => {
   // カラム削除
   const handleDeleteColumn = useCallback((columnId: string) => {
     if (columns.length <= 1) {
-      notify.error('最低1つのカラムが必要です');
+      notify._error('最低1つのカラムが必要です');
       return;
     }
 
@@ -459,7 +459,7 @@ export const BoardSettingsPanel: React.FC = () => {
               onUpdateName={handleUpdateColumnName}
               onMoveColumn={handleMoveColumn}
               onDeleteColumn={handleDeleteColumn}
-              error={columnErrors[column.id]}
+              _error={columnErrors[column.id]}
             />
           ))}
         </SortableContext>

@@ -93,9 +93,9 @@ export const toggleList = (type: 'unordered' | 'ordered'): void => {
   const command = type === 'unordered' ? 'insertUnorderedList' : 'insertOrderedList';
   try {
     document.execCommand(command, false);
-  } catch (error) {
+  } catch (_error) {
     // eslint-disable-next-line no-console
-    console.warn(`Failed to toggle ${type} list:`, error);
+    console.warn(`Failed to toggle ${type} list:`, _error);
   }
 };
 
@@ -105,9 +105,9 @@ export const toggleList = (type: 'unordered' | 'ordered'): void => {
 export const removeFormatting = (): void => {
   try {
     document.execCommand('removeFormat', false);
-  } catch (error) {
+  } catch (_error) {
     // eslint-disable-next-line no-console
-    console.warn('Failed to remove formatting:', error);
+    console.warn('Failed to remove formatting:', _error);
   }
 };
 

@@ -32,7 +32,7 @@ export const TextareaField: React.FC<TextareaFieldProps> = React.memo(
     autoFocus = false,
     disabled = false,
     validation,
-    error,
+    _error,
     touched,
     sx,
     rows = 3,
@@ -78,7 +78,7 @@ export const TextareaField: React.FC<TextareaFieldProps> = React.memo(
     }, [onFocus]);
 
     // エラー状態の判定
-    const hasError = Boolean(touched && error);
+    const hasError = Boolean(touched && _error);
 
     return (
       <Textarea
@@ -100,7 +100,7 @@ export const TextareaField: React.FC<TextareaFieldProps> = React.memo(
         style={sx ? (sx as React.CSSProperties) : undefined}
         aria-required={validation?.required}
         aria-invalid={hasError}
-        aria-describedby={hasError ? `${id}-error` : undefined}
+        aria-describedby={hasError ? `${id}-_error` : undefined}
       />
     );
   },

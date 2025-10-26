@@ -124,7 +124,7 @@ class TypedLocalStorage {
       if (rawValue === null) {
         return {
           success: false,
-          error: new StorageError("Item not found", String(key), "get"),
+          _error: new StorageError("Item not found", String(key), "get"),
         };
       }
 
@@ -146,7 +146,7 @@ class TypedLocalStorage {
       if (!parsedItem) {
         return {
           success: false,
-          error: new StorageError("Invalid JSON format", key, "get"),
+          _error: new StorageError("Invalid JSON format", key, "get"),
         };
       }
 
@@ -156,7 +156,7 @@ class TypedLocalStorage {
         if (generateChecksum(dataString) !== parsedItem.checksum) {
           return {
             success: false,
-            error: new StorageError("Checksum mismatch", key, "get"),
+            _error: new StorageError("Checksum mismatch", key, "get"),
           };
         }
       }
@@ -166,16 +166,16 @@ class TypedLocalStorage {
       if (!validatorFn(parsedItem.value)) {
         return {
           success: false,
-          error: new StorageError("Type validation failed", key, "get"),
+          _error: new StorageError("Type validation failed", key, "get"),
         };
       }
 
       return { success: true, data: parsedItem.value };
-    } catch (error) {
+    } catch (_error) {
       return {
         success: false,
-        error: new StorageError(
-          error instanceof Error ? error.message : "Unknown error",
+        _error: new StorageError(
+          _error instanceof Error ? _error.message : "Unknown _error",
           key,
           "get",
         ),
@@ -193,7 +193,7 @@ class TypedLocalStorage {
       if (!VALIDATORS[key](value)) {
         return {
           success: false,
-          error: new StorageError("Type validation failed", key, "set"),
+          _error: new StorageError("Type validation failed", key, "set"),
         };
       }
 
@@ -210,11 +210,11 @@ class TypedLocalStorage {
         JSON.stringify(storageItem),
       );
       return { success: true, data: undefined };
-    } catch (error) {
+    } catch (_error) {
       return {
         success: false,
-        error: new StorageError(
-          error instanceof Error ? error.message : "Unknown error",
+        _error: new StorageError(
+          _error instanceof Error ? _error.message : "Unknown _error",
           key,
           "set",
         ),
@@ -229,11 +229,11 @@ class TypedLocalStorage {
     try {
       localStorage.removeItem(STORAGE_KEYS[key as keyof typeof STORAGE_KEYS]);
       return { success: true, data: undefined };
-    } catch (error) {
+    } catch (_error) {
       return {
         success: false,
-        error: new StorageError(
-          error instanceof Error ? error.message : "Unknown error",
+        _error: new StorageError(
+          _error instanceof Error ? _error.message : "Unknown _error",
           key,
           "remove",
         ),
@@ -256,11 +256,11 @@ class TypedLocalStorage {
         localStorage.removeItem(key);
       });
       return { success: true, data: undefined };
-    } catch (error) {
+    } catch (_error) {
       return {
         success: false,
-        error: new StorageError(
-          error instanceof Error ? error.message : "Unknown error",
+        _error: new StorageError(
+          _error instanceof Error ? _error.message : "Unknown _error",
           "all",
           "remove",
         ),

@@ -115,7 +115,7 @@ const RecurrencePatternSelector: React.FC<RecurrencePatternSelectorProps> = ({
           options={patternField.options}
           onChange={handlePatternChange}
           onBlur={() => form.setTouched('pattern', true)}
-          error={form.getFieldError('pattern')}
+          _error={form.getFieldError('pattern')}
           touched={form.state.touched['pattern']}
           disabled={form.state.isSubmitting}
           hideLabel={false}
@@ -135,7 +135,7 @@ const RecurrencePatternSelector: React.FC<RecurrencePatternSelectorProps> = ({
           step={intervalField.step}
           onChange={handleIntervalChange}
           onBlur={() => form.setTouched('interval', true)}
-          error={form.getFieldError('interval')}
+          _error={form.getFieldError('interval')}
           touched={form.state.touched['interval']}
           disabled={form.state.isSubmitting}
           hideLabel={false}

@@ -282,7 +282,7 @@ export const UnifiedTaskForm = memo<UnifiedTaskFormProps>(({
             }
           }}
           onKeyDown={field.name === 'title' ? onKeyPress : undefined}
-          error={field.type !== 'custom' ? form.getFieldError(field.name) : undefined}
+          _error={field.type !== 'custom' ? form.getFieldError(field.name) : undefined}
           touched={field.type !== 'custom' ? form.state.touched[field.name] : undefined}
           disabled={field.type !== 'custom' ? form.state.isSubmitting : undefined}
           hideLabel={field.label === ''}

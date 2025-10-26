@@ -14,11 +14,11 @@ const RecurrenceErrorDisplay: React.FC<RecurrenceErrorDisplayProps> = ({
 
   return (
     <div className="mt-2">
-      {errors.map((error, index) => (
+      {errors.map((_error, index) => (
         <InlineMessage
           key={index}
           variant="critical"
-          message={error}
+          message={_error}
           size="small"
         />
       ))}

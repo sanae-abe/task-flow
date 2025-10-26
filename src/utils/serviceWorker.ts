@@ -73,9 +73,9 @@ function registerValidSW(swUrl: string, config?: Config) {
         };
       };
     })
-    .catch((error) => {
+    .catch((_error) => {
       // eslint-disable-next-line no-console
-      console.error("Error during service worker registration:", error);
+      console.error("Error during service worker registration:", _error);
     });
 }
 
@@ -112,7 +112,7 @@ export function unregister() {
       .then((registration) => {
         registration.unregister();
       })
-      .catch((error) => {
+      .catch((_error) => {
         // eslint-disable-next-line no-console
         console.error(error.message);
       });

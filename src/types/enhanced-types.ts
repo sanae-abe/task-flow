@@ -49,7 +49,7 @@ export type DeepReadonly<T> = {
 // Result Type for Error Handling
 export type Result<T, E = Error> =
   | { success: true; data: T }
-  | { success: false; error: E };
+  | { success: false; _error: E };
 
 // Event Handler Types with Better Type Safety
 export type TaskEventHandler<T = void> = (taskId: TaskId) => T;
@@ -61,7 +61,7 @@ export type TaskUpdateHandler<T extends Partial<Task> = Partial<Task>> = (
 // Enhanced Form Types with Runtime Validation
 export interface ValidatedFormField<T = unknown> {
   value: T;
-  error: string | null;
+  _error: string | null;
   touched: boolean;
   validator: (value: T) => string | null;
 }

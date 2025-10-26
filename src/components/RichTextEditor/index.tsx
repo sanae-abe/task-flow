@@ -10,7 +10,7 @@ import { useEditorState } from './hooks/useEditorState';
 import { useEditorHandlers } from './hooks/useEditorHandlers';
 import Toolbar from './components/Toolbar';
 import EditorContent from './components/EditorContent';
-import EmojiPickerWrapper from './components/EmojiPickerWrapper';
+import LazyEmojiPicker from './components/LazyEmojiPicker';
 import LinkInsertDialog from '../LinkInsertDialog';
 import { restoreRange } from './utils/editor';
 import { insertEmoji } from './utils/formatting';
@@ -142,8 +142,8 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
         />
       )}
 
-      {/* Emoji Picker */}
-      <EmojiPickerWrapper
+      {/* Lazy Emoji Picker */}
+      <LazyEmojiPicker
         isOpen={editorState.showEmojiPicker}
         onClose={() => editorState.setShowEmojiPicker(false)}
         onEmojiSelect={handleEmojiSelect}

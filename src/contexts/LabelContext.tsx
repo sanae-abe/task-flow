@@ -161,9 +161,9 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
             callbackIndex++;
             try {
               callback(messageToSend);
-            } catch (error) {
+            } catch (_error) {
               // eslint-disable-next-line no-console
-              console.error(`💬 createLabel: Error sending message to callback ${callbackIndex}:`, error);
+              console.error(`💬 createLabel: Error sending message to callback ${callbackIndex}:`, _error);
             }
           });
         }
@@ -194,9 +194,9 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
               callbackIndex++;
               try {
                 callback(messageToSend);
-              } catch (error) {
+              } catch (_error) {
                 // eslint-disable-next-line no-console
-                console.error(`💬 createLabelInBoard: Error sending message to callback ${callbackIndex}:`, error);
+                console.error(`💬 createLabelInBoard: Error sending message to callback ${callbackIndex}:`, _error);
               }
             });
           }
@@ -244,9 +244,9 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
             callbackIndex++;
             try {
               callback(messageToSend);
-            } catch (error) {
+            } catch (_error) {
               // eslint-disable-next-line no-console
-              console.error(`📬 updateLabel: Error sending message to callback ${callbackIndex}:`, error);
+              console.error(`📬 updateLabel: Error sending message to callback ${callbackIndex}:`, _error);
             }
           });
         } else {
@@ -278,9 +278,9 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
             callbackIndex++;
             try {
               callback(messageToSend);
-            } catch (error) {
+            } catch (_error) {
               // eslint-disable-next-line no-console
-              console.error(`💬 deleteLabel: Error sending message to callback ${callbackIndex}:`, error);
+              console.error(`💬 deleteLabel: Error sending message to callback ${callbackIndex}:`, _error);
             }
           });
         }
@@ -309,9 +309,9 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
             callbackIndex++;
             try {
               callback(messageToSend);
-            } catch (error) {
+            } catch (_error) {
               // eslint-disable-next-line no-console
-              console.error(`💬 deleteLabelFromAllBoards: Error sending message to callback ${callbackIndex}:`, error);
+              console.error(`💬 deleteLabelFromAllBoards: Error sending message to callback ${callbackIndex}:`, _error);
             }
           });
         } else {

@@ -6,7 +6,7 @@ import type { RecycleBinSettings } from "../types/settings";
  */
 export interface ValidationResult {
   isValid: boolean;
-  error?: string;
+  _error?: string;
 }
 
 /**
@@ -22,7 +22,7 @@ export const validateRetentionDays = (days: number | null): ValidationResult => 
   if (!Number.isInteger(days)) {
     return {
       isValid: false,
-      error: MESSAGES.VALIDATION.REQUIRED_INTEGER,
+      _error: MESSAGES.VALIDATION.REQUIRED_INTEGER,
     };
   }
 
@@ -30,7 +30,7 @@ export const validateRetentionDays = (days: number | null): ValidationResult => 
   if (days < RETENTION_DAYS_LIMITS.MIN) {
     return {
       isValid: false,
-      error: MESSAGES.VALIDATION.MIN_DAYS,
+      _error: MESSAGES.VALIDATION.MIN_DAYS,
     };
   }
 
@@ -38,7 +38,7 @@ export const validateRetentionDays = (days: number | null): ValidationResult => 
   if (days > RETENTION_DAYS_LIMITS.MAX) {
     return {
       isValid: false,
-      error: MESSAGES.VALIDATION.MAX_DAYS,
+      _error: MESSAGES.VALIDATION.MAX_DAYS,
     };
   }
 
@@ -60,7 +60,7 @@ export const validateRetentionDaysInput = (value: string): ValidationResult => {
   if (isNaN(days)) {
     return {
       isValid: false,
-      error: MESSAGES.VALIDATION.INVALID_NUMBER,
+      _error: MESSAGES.VALIDATION.INVALID_NUMBER,
     };
   }
 
@@ -107,5 +107,5 @@ export const sanitizeRetentionDaysInput = (value: string): number | null => {
  */
 export const getValidationMessage = (value: string): string | null => {
   const result = validateRetentionDaysInput(value);
-  return result.isValid ? null : result.error || null;
+  return result.isValid ? null : result._error || null;
 };

@@ -45,9 +45,9 @@ export const RecycleBinItemDetailDialog: React.FC<RecycleBinItemDetailDialogProp
     try {
       onRestore(item);
       onClose();
-    } catch (error) {
+    } catch (_error) {
       // eslint-disable-next-line no-console
-      console.error('復元に失敗:', error);
+      console.error('復元に失敗:', _error);
     } finally {
       setIsLoading(false);
       setLoadingAction(null);
@@ -62,9 +62,9 @@ export const RecycleBinItemDetailDialog: React.FC<RecycleBinItemDetailDialogProp
     try {
       onClose();
       onDelete(item);
-    } catch (error) {
+    } catch (_error) {
       // eslint-disable-next-line no-console
-      console.error('削除に失敗:', error);
+      console.error('削除に失敗:', _error);
     } finally {
       setIsLoading(false);
       setLoadingAction(null);

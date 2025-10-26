@@ -129,7 +129,7 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
       });
 
       onClose();
-    } catch (error) {
+    } catch (_error) {
       setErrors({ name: 'テンプレートの保存に失敗しました' });
     } finally {
       setIsLoading(false);

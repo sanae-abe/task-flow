@@ -109,7 +109,7 @@ const ColumnCreateDialog = memo<ColumnCreateDialogProps>(
               value={form.state.values[field.name]}
               onChange={(value) => form.setValue(field.name, value)}
               onBlur={() => form.setTouched(field.name, true)}
-              error={form.getFieldError(field.name)}
+              _error={form.getFieldError(field.name)}
               touched={form.state.touched[field.name]}
               disabled={form.state.isSubmitting}
             />

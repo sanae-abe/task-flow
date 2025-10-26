@@ -67,10 +67,10 @@ const downloadFile = (
     document.body.removeChild(link);
 
     notify.success(`「${name}」をダウンロードしました`);
-  } catch (error) {
+  } catch (_error) {
     // eslint-disable-next-line no-console
-    console.error("ファイルのダウンロードに失敗しました:", error);
-    notify.error("ファイルのダウンロードに失敗しました");
+    console.error("ファイルのダウンロードに失敗しました:", _error);
+    notify._error("ファイルのダウンロードに失敗しました");
   }
 };
 

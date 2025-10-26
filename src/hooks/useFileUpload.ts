@@ -21,7 +21,7 @@ export interface UseFileUploadOptions {
 
 export interface UseFileUploadReturn {
   isDragOver: boolean;
-  error: string | null;
+  _error: string | null;
   fileInputRef: React.RefObject<HTMLInputElement | null>;
   handleDragOver: (e: React.DragEvent) => void;
   handleDragLeave: (e: React.DragEvent) => void;
@@ -29,7 +29,7 @@ export interface UseFileUploadReturn {
   handleFileSelect: () => void;
   handleFileInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleFiles: (files: FileList) => Promise<void>;
-  setError: (error: string | null) => void;
+  setError: (_error: string | null) => void;
 }
 
 export const useFileUpload = (
@@ -43,7 +43,7 @@ export const useFileUpload = (
   } = options;
 
   const [isDragOver, setIsDragOver] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [_error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const generateFileId = useCallback(
@@ -165,7 +165,7 @@ export const useFileUpload = (
 
   return {
     isDragOver,
-    error,
+    _error,
     fileInputRef,
     handleDragOver,
     handleDragLeave,

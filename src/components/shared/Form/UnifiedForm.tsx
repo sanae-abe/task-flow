@@ -104,7 +104,7 @@ const UnifiedForm = memo<UnifiedFormProps>(
                 key={fieldConfig.id}
                 {...fieldConfig}
                 value={fieldValue}
-                error={fieldError}
+                _error={fieldError}
                 touched={fieldTouched}
                 disabled={disabled || fieldConfig.disabled}
                 onChange={handleFieldChange(fieldConfig)}

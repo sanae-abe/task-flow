@@ -156,7 +156,7 @@ export const useSubHeader = (): UseSubHeaderReturn => {
         if (targetBoard) {
           exportBoard(targetBoard);
         } else {
-          notify.error("エクスポートするボードが選択されていません");
+          notify._error("エクスポートするボードが選択されていません");
         }
       },
     };

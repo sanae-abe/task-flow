@@ -26,7 +26,7 @@ export const CheckboxField: React.FC<CheckboxFieldProps> = React.memo(
     onFocus,
     disabled = false,
     validation,
-    error,
+    _error,
     touched,
   }) => {
     /**
@@ -58,7 +58,7 @@ export const CheckboxField: React.FC<CheckboxFieldProps> = React.memo(
     }, [onFocus]);
 
     // エラー状態の判定
-    const hasError = Boolean(touched && error);
+    const hasError = Boolean(touched && _error);
 
     return (
       <Checkbox
@@ -74,7 +74,7 @@ export const CheckboxField: React.FC<CheckboxFieldProps> = React.memo(
         )}
         aria-required={validation?.required}
         aria-invalid={hasError}
-        aria-describedby={hasError ? `${id}-error` : undefined}
+        aria-describedby={hasError ? `${id}-_error` : undefined}
       />
     );
   },

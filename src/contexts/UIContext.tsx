@@ -67,8 +67,8 @@ const UIContext = createContext<UIContextType | undefined>(undefined);
 const saveSortOption = (sortOption: SortOption) => {
   try {
     localStorage.setItem("sort-option", JSON.stringify(sortOption));
-  } catch (error) {
-    logger.warn("Failed to save sort option to localStorage:", error);
+  } catch (_error) {
+    logger.warn("Failed to save sort option to localStorage:", _error);
   }
 };
 
@@ -76,8 +76,8 @@ const loadSortOption = (): SortOption => {
   try {
     const saved = localStorage.getItem("sort-option");
     return saved ? JSON.parse(saved) : "createdAt";
-  } catch (error) {
-    logger.warn("Failed to load sort option from localStorage:", error);
+  } catch (_error) {
+    logger.warn("Failed to load sort option from localStorage:", _error);
     return "createdAt";
   }
 };
@@ -85,8 +85,8 @@ const loadSortOption = (): SortOption => {
 const saveTaskFilter = (filter: TaskFilter) => {
   try {
     localStorage.setItem("task-filter", JSON.stringify(filter));
-  } catch (error) {
-    logger.warn("Failed to save task filter to localStorage:", error);
+  } catch (_error) {
+    logger.warn("Failed to save task filter to localStorage:", _error);
   }
 };
 
@@ -94,8 +94,8 @@ const loadTaskFilter = (): TaskFilter => {
   try {
     const saved = localStorage.getItem("task-filter");
     return saved ? JSON.parse(saved) : { type: "all", label: "すべて" };
-  } catch (error) {
-    logger.warn("Failed to load task filter from localStorage:", error);
+  } catch (_error) {
+    logger.warn("Failed to load task filter from localStorage:", _error);
     return { type: "all", label: "すべて" };
   }
 };
@@ -103,8 +103,8 @@ const loadTaskFilter = (): TaskFilter => {
 const saveViewMode = (mode: ViewMode) => {
   try {
     localStorage.setItem("view-mode", mode);
-  } catch (error) {
-    logger.warn("Failed to save view mode to localStorage:", error);
+  } catch (_error) {
+    logger.warn("Failed to save view mode to localStorage:", _error);
   }
 };
 
@@ -112,8 +112,8 @@ const loadViewMode = (): ViewMode => {
   try {
     const saved = localStorage.getItem("view-mode") as ViewMode;
     return saved || "kanban";
-  } catch (error) {
-    logger.warn("Failed to load view mode from localStorage:", error);
+  } catch (_error) {
+    logger.warn("Failed to load view mode from localStorage:", _error);
     return "kanban";
   }
 };
@@ -236,8 +236,8 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
         dispatch({ type: "LOAD_SORT_OPTION", payload: sortOption });
         dispatch({ type: "SET_TASK_FILTER", payload: taskFilter });
         dispatch({ type: "SET_VIEW_MODE", payload: viewMode });
-      } catch (error) {
-        logger.error("Failed to load initial UI data:", error);
+      } catch (_error) {
+        logger._error("Failed to load initial UI data:", _error);
       }
     };
 

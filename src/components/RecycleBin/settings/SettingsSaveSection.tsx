@@ -9,7 +9,7 @@ export interface SettingsSaveSectionProps {
   /** バリデーションエラーがあるかどうか */
   hasValidationError: boolean;
   /** 表示するメッセージ */
-  message: { text: string; type: 'success' | 'error' | 'warning' | 'info' } | null;
+  message: { text: string; type: 'success' | '_error' | 'warning' | 'info' } | null;
   /** 保存ハンドラ */
   onSave: () => Promise<void>;
 }

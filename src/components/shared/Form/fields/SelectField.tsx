@@ -31,7 +31,7 @@ export const SelectField: React.FC<SelectFieldProps> = React.memo(
     autoFocus = false,
     disabled = false,
     validation,
-    error,
+    _error,
     touched,
     sx,
     options = [],
@@ -65,7 +65,7 @@ export const SelectField: React.FC<SelectFieldProps> = React.memo(
     }, [onFocus]);
 
     // エラー状態の判定
-    const hasError = Boolean(touched && error);
+    const hasError = Boolean(touched && _error);
 
     return (
       <NativeSelect
@@ -83,7 +83,7 @@ export const SelectField: React.FC<SelectFieldProps> = React.memo(
         style={sx ? (sx as React.CSSProperties) : undefined}
         aria-required={validation?.required}
         aria-invalid={hasError}
-        aria-describedby={hasError ? `${id}-error` : undefined}
+        aria-describedby={hasError ? `${id}-_error` : undefined}
       >
         {placeholder && <NativeSelectOption value="">{placeholder}</NativeSelectOption>}
         {options.map((option) => (

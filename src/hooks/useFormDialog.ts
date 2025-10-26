@@ -43,9 +43,9 @@ export const useFormDialog = ({
     if (!required || trimmedValue.length >= minLength) {
       try {
         onSave(trimmedValue);
-      } catch (error) {
+      } catch (_error) {
         // eslint-disable-next-line no-console
-        console.error("Error saving form data:", error);
+        console.error("Error saving form data:", _error);
       }
     }
   }, [value, onSave, required, minLength]);

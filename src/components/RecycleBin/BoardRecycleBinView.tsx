@@ -51,9 +51,9 @@ const BoardRecycleBinView: React.FC<BoardRecycleBinViewProps> = ({
         type: "success",
         text: `ボード「${boardTitle}」を復元しました`,
       });
-    } catch (error) {
+    } catch (_error) {
       // eslint-disable-next-line no-console
-      console.error('Board restore failed:', error);
+      console.error('Board restore failed:', _error);
       onMessage?.({
         type: "danger",
         text: `ボード「${boardTitle}」の復元に失敗しました`,
@@ -77,9 +77,9 @@ const BoardRecycleBinView: React.FC<BoardRecycleBinViewProps> = ({
         type: "success",
         text: `ボード「${boardTitle}」を完全に削除しました`,
       });
-    } catch (error) {
+    } catch (_error) {
       // eslint-disable-next-line no-console
-      console.error('Board permanent delete failed:', error);
+      console.error('Board permanent delete failed:', _error);
       onMessage?.({
         type: "danger",
         text: `ボード「${boardTitle}」の完全削除に失敗しました`,
@@ -103,9 +103,9 @@ const BoardRecycleBinView: React.FC<BoardRecycleBinViewProps> = ({
         type: "success",
         text: `${boardCount}件のボードを完全に削除しました`,
       });
-    } catch (error) {
+    } catch (_error) {
       // eslint-disable-next-line no-console
-      console.error('Empty recycle bin failed:', error);
+      console.error('Empty recycle bin failed:', _error);
       onMessage?.({
         type: "danger",
         text: "ゴミ箱を空にすることに失敗しました",

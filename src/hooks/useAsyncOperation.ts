@@ -8,7 +8,7 @@ export interface UseAsyncOperationResult<T = void> {
   /** 現在実行中かどうか */
   isLoading: boolean;
   /** エラーメッセージ */
-  error: string | null;
+  _error: string | null;
   /** 非同期操作を実行する関数 */
   execute: (operation: () => Promise<T>) => Promise<T>;
   /** エラーをクリアする関数 */
@@ -19,7 +19,7 @@ export interface UseAsyncOperationResult<T = void> {
 
 export const useAsyncOperation = <T = void>(): UseAsyncOperationResult<T> => {
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [_error, setError] = useState<string | null>(null);
 
   const execute = useCallback(async (operation: () => Promise<T>): Promise<T> => {
     setIsLoading(true);
@@ -48,7 +48,7 @@ export const useAsyncOperation = <T = void>(): UseAsyncOperationResult<T> => {
 
   return {
     isLoading,
-    error,
+    _error,
     execute,
     clearError,
     reset,

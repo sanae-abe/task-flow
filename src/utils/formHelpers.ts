@@ -50,13 +50,13 @@ export const isEmptyValue = (value: unknown): boolean => {
  * バリデーションエラーを表示すべきかどうかを判定する
  *
  * @param touched - フィールドがタッチされたかどうか
- * @param error - エラーメッセージ
+ * @param _error - エラーメッセージ
  * @returns エラーを表示すべき場合はtrue
  */
 export const shouldShowError = (
   touched?: boolean,
-  error?: string | null,
-): boolean => Boolean(touched && error);
+  _error?: string | null,
+): boolean => Boolean(touched && _error);
 
 /**
  * Primer ReactのvalidationStatusを取得する
@@ -64,5 +64,5 @@ export const shouldShowError = (
  * @param hasError - エラーがあるかどうか
  * @returns validationStatus
  */
-export const getValidationStatus = (hasError: boolean): "error" | undefined =>
-  hasError ? "error" : undefined;
+export const getValidationStatus = (hasError: boolean): "_error" | undefined =>
+  hasError ? "_error" : undefined;

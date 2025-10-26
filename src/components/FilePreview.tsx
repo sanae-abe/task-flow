@@ -82,7 +82,7 @@ const FilePreview: React.FC<FilePreviewProps> = ({
       const getTextContent = () => {
         try {
           return atob(attachment.data);
-        } catch (error) {
+        } catch (_error) {
           return "ファイルの内容を読み込めませんでした。";
         }
       };

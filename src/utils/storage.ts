@@ -78,8 +78,8 @@ export const saveBoards = (
     if (currentBoardId) {
       localStorage.setItem("current-board-id", currentBoardId);
     }
-  } catch (error) {
-    logger.warn("Failed to save boards to localStorage:", error);
+  } catch (_error) {
+    logger.warn("Failed to save boards to localStorage:", _error);
   }
 };;
 
@@ -140,8 +140,8 @@ export const loadBoards = (): KanbanBoard[] => {
         })),
       })),
     }));
-  } catch (error) {
-    logger.warn("Failed to load boards from localStorage:", error);
+  } catch (_error) {
+    logger.warn("Failed to load boards from localStorage:", _error);
     return createDemoBoard();
   }
 };;
@@ -358,8 +358,8 @@ const authenticateUser = async (email, password) => {
   try {
     localStorage.setItem(DEMO_BACKUP_KEY, JSON.stringify([demoBoard]));
     logger.info("📖 Demo board backup saved successfully");
-  } catch (error) {
-    logger.warn("Failed to save demo board backup:", error);
+  } catch (_error) {
+    logger.warn("Failed to save demo board backup:", _error);
   }
 
   logger.info("📖 Demo board created successfully");
@@ -370,8 +370,8 @@ export const clearStorage = (): void => {
   try {
     localStorage.removeItem(STORAGE_KEY);
     localStorage.removeItem("current-board-id");
-  } catch (error) {
-    logger.warn("Failed to clear localStorage:", error);
+  } catch (_error) {
+    logger.warn("Failed to clear localStorage:", _error);
   }
 };
 
@@ -391,8 +391,8 @@ export const hasDemoBoard = (): boolean => {
     }
 
     return boards.some((board) => (board as unknown as Record<string, unknown>)[DEMO_BOARD_FLAG]);
-  } catch (error) {
-    logger.warn("Failed to check demo board existence:", error);
+  } catch (_error) {
+    logger.warn("Failed to check demo board existence:", _error);
     return false;
   }
 };
@@ -424,8 +424,8 @@ export const restoreDemoBoard = (): KanbanBoard[] => {
     
     logger.info("📖 Demo board restored successfully");
     return allBoards;
-  } catch (error) {
-    logger.error("Failed to restore demo board:", error);
+  } catch (_error) {
+    logger._error("Failed to restore demo board:", _error);
     // エラーの場合は既存のボードまたは新しいデモボードを返す
     try {
       const existingBoards = loadBoards();

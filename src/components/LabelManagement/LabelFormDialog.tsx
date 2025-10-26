@@ -171,7 +171,7 @@ const LabelFormDialog: React.FC<LabelFormDialogProps> = ({
       }
 
       onClose();
-    } catch (error) {
+    } catch (_error) {
       form.setError('name', 'ラベルの保存に失敗しました');
     }
   }, [onSave, onClose, form]);
@@ -223,7 +223,7 @@ const LabelFormDialog: React.FC<LabelFormDialogProps> = ({
             value={form.state.values[field.name]}
             onChange={(value) => form.setValue(field.name, value)}
             onBlur={() => form.setTouched(field.name, true)}
-            error={form.getFieldError(field.name)}
+            _error={form.getFieldError(field.name)}
             touched={form.state.touched[field.name]}
             disabled={form.state.isSubmitting}
           />

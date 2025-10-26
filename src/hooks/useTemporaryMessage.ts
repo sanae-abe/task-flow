@@ -2,7 +2,7 @@ import { useState, useCallback, useRef, useEffect } from "react";
 
 export interface TemporaryMessage {
   text: string;
-  type: 'success' | 'error' | 'warning' | 'info';
+  type: 'success' | '_error' | 'warning' | 'info';
 }
 
 /**

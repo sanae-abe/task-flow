@@ -54,10 +54,10 @@ const formReducer = (state: FormState, action: FormAction): FormState => {
 
     case "SET_FIELD_ERROR": {
       const newErrors = state.errors.filter(
-        (error) => error.fieldId !== action.fieldId,
+        (_error) => _error.fieldId !== action.fieldId,
       );
-      if (action.error) {
-        newErrors.push({ fieldId: action.fieldId, message: action.error });
+      if (action._error) {
+        newErrors.push({ fieldId: action.fieldId, message: action._error });
       }
 
       return {
@@ -184,8 +184,8 @@ export const useUnifiedForm = (
       if (state.touched[fieldId]) {
         const field = fields.find((f) => f.name === fieldId);
         if (field?.validation) {
-          const error = validateField(value, field.validation);
-          dispatch({ type: "SET_FIELD_ERROR", fieldId, error });
+          const _error = validateField(value, field.validation);
+          dispatch({ type: "SET_FIELD_ERROR", fieldId, _error });
         }
       }
     },
@@ -193,8 +193,8 @@ export const useUnifiedForm = (
   );
 
   // エラー設定
-  const setError = useCallback((fieldId: string, error: string | null) => {
-    dispatch({ type: "SET_FIELD_ERROR", fieldId, error });
+  const setError = useCallback((fieldId: string, _error: string | null) => {
+    dispatch({ type: "SET_FIELD_ERROR", fieldId, _error });
   }, []);
 
   // タッチ状態設定
@@ -211,10 +211,10 @@ export const useUnifiedForm = (
       }
 
       const value = state.values[fieldId];
-      const error = validateField(value, field.validation);
-      dispatch({ type: "SET_FIELD_ERROR", fieldId, error });
+      const _error = validateField(value, field.validation);
+      dispatch({ type: "SET_FIELD_ERROR", fieldId, _error });
 
-      return !error;
+      return !_error;
     },
     [fields, state.values],
   );
@@ -226,9 +226,9 @@ export const useUnifiedForm = (
     fields.forEach((field) => {
       if (field.validation) {
         const value = state.values[field.name];
-        const error = validateField(value, field.validation);
-        if (error) {
-          errors.push({ fieldId: field.name, message: error });
+        const _error = validateField(value, field.validation);
+        if (_error) {
+          errors.push({ fieldId: field.name, message: _error });
         }
       }
     });
@@ -263,9 +263,9 @@ export const useUnifiedForm = (
           }
 
           await onSubmit(state.values);
-        } catch (error) {
+        } catch (_error) {
           // eslint-disable-next-line no-console
-          console.error("Form submission error:", error);
+          console.error("Form submission _error:", _error);
         } finally {
           dispatch({ type: "SET_SUBMITTING", isSubmitting: false });
         }
@@ -276,15 +276,15 @@ export const useUnifiedForm = (
   // フィールドの有効性チェック
   const isFieldValid = useCallback(
     (fieldId: string): boolean =>
-      !state.errors.some((error) => error.fieldId === fieldId),
+      !state.errors.some((_error) => _error.fieldId === fieldId),
     [state.errors],
   );
 
   // フィールドエラー取得
   const getFieldError = useCallback(
     (fieldId: string): string | null => {
-      const error = state.errors.find((error) => error.fieldId === fieldId);
-      return error?.message ?? null;
+      const _error = state.errors.find((_error) => _error.fieldId === fieldId);
+      return _error?.message ?? null;
     },
     [state.errors],
   );

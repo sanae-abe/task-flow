@@ -66,14 +66,14 @@ export const TableColumnsProvider: React.FC<{ children: React.ReactNode }> = ({
         if (newColumns.length > 0) {
           try {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(result));
-          } catch (error) {
+          } catch (_error) {
             // Failed to update localStorage, continue silently
           }
         }
 
         return result;
       }
-    } catch (error) {
+    } catch (_error) {
       // Failed to load settings, will use defaults
     }
 
@@ -99,7 +99,7 @@ export const TableColumnsProvider: React.FC<{ children: React.ReactNode }> = ({
       // localStorageに保存
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(newSettings));
-      } catch (error) {
+      } catch (_error) {
         // Failed to save settings, continue silently
       }
 
@@ -124,7 +124,7 @@ export const TableColumnsProvider: React.FC<{ children: React.ReactNode }> = ({
       // localStorageに保存
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(newSettings));
-      } catch (error) {
+      } catch (_error) {
         // Failed to save settings, continue silently
       }
 
@@ -143,7 +143,7 @@ export const TableColumnsProvider: React.FC<{ children: React.ReactNode }> = ({
       // localStorageに保存
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(newSettings));
-      } catch (error) {
+      } catch (_error) {
         // Failed to save settings, continue silently
       }
 
@@ -174,7 +174,7 @@ export const TableColumnsProvider: React.FC<{ children: React.ReactNode }> = ({
       // localStorageに保存
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(newSettings));
-      } catch (error) {
+      } catch (_error) {
         // Failed to save settings, continue silently
       }
 

@@ -122,16 +122,16 @@ const updateCurrentBoardId = (boardId: string | null) => {
     } else {
       localStorage.removeItem("current-board-id");
     }
-  } catch (error) {
-    logger.warn("Failed to update current board ID in localStorage:", error);
+  } catch (_error) {
+    logger.warn("Failed to update current board ID in localStorage:", _error);
   }
 };
 
 const getCurrentBoardId = (): string | null => {
   try {
     return localStorage.getItem("current-board-id");
-  } catch (error) {
-    logger.warn("Failed to get current board ID from localStorage:", error);
+  } catch (_error) {
+    logger.warn("Failed to get current board ID from localStorage:", _error);
     return null;
   }
 };
@@ -749,9 +749,9 @@ export const BoardProvider: React.FC<BoardProviderProps> = ({ children }) => {
       try {
         const boardsData = loadBoards();
         dispatch({ type: "LOAD_BOARDS", payload: boardsData });
-      } catch (error) {
-        logger.error("Failed to load boards:", error);
-        notify.error("ボードデータの読み込みに失敗しました");
+      } catch (_error) {
+        logger._error("Failed to load boards:", _error);
+        notify._error("ボードデータの読み込みに失敗しました");
       }
     };
 
@@ -764,9 +764,9 @@ export const BoardProvider: React.FC<BoardProviderProps> = ({ children }) => {
     if (state.boards.length > 0) {
       try {
         saveBoards(state.boards);
-      } catch (error) {
-        logger.error("Failed to save boards:", error);
-        notify.error("ボードデータの保存に失敗しました");
+      } catch (_error) {
+        logger._error("Failed to save boards:", _error);
+        notify._error("ボードデータの保存に失敗しました");
       }
     }
   }, [state.boards, notify]);
@@ -826,7 +826,7 @@ export const BoardProvider: React.FC<BoardProviderProps> = ({ children }) => {
   const createColumn = useCallback(
     (title: string, insertIndex?: number) => {
       if (!currentBoard) {
-        notify.error("ボードが選択されていません");
+        notify._error("ボードが選択されていません");
         return;
       }
       dispatch({

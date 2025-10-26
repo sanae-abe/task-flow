@@ -187,19 +187,19 @@ export class TemplateStorage {
         "templates from localStorage",
       );
       return data.templates;
-    } catch (error) {
-      if (error instanceof SyntaxError) {
-        logger.error("Failed to parse template data:", error);
+    } catch (_error) {
+      if (_error instanceof SyntaxError) {
+        logger._error("Failed to parse template data:", _error);
         throw new TemplateStorageError(
           "PARSE_ERROR",
           "テンプレートデータの解析に失敗しました",
-          error,
+          _error,
         );
       }
       throw new TemplateStorageError(
         "UNKNOWN_ERROR",
         "テンプレートの読み込み中にエラーが発生しました",
-        error,
+        _error,
       );
     }
   }
@@ -218,7 +218,7 @@ export class TemplateStorage {
     // 各テンプレートをバリデート
     const invalidTemplates = templates.filter((t) => !validateTemplate(t));
     if (invalidTemplates.length > 0) {
-      logger.error("Invalid templates found:", invalidTemplates);
+      logger._error("Invalid templates found:", invalidTemplates);
       throw new TemplateStorageError(
         "VALIDATION_ERROR",
         `${invalidTemplates.length}個の無効なテンプレートが見つかりました`,
@@ -238,19 +238,19 @@ export class TemplateStorage {
         "templates",
       );
       localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-    } catch (error) {
-      if (error instanceof Error && error.name === "QuotaExceededError") {
-        logger.error("LocalStorage quota exceeded:", error);
+    } catch (_error) {
+      if (_error instanceof Error && _error.name === "QuotaExceededError") {
+        logger._error("LocalStorage quota exceeded:", _error);
         throw new TemplateStorageError(
           "QUOTA_EXCEEDED",
           "ストレージの容量制限を超えました",
-          error,
+          _error,
         );
       }
       throw new TemplateStorageError(
         "UNKNOWN_ERROR",
         "テンプレートの保存中にエラーが発生しました",
-        error,
+        _error,
       );
     }
   }
@@ -388,11 +388,11 @@ export class TemplateStorage {
     try {
       localStorage.removeItem(STORAGE_KEY);
       logger.info("Template storage cleared");
-    } catch (error) {
+    } catch (_error) {
       throw new TemplateStorageError(
         "UNKNOWN_ERROR",
         "ストレージのクリア中にエラーが発生しました",
-        error,
+        _error,
       );
     }
   }

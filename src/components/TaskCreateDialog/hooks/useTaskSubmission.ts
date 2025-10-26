@@ -7,7 +7,7 @@ import type { KanbanBoard } from '../../../types';
 // Notification function type
 type NotifyFunction = {
   success: (message: string) => void;
-  error: (message: string) => void;
+  _error: (message: string) => void;
 };
 
 // CreateTask function type
@@ -51,7 +51,7 @@ export const useTaskSubmission = (
       : currentBoard;
 
     if (!targetBoard) {
-      notify.error('タスクを作成するボードが選択されていません。');
+      notify._error('タスクを作成するボードが選択されていません。');
       return;
     }
 
@@ -102,7 +102,7 @@ export const useTaskSubmission = (
       closeTaskForm();
     } else {
       // カラムが存在しない場合のエラーハンドリング
-      notify.error('タスクを作成するためのカラムが存在しません。最初にカラムを作成してください。');
+      notify._error('タスクを作成するためのカラムが存在しません。最初にカラムを作成してください。');
     }
   }, [
     formState,

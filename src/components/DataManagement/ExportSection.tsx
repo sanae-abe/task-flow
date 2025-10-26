@@ -116,7 +116,7 @@ export const ExportSection = memo<ExportSectionProps>(({
         };
         onMessage?.(successMessage);
       }
-    } catch (error) {
+    } catch (_error) {
       const errorMessage = {
         type: 'critical' as const,
         text: 'エクスポートに失敗しました'
@@ -154,7 +154,7 @@ export const ExportSection = memo<ExportSectionProps>(({
             value={form.state.values[field.name]}
             onChange={(value) => form.setValue(field.name, value)}
             onBlur={() => form.setTouched(field.name, true)}
-            error={form.getFieldError(field.name)}
+            _error={form.getFieldError(field.name)}
             touched={form.state.touched[field.name]}
             disabled={form.state.isSubmitting}
           />
