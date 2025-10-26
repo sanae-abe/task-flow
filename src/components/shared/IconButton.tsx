@@ -60,7 +60,7 @@ const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(({
       case 'danger':
         return 'text-red-600 hover:text-red-700';
       case 'success':
-        return 'text-green-600 hover:text-green-700';
+        return 'text-green-700 hover:text-green-800';
       case 'warning':
         return 'text-yellow-600 hover:text-yellow-700';
       case 'muted':

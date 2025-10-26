@@ -30,7 +30,7 @@ export const DisplayView: React.FC<DisplayViewProps> = ({
           size="icon"
           onClick={onEdit}
           ariaLabel={`${subTask.title}を編集`}
-          className="w-6 h-6"
+          className="w-8 h-8 p-2"
           stopPropagation
         />
         <IconButton
@@ -38,7 +38,7 @@ export const DisplayView: React.FC<DisplayViewProps> = ({
           size="icon"
           onClick={onDelete}
           ariaLabel={`${subTask.title}を削除`}
-          className="w-6 h-6 mr-2"
+          className="w-8 h-8 p-2"
           stopPropagation
         />
       </div>

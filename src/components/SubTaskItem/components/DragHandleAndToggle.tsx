@@ -38,7 +38,9 @@ export const DragHandleAndToggle: React.FC<DragHandleAndToggleProps> = ({
           subTask.completed ? "未完了" : "完了"
         }にする`}
         variant="success"
+        size="icon"
         stopPropagation
+        className="w-8 h-8 p-2"
       />
     </div>
   );

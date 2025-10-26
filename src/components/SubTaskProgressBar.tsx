@@ -19,6 +19,7 @@ const SubTaskProgressBar: React.FC<SubTaskProgressBarProps> = ({
   return (
     <div className="mb-2">
       <Progress
+        color="bg-green-500"
         value={progressPercentage}
         className="h-[6px] bg-gray-300"
       />

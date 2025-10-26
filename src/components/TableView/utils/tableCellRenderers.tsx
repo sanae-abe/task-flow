@@ -54,7 +54,7 @@ export const renderActionsCell = (
  */
 export const renderTitleCell = (task: TaskWithColumn) => (
   <span
-    className={`block overflow-hidden text-ellipsis whitespace-nowrap font-semibold text-gray-900 text-sm ${
+    className={`block overflow-hidden text-ellipsis whitespace-nowrap text-gray-900 text-sm ${
       task.completedAt ? "line-through" : ""
     }`}
   >

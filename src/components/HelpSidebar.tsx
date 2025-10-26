@@ -147,11 +147,11 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
         </div>
 
         {/* Content */}
-        <div className="flex-1 p-4 overflow-y-auto">
+        <div className="flex-1 p-5 overflow-y-auto">
           <HelpSection
             title="ビュー切り替え"
             icon={Video}
-            background="var(--primary)"
+            background="rgb(29 78 216)"
           >
             <HelpItem
               title="カンバンビュー"
@@ -207,7 +207,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
           <HelpSection
             title="タスク管理"
             icon={List}
-            background="#0969DA"
+            background="rgb(29 78 216)"
           >
             <HelpItem
               title="タスク編集"

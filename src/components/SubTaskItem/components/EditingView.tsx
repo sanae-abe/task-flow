@@ -34,7 +34,7 @@ export const EditingView: React.FC<EditingViewProps> = ({
           size="icon"
           onClick={onSave}
           ariaLabel="編集を保存"
-          className="w-6 h-6"
+          className="w-8 h-8 p-2"
           stopPropagation
         />
         <IconButton
@@ -42,7 +42,7 @@ export const EditingView: React.FC<EditingViewProps> = ({
           size="icon"
           onClick={onCancel}
           ariaLabel="編集をキャンセル"
-          className="w-6 h-6 mr-2"
+          className="w-8 h-8 p-2"
           stopPropagation
         />
       </div>

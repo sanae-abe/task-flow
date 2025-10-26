@@ -119,7 +119,7 @@ const TaskDetailSidebar = memo<TaskDetailSidebarProps>(
           </div>
 
           {/* Content */}
-          <div ref={contentRef} className="flex-1 p-4 overflow-y-auto">
+          <div ref={contentRef} className="flex-1 p-5 overflow-y-auto">
             <TaskDisplayContent
               task={task}
               columnName={columnName}
@@ -137,7 +137,7 @@ const TaskDetailSidebar = memo<TaskDetailSidebarProps>(
           </div>
 
           {/* Actions */}
-          <div className="p-4 border-t border-gray-200 flex-shrink-0">
+          <div className="p-3 border-t border-gray-200 flex-shrink-0">
             <div className="flex gap-2">
               <Button
                 onClick={handleEdit}
