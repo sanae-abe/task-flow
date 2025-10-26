@@ -70,7 +70,8 @@
 - **テンプレート設定**: テンプレートカテゴリー・お気に入り・使用統計管理
 
 ### 🎨 UI/UX
-- **Primerデザイン**: GitHubのPrimerデザインシステム採用
+- **Shadcn/UI**: モダンで統一されたデザインシステム採用
+- **Tailwind CSS**: ユーティリティファーストによる柔軟なスタイリング
 - **レスポンシブ**: モバイル・デスクトップ対応
 - **アクセシビリティ**: WCAG準拠のアクセシブルUI
 - **ダークモード**: ユーザー設定に応じたテーマ対応
@@ -147,13 +148,14 @@ npm run seo:validate   # SEO検証（ビルド + Lighthouse）
 ### フロントエンド
 - **React 19.1.1**: UIライブラリ
 - **TypeScript 5.7.3**: 型安全性とDX向上
-- **Primer React**: GitHubのデザインシステム
-- **Styled Components**: CSS-in-JS
+- **Shadcn/UI**: モダンなUIコンポーネントライブラリ
+- **Tailwind CSS**: ユーティリティファーストCSS
+- **@radix-ui**: アクセシブルなプリミティブコンポーネント
 - **@dnd-kit**: ドラッグ&ドロップ機能
 - **Lexical 0.35.0**: 高性能リッチテキストエディタ
 - **emoji-picker-react**: リッチテキストエディタ用絵文字ピッカー
 - **date-fns 4.1.0**: 日付処理ライブラリ
-- **react-feather**: 追加アイコンライブラリ
+- **lucide-react**: 統一アイコンライブラリ
 - **DOMPurify**: HTMLサニタイズによるセキュリティ強化
 
 ### 開発ツール
@@ -263,7 +265,10 @@ MIT License - 詳細は [LICENSE](LICENSE) ファイルを参照
 
 ## 🙏 謝辞
 
-- [GitHub Primer](https://primer.style/) - デザインシステム
+- [Shadcn/UI](https://ui.shadcn.com/) - モダンなUIコンポーネントライブラリ
+- [Tailwind CSS](https://tailwindcss.com/) - ユーティリティファーストCSS
+- [Radix UI](https://www.radix-ui.com/) - アクセシブルなプリミティブコンポーネント
+- [Lucide](https://lucide.dev/) - 美しいアイコンライブラリ
 - [dnd kit](https://dndkit.com/) - ドラッグ&ドロップライブラリ
 - [Create React App](https://create-react-app.dev/) - 初期プロジェクト構成
 

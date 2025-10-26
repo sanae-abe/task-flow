@@ -5,16 +5,17 @@ React + TypeScriptで構築されたモダンなタスク管理アプリケー�
 
 ## 技術スタック
 - Frontend: React 19.1.1 + TypeScript 5.7.3
-- UI Framework: Primer React (GitHub Design System)
-- Styling: Styled Components
+- UI Framework: Shadcn/UI + @radix-ui/* (モダンなUIコンポーネント)
+- Styling: Tailwind CSS + CSS Variables
 - State Management: React Context API
-- Build Tool: Create React App (CRA)
+- Build Tool: Create React App (CRA) + Craco
 - Package Manager: npm
 - Drag & Drop: @dnd-kit
-- Icons: lucide-react (統一済み)
+- Icons: lucide-react (完全統一済み)
+- Color Picker: @uiw/react-color
 - Emoji Picker: emoji-picker-react
 - Rich Text Editor: Lexical 0.35.0
-- Date Utilities: date-fns 4.1.0
+- Date Utilities: date-fns 4.1.0 + react-day-picker
 - Security: DOMPurify (HTMLサニタイズ)
 
 ## 開発コマンド
