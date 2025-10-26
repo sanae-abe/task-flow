@@ -1,4 +1,4 @@
-import { DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import { DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Copy } from "lucide-react";
 import React from "react";
 
@@ -21,15 +21,15 @@ export const OtherBoardLabelSection: React.FC<OtherBoardLabelSectionProps> = ({
   return (
     <>
       <DropdownMenuSeparator />
-      <div className="px-2 py-1.5 text-sm font-semibold text-gray-700">他のボード</div>
+      <DropdownMenuLabel>他のボード</DropdownMenuLabel>
       {labels.map((label) => (
         <DropdownMenuItem
           key={label.id}
           onClick={() => onCopyAndSelectLabel(label)}
         >
+          <Copy size={16} className="mr-2" />
           <LabelColorCircle color={label.color} />
           <span className="ml-2 flex-1">{label.name}</span>
-          <Copy size={16} className="ml-auto" />
         </DropdownMenuItem>
       ))}
     </>

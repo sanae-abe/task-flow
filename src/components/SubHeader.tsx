@@ -9,7 +9,8 @@ import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import React from "react";
@@ -27,6 +28,7 @@ import FilterSelector from "./FilterSelector";
 import SubHeaderButton from "./SubHeaderButton";
 import TaskSortSelector from "./TaskSortSelector";
 import TaskStatsDisplay from "./TaskStatsDisplay";
+import { ViewMode } from "@/types";
 
 const SubHeader: React.FC = () => {
   const { setSortOption, setTaskFilter } = useKanban();
@@ -135,27 +137,29 @@ const SubHeader: React.FC = () => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem
-              onClick={() => navigateToView("kanban")}
+            <DropdownMenuRadioGroup value={state.viewMode} onValueChange={(value) => navigateToView(value as ViewMode)}>
+            <DropdownMenuRadioItem
+              value="kanban"
               className="flex items-center gap-2"
             >
               <SquareKanban size={16} />
               カンバン
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => navigateToView("calendar")}
+            </DropdownMenuRadioItem>
+            <DropdownMenuRadioItem
+              value="calendar"
               className="flex items-center gap-2"
             >
               <Calendar size={16} />
               カレンダー
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => navigateToView("table")}
+            </DropdownMenuRadioItem>
+            <DropdownMenuRadioItem
+              value="table"
               className="flex items-center gap-2"
             >
               <Table size={16} />
               テーブル
-            </DropdownMenuItem>
+            </DropdownMenuRadioItem>
+            </DropdownMenuRadioGroup>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
