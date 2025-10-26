@@ -245,11 +245,6 @@ export function DatePicker({
         </Popover>
       </div>
 
-      {/* ヘルプテキスト */}
-      <div id="date-picker-help" className="text-xs text-muted-foreground">
-        例: 2024-01-15, 2024年1月15日, 1月15日
-      </div>
-
       {/* エラーメッセージ */}
       {_error && (
         <div id="date-picker-error" className="text-xs text-destructive" role="alert">

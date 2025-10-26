@@ -29,7 +29,7 @@ export const DescriptionCard: React.FC<DescriptionCardProps> = ({ item }) => {
 
       {/* 説明文本文 */}
       <LinkifiedText
-        className="text-sm sm:text-base whitespace-pre-wrap break-words leading-normal text-foreground m-0 max-h-[200px] sm:max-h-[200px] overflow-auto max-[543px]:text-xs max-[543px]:max-h-[150px]"
+        className="text-sm whitespace-pre-wrap break-words leading-normal text-foreground m-0 max-h-[200px] sm:max-h-[200px] overflow-auto max-[543px]:max-h-[150px]"
       >
         {item.description}
       </LinkifiedText>

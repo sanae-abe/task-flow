@@ -111,7 +111,7 @@ const SortableColumnItem: React.FC<SortableColumnItemProps> = ({
       >
         <GripVertical size={16} />
       </div>
-      <div className="flex-1 gap-1">
+      <div className="flex flex-col flex-1 gap-1">
         <Input
           value={localName}
           onChange={handleInputChange}
@@ -421,20 +421,9 @@ export const BoardSettingsPanel: React.FC = () => {
         新しいボードを作成する際のデフォルトカラムを設定できます。
       </span>
 
-      {/* メッセージ表示 */}
-      {saveMessage && (
-        <div className="mb-4">
-          <InlineMessage
-            variant={saveMessageType === 'success' ? 'success' : 'critical'}
-            message={saveMessage}
-            size="small"
-          />
-        </div>
-      )}
-
       {/* カラム追加フォーム */}
       <div className="mb-4">
-        <div className="flex items-center gap-2 mb-3">
+        <div className="flex items-center gap-2 mb-2">
           <Input
             value={newColumnName}
             onChange={(e) => setNewColumnName(e.target.value)}
@@ -485,14 +474,26 @@ export const BoardSettingsPanel: React.FC = () => {
       {/* 保存ボタン */}
       <div className="flex justify-end mt-4">
         <Button
+          variant="default"
           onClick={handleSave}
           disabled={!hasUnsavedChanges || columns.length === 0}
-          className="px-4"
+          className="gap-2"
         >
           <Check size={16} />
           保存
         </Button>
       </div>
+
+      {/* メッセージ表示 */}
+      {saveMessage && (
+        <div className="mb-4 flex justify-end mt-2">
+          <InlineMessage
+            variant={saveMessageType === 'success' ? 'success' : 'critical'}
+            message={saveMessage}
+            size="small"
+          />
+        </div>
+      )}
     </div>
   );
 };

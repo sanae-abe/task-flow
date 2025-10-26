@@ -126,7 +126,7 @@ export const TemplateDataTable: React.FC<TemplateDataTableProps> = ({
               variant="ghost"
               size="icon"
               onClick={() => onDelete(template)}
-              className="h-8 w-8 p-0 text-destructive hover:text-destructive"
+              className="h-8 w-8 p-0"
               title="削除"
             >
               <Trash2 className="h-4 w-4" />
