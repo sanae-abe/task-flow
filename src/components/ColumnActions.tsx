@@ -38,7 +38,7 @@ const ColumnActions: React.FC<ColumnActionsProps> = ({
     variant: 'invisible',
     size: 'icon',
     ariaLabel: 'カラム設定',
-    className: 'w-6 h-6 p-0 hover:bg-transparent',
+    className: 'w-6 h-6 p-0 hover:bg-transparent justify-center',
   }), []);
 
   // メニューグループ設定

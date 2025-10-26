@@ -1,2 +1,6 @@
-export { EDITOR_STYLES, createInlineStyleString } from './editorStyles';
-export { escapeHtml, insertHtmlAtCursor } from './htmlHelpers';
+/**
+ * Utility functions exports for RichTextEditor
+ */
+
+export * from './editor';
+export * from './formatting';

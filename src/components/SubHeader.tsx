@@ -82,7 +82,7 @@ const SubHeader: React.FC = () => {
     <div className="bg-white border-b border-gray-200 px-5 py-1 z-[150] flex items-center justify-between w-full overflow-hidden text-sm text-muted-default"> 
       <TaskStatsDisplay stats={taskStats} />
 
-      <div className="flex items-center gap-1">
+      <div className="flex items-center">
         <FilterSelector
           currentFilter={state.taskFilter}
           onFilterChange={setTaskFilter}
