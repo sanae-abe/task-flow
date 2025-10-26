@@ -1,7 +1,7 @@
 /**
  * Label Management Data Table Component
  *
- * shadcn/ui data-tableベースのラベル管理テーブル
+ * shadcn/ui data-table ベースのラベル管理テーブル
  */
 
 import React from "react";
@@ -68,14 +68,14 @@ export const LabelDataTable: React.FC<LabelDataTableProps> = ({
     },
     {
       id: "actions",
-      header: "操作",
+      header: "",
       cell: ({ row }) => {
         const label = row.original;
         return (
           <div className="flex items-center justify-center gap-1">
             <Button
               variant="ghost"
-              size="sm"
+              size="icon"
               onClick={() => onEdit(label)}
               className="h-8 w-8 p-0"
               title="編集"
@@ -84,7 +84,7 @@ export const LabelDataTable: React.FC<LabelDataTableProps> = ({
             </Button>
             <Button
               variant="ghost"
-              size="sm"
+              size="icon"
               onClick={() => onDelete(label)}
               className="h-8 w-8 p-0 text-destructive hover:text-destructive"
               title="削除"

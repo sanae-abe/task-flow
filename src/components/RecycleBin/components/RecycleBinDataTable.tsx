@@ -1,7 +1,7 @@
 /**
  * Recycle Bin Data Table Component
  *
- * shadcn/ui data-tableベースのごみ箱テーブル
+ * shadcn/ui data-table ベースのごみ箱テーブル
  */
 
 import React from "react";
@@ -78,9 +78,9 @@ export const RecycleBinDataTable: React.FC<RecycleBinDataTableProps> = ({
       cell: ({ row }) => {
         const item = row.original;
         return (
-          <span className="text-base font-semibold break-words text-gray-900">
+          <>
             {item.title}
-          </span>
+          </>
         );
       },
     },
@@ -90,12 +90,12 @@ export const RecycleBinDataTable: React.FC<RecycleBinDataTableProps> = ({
       cell: ({ row }) => {
         const item = row.original;
         return (
-          <div className="flex justify-center gap-1">
+          <div className="flex items-center justify-center gap-1 text-sm">
             {item.timeUntilDeletion ? (
               <>
                 <Clock size={14} />
                 <span
-                  className={`text-sm text-center ${
+                  className={`${
                     recycleBinSettings.retentionDays === null ? 'text-gray-500' : 'text-gray-900'
                   }`}
                 >
@@ -103,7 +103,7 @@ export const RecycleBinDataTable: React.FC<RecycleBinDataTableProps> = ({
                 </span>
               </>
             ) : (
-              <span className="text-sm text-gray-500 text-center">
+              <span className="text-gray-500 text-center">
                 未設定
               </span>
             )}
@@ -113,7 +113,7 @@ export const RecycleBinDataTable: React.FC<RecycleBinDataTableProps> = ({
     },
     {
       id: "actions",
-      header: "操作",
+      header: "",
       cell: ({ row }) => {
         const item = row.original;
         return (

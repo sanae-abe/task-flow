@@ -1,7 +1,7 @@
 /**
  * Template Management Data Table Component
  *
- * shadcn/ui data-tableベースのテンプレート管理テーブル
+ * shadcn/ui data-table ベースのテンプレート管理テーブル
  */
 
 import React from "react";
@@ -108,14 +108,14 @@ export const TemplateDataTable: React.FC<TemplateDataTableProps> = ({
     },
     {
       id: "actions",
-      header: "操作",
+      header: "",
       cell: ({ row }) => {
         const template = row.original;
         return (
           <div className="flex items-center justify-center gap-1">
             <Button
               variant="ghost"
-              size="sm"
+              size="icon"
               onClick={() => onEdit(template)}
               className="h-8 w-8 p-0"
               title="編集"
@@ -124,7 +124,7 @@ export const TemplateDataTable: React.FC<TemplateDataTableProps> = ({
             </Button>
             <Button
               variant="ghost"
-              size="sm"
+              size="icon"
               onClick={() => onDelete(template)}
               className="h-8 w-8 p-0 text-destructive hover:text-destructive"
               title="削除"

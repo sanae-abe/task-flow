@@ -94,7 +94,7 @@ const TemplateTableHeader: React.FC<TemplateTableHeaderProps> = ({
       使用数
     </SortableHeader>
 
-    <span className="text-center text-xs p-2">操作</span>
+    <span className="block text-center text-xs p-2">操作</span>
   </div>
 );
 

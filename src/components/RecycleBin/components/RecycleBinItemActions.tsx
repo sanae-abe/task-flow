@@ -40,31 +40,31 @@ export const RecycleBinItemActions: React.FC<RecycleBinItemActionsProps> = ({
   const itemTypeText = item.type === 'board' ? 'ボード' : item.type === 'column' ? 'カラム' : 'タスク';
 
   return (
-    <div className="flex justify-center gap-1">
+    <div className="flex justify-center">
       <Button
         variant="ghost"
-        size="sm"
+        size="icon"
         aria-label={`${itemTypeText}「${item.title}」の詳細を表示`}
         onClick={() => onShowDetail(item)}
-        className="p-1 h-auto min-w-0"
+        className="w-8 -h-8 hover:bg-transparent"
       >
         <Eye size={16} />
       </Button>
       <Button
         variant="ghost"
-        size="sm"
+        size="icon"
         aria-label={`${itemTypeText}「${item.title}」を復元`}
         onClick={() => onRestore(item)}
-        className="p-1 h-auto min-w-0"
+        className="w-8 -h-8 hover:bg-transparent"
       >
         <RotateCcw size={16} />
       </Button>
       <Button
         variant="ghost"
-        size="sm"
+        size="icon"
         aria-label={`${itemTypeText}「${item.title}」を完全に削除`}
         onClick={() => onDelete(item)}
-        className="p-1 h-auto min-w-0"
+        className="w-8 -h-8 hover:bg-transparent"
       >
         <Trash2 size={16} />
       </Button>
