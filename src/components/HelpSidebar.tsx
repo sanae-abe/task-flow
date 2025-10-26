@@ -39,7 +39,7 @@ const HelpSection: React.FC<HelpSectionProps> = ({
   title,
   icon: Icon,
   children,
-  background = "var(--primary)",
+  background = "#0969DA",
 }) => (
   <>
     <div className="flex items-center gap-2 mb-3">
@@ -130,7 +130,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
         <div className="flex items-start justify-between border-b border-border flex-shrink-0 pt-[17px] pb-4 px-4">
           <h1
             id="help-title"
-            className="flex items-center gap-2 text-xl font-medium"
+            className="flex items-center gap-2 text-xl font-bold"
           >
             <Logo />
             使い方ガイド
@@ -207,7 +207,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
           <HelpSection
             title="タスク管理"
             icon={List}
-            background="var(--primary)"
+            background="#0969DA"
           >
             <HelpItem
               title="タスク編集"
@@ -290,7 +290,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
           <HelpSection
             title="テーブルビュー"
             icon={Table}
-            background="var(--primary)"
+            background="#0969DA"
           >
             <HelpItem
               title="カラム管理"

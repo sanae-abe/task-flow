@@ -3,6 +3,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
 import type { TaskTemplate } from '../../types/template';
 import { useKanban } from '../../contexts/KanbanContext';
+import { useBoard } from '../../contexts/BoardContext';
 import { useSonnerNotify } from '../../hooks/useSonnerNotify';
 import { useFormChangeDetector } from '../../hooks/useFormChangeDetector';
 import UnifiedDialog from '../shared/Dialog/UnifiedDialog';
@@ -30,12 +31,14 @@ import { TemplateSelector, TaskFormFields } from './components';
  */
 const TaskCreateDialog = memo(() => {
   const { state, closeTaskForm, createTask } = useKanban();
+  const { state: boardState, setCurrentBoard } = useBoard();
   const notify = useSonnerNotify();
 
   // カスタムフック: フォーム状態管理
   const { formState, formActions, handleTimeChange, isFormValid } = useTaskForm(
     state.isTaskFormOpen,
-    state.taskFormDefaultDate ? state.taskFormDefaultDate.toISOString().split('T')[0] : undefined
+    state.taskFormDefaultDate ? state.taskFormDefaultDate.toISOString().split('T')[0] : undefined,
+    state.currentBoard?.id
   );
 
   // カスタムフック: テンプレート選択管理
@@ -53,7 +56,9 @@ const TaskCreateDialog = memo(() => {
     closeTaskForm,
     notify,
     state.currentBoard,
-    state.taskFormDefaultStatus
+    state.taskFormDefaultStatus,
+    boardState.boards,
+    setCurrentBoard
   );
 
   // フォーム変更検知のためのデータ
@@ -68,6 +73,7 @@ const TaskCreateDialog = memo(() => {
     recurrence: formState.recurrence,
     priority: formState.priority,
     selectedTemplate: templateState.selectedTemplate,
+    selectedBoardId: formState.selectedBoardId,
   }), [
     formState.title,
     formState.description,
@@ -78,6 +84,7 @@ const TaskCreateDialog = memo(() => {
     formState.attachments,
     formState.recurrence,
     formState.priority,
+    formState.selectedBoardId,
     templateState.selectedTemplate,
   ]);
 
@@ -102,6 +109,14 @@ const TaskCreateDialog = memo(() => {
     };
     handleClose(closeAction);
   }, [handleClose, resetTemplateSelection, closeTaskForm]);
+
+  // 利用可能なボード一覧（現在のボード以外）
+  const availableBoards = useMemo(() =>
+    boardState.boards.map(board => ({
+      id: board.id,
+      title: board.title
+    }))
+  , [boardState.boards]);
 
   // 早期リターン：ダイアログが開いていない場合
   if (!state.isTaskFormOpen || !state.currentBoard) {
@@ -135,6 +150,7 @@ const TaskCreateDialog = memo(() => {
                 selectedTemplate={templateState.selectedTemplate}
                 onTimeChange={handleTimeChange}
                 onKeyPress={handleKeyPress}
+                availableBoards={availableBoards}
               />
             </TabsContent>
 
