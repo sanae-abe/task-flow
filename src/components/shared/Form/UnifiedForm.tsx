@@ -93,7 +93,7 @@ const UnifiedForm = memo<UnifiedFormProps>(
         className={className}
         autoComplete={autoComplete ? "on" : "off"}
       >
-        <div className="flex flex-col space-y-4">
+        <div className="flex flex-col space-y-4 mt-2">
           {fields.map((fieldConfig) => {
             const fieldValue = state.values[fieldConfig.name];
             const fieldError = getFieldError(fieldConfig.name);
