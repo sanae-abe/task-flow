@@ -8,33 +8,33 @@ import type { RecycleBinItem } from '../../../../../types/recycleBin';
 // アイテム種別別のカラーパレット
 export const itemTypeColors = {
   task: {
-    icon: 'accent.fg',
-    border: 'accent.muted',
-    background: 'accent.subtle',
+    icon: 'rgb(37 99 235)', // blue-600
+    border: 'rgb(219 234 254)', // blue-100
+    background: 'rgb(239 246 255)', // blue-50
     badge: {
-      bg: 'accent.subtle',
-      fg: 'accent.fg',
+      bg: 'rgb(219 234 254)', // blue-100
+      fg: 'rgb(37 99 235)', // blue-600
     },
   },
   board: {
-    icon: 'attention.fg',
-    border: 'attention.muted',
-    background: 'attention.subtle',
+    icon: 'rgb(245 158 11)', // amber-500
+    border: 'rgb(254 243 199)', // amber-100
+    background: 'rgb(255 251 235)', // amber-50
     badge: {
-      bg: 'attention.subtle',
-      fg: 'attention.fg',
+      bg: 'rgb(254 243 199)', // amber-100
+      fg: 'rgb(245 158 11)', // amber-500
     },
   },
   column: {
-    icon: 'success.fg',
-    border: 'success.muted',
-    background: 'success.subtle',
+    icon: 'rgb(34 197 94)', // green-500
+    border: 'rgb(220 252 231)', // green-100
+    background: 'rgb(240 253 244)', // green-50
     badge: {
-      bg: 'success.subtle',
-      fg: 'success.fg',
+      bg: 'rgb(220 252 231)', // green-100
+      fg: 'rgb(34 197 94)', // green-500
     },
   },
-} as const;
+} as const;;
 
 // スペーシングトークン（Primer準拠）
 export const spacing = {

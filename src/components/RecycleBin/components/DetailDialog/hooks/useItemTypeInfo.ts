@@ -69,16 +69,22 @@ export const useItemTypeInfo = (type: RecycleBinItem['type']) => useMemo(() => {
       iconProps: {
         size: 20,
         'aria-hidden': true,
-        style: { flexShrink: 0 },
+        style: { 
+          flexShrink: 0,
+          color: colors.icon,
+        },
       },
       // Hero Sectionアイコン用（大きめ）
       heroIconProps: {
         size: 24,
         'aria-hidden': true,
-        style: { flexShrink: 0 },
+        style: { 
+          flexShrink: 0,
+          color: colors.icon,
+        },
       },
     };
-  }, [type]);
+  }, [type]);;
 
 /**
  * 複数アイテムのメタデータを生成するヘルパー
