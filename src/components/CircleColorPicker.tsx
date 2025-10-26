@@ -1,8 +1,8 @@
 import { memo, useCallback } from 'react';
-import { Circle } from '@uiw/react-color';
 import { cn } from '@/lib/utils';
 
 import { LABEL_COLORS } from '../utils/labels';
+import { getLabelColors } from '../utils/labelHelpers';
 
 interface CircleColorPickerProps {
   readonly selectedColor: string;
@@ -12,16 +12,11 @@ interface CircleColorPickerProps {
 
 const CircleColorPicker = memo<CircleColorPickerProps>(
   ({ selectedColor, onColorSelect, className }) => {
-    // @uiw/react-colorのCircleコンポーネント用の色配列を作成
-    const colors = LABEL_COLORS.map(color => color.variant);
-
     // 色選択ハンドラー
-    const handleColorChange = useCallback(
-      (color: { hex?: string } | string) => {
+    const handleColorSelect = useCallback(
+      (color: string) => {
         try {
-          // @uiw/react-colorからの色データを処理
-          const hexColor = typeof color === 'string' ? color : color.hex || '#0969da';
-          onColorSelect(hexColor);
+          onColorSelect(color);
         } catch (error) {
           // ESLintルールに従い、error handling only
         }
@@ -30,33 +25,30 @@ const CircleColorPicker = memo<CircleColorPickerProps>(
     );
 
     return (
-      <div className={cn('flex justify-start', className)}>
-        <Circle
-          color={selectedColor}
-          colors={colors}
-          onChange={handleColorChange}
-          // カスタムスタイル設定
-          style={{
-            width: 'auto',
-            boxShadow: 'none',
-            padding: '0',
-          }}
-          // 円形カラーピッカーの設定
-          pointProps={{
-            style: {
-              width: '24px',
-              height: '24px',
-              marginRight: '10px',
-              marginBottom: '10px',
-              borderRadius: '50%',
-              border: '3px solid #fff',
-              boxShadow: '0 0 0 1px rgba(0,0,0,0.15), 0 2px 8px rgba(0,0,0,0.15)',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease-in-out',
-              position: 'relative',
-            },
-          }}
-        />
+      <div className={cn('flex flex-wrap gap-2 justify-start', className)}>
+        {LABEL_COLORS.map((color) => {
+          const colors = getLabelColors(color.variant);
+          const isSelected = selectedColor === color.variant;
+
+          return (
+            <button
+              key={color.variant}
+              type="button"
+              onClick={() => handleColorSelect(color.variant)}
+              aria-label={`${color.name}色を選択`}
+              className={cn(
+                'w-6 h-6 rounded-full border-2 transition-all duration-200 ease-in-out shadow-none',
+                'hover:scale-110 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2',
+              )}
+              style={{
+                background: isSelected ? "#ffffff" : colors.bg,
+                borderColor: isSelected ? colors.bg : 'transparent',
+                boxShadow: isSelected ? `0 0 4px ${colors.bg}` : 'none',
+                borderTopColor: isSelected ? colors.bg : 'transparent'
+              }}
+            />
+          );
+        })}
       </div>
     );
   },
