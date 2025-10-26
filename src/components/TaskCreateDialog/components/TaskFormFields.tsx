@@ -61,7 +61,7 @@ export const TaskFormFields: React.FC<TaskFormFieldsProps> = ({
       {selectedTemplate && (
         <div className="mb-6">
           <DialogFlashMessage message={{
-            type: 'default',
+            type: 'info',
             text: `テンプレート「${selectedTemplate.name}」から作成中`,
           }}
             isStatic
