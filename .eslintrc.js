@@ -23,7 +23,7 @@ module.exports = {
     // React rules
     'react/jsx-uses-react': 'off',
     'react/react-in-jsx-scope': 'off',
-    'react/jsx-props-no-spreading': ['warn', { 
+    'react/jsx-props-no-spreading': ['warn', {
       html: 'enforce',
       custom: 'ignore',
       explicitSpread: 'ignore'
@@ -114,6 +114,13 @@ module.exports = {
       files: ['**/*.tsx'],
       rules: {
         '@typescript-eslint/explicit-function-return-type': 'off'
+      }
+    },
+    {
+      files: ['src/components/ui/**/*.{ts,tsx}'],
+      rules: {
+        // Shadcn/UI components need prop spreading for flexibility
+        'react/jsx-props-no-spreading': 'off'
       }
     },
     {

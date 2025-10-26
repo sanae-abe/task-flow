@@ -33,7 +33,8 @@ const EditorContent: React.FC<EditorContentProps> = ({
     if (editorRef.current && editorRef.current.innerHTML !== value) {
       editorRef.current.innerHTML = value;
     }
-  }, [value]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value]); // editorRef is intentionally omitted to prevent infinite loops
 
   // Check if we should show placeholder
   const showPlaceholder = !value && !isEditorFocused;

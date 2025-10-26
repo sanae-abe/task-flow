@@ -53,7 +53,8 @@ export const useEditorHandlers = ({
     if (editorRef.current && onChange && !disabled) {
       onChange(editorRef.current.innerHTML);
     }
-  }, [onChange, disabled]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [onChange, disabled]); // editorRef is intentionally omitted (stable ref)
 
   // Handle editor focus
   const handleFocus = useCallback(() => {
@@ -134,7 +135,8 @@ export const useEditorHandlers = ({
         }
       }
     }
-  }, [disabled, handleInput, setSelectedText, setSavedRange, setShowLinkDialog]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [disabled, handleInput, setSelectedText, setSavedRange, setShowLinkDialog]); // editorRef is intentionally omitted (stable ref)
 
   // Handle paste events
   const handlePaste = useCallback((event: React.ClipboardEvent) => {
@@ -206,6 +208,7 @@ export const useEditorHandlers = ({
     }
 
     setTimeout(() => setIsToolbarInteraction(false), 100);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     disabled,
     handleInput,
@@ -215,7 +218,7 @@ export const useEditorHandlers = ({
     setShowLinkDialog,
     setSavedEmojiRange,
     setShowEmojiPicker
-  ]);
+  ]); // editorRef is intentionally omitted (stable ref)
 
   // Handle link insertion
   const handleLinkInsert = useCallback((url: string) => {
@@ -230,7 +233,8 @@ export const useEditorHandlers = ({
     setShowLinkDialog(false);
     setSelectedText("");
     setSavedRange(null);
-  }, [savedRange, editorState.selectedText, handleInput, setShowLinkDialog, setSelectedText, setSavedRange]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [savedRange, editorState.selectedText, handleInput, setShowLinkDialog, setSelectedText, setSavedRange]); // editorRef is intentionally omitted (stable ref)
 
   // Handle link editing
   const handleLinkEdit = useCallback((url: string) => {

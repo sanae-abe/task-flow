@@ -6,6 +6,7 @@
       "DOM.Iterable",
       "ES2022"
     ],
+    "types": ["vite/client"],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -15,6 +16,7 @@
     "noFallthroughCasesInSwitch": true,
     "module": "ESNext",
     "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
