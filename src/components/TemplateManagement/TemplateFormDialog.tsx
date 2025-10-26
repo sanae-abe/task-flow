@@ -192,10 +192,10 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
           テンプレート情報
         </div>
         {/* テンプレート基本情報 */}
-        <div className="p-3 rounded-md bg-neutral-100 border border-border">
+        <div className="flex flex-col gap-4 p-3 rounded-md bg-neutral-100 border border-border">
 
           {/* テンプレート名 */}
-          <div className="mb-3">
+          <div className="flex flex-col gap-1">
             <label className="text-sm font-medium" htmlFor="template-name">
               テンプレート名
               <span className="text-red-500 ml-1">*</span>
@@ -220,7 +220,7 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
           </div>
 
           {/* テンプレート説明 */}
-          <div className="mb-3">
+          <div className="flex flex-col gap-1">
             <label className="text-sm font-medium" htmlFor="template-description">
               説明
             </label>
@@ -249,9 +249,9 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
         <div className="mt-6 mb-3 font-bold text-base">
             作成されるタスク
         </div>
-        <div className="p-3 bg-neutral-100 rounded-md border border-border">
+        <div className="flex flex-col gap-4 p-3 bg-neutral-100 rounded-md border border-border">
           {/* タスクタイトル */}
-          <div className="mb-3">
+          <div className="flex flex-col gap-1">
             <label className="text-sm font-medium" htmlFor="task-title">
               タスクタイトル
               <span className="text-red-500 ml-1">*</span>
@@ -275,7 +275,7 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
           </div>
 
           {/* タスク説明 */}
-          <div className="mb-3">
+          <div className="flex flex-col gap-1">
             <label className="text-sm font-medium" htmlFor="task-description">
               タスク説明
             </label>
@@ -291,14 +291,12 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
           </div>
 
           {/* 優先度 */}
-          <div className="mb-4">
-            <PrioritySelector
-              priority={formData.priority}
-              onPriorityChange={handlePriorityChange}
-              disabled={isLoading}
-              variant="full"
-            />
-          </div>
+          <PrioritySelector
+            priority={formData.priority}
+            onPriorityChange={handlePriorityChange}
+            disabled={isLoading}
+            variant="full"
+          />
 
           {/* ラベル */}
           <div>

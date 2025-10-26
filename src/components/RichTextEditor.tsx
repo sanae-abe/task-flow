@@ -606,7 +606,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
       {/* ツールバー */}
       {shouldShowToolbar && (
         <div
-          className="p-2 border-b border-border bg-neutral-100"
+          className="p-2 border-b border-border bg-neutral-100 relative z-[100]"
         >
           <div className="flex gap-1">
             <Button
