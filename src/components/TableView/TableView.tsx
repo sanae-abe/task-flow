@@ -1,9 +1,11 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import type { TaskWithColumn } from "../../types/table";
+import type { Task } from "../../types";
 
 import { useKanban } from "../../contexts/KanbanContext";
 import { useTableColumns } from "../../contexts/TableColumnsContext";
 import DeleteConfirmDialog from "../DeleteConfirmDialog";
+import TaskEditDialog from "../TaskEditDialog";
 
 // カスタムフック
 import { useTableData, useTableActions, useDeleteConfirm } from "./hooks";
@@ -28,9 +30,13 @@ import { getCompletionRate } from "./utils/tableHelpers";
  * - EmptyState：空状態の表示
  */
 const TableView: React.FC = () => {
-  const { state, moveTask, deleteTask, setTaskFilter, openTaskDetail } =
+  const { state, moveTask, deleteTask, updateTask, setTaskFilter, openTaskDetail } =
     useKanban();
   const tableColumnsData = useTableColumns();
+
+  // TaskEditDialog状態管理
+  const [editingTask, setEditingTask] = useState<TaskWithColumn | null>(null);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
   // カスタムフック: 削除確認ダイアログ管理
   const { deleteConfirmDialog, setDeleteConfirmDialog } = useDeleteConfirm();
@@ -52,10 +58,33 @@ const TableView: React.FC = () => {
     setDeleteConfirmDialog,
   );
 
-  // タスク編集ハンドラー
+  // タスク編集ハンドラー - TaskEditDialogを直接開く
   const handleTaskEdit = useCallback((task: TaskWithColumn) => {
-    openTaskDetail(task.id);
-  }, [openTaskDetail]);
+    setEditingTask(task);
+    setIsEditDialogOpen(true);
+  }, []);
+
+  // TaskEditDialog: 保存ハンドラー
+  const handleEditSave = useCallback((updatedTask: Task) => {
+    updateTask(updatedTask.id, updatedTask);
+    setIsEditDialogOpen(false);
+    setEditingTask(null);
+  }, [updateTask]);
+
+  // TaskEditDialog: 削除ハンドラー
+  const handleEditDelete = useCallback((taskId: string) => {
+    if (editingTask) {
+      deleteTask(taskId, editingTask.columnId);
+      setIsEditDialogOpen(false);
+      setEditingTask(null);
+    }
+  }, [deleteTask, editingTask]);
+
+  // TaskEditDialog: キャンセルハンドラー
+  const handleEditCancel = useCallback(() => {
+    setIsEditDialogOpen(false);
+    setEditingTask(null);
+  }, []);
 
   // セル描画関数
   const renderCell = useCallback(
@@ -155,6 +184,15 @@ const TableView: React.FC = () => {
         onClose={tableActions.handleDeleteDialogClose}
         onConfirm={tableActions.handleTaskDelete}
         taskTitle={deleteConfirmDialog.task?.title || ""}
+      />
+
+      {/* タスク編集ダイアログ */}
+      <TaskEditDialog
+        task={editingTask}
+        isOpen={isEditDialogOpen}
+        onSave={handleEditSave}
+        onDelete={handleEditDelete}
+        onCancel={handleEditCancel}
       />
     </div>
   );
