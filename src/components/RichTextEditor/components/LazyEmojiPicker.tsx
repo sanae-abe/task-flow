@@ -34,7 +34,7 @@ const EmojiPickerLoading: React.FC = () => (
   >
     <div className="flex items-center justify-center h-full">
       <div className="flex flex-col items-center space-y-2">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-600"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-600" />
         <p className="text-sm text-gray-600">絵文字ピッカーを読み込み中...</p>
       </div>
     </div>

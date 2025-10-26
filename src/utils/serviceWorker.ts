@@ -114,7 +114,7 @@ export function unregister() {
       })
       .catch((_error) => {
         // eslint-disable-next-line no-console
-        console.error(error.message);
+        console.error(_error.message);
       });
   }
 }

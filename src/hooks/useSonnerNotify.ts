@@ -52,7 +52,7 @@ export const useSonnerNotify = (): NotifyAPI => {
       case 'success':
         return toast.success(message, toastOptions);
       case '_error':
-        return toast._error(message, toastOptions);
+        return toast.error(message, toastOptions);
       case 'warning':
         return toast.warning(message, toastOptions);
       case 'loading':
@@ -118,8 +118,8 @@ export const useAsyncSonnerNotify = () => {
       return result;
     } catch (_error) {
       toast.dismiss(loadingId);
-      const errorMessage = messages.error
-        ? messages._error(error as Error)
+      const errorMessage = messages._error
+        ? messages._error(_error as Error)
         : "処理中にエラーが発生しました";
       notify._error(errorMessage);
       throw _error;
