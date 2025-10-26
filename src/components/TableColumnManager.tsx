@@ -10,12 +10,6 @@ import {
   DropdownMenuGroup,
 } from "@/components/ui/dropdown-menu";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
   Settings,
   Trash2,
   GripVertical,
@@ -23,6 +17,7 @@ import {
 } from "lucide-react";
 
 import { useTableColumns } from "../contexts/TableColumnsContext";
+import UnifiedDialog from "./shared/Dialog/UnifiedDialog";
 
 const TableColumnManager: React.FC = () => {
   const {
@@ -163,96 +158,100 @@ const TableColumnManager: React.FC = () => {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {/* 詳細設定ダイアログ */}
-      <Dialog open={isSettingsOpen} onOpenChange={setIsSettingsOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>カラム詳細設定</DialogTitle>
-          </DialogHeader>
-          <div className="mb-5 text-gray-600">
-            カラムをドラッグして並び替え、幅の調整ができます。幅は50px〜1000pxの範囲で入力してください。
-          </div>
+      {/* 詳細設定ダイアログ - UnifiedDialog版 */}
+      <UnifiedDialog
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+        title="カラム詳細設定"
+        variant="modal"
+        size="large"
+        actions={[
+          {
+            label: "閉じる",
+            onClick: () => setIsSettingsOpen(false),
+            variant: "outline"
+          }
+        ]}
+      >
+        <div className="mb-5 text-gray-600">
+          カラムをドラッグして並び替え、幅の調整ができます。幅は50px〜1000pxの範囲で入力してください。
+        </div>
 
-          <div className="flex flex-colum gap-2">
-            {columnOrder.map((columnId) => {
-              const column = columns.find((col) => col.id === columnId);
-              if (!column) {
-                return null;
-              }
+        <div className="flex flex-colum gap-2">
+          {columnOrder.map((columnId) => {
+            const column = columns.find((col) => col.id === columnId);
+            if (!column) {
+              return null;
+            }
 
-              const isDragging = draggedColumnId === column.id;
+            const isDragging = draggedColumnId === column.id;
 
-              return (
-                <div
-                  key={column.id}
-                  draggable
-                  onDragStart={(e: React.DragEvent) =>
-                    handleDragStart(e, column.id)
-                  }
-                  onDragOver={handleDragOver}
-                  onDrop={(e: React.DragEvent) => handleDrop(e, column.id)}
-                  onDragEnd={handleDragEnd}
-                  style={{
-                    border: "1px solid",
-                    borderColor: isDragging
-                      ? "rgb(37 99 235)"
-                      : "hsl(var(--border))",
-                    background: column.visible
-                      ? "hsl(var(--background))"
-                      : "rgb(245 245 245)",
-                    opacity: isDragging ? 0.5 : 1,
-                  }}
-                  className="flex items-center py-1 px-0 rounded-md cursor-move transition-all duration-200 ease"
+            return (
+              <div
+                key={column.id}
+                draggable
+                onDragStart={(e: React.DragEvent) =>
+                  handleDragStart(e, column.id)
+                }
+                onDragOver={handleDragOver}
+                onDrop={(e: React.DragEvent) => handleDrop(e, column.id)}
+                onDragEnd={handleDragEnd}
+                style={{
+                  border: "1px solid",
+                  borderColor: isDragging
+                    ? "rgb(37 99 235)"
+                    : "hsl(var(--border))",
+                  background: column.visible
+                    ? "hsl(var(--background))"
+                    : "rgb(245 245 245)",
+                  opacity: isDragging ? 0.5 : 1,
+                }}
+                className="flex items-center py-1 px-0 rounded-md cursor-move transition-all duration-200 ease"
+              >
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  aria-label="並び替え"
+                  className="cursor-grab active:cursor-grabbing p-1 h-auto min-w-0"
                 >
+                  <GripVertical size={16} />
+                </Button>
+
+                <div className="flex-1">
+                  <span className="font-semibold text-gray-900">{column.label}</span>
+                </div>
+
+                <div className="mr-2">
+                  <label className="sr-only">
+                    {column.label}の幅を設定
+                  </label>
+                  <Input
+                    value={column.width}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      handleWidthChange(column.id, e.target.value)
+                    }
+                    placeholder="幅 (50px〜1000px)"
+                    className="w-30"
+                    aria-describedby={`width-help-${column.id}`}
+                  />
+                </div>
+
+                {isCustomColumn(column.id) && (
                   <Button
                     variant="ghost"
                     size="sm"
-                    aria-label="並び替え"
-                    className="cursor-grab active:cursor-grabbing p-1 h-auto min-w-0"
+                    aria-label="カラムを削除"
+                    onClick={() => removeColumn(column.id)}
+                    className="text-red-600 hover:text-red-700 p-1 h-auto min-w-0"
                   >
-                    <GripVertical size={16} />
+                    <Trash2 size={16} />
                   </Button>
-
-                  <div className="flex-1">
-                    <span className="font-semibold text-gray-900">{column.label}</span>
-                  </div>
-
-                  <div className="mr-2">
-                    <label className="sr-only">
-                      {column.label}の幅を設定
-                    </label>
-                    <Input
-                      value={column.width}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        handleWidthChange(column.id, e.target.value)
-                      }
-                      placeholder="幅 (50px〜1000px)"
-                      className="w-30"
-                      aria-describedby={`width-help-${column.id}`}
-                    />
-                  </div>
-
-                  {isCustomColumn(column.id) && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      aria-label="カラムを削除"
-                      onClick={() => removeColumn(column.id)}
-                      className="text-red-600 hover:text-red-700 p-1 h-auto min-w-0"
-                    >
-                      <Trash2 size={16} />
-                    </Button>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-
-          <div className="flex gap-2 mt-4 justify-end">
-            <Button onClick={() => setIsSettingsOpen(false)}>閉じる</Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </UnifiedDialog>
     </>
   );
 };
