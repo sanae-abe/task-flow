@@ -8,7 +8,7 @@
 import { useCallback } from 'react';
 import type { UseEditorStateReturn } from './useEditorState';
 import { executeEditorCommand, saveSelection, restoreRange, getSelectedText } from '../utils/editor';
-import { applyInlineCode, insertCodeBlock, getCurrentLink } from '../utils/formatting';
+import { applyInlineCode, insertCodeBlock } from '../utils/formatting';
 
 export interface UseEditorHandlersProps {
   editorState: UseEditorStateReturn;
@@ -46,7 +46,6 @@ export const useEditorHandlers = ({
     setIsToolbarInteraction,
     savedRange,
     editingLink,
-    savedEmojiRange,
   } = editorState;
 
   // Handle input changes
@@ -125,7 +124,9 @@ export const useEditorHandlers = ({
               return;
             }
           }
-          node = node.parentNode;
+          const parentNode = node.parentNode;
+          if (!parentNode) break;
+          node = parentNode;
         }
       }
     }

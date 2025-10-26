@@ -9,8 +9,8 @@ import { useState, useRef } from 'react';
 
 export interface UseEditorStateReturn {
   // Editor refs
-  editorRef: React.RefObject<HTMLDivElement>;
-  emojiButtonRef: React.RefObject<HTMLButtonElement>;
+  editorRef: React.RefObject<HTMLDivElement | null>;
+  emojiButtonRef: React.RefObject<HTMLButtonElement | null>;
 
   // Focus state
   isEditorFocused: boolean;

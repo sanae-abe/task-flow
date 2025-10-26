@@ -164,17 +164,44 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
       {/* ツールバー */}
       {shouldShowToolbar && (
         <Toolbar
-          onBold={() => handleToolbarButtonClick(() => executeCommand('bold'))}
-          onItalic={() => handleToolbarButtonClick(() => executeCommand('italic'))}
-          onUnderline={() => handleToolbarButtonClick(() => executeCommand('underline'))}
-          onStrikethrough={() => handleToolbarButtonClick(() => executeCommand('strikeThrough'))}
-          onLink={() => handleToolbarButtonClick(insertLink)}
-          onCode={() => handleToolbarButtonClick(insertCode)}
-          onCodeBlock={() => handleToolbarButtonClick(insertCodeBlock)}
-          onUnorderedList={() => handleToolbarButtonClick(() => executeCommand('insertUnorderedList'))}
-          onOrderedList={() => handleToolbarButtonClick(() => executeCommand('insertOrderedList'))}
-          onEmoji={() => handleToolbarButtonClick(handleEmojiPickerToggle)}
-          emojiButtonRef={emojiButtonRef as React.RefObject<HTMLButtonElement>}
+          onButtonClick={(command: string) => {
+            handleToolbarButtonClick(() => {
+              switch (command) {
+                case 'bold':
+                  executeCommand('bold');
+                  break;
+                case 'italic':
+                  executeCommand('italic');
+                  break;
+                case 'underline':
+                  executeCommand('underline');
+                  break;
+                case 'strikethrough':
+                  executeCommand('strikeThrough');
+                  break;
+                case 'unorderedList':
+                  executeCommand('insertUnorderedList');
+                  break;
+                case 'orderedList':
+                  executeCommand('insertOrderedList');
+                  break;
+                case 'link':
+                  insertLink();
+                  break;
+                case 'code':
+                  insertCode();
+                  break;
+                case 'codeBlock':
+                  insertCodeBlock();
+                  break;
+                case 'emoji':
+                  handleEmojiPickerToggle();
+                  break;
+              }
+            });
+          }}
+          disabled={disabled}
+          emojiButtonRef={emojiButtonRef as React.RefObject<HTMLButtonElement | null>}
         />
       )}
 

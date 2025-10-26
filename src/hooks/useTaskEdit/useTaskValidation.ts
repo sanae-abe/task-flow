@@ -26,9 +26,7 @@ export const useTaskValidation = ({
   formState,
 }: UseTaskValidationProps): UseTaskValidationReturn => {
   // フォームの有効性をチェック
-  const isValid = useMemo(() => {
-    return formState.title.trim().length > 0;
-  }, [formState.title]);
+  const isValid = useMemo(() => formState.title.trim().length > 0, [formState.title]);
 
   // バリデーションエラーメッセージ
   const validationErrors = useMemo(() => {

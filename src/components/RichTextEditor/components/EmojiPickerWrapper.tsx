@@ -6,13 +6,12 @@
 
 import React from 'react';
 import EmojiPicker, { EmojiClickData, EmojiStyle } from "emoji-picker-react";
-import { insertEmoji } from '../utils/formatting';
 
 interface EmojiPickerWrapperProps {
   isOpen: boolean;
   onClose: () => void;
   onEmojiSelect: (emoji: string) => void;
-  buttonRef: React.RefObject<HTMLButtonElement>;
+  buttonRef: React.RefObject<HTMLButtonElement | null>;
 }
 
 const EmojiPickerWrapper: React.FC<EmojiPickerWrapperProps> = ({

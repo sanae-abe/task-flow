@@ -25,7 +25,7 @@ interface ToolbarProps {
   onButtonClick: (command: string) => void;
   disabled?: boolean;
   className?: string;
-  emojiButtonRef?: React.RefObject<HTMLButtonElement>;
+  emojiButtonRef?: React.RefObject<HTMLButtonElement | null>;
 }
 
 const Toolbar: React.FC<ToolbarProps> = ({

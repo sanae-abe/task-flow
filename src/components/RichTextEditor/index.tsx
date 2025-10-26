@@ -108,9 +108,11 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
       {editorState.showLinkDialog && (
         <LinkInsertDialog
           isOpen={editorState.showLinkDialog}
-          selectedText={editorState.selectedText}
-          onInsert={handlers.handleLinkInsert}
-          onClose={() => {
+          initialText={editorState.selectedText}
+          onInsert={(url: string) => {
+            handlers.handleLinkInsert(url);
+          }}
+          onCancel={() => {
             editorState.setShowLinkDialog(false);
             editorState.setSelectedText("");
             editorState.setSavedRange(null);
@@ -122,10 +124,12 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
       {editorState.showLinkEditDialog && editorState.editingLink && (
         <LinkInsertDialog
           isOpen={editorState.showLinkEditDialog}
-          selectedText={editorState.editingLink.textContent || ""}
+          initialText={editorState.editingLink.textContent || ""}
           initialUrl={editorState.editingLink.href}
-          onInsert={handlers.handleLinkEdit}
-          onClose={() => {
+          onInsert={(url: string) => {
+            handlers.handleLinkEdit(url);
+          }}
+          onCancel={() => {
             editorState.setShowLinkEditDialog(false);
             editorState.setEditingLink(null);
           }}

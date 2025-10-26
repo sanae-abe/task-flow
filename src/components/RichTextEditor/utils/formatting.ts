@@ -128,7 +128,9 @@ export const getCurrentLink = (): HTMLAnchorElement | null => {
     if (node.nodeType === Node.ELEMENT_NODE && (node as Element).tagName === 'A') {
       return node as HTMLAnchorElement;
     }
-    node = node.parentNode;
+    const parentNode = node.parentNode;
+    if (!parentNode) break;
+    node = parentNode;
   }
 
   return null;

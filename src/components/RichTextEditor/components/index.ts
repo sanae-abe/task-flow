@@ -1,2 +1,2 @@
-export { Toolbar } from './Toolbar';
+export { default as Toolbar } from './Toolbar';
 export { EmojiPickerModal } from './EmojiPickerModal';
