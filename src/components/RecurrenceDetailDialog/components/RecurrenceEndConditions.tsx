@@ -29,7 +29,6 @@ const RecurrenceEndConditions: React.FC<RecurrenceEndConditionsProps> = ({
           value={config.endDate || ""}
           onChange={(date) => onEndDateChange(date || '')}
           placeholder="期限を選択"
-          className="w-full"
         />
       </div>
       <div className="flex flex-row items-center gap-2">

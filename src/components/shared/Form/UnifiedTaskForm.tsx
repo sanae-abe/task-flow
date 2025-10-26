@@ -166,7 +166,6 @@ export const UnifiedTaskForm = memo<UnifiedTaskFormProps>(({
       value={dueDate}
       onChange={(date) => setDueDate(date || '')}
       placeholder="期限を選択"
-      className="w-full"
     />
   ), [dueDate, setDueDate]);
 
