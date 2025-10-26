@@ -177,7 +177,7 @@ const TableColumnManager: React.FC = () => {
           カラムをドラッグして並び替え、幅の調整ができます。幅は50px〜1000pxの範囲で入力してください。
         </div>
 
-        <div className="flex flex-colum gap-2">
+        <div className="flex flex-col gap-2">
           {columnOrder.map((columnId) => {
             const column = columns.find((col) => col.id === columnId);
             if (!column) {
@@ -205,8 +205,11 @@ const TableColumnManager: React.FC = () => {
                     ? "hsl(var(--background))"
                     : "rgb(245 245 245)",
                   opacity: isDragging ? 0.5 : 1,
+                  color: column.visible
+                    ? "hsl(var(--foreground))"
+                    : "rgb(156 163 175)",
                 }}
-                className="flex items-center py-1 px-0 rounded-md cursor-move transition-all duration-200 ease"
+                className="flex items-center py-1 px-0 rounded-md cursor-drag transition-all duration-200 ease"
               >
                 <Button
                   variant="ghost"
@@ -218,7 +221,7 @@ const TableColumnManager: React.FC = () => {
                 </Button>
 
                 <div className="flex-1">
-                  <span className="font-semibold text-gray-900">{column.label}</span>
+                  <span className="text-sm">{column.label}</span>
                 </div>
 
                 <div className="mr-2">
