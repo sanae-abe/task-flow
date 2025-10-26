@@ -163,13 +163,14 @@ export const TaskFormFields: React.FC<TaskFormFieldsProps> = ({
       </div>
 
       {/* ファイル添付 */}
-      <div className="space-y-2">
+      <div className="flex flex-col space-y-2">
         <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
           ファイル添付
         </label>
         <FileUploader
           attachments={attachments}
           onAttachmentsChange={setAttachments}
+          showModeSelector={false}
         />
       </div>
     </div>
