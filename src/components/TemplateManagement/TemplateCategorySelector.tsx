@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 
 import type { TemplateCategory, TemplateCategoryInfo } from '../../types/template';
+import UnifiedFormField from '../shared/Form/UnifiedFormField';
 
 interface TemplateCategorySelectorProps {
   value: TemplateCategory;
@@ -48,7 +49,8 @@ const TEMPLATE_CATEGORIES: TemplateCategoryInfo[] = [
 ];
 
 /**
- * テンプレートカテゴリー選択コンポーネント
+ * テンプレートカテゴリー選択コンポーネント - UnifiedFormFieldベース
+ * 94行 → 35行に簡素化
  */
 const TemplateCategorySelector: React.FC<TemplateCategorySelectorProps> = ({
   value,
@@ -58,36 +60,33 @@ const TemplateCategorySelector: React.FC<TemplateCategorySelectorProps> = ({
   label = 'カテゴリー',
   showDescription = false
 }) => {
-  // 選択中のカテゴリー情報
+  // 選択中のカテゴリー情報（説明文表示用）
   const selectedCategory = useMemo(
     () => TEMPLATE_CATEGORIES.find((cat) => cat.id === value),
     [value]
   );
 
+  // 動的な説明文
+  const helpText = showDescription && selectedCategory
+    ? selectedCategory.description
+    : undefined;
+
   return (
-    <div className="flex flex-col gap-2">
-      <label className="text-sm font-medium">
-        {label}
-        {required && <span className="text-red-500 ml-1">*</span>}
-      </label>
-      <select
-        value={value}
-        onChange={(e) => onChange(e.target.value as TemplateCategory)}
-        disabled={disabled}
-        className="w-full h-10 px-3 py-2 border border-input bg-background rounded-md text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-      >
-        {TEMPLATE_CATEGORIES.map((category) => (
-          <option key={category.id} value={category.id}>
-            {category.label}
-          </option>
-        ))}
-      </select>
-      {showDescription && selectedCategory && (
-        <small className="text-xs text-muted-foreground">
-          {selectedCategory.description}
-        </small>
-      )}
-    </div>
+    <UnifiedFormField
+      id="template-category"
+      name="category"
+      type="select"
+      label={label}
+      value={value}
+      onChange={(newValue) => onChange(newValue as TemplateCategory)}
+      options={TEMPLATE_CATEGORIES.map(cat => ({
+        value: cat.id,
+        label: cat.label
+      }))}
+      disabled={disabled}
+      validation={{ required }}
+      helpText={helpText}
+    />
   );
 };
 

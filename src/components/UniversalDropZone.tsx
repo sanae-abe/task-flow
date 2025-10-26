@@ -137,7 +137,7 @@ const UniversalDropZone: React.FC<UniversalDropZoneProps> = ({
       </div>
       <p
         className={cn(
-          "block font-normal tracking-tight",
+          "block font-normal tracking-tight text-sm",
           isDragOver ? "text-blue-600" : "text-gray-900"
         )}
       >
