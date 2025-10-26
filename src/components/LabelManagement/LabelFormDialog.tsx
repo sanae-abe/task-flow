@@ -5,7 +5,7 @@ import type { Label } from '../../types';
 import { useLabel } from '../../contexts/LabelContext';
 import { useBoard } from '../../contexts/BoardContext';
 import UnifiedDialog from '../shared/Dialog/UnifiedDialog';
-import ColorSelector from '../ColorSelector';
+import CircleColorPicker from '../CircleColorPicker';
 import LabelChip from '../LabelChip';
 import InlineMessage from '../shared/InlineMessage';
 
@@ -221,10 +221,10 @@ const LabelFormDialog: React.FC<LabelFormDialogProps> = ({
           </div>
         )}
 
-        {/* カラーセレクター */}
+        {/* カラーピッカー */}
         <div className="flex flex-col gap-2">
           <label className="text-sm font-medium">色</label>
-          <ColorSelector
+          <CircleColorPicker
             selectedColor={formData.color}
             onColorSelect={(color: string) => setFormData(prev => ({ ...prev, color }))}
           />
