@@ -110,7 +110,7 @@ const SubTaskList: React.FC<SubTaskListProps> = ({
           items={subTasks.map((item) => item.id)}
           strategy={verticalListSortingStrategy}
         >
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col">
             {subTasks.map((subTask) => (
               <SubTaskItem
                 key={subTask.id}

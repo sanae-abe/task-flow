@@ -43,7 +43,7 @@ interface RichTextEditorProps {
 // スタイル定数の定義
 const EDITOR_STYLES = {
   code: {
-    backgroundColor: "#f6f8fa",
+    backgroundColor: "rgb(245 245 245)",
     color: "#e01e5a",
     padding: "2px 4px",
     borderRadius: "0.25rem",
@@ -62,7 +62,7 @@ const EDITOR_STYLES = {
     lineHeight: "1.45",
     overflowX: "auto",
     color: "#24292f",
-    backgroundColor: "#f6f8fa",
+    backgroundColor: "rgb(245 245 245)",
   },
 } as const;
 

@@ -1,10 +1,12 @@
-import { memo } from 'react';
+import { memo, useMemo, useCallback } from 'react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
 import type { TaskTemplate } from '../../types/template';
 import { useKanban } from '../../contexts/KanbanContext';
 import { useSonnerNotify } from '../../hooks/useSonnerNotify';
+import { useFormChangeDetector } from '../../hooks/useFormChangeDetector';
 import UnifiedDialog from '../shared/Dialog/UnifiedDialog';
+import ConfirmDialog from '../ConfirmDialog';
 
 // カスタムフック
 import { useTaskForm, useTemplateSelection, useTaskSubmission } from './hooks';
@@ -54,16 +56,52 @@ const TaskCreateDialog = memo(() => {
     state.taskFormDefaultStatus
   );
 
+  // フォーム変更検知のためのデータ
+  const formDataForDetection = useMemo(() => ({
+    title: formState.title,
+    description: formState.description,
+    dueDate: formState.dueDate,
+    dueTime: formState.dueTime,
+    hasTime: formState.hasTime,
+    labels: formState.labels,
+    attachments: formState.attachments,
+    recurrence: formState.recurrence,
+    priority: formState.priority,
+    selectedTemplate: templateState.selectedTemplate,
+  }), [
+    formState.title,
+    formState.description,
+    formState.dueDate,
+    formState.dueTime,
+    formState.hasTime,
+    formState.labels,
+    formState.attachments,
+    formState.recurrence,
+    formState.priority,
+    templateState.selectedTemplate,
+  ]);
+
+  // フォーム変更検知
+  const {
+    showCloseConfirm,
+    handleClose,
+    handleConfirmClose,
+    handleCancelClose,
+  } = useFormChangeDetector(formDataForDetection, state.isTaskFormOpen);
+
   // テンプレート選択時の処理
   const handleTemplateSelect = (template: TaskTemplate) => {
     templateActions.handleTemplateSelect(template);
   };
 
-  // ダイアログが閉じられた時の追加処理
-  const handleDialogClose = () => {
-    resetTemplateSelection();
-    closeTaskForm();
-  };
+  // ダイアログが閉じられた時の処理（確認機能付き）
+  const handleDialogClose = useCallback(() => {
+    const closeAction = () => {
+      resetTemplateSelection();
+      closeTaskForm();
+    };
+    handleClose(closeAction);
+  }, [handleClose, resetTemplateSelection, closeTaskForm]);
 
   // 早期リターン：ダイアログが開いていない場合
   if (!state.isTaskFormOpen || !state.currentBoard) {
@@ -71,46 +109,58 @@ const TaskCreateDialog = memo(() => {
   }
 
   return (
-    <UnifiedDialog
-      variant="modal"
-      isOpen={state.isTaskFormOpen}
-      title="新しいタスクを作成"
-      onClose={handleDialogClose}
-      ariaLabelledBy="task-create-dialog-title"
-      size="large"
-      actions={actions}
-    >
-      <div className="flex flex-col min-w-[600px]">
-        <Tabs defaultValue="normal" className="w-full">
-          {/* タブナビゲーション */}
-          <TabsList className="grid w-full grid-cols-2 mb-4">
-            <TabsTrigger value="normal">通常作成</TabsTrigger>
-            <TabsTrigger value="template">テンプレートから作成</TabsTrigger>
-          </TabsList>
+    <>
+      <UnifiedDialog
+        variant="modal"
+        isOpen={state.isTaskFormOpen}
+        title="新しいタスクを作成"
+        onClose={handleDialogClose}
+        ariaLabelledBy="task-create-dialog-title"
+        size="large"
+        actions={actions}
+      >
+        <div className="flex flex-col min-w-[600px]">
+          <Tabs defaultValue="normal" className="w-full">
+            {/* タブナビゲーション */}
+            <TabsList className="grid w-full grid-cols-2 mb-4">
+              <TabsTrigger value="normal">通常作成</TabsTrigger>
+              <TabsTrigger value="template">テンプレートから作成</TabsTrigger>
+            </TabsList>
 
-          {/* 通常作成フォーム */}
-          <TabsContent value="normal">
-            <TaskFormFields
-              formState={formState}
-              formActions={formActions}
-              selectedTemplate={templateState.selectedTemplate}
-              onTimeChange={handleTimeChange}
-              onKeyPress={handleKeyPress}
-            />
-          </TabsContent>
-
-          {/* テンプレート選択モード */}
-          <TabsContent value="template">
-            <div className="mb-6 flex-1 min-h-[500px]">
-              <TemplateSelector
-                templates={templateState.templates}
-                onSelect={handleTemplateSelect}
+            {/* 通常作成フォーム */}
+            <TabsContent value="normal">
+              <TaskFormFields
+                formState={formState}
+                formActions={formActions}
+                selectedTemplate={templateState.selectedTemplate}
+                onTimeChange={handleTimeChange}
+                onKeyPress={handleKeyPress}
               />
-            </div>
-          </TabsContent>
-        </Tabs>
-      </div>
-    </UnifiedDialog>
+            </TabsContent>
+
+            {/* テンプレート選択モード */}
+            <TabsContent value="template">
+              <div className="mb-6 flex-1 min-h-[500px]">
+                <TemplateSelector
+                  templates={templateState.templates}
+                  onSelect={handleTemplateSelect}
+                />
+              </div>
+            </TabsContent>
+          </Tabs>
+        </div>
+      </UnifiedDialog>
+
+      <ConfirmDialog
+        isOpen={showCloseConfirm}
+        title="変更を破棄しますか？"
+        message="編集した内容が失われますが、よろしいですか？"
+        confirmText="破棄する"
+        cancelText="戻る"
+        onConfirm={handleConfirmClose}
+        onCancel={handleCancelClose}
+      />
+    </>
   );
 });
 
