@@ -55,9 +55,7 @@ export const createTimeRecurrenceField = (): FormFieldConfig => ({
 export const createStatusField = (
   value: string,
   options: Array<{ value: string; label: string }>
-): FormFieldConfig => {
-
-  return {
+): FormFieldConfig => ({
     id: 'columnId',
     name: 'columnId',
     type: 'select',
@@ -65,8 +63,7 @@ export const createStatusField = (
     value,
     options,
     onChange: () => {}, // フォームで管理
-  };
-};
+  });
 
 // ボード選択フィールド（作成モード用）
 export const createBoardField = (

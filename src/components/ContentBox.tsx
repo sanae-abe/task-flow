@@ -5,6 +5,7 @@ interface ContentBoxProps {
   backgroundClass?: string;
   emptyText?: string;
   isEmpty?: boolean;
+  className?: string;
 }
 
 const ContentBox = memo<ContentBoxProps>(
@@ -13,8 +14,9 @@ const ContentBox = memo<ContentBoxProps>(
     backgroundClass = "bg-muted",
     emptyText,
     isEmpty = false,
+    className = "",
   }) => (
-    <div className={`p-3 rounded-md ${backgroundClass}`}>
+    <div className={`p-3 rounded-md wrap-anywhere ${backgroundClass} ${className}`}>
       {isEmpty && emptyText ? (
         <span className="text-sm text-muted-foreground italic">
           {emptyText}
