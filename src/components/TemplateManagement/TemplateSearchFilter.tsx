@@ -1,9 +1,11 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select";
 import { Search, Star } from 'lucide-react';
 import type { TemplateCategory } from '../../types/template';
 import { TEMPLATE_CATEGORIES } from './TemplateCategorySelector';
+
 
 interface TemplateSearchFilterProps {
   searchQuery: string;
@@ -41,18 +43,17 @@ const TemplateSearchFilter: React.FC<TemplateSearchFilterProps> = ({
 
     {/* カテゴリーフィルター */}
     <div>
-      <select
+      <NativeSelect
         value={filterCategory}
         onChange={(e) => onFilterCategoryChange(e.target.value as TemplateCategory | 'all')}
-        className="w-[180px] h-10 px-3 py-2 border border-border border-gray-200 rounded-md bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
       >
-        <option value="all">すべてのカテゴリー</option>
+        <NativeSelectOption value="all">すべてのカテゴリー</NativeSelectOption>
         {TEMPLATE_CATEGORIES.map((cat) => (
-          <option key={cat.id} value={cat.id}>
+          <NativeSelectOption key={cat.id} value={cat.id}>
             {cat.label}
-          </option>
+          </NativeSelectOption>
         ))}
-      </select>
+      </NativeSelect>
     </div>
 
     {/* お気に入りフィルター */}
