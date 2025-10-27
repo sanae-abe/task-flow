@@ -1,6 +1,6 @@
 {
   "name": "taskflow-app",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "A modern TaskFlow task management application built with React and TypeScript",
   "private": true,
   "homepage": "./",
