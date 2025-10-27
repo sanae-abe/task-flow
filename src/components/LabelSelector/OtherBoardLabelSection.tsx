@@ -1,5 +1,5 @@
-import { ActionList } from "@primer/react";
-import { CopyIcon } from "@primer/octicons-react";
+import { DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import { Copy } from "lucide-react";
 import React from "react";
 
 import type { Label } from "../../types";
@@ -20,23 +20,18 @@ export const OtherBoardLabelSection: React.FC<OtherBoardLabelSectionProps> = ({
 
   return (
     <>
-      <ActionList.Divider />
-      <ActionList.Group title="他のボード">
-        {labels.map((label) => (
-          <ActionList.Item
-            key={label.id}
-            onSelect={() => onCopyAndSelectLabel(label)}
-          >
-            <ActionList.LeadingVisual>
-              <LabelColorCircle color={label.color} />
-            </ActionList.LeadingVisual>
-            {label.name}
-            <ActionList.TrailingVisual>
-              <CopyIcon size={16} />
-            </ActionList.TrailingVisual>
-          </ActionList.Item>
-        ))}
-      </ActionList.Group>
+      <DropdownMenuSeparator />
+      <DropdownMenuLabel>他のボード</DropdownMenuLabel>
+      {labels.map((label) => (
+        <DropdownMenuItem
+          key={label.id}
+          onClick={() => onCopyAndSelectLabel(label)}
+        >
+          <Copy size={16} className="mr-2" />
+          <LabelColorCircle color={label.color} />
+          <span className="ml-2 flex-1">{label.name}</span>
+        </DropdownMenuItem>
+      ))}
     </>
   );
 };

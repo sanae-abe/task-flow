@@ -1,7 +1,6 @@
 // import React from 'react'; // StrictMode無効時は不要
 import ReactDOM from 'react-dom/client';
 import { HashRouter } from 'react-router-dom';
-import { StyleSheetManager } from 'styled-components';
 
 import './index.css';
 import App from './App';
@@ -11,29 +10,24 @@ import reportWebVitals from './reportWebVitals';
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
-// shouldForwardProp function to filter out sx and other style props
-const shouldForwardProp = (prop: string) =>
-  !['sx', 'bg', 'p', 'px', 'py', 'm', 'mx', 'my'].includes(prop);
 
 // HashRouter使用（S3環境での確実なルーティング）
 
 root.render(
   // <React.StrictMode> - 一時的に無効化（React Hooks初期化問題のデバッグ用）
-    <StyleSheetManager shouldForwardProp={shouldForwardProp}>
-      <HashRouter>
-        <App />
-      </HashRouter>
-    </StyleSheetManager>
+    <HashRouter>
+      <App />
+    </HashRouter>
   // </React.StrictMode>
 );
 
 // Service Worker registration - temporarily disabled for debugging
 // serviceWorker.register({
 //   onSuccess: () => {
-//     console.log('Service Worker registered successfully');
+//     // Service Worker registered successfully
 //   },
 //   onUpdate: () => {
-//     console.log('New content is available; please refresh');
+//     // New content is available; please refresh
 //   },
 // });
 

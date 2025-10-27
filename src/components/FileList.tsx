@@ -1,11 +1,11 @@
-import { FileIcon, ImageIcon, DownloadIcon } from "@primer/octicons-react";
-import { Text, Button } from "@primer/react";
+import { File, Image, Download } from "lucide-react";
 import React, { useMemo, useCallback } from "react";
 
 import type { FileAttachment } from "../types";
-import { useNotify } from "../contexts/NotificationContext";
+import { useSonnerNotify } from "../hooks/useSonnerNotify";
 
 import FilePreview from "./FilePreview";
+import { IconButton } from "./shared";
 
 interface FileListProps {
   attachments: FileAttachment[] | null | undefined;
@@ -39,15 +39,15 @@ const formatFileSize = (bytes: number): string => {
 const getFileIcon = (type: string) => {
   const iconProps = { size: 14 } as const;
   return type.startsWith("image/") ? (
-    <ImageIcon {...iconProps} />
+    <Image {...iconProps} />
   ) : (
-    <FileIcon {...iconProps} />
+    <File {...iconProps} />
   );
 };
 
 const downloadFile = (
   attachment: FileAttachment,
-  notify: ReturnType<typeof useNotify>,
+  notify: ReturnType<typeof useSonnerNotify>,
 ): void => {
   try {
     if (!attachment?.type || !attachment?.data || !attachment?.name) {
@@ -67,66 +67,13 @@ const downloadFile = (
     document.body.removeChild(link);
 
     notify.success(`「${name}」をダウンロードしました`);
-  } catch (error) {
+  } catch (_error) {
     // eslint-disable-next-line no-console
-    console.error("ファイルのダウンロードに失敗しました:", error);
-    notify.error("ファイルのダウンロードに失敗しました");
+    console.error("ファイルのダウンロードに失敗しました:", _error);
+    notify._error("ファイルのダウンロードに失敗しました");
   }
 };
 
-// スタイル定数
-const styles = {
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "4px",
-  },
-  fileItem: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: "8px",
-    backgroundColor: "var(--bgColor-muted)",
-    borderRadius: "var(--borderRadius-medium)",
-    fontSize: "12px",
-  },
-  fileInfo: {
-    display: "flex",
-    alignItems: "center",
-    gap: "8px",
-    flex: 1,
-    minWidth: 0,
-  },
-  fileDetails: {
-    minWidth: 0,
-    flex: 1,
-    gap: "8px",
-    display: "flex",
-    alignItems: "center",
-  },
-  fileName: {
-    fontSize: 0,
-    fontWeight: "600",
-    wordBreak: "break-word",
-  },
-  fileSize: {
-    fontSize: "10px",
-    color: "var(--fgColor-muted)",
-  },
-  actionButtons: {
-    display: "flex",
-    gap: "4px",
-  },
-  downloadButton: {
-    padding: "4px",
-  },
-  remainingText: {
-    fontSize: "10px",
-    color: "var(--fgColor-muted)",
-    textAlign: "center",
-    marginTop: "4px",
-  },
-} as const;
 
 const FileList: React.FC<FileListProps> = ({
   attachments,
@@ -134,7 +81,7 @@ const FileList: React.FC<FileListProps> = ({
   showPreview = true,
   maxFiles,
 }) => {
-  const notify = useNotify();
+  const notify = useSonnerNotify();
 
   const { displayAttachments, remainingCount } = useMemo(() => {
     if (!attachments?.length) {
@@ -162,7 +109,7 @@ const FileList: React.FC<FileListProps> = ({
   }
 
   return (
-    <div style={styles.container}>
+    <div className="flex flex-col gap-1">
       {displayAttachments.map((attachment) => (
         <FileListItem
           key={attachment.id}
@@ -174,7 +121,9 @@ const FileList: React.FC<FileListProps> = ({
       ))}
 
       {remainingCount > 0 && (
-        <Text sx={styles.remainingText}>他{remainingCount}個のファイル</Text>
+        <p className="text-xs text-zinc-700 text-center mt-1">
+          他{remainingCount}個のファイル
+        </p>
       )}
     </div>
   );
@@ -195,26 +144,28 @@ const FileListItem: React.FC<FileListItemProps> = React.memo(
     }, [attachment, onDownload]);
 
     return (
-      <div style={styles.fileItem}>
-        <div style={styles.fileInfo}>
+      <div className="flex items-center justify-between p-2 bg-gray-50 rounded-md text-xs">
+        <div className="flex items-center gap-2 flex-1 min-w-0">
           {getFileIcon(attachment.type)}
-          <div style={styles.fileDetails}>
-            <Text sx={styles.fileName}>{attachment.name}</Text>
-            <Text sx={styles.fileSize}>{formatFileSize(attachment.size)}</Text>
+          <div className="min-w-0 flex-1 gap-2 flex items-center">
+            <span className="text-xs font-semibold break-words">
+              {attachment.name}
+            </span>
+            <span className="text-[10px] text-zinc-700">
+              {formatFileSize(attachment.size)}
+            </span>
           </div>
         </div>
-        <div style={styles.actionButtons}>
+        <div className="flex gap-1">
           {showPreview && <FilePreview attachment={attachment} />}
           {showDownload && (
-            <Button
-              variant="invisible"
-              size="small"
+            <IconButton
+              icon={Download}
+              size="icon"
               onClick={handleDownloadClick}
-              sx={styles.downloadButton}
-              aria-label={`${attachment.name}をダウンロード`}
-            >
-              <DownloadIcon size={14} />
-            </Button>
+              className="p-1"
+              ariaLabel={`${attachment.name}をダウンロード`}
+            />
           )}
         </div>
       </div>

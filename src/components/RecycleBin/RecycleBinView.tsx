@@ -10,7 +10,6 @@ import { MESSAGES } from "../../constants/recycleBin";
 import { RecycleBinEmptyState } from "./components/RecycleBinEmptyState";
 import { RecycleBinHeader } from "./components/RecycleBinHeader";
 import { RecycleBinTaskItem, type DeletedTaskWithMeta } from "./components/RecycleBinTaskItem";
-import { Container, TaskGrid } from "./RecycleBinView.styles";
 
 /**
  * ゴミ箱のタスクを表示・復元・完全削除するコンポーネント
@@ -66,14 +65,14 @@ export const RecycleBinView: React.FC<RecycleBinViewProps> = ({ onMessage }) => 
   // 空状態の表示
   if (deletedTasks.length === 0) {
     return (
-      <Container>
+      <div className="pb-4">
         <RecycleBinEmptyState />
-      </Container>
+      </div>
     );
   }
 
   return (
-    <Container>
+    <div className="pb-4">
       <RecycleBinHeader
         taskCount={deletedTasks.length}
         settings={recycleBinSettings}
@@ -81,7 +80,7 @@ export const RecycleBinView: React.FC<RecycleBinViewProps> = ({ onMessage }) => 
         onEmptyClick={() => setShowEmptyConfirm(true)}
       />
 
-      <TaskGrid>
+      <div className="grid gap-3">
         {deletedTasks.map((task) => (
           <RecycleBinTaskItem
             key={task.id}
@@ -93,7 +92,7 @@ export const RecycleBinView: React.FC<RecycleBinViewProps> = ({ onMessage }) => 
             onDeleteConfirm={setShowDeleteConfirm}
           />
         ))}
-      </TaskGrid>
+      </div>
 
       {/* ゴミ箱を空にする確認ダイアログ */}
       <ConfirmDialog
@@ -118,7 +117,7 @@ export const RecycleBinView: React.FC<RecycleBinViewProps> = ({ onMessage }) => 
           cancelText="キャンセル"
         />
       )}
-    </Container>
+    </div>
   );
 };
 

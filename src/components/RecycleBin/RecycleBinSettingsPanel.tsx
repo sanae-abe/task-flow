@@ -6,13 +6,6 @@ import { InlineMessage } from "../shared";
 import { SettingsPresetButtons } from "./settings/SettingsPresetButtons";
 import { SettingsRetentionInput } from "./settings/SettingsRetentionInput";
 import { SettingsSaveSection } from "./settings/SettingsSaveSection";
-import {
-  Container,
-  HeaderContainer,
-  HeaderTitle,
-  Description,
-  ImportantNote,
-} from "./RecycleBinSettingsPanel.styles";
 
 interface RecycleBinSettingsPanelProps {
   onSave?: (settings: RecycleBinSettings) => void;
@@ -40,18 +33,18 @@ export const RecycleBinSettingsPanel: React.FC<RecycleBinSettingsPanelProps> = (
   };
 
   return (
-    <Container>
+    <div className="pb-4">
       {/* ヘッダー */}
-      <HeaderContainer>
-        <HeaderTitle>
+      <div className="flex items-center gap-2 mb-2">
+        <h2 className="text-base font-bold m-0">
           {UI_TEXT.PANEL.TITLE}
-        </HeaderTitle>
-      </HeaderContainer>
+        </h2>
+      </div>
 
       {/* 説明 */}
-      <Description>
+      <span className="text-sm text-zinc-700 mb-5 block">
         {UI_TEXT.PANEL.DESCRIPTION_WITH_UNLIMITED}
-      </Description>
+      </span>
 
       {/* プリセットボタン */}
       <SettingsPresetButtons
@@ -75,10 +68,10 @@ export const RecycleBinSettingsPanel: React.FC<RecycleBinSettingsPanelProps> = (
       />
 
       {/* 注意事項 */}
-      <ImportantNote>
+      <div className="mt-5">
         <InlineMessage variant="warning" message={UI_TEXT.PANEL.IMPORTANT_NOTE_TEXT} />
-      </ImportantNote>
-    </Container>
+      </div>
+    </div>
   );
 };
 

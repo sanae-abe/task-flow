@@ -4,25 +4,27 @@
 React + TypeScriptで構築されたモダンなタスク管理アプリケーション（TaskFlow）
 
 ## 技術スタック
-- Frontend: React 19.1.1 + TypeScript 5.7.3
-- UI Framework: Primer React (GitHub Design System)
-- Styling: Styled Components
+- Frontend: React 19.2.0 + TypeScript 5.7.3
+- UI Framework: Shadcn/UI + @radix-ui/* (モダンなUIコンポーネント)
+- Styling: Tailwind CSS 4.1.16 + CSS Variables
 - State Management: React Context API
-- Build Tool: Create React App (CRA)
+- Build Tool: Vite 7.1.12 (高速ビルド・HMR対応)
+- Test Framework: Vitest 4.0.3 (高速テスト実行)
 - Package Manager: npm
 - Drag & Drop: @dnd-kit
-- Icons: @primer/octicons-react + react-feather
+- Icons: lucide-react (完全統一済み)
+- Color Picker: @uiw/react-color
 - Emoji Picker: emoji-picker-react
 - Rich Text Editor: Lexical 0.35.0
-- Date Utilities: date-fns 4.1.0
+- Date Utilities: date-fns 4.1.0 + react-day-picker
 - Security: DOMPurify (HTMLサニタイズ)
 
 ## 開発コマンド
 ```bash
-# 開発サーバー起動
+# 開発サーバー起動（Vite）
 npm start
 
-# 本番ビルド
+# 本番ビルド（Vite）
 npm run build
 
 # 型チェック
@@ -34,8 +36,13 @@ npm run lint
 # 品質チェック（全体）
 npm run quality
 
-# テスト実行
+# テスト実行（Vitest）
 npm test
+npm run test:run      # 単発テスト実行
+npm run test:ui       # Vitest UIダッシュボード
+
+# Bundle分析
+npm run analyze:size  # Bundle分析レポート
 ```
 
 ## 主要機能

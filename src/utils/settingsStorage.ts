@@ -15,8 +15,8 @@ export const saveSettings = (settings: AppSettings): void => {
   try {
     const serialized = JSON.stringify(settings);
     localStorage.setItem(SETTINGS_STORAGE_KEY, serialized);
-  } catch (error) {
-    logger.error("Failed to save settings:", error);
+  } catch (_error) {
+    logger._error("Failed to save settings:", _error);
     throw new Error("設定の保存に失敗しました");
   }
 };
@@ -120,8 +120,8 @@ export const loadSettings = (): AppSettings => {
       defaultColumns: validatedColumns,
       autoDeletion: autoDeletionSettings,
     };
-  } catch (error) {
-    logger.error("Failed to load settings:", error);
+  } catch (_error) {
+    logger._error("Failed to load settings:", _error);
     return DEFAULT_SETTINGS;
   }
 };

@@ -1,5 +1,4 @@
 import { memo } from 'react';
-import { Text } from '@primer/react';
 
 import type { DataStatistics as DataStatisticsType } from './types';
 import { formatFileSize } from '../../utils/dataStatistics';
@@ -14,31 +13,22 @@ interface DataStatisticsProps {
   title?: string;
 }
 
-
 export const DataStatistics = memo<DataStatisticsProps>(({
   statistics,
   title = 'データ概要'
 }) => (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: "8px" }}>
+    <div className="flex flex-col gap-2">
       {title && (
-        <Text sx={{ fontSize: 1, fontWeight: '600', color: 'fg.muted' }}>
+        <span className="text-sm font-semibold text-zinc-700">
           {title}
-        </Text>
+        </span>
       )}
 
       {/* シンプルな1行統計表示 */}
-      <div
-        style={{
-          padding: '8px 12px',
-          backgroundColor: 'var(--bgColor-muted)',
-          borderRadius: 'var(--borderRadius-medium)',
-          border: '1px solid',
-          borderColor: 'var(--borderColor-default)'
-        }}
-      >
-        <Text sx={{ fontSize: 1, color: 'fg.default' }}>
+      <div className="px-3 py-2 bg-neutral-100 rounded-md border border-border">
+        <span className="text-sm text-foreground">
           {statistics.taskCount}タスク / {statistics.boardCount}ボード / {statistics.labelCount}ラベル / {statistics.attachmentCount}添付ファイル（約 {formatFileSize(statistics.estimatedSize)}）
-        </Text>
+        </span>
       </div>
     </div>
   ));

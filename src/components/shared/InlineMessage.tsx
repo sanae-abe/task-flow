@@ -1,29 +1,37 @@
 import React from "react";
-import { InfoIcon, CheckCircleIcon, CheckCircleFillIcon, AlertIcon, AlertFillIcon } from '@primer/octicons-react';
+import { Info, CircleCheck, AlertTriangle } from 'lucide-react';
 import InfoFillIcon from './icons/InfoFillIcon';
+import CircleCheck2Icon from './icons/CircleCheck2Icon';
 
 interface InlineMessageProps {
   message: string | null;
   variant?: "success" | "warning" | "critical" | "info" | "unavailable";
   size?: "small" | "medium";
+  useInvertedIcon?: boolean; // 色反転アイコンを使用するかどうか
+  className?: string;
 }
 
-const InlineMessage: React.FC<InlineMessageProps> = ({ message, variant = "info", size = "medium" }) => {
+const InlineMessage: React.FC<InlineMessageProps> = ({ message, variant = "info", size = "medium", useInvertedIcon = false, className }) => {
   if (!message) {
     return null;
   }
 
-  const fontSize = size === "small" ? "12px" : "14px";
+  const fontSizeClass = size === "small" ? "text-xs" : "text-sm";
   const iconSize = size === "small" ? 12 : 16;
-  const gap = size === "small" ? '4px' : '8px';
-  const fontWeight = size === "small" ? '700' : '400';
+  const gapClass = size === "small" ? 'gap-1' : 'gap-2';
+  const fontWeightClass = size === "small" ? 'font-bold' : 'font-normal';
 
   if (variant === "success") {
-    const SuccessIconComponent = size === "small" ? CheckCircleFillIcon : CheckCircleIcon;
+    let SuccessIconComponent;
+    if (useInvertedIcon) {
+      SuccessIconComponent = CircleCheck2Icon;
+    } else {
+      SuccessIconComponent = CircleCheck; // CircleCheckのみ使用
+    }
     return (
-      <div style={{ display: 'flex', alignItems: 'flex-start', gap, color: 'var(--fgColor-success)' }}>
-        <span style={{ display: 'flex', alignItems: 'center', paddingTop: '0.25em' }}><SuccessIconComponent size={iconSize} /></span>
-        <span style={{ fontSize, fontWeight }}>
+      <div className={`flex items-start text-success ${className} ${gapClass}`}>
+        <span className="flex items-center pt-[0.2em]"><SuccessIconComponent size={iconSize} /></span>
+        <span className={`${fontSizeClass} ${fontWeightClass}`}>
           {message}
         </span>
       </div>
@@ -31,11 +39,11 @@ const InlineMessage: React.FC<InlineMessageProps> = ({ message, variant = "info"
   }
 
   if (variant === "warning") {
-    const WarningIconComponent = size === "small" ? AlertFillIcon : AlertIcon;
+    const WarningIconComponent = AlertTriangle;
     return (
-      <div style={{ display: 'flex', alignItems: 'flex-start', gap, color: 'var(--fgColor-attention)' }}>
-        <span style={{ display: 'flex', alignItems: 'center', paddingTop: "0.25em" }}><WarningIconComponent size={iconSize} /></span>
-        <span style={{ fontSize, fontWeight }}>
+      <div className={`flex items-start gap-2 text-warning ${className} ${gapClass}`}>
+        <span className="flex items-center pt-[0.2em]"><WarningIconComponent size={iconSize} /></span>
+        <span className={`${fontSizeClass} ${fontWeightClass}`}>
           {message}
         </span>
       </div>
@@ -43,11 +51,11 @@ const InlineMessage: React.FC<InlineMessageProps> = ({ message, variant = "info"
   }
 
   if (variant === "critical") {
-    const CriticalIconComponent = size === "small" ? AlertFillIcon : AlertIcon;
+    const CriticalIconComponent = AlertTriangle;
     return (
-      <div style={{ display: 'flex', alignItems: 'flex-start', gap, color: 'var(--fgColor-default)' }}>
-        <span style={{ display: 'flex', alignItems: 'center', paddingTop: '0.25em' }}><CriticalIconComponent size={iconSize} /></span>
-        <span style={{ fontSize, fontWeight }}>
+      <div className={`flex items-start gap-2 text-destructive ${className} ${gapClass}`}>
+        <span className="flex items-center pt-[0.2em]"><CriticalIconComponent size={iconSize} /></span>
+        <span className={`${fontSizeClass} ${fontWeightClass}`}>
           {message}
         </span>
       </div>
@@ -55,22 +63,22 @@ const InlineMessage: React.FC<InlineMessageProps> = ({ message, variant = "info"
   }
 
   if (variant === "info") {
-    const InfoIconComponent = size === "small" ? InfoFillIcon : InfoIcon;
+    const InfoIconComponent = size === "small" ? InfoFillIcon : Info;
     return (
-      <div style={{ display: 'flex', alignItems: 'flex-start', gap, color: 'var(--fgColor-accent)' }}>
-        <span style={{ display: 'flex', alignItems: 'center', paddingTop: '0.25em' }}><InfoIconComponent size={iconSize} /></span>
-        <span style={{ fontSize, fontWeight }}>
+      <div className={`flex items-start gap-2 text-primary ${className} ${gapClass}`}>
+        <span className="flex items-center pt-[0.2em]"><InfoIconComponent size={iconSize} /></span>
+        <span className={`${fontSizeClass} ${fontWeightClass}`}>
           {message}
         </span>
       </div>
     );
   }
 
-  const UnavailableIconComponent = size === "small" ? AlertFillIcon : AlertIcon;
+  const UnavailableIconComponent = AlertTriangle;
   return (
-    <div style={{ display: 'flex', alignItems: 'flex-start', gap, color: 'var(--fgColor-muted)' }}>
-      <span style={{ display: 'flex', alignItems: 'center', paddingTop: '0.25em' }}><UnavailableIconComponent size={iconSize} /></span>
-      <span style={{ fontSize, fontWeight }}>
+    <div className={`flex items-start gap-2 text-muted-foreground ${className} ${gapClass}`}>
+      <span className="flex items-center pt-[0.2em]"><UnavailableIconComponent size={iconSize} /></span>
+      <span className={`${fontSizeClass} ${fontWeightClass}`}>
         {message}
       </span>
     </div>

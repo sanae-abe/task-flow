@@ -151,9 +151,17 @@ export const DEFAULT_COLUMNS: TableColumn[] = [
     type: "text",
   },
   {
+    id: "edit",
+    label: "編集",
+    width: "40px",
+    visible: true,
+    sortable: false,
+    type: "actions",
+  },
+  {
     id: "actions",
     label: "削除",
-    width: "80px",
+    width: "40px",
     visible: false,
     sortable: false,
     type: "actions",

@@ -5,7 +5,7 @@ import { TemplateStorage } from "../utils/templateStorage";
 interface UseTemplateManagementReturn {
   templates: TaskTemplate[];
   loading: boolean;
-  error: string | null;
+  _error: string | null;
   createTemplate: (data: TemplateFormData) => Promise<TaskTemplate | null>;
   updateTemplate: (
     id: string,
@@ -22,7 +22,7 @@ interface UseTemplateManagementReturn {
 export const useTemplateManagement = (): UseTemplateManagementReturn => {
   const [templates, setTemplates] = useState<TaskTemplate[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [_error, setError] = useState<string | null>(null);
 
   // テンプレートをLocalStorageから読み込み
   const loadTemplates = useCallback(async () => {
@@ -132,7 +132,7 @@ export const useTemplateManagement = (): UseTemplateManagementReturn => {
   return {
     templates,
     loading,
-    error,
+    _error,
     createTemplate,
     updateTemplate,
     deleteTemplate,

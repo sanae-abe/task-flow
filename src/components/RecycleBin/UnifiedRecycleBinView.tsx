@@ -1,16 +1,6 @@
 import React, { useMemo, useState } from "react";
-import {
-  Button,
-  Text,
-  Spinner,
-  Heading,
-} from "@primer/react";
-import {
-  ProjectIcon,
-  TasklistIcon,
-  ColumnsIcon,
-  ClockIcon,
-} from "@primer/octicons-react";
+import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
 
 import { useBoard } from "../../contexts/BoardContext";
 import { getAllRecycleBinItems } from "../../utils/recycleBin";
@@ -18,8 +8,7 @@ import { useRecycleBinSettingsReadOnly } from "../../hooks/useRecycleBinSettings
 import { useRecycleBinOperations } from "../../hooks/useRecycleBinOperations";
 import { useRecycleBinSort } from "../../hooks/useRecycleBinSort";
 import ConfirmDialog from "../ConfirmDialog";
-import { SortableHeader } from "./components/SortableHeader";
-import { RecycleBinItemActions } from "./components/RecycleBinItemActions";
+import { RecycleBinDataTable } from "./components/RecycleBinDataTable";
 import { RecycleBinItemDetailDialog } from "./components/RecycleBinItemDetailDialog";
 import type { DialogFlashMessageData } from "../shared/DialogFlashMessage";
 import type { RecycleBinItemWithMeta } from "../../types/recycleBin";
@@ -162,28 +151,23 @@ const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
     : null;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: "12px", paddingBottom: "16px" }}>
+    <div className="flex flex-col gap-3">
       {/* ヘッダー */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        gap: '8px'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <Heading sx={{ fontSize: 2, fontWeight: 'bold' }}>
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
+          <h2 className="text-lg font-bold text-foreground">
             ゴミ箱 ({allRecycleBinItems.length}件)
-          </Heading>
+          </h2>
         </div>
         <Button
-          variant="danger"
-          size="small"
+          variant="outline"
+          size="sm"
           onClick={() => setShowEmptyConfirm(true)}
           disabled={emptyingRecycleBin || isEmptying || allRecycleBinItems.length === 0}
         >
           {emptyingRecycleBin || isEmptying ? (
             <>
-              <Spinner size="small" sx={{ mr: 1 }} />
+              <Loader2 size={16} className="animate-spin mr-2" />
               削除中...
             </>
           ) : (
@@ -193,160 +177,17 @@ const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
       </div>
 
       {/* ゴミ箱一覧 */}
-      {allRecycleBinItems.length === 0 ? (
-        <div style={{
-          textAlign: 'center',
-          padding: '24px',
-          border: '1px dashed',
-          borderColor: 'var(--borderColor-muted)',
-          borderRadius: 'var(--borderRadius-medium)',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: "8px",
-          justifyContent: 'center',
-          alignItems: 'center'
-        }}>
-          <Text sx={{ color: 'fg.muted' }}>
-            ゴミ箱にアイテムはありません
-          </Text>
-        </div>
-      ) : (
-        <div style={{
-          border: '1px solid',
-          borderColor: 'var(--borderColor-default)',
-          borderRadius: "var(--borderRadius-medium)",
-          overflow: 'hidden'
-        }}>
-          {/* テーブルヘッダー */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: '80px 1fr 100px 100px',
-            gap: "8px",
-            alignItems: 'center',
-            background: 'var(--bgColor-muted)',
-            borderBottom: '1px solid',
-            borderColor: 'var(--borderColor-default)',
-            fontSize: "14px",
-            fontWeight: 'bold',
-            color: 'var(--fgColor-muted)'
-          }}>
-            <SortableHeader
-              field="type"
-              sortField={sortField}
-              sortDirection={sortDirection}
-              onSort={handleSort}
-            >
-              種別
-            </SortableHeader>
-            <SortableHeader
-              field="title"
-              sortField={sortField}
-              sortDirection={sortDirection}
-              onSort={handleSort}
-            >
-              タイトル
-            </SortableHeader>
-            <SortableHeader
-              field="timeUntilDeletion"
-              align="center"
-              sortField={sortField}
-              sortDirection={sortDirection}
-              onSort={handleSort}
-            >
-              削除予定
-            </SortableHeader>
-            <Text sx={{ textAlign: 'center', fontSize: 0, p: 1 }}>操作</Text>
-          </div>
-
-          {/* テーブルボディ */}
-          <div style={{ maxHeight: '500px', overflow: 'auto' }}>
-            {allRecycleBinItems.map((item, index) => (
-              <div
-                key={`${item.type}-${item.id}`}
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: '80px 1fr 100px 100px',
-                  gap: "8px",
-                  padding: "12px 8px",
-                  borderBottom: index === allRecycleBinItems.length - 1 ? 'none' : '1px solid',
-                  borderColor: 'var(--borderColor-muted)',
-                  alignItems: 'center'
-                }}
-              >
-                {/* 種別 */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  {item.type === 'board' ? (
-                    <ProjectIcon size={16} />
-                  ) : item.type === 'column' ? (
-                    <ColumnsIcon size={16} />
-                  ) : (
-                    <TasklistIcon size={16} />
-                  )}
-                  <Text
-                    sx={{
-                      fontSize: 0,
-                      color: "fg.default",
-                      px: 1,
-                      py: 0.5,
-                      bg: item.type === 'board' ? "attention.subtle" : item.type === 'column' ? "success.subtle" : "accent.subtle",
-                      borderRadius: 1,
-                    }}
-                  >
-                    {item.type === 'board' ? 'ボード' : item.type === 'column' ? 'カラム' : 'タスク'}
-                  </Text>
-                </div>
-
-                {/* タイトル */}
-                <div style={{ minWidth: 0 }}>
-                  <Text
-                    sx={{
-                      fontSize: 1,
-                      fontWeight: "semibold",
-                      wordBreak: "break-word",
-                    }}
-                  >
-                    {item.title}
-                  </Text>
-                </div>
-
-                {/* 削除予定 */}
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
-                  {item.timeUntilDeletion ? (
-                    <>
-                      <ClockIcon size={14} />
-                      <Text
-                        sx={{
-                          fontSize: 0,
-                          color: recycleBinSettings.retentionDays === null ? 'fg.muted' : 'fg.default',
-                          textAlign: 'center',
-                        }}
-                      >
-                        {item.timeUntilDeletion}
-                      </Text>
-                    </>
-                  ) : (
-                    <Text sx={{ fontSize: 0, color: 'fg.muted', textAlign: 'center' }}>
-                      未設定
-                    </Text>
-                  )}
-                </div>
-
-                {/* 操作 */}
-                <div>
-                  <RecycleBinItemActions
-                    item={item}
-                    isLoading={getItemLoadingState(item).isLoading}
-                    loadingText={getItemLoadingState(item).loadingText}
-                    onRestore={handleRestore}
-                    onDelete={(item) => setShowDeleteConfirm(item.id)}
-                    onShowDetail={(item) => setShowDetailDialog(item.id)}
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      <RecycleBinDataTable
+        items={allRecycleBinItems}
+        recycleBinSettings={recycleBinSettings}
+        getItemLoadingState={getItemLoadingState}
+        onRestore={handleRestore}
+        onDelete={(item) => setShowDeleteConfirm(item.id)}
+        onShowDetail={(item) => setShowDetailDialog(item.id)}
+        sortField={sortField}
+        sortDirection={sortDirection}
+        onSort={handleSort}
+      />
 
       {/* ゴミ箱を空にする確認ダイアログ */}
       <ConfirmDialog

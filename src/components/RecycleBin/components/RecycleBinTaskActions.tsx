@@ -1,17 +1,19 @@
 import React from "react";
+import { Button } from "@/components/ui/button";
 import {
-  Button,
-  ActionMenu,
-  ActionList,
-} from "@primer/react";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
-  KebabHorizontalIcon,
-  HistoryIcon,
-  TrashIcon,
-} from "@primer/octicons-react";
+  MoreHorizontal,
+  RotateCcw,
+  Trash2,
+} from "lucide-react";
 import { LoadingButton } from "../../shared/LoadingButton";
 import { MESSAGES } from "../../../constants/recycleBin";
-import { TaskActionsContainer } from "../RecycleBinView.styles";
 
 export interface RecycleBinTaskActionsProps {
   /** タスクID */
@@ -41,7 +43,7 @@ export const RecycleBinTaskActions: React.FC<RecycleBinTaskActionsProps> = ({
 
   if (isLoading) {
     return (
-      <TaskActionsContainer>
+      <div className="flex gap-2">
         <LoadingButton
           disabled
           isLoading
@@ -53,42 +55,34 @@ export const RecycleBinTaskActions: React.FC<RecycleBinTaskActionsProps> = ({
         >
           処理中
         </LoadingButton>
-      </TaskActionsContainer>
+      </div>
     );
   }
 
   return (
-    <TaskActionsContainer>
-      <ActionMenu>
-        <ActionMenu.Anchor>
+    <div className="flex gap-2">
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
           <Button
-            size="small"
-            leadingVisual={KebabHorizontalIcon}
+            size="sm"
+            variant="outline"
           >
+            <MoreHorizontal size={16} className="mr-2" />
             操作
           </Button>
-        </ActionMenu.Anchor>
-        <ActionMenu.Overlay>
-          <ActionList>
-            <ActionList.Item onSelect={() => onRestore(taskId)}>
-              <ActionList.LeadingVisual>
-                <HistoryIcon size={16} />
-              </ActionList.LeadingVisual>
-              復元
-            </ActionList.Item>
-            <ActionList.Divider />
-            <ActionList.Item
-              variant="danger"
-              onSelect={() => onDeleteConfirm(taskId)}
-            >
-              <ActionList.LeadingVisual>
-                <TrashIcon size={16} />
-              </ActionList.LeadingVisual>
-              完全に削除
-            </ActionList.Item>
-          </ActionList>
-        </ActionMenu.Overlay>
-      </ActionMenu>
-    </TaskActionsContainer>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuItem onClick={() => onRestore(taskId)}>
+            <RotateCcw size={16} className="mr-2" />
+            復元
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={() => onDeleteConfirm(taskId)}>
+            <Trash2 size={16} className="mr-2" />
+            完全に削除
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
   );
 };

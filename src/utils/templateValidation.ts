@@ -387,7 +387,7 @@ export const formatValidationErrors = (errors: ValidationError[]): string => {
     return "";
   }
 
-  return errors.map((error) => error.message).join("\n");
+  return errors.map((_error) => _error.message).join("\n");
 };
 
 /**

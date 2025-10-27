@@ -9,9 +9,7 @@ export type IconButtonVariant =
   | "warning"
   | "muted";
 
-export type IconButtonSize = "small" | "medium" | "large";
-
-export type IconButtonStyle = "primer" | "custom";
+export type IconButtonSize = "small" | "medium" | "large" | "icon";
 
 export type StatusBadgeVariant =
   | "default"
@@ -35,8 +33,6 @@ export type FlexJustify =
   | "space-between"
   | "space-around"
   | "space-evenly";
-
-export type FlexWrap = "nowrap" | "wrap" | "wrap-reverse";
 
 export type LoadingStateSize = "small" | "medium" | "large";
 

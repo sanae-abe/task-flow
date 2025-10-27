@@ -1,6 +1,6 @@
-import type { Icon } from '@primer/octicons-react';
-import { Text } from '@primer/react';
 import { memo } from 'react';
+import { cn } from '@/lib/utils';
+import type { LucideIcon } from 'lucide-react';
 
 import type { StatusBadgeVariant, StatusBadgeSize } from '../../types/shared';
 
@@ -10,18 +10,18 @@ interface StatusBadgeProps {
   /** バッジのサイズ */
   size?: StatusBadgeSize;
   /** アイコン（オプション） */
-  icon?: Icon | React.ComponentType<{ size: number }>;
+  icon?: LucideIcon | React.ComponentType<{ size: number }>;
   /** バッジのテキスト */
   children: React.ReactNode;
   /** フォントウェイト */
   fontWeight?: string | number;
   /** 追加のCSS */
-  sx?: Record<string, unknown>;
+  className?: string;
 }
 
 /**
  * 統一された状態表示バッジコンポーネント
- * 
+ *
  * 期限、ラベル、統計表示などの状態を一貫したデザインで表示します。
  * Primerデザインシステムの色トークンを使用してアクセシビリティを確保。
  */
@@ -31,102 +31,68 @@ const StatusBadge = memo<StatusBadgeProps>(({
   icon: IconComponent,
   children,
   fontWeight = '600',
-  sx
+  className
 }) => {
   // バリアント別の色定義
-  const getVariantColors = () => {
+  const getVariantColor = (): string => {
     switch (variant) {
       case 'danger':
-        return {
-          color: 'danger.fg',
-          cssColor: '#d1242f'
-        };
+        return 'text-destructive';
       case 'warning':
-        return {
-          color: 'attention.fg',
-          cssColor: '#9a6700'
-        };
+        return 'text-warning';
       case 'success':
-        return {
-          color: 'success.fg',
-          cssColor: '#1a7f37'
-        };
+        return 'text-success';
       case 'info':
-        return {
-          color: 'accent.fg',
-          cssColor: '#0969da'
-        };
-      case 'neutral':
-        return {
-          color: 'fg.muted',
-          cssColor: '#656d76'
-        };
-      case 'emphasis':
-        return {
-          color: 'fg.onEmphasis',
-          cssColor: '#ffffff'
-        };
+        return 'text-primary';
       default:
-        return {
-          color: 'fg.default',
-          cssColor: '#1f2328'
-        };
+        return 'text-default';
     }
   };
 
   // サイズ別のスタイル定義
-  const getSizeStyles = () => {
+  const getSizeClasses = (): { containerClass: string; textClass: string; iconSize: number } => {
     switch (size) {
       case 'small':
         return {
-          px: 1,
-          py: 0,
-          fontSize: 0,
-          iconSize: 10
+          containerClass: 'px-1 py-0',
+          textClass: 'text-xs',
+          iconSize: 16
         };
       case 'large':
         return {
-          px: 3,
-          py: 2,
-          fontSize: 2,
+          containerClass: 'px-3 py-2',
+          textClass: 'text-base',
           iconSize: 16
         };
       default: // medium
         return {
-          px: 2,
-          py: 1,
-          fontSize: 1,
-          iconSize: 12
+          containerClass: 'px-2 py-1',
+          textClass: 'text-sm',
+          iconSize: 16
         };
     }
   };
 
-  const colors = getVariantColors();
-  const sizeStyles = getSizeStyles();
+  const colorClass = getVariantColor();
+  const { containerClass, textClass, iconSize } = getSizeClasses();
 
   return (
     <div
+      className={cn(
+        'inline-flex items-center self-start gap-1',
+        containerClass,
+        textClass,
+        className,
+        colorClass
+      )}
       style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: IconComponent ? '4px' : 0,
-        color: colors.cssColor,
-        fontWeight,
-        alignSelf: 'flex-start',
-        ...sx
+        fontWeight
       }}
     >
       {IconComponent && (
-        <IconComponent size={sizeStyles.iconSize} />
+        <IconComponent size={iconSize} />
       )}
-      <Text 
-        sx={{ 
-          fontSize: sizeStyles.fontSize, 
-          color: colors.color,
-        }}
-      >
         {children}
-      </Text>
     </div>
   );
 });

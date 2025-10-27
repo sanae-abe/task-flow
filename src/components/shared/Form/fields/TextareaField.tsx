@@ -5,13 +5,12 @@
  */
 
 import React, { useCallback } from "react";
-import { Textarea } from "@primer/react";
+import { Textarea } from "@/components/ui/textarea";
+import { cn } from '@/lib/utils';
 
 import {
   toStringValue,
-  getValidationStatus,
 } from "../../../../utils/formHelpers";
-import { UNIFIED_FORM_STYLES } from "../styles";
 import type { TextareaFieldProps } from "./types";
 
 /**
@@ -33,9 +32,9 @@ export const TextareaField: React.FC<TextareaFieldProps> = React.memo(
     autoFocus = false,
     disabled = false,
     validation,
-    error,
+    _error,
     touched,
-    sx,
+    style,
     rows = 3,
   }) => {
     /**
@@ -79,11 +78,11 @@ export const TextareaField: React.FC<TextareaFieldProps> = React.memo(
     }, [onFocus]);
 
     // エラー状態の判定
-    const hasError = Boolean(touched && error);
-    const validationStatus = getValidationStatus(hasError);
+    const hasError = Boolean(touched && _error);
 
     return (
       <Textarea
+        id={id}
         name={name}
         value={toStringValue(value)}
         onChange={handleInputChange}
@@ -93,16 +92,15 @@ export const TextareaField: React.FC<TextareaFieldProps> = React.memo(
         placeholder={placeholder}
         autoFocus={autoFocus}
         disabled={disabled}
-        sx={{
-          ...UNIFIED_FORM_STYLES.input,
-          resize: "none",
-          height: `${rows * 20 + 16}px`,
-          ...sx,
-        }}
-        validationStatus={validationStatus}
+        rows={rows}
+        className={cn(
+          "resize-none",
+          hasError && "border-destructive focus:border-destructive focus:ring-destructive"
+        )}
+        style={style ? (style as React.CSSProperties) : undefined}
         aria-required={validation?.required}
         aria-invalid={hasError}
-        aria-describedby={hasError ? `${id}-error` : undefined}
+        aria-describedby={hasError ? `${id}-_error` : undefined}
       />
     );
   },

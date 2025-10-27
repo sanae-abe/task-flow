@@ -1,13 +1,13 @@
 import React from 'react';
-import { Button, Heading, Text } from '@primer/react';
-import { PlusIcon } from '@primer/octicons-react';
+import { Button } from '@/components/ui/button';
+import { Plus } from 'lucide-react';
 
 import type { TemplateFormData, TaskTemplate } from '../../types/template';
 import type { DialogFlashMessageData } from '../shared/DialogFlashMessage';
 import TemplateFormDialog from './TemplateFormDialog';
 import ConfirmDialog from '../shared/Dialog/ConfirmDialog';
 import TemplateSearchFilter from './TemplateSearchFilter';
-import TemplateTable from './TemplateTable';
+import { TemplateDataTable } from './components/TemplateDataTable';
 
 // カスタムフック
 import { useTemplateManagement } from '../../hooks/useTemplateManagement';
@@ -27,7 +27,7 @@ const TemplateManagementPanel: React.FC<TemplateManagementPanelProps> = ({ onMes
   const {
     templates,
     loading,
-    error,
+    _error,
     createTemplate,
     updateTemplate,
     deleteTemplate,
@@ -113,19 +113,19 @@ const TemplateManagementPanel: React.FC<TemplateManagementPanelProps> = ({ onMes
   // ローディングやエラー状態の表示
   if (loading) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', padding: '24px' }}>
-        <Text sx={{ color: 'fg.muted' }}>テンプレートを読み込み中...</Text>
+      <div className="flex justify-center p-6">
+        <p className="text-muted-foreground">テンプレートを読み込み中...</p>
       </div>
     );
   }
 
-  if (error) {
+  if (_error) {
     return (
-      <div style={{ textAlign: 'center', padding: '24px' }}>
-        <Text sx={{ color: 'danger.fg', fontSize: 1, fontWeight: 'bold' }}>
-          {error}
-        </Text>
-        <Button variant="default" sx={{ mt: 2 }} onClick={() => window.location.reload()}>
+      <div className="text-center p-6">
+        <p className="text-destructive text-sm font-bold">
+          {_error}
+        </p>
+        <Button variant="outline" className="mt-2" onClick={() => window.location.reload()}>
           再読み込み
         </Button>
       </div>
@@ -133,19 +133,12 @@ const TemplateManagementPanel: React.FC<TemplateManagementPanelProps> = ({ onMes
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: "12px", paddingBottom: "16px" }}>
+    <div className="flex flex-col gap-3">
       {/* ヘッダー */}
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: "8px",
-          flexWrap: 'wrap'
-        }}
-      >
-        <Heading sx={{ fontSize: 2, fontWeight: 'bold' }}>テンプレート管理</Heading>
-        <Button variant="primary" leadingVisual={PlusIcon} onClick={openCreateDialog} size="small">
+      <div className="flex items-center justify-between gap-2 flex-wrap">
+        <h2 className="text-lg font-bold">テンプレート管理</h2>
+        <Button variant="default" size="sm" onClick={openCreateDialog}>
+          <Plus size={16} className="mr-2" />
           テンプレートを作成
         </Button>
       </div>
@@ -162,7 +155,7 @@ const TemplateManagementPanel: React.FC<TemplateManagementPanelProps> = ({ onMes
       />
 
       {/* テンプレート一覧テーブル */}
-      <TemplateTable
+      <TemplateDataTable
         templates={filteredTemplates}
         sortField={sortField}
         sortDirection={sortDirection}

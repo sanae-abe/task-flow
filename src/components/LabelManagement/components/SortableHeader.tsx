@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChevronUpIcon, ChevronDownIcon } from '@primer/octicons-react';
+import { ChevronUp, ChevronDown } from 'lucide-react';
 import type { SortField, SortDirection } from '../../../types/labelManagement';
 
 interface SortableHeaderProps {
@@ -26,28 +26,19 @@ const SortableHeader: React.FC<SortableHeaderProps> = ({
       type="button"
       onClick={() => onSort(field)}
       style={{
-        background: 'none',
-        border: 'none',
-        cursor: 'pointer',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '4px',
-        justifyContent: align === 'center' ? 'center' : 'flex-start',
-        width: '100%',
-        padding: 0,
-        color: 'var(--fgColor-muted)',
-        fontSize: '12px',
-        fontWeight: 'bold',
-        fontFamily: 'inherit'
+        color: 'var(--muted-foreground)'
       }}
+      className={`bg-transparent border-0 cursor-pointer flex w-full p-0 font-xs font-bold font-[inherit] ${
+        align === 'center' ? 'justify-center' : 'justify-start'
+      }`}
       aria-label={`${children}でソート`}
     >
       <span>{children}</span>
-      <span style={{ opacity: isActive ? 1 : 0.3, fontSize: '10px' }}>
+      <span className={`${isActive ? 'opacity-30 text-[10px]' : ''}`}>
         {isActive && sortDirection === 'asc' ? (
-          <ChevronUpIcon size={12} />
+          <ChevronUp size={12} />
         ) : (
-          <ChevronDownIcon size={12} />
+          <ChevronDown size={12} />
         )}
       </span>
     </button>

@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, Button } from "@primer/react";
+import { Button } from "@/components/ui/button";
 import type { EmptyStateProps } from "../types";
 
 /**
@@ -18,19 +18,10 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
     : "タスクがありません";
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        paddingBlock: "32px",
-        color: "var(--fgColor-default)",
-      }}
-    >
-      <Text sx={{ fontSize: 1, mb: 2 }}>{message}</Text>
+    <div className="flex flex-col items-center justify-center py-8 text-foreground">
+      <p className="text-sm mb-2">{message}</p>
       {isFiltered && (
-        <Button variant="invisible" size="small" onClick={onClearFilter}>
+        <Button variant="ghost" size="sm" onClick={onClearFilter}>
           フィルタをクリア
         </Button>
       )}

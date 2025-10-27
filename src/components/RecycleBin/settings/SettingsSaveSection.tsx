@@ -1,12 +1,7 @@
 import React from "react";
-import { CheckIcon } from "@primer/octicons-react";
 import { MESSAGES, UI_TEXT } from "../../../constants/recycleBin";
 import { LoadingButton } from "../../shared/LoadingButton";
 import { InlineMessage } from "../../shared";
-import {
-  SaveSection,
-  SaveMessageContainer,
-} from "../RecycleBinSettingsPanel.styles";
 
 export interface SettingsSaveSectionProps {
   /** ローディング状態 */
@@ -14,7 +9,7 @@ export interface SettingsSaveSectionProps {
   /** バリデーションエラーがあるかどうか */
   hasValidationError: boolean;
   /** 表示するメッセージ */
-  message: { text: string; type: 'success' | 'error' | 'warning' | 'info' } | null;
+  message: { text: string; type: 'success' | '_error' | 'warning' | 'info' } | null;
   /** 保存ハンドラ */
   onSave: () => Promise<void>;
 }
@@ -29,18 +24,17 @@ export const SettingsSaveSection: React.FC<SettingsSaveSectionProps> = ({
   message,
   onSave,
 }) => (
-    <SaveSection>
+    <div className="mt-6">
       <LoadingButton
-        variant="primary"
+        primerVariant="primary"
         isLoading={isLoading}
         loadingText={MESSAGES.SAVE.IN_PROGRESS}
         onClick={onSave}
         disabled={hasValidationError}
-        leadingVisual={!isLoading ? CheckIcon : undefined}
       >
         {UI_TEXT.PANEL.SAVE_BUTTON}
       </LoadingButton>
-      <SaveMessageContainer>
+      <div className="mt-3">
         {message && (
           <InlineMessage
             variant={message.type === 'success' ? "success" : "critical"}
@@ -48,6 +42,6 @@ export const SettingsSaveSection: React.FC<SettingsSaveSectionProps> = ({
             size="small"
           />
         )}
-      </SaveMessageContainer>
-    </SaveSection>
+      </div>
+    </div>
   );

@@ -25,7 +25,7 @@ export const useFirstTimeUser = () => {
         hasShownHint: false,
         isLoading: false,
       });
-    } catch (error) {
+    } catch (_error) {
       // LocalStorage エラーの場合は初回ユーザーとして扱わない
       setState({
         isFirstTimeUser: false,
@@ -42,7 +42,7 @@ export const useFirstTimeUser = () => {
         ...prev,
         isFirstTimeUser: false,
       }));
-    } catch (error) {
+    } catch (_error) {
       // LocalStorage エラーの場合は何もしない
     }
   };

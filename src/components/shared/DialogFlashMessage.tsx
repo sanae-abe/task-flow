@@ -1,12 +1,14 @@
 import React from 'react';
-import { Flash, Text, IconButton } from '@primer/react';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+import { cn } from '@/lib/utils';
 import {
-  AlertIcon,
-  CheckCircleIcon,
-  InfoIcon,
-  StopIcon,
-  XIcon,
-} from '@primer/octicons-react';
+  AlertTriangle,
+  CircleCheck,
+  Info,
+  XCircle,
+  X
+} from 'lucide-react';
+import IconButton from './IconButton';
 
 /**
  * ダイアログ内でFlashメッセージを表示するためのメッセージタイプ
@@ -41,9 +43,9 @@ interface DialogFlashMessageProps {
 }
 
 /**
- * メッセージタイプをFlashコンポーネントのvariantに変換
+ * DialogMessageTypeをshadcn/ui Alertのvariantにマッピング
  */
-export const getFlashVariant = (type: DialogMessageType): "default" | "warning" | "danger" | "success" => {
+const getAlertVariant = (type: DialogMessageType): "default" | "destructive" | "warning" | "success" | "info" => {
   switch (type) {
     case 'success':
       return 'success';
@@ -51,9 +53,10 @@ export const getFlashVariant = (type: DialogMessageType): "default" | "warning" 
       return 'warning';
     case 'critical':
     case 'danger':
-      return 'danger';
+      return 'destructive';
     case 'info':
     case 'upsell':
+      return 'info';
     case 'default':
     default:
       return 'default';
@@ -66,25 +69,25 @@ export const getFlashVariant = (type: DialogMessageType): "default" | "warning" 
 export const getMessageIcon = (type: DialogMessageType): React.ReactElement => {
   switch (type) {
     case 'success':
-      return <CheckCircleIcon size={16} />;
+      return <CircleCheck className="h-4 w-4" />;
     case 'info':
     case 'upsell':
-      return <InfoIcon size={16} />;
+      return <Info className="h-4 w-4" />;
     case 'warning':
-      return <AlertIcon size={16} />;
+      return <AlertTriangle className="h-4 w-4" />;
     case 'critical':
-      return <StopIcon size={16} />;
+      return <XCircle className="h-4 w-4" />;
     case 'danger':
-      return <AlertIcon size={16} />;
+      return <AlertTriangle className="h-4 w-4" />;
     case 'default':
     default:
-      return <InfoIcon size={16} />;
+      return <Info className="h-4 w-4" />;
   }
 };
 
 /**
  * ダイアログ内でFlashメッセージを表示するコンポーネント
- * メッセージタイプに応じて適切なvariantとアイコンを表示します
+ * shadcn/ui Alertを使用してメッセージタイプに応じて適切なvariantとアイコンを表示します
  */
 export const DialogFlashMessage: React.FC<DialogFlashMessageProps> = ({
   message,
@@ -99,42 +102,34 @@ export const DialogFlashMessage: React.FC<DialogFlashMessageProps> = ({
   }
 
   return (
-    <Flash
-      variant={getFlashVariant(message.type)}
-      style={{
-        position: isStatic ? 'static' : 'sticky',
-        top: 0,
-        ...style
-      }}
-      className={className}
+    <Alert
+      variant={getAlertVariant(message.type)}
+      className={cn(
+        isStatic ? "static" : "sticky top-0",
+        "relative",
+        className
+      )}
+      style={style}
     >
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-        <div style={{ display: 'flex', alignItems: 'flex-start', flex: 1 }}>
-          <div style={{ marginRight: '8px' }}>{getMessageIcon(message.type)}</div>
-          <div style={{ flex: 1 }}>
-            {message.title ?
-              <Text sx={{ fontWeight: 'bold', display: 'block', mb: 1 }}>{message.title}</Text> : null}
-            <Text sx={{ display: 'block' }}>
-              {message.text}
-            </Text>
-          </div>
-        </div>
-        {showDismiss && onDismiss && (
-          <IconButton
-            aria-label="閉じる"
-            icon={XIcon}
-            size="small"
-            variant="invisible"
-            onClick={onDismiss}
-            style={{
-              marginLeft: '8px',
-              flexShrink: 0,
-              alignSelf: 'flex-start'
-            }}
-          />
+      {getMessageIcon(message.type)}
+      <div className="flex-1">
+        {message.title && (
+          <AlertTitle>{message.title}</AlertTitle>
         )}
+        <AlertDescription>
+          {message.text}
+        </AlertDescription>
       </div>
-    </Flash>
+      {showDismiss && onDismiss && (
+        <IconButton
+          icon={X}
+          size="icon"
+          ariaLabel="閉じる"
+          onClick={onDismiss}
+          className="absolute right-2 top-2 h-auto p-1 min-w-0"
+        />
+      )}
+    </Alert>
   );
 };
 

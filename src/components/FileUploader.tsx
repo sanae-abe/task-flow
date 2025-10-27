@@ -32,7 +32,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({
   const [importMode, setImportMode] = useState<ImportMode>(defaultImportMode);
   const {
     isDragOver,
-    error,
+    _error,
     fileInputRef,
     handleDragOver,
     handleDragLeave,
@@ -52,14 +52,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({
   );
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: "24px",
-        width: "100%",
-      }}
-    >
+    <div className="flex flex-col gap-6 w-full">
       {showModeSelector && (
         <ImportModeSelector
           selectedMode={importMode}
@@ -87,7 +80,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({
         onRemoveAttachment={handleRemoveAttachment}
       />
 
-      <InlineMessage variant="critical" message={error} size="small" />
+      <InlineMessage variant="critical" message={_error} size="small" />
     </div>
   );
 };

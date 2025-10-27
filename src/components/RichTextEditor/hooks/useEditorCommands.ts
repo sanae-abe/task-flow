@@ -46,7 +46,7 @@ export const useEditorCommands = (
             }
         }
         handleInput();
-      } catch (error) {
+      } catch (_error) {
         // コマンド実行失敗、フォールバック処理
         try {
           if (value) {
@@ -55,7 +55,7 @@ export const useEditorCommands = (
             document.execCommand(command);
           }
           handleInput();
-        } catch (fallbackError) {
+        } catch (_fallbackError) {
           // フォールバックも失敗 - プロダクションではサイレント
         }
       }

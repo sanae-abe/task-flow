@@ -1,8 +1,10 @@
 import React from 'react';
-import { Box, Text, IconButton } from '@primer/react';
-import { StarIcon, StarFillIcon, PencilIcon, TrashIcon } from '@primer/octicons-react';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import { Star, Edit, Trash2 } from 'lucide-react';
 import type { TaskTemplate } from '../../types/template';
 import { TEMPLATE_CATEGORIES } from './TemplateCategorySelector';
+import IconButton from '../shared/IconButton';
 
 interface TemplateTableRowProps {
   template: TaskTemplate;
@@ -25,113 +27,81 @@ const TemplateTableRow: React.FC<TemplateTableRowProps> = ({
   const categoryInfo = TEMPLATE_CATEGORIES.find((cat) => cat.id === template.category);
 
   return (
-    <Box
-      sx={{
-        display: 'grid',
-        gridTemplateColumns: '1fr 100px 80px 100px',
-        gap: 2,
-        p: 2,
-        alignItems: 'center',
-        borderBottom: isLast ? 'none' : '1px solid',
-        borderColor: 'border.muted',
-        '&:hover': {
-          bg: 'canvas.subtle',
-          '& .template-actions': {
-            opacity: 1
-          }
-        }
-      }}
+    <div
+      className={cn(
+        "grid grid-cols-[1fr_100px_80px_100px] gap-2 p-2 items-center",
+        "hover:bg-gray-50 hover:[&_.template-actions]:opacity-100",
+        !isLast && "border-b border-border border-gray-200"
+      )}
     >
       {/* テンプレート名 */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: "4px" }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: "4px" }}>
+      <div className="flex flex-col gap-1">
+        <div className="flex items-center gap-1">
           {template.isFavorite && (
-            <div style={{ color: 'var(--fgColor-attention)' }}>
-              <StarFillIcon size={14} />
+            <div className="text-warning">
+              <Star size={14} fill="currentColor" />
             </div>
           )}
-          <Text sx={{ fontWeight: 'semibold', fontSize: 1 }}>
+          <span className="font-semibold text-sm">
             {template.name}
-          </Text>
+          </span>
         </div>
         {template.description && (
-          <Text
-            sx={{
-              fontSize: 0,
-              color: 'fg.muted',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap'
-            }}
-          >
+          <span className="text-xs text-zinc-700 overflow-hidden text-ellipsis whitespace-nowrap">
             {template.description}
-          </Text>
+          </span>
         )}
       </div>
 
       {/* カテゴリー */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-        <Text
-          sx={{
-            fontSize: 1,
-            color: 'fg.muted',
-            display: 'inline-block'
-          }}
-        >
+      <div className="flex items-center gap-1">
+        <span className="text-sm text-zinc-700 inline-block">
           {categoryInfo?.label || template.category}
-        </Text>
+        </span>
       </div>
 
       {/* 使用数 */}
-      <div style={{ textAlign: 'center' }}>
-        <Text
-          sx={{
-            fontSize: 1,
-            fontWeight: template.usageCount > 0 ? 'bold' : 'normal',
-            color: template.usageCount > 0 ? 'fg.default' : 'fg.muted'
-          }}
+      <div className="text-center">
+        <span
+          className={cn(
+            "text-sm",
+            template.usageCount > 0 ? "font-bold text-foreground" : "font-normal text-zinc-700"
+          )}
         >
           {template.usageCount}
-        </Text>
+        </span>
       </div>
 
       {/* アクションボタン */}
-      <div
-        className="template-actions"
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          gap: '4px',
-          opacity: 0.7,
-          transition: 'opacity 0.2s ease'
-        }}
-      >
-        <IconButton
-          icon={template.isFavorite ? StarFillIcon : StarIcon}
+      <div className="template-actions flex justify-center gap-1 opacity-70 transition-opacity duration-200">
+        <Button
+          variant="ghost"
+          size="sm"
           aria-label={template.isFavorite ? 'お気に入りから削除' : 'お気に入りに追加'}
-          size="small"
-          variant="invisible"
           onClick={() => onToggleFavorite(template)}
-          sx={{
-            color: template.isFavorite ? 'attention.fg' : 'fg.muted'
-          }}
-        />
+          className={cn(
+            "p-1 h-auto min-w-0",
+            template.isFavorite ? "text-warning" : "text-zinc-700"
+          )}
+        >
+          <Star size={16} fill={template.isFavorite ? "currentColor" : "none"} />
+        </Button>
         <IconButton
-          icon={PencilIcon}
-          aria-label={`テンプレート「${template.name}」を編集`}
-          size="small"
-          variant="invisible"
+          icon={Edit}
+          size="icon"
+          ariaLabel={`テンプレート「${template.name}」を編集`}
           onClick={() => onEdit(template)}
+          className="p-1 h-auto min-w-0"
         />
         <IconButton
-          icon={TrashIcon}
-          aria-label={`テンプレート「${template.name}」を削除`}
-          size="small"
-          variant="invisible"
+          icon={Trash2}
+          size="icon"
+          ariaLabel={`テンプレート「${template.name}」を削除`}
           onClick={() => onDelete(template)}
+          className="p-1 h-auto min-w-0"
         />
       </div>
-    </Box>
+    </div>
   );
 };
 

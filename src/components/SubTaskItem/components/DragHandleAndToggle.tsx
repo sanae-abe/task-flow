@@ -1,15 +1,13 @@
 import React from "react";
-import { Box } from "@primer/react";
 import {
-  CheckCircleIcon,
-  CheckCircleFillIcon,
-  GrabberIcon,
-} from "@primer/octicons-react";
+  CircleCheck,
+  GripVertical,
+} from "lucide-react";
+import CircleCheck2Icon from "../../shared/icons/CircleCheck2Icon";
 import type { DraggableAttributes } from "@dnd-kit/core";
 import type { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
 import type { SubTask } from "../../../types";
 import IconButton from "../../shared/IconButton";
-import { subTaskItemStyles } from "../styles/subTaskItemStyles";
 
 interface DragHandleAndToggleProps {
   subTask: SubTask;
@@ -24,26 +22,27 @@ export const DragHandleAndToggle: React.FC<DragHandleAndToggleProps> = ({
   dragAttributes,
   dragListeners,
 }) => (
-    <div style={{ display: "flex", alignItems: "center" }}>
-      <Box
+    <div className="flex items-center">
+      <div
+        // eslint-disable-next-line react/jsx-props-no-spreading
         {...dragAttributes}
+        // eslint-disable-next-line react/jsx-props-no-spreading
         {...dragListeners}
-        className="drag-handle"
-        sx={subTaskItemStyles.dragHandle}
+        className="drag-handle p-1 cursor-grab"
       >
-        <GrabberIcon size={16} />
-      </Box>
+        <GripVertical size={16} className="text-zinc-500" />
+      </div>
 
       <IconButton
-        icon={subTask.completed ? CheckCircleFillIcon : CheckCircleIcon}
+        icon={subTask.completed ? CircleCheck2Icon : CircleCheck}
         onClick={onToggle}
         ariaLabel={`${subTask.title}を${
           subTask.completed ? "未完了" : "完了"
         }にする`}
         variant="success"
-        size="small"
+        size="icon"
         stopPropagation
-        sx={subTaskItemStyles.toggleButton}
+        className="w-8 h-8 p-2"
       />
     </div>
   );

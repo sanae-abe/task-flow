@@ -1,25 +1,38 @@
 import {
-  XIcon,
-  DatabaseIcon,
-  FilterIcon,
-  InfoIcon,
-  CalendarIcon,
-  TableIcon,
-  DeviceCameraVideoIcon,
-  TasklistIcon,
-  PaperclipIcon
-} from "@primer/octicons-react";
-import { MousePointer, FileText } from "react-feather";
+  X,
+  Database,
+  Filter,
+  Info,
+  Calendar,
+  Table,
+  Video,
+  List,
+  Paperclip,
+  MousePointer,
+  FileText
+} from "lucide-react";
 
-import { Button, Heading, Text } from "@primer/react";
+import { Button } from "@/components/ui/button";
 import React, { useEffect, useCallback } from "react";
+import { cn } from "@/lib/utils";
 
 import Logo from "./Logo";
 
 // 定数定義
 const SIDEBAR_WIDTH = "440px";
-const SIDEBAR_Z_INDEX = 1001;
+const SIDEBAR_Z_INDEX = 400;
 const TITLE_MIN_WIDTH = "120px";
+
+// セクション背景色定数
+const SECTION_COLORS = {
+  PRIMARY_BLUE: "bg-primary",    // ビュー切り替え、タスク管理
+  SUCCESS_GREEN: "bg-success",   // 基本操作、便利なヒント
+  ATTENTION_YELLOW: "bg-warning", // ファイル添付
+  ACCENT_PURPLE: "bg-purple-600",   // カレンダー機能
+  DANGER_RED: "bg-destructive",       // フィルタリング・ソート
+  MUTED_GRAY: "bg-gray-600",     // テンプレート管理
+  SPONSOR_ORANGE: "bg-orange-600",  // データ管理
+} as const;
 
 interface HelpSidebarProps {
   isOpen: boolean;
@@ -30,52 +43,28 @@ interface HelpSectionProps {
   title: string;
   icon: React.ComponentType<{ size?: number }>;
   children: React.ReactNode;
-  background?: string;
+  backgroundClass?: string;
 }
 
 const HelpSection: React.FC<HelpSectionProps> = ({
   title,
   icon: Icon,
   children,
-  background = "var(--bgColor-accent-emphasis)",
+  backgroundClass = SECTION_COLORS.PRIMARY_BLUE,
 }) => (
   <>
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: "8px",
-        marginBottom: "12px",
-      }}
-    >
+    <div className="flex items-center gap-2 mb-3">
       <div
-        style={{
-          padding: "8px",
-          background,
-          borderRadius: "50%",
-          color: "var(--fgColor-onEmphasis)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
+        className={`p-2 flex items-center justify-center rounded-full text-white ${backgroundClass}`}
       >
         <Icon size={14} />
       </div>
-      <Heading
-        sx={{ fontSize: 2, fontWeight: "600", color: "fg.default", margin: 0 }}
-      >
+      <h3 className="text-base font-semibold m-0">
         {title}
-      </Heading>
+      </h3>
     </div>
-    <div
-      style={{
-        marginBottom: "20px",
-        padding: "12px",
-        backgroundColor: "var(--bgColor-muted)",
-        borderRadius: "var(--borderRadius-medium)",
-      }}
-    >
-      <div style={{ paddingLeft: 0 }}>{children}</div>
+    <div className="mb-5 p-3 bg-neutral-100 rounded-md">
+      <div className="pl-0">{children}</div>
     </div>
   </>
 );
@@ -86,38 +75,16 @@ interface HelpItemProps {
 }
 
 const HelpItem: React.FC<HelpItemProps> = ({ title, description }) => (
-  <div
-    style={{
-      padding: "8px",
-      backgroundColor: "var(--bgColor-muted)",
-      borderRadius: "var(--borderRadius-medium)",
-      display: "flex",
-      gap: "12px",
-      alignItems: "flex-start",
-    }}
-  >
-    <Text
-      sx={{
-        fontSize: 1,
-        fontWeight: "600",
-        color: "accent.emphasis",
-        minWidth: TITLE_MIN_WIDTH,
-        flexShrink: 0,
-        overflowWrap: "break-word",
-      }}
+  <div className="p-2 flex gap-3 items-start bg-neutral-100 rounded-md">
+    <span
+      style={{ minWidth: TITLE_MIN_WIDTH }}
+      className={cn(`text-sm font-semibold text-primary flex-shrink-0 break-words`)}
     >
       {title}
-    </Text>
-    <Text
-      sx={{
-        fontSize: 0,
-        lineHeight: 1.5,
-        color: "fg.default",
-        flex: 1,
-      }}
-    >
+    </span>
+    <span className="text-xs leading-6 flex-1">
       {description}
-    </Text>
+    </span>
   </div>
 );
 
@@ -156,61 +123,43 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
         right: 0,
         width: SIDEBAR_WIDTH,
         height: "100vh",
-        backgroundColor: "var(--bgColor-default)",
+        backgroundColor: "var(--background)",
         boxShadow: "0 16px 32px rgba(0, 0, 0, 0.24)",
         borderLeft: "1px solid",
-        borderColor: "var(--borderColor-default)",
+        borderColor: "var(--border)",
         zIndex: SIDEBAR_Z_INDEX,
         overflowY: "auto",
         animation:
           "sidebar-slide-in-right 250ms cubic-bezier(0.33, 1, 0.68, 1)",
       }}
     >
-      <div style={{ display: "flex", height: "100%", flexDirection: "column" }}>
+      <div className="flex h-full flex-col">
         {/* Header */}
-        <div
-          style={{
-            display: "flex",
-            padding: "17px 16px 16px",
-            alignItems: "flex-start",
-            justifyContent: "space-between",
-            borderBottom: "1px solid",
-            borderColor: "var(--borderColor-default)",
-            flexShrink: 0,
-          }}
-        >
-          <Heading
+        <div className="flex items-start justify-between border-b border-border flex-shrink-0 pt-[17px] pb-4 px-4">
+          <h1
             id="help-title"
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: 2,
-              fontSize: "1.25rem !important",
-              "& svg": {
-                color: "accent.emphasis",
-                marginRight: "2px",
-              },
-            }}
+            className="flex items-center gap-2 text-xl font-bold"
           >
             <Logo />
             使い方ガイド
-          </Heading>
+          </h1>
           <Button
             onClick={onClose}
-            variant="invisible"
-            size="small"
-            leadingVisual={XIcon}
+            variant="ghost"
+            size="sm"
             aria-label="ヘルプを閉じる"
-            sx={{ flexShrink: 0 }}
-          />
+            className="flex-shrink-0 p-1 h-auto min-w-0"
+          >
+            <X size={16} />
+          </Button>
         </div>
 
         {/* Content */}
-        <div style={{ flex: "1", padding: "16px", overflowY: "auto" }}>
+        <div className="flex-1 p-5 overflow-y-auto">
           <HelpSection
             title="ビュー切り替え"
-            icon={DeviceCameraVideoIcon}
-            background="var(--bgColor-accent-emphasis)"
+            icon={Video}
+            backgroundClass={SECTION_COLORS.PRIMARY_BLUE}
           >
             <HelpItem
               title="カンバンビュー"
@@ -233,7 +182,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
           <HelpSection
             title="基本操作"
             icon={MousePointer}
-            background="var(--bgColor-success-emphasis)"
+            backgroundClass={SECTION_COLORS.SUCCESS_GREEN}
           >
             <HelpItem
               title="ボード作成"
@@ -265,8 +214,8 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
 
           <HelpSection
             title="タスク管理"
-            icon={TasklistIcon}
-            background="var(--bgColor-accent-emphasis)"
+            icon={List}
+            backgroundClass={SECTION_COLORS.PRIMARY_BLUE}
           >
             <HelpItem
               title="タスク編集"
@@ -304,8 +253,8 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
 
           <HelpSection
             title="ファイル添付"
-            icon={PaperclipIcon}
-            background="var(--bgColor-attention-emphasis)"
+            icon={Paperclip}
+            backgroundClass={SECTION_COLORS.ATTENTION_YELLOW}
           >
             <HelpItem
               title="ファイル管理"
@@ -315,8 +264,8 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
 
           <HelpSection
             title="カレンダー機能"
-            icon={CalendarIcon}
-            background="var(--bgColor-done-emphasis)"
+            icon={Calendar}
+            backgroundClass={SECTION_COLORS.ACCENT_PURPLE}
           >
             <HelpItem
               title="月次表示"
@@ -326,8 +275,8 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
 
           <HelpSection
             title="フィルタリング・ソート"
-            icon={FilterIcon}
-            background="var(--bgColor-severe-emphasis)"
+            icon={Filter}
+            backgroundClass={SECTION_COLORS.DANGER_RED}
           >
             <HelpItem
               title="絞り込み・並び替え"
@@ -338,7 +287,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
           <HelpSection
             title="テンプレート管理"
             icon={FileText}
-            background="var(--bgColor-closed-emphasis)"
+            backgroundClass={SECTION_COLORS.MUTED_GRAY}
           >
             <HelpItem
               title="テンプレート機能"
@@ -348,8 +297,8 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
 
           <HelpSection
             title="テーブルビュー"
-            icon={TableIcon}
-            background="var(--bgColor-accent-emphasis)"
+            icon={Table}
+            backgroundClass={SECTION_COLORS.PRIMARY_BLUE}
           >
             <HelpItem
               title="カラム管理"
@@ -359,8 +308,8 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
 
           <HelpSection
             title="データ管理"
-            icon={DatabaseIcon}
-            background="var(--bgColor-sponsors-emphasis)"
+            icon={Database}
+            backgroundClass={SECTION_COLORS.SPONSOR_ORANGE}
           >
             <HelpItem
               title="ローカル保存"
@@ -402,8 +351,8 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
 
           <HelpSection
             title="便利なヒント"
-            icon={InfoIcon}
-            background="var(--bgColor-success-emphasis)"
+            icon={Info}
+            backgroundClass={SECTION_COLORS.SUCCESS_GREEN}
           >
             <HelpItem
               title="キーボード操作"

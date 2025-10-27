@@ -11,7 +11,7 @@ export const useDataSync = () => {
   const initializeData = useCallback(async () => {
     try {
       await indexedDBManager.init();
-    } catch (error) {
+    } catch (_error) {
       // データの初期化に失敗 (silent fail)
     }
   }, []);
@@ -37,7 +37,7 @@ export const useDataSync = () => {
       };
 
       await indexedDBManager.saveAllData(dataToSave);
-    } catch (error) {
+    } catch (_error) {
       // データの保存に失敗 (silent fail)
     }
   }, [state.boards, state.labels]);
@@ -51,7 +51,7 @@ export const useDataSync = () => {
         await saveToIndexedDB();
 
         resetWasOffline();
-      } catch (error) {
+      } catch (_error) {
         // オンライン同期に失敗 (silent fail)
       }
     }

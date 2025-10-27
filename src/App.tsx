@@ -1,4 +1,4 @@
-import { BaseStyles, ThemeProvider } from '@primer/react';
+// Primer React ThemeProvider と BaseStyles を削除 - Shadcn/UI + Tailwind CSS 完全移行済み
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
@@ -7,10 +7,10 @@ import SubHeader from './components/SubHeader';
 import KanbanBoard from './components/KanbanBoard';
 import CalendarView from './components/CalendarView';
 import TableView from './components/TableView';
-import NotificationContainer from './components/NotificationContainer';
+import { Toaster } from '@/components/ui/sonner';
 import HelpSidebar from './components/HelpSidebar';
 import TaskDetailSidebar from './components/TaskDetailSidebar';
-import TaskCreateDialog from './components/TaskCreateDialog';
+import TaskCreateDialog from './components/TaskCreateDialog/TaskCreateDialog';
 import FirstTimeUserHint from './components/FirstTimeUserHint';
 import SettingsDialog from './components/SettingsDialog';
 import { useKanban } from './contexts/KanbanContext';
@@ -22,21 +22,6 @@ import { useTaskFinder } from './hooks/useTaskFinder';
 import { useFirstTimeUser } from './hooks/useFirstTimeUser';
 import { useSubHeader } from './hooks/useSubHeader';
 
-// 定数定義
-const Z_INDEX = 1000;
-
-// スタイル定義
-const styles = {
-  fixedHeader: {
-    position: 'fixed' as const,
-    top: 0,
-    left: 0,
-    right: 0,
-    zIndex: Z_INDEX,
-    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-  },
-} as const;
-
 const AppContent: React.FC = () => {
   const { state } = useKanban();
   const { openHelp, closeHelp, closeTaskDetail, state: uiState } = useUI();
@@ -44,6 +29,7 @@ const AppContent: React.FC = () => {
   const { shouldShowHint, markAsExistingUser, markHintAsShown } = useFirstTimeUser();
   const { handlers } = useSubHeader();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
 
   // データ同期の初期化
   useDataSync();
@@ -69,7 +55,9 @@ const AppContent: React.FC = () => {
   };
 
   // 設定ダイアログの処理
-  const openSettings = () => setIsSettingsOpen(true);
+  const openSettings = () => {
+    setIsSettingsOpen(true);
+  };
   const closeSettings = () => setIsSettingsOpen(false);
 
   // 排他制御はUIContext内で処理されるため、シンプルに呼び出すだけ
@@ -81,7 +69,7 @@ const AppContent: React.FC = () => {
 
   return (
     <div className="app" role="application" aria-label="TaskFlowアプリケーション">
-      <div style={styles.fixedHeader}>
+      <div className="fixed inset-0 z-1 h-[112px]">
         <Header onHelpClick={handleOpenHelp} onSettingsClick={openSettings} />
         <SubHeader />
       </div>
@@ -91,10 +79,7 @@ const AppContent: React.FC = () => {
           uiState.viewMode === 'calendar' ? 'カレンダービュー' :
           'テーブルビュー'
         }
-        style={{
-          transition: 'opacity 0.15s ease-out',
-          willChange: 'opacity',
-        }}
+        className="transition-opacity duration-150 will-change-opacity"
       >
         <Routes>
           <Route path="/" element={<Navigate to="/kanban" replace />} />
@@ -108,37 +93,21 @@ const AppContent: React.FC = () => {
         <>
           {/* オーバーレイ背景 */}
           <div
-            style={{
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              backgroundColor: 'rgba(0, 0, 0, 0.5)',
-              zIndex: 9998,
-              animation: 'fadeIn 0.2s ease-out',
-              cursor: 'pointer'
-            }}
+            className="fixed inset-0 bg-black/50 z-600 animate-fadeIn duration-200 ease-out cursor-pointer"
             onClick={handleDismissHint}
             role="button"
             aria-label="ヒントを閉じる"
           />
 
           {/* ツールチップ */}
-          <div style={{
-            position: 'fixed',
-            top: '100px',
-            right: '80px',
-            zIndex: 9999,
-            animation: 'fadeInSlide 0.3s ease-out'
-          }}>
+          <div className="fixed top-[100px] right-[80px] z-601 animate-fadeInSlide duration-300 ease-out">
             <FirstTimeUserHint
               onDismiss={handleDismissHint}
             />
           </div>
         </>
       )}
-      <NotificationContainer />
+      <Toaster position="top-right" richColors closeButton />
       <HelpSidebar isOpen={uiState.isHelpOpen} onClose={closeHelp} />
       <TaskDetailSidebar
         task={selectedTask}
@@ -158,13 +127,9 @@ const AppContent: React.FC = () => {
 
 function App() {
   return (
-    <ThemeProvider>
-      <BaseStyles>
-        <AppProviders>
-          <AppContent />
-        </AppProviders>
-      </BaseStyles>
-    </ThemeProvider>
+    <AppProviders>
+      <AppContent />
+    </AppProviders>
   );
 }
 

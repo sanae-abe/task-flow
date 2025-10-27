@@ -2,7 +2,7 @@
 export { default } from './TaskCreateDialog';
 
 // 再利用可能なコンポーネント
-export { TemplateSelector, TaskFormFields } from './components';
+export { TemplateSelector, TaskCreateForm } from './components';
 
 // カスタムフック
 export { useTaskForm, useTemplateSelection, useTaskSubmission } from './hooks';

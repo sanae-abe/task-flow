@@ -47,10 +47,10 @@ export const useRecycleBinOperations = (onMessage?: MessageCallback): UseRecycle
         importBoards(updatedBoards, true);
         onMessage?.({ type: 'success', text: message });
       }
-    } catch (error) {
-      logger.error("復元エラー:", error);
+    } catch (_error) {
+      logger._error("復元エラー:", _error);
       onMessage?.({ type: 'danger', text: '復元に失敗しました' });
-      throw error;
+      throw _error;
     } finally {
       setRestoringTaskId(null);
     }
@@ -67,10 +67,10 @@ export const useRecycleBinOperations = (onMessage?: MessageCallback): UseRecycle
         importBoards(updatedBoards, true);
         onMessage?.({ type: 'success', text: message });
       }
-    } catch (error) {
-      logger.error("完全削除エラー:", error);
+    } catch (_error) {
+      logger._error("完全削除エラー:", _error);
       onMessage?.({ type: 'danger', text: '完全削除に失敗しました' });
-      throw error;
+      throw _error;
     } finally {
       setDeletingTaskId(null);
     }
@@ -83,10 +83,10 @@ export const useRecycleBinOperations = (onMessage?: MessageCallback): UseRecycle
       importBoards(updatedBoards, true);
       onMessage?.({ type: 'success', text: `${deletedCount}件のタスクを完全削除しました` });
       logger.info(`${deletedCount}件のタスクを完全削除しました`);
-    } catch (error) {
-      logger.error("ゴミ箱を空にする際のエラー:", error);
+    } catch (_error) {
+      logger._error("ゴミ箱を空にする際のエラー:", _error);
       onMessage?.({ type: 'danger', text: 'ゴミ箱を空にする際にエラーが発生しました' });
-      throw error;
+      throw _error;
     } finally {
       setIsEmptying(false);
     }

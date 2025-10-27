@@ -1,17 +1,9 @@
 import React from "react";
-import { TrashIcon } from "@primer/octicons-react";
+import { Trash2 } from "lucide-react";
 import { UI_TEXT, MESSAGES } from "../../../constants/recycleBin";
 import { type RecycleBinSettings } from "../../../types/settings";
 import { LoadingButton } from "../../shared/LoadingButton";
 import { InlineMessage } from "../../shared";
-import {
-  HeaderContainer,
-  HeaderTop,
-  HeaderTitle,
-  EmptyButtonContent,
-  TaskCount,
-  WarningContainer,
-} from "../RecycleBinView.styles";
 
 export interface RecycleBinHeaderProps {
   /** 削除されたタスクの数 */
@@ -34,31 +26,31 @@ export const RecycleBinHeader: React.FC<RecycleBinHeaderProps> = ({
   isEmptying,
   onEmptyClick,
 }) => (
-    <HeaderContainer>
-      <HeaderTop>
-        <HeaderTitle>
-          <TrashIcon size={16} />
+    <div className="mb-4">
+      <div className="flex justify-between items-center">
+        <h2 className="text-base font-bold flex items-center gap-2 m-0">
+          <Trash2 size={16} />
           {UI_TEXT.VIEW.TITLE}
-        </HeaderTitle>
+        </h2>
         <LoadingButton
-          variant="danger"
-          size="small"
+          primerVariant="danger"
+          primerSize="small"
           isLoading={isEmptying}
           loadingText={MESSAGES.EMPTY_BIN.IN_PROGRESS}
           onClick={onEmptyClick}
         >
-          <EmptyButtonContent>
-            <TrashIcon size={14} />
+          <span className="flex items-center gap-1">
+            <Trash2 size={14} />
             {UI_TEXT.VIEW.EMPTY_BIN_BUTTON}
-          </EmptyButtonContent>
+          </span>
         </LoadingButton>
-      </HeaderTop>
+      </div>
 
-      <TaskCount>
+      <div className="my-3 text-zinc-700 text-sm">
         {UI_TEXT.VIEW.TASK_COUNT(taskCount)}
-      </TaskCount>
+      </div>
 
-      <WarningContainer>
+      <div className="mb-3">
         <InlineMessage
           variant="warning"
           message={
@@ -67,6 +59,6 @@ export const RecycleBinHeader: React.FC<RecycleBinHeaderProps> = ({
               : UI_TEXT.VIEW.WARNING_LIMITED(settings.retentionDays)
           }
         />
-      </WarningContainer>
-    </HeaderContainer>
+      </div>
+    </div>
   );

@@ -1,10 +1,11 @@
 import React, { memo, useCallback } from 'react';
-import { Box, Text, Button, IconButton } from '@primer/react';
-import { StarIcon, StarFillIcon, PencilIcon, TrashIcon } from '@primer/octicons-react';
+import { Button } from '@/components/ui/button';
+import { Star, Edit, Trash2 } from 'lucide-react';
 
 import type { TaskTemplate } from '../../types/template';
 import { TEMPLATE_CATEGORIES } from './TemplateCategorySelector';
 import LabelChip from '../LabelChip';
+import IconButton from "../shared/IconButton";
 
 interface TemplateCardProps {
   template: TaskTemplate;
@@ -46,17 +47,17 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
     return labels[priority] || priority;
   };
 
-  const getPriorityColor = (priority: string | undefined) => {
+  const getPriorityColorClass = (priority: string | undefined) => {
     if (!priority) {
-      return 'fg.muted';
+      return 'text-zinc-500';
     }
     const colors: Record<string, string> = {
-      low: 'fg.muted',
-      medium: 'attention.fg',
-      high: 'danger.fg',
-      critical: 'danger.fg'
+      low: 'text-primary',
+      medium: 'text-success',
+      high: 'text-warning',
+      critical: 'text-destructive'
     };
-    return colors[priority] || 'fg.default';
+    return colors[priority] || 'text-foreground';
   };
 
   // お気に入りトグル
@@ -100,72 +101,43 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
   }, [onSelect, template]);
 
   return (
-    <Box
-      sx={{
-        padding: compact ? "8px" : "12px",
-        border: '1px solid',
-        borderColor: 'border.default',
-        borderRadius: 2,
-        background: 'canvas.default',
-        cursor: onSelect ? 'pointer' : 'default',
-        transition: 'all 0.2s ease',
-        '&:hover': {
-          borderColor: onSelect ? 'accent.fg' : 'border.default',
-          background: onSelect ? 'canvas.subtle' : 'canvas.default',
-          '& .template-actions': {
-            opacity: 1
-          }
-        }
-      }}
+    <div
+      className={`
+        ${compact ? 'p-2' : 'p-3'}
+        border border-border border-gray-200 rounded-lg bg-white
+        ${onSelect ? 'cursor-pointer hover:border-primary hover:bg-gray-50' : 'cursor-default'}
+        transition-all duration-200 ease-in-out
+        hover:[&_.template-actions]:opacity-100
+      `}
       onClick={onSelect ? handleSelect : undefined}
     >
       {/* ヘッダー部分 */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'flex-start',
-        justifyContent: 'space-between',
-        gap: "8px",
-        marginBottom: compact ? "4px" : "8px"
-      }}>
-        <div style={{ flex: 1, minWidth: 0 }}>
+      <div className={`flex items-start justify-between gap-2 mb-${compact ? '1' : '2'}`}>
+        <div className="flex-1 min-w-0">
           {/* テンプレート名 */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: "4px", marginBottom: "4px" }}>
+          <div className="flex items-center gap-1 mb-1">
             {template.isFavorite && (
-              <div style={{ color: 'var(--fgColor-attention)' }}>
-                <StarFillIcon size={14} />
+              <div className="text-warning">
+                <Star size={14} fill="currentColor" />
               </div>
             )}
-            <Text sx={{
-              fontSize: compact ? 1 : 2,
-              fontWeight: 'bold',
-              color: 'fg.default',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap'
-            }}>
+            <h3 className={`
+              ${compact ? 'text-sm' : 'text-base'}
+              font-bold truncate
+            `}>
               {template.name}
-            </Text>
+            </h3>
           </div>
 
           {/* カテゴリーと使用回数 */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: "8px", flexWrap: 'wrap' }}>
-            <Text sx={{
-              fontSize: 0,
-              color: 'fg.muted',
-              px: 2,
-              py: 1,
-              bg: 'neutral.muted',
-              borderRadius: 2
-            }}>
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-xs text-zinc-700 px-2 py-1 bg-gray-100 rounded-md">
               {categoryInfo?.label || template.category}
-            </Text>
+            </span>
             {template.usageCount > 0 && (
-              <Text sx={{
-                fontSize: 0,
-                color: 'fg.muted'
-              }}>
+              <span className="text-xs text-zinc-700">
                 使用回数: {template.usageCount}
-              </Text>
+              </span>
             )}
           </div>
         </div>
@@ -173,42 +145,39 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
         {/* アクションボタン */}
         {showActions && (
           <div
-            className="template-actions"
-            style={{
-              display: 'flex',
-              gap: "4px",
-              opacity: compact ? 1 : 0.7,
-              transition: 'opacity 0.2s ease'
-            }}
+            className={`template-actions flex gap-1 transition-opacity duration-200 ease-in-out ${
+              compact ? 'opacity-100' : 'opacity-70'
+            }`}
           >
             {onToggleFavorite && (
-              <IconButton
-                icon={template.isFavorite ? StarFillIcon : StarIcon}
-                aria-label={template.isFavorite ? 'お気に入りから削除' : 'お気に入りに追加'}
-                size="small"
-                variant="invisible"
+              <Button
+                variant="ghost"
+                size="sm"
                 onClick={handleToggleFavorite}
-                sx={{
-                  color: template.isFavorite ? 'attention.fg' : 'fg.muted'
-                }}
-              />
+                aria-label={template.isFavorite ? 'お気に入りから削除' : 'お気に入りに追加'}
+                className={`p-1 h-auto min-w-0 ${
+                  template.isFavorite ? 'text-warning' : 'text-zinc-500'
+                }`}
+              >
+                {template.isFavorite ? <Star size={16} fill="currentColor" /> : <Star size={16} />}
+              </Button>
             )}
             {onEdit && (
               <IconButton
-                icon={PencilIcon}
-                aria-label={`テンプレート「${template.name}」を編集`}
-                size="small"
-                variant="invisible"
+                icon={Edit}
+                size="icon"
                 onClick={handleEdit}
+                ariaLabel={`テンプレート「${template.name}」を編集`}
+                className="p-1"
               />
             )}
             {onDelete && (
               <IconButton
-                icon={TrashIcon}
-                aria-label={`テンプレート「${template.name}」を削除`}
-                size="small"
-                variant="invisible"
+                icon={Trash2}
+                size="icon"
                 onClick={handleDelete}
+                ariaLabel={`テンプレート「${template.name}」を削除`}
+                className="p-1"
               />
             )}
           </div>
@@ -217,78 +186,47 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
 
       {/* 説明 */}
       {!compact && template.description && (
-        <div style={{ marginBottom: "8px" }}>
-          <Text sx={{
-            fontSize: 1,
-            color: 'fg.muted',
-            display: '-webkit-box',
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: 'vertical',
-            overflow: 'hidden'
-          }}>
+        <div className="mb-2">
+          <p className="text-sm text-zinc-700 line-clamp-2">
             {template.description}
-          </Text>
+          </p>
         </div>
       )}
 
       {/* タスク情報 */}
       {!compact && (
-        <div style={{
-          paddingTop: "8px",
-          borderTop: '1px solid',
-          borderColor: 'var(--borderColor-muted)',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: "4px"
-        }}>
+        <div className="pt-2 border-t border-border flex flex-col gap-1">
           {/* タスクタイトル */}
-          <Text sx={{
-            fontSize: 1,
-            fontWeight: 'semibold',
-            color: 'fg.default',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap'
-          }}>
+          <h4 className="text-sm font-semibold text-foreground truncate">
             {template.taskTitle}
-          </Text>
+          </h4>
 
           {/* タスク詳細情報 */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: "8px", flexWrap: 'wrap' }}>
+          <div className="flex items-center gap-2 flex-wrap">
             {/* 優先度 */}
-            <Text sx={{
-              fontSize: 0,
-              color: getPriorityColor(template.priority)
-            }}>
+            <span className={`text-xs ${getPriorityColorClass(template.priority)}`}>
               優先度: {getPriorityLabel(template.priority)}
-            </Text>
+            </span>
 
             {/* ラベル */}
             {template.labels.length > 0 && (
-              <div style={{ display: 'flex', gap: "4px", flexWrap: 'wrap' }}>
+              <div className="flex gap-1 flex-wrap">
                 {template.labels.slice(0, 3).map((label) => (
                   <LabelChip key={label.id} label={label} />
                 ))}
                 {template.labels.length > 3 && (
-                  <Text sx={{ fontSize: 0, color: 'fg.muted' }}>
+                  <span className="text-xs text-zinc-500">
                     +{template.labels.length - 3}
-                  </Text>
+                  </span>
                 )}
               </div>
             )}
 
             {/* 繰り返し設定 */}
             {template.recurrence?.enabled && (
-              <Text sx={{
-                fontSize: 0,
-                color: 'accent.fg',
-                px: 1,
-                py: 0.5,
-                bg: 'accent.subtle',
-                borderRadius: 1
-              }}>
+              <span className="text-xs text-primary px-1 py-0.5 bg-blue-50 rounded">
                 繰り返し
-              </Text>
+              </span>
             )}
           </div>
         </div>
@@ -296,13 +234,13 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
 
       {/* 選択ボタン（コンパクトモード） */}
       {compact && onSelect && (
-        <div style={{ marginTop: "8px" }}>
-          <Button variant="primary" size="small" sx={{ width: '100%' }}>
+        <div className="mt-2">
+          <Button variant="default" size="sm" className="w-full">
             このテンプレートを使用
           </Button>
         </div>
       )}
-    </Box>
+    </div>
   );
 });
 

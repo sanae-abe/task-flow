@@ -1,0 +1,362 @@
+/**
+ * TaskCard component tests
+ * TaskCardコンポーネントの包括的テスト
+ */
+
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { render, screen, fireEvent, within } from '@testing-library/react'
+import '@testing-library/jest-dom'
+import TaskCard from './TaskCard'
+import { Task } from '../types'
+import { BoardProvider } from '../contexts/BoardContext'
+import { TaskProvider } from '../contexts/TaskContext'
+
+// モックタスクデータ
+const mockTask: Task = {
+  id: 'task-1',
+  title: 'テストタスク',
+  description: '<p>タスクの説明</p>',
+  createdAt: '2025-01-01T00:00:00.000Z',
+  updatedAt: '2025-01-01T00:00:00.000Z',
+  dueDate: null,
+  completedAt: null,
+  priority: 'medium',
+  labels: [],
+  subTasks: [],
+  files: []
+}
+
+const mockCompletedTask: Task = {
+  ...mockTask,
+  id: 'task-2',
+  title: '完了済みタスク',
+  completedAt: '2025-01-01T12:00:00.000Z'
+}
+
+const mockTaskWithPriority: Task = {
+  ...mockTask,
+  id: 'task-3',
+  title: '高優先度タスク',
+  priority: 'high'
+}
+
+const mockTaskWithLabels: Task = {
+  ...mockTask,
+  id: 'task-4',
+  title: 'ラベル付きタスク',
+  labels: [
+    { id: 'label-1', name: 'UI', color: '#3b82f6' },
+    { id: 'label-2', name: 'バグ', color: '#ef4444' }
+  ]
+}
+
+const mockTaskWithSubtasks: Task = {
+  ...mockTask,
+  id: 'task-5',
+  title: 'サブタスク付きタスク',
+  subTasks: [
+    { id: 'sub-1', title: 'サブタスク1', completed: true, createdAt: '2025-01-01T00:00:00.000Z' },
+    { id: 'sub-2', title: 'サブタスク2', completed: false, createdAt: '2025-01-01T00:01:00.000Z' },
+    { id: 'sub-3', title: 'サブタスク3', completed: false, createdAt: '2025-01-01T00:02:00.000Z' }
+  ]
+}
+
+// テスト用のWrapper
+const TestWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <BoardProvider>
+    <TaskProvider>
+      {children}
+    </TaskProvider>
+  </BoardProvider>
+)
+
+describe('TaskCard', () => {
+  const mockOnEdit = vi.fn()
+  const mockOnComplete = vi.fn()
+  const mockOnDetail = vi.fn()
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  describe('Basic rendering', () => {
+    it('should render task title and description', () => {
+      render(
+        <TestWrapper>
+          <TaskCard
+            task={mockTask}
+            onEdit={mockOnEdit}
+            onComplete={mockOnComplete}
+            onDetail={mockOnDetail}
+          />
+        </TestWrapper>
+      )
+
+      expect(screen.getByText('テストタスク')).toBeInTheDocument()
+      expect(screen.getByText('タスクの説明')).toBeInTheDocument()
+    })
+
+    it('should render priority badge for non-medium priority', () => {
+      render(
+        <TestWrapper>
+          <TaskCard
+            task={mockTaskWithPriority}
+            onEdit={mockOnEdit}
+            onComplete={mockOnComplete}
+            onDetail={mockOnDetail}
+          />
+        </TestWrapper>
+      )
+
+      expect(screen.getByText('高')).toBeInTheDocument()
+    })
+
+    it('should not render priority badge for medium priority', () => {
+      render(
+        <TestWrapper>
+          <TaskCard
+            task={mockTask}
+            onEdit={mockOnEdit}
+            onComplete={mockOnComplete}
+            onDetail={mockOnDetail}
+          />
+        </TestWrapper>
+      )
+
+      expect(screen.queryByText('中')).not.toBeInTheDocument()
+    })
+  })
+
+  describe('Completion functionality', () => {
+    it('should show completed state for completed tasks', () => {
+      render(
+        <TestWrapper>
+          <TaskCard
+            task={mockCompletedTask}
+            onEdit={mockOnEdit}
+            onComplete={mockOnComplete}
+            onDetail={mockOnDetail}
+          />
+        </TestWrapper>
+      )
+
+      const card = screen.getByTestId('task-card')
+      expect(card).toHaveClass('opacity-60')
+    })
+
+    it('should call onComplete when completion checkbox is clicked', () => {
+      render(
+        <TestWrapper>
+          <TaskCard
+            task={mockTask}
+            onEdit={mockOnEdit}
+            onComplete={mockOnComplete}
+            onDetail={mockOnDetail}
+          />
+        </TestWrapper>
+      )
+
+      const checkbox = screen.getByRole('checkbox')
+      fireEvent.click(checkbox)
+
+      expect(mockOnComplete).toHaveBeenCalledWith('task-1')
+    })
+  })
+
+  describe('Labels display', () => {
+    it('should render task labels', () => {
+      render(
+        <TestWrapper>
+          <TaskCard
+            task={mockTaskWithLabels}
+            onEdit={mockOnEdit}
+            onComplete={mockOnComplete}
+            onDetail={mockOnDetail}
+          />
+        </TestWrapper>
+      )
+
+      expect(screen.getByText('UI')).toBeInTheDocument()
+      expect(screen.getByText('バグ')).toBeInTheDocument()
+    })
+
+    it('should not render labels section when no labels', () => {
+      render(
+        <TestWrapper>
+          <TaskCard
+            task={mockTask}
+            onEdit={mockOnEdit}
+            onComplete={mockOnComplete}
+            onDetail={mockOnDetail}
+          />
+        </TestWrapper>
+      )
+
+      // ラベル表示エリアが存在しないことを確認
+      expect(screen.queryByTestId('task-labels')).not.toBeInTheDocument()
+    })
+  })
+
+  describe('Subtasks display', () => {
+    it('should show subtask progress when subtasks exist', () => {
+      render(
+        <TestWrapper>
+          <TaskCard
+            task={mockTaskWithSubtasks}
+            onEdit={mockOnEdit}
+            onComplete={mockOnComplete}
+            onDetail={mockOnDetail}
+          />
+        </TestWrapper>
+      )
+
+      // 1/3の進捗表示を確認
+      expect(screen.getByText('1')).toBeInTheDocument()
+      expect(screen.getByText('3')).toBeInTheDocument()
+    })
+
+    it('should not show subtask progress when no subtasks', () => {
+      render(
+        <TestWrapper>
+          <TaskCard
+            task={mockTask}
+            onEdit={mockOnEdit}
+            onComplete={mockOnComplete}
+            onDetail={mockOnDetail}
+          />
+        </TestWrapper>
+      )
+
+      expect(screen.queryByTestId('subtask-progress')).not.toBeInTheDocument()
+    })
+  })
+
+  describe('Action buttons', () => {
+    it('should call onEdit when edit button is clicked', () => {
+      render(
+        <TestWrapper>
+          <TaskCard
+            task={mockTask}
+            onEdit={mockOnEdit}
+            onComplete={mockOnComplete}
+            onDetail={mockOnDetail}
+          />
+        </TestWrapper>
+      )
+
+      const editButton = screen.getByLabelText('編集')
+      fireEvent.click(editButton)
+
+      expect(mockOnEdit).toHaveBeenCalledWith(mockTask)
+    })
+
+    it('should call onDetail when detail button is clicked', () => {
+      render(
+        <TestWrapper>
+          <TaskCard
+            task={mockTask}
+            onEdit={mockOnEdit}
+            onComplete={mockOnComplete}
+            onDetail={mockOnDetail}
+          />
+        </TestWrapper>
+      )
+
+      const detailButton = screen.getByLabelText('詳細')
+      fireEvent.click(detailButton)
+
+      expect(mockOnDetail).toHaveBeenCalledWith(mockTask)
+    })
+  })
+
+  describe('Drag and drop', () => {
+    it('should have draggable attributes', () => {
+      render(
+        <TestWrapper>
+          <TaskCard
+            task={mockTask}
+            onEdit={mockOnEdit}
+            onComplete={mockOnComplete}
+            onDetail={mockOnDetail}
+          />
+        </TestWrapper>
+      )
+
+      const card = screen.getByTestId('task-card')
+      expect(card).toHaveAttribute('draggable', 'true')
+    })
+  })
+
+  describe('Accessibility', () => {
+    it('should have proper ARIA labels', () => {
+      render(
+        <TestWrapper>
+          <TaskCard
+            task={mockTask}
+            onEdit={mockOnEdit}
+            onComplete={mockOnComplete}
+            onDetail={mockOnDetail}
+          />
+        </TestWrapper>
+      )
+
+      expect(screen.getByRole('checkbox')).toHaveAccessibleName('タスクを完了としてマーク')
+      expect(screen.getByLabelText('編集')).toBeInTheDocument()
+      expect(screen.getByLabelText('詳細')).toBeInTheDocument()
+    })
+
+    it('should be keyboard navigable', () => {
+      render(
+        <TestWrapper>
+          <TaskCard
+            task={mockTask}
+            onEdit={mockOnEdit}
+            onComplete={mockOnComplete}
+            onDetail={mockOnDetail}
+          />
+        </TestWrapper>
+      )
+
+      const checkbox = screen.getByRole('checkbox')
+      const editButton = screen.getByLabelText('編集')
+
+      checkbox.focus()
+      expect(checkbox).toHaveFocus()
+
+      editButton.focus()
+      expect(editButton).toHaveFocus()
+    })
+  })
+
+  describe('Visual states', () => {
+    it('should apply correct classes for task priority', () => {
+      const { rerender } = render(
+        <TestWrapper>
+          <TaskCard
+            task={{ ...mockTask, priority: 'critical' }}
+            onEdit={mockOnEdit}
+            onComplete={mockOnComplete}
+            onDetail={mockOnDetail}
+          />
+        </TestWrapper>
+      )
+
+      // Critical priority styling
+      expect(screen.getByTestId('task-card')).toHaveClass('border-l-4')
+
+      rerender(
+        <TestWrapper>
+          <TaskCard
+            task={{ ...mockTask, priority: 'low' }}
+            onEdit={mockOnEdit}
+            onComplete={mockOnComplete}
+            onDetail={mockOnDetail}
+          />
+        </TestWrapper>
+      )
+
+      // Low priority styling should be different
+      expect(screen.getByTestId('task-card')).toHaveClass('border-l-2')
+    })
+  })
+})

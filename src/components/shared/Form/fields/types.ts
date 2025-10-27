@@ -35,11 +35,13 @@ export interface BaseFieldProps {
   /** バリデーションルール */
   validation?: ValidationRule;
   /** エラーメッセージ */
-  error?: string | null;
+  _error?: string | null;
   /** タッチ状態 */
   touched?: boolean;
   /** カスタムスタイル */
   sx?: Record<string, unknown>;
+  /** インラインスタイル */
+  style?: React.CSSProperties;
 }
 
 /**

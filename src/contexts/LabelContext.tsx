@@ -8,7 +8,6 @@ import React, {
 
 import type { Label } from "../types";
 import { useBoard } from "./BoardContext";
-// import { useNotify } from "./NotificationContext"; // 将来的にメッセージ機能で使用予定
 
 interface LabelContextType {
   // 現在のボード対象
@@ -55,7 +54,6 @@ interface LabelProviderProps {
 export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
   // 基本的な依存関係を安全に取得
   const { state: boardState, dispatch: boardDispatch } = useBoard();
-  // const _notify = useNotify(); // 将来的にメッセージ機能で使用予定
 
   // 複数のメッセージコールバックを管理する配列
   const _messageCallbacksRef = useRef<Set<MessageCallback>>(new Set());
@@ -163,8 +161,9 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
             callbackIndex++;
             try {
               callback(messageToSend);
-            } catch (error) {
-              console.error(`💬 createLabel: Error sending message to callback ${callbackIndex}:`, error);
+            } catch (_error) {
+              // eslint-disable-next-line no-console
+              console.error(`💬 createLabel: Error sending message to callback ${callbackIndex}:`, _error);
             }
           });
         }
@@ -195,8 +194,9 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
               callbackIndex++;
               try {
                 callback(messageToSend);
-              } catch (error) {
-                console.error(`💬 createLabelInBoard: Error sending message to callback ${callbackIndex}:`, error);
+              } catch (_error) {
+                // eslint-disable-next-line no-console
+                console.error(`💬 createLabelInBoard: Error sending message to callback ${callbackIndex}:`, _error);
               }
             });
           }
@@ -244,11 +244,13 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
             callbackIndex++;
             try {
               callback(messageToSend);
-            } catch (error) {
-              console.error(`📬 updateLabel: Error sending message to callback ${callbackIndex}:`, error);
+            } catch (_error) {
+              // eslint-disable-next-line no-console
+              console.error(`📬 updateLabel: Error sending message to callback ${callbackIndex}:`, _error);
             }
           });
         } else {
+          // ラベルが見つからない場合は何もしない
         }
       },
       deleteLabel: (labelId: string) => {
@@ -277,8 +279,9 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
             callbackIndex++;
             try {
               callback(messageToSend);
-            } catch (error) {
-              console.error(`💬 deleteLabel: Error sending message to callback ${callbackIndex}:`, error);
+            } catch (_error) {
+              // eslint-disable-next-line no-console
+              console.error(`💬 deleteLabel: Error sending message to callback ${callbackIndex}:`, _error);
             }
           });
         }
@@ -307,11 +310,13 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
             callbackIndex++;
             try {
               callback(messageToSend);
-            } catch (error) {
-              console.error(`💬 deleteLabelFromAllBoards: Error sending message to callback ${callbackIndex}:`, error);
+            } catch (_error) {
+              // eslint-disable-next-line no-console
+              console.error(`💬 deleteLabelFromAllBoards: Error sending message to callback ${callbackIndex}:`, _error);
             }
           });
         } else {
+          // ラベルが見つからない場合は何もしない
         }
       },
 

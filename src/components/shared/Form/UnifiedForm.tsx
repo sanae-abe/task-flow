@@ -1,4 +1,4 @@
-import { Box, Button } from "@primer/react";
+import { Button } from "@/components/ui/button";
 import React, { memo, useCallback } from "react";
 
 import type {
@@ -8,7 +8,6 @@ import type {
 
 import { useUnifiedForm } from "../../../hooks/useUnifiedForm";
 import UnifiedFormField from "./UnifiedFormField";
-import { VBox } from "../FlexBox";
 
 /**
  * 統合フォームコンポーネント
@@ -27,7 +26,6 @@ const UnifiedForm = memo<UnifiedFormProps>(
     showCancelButton = true,
     disabled = false,
     className,
-    sx,
     validateOnChange: _validateOnChange = true,
     validateOnBlur = true,
     autoComplete = true,
@@ -90,14 +88,12 @@ const UnifiedForm = memo<UnifiedFormProps>(
     }, [onCancel]);
 
     return (
-      <Box
-        as="form"
+      <form
         onSubmit={onFormSubmit}
         className={className}
-        sx={sx}
         autoComplete={autoComplete ? "on" : "off"}
       >
-        <VBox>
+        <div className="flex flex-col space-y-4 mt-2">
           {fields.map((fieldConfig) => {
             const fieldValue = state.values[fieldConfig.name];
             const fieldError = getFieldError(fieldConfig.name);
@@ -108,7 +104,7 @@ const UnifiedForm = memo<UnifiedFormProps>(
                 key={fieldConfig.id}
                 {...fieldConfig}
                 value={fieldValue}
-                error={fieldError}
+                _error={fieldError}
                 touched={fieldTouched}
                 disabled={disabled || fieldConfig.disabled}
                 onChange={handleFieldChange(fieldConfig)}
@@ -121,23 +117,23 @@ const UnifiedForm = memo<UnifiedFormProps>(
           {children}
 
           {(showCancelButton || onCancel) && (
-            <div style={{ display: "flex", gap: "8px", marginTop: "12px" }}>
+            <div className="flex gap-2 mt-3">
               <Button
                 type="submit"
-                variant="primary"
+                variant="default"
                 disabled={disabled || state.isSubmitting || !state.isValid}
               >
                 {submitText}
               </Button>
               {showCancelButton && onCancel && (
-                <Button onClick={handleCancel} variant="default">
+                <Button onClick={handleCancel} variant="outline">
                   {cancelText}
                 </Button>
               )}
             </div>
           )}
-        </VBox>
-      </Box>
+        </div>
+      </form>
     );
   },
 );

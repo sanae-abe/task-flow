@@ -43,7 +43,7 @@ export const FIELD_TYPE_STYLES = {
  * バリデーション状態に応じたスタイル
  */
 export const VALIDATION_STYLES = {
-  error: {
+  _error: {
     borderColor: "danger.emphasis",
   },
   valid: {

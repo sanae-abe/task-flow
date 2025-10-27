@@ -85,10 +85,15 @@ export const useTaskForm = (
     selectedBoardId
   };
 
+  // DatePicker対応のラッパー関数
+  const handleSetDueDate = useCallback((date: string | null) => {
+    setDueDate(date || '');
+  }, []);
+
   const formActions: TaskFormActions = {
     setTitle,
     setDescription,
-    setDueDate,
+    setDueDate: handleSetDueDate,
     setDueTime,
     setHasTime,
     setLabels,

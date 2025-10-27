@@ -1,7 +1,10 @@
-import { memo, useMemo, useState, useCallback } from 'react';
-import { Text, Button, FormControl, Select, RadioGroup, Radio } from '@primer/react';
-import { DownloadIcon } from '@primer/octicons-react';
+import { memo, useMemo, useCallback } from 'react';
+import { Button } from '@/components/ui/button';
+import { Download } from 'lucide-react';
 
+import type { FormFieldConfig } from '../../types/unified-form';
+import { useUnifiedForm } from '../../hooks/useUnifiedForm';
+import UnifiedFormField from '../shared/Form/UnifiedFormField';
 import { useKanban } from '../../contexts/KanbanContext';
 import { calculateDataStatistics, calculateCurrentBoardStatistics } from '../../utils/dataStatistics';
 import type { KanbanBoard } from '../../types';
@@ -25,8 +28,58 @@ export const ExportSection = memo<ExportSectionProps>(({
   onMessage
 }) => {
   const { state } = useKanban();
-  const [exportType, setExportType] = useState<'all' | 'selected'>('all');
-  const [selectedBoardId, setSelectedBoardId] = useState<string>('');
+
+  // 初期値の設定
+  const initialValues = useMemo(() => ({
+    exportType: 'all',
+    selectedBoardId: ''
+  }), []);
+
+  // ボード選択のオプション生成
+  const boardOptions = useMemo(() => {
+    const options = [{ value: '', label: 'ボードを選択してください' }];
+    state.boards.forEach(board => {
+      options.push({
+        value: board.id,
+        label: board.title
+      });
+    });
+    return options;
+  }, [state.boards]);
+
+  // フィールド設定
+  const fields: FormFieldConfig[] = useMemo(() => [
+    // エクスポート範囲選択
+    {
+      id: 'exportType',
+      name: 'exportType',
+      type: 'select',
+      label: 'エクスポート範囲',
+      value: initialValues.exportType,
+      options: [
+        { value: 'all', label: '全データをエクスポート' },
+        { value: 'selected', label: '選択したボードをエクスポート' }
+      ],
+      onChange: () => {}, // フォームで管理
+    },
+    // ボード選択（条件付き表示）
+    {
+      id: 'selectedBoardId',
+      name: 'selectedBoardId',
+      type: 'select',
+      label: 'エクスポートするボード',
+      value: initialValues.selectedBoardId,
+      options: boardOptions,
+      onChange: () => {}, // フォームで管理
+    },
+  ], [initialValues, boardOptions]);
+
+  // 統合フォーム管理
+  const form = useUnifiedForm(fields, initialValues);
+
+  // 現在の値を取得
+  const currentExportType = String(form.state.values['exportType'] || 'all');
+  const currentSelectedBoardId = String(form.state.values['selectedBoardId'] || '');
 
   // 全体の統計情報を計算
   const allDataStatistics = useMemo(
@@ -36,8 +89,8 @@ export const ExportSection = memo<ExportSectionProps>(({
 
   // 選択されたボードの統計情報を計算
   const selectedBoard = useMemo(
-    () => state.boards.find(board => board.id === selectedBoardId),
-    [state.boards, selectedBoardId]
+    () => state.boards.find(board => board.id === currentSelectedBoardId),
+    [state.boards, currentSelectedBoardId]
   );
 
   const selectedBoardStatistics = useMemo(
@@ -47,9 +100,8 @@ export const ExportSection = memo<ExportSectionProps>(({
 
   // エクスポート実行処理
   const handleExport = useCallback(() => {
-
     try {
-      if (exportType === 'all') {
+      if (currentExportType === 'all') {
         onExportAll?.();
         const successMessage = {
           type: 'success' as const,
@@ -64,66 +116,50 @@ export const ExportSection = memo<ExportSectionProps>(({
         };
         onMessage?.(successMessage);
       }
-    } catch (error) {
+    } catch (_error) {
       const errorMessage = {
         type: 'critical' as const,
         text: 'エクスポートに失敗しました'
       };
       onMessage?.(errorMessage);
     }
-  }, [exportType, selectedBoard, onExportAll, onExportCurrent, onMessage]);
+  }, [currentExportType, selectedBoard, onExportAll, onExportCurrent, onMessage]);
 
   // 表示する統計情報を決定
-  const currentStatistics = exportType === 'all' ? allDataStatistics : selectedBoardStatistics;
-  const statisticsTitle = exportType === 'all' ? 'エクスポートされるデータ' : `「${selectedBoard?.title}」のデータ`;
+  const currentStatistics = currentExportType === 'all' ? allDataStatistics : selectedBoardStatistics;
+  const statisticsTitle = currentExportType === 'all' ? 'エクスポートされるデータ' : `「${selectedBoard?.title}」のデータ`;
+
+  // 表示するフィールドをフィルタリング
+  const visibleFields = useMemo(() =>
+    fields.filter(field => {
+      if (field.name === 'selectedBoardId') {
+        return currentExportType === 'selected';
+      }
+      return true;
+    }), [fields, currentExportType]);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: "16px" }}>
+    <div className="flex flex-col gap-4">
       {/* セクション概要 */}
-      <Text sx={{ fontSize: 1, color: 'fg.muted' }}>
+      <p className="text-sm text-zinc-700">
         タスク管理データをJSON形式でエクスポートします。<br />バックアップや他の環境への移行にご利用ください。
-      </Text>
+      </p>
 
-      {/* エクスポート範囲選択 */}
-      <FormControl>
-        <FormControl.Label sx={{ fontSize: 1, fontWeight: '600' }}>
-          エクスポート範囲
-        </FormControl.Label>
-        <RadioGroup
-          name="exportType"
-          aria-labelledby='export-type-label'
-          onChange={(value) => setExportType(value as 'all' | 'selected')}
-          sx={{ mt: 1 }}
-        >
-          <FormControl>
-            <Radio value="all" checked={exportType === 'all'} />
-            <FormControl.Label>全データをエクスポート</FormControl.Label>
-          </FormControl>
-          <FormControl>
-            <Radio value="selected" checked={exportType === 'selected'} />
-            <FormControl.Label>選択したボードをエクスポート</FormControl.Label>
-          </FormControl>
-        </RadioGroup>
-      </FormControl>
-
-      {/* ボード選択（特定ボードを選択した場合のみ表示） */}
-      {exportType === 'selected' && (
-        <FormControl>
-          <FormControl.Label>エクスポートするボード</FormControl.Label>
-          <Select
-            value={selectedBoardId}
-            onChange={(e) => setSelectedBoardId(e.target.value)}
-            sx={{ width: '100%' }}
-            placeholder="ボードを選択してください"
-          >
-            {state.boards.map(board => (
-              <Select.Option key={board.id} value={board.id}>
-                {board.title}
-              </Select.Option>
-            ))}
-          </Select>
-        </FormControl>
-      )}
+      {/* フォームフィールド */}
+      <div className="flex flex-col gap-4">
+        {visibleFields.map((field) => (
+          <UnifiedFormField
+            key={field.id}
+            {...field}
+            value={form.state.values[field.name]}
+            onChange={(value) => form.setValue(field.name, value)}
+            onBlur={() => form.setTouched(field.name, true)}
+            _error={form.getFieldError(field.name)}
+            touched={form.state.touched[field.name]}
+            disabled={form.state.isSubmitting}
+          />
+        ))}
+      </div>
 
       {/* 統計情報表示 */}
       {currentStatistics && (
@@ -134,14 +170,14 @@ export const ExportSection = memo<ExportSectionProps>(({
       )}
 
       {/* エクスポート実行ボタン */}
-      <div style={{ paddingTop: "12px", borderTop: "1px solid", borderColor: "var(--borderColor-default)" }}>
-        <div style={{ display: "flex", alignItems: "flex-end", flexDirection: "column", gap: "8px" }}>
+      <div className="pt-3 border-t border-gray-200">
+        <div className="flex items-end flex-col gap-2">
           <Button
-            variant="primary"
-            leadingVisual={DownloadIcon}
+            variant="default"
             onClick={handleExport}
-            disabled={exportType === 'selected' && !selectedBoard}
+            disabled={currentExportType === 'selected' && !selectedBoard}
           >
+            <Download size={16} className="mr-2" />
             エクスポート実行
           </Button>
         </div>

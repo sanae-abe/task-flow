@@ -1,7 +1,7 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Box } from "@primer/react";
 import React, { useCallback } from "react";
+import { cn } from "@/lib/utils";
 
 import { useTaskCard } from "../hooks/useTaskCard";
 import type { Task } from "../types";
@@ -23,36 +23,15 @@ interface TaskCardProps {
   };
 }
 
-const getCardStyles = (
+const getCardDynamicStyles = (
   isRightmostColumn: boolean,
   isDragging: boolean,
   transform: { x: number; y: number; scaleX: number; scaleY: number } | null,
   transition: string | undefined,
 ) => ({
-  ...{
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : isRightmostColumn ? 0.6 : 1,
-  },
-  borderRadius: 2,
-  cursor: "grab",
-  boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
-  transition: "all 0.2s ease",
-  width: "100%",
-  maxWidth: "100%",
-  minWidth: 0,
-  minHeight: "auto",
-  height: "auto",
-  wordWrap: "break-word" as const,
-  overflowWrap: "break-word" as const,
-  display: "flex",
-  flexDirection: "column" as const,
-  "&:hover": {
-    boxShadow: "0 2px 12px rgba(0, 0, 0, 0.15)",
-  },
-  "&:active": {
-    cursor: "grabbing",
-  },
+  transform: CSS.Transform.toString(transform),
+  transition,
+  opacity: isDragging ? 0.5 : isRightmostColumn ? 0.6 : 1,
 });
 
 const TaskCard: React.FC<TaskCardProps> = React.memo(
@@ -102,12 +81,16 @@ const TaskCard: React.FC<TaskCardProps> = React.memo(
         {/* タスクの上にドロップインジケーターを表示 */}
         <DropIndicator isVisible={isOver && !isDragging} />
 
-        <Box
+        <div
           ref={setNodeRef}
-          sx={{
-            bg: "canvas.default",
-            p: 3,
-            ...getCardStyles(
+          className={cn(
+            "bg-white p-3 rounded-md cursor-grab shadow-[0px_1px_3px_rgba(0,0,0,0.1)] transition-all duration-200 ease-out",
+            "w-full max-w-full min-w-0 min-h-fit h-auto",
+            "break-words overflow-wrap-break-word flex flex-col",
+            "hover:shadow-[0px_1px_8px_rgba(0,0,0,0.15)] active:cursor-grabbing"
+          )}
+          style={{
+            ...getCardDynamicStyles(
               taskCardData.isRightmostColumn,
               isDragging,
               transform,
@@ -115,7 +98,9 @@ const TaskCard: React.FC<TaskCardProps> = React.memo(
             ),
             ...keyboardDragStyles,
           }}
+          // eslint-disable-next-line react/jsx-props-no-spreading
           {...attributes}
+          // eslint-disable-next-line react/jsx-props-no-spreading
           {...listeners}
           onClick={handleTaskClick}
           onKeyDown={handleKeyDown}
@@ -145,7 +130,7 @@ const TaskCard: React.FC<TaskCardProps> = React.memo(
             }}
             isRightmostColumn={taskCardData.isRightmostColumn}
           />
-        </Box>
+        </div>
 
         <TaskEditDialog
           task={task}

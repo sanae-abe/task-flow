@@ -1,4 +1,3 @@
-import { Box } from "@primer/react";
 import React from "react";
 
 import type { Label } from "../../types";
@@ -18,20 +17,7 @@ export const SelectedLabelsDisplay: React.FC<SelectedLabelsDisplayProps> = ({
   }
 
   return (
-    <Box
-      sx={{
-        mb: 2,
-        display: "flex",
-        flexWrap: "wrap",
-        alignItems: "center",
-        gap: 1,
-        "& button": {
-          height: "auto",
-          padding: 0,
-          fontSize: 0,
-        },
-      }}
-    >
+    <div className="mb-2 flex flex-wrap items-center gap-1">
       {selectedLabels.map((label) => (
         <LabelChip
           key={label.id}
@@ -40,6 +26,6 @@ export const SelectedLabelsDisplay: React.FC<SelectedLabelsDisplayProps> = ({
           onRemove={onRemoveLabel}
         />
       ))}
-    </Box>
+    </div>
   );
 };

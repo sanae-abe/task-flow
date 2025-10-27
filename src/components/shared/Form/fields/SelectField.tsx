@@ -5,13 +5,12 @@
  */
 
 import React, { useCallback } from "react";
-import { Select } from "@primer/react";
+import { cn } from '@/lib/utils';
+import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select";
 
 import {
   toStringValue,
-  getValidationStatus,
 } from "../../../../utils/formHelpers";
-import { UNIFIED_FORM_STYLES } from "../styles";
 import type { SelectFieldProps } from "./types";
 
 /**
@@ -32,9 +31,9 @@ export const SelectField: React.FC<SelectFieldProps> = React.memo(
     autoFocus = false,
     disabled = false,
     validation,
-    error,
+    _error,
     touched,
-    sx,
+    style,
     options = [],
   }) => {
     /**
@@ -66,31 +65,35 @@ export const SelectField: React.FC<SelectFieldProps> = React.memo(
     }, [onFocus]);
 
     // エラー状態の判定
-    const hasError = Boolean(touched && error);
-    const validationStatus = getValidationStatus(hasError);
+    const hasError = Boolean(touched && _error);
+
+    const stringValue = toStringValue(value);
 
     return (
-      <Select
+      <NativeSelect
+        id={id}
         name={name}
-        value={toStringValue(value)}
+        value={stringValue}
         onChange={handleInputChange}
         onBlur={handleBlur}
         onFocus={handleFocus}
         autoFocus={autoFocus}
         disabled={disabled}
-        sx={{ ...UNIFIED_FORM_STYLES.input, ...sx }}
-        validationStatus={validationStatus}
+        className={cn(
+          "w-full"
+        )}
+        style={style ? (style as React.CSSProperties) : undefined}
         aria-required={validation?.required}
         aria-invalid={hasError}
-        aria-describedby={hasError ? `${id}-error` : undefined}
+        aria-describedby={hasError ? `${id}-_error` : undefined}
       >
-        {placeholder && <Select.Option value="">{placeholder}</Select.Option>}
+        {placeholder && <NativeSelectOption value="">{placeholder}</NativeSelectOption>}
         {options.map((option) => (
-          <Select.Option key={option.value} value={option.value}>
+          <NativeSelectOption key={option.value} value={option.value}>
             {option.label}
-          </Select.Option>
+          </NativeSelectOption>
         ))}
-      </Select>
+      </NativeSelect>
     );
   },
 );

@@ -1,9 +1,10 @@
-import { EyeIcon, ImageIcon, XIcon } from "@primer/octicons-react";
-import { Text, Button } from "@primer/react";
+import { Eye, Image, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import React, { useState, memo, useCallback } from "react";
 
 import type { FileAttachment } from "../types";
 import { isImageFile, isTextFile, formatFileSize } from "../utils/fileUtils";
+import IconButton from "../components/shared/IconButton";
 
 interface FilePreviewProps {
   attachment: FileAttachment;
@@ -30,36 +31,27 @@ interface PreviewFooterProps {
 const PreviewButton = memo<PreviewButtonProps>(
   ({ attachment, isImage, onClick }) => (
     <Button
-      variant="invisible"
-      size="small"
+      variant="ghost"
+      size="sm"
       onClick={onClick}
-      sx={{ p: 1 }}
+      className="p-1"
       aria-label={`${attachment.name}をプレビュー`}
     >
-      {isImage ? <ImageIcon size={14} /> : <EyeIcon size={14} />}
+      {isImage ? <Image size={14} /> : <Eye size={14} />}
     </Button>
   ),
 );
 
 // プレビューフッターコンポーネント
 const PreviewFooter = memo<PreviewFooterProps>(({ attachment }) => (
-  <div
-    style={{
-      padding: "12px",
-      borderTop: "1px solid",
-      borderColor: "var(--borderColor-default)",
-      background: "var(--bgColor-muted)",
-      display: "flex",
-      gap: "12px",
-    }}
-  >
-    <Text sx={{ fontSize: 0, color: "fg.muted" }}>
+  <div className="p-3 border-t border-gray-200 bg-gray-50 flex gap-3">
+    <span className="text-xs text-zinc-700">
       ファイルサイズ: {formatFileSize(attachment.size)}
-    </Text>
-    <Text sx={{ fontSize: 0, color: "fg.muted" }}>
+    </span>
+    <span className="text-xs text-zinc-700">
       アップロード日:{" "}
       {new Date(attachment.uploadedAt).toLocaleDateString("ja-JP")}
-    </Text>
+    </span>
   </div>
 ));
 
@@ -90,25 +82,18 @@ const FilePreview: React.FC<FilePreviewProps> = ({
       const getTextContent = () => {
         try {
           return atob(attachment.data);
-        } catch (error) {
+        } catch (_error) {
           return "ファイルの内容を読み込めませんでした。";
         }
       };
 
       if (isImage) {
         return (
-          <div
-            style={{ textAlign: "center", maxHeight: "70vh", overflow: "auto" }}
-          >
+          <div className="text-center max-h-[70vh] overflow-auto">
             <img
               src={getDataUrl()}
               alt={attachment.name}
-              style={{
-                maxWidth: "100%",
-                maxHeight: "60vh",
-                objectFit: "contain",
-                borderRadius: "6px",
-              }}
+              className="max-w-full max-h-[60vh] object-contain rounded-md"
             />
           </div>
         );
@@ -116,25 +101,10 @@ const FilePreview: React.FC<FilePreviewProps> = ({
 
       if (isText) {
         return (
-          <div
-            style={{
-              maxHeight: "60vh",
-              overflow: "auto",
-              background: "var(--bgColor-muted)",
-              padding: "12px",
-              borderRadius: "var(--borderRadius-small)",
-              fontFamily: "mono",
-            }}
-          >
-            <Text
-              sx={{
-                whiteSpace: "pre-wrap",
-                fontSize: 0,
-                lineHeight: "1.5",
-              }}
-            >
+          <div className="max-h-[60vh] overflow-auto bg-gray-50 p-3 rounded-sm font-mono">
+            <pre className="whitespace-pre-wrap text-xs leading-6 m-0">
               {getTextContent()}
-            </Text>
+            </pre>
           </div>
         );
       }
@@ -159,65 +129,32 @@ const FilePreview: React.FC<FilePreviewProps> = ({
 
       {isPreviewOpen && (
         <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: "var(--overlay-backdrop-bgColor)",
-            zIndex: 1000,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
+          className="fixed inset-0 bg-black/50 z-400 flex items-center justify-center"
           onClick={handleClosePreview}
         >
           <div
-            style={{
-              background: "var(--bgColor-default)",
-              border: "1px solid",
-              borderColor: "var(--borderColor-default)",
-              borderRadius: "var(--borderRadius-small)",
-              boxShadow: "shadow.extra-large",
-              maxWidth: "90vw",
-              maxHeight: "90vh",
-              overflow: "hidden",
-              display: "flex",
-              flexDirection: "column",
-            }}
+            className="bg-white border border-border border-gray-200 rounded-md shadow-2xl max-w-[90vw] max-h-[90vh] overflow-hidden flex flex-col"
             onClick={(e: React.MouseEvent) => e.stopPropagation()}
             role="dialog"
             aria-modal="true"
             aria-labelledby="file-preview-title"
           >
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                padding: "12px",
-                borderBottom: "1px solid",
-                borderColor: "var(--borderColor-default)",
-              }}
-            >
-              <Text
+            <div className="flex items-center justify-between p-3 border-b border-border border-gray-200">
+              <h2
                 id="file-preview-title"
-                sx={{ fontSize: 2, fontWeight: "700" }}
+                className="text-base font-bold"
               >
                 {attachment.name}
-              </Text>
-              <Button
-                variant="invisible"
+              </h2>
+              <IconButton
+                icon={X}
+                size="icon"
                 onClick={handleClosePreview}
-                sx={{ p: 1 }}
-                aria-label="プレビューを閉じる"
-              >
-                <XIcon size={16} />
-              </Button>
+                ariaLabel="プレビューを閉じる"
+              />
             </div>
 
-            <div style={{ padding: "12px", flex: 1, overflow: "auto" }}>
+            <div className="p-3 flex-1 overflow-auto">
               <PreviewContent
                 attachment={attachment}
                 isImage={isImage}

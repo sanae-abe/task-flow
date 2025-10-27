@@ -1,11 +1,12 @@
 import React, { useCallback } from 'react';
-import { Button, Heading, Text } from '@primer/react';
-import { PlusIcon } from '@primer/octicons-react';
+import { Button } from '@/components/ui/button';
+import { Plus } from 'lucide-react';
 
 import LabelFormDialog from './LabelFormDialog';
 import ConfirmDialog from '../shared/Dialog/ConfirmDialog';
-import { EmptyState, SortableHeader, LabelTableRow } from './components';
-import { useLabelSort, useLabelDialogs, useLabelData } from './hooks';
+import { EmptyState } from './components';
+import { LabelDataTable } from './components/LabelDataTable';
+import { useLabelDialogs, useLabelData } from './hooks';
 
 interface LabelManagementPanelProps {
   /** メッセージ表示時のコールバック */
@@ -13,8 +14,7 @@ interface LabelManagementPanelProps {
 }
 
 const LabelManagementPanel: React.FC<LabelManagementPanelProps> = ({ onMessage }) => {
-  const { sortField, sortDirection, handleSort } = useLabelSort();
-  const { allLabelsWithInfo } = useLabelData(sortField, sortDirection);
+  const { allLabelsWithInfo } = useLabelData('name', 'asc');
 
   // メッセージコールバック
   const handleMessage = useCallback((message: { type: 'success' | 'danger' | 'warning' | 'critical' | 'default' | 'info' | 'upsell'; text: string } | null) => {
@@ -42,25 +42,20 @@ const LabelManagementPanel: React.FC<LabelManagementPanelProps> = ({ onMessage }
   } = useLabelDialogs(handleMessage);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: "12px", paddingBottom: "16px" }}>
+    <div className="flex flex-col gap-3">
       {/* ヘッダー */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        gap: '8px'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <Heading sx={{ fontSize: 2, fontWeight: 'bold' }}>
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
+          <h2 className="text-lg font-bold">
             ラベル管理
-          </Heading>
+          </h2>
         </div>
         <Button
-          variant="primary"
-          leadingVisual={PlusIcon}
+          variant="default"
           onClick={handleCreate}
-          size="small"
+          size="sm"
         >
+          <Plus size={16} className="mr-2" />
           ラベルを作成
         </Button>
       </div>
@@ -69,67 +64,11 @@ const LabelManagementPanel: React.FC<LabelManagementPanelProps> = ({ onMessage }
       {allLabelsWithInfo.length === 0 ? (
         <EmptyState />
       ) : (
-        <div style={{
-          border: '1px solid',
-          borderColor: 'var(--borderColor-default)',
-          borderRadius: "var(--borderRadius-medium)",
-          overflow: 'hidden'
-        }}>
-          {/* テーブルヘッダー */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 200px 60px 50px',
-            gap: "8px",
-            padding: "8px",
-            background: 'var(--bgColor-muted)',
-            borderBottom: '1px solid',
-            borderColor: 'var(--borderColor-default)',
-            fontSize: "14px",
-            fontWeight: 'bold',
-            color: 'var(--fgColor-muted)'
-          }}>
-            <SortableHeader
-              field="name"
-              currentSortField={sortField}
-              sortDirection={sortDirection}
-              onSort={handleSort}
-            >
-              ラベル
-            </SortableHeader>
-            <SortableHeader
-              field="boardName"
-              currentSortField={sortField}
-              sortDirection={sortDirection}
-              onSort={handleSort}
-            >
-              所属ボード
-            </SortableHeader>
-            <SortableHeader
-              field="usageCount"
-              currentSortField={sortField}
-              sortDirection={sortDirection}
-              onSort={handleSort}
-              align="center"
-            >
-              使用数
-            </SortableHeader>
-            <Text sx={{ textAlign: 'center', fontSize: 0 }}>操作</Text>
-          </div>
-
-          {/* テーブルボディ */}
-          <div style={{ maxHeight: '400px', overflow: 'auto' }}>
-            {allLabelsWithInfo.map((label, index) => (
-              <LabelTableRow
-                key={label.id}
-                label={label}
-                index={index}
-                totalCount={allLabelsWithInfo.length}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-              />
-            ))}
-          </div>
-        </div>
+        <LabelDataTable
+          labels={allLabelsWithInfo}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+        />
       )}
 
       {/* フォームダイアログ */}

@@ -1,4 +1,4 @@
-import { FileIcon, ImageIcon } from "@primer/octicons-react";
+import { File, Image } from "lucide-react";
 import React from "react";
 
 /**
@@ -19,9 +19,9 @@ export const formatFileSize = (bytes: number): string => {
  */
 export const getFileIcon = (type: string, size = 16): React.ReactElement => {
   if (type.startsWith("image/")) {
-    return React.createElement(ImageIcon, { size });
+    return React.createElement(Image, { size });
   }
-  return React.createElement(FileIcon, { size });
+  return React.createElement(File, { size });
 };
 
 /**

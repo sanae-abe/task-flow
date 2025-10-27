@@ -3,10 +3,10 @@
  */
 export const EDITOR_STYLES = {
   code: {
-    backgroundColor: '#f6f8fa',
+    backgroundColor: 'var(--muted)',
     color: '#e01e5a',
     padding: '2px 4px',
-    borderRadius: 'var(--borderRadius-small)',
+    borderRadius: '0.25rem',
     fontFamily: "'Monaco', 'Menlo', 'Consolas', monospace",
     fontSize: '0.875em',
     border: '1px solid #d0d7de',
@@ -14,14 +14,14 @@ export const EDITOR_STYLES = {
   codeBlock: {
     margin: '0 0 8px',
     border: '1px solid #d0d7de',
-    borderRadius: 'var(--borderRadius-medium)',
+    borderRadius: '0.5rem',
     padding: '8px',
     fontFamily: "'SFMono-Regular', 'Consolas', 'Liberation Mono', 'Menlo', monospace",
     fontSize: '13px',
     lineHeight: '1.45',
     overflowX: 'auto',
     color: '#24292f',
-    backgroundColor: '#f6f8fa',
+    backgroundColor: 'var(--muted)',
   },
 } as const;
 

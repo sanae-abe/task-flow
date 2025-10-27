@@ -1,9 +1,9 @@
 import React, {
   createContext,
   useContext,
-  useReducer,
   useMemo,
   useCallback,
+  useRef,
   type ReactNode,
 } from "react";
 import { v4 as uuidv4 } from "uuid";
@@ -15,8 +15,9 @@ import type {
   FileAttachment,
   RecurrenceConfig,
   Priority,
+  Column,
 } from "../types";
-import { useNotify } from "./NotificationContext";
+import { useSonnerNotify } from "../hooks/useSonnerNotify";
 import { useBoard } from "./BoardContext";
 import {
   calculateNextDueDate,
@@ -25,15 +26,10 @@ import {
 } from "../utils/recurrence";
 import { logger } from "../utils/logger";
 
-interface TaskState {
-  // Task操作の一時的な状態をここに追加可能
-  isProcessing: boolean;
-}
-
-type TaskAction = { type: "SET_PROCESSING"; payload: boolean };
+// 定数定義
+const OPERATION_LOCK_TIMEOUT = 2000; // タスク移動の重複実行防止用タイムアウト（ms）
 
 interface TaskContextType {
-  state: TaskState;
   createTask: (
     columnId: string,
     title: string,
@@ -66,29 +62,16 @@ interface TaskContextType {
 
 const TaskContext = createContext<TaskContextType | undefined>(undefined);
 
-const taskReducer = (state: TaskState, action: TaskAction): TaskState => {
-  switch (action.type) {
-    case "SET_PROCESSING":
-      return {
-        ...state,
-        isProcessing: action.payload,
-      };
-    default:
-      return state;
-  }
-};
-
 interface TaskProviderProps {
   children: ReactNode;
 }
 
 export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
-  const notify = useNotify();
+  const notify = useSonnerNotify();
   const { state: boardState, dispatch: boardDispatch } = useBoard();
 
-  const [state] = useReducer(taskReducer, {
-    isProcessing: false,
-  });
+  // 重複実行防止のためのRef
+  const processingTasksRef = useRef<Set<string>>(new Set());
 
   // ヘルパー関数: タスクをIDで検索
   const findTaskById = useCallback(
@@ -138,7 +121,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       priority?: Priority,
     ) => {
       if (!boardState.currentBoard) {
-        notify.error("ボードが選択されていません");
+        notify._error("ボードが選択されていません");
         return;
       }
 
@@ -178,6 +161,89 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     [boardState.currentBoard, boardDispatch, notify],
   );
 
+  // タスク移動のヘルパー関数群
+
+  // 同じカラム内でのタスク移動
+  const moveTaskWithinColumn = useCallback(
+    (
+      column: Column,
+      taskId: string,
+      targetIndex: number,
+      currentTimestamp: string
+    ) => {
+      const taskIndex = column.tasks.findIndex((task) => task.id === taskId);
+      if (taskIndex === -1 || taskIndex === targetIndex) {
+        return null;
+      }
+
+      const newTasks = [...column.tasks];
+      const [movedTask] = newTasks.splice(taskIndex, 1);
+      const safeTargetIndex = Math.max(0, Math.min(targetIndex, newTasks.length));
+      newTasks.splice(safeTargetIndex, 0, {
+        ...movedTask,
+        updatedAt: currentTimestamp,
+      });
+
+      return newTasks;
+    },
+    []
+  );
+
+  // 異なるカラム間でのタスク移動用の更新タスク作成
+  const createUpdatedTaskForMove = useCallback(
+    (
+      task: Task,
+      targetColumnIndex: number,
+      sourceColumnIndex: number,
+      currentTimestamp: string,
+      rightmostColumnIndex: number
+    ) => {
+      const isMovingToCompleted = targetColumnIndex === rightmostColumnIndex;
+      const isMovingFromCompleted = sourceColumnIndex === rightmostColumnIndex;
+
+      return {
+        ...task,
+        updatedAt: currentTimestamp,
+        completedAt: isMovingToCompleted
+          ? currentTimestamp
+          : isMovingFromCompleted
+            ? null
+            : task.completedAt,
+      };
+    },
+    []
+  );
+
+  // 異なるカラム間でのカラム更新処理
+  const updateColumnsForMove = useCallback(
+    (
+      columns: Column[],
+      sourceColumnId: string,
+      targetColumnId: string,
+      taskId: string,
+      targetIndex: number,
+      updatedTask: Task
+    ) => columns.map((column) => {
+      if (column.id === sourceColumnId) {
+        return {
+          ...column,
+          tasks: column.tasks.filter((task) => task.id !== taskId),
+        };
+      }
+      if (column.id === targetColumnId) {
+        const newTasks = [...column.tasks];
+        const safeTargetIndex = Math.max(0, Math.min(targetIndex, newTasks.length));
+        newTasks.splice(safeTargetIndex, 0, updatedTask);
+        return {
+          ...column,
+          tasks: newTasks,
+        };
+      }
+      return column;
+    }),
+    []
+  );
+
   // タスク移動
   const moveTask = useCallback(
     (
@@ -187,159 +253,147 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       targetIndex: number,
     ) => {
       if (!boardState.currentBoard) {
-        notify.error("ボードが選択されていません");
+        notify._error("ボードが選択されていません");
         return;
       }
 
-      const taskToMove = findTaskById(taskId);
-      if (!taskToMove) {
-        logger.warn("Task to move not found:", taskId);
+      // 重複実行防止
+      const operationKey = `${taskId}:${sourceColumnId}:${targetColumnId}`;
+
+      if (processingTasksRef.current.has(operationKey)) {
         return;
       }
 
-      // ソースカラムとターゲットカラムの存在確認
-      const sourceColumn = boardState.currentBoard.columns.find(
-        (col) => col.id === sourceColumnId,
-      );
-      const targetColumn = boardState.currentBoard.columns.find(
-        (col) => col.id === targetColumnId,
-      );
+      processingTasksRef.current.add(operationKey);
 
-      if (!sourceColumn || !targetColumn) {
-        logger.warn("Source or target column not found:", {
-          sourceColumnId,
-          targetColumnId,
-        });
-        return;
-      }
+      const now = new Date();
+      const currentTimestamp = now.toISOString();
 
-      // 最右のカラム（完了カラム）への移動をチェック
-      const rightmostColumnIndex = boardState.currentBoard.columns.length - 1;
-      const targetColumnIndex = boardState.currentBoard.columns.findIndex(
-        (col) => col.id === targetColumnId,
-      );
-      const sourceColumnIndex = boardState.currentBoard.columns.findIndex(
-        (col) => col.id === sourceColumnId,
-      );
-      const isMovingToCompleted = targetColumnIndex === rightmostColumnIndex;
-      const isMovingFromCompleted = sourceColumnIndex === rightmostColumnIndex;
+      // 自動的にロックを解除
+      const lockTimer = setTimeout(() => {
+        processingTasksRef.current.delete(operationKey);
+      }, OPERATION_LOCK_TIMEOUT);
 
-      // タスクを更新（updatedAtとcompletedAtを設定）
-      const updatedTask = {
-        ...taskToMove,
-        updatedAt: new Date().toISOString(),
-        completedAt: isMovingToCompleted
-          ? new Date().toISOString()
-          : isMovingFromCompleted
-            ? null
-            : taskToMove.completedAt,
-      };
-
-      // 同じカラム内での移動の場合は、特別な処理を行う
-      if (sourceColumnId === targetColumnId) {
-        const newTasks = [...sourceColumn.tasks];
-        const oldIndex = newTasks.findIndex((task) => task.id === taskId);
-
-        if (oldIndex === -1) {
-          logger.warn(
-            "Task not found in source column for same-column move:",
-            taskId,
+      try {
+        // 同じカラム内での移動
+        if (sourceColumnId === targetColumnId) {
+          const column = boardState.currentBoard.columns.find(
+            (col) => col.id === sourceColumnId,
           );
+          if (!column) {
+            logger._error("Column not found for same column move", { sourceColumnId, taskId });
+            return;
+          }
+
+          const newTasks = moveTaskWithinColumn(column, taskId, targetIndex, currentTimestamp);
+          if (!newTasks) {
+            return;
+          }
+
+          const updatedColumns = boardState.currentBoard.columns.map((col) =>
+            col.id === sourceColumnId ? { ...col, tasks: newTasks } : col
+          );
+
+          boardDispatch({
+            type: "UPDATE_BOARD",
+            payload: {
+              boardId: boardState.currentBoard.id,
+              updates: {
+                ...boardState.currentBoard,
+                columns: updatedColumns,
+                updatedAt: currentTimestamp,
+              },
+            },
+          });
           return;
         }
 
-        // タスクを削除
-        newTasks.splice(oldIndex, 1);
+        // 異なるカラム間での移動
+        const taskToMove = findTaskById(taskId);
+        if (!taskToMove) {
+          logger._error("Task not found for different column move", { taskId, sourceColumnId, targetColumnId });
+          return;
+        }
 
-        // 安全なターゲットインデックスを計算
-        const safeTargetIndex = Math.max(
-          0,
-          Math.min(targetIndex, newTasks.length),
+        const sourceColumn = boardState.currentBoard.columns.find(
+          (col) => col.id === sourceColumnId,
+        );
+        const targetColumn = boardState.currentBoard.columns.find(
+          (col) => col.id === targetColumnId,
         );
 
-        // 新しい位置に挿入
-        newTasks.splice(safeTargetIndex, 0, updatedTask);
+        if (!sourceColumn || !targetColumn) {
+          return;
+        }
 
-        const updatedColumns = boardState.currentBoard.columns.map((column) => {
-          if (column.id === sourceColumnId) {
-            return {
-              ...column,
-              tasks: newTasks,
-            };
-          }
-          return column;
-        });
+        // カラムインデックスの取得
+        const rightmostColumnIndex = boardState.currentBoard.columns.length - 1;
+        const targetColumnIndex = boardState.currentBoard.columns.findIndex(
+          (col) => col.id === targetColumnId,
+        );
+        const sourceColumnIndex = boardState.currentBoard.columns.findIndex(
+          (col) => col.id === sourceColumnId,
+        );
 
-        const updatedBoard = {
-          ...boardState.currentBoard,
-          columns: updatedColumns,
-          updatedAt: new Date().toISOString(),
-        };
+        // 更新されたタスクを作成
+        const updatedTask = createUpdatedTaskForMove(
+          taskToMove,
+          targetColumnIndex,
+          sourceColumnIndex,
+          currentTimestamp,
+          rightmostColumnIndex
+        );
 
-        boardDispatch({
-          type: "UPDATE_BOARD",
-          payload: {
-            boardId: boardState.currentBoard.id,
-            updates: updatedBoard,
-          },
-        });
-      } else {
-        // 異なるカラム間での移動
-        const updatedColumns = boardState.currentBoard.columns.map((column) => {
-          if (column.id === sourceColumnId) {
-            // ソースカラムからタスクを削除
-            return {
-              ...column,
-              tasks: column.tasks.filter((task) => task.id !== taskId),
-            };
-          } else if (column.id === targetColumnId) {
-            // ターゲットカラムにタスクを追加
-            const newTasks = [...column.tasks];
-            const safeTargetIndex = Math.max(
-              0,
-              Math.min(targetIndex, newTasks.length),
-            );
-
-            newTasks.splice(safeTargetIndex, 0, updatedTask);
-
-            return {
-              ...column,
-              tasks: newTasks,
-            };
-          }
-          return column;
-        });
-
-        const updatedBoard = {
-          ...boardState.currentBoard,
-          columns: updatedColumns,
-          updatedAt: new Date().toISOString(),
-        };
+        // カラムを更新
+        const updatedColumns = updateColumnsForMove(
+          boardState.currentBoard.columns,
+          sourceColumnId,
+          targetColumnId,
+          taskId,
+          targetIndex,
+          updatedTask
+        );
 
         boardDispatch({
           type: "UPDATE_BOARD",
           payload: {
             boardId: boardState.currentBoard.id,
-            updates: updatedBoard,
+            updates: {
+              ...boardState.currentBoard,
+              columns: updatedColumns,
+              updatedAt: currentTimestamp,
+            },
           },
         });
+
+        logger.debug("Task moved successfully:", {
+          taskId,
+          sourceColumnId,
+          targetColumnId,
+          targetIndex,
+          operationKey,
+        });
+      } finally {
+        clearTimeout(lockTimer);
+        processingTasksRef.current.delete(operationKey);
       }
-
-      logger.debug("Task moved successfully:", {
-        taskId,
-        sourceColumnId,
-        targetColumnId,
-        targetIndex,
-      });
     },
-    [boardState.currentBoard, findTaskById, boardDispatch, notify],
+    [
+      boardState.currentBoard,
+      findTaskById,
+      boardDispatch,
+      notify,
+      moveTaskWithinColumn,
+      createUpdatedTaskForMove,
+      updateColumnsForMove,
+    ],
   );
 
   // タスク更新
   const updateTask = useCallback(
     (taskId: string, updates: Partial<Task>) => {
       if (!boardState.currentBoard) {
-        notify.error("ボードが選択されていません");
+        notify._error("ボードが選択されていません");
         return;
       }
 
@@ -370,7 +424,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   const deleteTask = useCallback(
     (taskId: string, columnId: string) => {
       if (!boardState.currentBoard) {
-        notify.error("ボードが選択されていません");
+        notify._error("ボードが選択されていません");
         return;
       }
 
@@ -409,19 +463,19 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   const duplicateTask = useCallback(
     (taskId: string) => {
       if (!boardState.currentBoard) {
-        notify.error("ボードが選択されていません");
+        notify._error("ボードが選択されていません");
         return;
       }
 
       const originalTask = findTaskById(taskId);
       if (!originalTask) {
-        notify.error("複製するタスクが見つかりません");
+        notify._error("複製するタスクが見つかりません");
         return;
       }
 
       const sourceColumnId = findTaskColumnId(taskId);
       if (!sourceColumnId) {
-        notify.error("タスクのカラムが見つかりません");
+        notify._error("タスクのカラムが見つかりません");
         return;
       }
 
@@ -475,7 +529,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   // 完了済みタスクのクリア
   const clearCompletedTasks = useCallback(() => {
     if (!boardState.currentBoard) {
-      notify.error("ボードが選択されていません");
+      notify._error("ボードが選択されていません");
       return;
     }
 
@@ -485,7 +539,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       boardState.currentBoard.columns[rightmostColumnIndex];
 
     if (!rightmostColumn) {
-      notify.error("完了カラムが見つかりません");
+      notify._error("完了カラムが見つかりません");
       return;
     }
 
@@ -540,7 +594,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
 
       const task = findTaskById(taskId);
       if (!task) {
-        notify.error("タスクが見つかりません");
+        notify._error("タスクが見つかりません");
         return;
       }
 
@@ -556,7 +610,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     (taskId: string, subTaskId: string) => {
       const task = findTaskById(taskId);
       if (!task || !task.subTasks) {
-        notify.error("タスクまたはサブタスクが見つかりません");
+        notify._error("タスクまたはサブタスクが見つかりません");
         return;
       }
 
@@ -576,7 +630,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     (taskId: string, subTaskId: string) => {
       const task = findTaskById(taskId);
       if (!task || !task.subTasks) {
-        notify.error("タスクまたはサブタスクが見つかりません");
+        notify._error("タスクまたはサブタスクが見つかりません");
         return;
       }
 
@@ -591,7 +645,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     (taskId: string, subTaskId: string, title: string) => {
       const task = findTaskById(taskId);
       if (!task || !task.subTasks) {
-        notify.error("タスクまたはサブタスクが見つかりません");
+        notify._error("タスクまたはサブタスクが見つかりません");
         return;
       }
 
@@ -610,7 +664,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     (taskId: string, oldIndex: number, newIndex: number) => {
       const task = findTaskById(taskId);
       if (!task || !task.subTasks) {
-        notify.error("タスクまたはサブタスクが見つかりません");
+        notify._error("タスクまたはサブタスクが見つかりません");
         return;
       }
 
@@ -723,7 +777,6 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   // メモ化されたコンテキスト値
   const contextValue = useMemo(
     () => ({
-      state,
       createTask,
       moveTask,
       updateTask,
@@ -740,7 +793,6 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       findTaskColumnId,
     }),
     [
-      state,
       createTask,
       moveTask,
       updateTask,

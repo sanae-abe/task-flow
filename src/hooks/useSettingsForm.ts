@@ -15,7 +15,7 @@ export interface UseSettingsFormResult {
   /** バリデーションエラー */
   validationError: string | null;
   /** 一時メッセージ */
-  message: { text: string; type: 'success' | 'error' | 'warning' | 'info' } | null;
+  message: { text: string; type: 'success' | '_error' | 'warning' | 'info' } | null;
   /** 保持期間の変更ハンドラ */
   handleRetentionDaysChange: (value: string) => void;
   /** プリセット選択ハンドラ */
@@ -36,7 +36,7 @@ export const useSettingsForm = (): UseSettingsFormResult => {
     updateSettings,
     saveSettings,
     isLoading,
-    error: hookError,
+    _error: hookError,
   } = useRecycleBinSettings();
 
   const { message, showMessage, clearMessage } = useTemporaryMessage();
@@ -63,7 +63,7 @@ export const useSettingsForm = (): UseSettingsFormResult => {
     // バリデーション実行
     const validationResult = validateRetentionDaysInput(settings.retentionDays?.toString() || "");
     if (!validationResult.isValid) {
-      setValidationError(validationResult.error || null);
+      setValidationError(validationResult._error || null);
       return;
     }
 
@@ -83,14 +83,14 @@ export const useSettingsForm = (): UseSettingsFormResult => {
         // エラーメッセージを表示
         showMessage({
           text: hookError || MESSAGES.SAVE.FAILED,
-          type: 'error',
+          type: '_error',
         }, 5000);
       }
-    } catch (error) {
+    } catch (_error) {
       // エラーメッセージを表示
       showMessage({
         text: MESSAGES.SAVE.FAILED,
-        type: 'error',
+        type: '_error',
       }, 5000);
     }
   }, [settings, saveSettings, hookError, showMessage]);

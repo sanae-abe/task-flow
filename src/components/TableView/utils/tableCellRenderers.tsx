@@ -1,18 +1,21 @@
 import React from "react";
+import { Button } from "@/components/ui/button";
 import {
-  Text,
-  IconButton,
-  ActionMenu,
-  ActionList,
-  Button,
-} from "@primer/react";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuLabel,
+} from "@/components/ui/dropdown-menu";
 import {
-  XIcon,
-  CheckIcon,
-  PaperclipIcon,
-  TriangleDownIcon,
-  SyncIcon,
-} from "@primer/octicons-react";
+  Trash2,
+  Check,
+  Paperclip,
+  ChevronDown,
+  RotateCcw,
+  Edit,
+} from "lucide-react";
 
 import type { TaskWithColumn } from "../../../types/table";
 import type { KanbanBoard } from "../../../types";
@@ -24,8 +27,9 @@ import SubTaskProgressBar from "../../SubTaskProgressBar";
 import {
   getPriorityText,
   getCompletionRate,
-  getDateColor,
+  getDateColorClass,
 } from "./tableHelpers";
+import IconButton from "@/components/shared/IconButton";
 
 /**
  * アクションセル（削除ボタン）の描画
@@ -36,17 +40,29 @@ export const renderActionsCell = (
 ) => (
   <div onClick={(e: React.MouseEvent) => e.stopPropagation()}>
     <IconButton
-      aria-label="タスクを削除"
-      variant="invisible"
-      icon={XIcon}
-      size="small"
+      icon={Trash2}
+      size="icon"
+      ariaLabel="タスクを削除"
       onClick={() => onDeleteClick(task)}
-      sx={{
-        "&:hover": {
-          bg: "transparent",
-          color: "danger.fg",
-        },
-      }}
+      className="w-8 h-8 p-2 hover:bg-gray-200"
+    />
+  </div>
+);
+
+/**
+ * 編集セル（編集ボタン）の描画
+ */
+export const renderEditCell = (
+  task: TaskWithColumn,
+  onEditClick: (task: TaskWithColumn) => void,
+) => (
+  <div onClick={(e: React.MouseEvent) => e.stopPropagation()}>
+    <IconButton
+      icon={Edit}
+      size="icon"
+      ariaLabel="タスクを編集"
+      onClick={() => onEditClick(task)}
+      className="w-8 h-8 p-2 hover:bg-gray-200"
     />
   </div>
 );
@@ -55,20 +71,13 @@ export const renderActionsCell = (
  * タイトルセルの描画
  */
 export const renderTitleCell = (task: TaskWithColumn) => (
-  <Text
-    sx={{
-      display: "block",
-      overflow: "hidden",
-      textOverflow: "ellipsis",
-      whiteSpace: "nowrap",
-      fontWeight: "semibold",
-      color: task.completedAt ? "fg.default" : "fg.default",
-      textDecoration: task.completedAt ? "line-through" : "none",
-      fontSize: 1,
-    }}
+  <span
+    className={`block overflow-hidden text-ellipsis whitespace-nowrap text-foreground text-sm ${
+      task.completedAt ? "line-through" : ""
+    }`}
   >
     {task.title}
-  </Text>
+  </span>
 );
 
 /**
@@ -80,42 +89,33 @@ export const renderStatusCell = (
   onStatusChange: (task: TaskWithColumn, newColumnId: string) => void,
 ) => (
   <div onClick={(e: React.MouseEvent) => e.stopPropagation()}>
-    <ActionMenu>
-      <ActionMenu.Anchor>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
         <Button
-          variant="invisible"
-          size="small"
-          trailingVisual={TriangleDownIcon}
-          sx={{
-            padding: 0,
-            minHeight: "auto",
-            border: "none",
-            "&:hover": {
-              bg: "transparent",
-            },
-          }}
+          variant="ghost"
+          size="sm"
+          className="p-0 h-auto min-h-0 border-none"
         >
           <StatusBadge size="medium" variant="default" fontWeight="400">
             {task.status}
           </StatusBadge>
+          <ChevronDown size={12} className="ml-1" />
         </Button>
-      </ActionMenu.Anchor>
-      <ActionMenu.Overlay>
-        <ActionList selectionVariant="single">
-          <ActionList.Group title="ステータス変更" selectionVariant="single">
-            {currentBoard?.columns.map((column) => (
-              <ActionList.Item
-                key={column.id}
-                onSelect={() => onStatusChange(task, column.id)}
-                selected={task.columnId === column.id}
-              >
-                {column.title}
-              </ActionList.Item>
-            ))}
-          </ActionList.Group>
-        </ActionList>
-      </ActionMenu.Overlay>
-    </ActionMenu>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent>
+        <DropdownMenuRadioGroup value={task.columnId} onValueChange={(value) => onStatusChange(task, value)}>
+          <DropdownMenuLabel>ステータス変更</DropdownMenuLabel>
+          {currentBoard?.columns.map((column) => (
+            <DropdownMenuRadioItem
+              value={column.id}
+              key={column.id}
+            >
+              {column.title}
+            </DropdownMenuRadioItem>
+          ))}
+        </DropdownMenuRadioGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
   </div>
 );
 
@@ -125,11 +125,11 @@ export const renderStatusCell = (
 export const renderPriorityCell = (task: TaskWithColumn) => (
   <div>
     {task.priority ? (
-      <Text sx={{ color: "fg.default", fontSize: 1 }}>
+      <span className="text-foreground text-sm">
         {getPriorityText(task.priority)}
-      </Text>
+      </span>
     ) : (
-      <Text sx={{ color: "fg.default", fontSize: 1 }}>-</Text>
+      <span className="text-foreground text-sm">-</span>
     )}
   </div>
 );
@@ -141,7 +141,7 @@ export const renderDueDateCell = (task: TaskWithColumn) => {
   if (!task.dueDate) {
     return (
       <div>
-        <Text sx={{ color: "fg.default", fontSize: 1 }}>-</Text>
+        <span className="text-foreground text-sm">-</span>
       </div>
     );
   }
@@ -149,21 +149,14 @@ export const renderDueDateCell = (task: TaskWithColumn) => {
   const dueDate = new Date(task.dueDate);
   const { isOverdue, isDueToday, isDueTomorrow } = getDateStatus(dueDate);
   const formattedDate = formatDate(task.dueDate, "MM/dd HH:mm");
-  const dateColor = getDateColor(isOverdue, isDueToday, isDueTomorrow);
+  const dateColorClass = getDateColorClass(isOverdue, isDueToday, isDueTomorrow);
 
   return (
-    <Text
-      sx={{
-        display: "flex",
-        alignItems: "center",
-        gap: 1,
-        fontSize: 1,
-        color: dateColor,
-      }}
+    <span
+      className={`flex items-center gap-2 text-sm ${dateColorClass}`}
     >
       {formattedDate}
-      {task.recurrence?.enabled && <SyncIcon size={12} />}
-    </Text>
+    </span>
   );
 };
 
@@ -171,31 +164,14 @@ export const renderDueDateCell = (task: TaskWithColumn) => {
  * ラベルセルの描画
  */
 export const renderLabelsCell = (task: TaskWithColumn) => (
-  <div
-    style={{
-      display: "flex",
-      gap: "4px",
-      flexWrap: "wrap",
-      alignItems: "center",
-    }}
-  >
+  <div className="flex flex-wrap items-center gap-1">
     {task.labels?.slice(0, 2).map((label) => (
       <LabelChip key={label.id} label={label} />
     ))}
     {task.labels && task.labels.length > 2 && (
-      <Text
-        sx={{
-          fontSize: 0,
-          color: "fg.default",
-          px: 2,
-          py: 1,
-          border: "1px solid",
-          borderColor: "border.default",
-          borderRadius: 2,
-        }}
-      >
+      <span className="text-xs text-foreground px-2 py-1 border border-border border-gray-200 rounded">
         +{task.labels.length - 2}
-      </Text>
+      </span>
     )}
   </div>
 );
@@ -204,17 +180,17 @@ export const renderLabelsCell = (task: TaskWithColumn) => (
  * サブタスクセルの描画
  */
 export const renderSubTasksCell = (task: TaskWithColumn) => (
-  <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+  <div className="flex items-center gap-1">
     {task.subTasks && task.subTasks.length > 0 ? (
       <>
-        <CheckIcon size={12} />
-        <Text sx={{ fontSize: 1, color: "fg.default" }}>
+        <Check size={12} />
+        <span className="text-sm text-foreground">
           {task.subTasks.filter((sub) => sub.completed).length}/
           {task.subTasks.length}
-        </Text>
+        </span>
       </>
     ) : (
-      <Text sx={{ color: "fg.default", fontSize: 1 }}>-</Text>
+      <span className="text-foreground text-sm">-</span>
     )}
   </div>
 );
@@ -223,16 +199,16 @@ export const renderSubTasksCell = (task: TaskWithColumn) => (
  * ファイルセルの描画
  */
 export const renderFilesCell = (task: TaskWithColumn) => (
-  <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+  <div className="flex items-center gap-1">
     {task.files && task.files.length > 0 ? (
       <>
-        <PaperclipIcon size={12} />
-        <Text sx={{ fontSize: 1, color: "fg.default" }}>
+        <Paperclip size={12} />
+        <span className="text-sm text-foreground">
           {task.files.length}
-        </Text>
+        </span>
       </>
     ) : (
-      <Text sx={{ color: "fg.default", fontSize: 1 }}>-</Text>
+      <span className="text-foreground text-sm">-</span>
     )}
   </div>
 );
@@ -243,17 +219,17 @@ export const renderFilesCell = (task: TaskWithColumn) => (
 export const renderProgressCell = (task: TaskWithColumn) => (
   <div>
     {task.subTasks && task.subTasks.length > 0 ? (
-      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+      <div className="flex items-center gap-2">
         <SubTaskProgressBar
           completedCount={task.subTasks.filter((sub) => sub.completed).length}
           totalCount={task.subTasks.length}
         />
-        <Text sx={{ fontSize: 1, color: "fg.default" }}>
+        <span className="text-sm text-foreground">
           {getCompletionRate(task)}%
-        </Text>
+        </span>
       </div>
     ) : (
-      <Text sx={{ color: "fg.default", fontSize: 1 }}>-</Text>
+      <span className="text-foreground text-sm">-</span>
     )}
   </div>
 );
@@ -262,18 +238,18 @@ export const renderProgressCell = (task: TaskWithColumn) => (
  * 作成日セルの描画
  */
 export const renderCreatedAtCell = (task: TaskWithColumn) => (
-  <Text sx={{ fontSize: 1, color: "fg.default" }}>
+  <span className="text-sm text-foreground">
     {formatDate(task.createdAt, "MM/dd HH:mm")}
-  </Text>
+  </span>
 );
 
 /**
  * 更新日セルの描画
  */
 export const renderUpdatedAtCell = (task: TaskWithColumn) => (
-  <Text sx={{ fontSize: 1, color: "fg.default" }}>
+  <span className="text-sm text-foreground">
     {formatDate(task.updatedAt, "MM/dd HH:mm")}
-  </Text>
+  </span>
 );
 
 /**
@@ -282,11 +258,11 @@ export const renderUpdatedAtCell = (task: TaskWithColumn) => (
 export const renderCompletedAtCell = (task: TaskWithColumn) => (
   <div>
     {task.completedAt ? (
-      <Text sx={{ fontSize: 1, color: "fg.default" }}>
+      <span className="text-sm text-foreground">
         {formatDate(task.completedAt, "MM/dd HH:mm")}
-      </Text>
+      </span>
     ) : (
-      <Text sx={{ color: "fg.default", fontSize: 1 }}>-</Text>
+      <span className="text-foreground text-sm">-</span>
     )}
   </div>
 );
@@ -297,22 +273,14 @@ export const renderCompletedAtCell = (task: TaskWithColumn) => (
 export const renderDescriptionCell = (task: TaskWithColumn) => (
   <div>
     {task.description ? (
-      <Text
-        sx={{
-          display: "block",
-          fontSize: 0,
-          color: "fg.default",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          whiteSpace: "nowrap",
-          maxWidth: "580px",
-        }}
+      <span
+        className="block text-xs text-foreground overflow-hidden text-ellipsis whitespace-nowrap max-w-[580px]"
         title={stripHtml(task.description)}
       >
         {stripHtml(task.description)}
-      </Text>
+      </span>
     ) : (
-      <Text sx={{ color: "fg.default", fontSize: 0 }}>-</Text>
+      <span className="text-foreground text-xs">-</span>
     )}
   </div>
 );
@@ -323,24 +291,22 @@ export const renderDescriptionCell = (task: TaskWithColumn) => (
 export const renderRecurrenceCell = (task: TaskWithColumn) => (
   <div
     style={{
-      display: "flex",
-      alignItems: "center",
-      gap: "4px",
-      color: "var(--fgColor-default)",
+      color: "var(--foreground)",
     }}
+    className="flex items-center gap-1"
   >
     {task.recurrence?.enabled ? (
       <>
-        <SyncIcon size={12} />
-        <Text sx={{ fontSize: 1 }}>
+        <RotateCcw size={12} />
+        <span className="text-sm">
           {task.recurrence.pattern === "daily" && "毎日"}
           {task.recurrence.pattern === "weekly" && "毎週"}
           {task.recurrence.pattern === "monthly" && "毎月"}
           {task.recurrence.pattern === "yearly" && "毎年"}
-        </Text>
+        </span>
       </>
     ) : (
-      <Text sx={{ color: "fg.default", fontSize: 1 }}>-</Text>
+      <span className="text-foreground text-sm">-</span>
     )}
   </div>
 );
@@ -349,5 +315,5 @@ export const renderRecurrenceCell = (task: TaskWithColumn) => (
  * デフォルトセルの描画
  */
 export const renderDefaultCell = () => (
-  <Text sx={{ fontSize: 1, color: "fg.default" }}>-</Text>
+  <span className="text-sm text-foreground">-</span>
 );

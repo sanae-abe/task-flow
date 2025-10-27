@@ -1,8 +1,7 @@
 import React from "react";
-import { Box, TextInput } from "@primer/react";
-import { CheckIcon, XIcon } from "@primer/octicons-react";
+import { Input } from "@/components/ui/input";
+import { Check, X } from "lucide-react";
 import IconButton from "../../shared/IconButton";
-import { subTaskItemStyles } from "../styles/subTaskItemStyles";
 
 interface EditingViewProps {
   editTitle: string;
@@ -22,31 +21,30 @@ export const EditingView: React.FC<EditingViewProps> = ({
   onKeyDown,
 }) => (
     <>
-      <TextInput
+      <Input
         ref={inputRef}
         value={editTitle}
         onChange={(e) => setEditTitle(e.target.value)}
         onKeyDown={onKeyDown}
-        sx={subTaskItemStyles.textInput}
-        size="small"
+        className="flex-1 h-8 text-sm"
       />
-      <Box sx={subTaskItemStyles.editActionsContainer}>
+      <div className="flex items-center opacity-0 group-hover:opacity-100 transition-opacity">
         <IconButton
-          icon={CheckIcon}
+          icon={Check}
+          size="icon"
           onClick={onSave}
           ariaLabel="編集を保存"
-          size="small"
+          className="w-8 h-8 p-2"
           stopPropagation
-          sx={subTaskItemStyles.saveButton}
         />
         <IconButton
-          icon={XIcon}
+          icon={X}
+          size="icon"
           onClick={onCancel}
           ariaLabel="編集をキャンセル"
-          size="small"
+          className="w-8 h-8 p-2"
           stopPropagation
-          sx={subTaskItemStyles.cancelButton}
         />
-      </Box>
+      </div>
     </>
   );

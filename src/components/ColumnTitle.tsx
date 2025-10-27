@@ -1,4 +1,3 @@
-import { Heading, CounterLabel } from "@primer/react";
 import React from "react";
 
 import type { Column } from "../types";
@@ -7,36 +6,22 @@ interface ColumnTitleProps {
   column: Column;
 }
 
-const ColumnTitle: React.FC<ColumnTitleProps> = ({ column }) => (
-  <div
-    style={{
-      display: "flex",
-      flex: 1,
-      alignItems: "center",
-      justifyContent: "space-between",
-      gap: "8px",
-      flexShrink: 0,
-      width: "100%",
-      overflow: "hidden",
-    }}
-  >
-    <Heading
-      sx={{
-        fontSize: 2,
-        margin: 0,
-        fontWeight: 700,
-        color: "fg.default",
-        flex: 1,
-        minWidth: 0,
-        overflow: "hidden",
-        textOverflow: "ellipsis",
-        whiteSpace: "nowrap",
-      }}
-    >
-      {column.title}
-    </Heading>
-    <CounterLabel sx={{ flexShrink: 0 }}>{column.tasks.length}</CounterLabel>
-  </div>
-);
+const ColumnTitle: React.FC<ColumnTitleProps> = ({ column }) => {
+  // 削除されていないタスクのみをカウント（ゴミ箱のタスクは除外）
+  const activeTasksCount = column.tasks.filter(
+    task => task.deletionState !== 'deleted'
+  ).length;
+
+  return (
+    <div className="flex flex-1 items-center justify-between gap-2 flex-shrink-0 w-full overflow-hidden mr-1">
+      <h3 className="text-md font-bold text-foreground flex-1 min-w-0 overflow-hidden text-ellipsis whitespace-nowrap m-0">
+        {column.title}
+      </h3>
+      <span className="flex-shrink-0 bg-neutral-200 px-2 py-1 rounded-full text-xs">
+        {activeTasksCount}
+      </span>
+    </div>
+  );
+};
 
 export default ColumnTitle;

@@ -1,6 +1,6 @@
 import React, { memo, useMemo } from "react";
 
-import { UnifiedForm, createLabelFormFields } from "./shared/Form";
+import { UnifiedForm, type FormFieldConfig } from "./shared/Form";
 
 interface LabelCreateFormProps {
   labelName: string;
@@ -24,34 +24,41 @@ const LabelCreateForm = memo<LabelCreateFormProps>(
     onKeyDown,
     isValid,
   }) => {
-    // フォームフィールド設定を生成
+    // フォームフィールドを直接定義
     const formFields = useMemo(
-      () =>
-        createLabelFormFields(
-          {
-            name: labelName,
-            color: selectedColor,
-          },
-          {
-            setName: onLabelNameChange,
-            setColor: onColorSelect,
-          },
-          {
-            onKeyDown,
-          },
-        ),
+      (): FormFieldConfig[] => [
+        {
+          id: "label-name",
+          name: "name",
+          type: "text",
+          label: "ラベル名",
+          value: labelName,
+          placeholder: "ラベル名を入力",
+          onChange: onLabelNameChange as (value: unknown) => void,
+          onKeyDown,
+          autoFocus: true,
+          hideLabel: false,
+          disabled: false,
+          validation: { required: true, minLength: 1, maxLength: 50 },
+        },
+        {
+          id: "label-color",
+          name: "color",
+          type: "color-selector",
+          label: "色",
+          value: selectedColor,
+          onChange: onColorSelect as (value: unknown) => void,
+          autoFocus: false,
+          hideLabel: false,
+          disabled: false,
+        },
+      ],
       [labelName, selectedColor, onLabelNameChange, onColorSelect, onKeyDown],
     );
 
     return (
       <div
-        style={{
-          padding: "12px",
-          background: "var(--bgColor-muted)",
-          borderRadius: "var(--borderRadius-medium)",
-          border: "1px solid",
-          borderColor: "border.default",
-        }}
+        className={`p-3 bg-neutral-100 rounded-md border`}
       >
         <UnifiedForm
           fields={formFields}

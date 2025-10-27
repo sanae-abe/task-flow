@@ -19,7 +19,7 @@ import type { SubTask } from "../types";
 
 import SubTaskForm from "./SubTaskForm";
 import SubTaskHeader from "./SubTaskHeader";
-import SubTaskItem from "./SubTaskItem";
+import SubTaskItem from "./SubTaskItem/SubTaskItem";
 import SubTaskProgressBar from "./SubTaskProgressBar";
 
 interface SubTaskListProps {
@@ -88,7 +88,7 @@ const SubTaskList: React.FC<SubTaskListProps> = ({
   );
 
   return (
-    <div style={{ marginBottom: "16px" }}>
+    <div className="mb-4">
       <SubTaskHeader
         completedCount={completedCount}
         totalCount={totalCount}
@@ -110,7 +110,7 @@ const SubTaskList: React.FC<SubTaskListProps> = ({
           items={subTasks.map((item) => item.id)}
           strategy={verticalListSortingStrategy}
         >
-          <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+          <div className="flex flex-col">
             {subTasks.map((subTask) => (
               <SubTaskItem
                 key={subTask.id}

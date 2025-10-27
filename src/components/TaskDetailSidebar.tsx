@@ -1,6 +1,6 @@
-import { TrashIcon, XIcon, PencilIcon, CopyIcon } from "@primer/octicons-react";
-import { Button, Box, Heading } from "@primer/react";
-import { useEffect, useCallback, useMemo, memo, useRef } from "react";
+import { Trash2, X, Edit, Copy } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useEffect, useCallback, memo, useRef } from "react";
 
 import { useTaskActions } from "../hooks/useTaskActions";
 import { useTaskColumn } from "../hooks/useTaskColumn";
@@ -65,76 +65,6 @@ const TaskDetailSidebar = memo<TaskDetailSidebarProps>(
       setShowDeleteConfirm(false);
     }, [setShowDeleteConfirm]);
 
-    // スタイルオブジェクトをメモ化
-    const sidebarStyles = useMemo(
-      () => ({
-        position: "fixed" as const,
-        top: 0,
-        right: 0,
-        width: "440px",
-        height: "100vh",
-        background: "var(--bgColor-default)",
-        boxShadow: "0 16px 32px rgba(0, 0, 0, 0.24)",
-        borderLeft: { md: "1px solid" },
-        borderColor: "var(--borderColor-default)",
-        zIndex: 1020,
-        overflowY: "auto" as const,
-        animation:
-          "sidebar-slide-in-right 250ms cubic-bezier(0.33, 1, 0.68, 1)",
-      }),
-      [],
-    );
-
-    const headerStyles = useMemo(
-      () => ({
-        display: "flex",
-        p: "19px",
-        alignItems: "flex-start",
-        justifyContent: "space-between",
-        borderBottom: "1px solid",
-        borderColor: "var(--borderColor-default)",
-        flexShrink: 0,
-      }),
-      [],
-    );
-
-    const contentStyles = useMemo(
-      () => ({
-        flex: "1",
-        p: 4,
-        overflowY: "auto" as const,
-      }),
-      [],
-    );
-
-    const actionsStyles = useMemo(
-      () => ({
-        padding: "16px",
-        borderTop: "1px solid",
-        borderColor: "var(--borderColor-default)",
-        flexShrink: 0,
-      }),
-      [],
-    );
-
-    const buttonContainerStyles = useMemo(
-      () => ({
-        display: "flex",
-        gap: "8px",
-      }),
-      [],
-    );
-
-    const buttonStyles = useMemo(
-      () => ({
-        flex: 1,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: "8px",
-      }),
-      [],
-    );
 
     useEffect(() => {
       if (isOpen) {
@@ -164,35 +94,32 @@ const TaskDetailSidebar = memo<TaskDetailSidebarProps>(
     }
 
     return (
-      <Box
+      <div
         ref={sidebarRef}
-        sx={sidebarStyles}
+        className="fixed top-0 right-0 w-[440px] h-screen bg-white shadow-2xl border-l border-gray-200 z-300 overflow-y-auto animate-[sidebar-slide-in-right_250ms_cubic-bezier(0.33,1,0.68,1)]"
         role="dialog"
         aria-label="タスク詳細"
         aria-modal="true"
       >
-        <div
-          style={{ display: "flex", height: "100%", flexDirection: "column" }}
-        >
+        <div className="flex h-full flex-col">
           {/* Header */}
-          <Box sx={headerStyles}>
-            <Heading
-              sx={{ fontSize: 2, margin: 0, pr: 3, wordBreak: "break-word" }}
-            >
+          <div className="flex p-5 items-start justify-between border-b border-border border-gray-200 flex-shrink-0">
+            <h2 className="text-lg font-bold m-0 pr-3 break-words">
               {task.title}
-            </Heading>
+            </h2>
             <Button
               onClick={onClose}
-              variant="invisible"
-              size="small"
-              leadingVisual={XIcon}
+              variant="ghost"
+              size="sm"
               aria-label="タスク詳細を閉じる"
-              sx={{ flexShrink: 0 }}
-            />
-          </Box>
+              className="flex-shrink-0 p-1 h-auto min-w-0"
+            >
+              <X size={16} />
+            </Button>
+          </div>
 
           {/* Content */}
-          <Box ref={contentRef} sx={contentStyles}>
+          <div ref={contentRef} className="flex-1 p-5 overflow-y-auto">
             <TaskDisplayContent
               task={task}
               columnName={columnName}
@@ -207,41 +134,41 @@ const TaskDetailSidebar = memo<TaskDetailSidebarProps>(
               onReorderSubTasks={handleReorderSubTasks}
             />
             <TaskMetadata task={task} />
-          </Box>
+          </div>
 
           {/* Actions */}
-          <Box sx={actionsStyles}>
-            <Box sx={buttonContainerStyles}>
+          <div className="p-3 border-t border-gray-200 flex-shrink-0">
+            <div className="flex gap-2">
               <Button
                 onClick={handleEdit}
-                variant="primary"
-                size="medium"
-                leadingVisual={PencilIcon}
-                sx={buttonStyles}
+                variant="default"
+                size="default"
+                className="flex-1 flex items-center justify-center gap-2"
               >
+                <Edit size={16} />
                 編集
               </Button>
               <Button
                 onClick={handleDuplicate}
-                variant="default"
-                size="medium"
-                leadingVisual={CopyIcon}
-                sx={buttonStyles}
+                variant="outline"
+                size="default"
+                className="flex-1 flex items-center justify-center gap-2"
               >
+                <Copy size={16} />
                 複製
               </Button>
               <TaskBoardMover onMoveTask={handleMoveToBoard} />
               <Button
                 onClick={handleDelete}
-                variant="danger"
-                size="medium"
-                leadingVisual={TrashIcon}
-                sx={buttonStyles}
+                variant="destructive"
+                size="default"
+                className="flex-1 flex items-center justify-center gap-2"
               >
+                <Trash2 size={16} />
                 削除
               </Button>
-            </Box>
-          </Box>
+            </div>
+          </div>
         </div>
 
         <TaskEditDialog
@@ -259,7 +186,7 @@ const TaskDetailSidebar = memo<TaskDetailSidebarProps>(
           onConfirm={handleConfirmDelete}
           onCancel={handleDeleteConfirmCancel}
         />
-      </Box>
+      </div>
     );
   },
 );

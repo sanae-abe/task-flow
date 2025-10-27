@@ -1,86 +1,33 @@
 import React from "react";
-import { SparklesFillIcon, XIcon } from "@primer/octicons-react";
-import { Box, Button } from "@primer/react";
+import { Sparkles, X } from "lucide-react";
+import IconButton from "@/components/shared/IconButton";
 
 interface FirstTimeUserHintProps {
   onDismiss: () => void;
 }
 
 const FirstTimeUserHint: React.FC<FirstTimeUserHintProps> = ({ onDismiss }) => (
-  <Box
-    sx={{
-      position: "relative",
-      maxWidth: "400px",
-      bg: "canvas.overlay",
-      border: "1px solid",
-      borderColor: "border.default",
-      borderRadius: "6px",
-      boxShadow: "0 0 12px rgba(0, 0, 0, 0.1)",
-      p: 3,
-      "&::before": {
-        content: '""',
-        position: "absolute",
-        top: "-8px",
-        right: "100px",
-        width: 0,
-        height: 0,
-        borderLeft: "8px solid transparent",
-        borderRight: "8px solid transparent",
-        borderBottom: "8px solid",
-        borderBottomColor: "border.default",
-      },
-      "&::after": {
-        content: '""',
-        position: "absolute",
-        top: "-7px",
-        right: "100px",
-        width: 0,
-        height: 0,
-        borderLeft: "8px solid transparent",
-        borderRight: "8px solid transparent",
-        borderBottom: "8px solid",
-        borderBottomColor: "canvas.overlay",
-      },
-    }}
-  >
-    <div style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
-      <div style={{ color: "var(--fgColor-accent)" }}>
-        <SparklesFillIcon size={16} />
+  <div className="relative max-w-sm bg-white border border-border border-gray-200 rounded-md shadow-lg p-3 before:content-[''] before:absolute before:-top-2 before:right-[100px] before:w-0 before:h-0 before:border-l-8 before:border-r-8 before:border-b-8 before:border-l-transparent before:border-r-transparent before:border-b-gray-200 after:content-[''] after:absolute after:-top-[7px] after:right-[100px] after:w-0 after:h-0 after:border-l-8 after:border-r-8 after:border-b-8 after:border-l-transparent after:border-r-transparent after:border-b-white">
+    <div className="flex items-start gap-2">
+      <div className="text-primary">
+        <Sparkles size={16} />
       </div>
-      <div style={{ flex: 1 }}>
-        <div
-          style={{ fontWeight: "bold", marginBottom: "4px", fontSize: "14px" }}
-        >
+      <div className="flex-1">
+        <div className="font-bold mb-1 text-sm">
           TaskFlowアプリへようこそ！
         </div>
-        <div
-          style={{
-            fontSize: "12px",
-            color: "var(--fgColor-muted)",
-            lineHeight: 1.4,
-          }}
-        >
+        <div className="text-xs text-zinc-700 leading-relaxed">
           「ボード設定」メニューから新しいボードを作成して、プロジェクトごとにタスクを管理しましょう
         </div>
       </div>
-      <Button
-        variant="invisible"
-        size="small"
+      <IconButton
+        icon={X}
+        size="icon"
         onClick={onDismiss}
-        leadingVisual={XIcon}
-        aria-label="ヒントを閉じる"
-        sx={{
-          color: "fg.muted",
-          p: 1,
-          minWidth: "auto",
-          "&:hover": {
-            color: "fg.default",
-            bg: "actionListItem.default.hoverBg",
-          },
-        }}
+        ariaLabel="ヒントを閉じる"
       />
     </div>
-  </Box>
+  </div>
 );
 
 export default FirstTimeUserHint;

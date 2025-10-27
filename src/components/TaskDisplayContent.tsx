@@ -1,4 +1,3 @@
-import { Text } from "@primer/react";
 import React from "react";
 
 import type { Task, Priority } from "../types";
@@ -49,11 +48,7 @@ const TaskDisplayContent = React.memo<TaskDisplayContentProps>(
           >
             {task.description && (
               <LinkifiedText
-                sx={{
-                  fontSize: 1,
-                  whiteSpace: "pre-wrap",
-                  overflowWrap: "anywhere",
-                }}
+                className="text-sm whitespace-pre-wrap break-anywhere"
               >
                 {task.description}
               </LinkifiedText>
@@ -72,9 +67,9 @@ const TaskDisplayContent = React.memo<TaskDisplayContentProps>(
         {task.recurrence && (
           <TaskDisplaySection title="繰り返し設定">
             <ContentBox>
-              <Text sx={{ fontSize: 1 }}>
+              <span className="text-sm">
                 {getRecurrenceDescription(task.recurrence)}
-              </Text>
+              </span>
             </ContentBox>
           </TaskDisplaySection>
         )}
@@ -82,7 +77,7 @@ const TaskDisplayContent = React.memo<TaskDisplayContentProps>(
         {columnName && (
           <TaskDisplaySection title="ステータス">
             <ContentBox>
-              <Text sx={{ fontSize: 1 }}>{columnName}</Text>
+              <span className="text-sm">{columnName}</span>
             </ContentBox>
           </TaskDisplaySection>
         )}
@@ -90,7 +85,7 @@ const TaskDisplayContent = React.memo<TaskDisplayContentProps>(
         {task.priority && (
           <TaskDisplaySection title="優先度">
             <ContentBox>
-              <Text sx={{ fontSize: 1 }}>{getPriorityText(task.priority)}</Text>
+              <span className="text-sm">{getPriorityText(task.priority)}</span>
             </ContentBox>
           </TaskDisplaySection>
         )}
@@ -98,9 +93,9 @@ const TaskDisplayContent = React.memo<TaskDisplayContentProps>(
         {task.completedAt && (
           <TaskDisplaySection title="完了日時">
             <ContentBox>
-              <Text sx={{ fontSize: 1 }}>
+              <span className="text-sm">
                 {formatDateTime(task.completedAt)}
-              </Text>
+              </span>
             </ContentBox>
           </TaskDisplaySection>
         )}

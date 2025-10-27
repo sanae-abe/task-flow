@@ -18,7 +18,7 @@ import {
   TemplateStorage,
   TemplateStorageError,
 } from "../utils/templateStorage";
-import { useNotify } from "./NotificationContext";
+import { useSonnerNotify } from "../hooks/useSonnerNotify";
 import { logger } from "../utils/logger";
 
 /**
@@ -27,7 +27,7 @@ import { logger } from "../utils/logger";
 interface TemplateState {
   templates: TaskTemplate[];
   isLoading: boolean;
-  error: string | null;
+  _error: string | null;
   filter: TemplateFilter;
   sort: TemplateSortConfig;
 }
@@ -59,7 +59,7 @@ interface TemplateContextType {
   templates: TaskTemplate[];
   filteredTemplates: TaskTemplate[];
   isLoading: boolean;
-  error: string | null;
+  _error: string | null;
   createTemplate: (formData: TemplateFormData) => Promise<TaskTemplate>;
   updateTemplate: (
     id: string,
@@ -95,7 +95,7 @@ const TemplateContext = createContext<TemplateContextType | undefined>(
 const initialState: TemplateState = {
   templates: [],
   isLoading: false,
-  error: null,
+  _error: null,
   filter: {},
   sort: {
     field: "updatedAt",
@@ -116,7 +116,7 @@ const templateReducer = (
         ...state,
         templates: action.payload,
         isLoading: false,
-        error: null,
+        _error: null,
       };
 
     case "SET_LOADING":
@@ -128,7 +128,7 @@ const templateReducer = (
     case "SET_ERROR":
       return {
         ...state,
-        error: action.payload,
+        _error: action.payload,
         isLoading: false,
       };
 
@@ -304,7 +304,7 @@ interface TemplateProviderProps {
 export const TemplateProvider: React.FC<TemplateProviderProps> = ({
   children,
 }) => {
-  const notify = useNotify();
+  const notify = useSonnerNotify();
   const [state, dispatch] = useReducer(templateReducer, initialState);
 
   /**
@@ -318,20 +318,21 @@ export const TemplateProvider: React.FC<TemplateProviderProps> = ({
         const templates = TemplateStorage.load();
         dispatch({ type: "LOAD_TEMPLATES", payload: templates });
         logger.info("Templates loaded:", templates.length);
-      } catch (error) {
+      } catch (_error) {
         const errorMessage =
-          error instanceof TemplateStorageError
-            ? error.message
+          _error instanceof TemplateStorageError
+            ? _error.message
             : "テンプレートの読み込みに失敗しました";
 
-        logger.error("Failed to load templates:", error);
+        logger._error("Failed to load templates:", _error);
         dispatch({ type: "SET_ERROR", payload: errorMessage });
-        notify.error(errorMessage);
+        notify._error(errorMessage);
       }
     };
 
     loadTemplates();
-  }, [notify]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   /**
    * テンプレートを作成
@@ -343,15 +344,15 @@ export const TemplateProvider: React.FC<TemplateProviderProps> = ({
         dispatch({ type: "CREATE_TEMPLATE", payload: template });
         notify.success(`テンプレート「${template.name}」を作成しました`);
         return template;
-      } catch (error) {
+      } catch (_error) {
         const errorMessage =
-          error instanceof TemplateStorageError
-            ? error.message
+          _error instanceof TemplateStorageError
+            ? _error.message
             : "テンプレートの作成に失敗しました";
 
-        logger.error("Failed to create template:", error);
-        notify.error(errorMessage);
-        throw error;
+        logger._error("Failed to create template:", _error);
+        notify._error(errorMessage);
+        throw _error;
       }
     },
     [notify],
@@ -369,7 +370,7 @@ export const TemplateProvider: React.FC<TemplateProviderProps> = ({
         const updatedTemplate = TemplateStorage.update(id, updates);
 
         if (!updatedTemplate) {
-          notify.error("テンプレートが見つかりません");
+          notify._error("テンプレートが見つかりません");
           return null;
         }
 
@@ -379,15 +380,15 @@ export const TemplateProvider: React.FC<TemplateProviderProps> = ({
         });
         notify.success(`テンプレート「${updatedTemplate.name}」を更新しました`);
         return updatedTemplate;
-      } catch (error) {
+      } catch (_error) {
         const errorMessage =
-          error instanceof TemplateStorageError
-            ? error.message
+          _error instanceof TemplateStorageError
+            ? _error.message
             : "テンプレートの更新に失敗しました";
 
-        logger.error("Failed to update template:", error);
-        notify.error(errorMessage);
-        throw error;
+        logger._error("Failed to update template:", _error);
+        notify._error(errorMessage);
+        throw _error;
       }
     },
     [notify],
@@ -408,18 +409,18 @@ export const TemplateProvider: React.FC<TemplateProviderProps> = ({
             `テンプレート「${template?.name || ""}」を削除しました`,
           );
         } else {
-          notify.error("テンプレートが見つかりません");
+          notify._error("テンプレートが見つかりません");
         }
 
         return success;
-      } catch (error) {
+      } catch (_error) {
         const errorMessage =
-          error instanceof TemplateStorageError
-            ? error.message
+          _error instanceof TemplateStorageError
+            ? _error.message
             : "テンプレートの削除に失敗しました";
 
-        logger.error("Failed to delete template:", error);
-        notify.error(errorMessage);
+        logger._error("Failed to delete template:", _error);
+        notify._error(errorMessage);
         return false;
       }
     },
@@ -433,8 +434,8 @@ export const TemplateProvider: React.FC<TemplateProviderProps> = ({
     try {
       TemplateStorage.incrementUsage(id);
       dispatch({ type: "INCREMENT_USAGE", payload: id });
-    } catch (error) {
-      logger.error("Failed to increment template usage:", error);
+    } catch (_error) {
+      logger._error("Failed to increment template usage:", _error);
     }
   }, []);
 
@@ -452,9 +453,9 @@ export const TemplateProvider: React.FC<TemplateProviderProps> = ({
           ? `「${template?.name}」をお気に入りに追加しました`
           : `「${template?.name}」をお気に入りから削除しました`;
         notify.success(message);
-      } catch (error) {
-        logger.error("Failed to toggle template favorite:", error);
-        notify.error("お気に入りの切り替えに失敗しました");
+      } catch (_error) {
+        logger._error("Failed to toggle template favorite:", _error);
+        notify._error("お気に入りの切り替えに失敗しました");
       }
     },
     [state.templates, notify],
@@ -502,15 +503,15 @@ export const TemplateProvider: React.FC<TemplateProviderProps> = ({
           ? `${templates.length}個のテンプレートをインポートしました`
           : `${templates.length}個のテンプレートをインポートしました（既存データを置換）`;
         notify.success(message);
-      } catch (error) {
+      } catch (_error) {
         const errorMessage =
-          error instanceof TemplateStorageError
-            ? error.message
+          _error instanceof TemplateStorageError
+            ? _error.message
             : "テンプレートのインポートに失敗しました";
 
-        logger.error("Failed to import templates:", error);
-        notify.error(errorMessage);
-        throw error;
+        logger._error("Failed to import templates:", _error);
+        notify._error(errorMessage);
+        throw _error;
       }
     },
     [notify],
@@ -558,7 +559,7 @@ export const TemplateProvider: React.FC<TemplateProviderProps> = ({
       templates: state.templates,
       filteredTemplates,
       isLoading: state.isLoading,
-      error: state.error,
+      _error: state._error,
       createTemplate,
       updateTemplate,
       deleteTemplate,

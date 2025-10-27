@@ -1,6 +1,5 @@
 import React from 'react';
-import { Text } from '@primer/react';
-import { ChevronUpIcon, ChevronDownIcon, StarFillIcon } from '@primer/octicons-react';
+import { ChevronUp, ChevronDown, Star } from 'lucide-react';
 import type { TemplateSortField, TemplateSortDirection } from '../../types/template';
 
 interface SortableHeaderProps {
@@ -29,28 +28,19 @@ const SortableHeader: React.FC<SortableHeaderProps> = ({
     <button
       onClick={() => onSort(field)}
       aria-label={`${children}でソート`}
-      className="TableSortButton"
-      style={{
-        width: '100%',
-        justifyContent: align === 'center' ? 'center' : 'flex-start',
-        fontWeight: 'bold',
-        border: 0,
-        padding: '8px',
-        color: 'var(--fgColor-muted)',
-        fontSize: 0,
-        background: 'none',
-        appearance: 'none'
-      }}
+      className={`w-full p-2 font-bold border-0 text-xs text-zinc-700 bg-transparent appearance-none ${
+        align === 'center' ? 'justify-center' : 'justify-start'
+      } flex`}
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-        <Text sx={{ fontSize: 0, fontWeight: 'bold' }}>
+      <div className="flex items-center gap-1">
+        <span className="text-xs font-bold">
           {children}
-        </Text>
-        <div style={{ opacity: isActive ? 1 : 0.3 }}>
+        </span>
+        <div className={`${isActive ? 'opacity-100' : 'opacity-30'}`}>
           {isActive && sortDirection === 'asc' ? (
-            <ChevronUpIcon size={12} />
+            <ChevronUp size={12} />
           ) : (
-            <ChevronDownIcon size={12} />
+            <ChevronDown size={12} />
           )}
         </div>
       </div>
@@ -72,28 +62,16 @@ const TemplateTableHeader: React.FC<TemplateTableHeaderProps> = ({
   sortDirection,
   onSort
 }) => (
-  <div
-    style={{
-      display: 'grid',
-      gridTemplateColumns: '1fr 120px 80px 100px',
-      gap: '8px',
-      background: 'var(--bgColor-muted)',
-      borderBottom: '1px solid',
-      borderColor: 'var(--borderColor-default)',
-      fontSize: '12px',
-      fontWeight: 'bold',
-      color: 'var(--fgColor-muted)'
-    }}
-  >
+  <div className="grid grid-cols-[1fr_120px_80px_100px] gap-2 bg-neutral-100 border-b border-border text-xs font-bold text-zinc-700">
     <SortableHeader
       field="favorite"
       currentSortField={sortField}
       sortDirection={sortDirection}
       onSort={onSort}
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-        <StarFillIcon size={12} />
-        <Text sx={{ fontSize: 0 }}>おすすめ順</Text>
+      <div className="flex items-center gap-1">
+        <Star size={12} />
+        <span className="text-xs">おすすめ順</span>
       </div>
     </SortableHeader>
 
@@ -116,7 +94,7 @@ const TemplateTableHeader: React.FC<TemplateTableHeaderProps> = ({
       使用数
     </SortableHeader>
 
-    <Text sx={{ textAlign: 'center', fontSize: 0, p: 2 }}>操作</Text>
+    <span className="block text-center text-xs p-2">操作</span>
   </div>
 );
 

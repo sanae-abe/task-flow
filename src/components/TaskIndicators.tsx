@@ -1,23 +1,7 @@
-import { CheckIcon, PaperclipIcon } from "@primer/octicons-react";
-import { Text } from "@primer/react";
+import { Check, Paperclip } from "lucide-react";
 import React from "react";
 
 import type { SubTask, FileAttachment } from "../types";
-
-const INDICATOR_STYLES = {
-  container: {
-    display: "flex",
-    alignItems: "center",
-    gap: "4px",
-    paddingInline: "4px",
-    paddingBlock: "4px",
-    borderRadius: "var(--borderRadius-medium)",
-    fontSize: "12px",
-    fontWeight: "400",
-    alignSelf: "flex-start" as const,
-    color: "var(--fgColor-muted)",
-  },
-} as const;
 
 interface TaskIndicatorsProps {
   subTasks?: SubTask[];
@@ -36,20 +20,20 @@ const TaskIndicators: React.FC<TaskIndicatorsProps> = ({
   }
 
   return (
-    <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}>
+    <div className="flex justify-end gap-2">
       {hasSubTasks && (
-        <div style={INDICATOR_STYLES.container}>
-          <CheckIcon size={12} />
-          <Text sx={{ fontSize: 0 }}>
+        <div className="flex items-center gap-1 px-1 py-1 rounded text-xs font-normal self-start text-zinc-500">
+          <Check size={12} />
+          <span className="text-xs">
             {subTasks.filter((sub) => sub.completed).length}/{subTasks.length}
-          </Text>
+          </span>
         </div>
       )}
 
       {hasAttachments && (
-        <div style={INDICATOR_STYLES.container}>
-          <PaperclipIcon size={12} />
-          <Text sx={{ fontSize: 0 }}>{attachments.length}</Text>
+        <div className="flex items-center gap-1 px-1 py-1 rounded text-xs font-normal self-start text-zinc-500">
+          <Paperclip size={12} />
+          <span className="text-xs">{attachments.length}</span>
         </div>
       )}
     </div>

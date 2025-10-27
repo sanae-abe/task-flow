@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
-import { FormControl, Select } from '@primer/react';
 
 import type { TemplateCategory, TemplateCategoryInfo } from '../../types/template';
+import UnifiedFormField from '../shared/Form/UnifiedFormField';
 
 interface TemplateCategorySelectorProps {
   value: TemplateCategory;
@@ -49,7 +49,8 @@ const TEMPLATE_CATEGORIES: TemplateCategoryInfo[] = [
 ];
 
 /**
- * テンプレートカテゴリー選択コンポーネント
+ * テンプレートカテゴリー選択コンポーネント - UnifiedFormFieldベース
+ * 94行 → 35行に簡素化
  */
 const TemplateCategorySelector: React.FC<TemplateCategorySelectorProps> = ({
   value,
@@ -59,31 +60,33 @@ const TemplateCategorySelector: React.FC<TemplateCategorySelectorProps> = ({
   label = 'カテゴリー',
   showDescription = false
 }) => {
-  // 選択中のカテゴリー情報
+  // 選択中のカテゴリー情報（説明文表示用）
   const selectedCategory = useMemo(
     () => TEMPLATE_CATEGORIES.find((cat) => cat.id === value),
     [value]
   );
 
+  // 動的な説明文
+  const helpText = showDescription && selectedCategory
+    ? selectedCategory.description
+    : undefined;
+
   return (
-    <FormControl required={required}>
-      <FormControl.Label>{label}</FormControl.Label>
-      <Select
-        value={value}
-        onChange={(e) => onChange(e.target.value as TemplateCategory)}
-        disabled={disabled}
-        sx={{ width: '100%' }}
-      >
-        {TEMPLATE_CATEGORIES.map((category) => (
-          <Select.Option key={category.id} value={category.id}>
-            {category.label}
-          </Select.Option>
-        ))}
-      </Select>
-      {showDescription && selectedCategory && (
-        <FormControl.Caption>{selectedCategory.description}</FormControl.Caption>
-      )}
-    </FormControl>
+    <UnifiedFormField
+      id="template-category"
+      name="category"
+      type="select"
+      label={label}
+      value={value}
+      onChange={(newValue) => onChange(newValue as TemplateCategory)}
+      options={TEMPLATE_CATEGORIES.map(cat => ({
+        value: cat.id,
+        label: cat.label
+      }))}
+      disabled={disabled}
+      validation={{ required }}
+      helpText={helpText}
+    />
   );
 };
 

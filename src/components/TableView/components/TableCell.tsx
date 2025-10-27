@@ -2,6 +2,7 @@ import React from "react";
 import type { TableCellProps } from "../types";
 import {
   renderActionsCell,
+  renderEditCell,
   renderTitleCell,
   renderStatusCell,
   renderPriorityCell,
@@ -30,10 +31,14 @@ export const TableCell: React.FC<TableCellProps> = ({
   currentBoard,
   onStatusChange,
   onDeleteClick,
+  onEditClick,
 }) => {
   switch (columnId) {
     case "actions":
       return renderActionsCell(task, onDeleteClick);
+
+    case "edit":
+      return renderEditCell(task, onEditClick);
 
     case "title":
       return renderTitleCell(task);

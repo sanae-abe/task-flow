@@ -1,13 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import {
-  Box,
-  Heading,
-  Button,
-  TextInput,
-  Flash,
-  FormControl
-} from '@primer/react';
-import { PlusIcon, TrashIcon, GrabberIcon, ChevronUpIcon, ChevronDownIcon, CheckIcon } from '@primer/octicons-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Plus, Trash2, GripVertical, ChevronUp, ChevronDown, Check } from 'lucide-react';
 import {
   DndContext,
   closestCenter,
@@ -27,9 +21,10 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import type { DefaultColumnConfig } from '../../types/settings';
 import { loadSettings, updateDefaultColumns } from '../../utils/settingsStorage';
-import { useNotify } from '../../contexts/NotificationContext';
+import { useSonnerNotify } from '../../hooks/useSonnerNotify';
 import { v4 as uuidv4 } from 'uuid';
 import InlineMessage from '../shared/InlineMessage';
+import IconButton from '../shared/IconButton';
 
 // デバウンス機能
 const useDebounce = <T extends unknown[]>(callback: (...args: T) => void, delay: number) => {
@@ -56,7 +51,7 @@ interface SortableColumnItemProps {
   onUpdateName: (columnId: string, newName: string) => void;
   onMoveColumn: (columnId: string, direction: 'up' | 'down') => void;
   onDeleteColumn: (columnId: string) => void;
-  error?: string | null;
+  _error?: string | null;
 }
 
 const SortableColumnItem: React.FC<SortableColumnItemProps> = ({
@@ -66,7 +61,7 @@ const SortableColumnItem: React.FC<SortableColumnItemProps> = ({
   onUpdateName,
   onMoveColumn,
   onDeleteColumn,
-  error,
+  _error,
 }) => {
   const {
     attributes,
@@ -101,78 +96,60 @@ const SortableColumnItem: React.FC<SortableColumnItemProps> = ({
   };
 
   return (
-    <Box
+    <div
       ref={setNodeRef}
       style={style}
-      sx={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: 2,
-        p: 2,
-        mb: 2,
-        border: '1px solid',
-        borderColor: isDragging ? 'accent.emphasis' : 'border.default',
-        borderRadius: 2,
-        backgroundColor: isDragging ? 'canvas.inset' : 'canvas.subtle',
-        cursor: isDragging ? 'grabbing' : 'grab',
-      }}
+      className={`flex items-center gap-2 p-2 mb-3 border border-border rounded-lg ${
+        isDragging
+          ? 'border-primary bg-gray-100 cursor-grabbing'
+          : 'border-gray-300 bg-gray-50 cursor-grab'
+      }`}
     >
-      <Box
+      <div
+        // eslint-disable-next-line react/jsx-props-no-spreading
         {...attributes}
+        // eslint-disable-next-line react/jsx-props-no-spreading
         {...listeners}
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          cursor: 'grab',
-          '&:active': {
-            cursor: 'grabbing',
-          },
-        }}
+        className="flex items-center cursor-grab active:cursor-grabbing"
       >
-        <GrabberIcon size={16} />
-      </Box>
-      <div style={{ flex: 1 }}>
-        <TextInput
+        <GripVertical size={16} />
+      </div>
+      <div className="flex flex-col flex-1 gap-1">
+        <Input
           value={localName}
           onChange={handleInputChange}
           placeholder="カラム名"
-          sx={{ width: '100%' }}
+          className="w-full"
           aria-label={`カラム「${column.name}」の名前`}
         />
-        {error && (
-          <InlineMessage variant="critical" message={error} size="small" />
+        {_error && (
+          <InlineMessage variant="critical" message={_error} size="small" />
         )}
       </div>
-      <div style={{ display: 'flex', gap: "4px" }}>
-        <Button
-          variant="invisible"
-          size="small"
-          leadingVisual={ChevronUpIcon}
+      <div className="flex">
+        <IconButton
+          icon={ChevronUp}
+          size="icon"
           onClick={() => onMoveColumn(column.id, 'up')}
           disabled={index === 0}
-          aria-label={`${column.name}を上に移動`}
-          sx={{ px: 2 }}
+          ariaLabel={`${column.name}を上に移動`}
         />
-        <Button
-          variant="invisible"
-          size="small"
-          leadingVisual={ChevronDownIcon}
+        <IconButton
+          icon={ChevronDown}
+          size="icon"
           onClick={() => onMoveColumn(column.id, 'down')}
           disabled={index === totalColumns - 1}
-          aria-label={`${column.name}を下に移動`}
-          sx={{ px: 2 }}
+          ariaLabel={`${column.name}を下に移動`}
         />
-        <Button
-          variant="invisible"
-          size="small"
-          leadingVisual={TrashIcon}
+        <IconButton
+          size="icon"
+          icon={Trash2}
           onClick={() => onDeleteColumn(column.id)}
           disabled={totalColumns <= 1}
-          aria-label={`${column.name}を削除`}
-          sx={{ color: 'danger.fg' }}
+          ariaLabel={`${column.name}を削除`}
         />
       </div>
-    </Box>
+    </div>
   );
 };
 
@@ -182,15 +159,15 @@ export const BoardSettingsPanel: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
-  const [saveMessageType, setSaveMessageType] = useState<'success' | 'error' | null>(null);
+  const [saveMessageType, setSaveMessageType] = useState<'success' | '_error' | null>(null);
   const [addColumnError, setAddColumnError] = useState<string | null>(null);
   const [columnErrors, setColumnErrors] = useState<Record<string, string>>({});
   const [erroredColumnName, setErroredColumnName] = useState<string>('');
-  const notify = useNotify();
+  const notify = useSonnerNotify();
   const messageTimerRef = React.useRef<NodeJS.Timeout | null>(null);
 
   // メッセージ表示用の共通関数
-  const showMessage = useCallback((message: string, type: 'success' | 'error') => {
+  const showMessage = useCallback((message: string, type: 'success' | '_error') => {
     // 既存のタイマーをクリア
     if (messageTimerRef.current) {
       clearTimeout(messageTimerRef.current);
@@ -208,13 +185,13 @@ export const BoardSettingsPanel: React.FC = () => {
   }, []);
 
   // カラムエラー設定用の関数
-  const setColumnError = useCallback((columnId: string, error: string | null) => {
+  const setColumnError = useCallback((columnId: string, _error: string | null) => {
     setColumnErrors(prev => {
-      if (error === null) {
+      if (_error === null) {
         const { [columnId]: _, ...rest } = prev;
         return rest;
       }
-      return { ...prev, [columnId]: error };
+      return { ...prev, [columnId]: _error };
     });
   }, []);
 
@@ -229,17 +206,18 @@ export const BoardSettingsPanel: React.FC = () => {
   // カラムIDの配列を取得（memoized）
   const columnIds = useMemo(() => columns.map(col => col.id), [columns]);
 
-  // 設定読み込み
+  // 設定読み込み（初期化時のみ実行）
   useEffect(() => {
     try {
       const settings = loadSettings();
       setColumns(settings.defaultColumns);
-    } catch (error) {
-      notify.error('設定の読み込みに失敗しました');
+    } catch (_error) {
+      notify._error('設定の読み込みに失敗しました');
     } finally {
       setIsLoading(false);
     }
-  }, [notify]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // 初期化時のみ実行。notifyは安定した参照ではないため依存配列から除外
 
   // 自動保存機能
   useEffect(() => {
@@ -249,8 +227,8 @@ export const BoardSettingsPanel: React.FC = () => {
           updateDefaultColumns(columns);
           setHasUnsavedChanges(false);
           showMessage('設定を自動保存しました', 'success');
-        } catch (error) {
-          showMessage('自動保存に失敗しました', 'error');
+        } catch (_error) {
+          showMessage('自動保存に失敗しました', '_error');
         }
       }, 1000);
 
@@ -302,7 +280,7 @@ export const BoardSettingsPanel: React.FC = () => {
   // 設定保存
   const handleSave = useCallback(async () => {
     if (columns.length === 0) {
-      showMessage('最低1つのカラムが必要です', 'error');
+      showMessage('最低1つのカラムが必要です', '_error');
       return;
     }
 
@@ -310,8 +288,8 @@ export const BoardSettingsPanel: React.FC = () => {
       updateDefaultColumns(columns);
       setHasUnsavedChanges(false);
       showMessage('設定を保存しました', 'success');
-    } catch (error) {
-      showMessage('設定の保存に失敗しました', 'error');
+    } catch (_error) {
+      showMessage('設定の保存に失敗しました', '_error');
     }
   }, [columns, showMessage]);
 
@@ -356,7 +334,7 @@ export const BoardSettingsPanel: React.FC = () => {
   // カラム削除
   const handleDeleteColumn = useCallback((columnId: string) => {
     if (columns.length <= 1) {
-      notify.error('最低1つのカラムが必要です');
+      notify._error('最低1つのカラムが必要です');
       return;
     }
 
@@ -422,104 +400,95 @@ export const BoardSettingsPanel: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div style={{ padding: "12px" }}>
-        <Flash>設定を読み込み中...</Flash>
+      <div className="p-3">
+        <div className="bg-blue-50 border border-border border-blue-200 rounded-md p-3 text-blue-800">
+          設定を読み込み中...
+        </div>
       </div>
     );
   }
 
   return (
-    <div style={{ paddingBottom: "16px" }}>
-      <div style={{ marginBottom: "16px" }}>
-        <Heading sx={{ fontSize: 2, mb: 2 }}>デフォルトカラム設定</Heading>
-        <div style={{ color: 'var(--fgColor-muted)', fontSize: "14px" }}>
-          新しいボード作成時に使用されるデフォルトカラムを設定できます。<br />
-          既存のボードには影響しません。
+    <div className="p-3">
+      <h2 className="text-base font-bold m-0 mb-2">デフォルトカラム設定</h2>
+      <span className="text-sm text-zinc-700 mb-5 block">
+        新しいボードを作成する際のデフォルトカラムを設定できます。
+      </span>
+
+      {/* カラム追加フォーム */}
+      <div className="mb-4">
+        <div className="flex items-center gap-2 mb-2">
+          <Input
+            value={newColumnName}
+            onChange={(e) => setNewColumnName(e.target.value)}
+            placeholder="新しいカラム名"
+            className="flex-1"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                handleAddColumn();
+              }
+            }}
+            aria-label="新しいカラム名"
+          />
+          <IconButton
+            icon={Plus}
+            size="icon"
+            ariaLabel="カラムを追加"
+            onClick={handleAddColumn}
+            disabled={!newColumnName.trim()}
+            className="bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground w-10 h-10"
+          />
         </div>
+        {addColumnError && (
+          <InlineMessage variant="critical" message={addColumnError} size="small" />
+        )}
       </div>
 
-      <div style={{ marginBottom: "16px" }}>
-
-        {/* 現在のカラム一覧 */}
-        <div style={{ marginBottom: "20px" }}>
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
-          >
-            <SortableContext items={columnIds} strategy={verticalListSortingStrategy}>
-              {columns.map((column, index) => (
-                <SortableColumnItem
-                  key={column.id}
-                  column={column}
-                  index={index}
-                  totalColumns={columns.length}
-                  onUpdateName={handleUpdateColumnName}
-                  onMoveColumn={handleMoveColumn}
-                  onDeleteColumn={handleDeleteColumn}
-                  error={columnErrors[column.id] || null}
-                />
-              ))}
-            </SortableContext>
-          </DndContext>
-        </div>
-
-        {/* 新しいカラム追加 */}
-        <div style={{ marginBottom: "12px" }}>
-          <div style={{ marginBottom: "8px", fontSize: "14px", fontWeight: "bold" }}>新しいカラムを追加</div>
-          <FormControl>
-            <div style={{ display: "flex", gap: "8px", width: "100%" }}>
-              <TextInput
-                value={newColumnName}
-                onChange={(e) => setNewColumnName(e.target.value)}
-                placeholder="カラム名を入力"
-                sx={{ width: "100%" }}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    handleAddColumn();
-                  }
-                }}
-                aria-label="新しいカラム名"
-              />
-              <Button
-                variant="primary"
-                size="small"
-                leadingVisual={PlusIcon}
-                onClick={handleAddColumn}
-                aria-label="新しいカラムを追加"
-              >
-                追加
-              </Button>
-            </div>
-            {addColumnError && (
-              <InlineMessage variant="critical" message={addColumnError} size="small" />
-            )}
-          </FormControl>
-        </div>
-      </div>
+      {/* カラムリスト */}
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+      >
+        <SortableContext items={columnIds} strategy={verticalListSortingStrategy}>
+          {columns.map((column, index) => (
+            <SortableColumnItem
+              key={column.id}
+              column={column}
+              index={index}
+              totalColumns={columns.length}
+              onUpdateName={handleUpdateColumnName}
+              onMoveColumn={handleMoveColumn}
+              onDeleteColumn={handleDeleteColumn}
+              _error={columnErrors[column.id]}
+            />
+          ))}
+        </SortableContext>
+      </DndContext>
 
       {/* 保存ボタン */}
-      <div style={{ paddingTop: "12px", borderTop: "1px solid", borderColor: "var(--borderColor-default)" }}>
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", justifyContent: "center", gap: "8px" }}>
-          <Button
-            variant="primary"
-            leadingVisual={CheckIcon}
-            onClick={handleSave}
-          >
-            設定を保存
-          </Button>
-          <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-            {/* 未保存状態メッセージ */}
-            {hasUnsavedChanges ? (
-              <InlineMessage variant="warning" message="未保存の変更があります（1秒後に自動保存されます）" size="small" />
-            ) : (
-              saveMessage && (
-                <InlineMessage variant={saveMessageType === 'success' ? 'success' : 'critical'} message={saveMessage} size="small" />
-              )
-            )}
-          </div>
-        </div>
+      <div className="flex justify-end mt-4">
+        <Button
+          variant="default"
+          onClick={handleSave}
+          disabled={!hasUnsavedChanges || columns.length === 0}
+          className="gap-2"
+        >
+          <Check size={16} />
+          保存
+        </Button>
       </div>
+
+      {/* メッセージ表示 */}
+      {saveMessage && (
+        <div className="mb-4 flex justify-end mt-2">
+          <InlineMessage
+            variant={saveMessageType === 'success' ? 'success' : 'critical'}
+            message={saveMessage}
+            size="small"
+          />
+        </div>
+      )}
     </div>
   );
 };

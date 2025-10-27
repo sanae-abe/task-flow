@@ -1,10 +1,10 @@
-import { Text } from "@primer/react";
 import React, { useMemo } from "react";
 import DOMPurify from "dompurify";
 
 interface LinkifiedTextProps {
   children: string;
-  sx?: React.ComponentProps<typeof Text>['sx'];
+  className?: string;
+  style?: React.CSSProperties;
 }
 
 /**
@@ -12,7 +12,7 @@ interface LinkifiedTextProps {
  * リッチテキストエディタで作成されたHTMLコンテンツの表示に対応
  * DOMPurifyによるXSS攻撃からの保護機能付き
  */
-const LinkifiedText: React.FC<LinkifiedTextProps> = ({ children, sx }) => {
+const LinkifiedText: React.FC<LinkifiedTextProps> = ({ children, className = "", style = {} }) => {
   const processedContent = useMemo(() => {
     // URL自動リンク化を実行する関数（コード記述を除外）
     const linkifyUrls = (text: string) =>
@@ -72,6 +72,30 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({ children, sx }) => {
         },
       );
 
+    // <pre><code>構造の処理（リッチテキストエディタ由来）
+    const processPreCodeBlock = (html: string): string =>
+      html.replace(
+        /<pre([^>]*)><code([^>]*)>([\s\S]*?)<\/code><\/pre>/gi,
+        (_match, preAttributes, codeAttributes, content) => {
+          // ステップ1: エディタ由来の属性を削除
+          let cleanContent = content
+            .replace(/contenteditable="[^"]*"/gi, "")
+            .replace(/spellcheck="[^"]*"/gi, "");
+
+          // ステップ2: リッチテキストエディタの<br>タグを改行に変換
+          cleanContent = cleanContent.replace(/<br\s*\/?>/gi, "\n");
+
+          // ステップ3: HTMLタグをエスケープ（codeタグ内のコンテンツのみ）
+          const escapedContent = cleanContent
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/\{/g, "&#123;")
+            .replace(/\}/g, "&#125;");
+
+          return `<pre${preAttributes}><code${codeAttributes}>${escapedContent}</code></pre>`;
+        },
+      );
+
     const processBlockCode = (html: string): string =>
       html.replace(
         /<pre([^>]*)>([\s\S]*?)<\/pre>/gi,
@@ -115,7 +139,7 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({ children, sx }) => {
         return placeholder;
       });
 
-      // ステップ2: コードブロック（div+pre構造とpreタグとcodeタグ）を保護
+      // ステップ2: コードブロック（div+pre構造とpre+code構造とpreタグとcodeタグ）を保護
       const codeBlockMap = new Map<string, string>();
 
       // div+pre構造を保護（リッチテキストエディタ由来）
@@ -123,6 +147,16 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({ children, sx }) => {
         /<div[^>]*><pre(?:\s[^>]*)?>[\s\S]*?<\/pre><\/div>/gi,
         (match) => {
           const placeholder = `__DIV_PRE_BLOCK_PLACEHOLDER_${Math.random().toString(36).substring(2, 11)}__`;
+          codeBlockMap.set(placeholder, match);
+          return placeholder;
+        },
+      );
+
+      // pre+code構造を保護（リッチテキストエディタ由来、最優先）
+      content = content.replace(
+        /<pre(?:\s[^>]*)?><code(?:\s[^>]*)?>[\s\S]*?<\/code><\/pre>/gi,
+        (match) => {
+          const placeholder = `__PRE_CODE_BLOCK_PLACEHOLDER_${Math.random().toString(36).substring(2, 11)}__`;
           codeBlockMap.set(placeholder, match);
           return placeholder;
         },
@@ -158,6 +192,9 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({ children, sx }) => {
         if (originalCode.startsWith("<div")) {
           // div+pre構造のコードブロック処理
           processedCode = processDivPreCodeBlock(originalCode);
+        } else if (placeholder.includes("PRE_CODE_BLOCK")) {
+          // pre+code構造のコードブロック処理（最優先）
+          processedCode = processPreCodeBlock(originalCode);
         } else if (originalCode.startsWith("<pre")) {
           processedCode = processBlockCode(originalCode);
         } else if (originalCode.startsWith("<code")) {
@@ -178,6 +215,18 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({ children, sx }) => {
         /<div[^>]*><pre(?:\s[^>]*)?>[\s\S]*?<\/pre><\/div>/gi,
         (match) => {
           const placeholder = `__FINAL_DIV_PRE_BLOCK_${placeholderIndex}__`;
+          finalCodeBlocks.push(match);
+          finalPlaceholders.push(placeholder);
+          placeholderIndex++;
+          return placeholder;
+        },
+      );
+
+      // pre+code構造を一時的に保護（最優先）
+      content = content.replace(
+        /<pre(?:\s[^>]*)?><code(?:\s[^>]*)?>[\s\S]*?<\/code><\/pre>/gi,
+        (match) => {
+          const placeholder = `__FINAL_PRE_CODE_BLOCK_${placeholderIndex}__`;
           finalCodeBlocks.push(match);
           finalPlaceholders.push(placeholder);
           placeholderIndex++;
@@ -311,65 +360,14 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({ children, sx }) => {
     return sanitizedContent;
   }, [children]);
 
-  return (
-    <Text
-      sx={{
-        "& a": {
-          color: "accent.fg",
-          textDecoration: "none",
-          "&:hover": {
-            textDecoration: "underline",
-          },
-        },
-        "& code": {
-          backgroundColor: "#f6f8fa",
-          color: "#e01e5a",
-          padding: "2px 4px",
-          borderRadius: "var(--borderRadius-small)",
-          fontFamily: "mono",
-          fontSize: "0.875em",
-          border: "1px solid",
-          borderColor: "#d0d7de",
-        },
-        "& ul, & ol": {
-          margin: "8px 0",
-          paddingLeft: "24px",
-        },
-        "& li": {
-          margin: "4px 0",
-        },
+  const combinedStyle: React.CSSProperties = {
+    ...style,
+  };
 
-        "& pre": {
-          backgroundColor: "canvas.subtle",
-          color: "fg.default",
-          padding: "8px",
-          borderRadius: "6px",
-          fontFamily: "mono",
-          fontSize: "13px",
-          lineHeight: "1.45",
-          overflowX: "auto",
-          border: "1px solid",
-          borderColor: "border.default",
-          margin: "0 0 8px",
-          whiteSpace: "pre-wrap", // 改行を保持
-          wordBreak: "break-word", // 長い行の折り返し
-          "& code": {
-            backgroundColor: "transparent",
-            color: "inherit",
-            padding: 0,
-            border: "none",
-            whiteSpace: "pre-wrap", // コード内でも改行を保持
-            wordBreak: "break-word",
-          },
-        },
-        "& p": {
-          margin: "0 0 8px",
-          "&:last-child": {
-            margin: 0,
-          },
-        },
-        ...sx,
-      }}
+  return (
+    <span
+      className={`block prose prose-sm max-w-none text-foreground ${className} [&_p]:mb-[1em] [&_ul]:mb-[1em] [&_ol]:mb-[1em] [&_ul]:ml-[1em] [&_ol]:ml-[1em]] [&_ul]:list-disc [&_ol]:list-disc [&_a]:underline [&_a]:font-medium [&_pre>code]:!text-inherit [&_pre>code]:!border-0 [&_pre>code]:!p-0[&_pre>code]:!bg-transparent`}
+      style={combinedStyle}
       dangerouslySetInnerHTML={{ __html: processedContent }}
     />
   );

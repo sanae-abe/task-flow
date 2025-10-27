@@ -1,4 +1,4 @@
-import { Button } from '@primer/react';
+import { Button } from '@/components/ui/button';
 import { memo } from 'react';
 
 import type { DialogAction } from '../../../types/unified-dialog';
@@ -9,6 +9,20 @@ interface DialogActionsProps {
   /** レイアウトタイプ */
   layout?: 'standard' | 'split';
 }
+
+/**
+ * DialogActionのvariantをButtonのvariantにマッピングする
+ */
+const mapVariantToButton = (variant?: DialogAction['variant']) => {
+  switch (variant) {
+    case 'primary':
+      return 'default';
+    case 'danger':
+      return 'destructive';
+    default:
+      return variant;
+  }
+};
 
 /**
  * ダイアログアクションボタン群コンポーネント
@@ -24,42 +38,29 @@ const DialogActions = memo<DialogActionsProps>(({ actions, layout = 'standard' }
     const rightActions = actions.filter(action => action.position !== 'left');
 
     return (
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          gap: "8px",
-          width: '100%'
-        }}
-      >
-        <div style={{ display: 'flex', gap: "8px" }}>
+      <div className="flex justify-between gap-2 w-full">
+        <div className="flex gap-2">
           {leftActions.map((action, index) => (
             <Button
               key={index}
               onClick={action.onClick}
-              variant={action.variant ?? 'default'}
+              variant={mapVariantToButton(action.variant)}
               disabled={action.disabled}
-              leadingVisual={action.icon}
-              sx={{
-                color: action.variant === 'primary' ? 'fg.onEmphasis !important' : undefined
-              }}
             >
+              {action.icon && <span className="mr-2"><action.icon size={16} /></span>}
               {action.label}
             </Button>
           ))}
         </div>
-        <div style={{ display: 'flex', gap: "8px" }}>
+        <div className="flex gap-2">
           {rightActions.map((action, index) => (
             <Button
               key={index}
               onClick={action.onClick}
-              variant={action.variant ?? 'default'}
+              variant={mapVariantToButton(action.variant)}
               disabled={action.disabled}
-              leadingVisual={action.icon}
-              sx={{
-                color: action.variant === 'primary' ? 'fg.onEmphasis !important' : undefined
-              }}
             >
+              {action.icon && <span className="mr-2"><action.icon size={16} /></span>}
               {action.label}
             </Button>
           ))}
@@ -70,22 +71,19 @@ const DialogActions = memo<DialogActionsProps>(({ actions, layout = 'standard' }
 
   // 標準レイアウト（右揃え）
   return (
-    <>
+    <div className="flex justify-end gap-2">
       {actions.map((action, index) => (
         <Button
           key={index}
           onClick={action.onClick}
-          variant={action.variant ?? 'default'}
+          variant={mapVariantToButton(action.variant)}
           disabled={action.disabled}
-          leadingVisual={action.icon}
-          sx={{
-            color: action.variant === 'primary' ? 'fg.onEmphasis !important' : undefined
-          }}
         >
+          {action.icon && <span className="mr-2"><action.icon size={16} /></span>}
           {action.label}
         </Button>
       ))}
-    </>
+    </div>
   );
 });
 

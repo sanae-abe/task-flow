@@ -1,5 +1,5 @@
-import { PlusIcon } from "@primer/octicons-react";
-import { Text, Button } from "@primer/react";
+import { Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import React from "react";
 
 interface SubTaskHeaderProps {
@@ -15,25 +15,19 @@ const SubTaskHeader: React.FC<SubTaskHeaderProps> = ({
   isAdding,
   onStartAdding,
 }) => (
-  <div
-    style={{
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "space-between",
-      marginBottom: "8px",
-    }}
-  >
-    <Text sx={{ fontSize: 1, fontWeight: "700" }}>
+  <div className="flex items-center justify-between mb-2">
+    <h3 className="text-sm font-bold">
       サブタスク {totalCount > 0 && `(${completedCount}/${totalCount})`}
-    </Text>
+    </h3>
     {!isAdding && (
       <Button
         onClick={onStartAdding}
-        variant="invisible"
-        size="small"
-        leadingVisual={PlusIcon}
+        variant="ghost"
+        size="sm"
         aria-label="サブタスクを作成"
+        className="flex items-center gap-1"
       >
+        <Plus size={16} />
         追加
       </Button>
     )}

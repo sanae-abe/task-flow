@@ -1,6 +1,6 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { useDraggable } from "@dnd-kit/core";
-import { SyncIcon } from "@primer/octicons-react";
+import { RotateCcw } from "lucide-react";
 
 import type { Task } from "../../../types";
 import {
@@ -25,30 +25,20 @@ const CalendarTask: React.FC<CalendarTaskProps> = React.memo(
       disabled: isVirtual, // 仮想タスクはドラッグ無効
     });
 
-    const taskItemStyles = useMemo(
-      () => ({
-        fontSize: "13px",
-        padding: "2px 8px",
-        borderRadius: "6px",
-        backgroundColor: isVirtual
-          ? "var(--bgColor-neutral-muted)"
-          : "var(--bgColor-accent-muted)",
-        color: isVirtual ? "var(--fgColor-muted)" : "var(--fgColor-accent)",
-        cursor: isVirtual ? "pointer" : isDragging ? "grabbing" : "grab",
-        whiteSpace: "nowrap" as const,
-        overflow: "hidden",
-        textOverflow: "ellipsis",
-        opacity: isDragging ? 0.5 : isVirtual ? 0.7 : 1,
-        transition: "opacity 200ms, transform 200ms",
-        border: isVirtual ? "1px dashed var(--borderColor-muted)" : "none",
-      }),
-      [isDragging, isVirtual],
-    );
+    // Dynamic className generation for task item
+    const taskItemClassName = `
+      text-[13px] px-2 py-0.5 rounded-md whitespace-nowrap overflow-hidden text-ellipsis transition-opacity duration-200
+      ${isVirtual
+        ? "bg-gray-200 text-zinc-500 border border-border border-dashed border-gray-300 opacity-70 cursor-pointer"
+        : "bg-blue-100 text-primary border-none cursor-grab"
+      }
+      ${isDragging && !isVirtual ? "opacity-50 cursor-grabbing" : ""}
+    `.trim().replace(/\s+/g, ' ');
 
     return (
       <div
         ref={setNodeRef}
-        style={taskItemStyles}
+        className={taskItemClassName}
         // 仮想タスクの場合はドラッグ関連の属性を無効化
         // eslint-disable-next-line react/jsx-props-no-spreading
         {...(isVirtual ? {} : listeners)}
@@ -68,9 +58,9 @@ const CalendarTask: React.FC<CalendarTaskProps> = React.memo(
           }
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-          {task.recurrence?.enabled && <SyncIcon size={10} />}
-          <span style={{ flex: 1, minWidth: 0 }}>{task.title}</span>
+        <div className="flex items-center gap-1">
+          {task.recurrence?.enabled && <RotateCcw size={10} />}
+          <span className="flex-1 min-w-0">{task.title}</span>
         </div>
       </div>
     );

@@ -5,7 +5,8 @@
  */
 
 import React, { useCallback } from "react";
-import { Checkbox } from "@primer/react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { cn } from '@/lib/utils';
 
 import type { CheckboxFieldProps } from "./types";
 
@@ -25,15 +26,15 @@ export const CheckboxField: React.FC<CheckboxFieldProps> = React.memo(
     onFocus,
     disabled = false,
     validation,
-    error,
+    _error,
     touched,
   }) => {
     /**
      * チェック状態変更ハンドラー
      */
     const handleChange = useCallback(
-      (e: React.ChangeEvent<HTMLInputElement>) => {
-        onChange(e.target.checked);
+      (checked: boolean) => {
+        onChange(checked);
       },
       [onChange],
     );
@@ -57,19 +58,23 @@ export const CheckboxField: React.FC<CheckboxFieldProps> = React.memo(
     }, [onFocus]);
 
     // エラー状態の判定
-    const hasError = Boolean(touched && error);
+    const hasError = Boolean(touched && _error);
 
     return (
       <Checkbox
+        id={id}
         name={name}
         checked={Boolean(value)}
-        onChange={handleChange}
+        onCheckedChange={handleChange}
         onBlur={handleBlur}
         onFocus={handleFocus}
         disabled={disabled}
+        className={cn(
+          hasError && "border-destructive focus:border-destructive focus:ring-destructive"
+        )}
         aria-required={validation?.required}
         aria-invalid={hasError}
-        aria-describedby={hasError ? `${id}-error` : undefined}
+        aria-describedby={hasError ? `${id}-_error` : undefined}
       />
     );
   },

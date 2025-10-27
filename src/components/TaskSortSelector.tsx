@@ -1,5 +1,12 @@
-import { SortAscIcon } from "@primer/octicons-react";
-import { ActionMenu, ActionList, Button } from "@primer/react";
+import { ArrowUpDown } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem
+} from "@/components/ui/dropdown-menu";
 import React from "react";
 
 import type { SortOption, SortConfig } from "../types";
@@ -27,32 +34,33 @@ const TaskSortSelector: React.FC<TaskSortSelectorProps> = ({
   );
 
   return (
-    <ActionMenu>
-      <ActionMenu.Anchor>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
         <Button
-          variant="invisible"
-          size="small"
-          leadingVisual={SortAscIcon}
+          variant="ghost"
+          size="sm"
           aria-label={`現在のソート: ${currentSortConfig?.label ?? "手動"}`}
+          className="flex items-center gap-1 text-zinc-700 text-xs"
         >
+          <ArrowUpDown size={16} />
           {currentSortConfig?.label ?? "手動"}
         </Button>
-      </ActionMenu.Anchor>
+      </DropdownMenuTrigger>
 
-      <ActionMenu.Overlay>
-        <ActionList selectionVariant="single">
+      <DropdownMenuContent align="end">
+        <DropdownMenuRadioGroup value={currentSort} onValueChange={(value) => onSortChange(value as SortOption)}>
           {SORT_OPTIONS.map((option) => (
-            <ActionList.Item
+            <DropdownMenuRadioItem
               key={option.option}
-              selected={currentSort === option.option}
-              onSelect={() => onSortChange(option.option)}
+              value={option.option}
+              className={currentSort === option.option ? "bg-gray-100" : ""}
             >
               {option.label}
-            </ActionList.Item>
+            </DropdownMenuRadioItem>
           ))}
-        </ActionList>
-      </ActionMenu.Overlay>
-    </ActionMenu>
+        </DropdownMenuRadioGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };
 

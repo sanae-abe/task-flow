@@ -1,5 +1,7 @@
-import { ActionList } from "@primer/react";
-import { CheckIcon } from "@primer/octicons-react";
+import {
+  DropdownMenuCheckboxItem,
+  DropdownMenuLabel
+ } from "@/components/ui/dropdown-menu";
 import React from "react";
 
 import type { Label } from "../../types";
@@ -21,26 +23,21 @@ export const CurrentBoardLabelSection: React.FC<CurrentBoardLabelSectionProps> =
   }
 
   return (
-    <ActionList.Group title="現在のボード">
+    <>
+      <DropdownMenuLabel>現在のボード</DropdownMenuLabel>
       {labels.map((label) => {
         const isSelected = selectedLabelIds.has(label.id);
         return (
-          <ActionList.Item
+          <DropdownMenuCheckboxItem
             key={label.id}
-            onSelect={() => onToggleLabel(label)}
+            checked={isSelected}
+            onCheckedChange={() => onToggleLabel(label)}
           >
-            <ActionList.LeadingVisual>
-              <LabelColorCircle color={label.color} />
-            </ActionList.LeadingVisual>
-            {label.name}
-            {isSelected && (
-              <ActionList.TrailingVisual>
-                <CheckIcon size={16} />
-              </ActionList.TrailingVisual>
-            )}
-          </ActionList.Item>
+            <LabelColorCircle color={label.color} />
+            <span className="ml-2 flex-1">{label.name}</span>
+          </DropdownMenuCheckboxItem>
         );
       })}
-    </ActionList.Group>
+    </>
   );
 };

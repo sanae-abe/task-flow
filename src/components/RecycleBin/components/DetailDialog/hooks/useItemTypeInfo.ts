@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
 import {
-  ProjectIcon,
-  ColumnsIcon,
-  TasklistIcon,
-} from '@primer/octicons-react';
+  FolderKanban,
+  Columns,
+  ListTodo,
+} from 'lucide-react';
 import type { RecycleBinItem } from '../../../../../types/recycleBin';
 import { getItemTypeColors } from '../styles/designTokens';
 
@@ -18,28 +18,28 @@ export const useItemTypeInfo = (type: RecycleBinItem['type']) => useMemo(() => {
           return {
             typeText: 'タスク',
             typeTextEn: 'Task',
-            Icon: TasklistIcon,
+            Icon: ListTodo,
             description: 'タスクアイテム',
           };
         case 'board':
           return {
             typeText: 'ボード',
             typeTextEn: 'Board',
-            Icon: ProjectIcon,
+            Icon: FolderKanban,
             description: 'ボードアイテム',
           };
         case 'column':
           return {
             typeText: 'カラム',
             typeTextEn: 'Column',
-            Icon: ColumnsIcon,
+            Icon: Columns,
             description: 'カラムアイテム',
           };
         default:
           return {
             typeText: 'アイテム',
             typeTextEn: 'Item',
-            Icon: TasklistIcon,
+            Icon: ListTodo,
             description: '不明なアイテム',
           };
       }
@@ -69,13 +69,19 @@ export const useItemTypeInfo = (type: RecycleBinItem['type']) => useMemo(() => {
       iconProps: {
         size: 20,
         'aria-hidden': true,
-        style: { flexShrink: 0 },
+        style: { 
+          flexShrink: 0,
+          color: colors.icon,
+        },
       },
       // Hero Sectionアイコン用（大きめ）
       heroIconProps: {
         size: 24,
         'aria-hidden': true,
-        style: { flexShrink: 0 },
+        style: { 
+          flexShrink: 0,
+          color: colors.icon,
+        },
       },
     };
   }, [type]);

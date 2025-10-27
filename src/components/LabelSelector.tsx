@@ -1,5 +1,10 @@
-import { PlusIcon, TagIcon } from "@primer/octicons-react";
-import { Button, Box, ActionMenu, ActionList } from "@primer/react";
+import { Plus, Tag } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { memo } from "react";
 
 import type { Label } from "../types";
@@ -9,7 +14,6 @@ import {
   EMPTY_LABELS_MESSAGE,
   SELECT_LABEL_TEXT,
   ADD_LABEL_TEXT,
-  LABEL_SELECTOR_STYLES,
 } from "./LabelSelector/constants";
 import { CurrentBoardLabelSection } from "./LabelSelector/CurrentBoardLabelSection";
 import { OtherBoardLabelSection } from "./LabelSelector/OtherBoardLabelSection";
@@ -38,7 +42,7 @@ const LabelSelector = memo<LabelSelectorProps>(
     } = useLabelManagement({ selectedLabels, onLabelsChange });
 
     return (
-      <Box sx={LABEL_SELECTOR_STYLES.container}>
+      <div className="mt-2">
         {/* 選択されたラベルを表示 */}
         <SelectedLabelsDisplay
           selectedLabels={selectedLabels}
@@ -46,50 +50,52 @@ const LabelSelector = memo<LabelSelectorProps>(
         />
 
         {/* ラベル選択・追加のアクションメニュー */}
-        <Box sx={LABEL_SELECTOR_STYLES.menuContainer}>
+        <div className="flex gap-2 items-center">
           {/* ラベル選択 */}
-          <ActionMenu>
-            <ActionMenu.Button
-              leadingVisual={TagIcon}
-              sx={LABEL_SELECTOR_STYLES.buttonHover}
-              aria-label="ラベル選択メニューを開く"
-            >
-              {SELECT_LABEL_TEXT}
-            </ActionMenu.Button>
-            <ActionMenu.Overlay>
-              <ActionList>
-                {/* 現在のボードのラベル */}
-                <CurrentBoardLabelSection
-                  labels={currentBoardLabels}
-                  selectedLabelIds={selectedLabelIds}
-                  onToggleLabel={toggleLabel}
-                />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                className="hover:text-foreground hover:bg-gray-100"
+                aria-label="ラベル選択メニューを開く"
+              >
+                <Tag size={16} className="mr-2" />
+                {SELECT_LABEL_TEXT}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              {/* 現在のボードのラベル */}
+              <CurrentBoardLabelSection
+                labels={currentBoardLabels}
+                selectedLabelIds={selectedLabelIds}
+                onToggleLabel={toggleLabel}
+              />
 
-                {/* 他のボードのラベル */}
-                <OtherBoardLabelSection
-                  labels={otherBoardLabels}
-                  onCopyAndSelectLabel={handleCopyAndSelectLabel}
-                />
+              {/* 他のボードのラベル */}
+              <OtherBoardLabelSection
+                labels={otherBoardLabels}
+                onCopyAndSelectLabel={handleCopyAndSelectLabel}
+              />
 
-                {allLabels.length === 0 && (
-                  <ActionList.Item disabled>
-                    {EMPTY_LABELS_MESSAGE}
-                  </ActionList.Item>
-                )}
-              </ActionList>
-            </ActionMenu.Overlay>
-          </ActionMenu>
+              {allLabels.length === 0 && (
+                <div className="px-2 py-1.5 text-sm text-muted-foreground">
+                  {EMPTY_LABELS_MESSAGE}
+                </div>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
 
           {/* ラベル追加 */}
           <Button
-            leadingVisual={PlusIcon}
+            variant="outline"
             onClick={handleAddDialogOpen}
-            sx={LABEL_SELECTOR_STYLES.buttonHover}
+            className="hover:text-foreground hover:bg-gray-100"
             aria-label="新しいラベルを作成"
           >
+            <Plus size={16} className="mr-2" />
             {ADD_LABEL_TEXT}
           </Button>
-        </Box>
+        </div>
 
         {/* ラベル追加ダイアログ */}
         <LabelFormDialog
@@ -98,7 +104,7 @@ const LabelSelector = memo<LabelSelectorProps>(
           onClose={handleAddDialogClose}
           onSave={handleLabelCreated}
         />
-      </Box>
+      </div>
     );
   },
 );

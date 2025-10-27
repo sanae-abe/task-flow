@@ -12,7 +12,7 @@ export {
   isTaskWithColumn,
   getPriorityText,
   getCompletionRate,
-  getDateColor,
+  getDateColorClass,
 } from "./utils";
 
 // 型定義

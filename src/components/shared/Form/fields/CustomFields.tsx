@@ -7,7 +7,7 @@
 import React, { useCallback } from "react";
 
 import LabelSelector from "../../../LabelSelector";
-import ColorSelector from "../../../ColorSelector";
+import CircleColorPicker from "../../../CircleColorPicker";
 import FileUploader from "../../../FileUploader";
 import RecurrenceSelector from "../../../RecurrenceSelector";
 import type { BaseFieldProps } from "./types";
@@ -83,7 +83,7 @@ export const ColorSelectorField: React.FC<ColorSelectorFieldProps> = React.memo(
     );
 
     return (
-      <ColorSelector
+      <CircleColorPicker
         selectedColor={String(value || "default")}
         onColorSelect={handleColorSelect}
       />

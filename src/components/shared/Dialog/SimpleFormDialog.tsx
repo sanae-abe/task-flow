@@ -44,7 +44,7 @@ const SimpleFormDialog = memo<SimpleFormDialogProps>(({
     {
       label: 'キャンセル',
       onClick: onCancel,
-      variant: 'default' as const
+      variant: 'outline' as const
     },
     {
       label: saveText,

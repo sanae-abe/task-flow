@@ -1,5 +1,4 @@
 import React from "react";
-import { Text } from "@primer/react";
 import type { RecurrenceConfig } from "../types";
 import { getRecurrenceDescription } from "../../../utils/recurrence";
 
@@ -13,18 +12,10 @@ const RecurrencePreview: React.FC<RecurrencePreviewProps> = ({ config }) => {
   }
 
   return (
-    <div
-      style={{
-        marginTop: "20px",
-        padding: "8px",
-        background: "var(--bgColor-muted)",
-        borderRadius: "var(--borderRadius-medium)",
-        border: "1px solid var(--borderColor-muted)",
-      }}
-    >
-      <Text sx={{ fontSize: 0, color: "fg.muted" }}>
+    <div className="mt-5 p-2 bg-neutral-100 rounded-md border border-border">
+      <span className="text-sm">
         設定内容: {getRecurrenceDescription(config)}
-      </Text>
+      </span>
     </div>
   );
 };

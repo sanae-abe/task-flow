@@ -1,4 +1,3 @@
-import { Text } from '@primer/react';
 import { memo } from 'react';
 
 import type { ConfirmDialogProps } from '../../../types/unified-dialog';
@@ -7,7 +6,7 @@ import UnifiedDialog from './UnifiedDialog';
 
 /**
  * 確認ダイアログコンポーネント
- * 
+ *
  * 危険な操作や重要な確認が必要な場合に使用します。
  * Enterキーによる誤操作を防止し、安全な操作を促します。
  */
@@ -19,14 +18,14 @@ const ConfirmDialog = memo<ConfirmDialogProps>(({
   onCancel,
   confirmText = '確認',
   cancelText = 'キャンセル',
-  confirmVariant = 'primary',
+  confirmVariant = 'default',
   ...dialogProps
 }) => {
   const actions = [
     {
       label: cancelText,
       onClick: onCancel,
-      variant: 'default' as const
+      variant: 'outline' as const
     },
     {
       label: confirmText,
@@ -47,13 +46,9 @@ const ConfirmDialog = memo<ConfirmDialogProps>(({
       closeOnBackdropClick
     >
       {message && (
-        <Text sx={{ 
-          color: 'fg.muted', 
-          display: 'block', 
-          lineHeight: 1.5 
-        }}>
+        <p className="leading-6 text-sm">
           {message}
-        </Text>
+        </p>
       )}
     </UnifiedDialog>
   );

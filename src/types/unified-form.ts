@@ -72,7 +72,7 @@ export interface FormState {
 // フォームアクション
 export type FormAction =
   | { type: "SET_FIELD_VALUE"; fieldId: string; value: unknown }
-  | { type: "SET_FIELD_ERROR"; fieldId: string; error: string | null }
+  | { type: "SET_FIELD_ERROR"; fieldId: string; _error: string | null }
   | { type: "SET_FIELD_TOUCHED"; fieldId: string; touched: boolean }
   | { type: "SET_SUBMITTING"; isSubmitting: boolean }
   | { type: "SET_ERRORS"; errors: FormError[] }
@@ -156,7 +156,7 @@ export interface TaskFormConfig {
 export interface UseFormReturn {
   state: FormState;
   setValue: (fieldId: string, value: unknown) => void;
-  setError: (fieldId: string, error: string | null) => void;
+  setError: (fieldId: string, _error: string | null) => void;
   setTouched: (fieldId: string, touched: boolean) => void;
   validateField: (fieldId: string) => boolean;
   validateForm: () => boolean;

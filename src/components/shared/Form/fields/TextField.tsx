@@ -5,13 +5,12 @@
  */
 
 import React, { useCallback } from "react";
-import { TextInput } from "@primer/react";
+import { Input } from "@/components/ui/input";
+import { cn } from '@/lib/utils';
 
 import {
   toStringValue,
-  getValidationStatus,
 } from "../../../../utils/formHelpers";
-import { UNIFIED_FORM_STYLES } from "../styles";
 import type { TextFieldProps } from "./types";
 
 /**
@@ -34,9 +33,9 @@ export const TextField: React.FC<TextFieldProps> = React.memo(
     autoFocus = false,
     disabled = false,
     validation,
-    error,
+    _error,
     touched,
-    sx,
+    style,
     step,
     min,
     max,
@@ -82,11 +81,11 @@ export const TextField: React.FC<TextFieldProps> = React.memo(
     }, [onFocus]);
 
     // エラー状態の判定
-    const hasError = Boolean(touched && error);
-    const validationStatus = getValidationStatus(hasError);
+    const hasError = Boolean(touched && _error);
 
     return (
-      <TextInput
+      <Input
+        id={id}
         name={name}
         type={type}
         value={toStringValue(value)}
@@ -97,11 +96,13 @@ export const TextField: React.FC<TextFieldProps> = React.memo(
         placeholder={placeholder}
         autoFocus={autoFocus}
         disabled={disabled}
-        sx={{ ...UNIFIED_FORM_STYLES.input, ...sx }}
-        validationStatus={validationStatus}
+        className={cn(
+          hasError && "border-destructive focus:border-destructive focus:ring-destructive"
+        )}
+        style={style ? (style as React.CSSProperties) : undefined}
         aria-required={validation?.required}
         aria-invalid={hasError}
-        aria-describedby={hasError ? `${id}-error` : undefined}
+        aria-describedby={hasError ? `${id}-_error` : undefined}
         {...(step ? { step } : {})}
         {...(min ? { min } : {})}
         {...(max ? { max } : {})}

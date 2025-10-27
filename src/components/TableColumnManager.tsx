@@ -1,22 +1,37 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
-  Text,
-  IconButton,
-  ActionMenu,
-  ActionList,
-  Button,
-  FormControl,
-  TextInput,
-  Dialog,
-} from "@primer/react";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuCheckboxItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+  DropdownMenuGroup,
+  DropdownMenuLabel
+} from "@/components/ui/dropdown-menu";
 import {
-  GearIcon,
-  TrashIcon,
-  GrabberIcon,
-  CheckIcon,
-} from "@primer/octicons-react";
+  Settings,
+  Trash2,
+  GripVertical,
+  Eye,
+  EyeOff,
+  ChevronUp,
+  ChevronDown
+} from "lucide-react";
 
 import { useTableColumns } from "../contexts/TableColumnsContext";
+import UnifiedDialog from "./shared/Dialog/UnifiedDialog";
+import { IconButton, InlineMessage } from "./shared";
+import { cn } from '@/lib/utils';
+
+interface TempColumn {
+  id: string;
+  label: string;
+  visible: boolean;
+  width: string;
+}
 
 const TableColumnManager: React.FC = () => {
   const {
@@ -32,31 +47,134 @@ const TableColumnManager: React.FC = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [draggedColumnId, setDraggedColumnId] = useState<string | null>(null);
 
-  const handleWidthChange = useCallback(
-    (columnId: string, newWidth: string) => {
-      // 空文字列は許可
-      if (newWidth === "") {
-        updateColumnWidth(columnId, newWidth);
-        return;
-      }
+  // 一時的な状態管理
+  const [tempColumns, setTempColumns] = useState<TempColumn[]>([]);
+  const [tempColumnOrder, setTempColumnOrder] = useState<string[]>([]);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
+  // ダイアログが開かれた時に一時的な状態を初期化
+  useEffect(() => {
+    if (isSettingsOpen) {
+      setTempColumns(columns.map(col => ({ ...col })));
+      setTempColumnOrder([...columnOrder]);
+      setHasUnsavedChanges(false);
+    }
+  }, [isSettingsOpen, columns, columnOrder]);
+
+  // 一時的な状態を操作する関数群
+  const handleTempToggleVisibility = useCallback((columnId: string) => {
+    setTempColumns(prev =>
+      prev.map(col =>
+        col.id === columnId ? { ...col, visible: !col.visible } : col
+      )
+    );
+    setHasUnsavedChanges(true);
+  }, []);
+
+  const handleTempWidthChange = useCallback((columnId: string, newWidth: string) => {
+    let formattedWidth = newWidth;
+
+    // 空文字列でない場合はバリデーション
+    if (newWidth !== "") {
       // pxを削除して数値のみを取得
       const numericValue = parseInt(newWidth.replace(/px$/, ""), 10);
 
       // 50px～1000pxの範囲内かチェック
       if (!isNaN(numericValue) && numericValue >= 50 && numericValue <= 1000) {
-        // px単位で保存
-        const formattedWidth = `${numericValue}px`;
-        updateColumnWidth(columnId, formattedWidth);
+        formattedWidth = `${numericValue}px`;
       } else if (!isNaN(numericValue)) {
         // 範囲外の場合は最小値/最大値に調整
         const clampedValue = Math.max(50, Math.min(1000, numericValue));
-        const formattedWidth = `${clampedValue}px`;
-        updateColumnWidth(columnId, formattedWidth);
+        formattedWidth = `${clampedValue}px`;
       }
-    },
-    [updateColumnWidth],
-  );
+    }
+
+    setTempColumns(prev =>
+      prev.map(col =>
+        col.id === columnId ? { ...col, width: formattedWidth } : col
+      )
+    );
+    setHasUnsavedChanges(true);
+  }, []);
+
+  const handleTempReorderColumns = useCallback((newOrder: string[]) => {
+    setTempColumnOrder(newOrder);
+    setHasUnsavedChanges(true);
+  }, []);
+
+  const handleTempRemoveColumn = useCallback((columnId: string) => {
+    setTempColumns(prev => prev.filter(col => col.id !== columnId));
+    setTempColumnOrder(prev => prev.filter(id => id !== columnId));
+    setHasUnsavedChanges(true);
+  }, []);
+
+  // 上下移動のハンドラー関数
+  const handleMoveUp = useCallback((columnId: string) => {
+    const currentIndex = tempColumnOrder.indexOf(columnId);
+    if (currentIndex > 0 && currentIndex < tempColumnOrder.length) {
+      const newOrder = [...tempColumnOrder];
+      // 現在のアイテムと前のアイテムを入れ替え
+      const prevItem = newOrder[currentIndex - 1];
+      const currentItem = newOrder[currentIndex];
+      if (prevItem !== undefined && currentItem !== undefined) {
+        newOrder[currentIndex - 1] = currentItem;
+        newOrder[currentIndex] = prevItem;
+        handleTempReorderColumns(newOrder);
+      }
+    }
+  }, [tempColumnOrder, handleTempReorderColumns]);
+
+  const handleMoveDown = useCallback((columnId: string) => {
+    const currentIndex = tempColumnOrder.indexOf(columnId);
+    if (currentIndex >= 0 && currentIndex < tempColumnOrder.length - 1) {
+      const newOrder = [...tempColumnOrder];
+      // 現在のアイテムと次のアイテムを入れ替え
+      const currentItem = newOrder[currentIndex];
+      const nextItem = newOrder[currentIndex + 1];
+      if (currentItem !== undefined && nextItem !== undefined) {
+        newOrder[currentIndex] = nextItem;
+        newOrder[currentIndex + 1] = currentItem;
+        handleTempReorderColumns(newOrder);
+      }
+    }
+  }, [tempColumnOrder, handleTempReorderColumns]);
+
+  // 保存処理
+  const handleSave = useCallback(() => {
+    // 表示状態の変更を適用
+    tempColumns.forEach(tempCol => {
+      const originalCol = columns.find(col => col.id === tempCol.id);
+      if (originalCol && originalCol.visible !== tempCol.visible) {
+        toggleColumnVisibility(tempCol.id);
+      }
+      if (originalCol && originalCol.width !== tempCol.width) {
+        updateColumnWidth(tempCol.id, tempCol.width);
+      }
+    });
+
+    // カラム順序の変更を適用
+    if (JSON.stringify(columnOrder) !== JSON.stringify(tempColumnOrder)) {
+      reorderColumns(tempColumnOrder);
+    }
+
+    // 削除されたカラムを処理
+    const removedColumns = columns.filter(col =>
+      !tempColumns.some(tempCol => tempCol.id === col.id)
+    );
+    removedColumns.forEach(col => removeColumn(col.id));
+
+    setHasUnsavedChanges(false);
+    setIsSettingsOpen(false);
+  }, [tempColumns, tempColumnOrder, columns, columnOrder, toggleColumnVisibility, updateColumnWidth, reorderColumns, removeColumn]);
+
+  // キャンセル処理
+  const handleCancel = useCallback(() => {
+    setTempColumns([]);
+    setTempColumnOrder([]);
+    setHasUnsavedChanges(false);
+    setIsSettingsOpen(false);
+  }, []);
+
 
   const isCustomColumn = useCallback(
     (columnId: string) => columnId.startsWith("custom-"),
@@ -79,7 +197,7 @@ const TableColumnManager: React.FC = () => {
     e.dataTransfer.dropEffect = "move";
   }, []);
 
-  // ドロップ
+  // ドロップ（詳細設定ダイアログ用）
   const handleDrop = useCallback(
     (e: React.DragEvent, targetColumnId: string) => {
       e.preventDefault();
@@ -89,7 +207,7 @@ const TableColumnManager: React.FC = () => {
         return;
       }
 
-      const currentOrder = [...columnOrder];
+      const currentOrder = [...tempColumnOrder];
       const draggedIndex = currentOrder.indexOf(draggedColumnId);
       const targetIndex = currentOrder.indexOf(targetColumnId);
 
@@ -102,10 +220,10 @@ const TableColumnManager: React.FC = () => {
       currentOrder.splice(draggedIndex, 1);
       currentOrder.splice(targetIndex, 0, draggedColumnId);
 
-      reorderColumns(currentOrder);
+      handleTempReorderColumns(currentOrder);
       setDraggedColumnId(null);
     },
-    [draggedColumnId, columnOrder, reorderColumns],
+    [draggedColumnId, tempColumnOrder, handleTempReorderColumns],
   );
 
   // ドラッグ終了
@@ -115,156 +233,188 @@ const TableColumnManager: React.FC = () => {
 
   return (
     <>
-      <ActionMenu>
-        <ActionMenu.Anchor>
-          <IconButton
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant="ghost"
+            size="sm"
             aria-label="カラム詳細設定"
-            icon={GearIcon}
-            variant="invisible"
-            size="small"
-          />
-        </ActionMenu.Anchor>
-        <ActionMenu.Overlay>
-          <ActionList>
-            <ActionList.Group title="表示カラム">
-              {columns.map((column) => (
-                <ActionList.Item
+            className="p-1 h-auto min-w-0"
+          >
+            <Settings size={16} />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="w-64 max-h-80 overflow-y-auto">
+          <DropdownMenuGroup>
+            <DropdownMenuLabel>
+              表示カラム
+            </DropdownMenuLabel>
+            <div className="max-h-48 overflow-y-auto">
+              {(isSettingsOpen ? tempColumns : columns).map((column) => (
+                <DropdownMenuCheckboxItem
+                  checked={column.visible}
                   key={column.id}
-                  onSelect={() => toggleColumnVisibility(column.id)}
-                >
-                  <ActionList.LeadingVisual>
-                    <div
-                      style={{
-                        color: column.visible ? "inherit" : "white",
-                      }}
-                    >
-                      <CheckIcon />
-                    </div>
-                  </ActionList.LeadingVisual>
-                  {column.label}
-                </ActionList.Item>
-              ))}
-            </ActionList.Group>
-            <ActionList.Divider />
-            <ActionList.Item onSelect={() => setIsSettingsOpen(true)}>
-              <ActionList.LeadingVisual>
-                <GearIcon />
-              </ActionList.LeadingVisual>
-              詳細設定
-            </ActionList.Item>
-            <ActionList.Divider />
-            <ActionList.Item onSelect={resetToDefaults} variant="danger">
-              デフォルトに戻す
-            </ActionList.Item>
-          </ActionList>
-        </ActionMenu.Overlay>
-      </ActionMenu>
-
-      {/* 詳細設定ダイアログ */}
-      {isSettingsOpen && (
-        <Dialog
-          title="カラム詳細設定"
-          onClose={() => setIsSettingsOpen(false)}
-          aria-labelledby="column-settings-title"
-        >
-          <div style={{ marginBottom: "20px", color: "fg.muted" }}>
-            カラムをドラッグして並び替え、幅の調整ができます。幅は50px〜1000pxの範囲で入力してください。
-          </div>
-
-          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-            {columnOrder.map((columnId) => {
-              const column = columns.find((col) => col.id === columnId);
-              if (!column) {
-                return null;
-              }
-
-              const isDragging = draggedColumnId === column.id;
-
-              return (
-                <div
-                  key={column.id}
-                  draggable
-                  onDragStart={(e: React.DragEvent) =>
-                    handleDragStart(e, column.id)
-                  }
-                  onDragOver={handleDragOver}
-                  onDrop={(e: React.DragEvent) => handleDrop(e, column.id)}
-                  onDragEnd={handleDragEnd}
-                  style={{
-                    display: "flex",
-                    padding: "4px 0",
-                    alignItems: "center",
-                    border: "1px solid",
-                    borderColor: isDragging
-                      ? "var(--borderColor-accent-emphasis)"
-                      : "var(--borderColor-default)",
-                    borderRadius: "var(--borderRadius-medium)",
-                    background: column.visible
-                      ? "var(--bgColor-default)"
-                      : "var(--bgColor-muted)",
-                    opacity: isDragging ? 0.5 : 1,
-                    cursor: "move",
-                    transition: "all 0.2s ease",
+                  onCheckedChange={() => {
+                    // e.preventDefault(); // メニューが閉じるのを防ぐ
+                    if (isSettingsOpen) {
+                      handleTempToggleVisibility(column.id);
+                    } else {
+                      toggleColumnVisibility(column.id);
+                    }
                   }}
+                  className="cursor-pointer hover:bg-gray-50"
                 >
-                  <IconButton
-                    aria-label="並び替え"
-                    icon={GrabberIcon}
-                    variant="invisible"
-                    size="small"
-                    sx={{
-                      cursor: "grab",
-                      "&:active": { cursor: "grabbing" },
-                    }}
-                  />
+                  <span className="text-sm truncate">{column.label}</span>
+                </DropdownMenuCheckboxItem>
+              ))}
+            </div>
+          </DropdownMenuGroup>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={() => setIsSettingsOpen(true)} className="cursor-pointer">
+            <Settings size={16} className="mr-2" />
+            詳細設定
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={resetToDefaults} className="cursor-pointer">
+            デフォルトに戻す
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
 
-                  <div style={{ flex: 1 }}>
-                    <Text sx={{ fontWeight: "semibold" }}>{column.label}</Text>
+      {/* 詳細設定ダイアログ - UnifiedDialog版 */}
+      <UnifiedDialog
+        isOpen={isSettingsOpen}
+        onClose={handleCancel}
+        title="カラム詳細設定"
+        variant="modal"
+        size="large"
+        actions={[
+          {
+            label: "キャンセル",
+            onClick: handleCancel,
+            variant: "outline",
+          },
+          {
+            label: "保存",
+            onClick: handleSave,
+            variant: "default",
+            disabled: !hasUnsavedChanges
+          }
+        ]}
+      >
+        <div className="mb-5 text-zinc-700 text-sm">
+          カラムをドラッグして並び替え、表示切り替え、幅の調整ができます。<br />
+          幅は50px〜1000pxの範囲で入力してください。
+          {hasUnsavedChanges && (
+            <InlineMessage variant="warning" message="未保存の変更があります" className="mt-2" />
+          )}
+        </div>
+
+        <div className="flex flex-col gap-3 max-h-96 overflow-y-auto">
+          {tempColumnOrder.map((columnId, index) => {
+            const column = tempColumns.find((col) => col.id === columnId);
+            if (!column) {
+              return null;
+            }
+
+            const isDragging = draggedColumnId === column.id;
+            const isFirst = index === 0;
+            const isLast = index === tempColumnOrder.length - 1;
+
+            return (
+              <div
+                key={column.id}
+                draggable
+                onDragStart={(e: React.DragEvent) =>
+                  handleDragStart(e, column.id)
+                }
+                onDragOver={handleDragOver}
+                onDrop={(e: React.DragEvent) => handleDrop(e, column.id)}
+                onDragEnd={handleDragEnd}
+                className={`flex flex-wrap items-center gap-1 p-2 border border-border rounded-lg transition-all duration-200 ease ${
+                  isDragging
+                    ? 'border-primary bg-blue-50 cursor-grabbing opacity-50'
+                    : 'border-gray-300 bg-gray-50 cursor-grab hover:bg-gray-100'
+                }`}
+              >
+                {/* ドラッグハンドルと表示切り替え */}
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center cursor-grab active:cursor-grabbing">
+                    <GripVertical size={16} />
                   </div>
+                  <IconButton
+                    icon={column.visible ? Eye : EyeOff}
+                    size="icon"
+                    ariaLabel={column.visible ? 'カラムを非表示にする' : 'カラムを表示する'}
+                    onClick={(e) => {
+                    e.stopPropagation();
+                    handleTempToggleVisibility(column.id);
+                    }}
+                    className="p-2 hover:bg-gray-200"
+                  />
+                </div>
 
-                  <FormControl>
-                    <FormControl.Label visuallyHidden>
-                      {column.label}の幅を設定
-                    </FormControl.Label>
-                    <TextInput
-                      value={column.width}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        handleWidthChange(column.id, e.target.value)
-                      }
-                      placeholder="幅 (50px〜1000px)"
-                      size="small"
-                      sx={{ width: "120px", mr: 1 }}
-                      aria-describedby={`width-help-${column.id}`}
+                {/* カラム名 */}
+                <div className="flex-1 min-w-0">
+                  <span className="text-sm font-medium truncate">{column.label}</span>
+                </div>
+
+                {/* 幅設定 */}
+                <div className="flex items-center gap-1">
+                  <label className="text-sm text-zinc-500 hidden sm:block">幅:</label>
+                  <Input
+                    value={column.width}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      handleTempWidthChange(column.id, e.target.value)
+                    }
+                    placeholder="幅"
+                    className="w-20 h-8 text-xs"
+                    aria-describedby={`width-help-${column.id}`}
+                  />
+                </div>
+
+                {/* 上下移動と削除ボタン */}
+                <div className="flex items-center gap-1">
+                  <div className="flex gap-0.5">
+                    <IconButton
+                      icon={ChevronUp}
+                      size="icon"
+                      ariaLabel="カラムを上に移動"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleMoveUp(column.id);
+                      }}
+                      disabled={isFirst}
+                      className={cn("p-2 hover:bg-gray-200", isFirst ? "text-zinc-300" : "text-foreground")}
                     />
-                  </FormControl>
+                    <IconButton
+                      icon={ChevronDown}
+                      size="icon"
+                      ariaLabel="カラムを下に移動"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleMoveDown(column.id);
+                      }}
+                      disabled={isLast}
+                      className={cn("p-2 hover:bg-gray-200", isLast ? "text-zinc-300" : "text-foreground")}
+                    />
+                  </div>
 
                   {isCustomColumn(column.id) && (
                     <IconButton
-                      aria-label="カラムを削除"
-                      icon={TrashIcon}
-                      variant="invisible"
-                      size="small"
-                      onClick={() => removeColumn(column.id)}
-                      sx={{ color: "danger.emphasis" }}
+                      icon={Trash2}
+                      size="icon"
+                      ariaLabel="カラムを削除"
+                      onClick={() => handleTempRemoveColumn(column.id)}
+                      className="w-8 h-8 p-2 hover:bg-gray-200"
                     />
                   )}
                 </div>
-              );
-            })}
-          </div>
-
-          <div
-            style={{
-              display: "flex",
-              gap: "8px",
-              marginTop: "16px",
-              justifyContent: "flex-end",
-            }}
-          >
-            <Button onClick={() => setIsSettingsOpen(false)}>閉じる</Button>
-          </div>
-        </Dialog>
-      )}
+              </div>
+            );
+          })}
+        </div>
+      </UnifiedDialog>
     </>
   );
 };

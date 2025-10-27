@@ -8,4 +8,5 @@ export interface TaskDisplayProps extends DateHelpers {
   onDelete: (e: React.MouseEvent) => void;
   onComplete?: (e: React.MouseEvent) => void;
   isRightmostColumn?: boolean;
+  useInvertedIcon?: boolean; // 色反転アイコンを使用するかどうか
 }

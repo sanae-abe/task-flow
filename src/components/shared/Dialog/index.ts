@@ -7,7 +7,6 @@
  * - UnifiedDialog: ベースダイアログ（カスタマイズ可能）
  * - ConfirmDialog: 確認ダイアログ（危険な操作用）
  * - SimpleFormDialog: シンプルフォーム（単一入力）
- * - FormDialog: 複雑フォーム（複数入力）
  */
 
 // ベースダイアログ
@@ -16,7 +15,6 @@ export { default as UnifiedDialog, DialogHeader, DialogFooter } from './UnifiedD
 // 特化ダイアログ
 export { default as ConfirmDialog } from './ConfirmDialog';
 export { default as SimpleFormDialog } from './SimpleFormDialog';
-export { default as FormDialog } from './FormDialog';
 
 // アクションコンポーネント
 export { default as DialogActions } from './DialogActions';
@@ -26,7 +24,6 @@ export type {
   UnifiedDialogProps,
   ConfirmDialogProps,
   SimpleFormDialogProps,
-  FormDialogProps,
   CustomDialogProps,
   DialogAction,
   DialogVariant,

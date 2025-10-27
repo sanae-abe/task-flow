@@ -20,14 +20,14 @@ export const useRecycleBinSettings = () => {
           return parsed;
         }
       }
-    } catch (error) {
-      logger.warn('ゴミ箱設定の読み込みに失敗:', error);
+    } catch (_error) {
+      logger.warn('ゴミ箱設定の読み込みに失敗:', _error);
     }
     return DEFAULT_RECYCLE_BIN_SETTINGS;
   });
 
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [_error, setError] = useState<string | null>(null);
 
   /**
    * 設定をLocalStorageに保存
@@ -48,9 +48,9 @@ export const useRecycleBinSettings = () => {
 
       logger.info('ゴミ箱設定を保存しました:', newSettings);
       return true;
-    } catch (error) {
+    } catch (_error) {
       const errorMessage = 'ゴミ箱設定の保存に失敗しました';
-      logger.error(errorMessage, error);
+      logger._error(errorMessage, _error);
       setError(errorMessage);
       return false;
     } finally {
@@ -79,8 +79,8 @@ export const useRecycleBinSettings = () => {
         try {
           const newSettings = JSON.parse(e.newValue) as RecycleBinSettings;
           setSettings(newSettings);
-        } catch (error) {
-          logger.warn('設定の同期に失敗:', error);
+        } catch (_error) {
+          logger.warn('設定の同期に失敗:', _error);
         }
       }
     };
@@ -95,7 +95,7 @@ export const useRecycleBinSettings = () => {
     saveSettings,
     resetSettings,
     isLoading,
-    error,
+    _error,
   };
 };
 
@@ -113,8 +113,8 @@ export const useRecycleBinSettingsReadOnly = (): RecycleBinSettings => {
           return parsed;
         }
       }
-    } catch (error) {
-      logger.warn('ゴミ箱設定の読み込みに失敗:', error);
+    } catch (_error) {
+      logger.warn('ゴミ箱設定の読み込みに失敗:', _error);
     }
     return DEFAULT_RECYCLE_BIN_SETTINGS;
   });
@@ -126,8 +126,8 @@ export const useRecycleBinSettingsReadOnly = (): RecycleBinSettings => {
         try {
           const newSettings = JSON.parse(e.newValue) as RecycleBinSettings;
           setSettings(newSettings);
-        } catch (error) {
-          logger.warn('設定の同期に失敗:', error);
+        } catch (_error) {
+          logger.warn('設定の同期に失敗:', _error);
         }
       }
     };
@@ -136,8 +136,8 @@ export const useRecycleBinSettingsReadOnly = (): RecycleBinSettings => {
     const handleCustomEvent = (e: CustomEvent<RecycleBinSettings>) => {
       try {
         setSettings(e.detail);
-      } catch (error) {
-        logger.warn('設定の同期に失敗:', error);
+      } catch (_error) {
+        logger.warn('設定の同期に失敗:', _error);
       }
     };
 

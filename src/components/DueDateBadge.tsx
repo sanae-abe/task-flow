@@ -1,4 +1,4 @@
-import { SyncIcon } from "@primer/octicons-react";
+import { RotateCcw } from "lucide-react";
 import React from "react";
 
 import type { DueDateBadgeProps } from "../types/date";
@@ -29,9 +29,9 @@ const DueDateBadge: React.FC<DueDateBadgeProps> = ({
     <StatusBadge
       variant={getVariant()}
       size="small"
-      sx={{ border: "none", bg: "transparent" }}
+      className="border-0 bg-transparent"
     >
-      期限: {formatDueDate(dueDate)} {isRecurrence && <SyncIcon size={12} />}
+      期限: {formatDueDate(dueDate)} {isRecurrence && <RotateCcw size={12} />}
     </StatusBadge>
   );
 };

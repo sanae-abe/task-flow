@@ -1,29 +1,31 @@
-import type { Icon } from "@primer/octicons-react";
-import { Button, type ButtonProps } from "@primer/react";
+import type { LucideIcon } from "lucide-react";
+import { Button, type ButtonProps } from "@/components/ui/button";
 import React from "react";
+import { cn } from "@/lib/utils";
 
 interface SubHeaderButtonProps extends Omit<ButtonProps, "size" | "variant"> {
-  icon: Icon;
+  icon: LucideIcon;
   children: React.ReactNode;
 }
 
-const SubHeaderButton: React.FC<SubHeaderButtonProps> = ({
+const SubHeaderButton = React.forwardRef<HTMLButtonElement, SubHeaderButtonProps>(({
   icon: IconComponent,
   children,
+  className,
   ...props
-}) => (
-  <Button size="small" variant="invisible" {...props}>
-    <span
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: "4px",
-      }}
-    >
-      <IconComponent size={16} />
-      {children}
-    </span>
+}, ref) => (
+  <Button
+    ref={ref}
+    size="sm"
+    variant="ghost"
+    className={cn("flex items-center gap-1 text-zinc-700 text-xs", className)}
+    {...props}
+  >
+    <IconComponent size={16} />
+    {children}
   </Button>
-);
+));
+
+SubHeaderButton.displayName = 'SubHeaderButton';
 
 export default SubHeaderButton;

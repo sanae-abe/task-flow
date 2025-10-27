@@ -1,17 +1,19 @@
-import { useState, memo } from 'react';
-import { UnderlineNav } from '@primer/react';
+import { memo, useMemo, useCallback, useState } from 'react';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
-import type { CreateMode } from './types';
 import type { TaskTemplate } from '../../types/template';
 import { useKanban } from '../../contexts/KanbanContext';
-import { useNotify } from '../../contexts/NotificationContext';
+import { useBoard } from '../../contexts/BoardContext';
+import { useSonnerNotify } from '../../hooks/useSonnerNotify';
+import { useFormChangeDetector } from '../../hooks/useFormChangeDetector';
 import UnifiedDialog from '../shared/Dialog/UnifiedDialog';
+import ConfirmDialog from '../ConfirmDialog';
 
 // カスタムフック
 import { useTaskForm, useTemplateSelection, useTaskSubmission } from './hooks';
 
 // コンポーネント
-import { TemplateSelector, TaskFormFields } from './components';
+import { TemplateSelector, TaskCreateForm } from './components';
 
 /**
  * タスク作成ダイアログコンポーネント
@@ -25,19 +27,21 @@ import { TemplateSelector, TaskFormFields } from './components';
  * - useTemplateSelection：テンプレート選択管理
  * - useTaskSubmission：保存・送信処理
  * - TemplateSelector：テンプレート選択UI
- * - TaskFormFields：フォームフィールド群
+ * - TaskCreateForm：フォームフィールド群
  */
 const TaskCreateDialog = memo(() => {
   const { state, closeTaskForm, createTask } = useKanban();
-  const notify = useNotify();
+  const { state: boardState, setCurrentBoard } = useBoard();
+  const notify = useSonnerNotify();
 
-  // 作成モード
-  const [createMode, setCreateMode] = useState<CreateMode>('normal');
+  // タブ状態管理
+  const [activeTab, setActiveTab] = useState<string>('normal');
 
   // カスタムフック: フォーム状態管理
   const { formState, formActions, handleTimeChange, isFormValid } = useTaskForm(
     state.isTaskFormOpen,
-    state.taskFormDefaultDate ? state.taskFormDefaultDate.toISOString().split('T')[0] : undefined
+    state.taskFormDefaultDate ? state.taskFormDefaultDate.toISOString().split('T')[0] : undefined,
+    state.currentBoard?.id
   );
 
   // カスタムフック: テンプレート選択管理
@@ -55,22 +59,70 @@ const TaskCreateDialog = memo(() => {
     closeTaskForm,
     notify,
     state.currentBoard,
-    state.taskFormDefaultStatus
+    state.taskFormDefaultStatus,
+    boardState.boards,
+    setCurrentBoard
   );
 
-  // テンプレート選択時の処理（モード切り替えを含む）
+  // フォーム変更検知のためのデータ
+  const formDataForDetection = useMemo(() => ({
+    title: formState.title,
+    description: formState.description,
+    dueDate: formState.dueDate,
+    dueTime: formState.dueTime,
+    hasTime: formState.hasTime,
+    labels: formState.labels,
+    attachments: formState.attachments,
+    recurrence: formState.recurrence,
+    priority: formState.priority,
+    selectedTemplate: templateState.selectedTemplate,
+    selectedBoardId: formState.selectedBoardId,
+  }), [
+    formState.title,
+    formState.description,
+    formState.dueDate,
+    formState.dueTime,
+    formState.hasTime,
+    formState.labels,
+    formState.attachments,
+    formState.recurrence,
+    formState.priority,
+    formState.selectedBoardId,
+    templateState.selectedTemplate,
+  ]);
+
+  // フォーム変更検知
+  const {
+    showCloseConfirm,
+    handleClose,
+    handleConfirmClose,
+    handleCancelClose,
+  } = useFormChangeDetector(formDataForDetection, state.isTaskFormOpen);
+
+  // テンプレート選択時の処理
   const handleTemplateSelect = (template: TaskTemplate) => {
     templateActions.handleTemplateSelect(template);
-    // テンプレート選択後は通常作成モードに切り替え
-    setCreateMode('normal');
+    // テンプレート選択後、通常作成タブに自動切り替え
+    setActiveTab('normal');
   };
 
-  // ダイアログが閉じられた時の追加処理
-  const handleDialogClose = () => {
-    setCreateMode('normal');
-    resetTemplateSelection();
-    closeTaskForm();
-  };
+  // ダイアログが閉じられた時の処理（確認機能付き）
+  const handleDialogClose = useCallback(() => {
+    const closeAction = () => {
+      resetTemplateSelection();
+      setActiveTab('normal'); // タブを通常作成にリセット
+      closeTaskForm();
+    };
+    handleClose(closeAction);
+  }, [handleClose, resetTemplateSelection, closeTaskForm]);
+
+  // 利用可能なボード一覧（現在のボード以外）
+  const availableBoards = useMemo(() =>
+    boardState.boards.map(board => ({
+      id: board.id,
+      title: board.title
+    }))
+  , [boardState.boards]);
 
   // 早期リターン：ダイアログが開いていない場合
   if (!state.isTaskFormOpen || !state.currentBoard) {
@@ -78,56 +130,59 @@ const TaskCreateDialog = memo(() => {
   }
 
   return (
-    <UnifiedDialog
-      variant="modal"
-      isOpen={state.isTaskFormOpen}
-      title="新しいタスクを作成"
-      onClose={handleDialogClose}
-      ariaLabelledBy="task-create-dialog-title"
-      size="large"
-      actions={actions}
-    >
-      <div style={{ display: 'flex', flexDirection: 'column', minHeight: '600px' }}>
-        {/* タブナビゲーション */}
-        <div style={{ marginBottom: '16px' }}>
-          <UnderlineNav aria-label="タスク作成モード選択" sx={{ padding: 0, transform: 'translateY(-8px)' }}>
-            <UnderlineNav.Item
-              aria-current={createMode === 'normal' ? 'page' : undefined}
-              onSelect={() => setCreateMode('normal')}
-            >
-              通常作成
-            </UnderlineNav.Item>
-            <UnderlineNav.Item
-              aria-current={createMode === 'template' ? 'page' : undefined}
-              onSelect={() => setCreateMode('template')}
-            >
-              テンプレートから作成
-            </UnderlineNav.Item>
-          </UnderlineNav>
+    <>
+      <UnifiedDialog
+        variant="modal"
+        isOpen={state.isTaskFormOpen}
+        title="新しいタスクを作成"
+        onClose={handleDialogClose}
+        ariaLabelledBy="task-create-dialog-title"
+        size="large"
+        actions={actions}
+      >
+        <div className="flex flex-col min-w-[600px]">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            {/* タブナビゲーション */}
+            <TabsList className="grid w-full grid-cols-2 mb-4">
+              <TabsTrigger value="normal">通常作成</TabsTrigger>
+              <TabsTrigger value="template">テンプレートから作成</TabsTrigger>
+            </TabsList>
+
+            {/* 通常作成フォーム */}
+            <TabsContent value="normal">
+              <TaskCreateForm
+                formState={formState}
+                formActions={formActions}
+                selectedTemplate={templateState.selectedTemplate}
+                onTimeChange={handleTimeChange}
+                onKeyPress={handleKeyPress}
+                availableBoards={availableBoards}
+              />
+            </TabsContent>
+
+            {/* テンプレート選択モード */}
+            <TabsContent value="template">
+              <div className="mb-6 flex-1 min-h-[500px]">
+                <TemplateSelector
+                  templates={templateState.templates}
+                  onSelect={handleTemplateSelect}
+                />
+              </div>
+            </TabsContent>
+          </Tabs>
         </div>
+      </UnifiedDialog>
 
-        {/* テンプレート選択モード */}
-        {createMode === 'template' && (
-          <div style={{ marginBottom: '24px', flex: 1, minHeight: '500px' }}>
-            <TemplateSelector
-              templates={templateState.templates}
-              onSelect={handleTemplateSelect}
-            />
-          </div>
-        )}
-
-        {/* 通常作成フォーム */}
-        {createMode === 'normal' && (
-          <TaskFormFields
-            formState={formState}
-            formActions={formActions}
-            selectedTemplate={templateState.selectedTemplate}
-            onTimeChange={handleTimeChange}
-            onKeyPress={handleKeyPress}
-          />
-        )}
-      </div>
-    </UnifiedDialog>
+      <ConfirmDialog
+        isOpen={showCloseConfirm}
+        title="変更を破棄しますか？"
+        message="編集した内容が失われますが、よろしいですか？"
+        confirmText="破棄する"
+        cancelText="戻る"
+        onConfirm={handleConfirmClose}
+        onCancel={handleCancelClose}
+      />
+    </>
   );
 });
 

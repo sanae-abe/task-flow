@@ -8,30 +8,30 @@ import type { RecycleBinItem } from '../../../../../types/recycleBin';
 // アイテム種別別のカラーパレット
 export const itemTypeColors = {
   task: {
-    icon: 'accent.fg',
-    border: 'accent.muted',
-    background: 'accent.subtle',
+    icon: 'var(--primary)', // primary blue
+    border: 'var(--accent)', // accent blue
+    backgroundClass: 'bg-blue-50', // light accent blue
     badge: {
-      bg: 'accent.subtle',
-      fg: 'accent.fg',
+      bg: 'var(--accent)', // accent blue
+      fg: 'var(--primary)', // primary blue
     },
   },
   board: {
-    icon: 'attention.fg',
-    border: 'attention.muted',
-    background: 'attention.subtle',
+    icon: 'rgb(245 158 11)', // amber-500
+    border: 'rgb(254 243 199)', // amber-100
+    backgroundClass: 'bg-amber-50', // amber-50
     badge: {
-      bg: 'attention.subtle',
-      fg: 'attention.fg',
+      bg: 'rgb(254 243 199)', // amber-100
+      fg: 'rgb(245 158 11)', // amber-500
     },
   },
   column: {
-    icon: 'success.fg',
-    border: 'success.muted',
-    background: 'success.subtle',
+    icon: 'rgb(34 197 94)', // green-500
+    border: 'rgb(220 252 231)', // green-100
+    backgroundClass: 'bg-green-50', // green-50
     badge: {
-      bg: 'success.subtle',
-      fg: 'success.fg',
+      bg: 'rgb(220 252 231)', // green-100
+      fg: 'rgb(34 197 94)', // green-500
     },
   },
 } as const;
@@ -144,5 +144,4 @@ export const getResponsiveValue = <T>(
   defaultValue: T
 ): T => 
   // 簡易実装: 実際のブレークポイント判定は CSS-in-JS で行う
-   values.md || values.sm || values.xs || defaultValue
-;
+  values.md || values.sm || values.xs || defaultValue;

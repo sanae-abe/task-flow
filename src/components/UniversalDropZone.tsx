@@ -1,6 +1,7 @@
-import { UploadIcon } from "@primer/octicons-react";
-import { Text, Button } from "@primer/react";
+import { Upload } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import React from "react";
+import { cn } from "@/lib/utils";
 
 import type { ImportMode } from "../types";
 
@@ -97,36 +98,6 @@ const UniversalDropZone: React.FC<UniversalDropZoneProps> = ({
   const shouldAllowClick =
     importMode === "file-select" || importMode === "both";
 
-  const getBorderColor = () => {
-    if (isLoading) {
-      return "var(--borderColor-muted)";
-    }
-    if (isDragOver) {
-      return "var(--borderColor-accent-emphasis)";
-    }
-    return "var(--borderColor-default)";
-  };
-
-  const getBackgroundColor = () => {
-    if (isLoading) {
-      return "var(--bgColor-inset)";
-    }
-    if (isDragOver) {
-      return "var(--bgColor-accent-muted)";
-    }
-    return "var(--bgColor-muted)";
-  };
-
-  const getCursor = () => {
-    if (isLoading) {
-      return "not-allowed";
-    }
-    if (shouldAllowClick) {
-      return "pointer";
-    }
-    return "default";
-  };
-
   const getAriaLabel = () => {
     if (ariaLabel) {
       return ariaLabel;
@@ -142,23 +113,16 @@ const UniversalDropZone: React.FC<UniversalDropZoneProps> = ({
 
   return (
     <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: "8px",
-        border: shouldShowDropZone ? "2px dashed" : "2px solid",
-        borderColor: getBorderColor(),
-        borderRadius: "var(--borderRadius-medium)",
-        padding: "16px",
-        textAlign: "center",
-        background: getBackgroundColor(),
-        cursor: getCursor(),
-        transition: "all 0.2s ease",
-        minHeight,
-        opacity: isLoading ? 0.7 : 1,
-      }}
+      className={cn(
+        "flex flex-col items-center justify-center gap-2 p-4 text-center transition-all duration-200 rounded-md",
+        shouldShowDropZone ? "border-2 border-dashed" : "border-2 border-solid",
+        isLoading && "opacity-70 cursor-not-allowed",
+        isDragOver && "border-primary bg-blue-50",
+        !isDragOver && !isLoading && "border-gray-300 bg-gray-50",
+        isLoading && "border-gray-200 bg-gray-100",
+        shouldAllowClick && !isLoading && "cursor-pointer"
+      )}
+      style={{ minHeight }}
       onDragOver={!isLoading && shouldShowDropZone ? onDragOver : undefined}
       onDragEnter={!isLoading && shouldShowDropZone ? onDragEnter : undefined}
       onDragLeave={!isLoading && shouldShowDropZone ? onDragLeave : undefined}
@@ -168,28 +132,20 @@ const UniversalDropZone: React.FC<UniversalDropZoneProps> = ({
       tabIndex={isLoading ? -1 : 0}
       aria-label={getAriaLabel()}
     >
-      <div
-        style={{
-          color: isDragOver
-            ? "var(--fgColor-accent-emphasis)"
-            : "var(--fgColor-muted)",
-        }}
-      >
-        <UploadIcon size={24} />
+      <div className={cn(isDragOver ? "text-primary" : "text-zinc-500")}>
+        <Upload size={24} />
       </div>
-      <Text
-        sx={{
-          display: "block",
-          color: isDragOver ? "accent.emphasis" : "fg.default",
-          fontWeight: "normal",
-          letterSpacing: "-0.04em",
-        }}
+      <p
+        className={cn(
+          "block font-normal tracking-tight text-sm",
+          isDragOver ? "text-primary" : "text-foreground"
+        )}
       >
         {getDisplayTitle()}
-      </Text>
-      <Text sx={{ fontSize: 0, color: "fg.muted" }}>
+      </p>
+      <p className="text-xs text-zinc-700">
         {subtitle ?? getDefaultSubtitle()}
-      </Text>
+      </p>
       {showButton && !isDragOver && (
         <Button
           onClick={(e) => {
@@ -197,7 +153,8 @@ const UniversalDropZone: React.FC<UniversalDropZoneProps> = ({
             onClick();
           }}
           disabled={isLoading}
-          size="small"
+          size="sm"
+          variant="default"
         >
           {isLoading
             ? (loadingText ?? "アップロード中...")
@@ -211,9 +168,9 @@ const UniversalDropZone: React.FC<UniversalDropZoneProps> = ({
         multiple={multiple}
         accept={allowedTypes.join(",")}
         onChange={onFileInputChange}
-        style={{ display: "none" }}
         disabled={isLoading}
         aria-hidden="true"
+        className="hidden"
       />
     </div>
   );

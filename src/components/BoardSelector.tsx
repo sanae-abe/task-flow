@@ -1,4 +1,4 @@
-import { Button, Box, Text } from "@primer/react";
+import { Button } from "@/components/ui/button";
 import React, { memo } from "react";
 import {
   DndContext,
@@ -12,105 +12,17 @@ import {
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { cn } from "@/lib/utils";
 
 import { useBoard } from "../contexts/BoardContext";
 import { useBoardDragAndDrop } from "../hooks/useBoardDragAndDrop";
 import type { KanbanBoard } from "../types";
 
-// スタイル定義
-const styles = {
-  container: {
-    display: "flex",
-    alignItems: "center",
-    gap: "16px",
-    fontSize: "14px",
-    minWidth: 0,
-    width: "100%",
-    height: "100%",
-    overflowX: "auto",
-    scrollbarWidth: "none",
-    "&::WebkitScrollbar": {
-      display: "none",
-    },
-    maskImage:
-      "linear-gradient(to right, black 0%, black calc(100% - 12px), transparent 100%)",
-    paddingRight: "4px",
-  },
-  emptyState: {
-    display: "flex",
-    alignItems: "center",
-  },
-  emptyText: {
-    color: "fg.muted",
-    fontSize: "14px",
-  },
-  tabContainer: {
-    height: "100%",
-    display: "flex",
-    alignItems: "center",
-    transition: "transform 200ms ease",
-  },
-  draggingTab: {
-    opacity: 0.5,
-    transform: "rotate(5deg)",
-    zIndex: 1000,
-  },
-  selectedTab: {
-    paddingInline: 0,
-    paddingBlock: "12px",
-    borderBottom: "2px solid",
-    borderBottomColor: "accent.emphasis",
-  },
-  unselectedTab: {
-    paddingInline: 0,
-    paddingBlock: "12px",
-    borderBottom: "none",
-  },
-  tabButton: {
-    fontSize: "14px",
-    borderRadius: "6px",
-    paddingInline: "4px",
-    paddingBlock: 0,
-    whiteSpace: "nowrap",
-    translate: "0 2px",
-    flexShrink: 0,
-    cursor: "grab",
-    "&:hover": {
-      backgroundColor: "canvas.subtle",
-      color: "fg.default",
-    },
-    "&:active": {
-      cursor: "grabbing",
-    },
-  },
-  selectedButton: {
-    fontWeight: "600",
-    color: "fg.default",
-  },
-  unselectedButton: {
-    fontWeight: "400",
-    color: "fg.muted",
-  },
-  overlayButton: {
-    fontSize: "14px",
-    borderRadius: "6px",
-    paddingInline: "4px",
-    paddingBlock: 0,
-    whiteSpace: "nowrap",
-    flexShrink: 0,
-    fontWeight: "600",
-    color: "fg.default",
-    backgroundColor: "canvas.default",
-    border: "1px solid",
-    borderColor: "border.default",
-    boxShadow: "shadow.medium",
-  },
-} as const;
 
 // 空状態表示コンポーネント
 const EmptyBoardsMessage: React.FC = memo(() => (
-  <div style={styles.emptyState}>
-    <Text sx={styles.emptyText}>利用可能なボードがありません</Text>
+  <div className="flex items-center">
+    <p className="text-zinc-700 text-sm">利用可能なボードがありません</p>
   </div>
 ));
 
@@ -137,36 +49,36 @@ const SortableBoardTab: React.FC<SortableBoardTabProps> = memo(
       transition,
     };
 
-    const tabStyles = {
-      ...styles.tabContainer,
-      ...(isSelected ? styles.selectedTab : styles.unselectedTab),
-      ...(isDragging ? styles.draggingTab : {}),
-    };
-
-    const buttonStyles = {
-      ...styles.tabButton,
-      ...(isSelected ? styles.selectedButton : styles.unselectedButton),
-    };
-
     return (
-      <Box
+      <div
         ref={setNodeRef}
         style={style}
-        sx={tabStyles}
+        className={cn(
+          "h-full flex items-center transition-transform duration-200",
+          isSelected
+            ? "py-3 border-b-2 border-primary"
+            : "py-3 border-b-0",
+          isDragging && "opacity-50 z-900"
+        )}
         aria-selected={isSelected}
+        // eslint-disable-next-line react/jsx-props-no-spreading
         {...attributes}
+        // eslint-disable-next-line react/jsx-props-no-spreading
         {...listeners}
       >
         <Button
-          variant="invisible"
-          size="medium"
+          variant="ghost"
+          size="sm"
           onClick={() => onSelect(board.id)}
-          sx={buttonStyles}
+          className={cn(
+            "text-sm rounded-md px-1 py-0 whitespace-nowrap translate-y-0.5 flex-shrink-0 cursor-grab hover:text-foreground/70 hover:bg-transparent active:cursor-grabbing focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
+            isSelected ? "font-semibold" : "font-normal"
+          )}
           aria-label={`${board.title}ボードを選択`}
         >
           {board.title}
         </Button>
-      </Box>
+      </div>
     );
   },
 );
@@ -178,13 +90,12 @@ interface DragOverlayBoardTabProps {
 
 const DragOverlayBoardTab: React.FC<DragOverlayBoardTabProps> = memo(
   ({ board }) => (
-    <div
-      style={{
-        ...styles.tabContainer,
-        ...styles.selectedTab,
-      }}
-    >
-      <Button variant="invisible" size="medium" sx={styles.overlayButton}>
+    <div className="h-full flex items-center py-3 border-b-2 border-primary ">
+      <Button
+        variant="ghost"
+        size="sm"
+        className="text-sm rounded-md px-1 py-0 whitespace-nowrap flex-shrink-0 font-semibold text-foreground bg-white hover:bg-white"
+      >
         {board.title}
       </Button>
     </div>
@@ -219,7 +130,14 @@ const BoardSelector: React.FC = () => {
         items={activeBoards.map((board) => board.id)}
         strategy={horizontalListSortingStrategy}
       >
-        <div style={styles.container} role="tablist" aria-label="ボード選択">
+        <div
+          className="flex items-center gap-4 text-sm min-w-0 w-full h-full overflow-x-auto scrollbar-none pr-1"
+          style={{
+            maskImage: "linear-gradient(to right, black 0%, black calc(100% - 12px), transparent 100%)"
+          }}
+          role="tablist"
+          aria-label="ボード選択"
+        >
           {activeBoards.map((board) => (
             <SortableBoardTab
               key={board.id}

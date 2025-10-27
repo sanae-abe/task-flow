@@ -1,5 +1,4 @@
 import React from "react";
-import { Text, CounterLabel } from "@primer/react";
 import type { TableHeaderProps } from "../types";
 import TableColumnManager from "../../TableColumnManager";
 
@@ -18,10 +17,10 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
     style={{
       gridTemplateColumns,
       display: "grid",
-      background: "var(--bgColor-default)",
-      borderBottom: "1px solid var(--borderColor-default)",
+      background: "var(--background)",
+      borderBottom: "1px solid var(--border)",
       boxShadow: "0 0 2px rgba(0,0,0,0.05)",
-      padding: "8px 12px",
+      padding: "8px 50px 8px 12px",
       gap: "8px",
       minWidth: "fit-content",
       position: "relative",
@@ -30,24 +29,17 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
     {visibleColumns.map((column) => (
       <div
         key={column.id}
-        style={{ display: "flex", alignItems: "center", gap: "4px" }}
+        className="flex items-center gap-1"
       >
-        <Text sx={{ fontWeight: "bold", fontSize: 1 }}>{column.label}</Text>
+        <span className="font-bold text-sm">{column.label}</span>
         {column.id === "title" && (
-          <CounterLabel sx={{ ml: 1, flexShrink: 0 }}>{taskCount}</CounterLabel>
+          <span className="ml-1 flex-shrink-0 bg-neutral-100 text-zinc-900 text-xs px-1.5 py-0.5 rounded-full">{taskCount}</span>
         )}
       </div>
     ))}
 
     {/* 設定ボタンを固定位置に配置 */}
-    <div
-      style={{
-        position: "absolute",
-        top: "50%",
-        right: "12px",
-        transform: "translateY(-50%)",
-      }}
-    >
+    <div className="absolute top-1/2 right-3 transform -translate-y-1/2">
       <TableColumnManager />
     </div>
   </div>

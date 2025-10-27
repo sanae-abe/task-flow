@@ -1,10 +1,11 @@
-import React, { useCallback } from "react";
-import { Text } from "@primer/react";
+import React, { useCallback, useState } from "react";
 import type { TaskWithColumn } from "../../types/table";
+import type { Task } from "../../types";
 
 import { useKanban } from "../../contexts/KanbanContext";
 import { useTableColumns } from "../../contexts/TableColumnsContext";
 import DeleteConfirmDialog from "../DeleteConfirmDialog";
+import TaskEditDialog from "../TaskEditDialog";
 
 // カスタムフック
 import { useTableData, useTableActions, useDeleteConfirm } from "./hooks";
@@ -29,9 +30,13 @@ import { getCompletionRate } from "./utils/tableHelpers";
  * - EmptyState：空状態の表示
  */
 const TableView: React.FC = () => {
-  const { state, moveTask, deleteTask, setTaskFilter, openTaskDetail } =
+  const { state, moveTask, deleteTask, updateTask, setTaskFilter, openTaskDetail } =
     useKanban();
   const tableColumnsData = useTableColumns();
+
+  // TaskEditDialog状態管理
+  const [editingTask, setEditingTask] = useState<TaskWithColumn | null>(null);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
   // カスタムフック: 削除確認ダイアログ管理
   const { deleteConfirmDialog, setDeleteConfirmDialog } = useDeleteConfirm();
@@ -53,6 +58,34 @@ const TableView: React.FC = () => {
     setDeleteConfirmDialog,
   );
 
+  // タスク編集ハンドラー - TaskEditDialogを直接開く
+  const handleTaskEdit = useCallback((task: TaskWithColumn) => {
+    setEditingTask(task);
+    setIsEditDialogOpen(true);
+  }, []);
+
+  // TaskEditDialog: 保存ハンドラー
+  const handleEditSave = useCallback((updatedTask: Task) => {
+    updateTask(updatedTask.id, updatedTask);
+    setIsEditDialogOpen(false);
+    setEditingTask(null);
+  }, [updateTask]);
+
+  // TaskEditDialog: 削除ハンドラー
+  const handleEditDelete = useCallback((taskId: string) => {
+    if (editingTask) {
+      deleteTask(taskId, editingTask.columnId);
+      setIsEditDialogOpen(false);
+      setEditingTask(null);
+    }
+  }, [deleteTask, editingTask]);
+
+  // TaskEditDialog: キャンセルハンドラー
+  const handleEditCancel = useCallback(() => {
+    setIsEditDialogOpen(false);
+    setEditingTask(null);
+  }, []);
+
   // セル描画関数
   const renderCell = useCallback(
     (task: TaskWithColumn, columnId: string) => (
@@ -62,6 +95,7 @@ const TableView: React.FC = () => {
         currentBoard={state.currentBoard}
         onStatusChange={tableActions.handleStatusChange}
         onDeleteClick={tableActions.handleTaskDeleteClick}
+        onEditClick={handleTaskEdit}
         getCompletionRate={getCompletionRate}
       />
     ),
@@ -69,6 +103,7 @@ const TableView: React.FC = () => {
       state.currentBoard,
       tableActions.handleStatusChange,
       tableActions.handleTaskDeleteClick,
+      handleTaskEdit,
     ],
   );
 
@@ -85,11 +120,11 @@ const TableView: React.FC = () => {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          height: "calc(100vh - 120px)",
-          color: "var(--fgColor-default)",
+          height: "calc(100vh - 112px)",
+          color: "var(--foreground)",
         }}
       >
-        <Text>ボードを選択してください</Text>
+        <span className="text-foreground">ボードを選択してください</span>
       </div>
     );
   }
@@ -98,11 +133,9 @@ const TableView: React.FC = () => {
     <div
       key={`tableview-${tableColumnsData.forceRender}`}
       style={{
-        height: "calc(100vh - 120px)",
-        overflow: "auto",
-        backgroundColor: "var(--bgColor-muted)",
-        padding: "32px",
+        backgroundColor: "var(--muted)"
       }}
+      className="h-[calc(100vh-120px)] overflow-auto p-8"
     >
       {/* メインテーブル */}
       <div
@@ -110,7 +143,7 @@ const TableView: React.FC = () => {
         style={{
           borderRadius: 2,
           overflow: "auto",
-          backgroundColor: "var(--bgColor-default)",
+          backgroundColor: "var(--background)",
           boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
           minWidth: "fit-content",
         }}
@@ -151,6 +184,15 @@ const TableView: React.FC = () => {
         onClose={tableActions.handleDeleteDialogClose}
         onConfirm={tableActions.handleTaskDelete}
         taskTitle={deleteConfirmDialog.task?.title || ""}
+      />
+
+      {/* タスク編集ダイアログ */}
+      <TaskEditDialog
+        task={editingTask}
+        isOpen={isEditDialogOpen}
+        onSave={handleEditSave}
+        onDelete={handleEditDelete}
+        onCancel={handleEditCancel}
       />
     </div>
   );

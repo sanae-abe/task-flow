@@ -1,12 +1,7 @@
 import React from "react";
-import { Button } from "@primer/react";
+import { Button } from "@/components/ui/button";
 import { type RecycleBinSettings } from "../../../types/settings";
 import { RETENTION_PRESETS, UI_TEXT } from "../../../constants/recycleBin";
-import {
-  PresetSection,
-  PresetTitle,
-  PresetButtonsContainer,
-} from "../RecycleBinSettingsPanel.styles";
 
 export interface SettingsPresetButtonsProps {
   /** 現在の設定 */
@@ -23,20 +18,20 @@ export const SettingsPresetButtons: React.FC<SettingsPresetButtonsProps> = ({
   settings,
   onPresetSelect,
 }) => (
-    <PresetSection>
-      <PresetTitle>
+    <div className="mb-4">
+      <span className="text-sm font-semibold mb-2 block">
         {UI_TEXT.PANEL.PRESET_TITLE}
-      </PresetTitle>
-      <PresetButtonsContainer>
+      </span>
+      <div className="flex gap-2 flex-wrap">
         {RETENTION_PRESETS.map(({ label, days }) => (
           <Button
             key={days?.toString() || 'unlimited'}
-            variant={settings.retentionDays === days ? "primary" : "default"}
+            variant={settings.retentionDays === days ? "default" : "outline"}
             onClick={() => onPresetSelect(days)}
           >
             {label}
           </Button>
         ))}
-      </PresetButtonsContainer>
-    </PresetSection>
+      </div>
+    </div>
   );

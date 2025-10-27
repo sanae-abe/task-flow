@@ -39,12 +39,12 @@ export const insertHtmlAtCursor = (html: string) => {
     range.collapse(false);
     selection.removeAllRanges();
     selection.addRange(range);
-  } catch (error) {
+  } catch (_error) {
     // HTML挿入に失敗、フォールバックを使用
     // フォールバック: document.execCommand
     try {
       document.execCommand('insertHTML', false, html);
-    } catch (fallbackError) {
+    } catch (_fallbackError) {
       // フォールバック挿入も失敗 - プロダクションではサイレント
     }
   }

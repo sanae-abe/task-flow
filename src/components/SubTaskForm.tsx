@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 
-import { UnifiedForm, createSubTaskFormFields } from "./shared/Form";
+import { UnifiedForm, type FormFieldConfig } from "./shared/Form";
 
 interface SubTaskFormProps {
   title: string;
@@ -17,48 +17,38 @@ const SubTaskForm: React.FC<SubTaskFormProps> = ({
   onCancel,
   onKeyDown,
 }) => {
-  // フォームフィールド設定を生成
+  // フォームフィールドを直接定義
   const formFields = useMemo(
-    () =>
-      createSubTaskFormFields(
-        {
-          title,
-        },
-        {
-          setTitle: onTitleChange,
-        },
-        {
-          onKeyDown,
-        },
-      ),
+    (): FormFieldConfig[] => [
+      {
+        id: "subtask-title",
+        name: "title",
+        type: "text",
+        label: "サブタスク名",
+        value: title,
+        placeholder: "サブタスク名を入力...",
+        onChange: onTitleChange as (value: unknown) => void,
+        onKeyDown,
+        autoFocus: true,
+        hideLabel: true,
+        disabled: false,
+        validation: { required: true, minLength: 1, maxLength: 100 },
+      },
+    ],
     [title, onTitleChange, onKeyDown],
   );
 
   return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: "var(--primer-control-small-gap, 0.5rem)",
-        borderRadius: "var(--primer-borderRadius-medium, 6px)",
-        backgroundColor: "var(--primer-canvas-default)",
-      }}
-    >
-      <UnifiedForm
-        fields={formFields}
-        onSubmit={onSubmit}
-        onCancel={onCancel}
-        submitText="追加"
-        cancelText="キャンセル"
-        validateOnChange={false}
-        validateOnBlur={false}
-        sx={{
-          flex: 1,
-          "& > div > div": { mb: 0 }, // フォームコンテナの下マージン削除
-          "& form": { display: "flex", alignItems: "center", gap: 2 },
-        }}
-      />
-    </div>
+    <UnifiedForm
+      fields={formFields}
+      onSubmit={onSubmit}
+      onCancel={onCancel}
+      submitText="追加"
+      cancelText="キャンセル"
+      validateOnChange={false}
+      validateOnBlur={false}
+      className="flex-1 mb-0 [&>div]:flex [&>div]:flex-col [&>div]:gap-2 [&_div_div]:mt-0 [&_div_div]:mb-0"
+    />
   );
 };
 

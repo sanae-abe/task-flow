@@ -8,13 +8,6 @@ import {
 
 const STORAGE_KEY = "taskflow-table-columns";
 
-// 開発環境でのみログを出力するヘルパー関数
-const debugLog = (message: string, ...args: unknown[]) => {
-  if (process.env.NODE_ENV === "development") {
-    // eslint-disable-next-line no-console
-    console.log(message, ...args);
-  }
-};
 
 export const useTableColumns = (): TableColumnsHookReturn => {
   // 強制再レンダリング用のカウンター
@@ -37,7 +30,7 @@ export const useTableColumns = (): TableColumnsHookReturn => {
         };
         return result;
       }
-    } catch (error) {
+    } catch (_error) {
       // Failed to load settings, will use defaults
     }
 
@@ -50,13 +43,7 @@ export const useTableColumns = (): TableColumnsHookReturn => {
 
   // カラムの表示/非表示を切り替え
   const toggleColumnVisibility = useCallback((columnId: string) => {
-    debugLog("🎯 toggleColumnVisibility called with:", columnId);
     setSettings((currentSettings) => {
-      debugLog(
-        "🔍 Current settings before toggle:",
-        currentSettings.columns.map((c) => ({ id: c.id, visible: c.visible })),
-      );
-
       const newColumns = currentSettings.columns.map((col) =>
         col.id === columnId ? { ...col, visible: !col.visible } : { ...col },
       );
@@ -66,28 +53,18 @@ export const useTableColumns = (): TableColumnsHookReturn => {
         columnOrder: [...currentSettings.columnOrder],
       };
 
-      debugLog(
-        "🔄 New settings after toggle:",
-        newColumns.map((c) => ({ id: c.id, visible: c.visible })),
-      );
-
       // localStorageに保存
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(newSettings));
-        debugLog("💾 Settings saved to localStorage");
-      } catch (error) {
-        debugLog("❌ Failed to save settings:", error);
+      } catch (_error) {
+        // Failed to save settings
       }
 
       // 強制再レンダリングを発生させる
-      setForceRender((prev) => {
-        debugLog("🔄 Force render incrementing from", prev, "to", prev + 1);
-        return prev + 1;
-      });
+      setForceRender((prev) => prev + 1);
 
       // カスタムイベントを発行してTableViewに通知
       setTimeout(() => {
-        debugLog("📡 Dispatching table-columns-visibility-changed event");
         window.dispatchEvent(
           new CustomEvent("table-columns-visibility-changed", {
             detail: { timestamp: Date.now() },
@@ -113,8 +90,8 @@ export const useTableColumns = (): TableColumnsHookReturn => {
       // localStorageに保存
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(newSettings));
-      } catch (error) {
-        debugLog("❌ Failed to save settings:", error);
+      } catch (_error) {
+        // Failed to save settings
       }
 
       return newSettings;
@@ -132,8 +109,8 @@ export const useTableColumns = (): TableColumnsHookReturn => {
       // localStorageに保存
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(newSettings));
-      } catch (error) {
-        debugLog("❌ Failed to save settings:", error);
+      } catch (_error) {
+        // Failed to save settings
       }
 
       return newSettings;
@@ -165,8 +142,8 @@ export const useTableColumns = (): TableColumnsHookReturn => {
       // localStorageに保存
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(newSettings));
-      } catch (error) {
-        debugLog("❌ Failed to save settings:", error);
+      } catch (_error) {
+        // Failed to save settings
       }
 
       return newSettings;
@@ -196,8 +173,8 @@ export const useTableColumns = (): TableColumnsHookReturn => {
       // localStorageに保存
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(newSettings));
-      } catch (error) {
-        debugLog("❌ Failed to save settings:", error);
+      } catch (_error) {
+        // Failed to save settings
       }
 
       return newSettings;

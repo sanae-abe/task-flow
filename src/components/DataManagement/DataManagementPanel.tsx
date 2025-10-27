@@ -1,5 +1,5 @@
 import { memo, useState } from 'react';
-import { UnderlineNav, Text } from '@primer/react';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
 import { ExportSection } from './ExportSection';
 import { ImportSection } from './ImportSection';
@@ -25,54 +25,35 @@ export const DataManagementPanel = memo<DataManagementPanelProps>(({
   const [activeTab, setActiveTab] = useState<'export' | 'import'>('export');
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: "12px", paddingBottom: "16px" }}>
+    <div className="flex flex-col gap-3">
       {/* ヘッダー */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '8px',
-      }}>
-        <Text
-          as="h2"
-          style={{
-            fontSize: '16px',
-            fontWeight: 'bold',
-            margin: 0
-          }}
-        >
+      <div className="flex items-center gap-2">
+        <h2 className="text-base font-bold m-0">
           データ管理
-        </Text>
+        </h2>
       </div>
-      {/* タブナビゲーション */}
-      <UnderlineNav aria-label="データ管理" sx={{ px: 0, transform: 'translateY(-4px)' }}>
-        <UnderlineNav.Item
-          aria-current={activeTab === 'export' ? 'page' : undefined}
-          onSelect={() => setActiveTab('export')}
-        >
-          エクスポート
-        </UnderlineNav.Item>
-        <UnderlineNav.Item
-          aria-current={activeTab === 'import' ? 'page' : undefined}
-          onSelect={() => setActiveTab('import')}
-        >
-          インポート
-        </UnderlineNav.Item>
-      </UnderlineNav>
 
-      {/* タブコンテンツ */}
-      <div>
-        {activeTab === 'export' ? (
+      {/* タブナビゲーション */}
+      <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'export' | 'import')}>
+        <TabsList className="grid w-full grid-cols-2 mb-4">
+          <TabsTrigger value="export">エクスポート</TabsTrigger>
+          <TabsTrigger value="import">インポート</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="export">
           <ExportSection
             onExportAll={onExportAll}
             onExportCurrent={onExportCurrent}
             onMessage={onMessage}
           />
-        ) : (
+        </TabsContent>
+
+        <TabsContent value="import">
           <ImportSection
             onMessage={onMessage}
           />
-        )}
-      </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 });

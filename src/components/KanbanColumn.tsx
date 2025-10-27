@@ -24,7 +24,7 @@ const COLUMN_CONFIG = {
   PADDING_BOTTOM: "100px", // 下に100pxの余白を追加
   TASK_LIST_MIN_HEIGHT: "calc(100vh - 112px - 48px -40px)", // ヘッダーとフッターとカラムヘッダーの高さとpaddingBlockを考慮
   HORIZONTAL_PADDING: "8px",
-  TASK_GAP: "12px",
+  TASK_GAP: "16px",
 } as const;
 
 const COLUMN_STYLES = {
@@ -42,6 +42,7 @@ const COLUMN_STYLES = {
     overflow: "hidden",
     display: "flex",
     flexDirection: "column",
+    contain: "layout style", // レンダリング最適化
   },
   taskList: {
     minHeight: COLUMN_CONFIG.TASK_LIST_MIN_HEIGHT,
@@ -49,6 +50,8 @@ const COLUMN_STYLES = {
     flexDirection: "column",
     gap: COLUMN_CONFIG.TASK_GAP,
     flex: 1, // 残り空間を最大限活用
+    contain: "layout style", // レンダリング最適化
+    willChange: "contents", // タスクの追加・削除・移動を最適化
   },
 } as const;
 
@@ -179,17 +182,7 @@ const KanbanColumn: React.FC<KanbanColumnProps> = React.memo(
             {/* カラムの一番下のドロップエリア - 残り空間を最大活用 */}
             {sortedTasks.length > 0 && (
               <div
-                style={{
-                  flex: 1, // 残り空間を全て使用
-                  minHeight: "200px", // より大きな最小高さを設定
-                  height: "auto", // 自動高さ調整
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  borderRadius: "var(--borderRadius-small)",
-                  marginTop: "8px", // 上のタスクとの間隔
-                  marginBottom: "100px", // 下部マージンを追加
-                }}
+                className="flex-1 min-h-[200px] h-auto flex items-center justify-center rounded-sm mt-2 mb-[100px]"
               />
             )}
           </SortableContext>

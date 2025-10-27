@@ -14,14 +14,7 @@ const TaskLabels = memo<TaskLabelsProps>(({ labels }) => {
   }
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexWrap: "wrap",
-        gap: "8px",
-        alignItems: "center",
-      }}
-    >
+    <div className="flex flex-wrap gap-2 items-center">
       {labels.map((label) => (
         <LabelChip key={label.id} label={label} showRemove={false} />
       ))}

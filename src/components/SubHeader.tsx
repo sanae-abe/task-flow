@@ -1,11 +1,18 @@
 import {
-  PlusIcon,
-  CalendarIcon,
-  ProjectIcon,
-  TriangleDownIcon,
-  TableIcon,
-} from "@primer/octicons-react";
-import { ActionMenu, ActionList, Button } from "@primer/react";
+  Plus,
+  Calendar,
+  SquareKanban,
+  ChevronDown,
+  Table,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import React from "react";
 
 import { useKanban } from "../contexts/KanbanContext";
@@ -21,6 +28,7 @@ import FilterSelector from "./FilterSelector";
 import SubHeaderButton from "./SubHeaderButton";
 import TaskSortSelector from "./TaskSortSelector";
 import TaskStatsDisplay from "./TaskStatsDisplay";
+import { ViewMode } from "@/types";
 
 const SubHeader: React.FC = () => {
   const { setSortOption, setTaskFilter } = useKanban();
@@ -73,23 +81,10 @@ const SubHeader: React.FC = () => {
   }
 
   return (
-    <div
-      style={{
-        background: "var(--bgColor-default)",
-        borderBottom: "1px solid",
-        borderColor: "var(--borderColor-default)",
-        padding: "8px 20px",
-        zIndex: 999,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        width: "100%",
-        overflow: "hidden",
-      }}
-    >
+    <div className="bg-white border-b border-border border-gray-200 px-5 py-1 z-150 flex items-center justify-between w-full overflow-hidden text-sm text-muted-default"> 
       <TaskStatsDisplay stats={taskStats} />
 
-      <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+      <div className="flex items-center">
         <FilterSelector
           currentFilter={state.taskFilter}
           onFilterChange={setTaskFilter}
@@ -99,15 +94,9 @@ const SubHeader: React.FC = () => {
           currentSort={state.sortOption}
           onSortChange={setSortOption}
         />
-        <div
-          style={{
-            width: "1px",
-            height: "24px",
-            background: "var(--borderColor-default)",
-          }}
-        />
+        <div className="w-px h-6 bg-gray-200" />
         {state.viewMode === "kanban" && (
-          <SubHeaderButton icon={PlusIcon} onClick={handlers.startCreateColumn}>
+          <SubHeaderButton icon={Plus} onClick={handlers.startCreateColumn}>
             カラム追加
           </SubHeaderButton>
         )}
@@ -121,69 +110,58 @@ const SubHeader: React.FC = () => {
           onClearCompletedTasks={handlers.openClearCompletedConfirm}
         />
 
-        <div
-          style={{
-            width: "1px",
-            height: "24px",
-            background: "var(--borderColor-default)",
-          }}
-        />
+        <div className="w-px h-6 bg-gray-200" />
 
-        {/* View Mode ActionMenu */}
-        <ActionMenu>
-          <ActionMenu.Anchor>
+        {/* View Mode DropdownMenu */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
             <Button
-              variant="invisible"
-              size="small"
-              leadingVisual={
-                state.viewMode === "kanban"
-                  ? ProjectIcon
-                  : state.viewMode === "calendar"
-                    ? CalendarIcon
-                    : TableIcon
-              }
-              trailingVisual={TriangleDownIcon}
+              variant="ghost"
+              size="sm"
               aria-label="ビューモードを選択"
+              className="flex items-center gap-1 text-zinc-700 text-xs"
             >
+              {state.viewMode === "kanban" ? (
+                <SquareKanban size={16} />
+              ) : state.viewMode === "calendar" ? (
+                <Calendar size={16} />
+              ) : (
+                <Table size={16} />
+              )}
               {state.viewMode === "kanban"
                 ? "カンバン"
                 : state.viewMode === "calendar"
                   ? "カレンダー"
                   : "テーブル"}
+              <ChevronDown size={16} />
             </Button>
-          </ActionMenu.Anchor>
-          <ActionMenu.Overlay>
-            <ActionList selectionVariant="single">
-              <ActionList.Item
-                selected={state.viewMode === "kanban"}
-                onSelect={() => navigateToView("kanban")}
-              >
-                <ActionList.LeadingVisual>
-                  <ProjectIcon />
-                </ActionList.LeadingVisual>
-                カンバン
-              </ActionList.Item>
-              <ActionList.Item
-                selected={state.viewMode === "calendar"}
-                onSelect={() => navigateToView("calendar")}
-              >
-                <ActionList.LeadingVisual>
-                  <CalendarIcon />
-                </ActionList.LeadingVisual>
-                カレンダー
-              </ActionList.Item>
-              <ActionList.Item
-                selected={state.viewMode === "table"}
-                onSelect={() => navigateToView("table")}
-              >
-                <ActionList.LeadingVisual>
-                  <TableIcon />
-                </ActionList.LeadingVisual>
-                テーブル
-              </ActionList.Item>
-            </ActionList>
-          </ActionMenu.Overlay>
-        </ActionMenu>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuRadioGroup value={state.viewMode} onValueChange={(value) => navigateToView(value as ViewMode)}>
+            <DropdownMenuRadioItem
+              value="kanban"
+              className="flex items-center gap-2"
+            >
+              <SquareKanban size={16} />
+              カンバン
+            </DropdownMenuRadioItem>
+            <DropdownMenuRadioItem
+              value="calendar"
+              className="flex items-center gap-2"
+            >
+              <Calendar size={16} />
+              カレンダー
+            </DropdownMenuRadioItem>
+            <DropdownMenuRadioItem
+              value="table"
+              className="flex items-center gap-2"
+            >
+              <Table size={16} />
+              テーブル
+            </DropdownMenuRadioItem>
+            </DropdownMenuRadioGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       <ConfirmDialog

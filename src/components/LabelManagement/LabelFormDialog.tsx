@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { TextInput, FormControl, Select } from '@primer/react';
+import React, { useMemo, useCallback } from 'react';
 
 import type { Label } from '../../types';
+import type { FormFieldConfig } from '../../types/unified-form';
 import { useLabel } from '../../contexts/LabelContext';
 import { useBoard } from '../../contexts/BoardContext';
+import { useUnifiedForm } from '../../hooks/useUnifiedForm';
 import UnifiedDialog from '../shared/Dialog/UnifiedDialog';
-import ColorSelector from '../ColorSelector';
+import UnifiedFormField from '../shared/Form/UnifiedFormField';
 import LabelChip from '../LabelChip';
-import InlineMessage from '../shared/InlineMessage';
 
 interface LabelFormDialogProps {
   isOpen: boolean;
@@ -17,12 +17,6 @@ interface LabelFormDialogProps {
   label?: Label | null;
   mode: 'create' | 'edit';
   enableBoardSelection?: boolean; // 全ボード管理モードでのみtrue
-}
-
-interface LabelFormData {
-  name: string;
-  color: string;
-  boardId?: string;
 }
 
 const LabelFormDialog: React.FC<LabelFormDialogProps> = ({
@@ -35,92 +29,152 @@ const LabelFormDialog: React.FC<LabelFormDialogProps> = ({
 }) => {
   const { getAllLabels } = useLabel();
   const { state: boardState } = useBoard();
-  const [formData, setFormData] = useState<LabelFormData>({
-    name: '',
-    color: '#0969da',
-    boardId: undefined
-  });
-  const [errors, setErrors] = useState<{ name?: string }>({});
-  const [isLoading, setIsLoading] = useState(false);
 
-  // フォームデータの初期化
-  useEffect(() => {
-    if (isOpen) {
-      if (mode === 'edit' && label) {
-        setFormData({
-          name: label.name,
-          color: label.color,
-          boardId: undefined // 編集時はボード選択不要
-        });
-      } else {
-        setFormData({
-          name: '',
-          color: '#0969da',
-          boardId: enableBoardSelection && boardState.boards.length > 0 ? boardState.boards[0]?.id : undefined
-        });
-      }
-      setErrors({});
-      setIsLoading(false);
+  // 初期値の設定
+  const initialValues = useMemo(() => {
+    if (mode === 'edit' && label) {
+      return {
+        name: label.name,
+        color: label.color,
+        boardId: undefined // 編集時はボード選択不要
+      };
     }
-  }, [isOpen, mode, label, enableBoardSelection, boardState.boards]);
+    return {
+      name: '',
+      color: '#0969da',
+      boardId: enableBoardSelection && boardState.boards.length > 0 ? boardState.boards[0]?.id : undefined
+    };
+  }, [mode, label, enableBoardSelection, boardState.boards]);
 
-  // バリデーション（統合版）
-  const validateForm = useCallback(() => {
-    const newErrors: { name?: string } = {};
-    const trimmedName = formData.name.trim();
+  // プレビュー用のラベルデータ
+  const createPreviewLabel = useCallback((formValues: Record<string, unknown>): Label => ({
+    id: 'preview',
+    name: String(formValues['name'] || 'ラベル名'),
+    color: String(formValues['color'] || '#0969da')
+  }), []);
 
-    // 基本バリデーション
+  // カスタムバリデーション（重複チェック）
+  const validateLabelName = useCallback((value: unknown): string | null => {
+    const trimmedName = String(value || '').trim();
+
     if (!trimmedName) {
-      newErrors.name = 'ラベル名は必須です';
-    } else if (trimmedName.length < 2) {
-      newErrors.name = 'ラベル名は2文字以上で入力してください';
-    } else if (trimmedName.length > 50) {
-      newErrors.name = 'ラベル名は50文字以下で入力してください';
-    } else {
-      // 重複チェック（編集時は自分自身を除外）
-      const allLabels = getAllLabels();
-      const isDuplicate = allLabels.some(existingLabel => {
-        const isSameLabel = mode === 'edit' && label && existingLabel.id === label.id;
-        return !isSameLabel && existingLabel.name.toLowerCase() === trimmedName.toLowerCase();
+      return null; // required validationで処理
+    }
+
+    // 重複チェック（編集時は自分自身を除外）
+    const allLabels = getAllLabels();
+    const isDuplicate = allLabels.some(existingLabel => {
+      const isSameLabel = mode === 'edit' && label && existingLabel.id === label.id;
+      return !isSameLabel && existingLabel.name.toLowerCase() === trimmedName.toLowerCase();
+    });
+
+    return isDuplicate ? '同じ名前のラベルが既に存在します' : null;
+  }, [getAllLabels, mode, label]);
+
+  // フィールド設定
+  const fields: FormFieldConfig[] = useMemo(() => {
+    const baseFields: FormFieldConfig[] = [
+      // プレビューエリア
+      {
+        id: 'preview',
+        name: 'preview',
+        type: 'custom',
+        label: 'プレビュー',
+        value: '',
+        customComponent: null, // 後で動的に設定
+        onChange: () => {}, // プレビューは読み取り専用
+      },
+      // ラベル名入力
+      {
+        id: 'name',
+        name: 'name',
+        type: 'text',
+        label: 'ラベル名',
+        placeholder: 'ラベル名を入力',
+        value: initialValues.name,
+        autoFocus: true,
+        validation: {
+          required: true,
+          minLength: 2,
+          maxLength: 50,
+          custom: validateLabelName,
+        },
+        onChange: () => {}, // フォームで管理
+      },
+      // カラーピッカー
+      {
+        id: 'color',
+        name: 'color',
+        type: 'color-selector',
+        label: '色',
+        value: initialValues.color,
+        onChange: () => {}, // フォームで管理
+      },
+    ];
+
+    // ボード選択フィールド（条件付き追加）
+    if (enableBoardSelection && mode === 'create') {
+      const boardOptions = boardState.boards.map(board => ({
+        value: board.id,
+        label: board.title
+      }));
+
+      baseFields.push({
+        id: 'boardId',
+        name: 'boardId',
+        type: 'select',
+        label: '作成先ボード',
+        value: initialValues.boardId,
+        options: boardOptions,
+        onChange: () => {}, // フォームで管理
       });
-
-      if (isDuplicate) {
-        newErrors.name = '同じ名前のラベルが既に存在します';
-      }
     }
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  }, [formData.name, getAllLabels, mode, label]);
+    return baseFields;
+  }, [initialValues, enableBoardSelection, mode, boardState.boards, validateLabelName]);
 
-  // 保存処理（統合版）
-  const handleSave = useCallback(async () => {
-    if (!validateForm()) {
-      return;
-    }
+  // 統合フォーム管理
+  const form = useUnifiedForm(fields, initialValues);
 
-    setIsLoading(true);
-    setErrors({});
+  // プレビューコンポーネントの動的生成
+  const previewComponent = useMemo(() => {
+    const previewLabel = createPreviewLabel(form.state.values);
+    return (
+      <div className="rounded-lg p-4 border border-border border-gray-200">
+        <div className="flex justify-center">
+          <LabelChip label={previewLabel} />
+        </div>
+      </div>
+    );
+  }, [form.state.values, createPreviewLabel]);
 
+  // プレビューフィールドのカスタムコンポーネントを更新
+  const updatedFields = useMemo(() =>
+    fields.map(field =>
+      field.id === 'preview'
+        ? { ...field, customComponent: previewComponent }
+        : field
+    ), [fields, previewComponent]
+  );
+
+  // フォーム送信処理
+  const handleSubmit = useCallback(async (values: Record<string, unknown>) => {
     try {
       const labelData = {
-        name: formData.name.trim(),
-        color: formData.color,
-        boardId: formData.boardId
+        name: String(values['name'] || '').trim(),
+        color: String(values['color'] || '#0969da'),
+        boardId: values['boardId'] ? String(values['boardId']) : undefined
       };
 
-      // create/edit両方でonSaveを使用
       if (onSave) {
         onSave(labelData);
       }
 
       onClose();
-    } catch (error) {
-      setErrors({ name: 'ラベルの保存に失敗しました' });
-    } finally {
-      setIsLoading(false);
+    } catch (_error) {
+      form.setError('name', 'ラベルの保存に失敗しました');
     }
-  }, [formData, validateForm, onSave, onClose]);
+  }, [onSave, onClose, form]);
 
   // キャンセル処理
   const handleCancel = useCallback(() => {
@@ -131,30 +185,24 @@ const LabelFormDialog: React.FC<LabelFormDialogProps> = ({
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
       e.preventDefault();
-      if (!isLoading) {
-        handleSave();
+      if (!form.state.isSubmitting && form.state.isValid) {
+        form.handleSubmit(handleSubmit)();
       }
     }
-  }, [handleSave, isLoading]);
+  }, [form, handleSubmit]);
 
-  // プレビュー用のラベルデータ
-  const previewLabel: Label = {
-    id: 'preview',
-    name: formData.name || 'ラベル名',
-    color: formData.color
-  };
-
+  // ダイアログアクション
   const actions = [
     {
       label: 'キャンセル',
-      variant: 'default' as const,
+      variant: 'outline' as const,
       onClick: handleCancel
     },
     {
       label: mode === 'create' ? '作成' : '更新',
-      variant: 'primary' as const,
-      onClick: handleSave,
-      disabled: !formData.name.trim() || isLoading
+      variant: 'default' as const,
+      onClick: form.handleSubmit(handleSubmit),
+      disabled: !form.state.values['name'] || String(form.state.values['name']).trim() === '' || form.state.isSubmitting
     }
   ];
 
@@ -167,76 +215,19 @@ const LabelFormDialog: React.FC<LabelFormDialogProps> = ({
       size="medium"
       actions={actions}
     >
-      <div style={{ display: 'flex', flexDirection: 'column', gap: "16px" }} onKeyDown={handleKeyDown}>
-        {/* プレビューエリア */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: "4px" }}>
-          <FormControl.Label sx={{ display: 'block' }}>
-            プレビュー
-          </FormControl.Label>
-          <div style={{
-            borderRadius: '8px',
-            padding: '16px',
-            border: '1px solid',
-            borderColor: 'var(--borderColor-muted)'
-          }}>
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
-              <LabelChip label={previewLabel} />
-            </div>
-          </div>
-        </div>
-
-        {/* ラベル名入力 */}
-        <FormControl>
-          <FormControl.Label>ラベル名</FormControl.Label>
-          <TextInput
-            value={formData.name}
-            onChange={(e) => {
-              setFormData(prev => ({ ...prev, name: e.target.value }));
-              // リアルタイムでエラーをクリア
-              if (errors.name) {
-                setErrors(prev => ({ ...prev, name: undefined }));
-              }
-            }}
-            placeholder="ラベル名を入力"
-            sx={{ width: '100%' }}
-            validationStatus={errors.name ? 'error' : undefined}
-            autoFocus
-            disabled={isLoading}
+      <div className="flex flex-col gap-4" onKeyDown={handleKeyDown}>
+        {updatedFields.map((field) => (
+          <UnifiedFormField
+            key={field.id}
+            {...field}
+            value={form.state.values[field.name]}
+            onChange={(value) => form.setValue(field.name, value)}
+            onBlur={() => form.setTouched(field.name, true)}
+            _error={form.getFieldError(field.name)}
+            touched={form.state.touched[field.name]}
+            disabled={form.state.isSubmitting}
           />
-          {errors.name && (
-            <InlineMessage variant="critical" message={errors.name} size="small" />
-          )}
-        </FormControl>
-
-        {/* ボード選択 */}
-        {enableBoardSelection && mode === 'create' && (
-          <FormControl>
-            <FormControl.Label>作成先ボード</FormControl.Label>
-            <Select
-              value={formData.boardId || ''}
-              onChange={(e) => setFormData(prev => ({ ...prev, boardId: e.target.value }))}
-              sx={{ width: '100%' }}
-              disabled={isLoading}
-            >
-              {boardState.boards.map(board => (
-                <Select.Option key={board.id} value={board.id}>
-                  {board.title}
-                </Select.Option>
-              ))}
-            </Select>
-          </FormControl>
-        )}
-
-        {/* カラーセレクター */}
-        <FormControl>
-          <FormControl.Label>色</FormControl.Label>
-          <div style={{ marginTop: "8px" }}>
-            <ColorSelector
-              selectedColor={formData.color}
-              onColorSelect={(color: string) => setFormData(prev => ({ ...prev, color }))}
-            />
-          </div>
-        </FormControl>
+        ))}
       </div>
     </UnifiedDialog>
   );
