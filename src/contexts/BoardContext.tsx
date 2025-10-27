@@ -5,6 +5,7 @@ import React, {
   useEffect,
   useMemo,
   useCallback,
+  useRef,
   type ReactNode,
 } from "react";
 import { v4 as uuidv4 } from "uuid";
@@ -215,10 +216,11 @@ const boardReducer = (state: BoardState, action: BoardAction): BoardState => {
         return state;
       }
 
-      const updatedBoard = updateBoardTimestamp({
+      const updatedBoard = {
         ...boardToUpdate,
         ...action.payload.updates,
-      });
+        updatedAt: new Date().toISOString(),
+      };
 
       return {
         ...state,
@@ -740,6 +742,44 @@ export const BoardProvider: React.FC<BoardProviderProps> = ({ children }) => {
     currentBoard: null,
   });
 
+  // UPDATE_BOARD重複実行防止用のRef（強化版）
+  const processingUpdatesRef = useRef<Set<string>>(new Set());
+
+  // 拡張されたdispatch関数（強力な重複実行防止機能付き）
+  const safeDispatch = useCallback((action: any) => {
+    // UPDATE_BOARDの重複実行防止（強化版）
+    if (action.type === "UPDATE_BOARD") {
+      const { boardId, updates } = action.payload;
+
+      // 操作固有のキーを生成（タスク移動の場合）
+      let operationKey = `${boardId}:${updates.updatedAt}`;
+
+      // カラム情報が含まれている場合はより詳細なキーを生成
+      if (updates.columns) {
+        const columnsSignature = updates.columns.map((col: any) =>
+          `${col.id}:${col.tasks?.length || 0}`
+        ).join('|');
+        operationKey = `${boardId}:${columnsSignature}:${updates.updatedAt}`;
+      }
+
+      // 重複実行防止チェック
+      if (processingUpdatesRef.current.has(operationKey)) {
+        return;
+      }
+
+      // 処理開始をマーク
+      processingUpdatesRef.current.add(operationKey);
+
+      // 3秒後に自動的にロックを解除
+      setTimeout(() => {
+        processingUpdatesRef.current.delete(operationKey);
+      }, 3000);
+    }
+
+    // 通常のdispatch実行
+    dispatch(action);
+  }, []);
+
   // 現在のボードを取得
   const currentBoard = useMemo(() => state.currentBoard, [state.currentBoard]);
 
@@ -789,9 +829,9 @@ export const BoardProvider: React.FC<BoardProviderProps> = ({ children }) => {
 
   const updateBoard = useCallback(
     (boardId: string, updates: Partial<KanbanBoard>) => {
-      dispatch({ type: "UPDATE_BOARD", payload: { boardId, updates } });
+      safeDispatch({ type: "UPDATE_BOARD", payload: { boardId, updates } });
     },
-    [],
+    [safeDispatch],
   );
 
   const deleteBoard = useCallback(
@@ -918,7 +958,7 @@ export const BoardProvider: React.FC<BoardProviderProps> = ({ children }) => {
     () => ({
       state,
       currentBoard,
-      dispatch,
+      dispatch: safeDispatch,
       createBoard,
       setCurrentBoard,
       updateBoard,
@@ -939,6 +979,7 @@ export const BoardProvider: React.FC<BoardProviderProps> = ({ children }) => {
     [
       state,
       currentBoard,
+      safeDispatch,
       createBoard,
       setCurrentBoard,
       updateBoard,
@@ -970,5 +1011,6 @@ export const useBoard = (): BoardContextType => {
   if (context === undefined) {
     throw new Error("useBoard must be used within a BoardProvider");
   }
+
   return context;
 };

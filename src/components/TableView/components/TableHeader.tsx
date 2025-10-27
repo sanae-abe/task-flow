@@ -33,7 +33,7 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
       >
         <span className="font-bold text-sm">{column.label}</span>
         {column.id === "title" && (
-          <span className="ml-1 flex-shrink-0 bg-neutral-100 text-neutral-900 text-xs px-1.5 py-0.5 rounded-full">{taskCount}</span>
+          <span className="ml-1 flex-shrink-0 bg-neutral-100 text-zinc-900 text-xs px-1.5 py-0.5 rounded-full">{taskCount}</span>
         )}
       </div>
     ))}

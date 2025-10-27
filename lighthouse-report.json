@@ -32004,7 +32004,7 @@
               "width": 250,
               "height": 59
             },
-            "snippet": "<div class=\"text-xs text-gray-600 leading-relaxed\">",
+            "snippet": "<div class=\"text-xs text-zinc-700 leading-relaxed\">",
             "nodeLabel": "「ボード設定」メニューから新しいボードを作成して、プロジェクトごとにタスクを管理しましょう"
           }
         ]

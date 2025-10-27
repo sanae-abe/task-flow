@@ -34,7 +34,7 @@ const AttachmentList: React.FC<AttachmentListProps> = ({
               <span className="text-sm font-semibold break-words leading-tight">
                 {attachment.name}
               </span>
-              <span className="text-xs text-gray-600">
+              <span className="text-xs text-zinc-700">
                 {formatFileSize(attachment.size)}
               </span>
             </div>

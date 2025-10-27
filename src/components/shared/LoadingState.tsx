@@ -87,12 +87,12 @@ const LoadingState = memo<LoadingStateProps>(({
       <div className="flex flex-col items-center gap-3">
         <Loader2
           size={spinnerConfig.iconSize}
-          className="animate-spin text-gray-600"
+          className="animate-spin text-zinc-700"
         />
         {loadingText && (
           <span className={cn(
             spinnerConfig.textClass,
-            'text-gray-500 text-center'
+            'text-zinc-500 text-center'
           )}>
             {loadingText}
           </span>

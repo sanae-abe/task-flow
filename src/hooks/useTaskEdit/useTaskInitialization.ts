@@ -20,11 +20,14 @@ export interface UseTaskInitializationReturn {
   // No additional return values needed - all operations are side effects
 }
 
+import { useKanban } from '../../contexts/KanbanContext';
 export const useTaskInitialization = ({
   task,
   isOpen,
   formState,
 }: UseTaskInitializationProps): UseTaskInitializationReturn => {
+  const { state } = useKanban();
+  
   // 前の値を追跡するためのref
   const prevIsOpenRef = useRef(isOpen);
   const prevTaskIdRef = useRef(task?.id);
@@ -84,6 +87,14 @@ export const useTaskInitialization = ({
 
         // ラベルの初期化
         formState.setLabels(task.labels ?? []);
+
+        // ColumnIdの初期化: タスクが属するカラムのIDを設定
+        if (state.currentBoard?.columns) {
+          const currentColumn = state.currentBoard.columns.find((column) =>
+            column.tasks.some((t) => t.id === task.id)
+          );
+          formState.setColumnId(currentColumn?.id ?? "");
+        }
       } else if (!isOpen && prevIsOpen) {
         // ダイアログが閉じられた時にフォームをリセット（前回開いていた場合のみ）
         formState.resetFormState();
@@ -93,7 +104,7 @@ export const useTaskInitialization = ({
     // refを更新
     prevIsOpenRef.current = isOpen;
     prevTaskIdRef.current = task?.id;
-  }, [isOpen, task, formState]);
+  }, [isOpen, task, formState, state.currentBoard]);
 
   return {};
-};
+};;

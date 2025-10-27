@@ -9,6 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
   DropdownMenuGroup,
+  DropdownMenuLabel
 } from "@/components/ui/dropdown-menu";
 import {
   Settings,
@@ -245,9 +246,9 @@ const TableColumnManager: React.FC = () => {
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-64 max-h-80 overflow-y-auto">
           <DropdownMenuGroup>
-            <div className="px-2 py-1.5 text-sm font-semibold text-gray-700 sticky top-0 bg-white border-b border-border border-gray-100">
+            <DropdownMenuLabel>
               表示カラム
-            </div>
+            </DropdownMenuLabel>
             <div className="max-h-48 overflow-y-auto">
               {(isSettingsOpen ? tempColumns : columns).map((column) => (
                 <DropdownMenuCheckboxItem
@@ -301,7 +302,7 @@ const TableColumnManager: React.FC = () => {
           }
         ]}
       >
-        <div className="mb-5 text-gray-600 text-sm">
+        <div className="mb-5 text-zinc-700 text-sm">
           カラムをドラッグして並び替え、表示切り替え、幅の調整ができます。<br />
           幅は50px〜1000pxの範囲で入力してください。
           {hasUnsavedChanges && (
@@ -360,7 +361,7 @@ const TableColumnManager: React.FC = () => {
 
                 {/* 幅設定 */}
                 <div className="flex items-center gap-1">
-                  <label className="text-sm text-gray-500 hidden sm:block">幅:</label>
+                  <label className="text-sm text-zinc-500 hidden sm:block">幅:</label>
                   <Input
                     value={column.width}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
@@ -384,7 +385,7 @@ const TableColumnManager: React.FC = () => {
                         handleMoveUp(column.id);
                       }}
                       disabled={isFirst}
-                      className={cn("p-2 hover:bg-gray-200", isFirst ? "text-gray-300" : "text-foreground")}
+                      className={cn("p-2 hover:bg-gray-200", isFirst ? "text-zinc-300" : "text-foreground")}
                     />
                     <IconButton
                       icon={ChevronDown}
@@ -395,7 +396,7 @@ const TableColumnManager: React.FC = () => {
                         handleMoveDown(column.id);
                       }}
                       disabled={isLast}
-                      className={cn("p-2 hover:bg-gray-200", isLast ? "text-gray-300" : "text-foreground")}
+                      className={cn("p-2 hover:bg-gray-200", isLast ? "text-zinc-300" : "text-foreground")}
                     />
                   </div>
 

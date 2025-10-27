@@ -5,11 +5,12 @@
  * save, delete, and other user interaction handlers.
  */
 
-import { useCallback } from 'react';
+import { useCallback, useRef } from 'react';
 import type { Task } from '../../types';
 import type { TaskWithColumn } from '../../types/table';
 import { fromDateTimeLocalString } from '../../utils/dateHelpers';
 import { useKanban } from '../../contexts/KanbanContext';
+import { logger } from '../../utils/logger';
 import type { UseTaskFormStateReturn } from './useTaskFormState';
 
 export interface UseTaskHandlersProps {
@@ -37,8 +38,18 @@ export const useTaskHandlers = ({
 }: UseTaskHandlersProps): UseTaskHandlersReturn => {
   const { state, moveTask } = useKanban();
 
+  // 🔧 ULTIMATE FIX: 保存実行中フラグで重複実行を完全防止
+  const savingInProgressRef = useRef<boolean>(false);
+
   const handleSave = useCallback(() => {
+    // 🔧 ULTIMATE FIX: 重複実行防止
+    if (savingInProgressRef.current) {
+      return;
+    }
+
     if (task && formState.title.trim()) {
+      // 保存開始をマーク
+      savingInProgressRef.current = true;
       let dueDateObj: Date | undefined = undefined;
 
       if (formState.dueDate) {
@@ -61,6 +72,8 @@ export const useTaskHandlers = ({
       const currentColumn = state.currentBoard?.columns.find((column) =>
         column.tasks.some((t) => t.id === task.id),
       );
+
+      let columnMoved = false;
 
       if (currentColumn && formState.columnId && currentColumn.id !== formState.columnId) {
         // 最後のカラム（完了カラム）への移動かどうかを判定
@@ -85,6 +98,7 @@ export const useTaskHandlers = ({
 
         // タスクを移動
         moveTask(task.id, currentColumn.id, formState.columnId, 0);
+        columnMoved = true;
       }
 
       const updatedTask: TaskWithColumn = {
@@ -103,7 +117,31 @@ export const useTaskHandlers = ({
         updatedAt: new Date().toISOString(),
       };
 
-      onSave(updatedTask);
+      // 🔧 ULTIMATE FIX: カラム移動のみの場合はonCancelでダイアログを閉じる
+      if (columnMoved) {
+        // 保存完了をマーク
+        savingInProgressRef.current = false;
+        // カラム移動のみの場合はonCancelでダイアログを閉じる
+        // （onSaveを呼ぶとmoveTaskの変更が上書きされる）
+        onCancel();
+        return;
+      }
+
+      try {
+        onSave(updatedTask);
+      } catch (_error) {
+        logger._error('❌ handleSave failed', {
+          taskId: task.id,
+          taskTitle: task.title,
+          _error
+        });
+      } finally {
+        // 保存完了をマーク（必ず実行）
+        savingInProgressRef.current = false;
+      }
+    } else {
+      // バリデーションエラーの場合もフラグをリセット
+      savingInProgressRef.current = false;
     }
   }, [
     task,

@@ -67,11 +67,13 @@ export const SelectField: React.FC<SelectFieldProps> = React.memo(
     // エラー状態の判定
     const hasError = Boolean(touched && _error);
 
+    const stringValue = toStringValue(value);
+
     return (
       <NativeSelect
         id={id}
         name={name}
-        value={toStringValue(value)}
+        value={stringValue}
         onChange={handleInputChange}
         onBlur={handleBlur}
         onFocus={handleFocus}

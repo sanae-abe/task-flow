@@ -60,7 +60,7 @@ const ImportModeSelector: React.FC<ImportModeSelectorProps> = ({
           {getModeIcon(selectedMode)}
           <div>
             <p className="font-semibold text-sm">現在のインポートモード</p>
-            <p className="text-xs text-gray-600">{selectedConfig?.label}</p>
+            <p className="text-xs text-zinc-700">{selectedConfig?.label}</p>
           </div>
         </div>
       )}
@@ -80,7 +80,7 @@ const ImportModeSelector: React.FC<ImportModeSelectorProps> = ({
                 {getModeIcon(modeConfig.mode)}
                 <span className="flex flex-col items-start">
                   <span className="font-bold text-sm">{modeConfig.label}</span>
-                  <span className="text-xs text-gray-600">
+                  <span className="text-xs text-zinc-700">
                     {modeConfig.description}
                   </span>
                 </span>

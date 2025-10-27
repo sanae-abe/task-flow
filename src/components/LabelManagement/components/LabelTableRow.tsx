@@ -35,7 +35,7 @@ const LabelTableRow: React.FC<LabelTableRowProps> = ({
 
     {/* 所属ボード */}
     <div className="overflow-hidden text-ellipsis whitespace-nowrap">
-      <span className="text-gray-600">
+      <span className="text-zinc-700">
         {label.boardName}
       </span>
     </div>

@@ -45,10 +45,10 @@ const PreviewButton = memo<PreviewButtonProps>(
 // プレビューフッターコンポーネント
 const PreviewFooter = memo<PreviewFooterProps>(({ attachment }) => (
   <div className="p-3 border-t border-gray-200 bg-gray-50 flex gap-3">
-    <span className="text-xs text-gray-600">
+    <span className="text-xs text-zinc-700">
       ファイルサイズ: {formatFileSize(attachment.size)}
     </span>
-    <span className="text-xs text-gray-600">
+    <span className="text-xs text-zinc-700">
       アップロード日:{" "}
       {new Date(attachment.uploadedAt).toLocaleDateString("ja-JP")}
     </span>

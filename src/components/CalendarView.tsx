@@ -97,7 +97,7 @@ const CalendarView: React.FC = () => {
         <div className="overflow-hidden rounded-md shadow-sm">
           <div className="grid grid-cols-7 gap-px bg-border border-border border-b rounded-t-md mb-0">
             {weekDays.map((day) => (
-              <div key={day} className="p-2 bg-background text-center font-semibold text-xs text-muted-foreground">
+              <div key={day} className="p-2 bg-background text-center font-semibold text-xs text-zinc-700">
                 {day}
               </div>
             ))}

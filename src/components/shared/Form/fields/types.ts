@@ -40,6 +40,8 @@ export interface BaseFieldProps {
   touched?: boolean;
   /** カスタムスタイル */
   sx?: Record<string, unknown>;
+  /** インラインスタイル */
+  style?: React.CSSProperties;
 }
 
 /**

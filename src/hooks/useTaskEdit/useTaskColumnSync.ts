@@ -5,7 +5,7 @@
  * completedAt updates based on task status changes.
  */
 
-import { useEffect, useRef, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import type { Task } from '../../types';
 import { useKanban } from '../../contexts/KanbanContext';
 import { toDateTimeLocalString } from '../../utils/dateHelpers';
@@ -24,31 +24,10 @@ export interface UseTaskColumnSyncReturn {
 
 export const useTaskColumnSync = ({
   task,
-  isOpen,
+  isOpen: _isOpen, // eslint-disable-line @typescript-eslint/no-unused-vars
   formState,
 }: UseTaskColumnSyncProps): UseTaskColumnSyncReturn => {
   const { state } = useKanban();
-
-  // columns配列の変更を追跡するためのref
-  const prevColumnsLengthRef = useRef(state.currentBoard?.columns.length || 0);
-
-  // カラム情報の初期化（columns配列の長さが変わった場合のみ実行）
-  useEffect(() => {
-    if (isOpen && task && state.currentBoard?.columns) {
-      const currentColumnsLength = state.currentBoard.columns.length;
-      const prevColumnsLength = prevColumnsLengthRef.current;
-
-      // カラム数が変更された場合、またはタスクが開かれた場合のみ実行
-      if (currentColumnsLength !== prevColumnsLength || formState.columnId === "") {
-        const currentColumn = state.currentBoard.columns.find((column) =>
-          column.tasks.some((t) => t.id === task.id),
-        );
-        formState.setColumnId(currentColumn?.id ?? "");
-        prevColumnsLengthRef.current = currentColumnsLength;
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen, task?.id, state.currentBoard?.columns?.length]);
 
   // ステータス変更時の完了日時の自動更新
   useEffect(() => {
@@ -131,10 +110,10 @@ export const useTaskColumnSync = ({
         value: column.id,
         label: column.title,
       }));
-  }, [state.currentBoard]);
+  }, [state.currentBoard, formState.columnId]);
 
   return {
     isCompleted,
     statusOptions,
   };
-};
+};;;;

@@ -46,7 +46,7 @@ export const RecycleBinHeader: React.FC<RecycleBinHeaderProps> = ({
         </LoadingButton>
       </div>
 
-      <div className="my-3 text-muted-foreground text-sm">
+      <div className="my-3 text-zinc-700 text-sm">
         {UI_TEXT.VIEW.TASK_COUNT(taskCount)}
       </div>
 

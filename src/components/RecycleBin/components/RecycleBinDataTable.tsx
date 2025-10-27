@@ -96,14 +96,14 @@ export const RecycleBinDataTable: React.FC<RecycleBinDataTableProps> = ({
                 <Clock size={14} />
                 <span
                   className={`${
-                    recycleBinSettings.retentionDays === null ? 'text-gray-500' : 'text-foreground'
+                    recycleBinSettings.retentionDays === null ? 'text-zinc-500' : 'text-foreground'
                   }`}
                 >
                   {item.timeUntilDeletion}
                 </span>
               </>
             ) : (
-              <span className="text-gray-500 text-center">
+              <span className="text-zinc-500 text-center">
                 未設定
               </span>
             )}

@@ -75,7 +75,7 @@ interface HelpItemProps {
 }
 
 const HelpItem: React.FC<HelpItemProps> = ({ title, description }) => (
-  <div className="p-2 flex gap-3 items-start mb-2 bg-neutral-100 rounded-md">
+  <div className="p-2 flex gap-3 items-start bg-neutral-100 rounded-md">
     <span
       style={{ minWidth: TITLE_MIN_WIDTH }}
       className={cn(`text-sm font-semibold text-primary flex-shrink-0 break-words`)}

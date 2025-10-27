@@ -22,7 +22,7 @@ const TaskIndicators: React.FC<TaskIndicatorsProps> = ({
   return (
     <div className="flex justify-end gap-2">
       {hasSubTasks && (
-        <div className="flex items-center gap-1 px-1 py-1 rounded text-xs font-normal self-start text-gray-500">
+        <div className="flex items-center gap-1 px-1 py-1 rounded text-xs font-normal self-start text-zinc-500">
           <Check size={12} />
           <span className="text-xs">
             {subTasks.filter((sub) => sub.completed).length}/{subTasks.length}
@@ -31,7 +31,7 @@ const TaskIndicators: React.FC<TaskIndicatorsProps> = ({
       )}
 
       {hasAttachments && (
-        <div className="flex items-center gap-1 px-1 py-1 rounded text-xs font-normal self-start text-gray-500">
+        <div className="flex items-center gap-1 px-1 py-1 rounded text-xs font-normal self-start text-zinc-500">
           <Paperclip size={12} />
           <span className="text-xs">{attachments.length}</span>
         </div>

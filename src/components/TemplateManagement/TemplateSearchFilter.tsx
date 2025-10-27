@@ -32,7 +32,7 @@ const TemplateSearchFilter: React.FC<TemplateSearchFilterProps> = ({
   <div className="flex gap-2 flex-wrap items-center p-3 bg-gray-50 rounded-md border border-border border-gray-200">
     {/* 検索 */}
     <div className="flex-1 min-w-[200px] relative">
-      <Search size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+      <Search size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-400" />
       <Input
         placeholder="テンプレートを検索..."
         value={searchQuery}

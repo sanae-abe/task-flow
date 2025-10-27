@@ -346,7 +346,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       }
     },
     [boardState.currentBoard, findTaskById, boardDispatch, notify],
-  );;;;;
+  );
 
   // タスク更新
   const updateTask = useCallback(

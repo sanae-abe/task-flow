@@ -39,7 +39,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ item }) => {
         </h2>
 
         {/* タイプ表示 */}
-        <span className="text-xs text-muted-foreground font-normal m-0 mt-1 block">
+        <span className="text-xs text-zinc-700 font-normal m-0 mt-1 block">
           {typeText}
         </span>
       </div>

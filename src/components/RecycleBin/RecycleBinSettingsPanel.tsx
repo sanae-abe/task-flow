@@ -42,7 +42,7 @@ export const RecycleBinSettingsPanel: React.FC<RecycleBinSettingsPanelProps> = (
       </div>
 
       {/* 説明 */}
-      <span className="text-sm text-muted-foreground mb-5 block">
+      <span className="text-sm text-zinc-700 mb-5 block">
         {UI_TEXT.PANEL.DESCRIPTION_WITH_UNLIMITED}
       </span>
 

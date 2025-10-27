@@ -119,7 +119,7 @@ const BoardRecycleBinView: React.FC<BoardRecycleBinViewProps> = ({
   if (deletedBoards.length === 0) {
     return (
       <div className="p-4 text-center">
-        <p className="text-gray-600 text-sm">
+        <p className="text-zinc-700 text-sm">
           ゴミ箱にボードはありません
         </p>
       </div>
@@ -160,10 +160,10 @@ const BoardRecycleBinView: React.FC<BoardRecycleBinViewProps> = ({
                 <h4 className="text-sm font-semibold mb-1 break-words">
                   {board.title}
                 </h4>
-                <p className="text-xs text-gray-600">
+                <p className="text-xs text-zinc-700">
                   削除日時: {new Date(board.deletedAt || "").toLocaleString("ja-JP")}
                 </p>
-                <p className="text-xs text-gray-600 mt-1">
+                <p className="text-xs text-zinc-700 mt-1">
                   カラム数: {board.columns.length}個
                 </p>
               </div>

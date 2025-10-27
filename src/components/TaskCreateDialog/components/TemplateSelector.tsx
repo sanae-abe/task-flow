@@ -37,7 +37,7 @@ export const TemplateSelector: React.FC<TemplateSelectorProps> = ({
 
   if (templates.length === 0) {
     return (
-      <div className="p-8 text-center text-gray-500 text-sm">
+      <div className="p-8 text-center text-muted-foreground text-sm">
         テンプレートが登録されていません。<br />
         設定画面からテンプレートを作成してください。
       </div>
@@ -120,12 +120,12 @@ const TemplateCard: React.FC<TemplateCardProps> = ({ template, onSelect, isFavor
         )}
         <span>{template.name}</span>
       </div>
-      <div className="text-sm text-gray-600 mb-2">
+      <div className="text-sm text-zinc-700 mb-2">
         {template.description
-          ? stripHtmlTags(template.description).slice(0, 100) + '...'
-          : stripHtmlTags(template.taskDescription).slice(0, 100) + '...'}
+          ? `${stripHtmlTags(template.description).slice(0, 100)  }...`
+          : `${stripHtmlTags(template.taskDescription).slice(0, 100)  }...`}
       </div>
-      <div className="text-xs text-gray-500">
+      <div className="text-xs text-zinc-500">
         カテゴリー: {template.category} | 使用回数: {template.usageCount}回
       </div>
     </div>

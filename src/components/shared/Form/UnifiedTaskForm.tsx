@@ -146,8 +146,9 @@ export const UnifiedTaskForm = memo<UnifiedTaskFormProps>(({
       values['selectedBoardId'] = createOptions.selectedBoardId;
     }
 
+
     return values;
-  }, [mode, title, editOptions, createOptions]);
+  }, [mode, title, editOptions?.columnId, createOptions?.selectedBoardId]);
 
   // 統合フォーム管理
   const form = useUnifiedForm(fields, initialValues);
@@ -248,12 +249,16 @@ export const UnifiedTaskForm = memo<UnifiedTaskFormProps>(({
       )}
 
       {/* フォームフィールド */}
-      {updatedFields.map((field) => (
-        <UnifiedFormField
-          key={field.id}
-          {...field}
-          value={field.type === 'custom' ? field.value : form.state.values[field.name]}
-          onChange={(value) => {
+      {updatedFields.map((field) => {
+        const fieldValue = field.type === 'custom' ? field.value : form.state.values[field.name];
+
+
+        return (
+          <UnifiedFormField
+            key={field.id}
+            {...field}
+            value={fieldValue}
+            onChange={(value) => {
             // カスタムコンポーネントは独自のonChangeを使用
             if (field.type !== 'custom') {
               form.setValue(field.name, value);
@@ -288,7 +293,8 @@ export const UnifiedTaskForm = memo<UnifiedTaskFormProps>(({
           hideLabel={field.label === ''}
           className={field.name === 'dueDate' ? '!mb-4' : undefined}
         />
-      ))}
+        );
+      })}
     </div>
   );
 });

@@ -30,7 +30,7 @@ export const DragHandleAndToggle: React.FC<DragHandleAndToggleProps> = ({
         {...dragListeners}
         className="drag-handle p-1 cursor-grab"
       >
-        <GripVertical size={16} className="text-gray-500" />
+        <GripVertical size={16} className="text-zinc-500" />
       </div>
 
       <IconButton

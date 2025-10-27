@@ -121,7 +121,7 @@ const FileList: React.FC<FileListProps> = ({
       ))}
 
       {remainingCount > 0 && (
-        <p className="text-xs text-gray-600 text-center mt-1">
+        <p className="text-xs text-zinc-700 text-center mt-1">
           他{remainingCount}個のファイル
         </p>
       )}
@@ -151,7 +151,7 @@ const FileListItem: React.FC<FileListItemProps> = React.memo(
             <span className="text-xs font-semibold break-words">
               {attachment.name}
             </span>
-            <span className="text-[10px] text-gray-600">
+            <span className="text-[10px] text-zinc-700">
               {formatFileSize(attachment.size)}
             </span>
           </div>

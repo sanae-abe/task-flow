@@ -1,6 +1,6 @@
 import React from "react";
 import { Sparkles, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import IconButton from "@/components/shared/IconButton";
 
 interface FirstTimeUserHintProps {
   onDismiss: () => void;
@@ -16,19 +16,16 @@ const FirstTimeUserHint: React.FC<FirstTimeUserHintProps> = ({ onDismiss }) => (
         <div className="font-bold mb-1 text-sm">
           TaskFlowアプリへようこそ！
         </div>
-        <div className="text-xs text-gray-600 leading-relaxed">
+        <div className="text-xs text-zinc-700 leading-relaxed">
           「ボード設定」メニューから新しいボードを作成して、プロジェクトごとにタスクを管理しましょう
         </div>
       </div>
-      <Button
-        variant="ghost"
-        size="sm"
+      <IconButton
+        icon={X}
+        size="icon"
         onClick={onDismiss}
-        aria-label="ヒントを閉じる"
-        className="text-gray-500 p-1 min-w-0 hover:text-gray-700 hover:bg-gray-100"
-      >
-        <X size={16} />
-      </Button>
+        ariaLabel="ヒントを閉じる"
+      />
     </div>
   </div>
 );

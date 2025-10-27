@@ -16,7 +16,7 @@ const ContentBox = memo<ContentBoxProps>(
   }) => (
     <div className={`p-3 rounded-md ${backgroundClass}`}>
       {isEmpty && emptyText ? (
-        <span className="text-sm text-gray-500 italic">
+        <span className="text-sm text-muted-foreground italic">
           {emptyText}
         </span>
       ) : (

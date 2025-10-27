@@ -42,7 +42,7 @@ const KanbanBoard: React.FC = () => {
   if (!currentBoard) {
     return (
       <div className="flex items-center justify-center h-96">
-        <p className="text-base text-gray-500">
+        <p className="text-base text-zinc-500">
           Please select a board
         </p>
       </div>

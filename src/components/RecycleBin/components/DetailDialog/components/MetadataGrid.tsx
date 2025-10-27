@@ -71,7 +71,7 @@ export const MetadataGrid: React.FC<MetadataGridProps> = ({ item }) => {
         {/* 削除日時 */}
         {formattedDeletedAt && (
           <div className="flex justify-between items-center py-3 border-b border-border border-border">
-            <span className="text-sm text-muted-foreground m-0">
+            <span className="text-sm text-zinc-700 m-0">
               削除日時
             </span>
             <span className="text-sm text-foreground m-0 font-semibold">
@@ -88,7 +88,7 @@ export const MetadataGrid: React.FC<MetadataGridProps> = ({ item }) => {
               index === metadata.length - 1 ? '' : 'border-b border-border border-border'
             } ${index === metadata.length - 1 ? 'pb-0' : ''}`}
           >
-            <span className="text-sm text-muted-foreground m-0">
+            <span className="text-sm text-zinc-700 m-0">
               {meta.label}
             </span>
             <span className="text-sm text-foreground m-0 font-semibold">

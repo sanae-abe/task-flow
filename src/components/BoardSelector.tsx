@@ -22,7 +22,7 @@ import type { KanbanBoard } from "../types";
 // 空状態表示コンポーネント
 const EmptyBoardsMessage: React.FC = memo(() => (
   <div className="flex items-center">
-    <p className="text-gray-600 text-sm">利用可能なボードがありません</p>
+    <p className="text-zinc-700 text-sm">利用可能なボードがありません</p>
   </div>
 ));
 

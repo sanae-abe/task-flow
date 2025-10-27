@@ -64,7 +64,7 @@ export const LabelDataTable: React.FC<LabelDataTableProps> = ({
         const count = row.getValue("usageCount") as number;
         return (
           <div className="text-center">
-            <span className={`text-sm ${count > 0 ? 'font-bold text-foreground' : 'font-normal text-muted-foreground'}`}>
+            <span className={`text-sm ${count > 0 ? 'font-bold text-foreground' : 'font-normal text-zinc-700'}`}>
               {count}
             </span>
           </div>

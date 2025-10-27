@@ -40,7 +40,7 @@ export const SettingsRetentionInput: React.FC<SettingsRetentionInputProps> = ({
         />
         <span className="text-muted-foreground">{UI_TEXT.PANEL.RETENTION_UNIT}</span>
       </div>
-      <small id="retention-help" className="text-xs text-muted-foreground">
+      <small id="retention-help" className="text-xs text-muted-foreground0">
         {UI_TEXT.PANEL.RETENTION_HELP}
       </small>
       {validationError && (

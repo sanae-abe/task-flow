@@ -64,13 +64,13 @@ export const RecycleBinTaskItem: React.FC<RecycleBinTaskItemProps> = ({
       </div>
 
       <div className="flex flex-col gap-2 mb-3">
-        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+        <div className="flex items-center gap-2 text-xs text-zinc-700">
           <FolderKanban size={12} />
           <span>
             {task.boardTitle} <ArrowRight size={12} /> {task.columnTitle}
           </span>
         </div>
-        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+        <div className="flex items-center gap-2 text-xs text-zinc-700">
           <Clock size={12} />
           <span>
             {UI_TEXT.VIEW.DELETION_SCHEDULE}{" "}
@@ -84,7 +84,7 @@ export const RecycleBinTaskItem: React.FC<RecycleBinTaskItemProps> = ({
 
       {task.description && (
         <div className="mt-2 pt-2 border-t border-border">
-          <p className="text-xs text-muted-foreground m-0 line-clamp-3 whitespace-pre-wrap">
+          <p className="text-xs text-zinc-700 m-0 line-clamp-3 whitespace-pre-wrap">
             {task.description.replace(/<[^>]*>/g, "")} {/* HTMLタグを除去 */}
           </p>
         </div>
