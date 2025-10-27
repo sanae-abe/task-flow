@@ -15,6 +15,7 @@ import {
   FileCode,
   Smile,
   Eraser,
+  ArrowRight,
 } from 'lucide-react';
 
 import { UnderlineIcon, StrikethroughIcon } from './icons';
@@ -101,6 +102,12 @@ const Toolbar: React.FC<ToolbarProps> = ({
       icon: Smile,
       title: '絵文字',
       action: () => onButtonClick('emoji'),
+    },
+    {
+      id: 'escape',
+      icon: ArrowRight,
+      title: '脱出 (Escape/Shift+Enter)',
+      action: () => onButtonClick('escape'),
     },
     {
       id: 'removeFormatting',

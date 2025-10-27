@@ -157,6 +157,37 @@ export const removeFormatting = (): void => {
         }
       });
 
+      // Remove lists (UL/OL) and convert list items to paragraphs
+      const listElements = editorContainer.querySelectorAll('ul, ol');
+      listElements.forEach((listElement: Element) => {
+        if (selection.containsNode(listElement, true)) {
+          // Get all list items
+          const listItems = listElement.querySelectorAll('li');
+          const fragment = document.createDocumentFragment();
+
+          listItems.forEach((li: Element) => {
+            // Create a paragraph for each list item
+            const paragraph = document.createElement('p');
+            paragraph.textContent = li.textContent || '';
+            fragment.appendChild(paragraph);
+          });
+
+          // Replace the entire list with paragraphs
+          listElement.parentNode?.replaceChild(fragment, listElement);
+        }
+      });
+
+      // Also handle individual list items that might be selected
+      const listItemElements = editorContainer.querySelectorAll('li');
+      listItemElements.forEach((listItem: Element) => {
+        if (selection.containsNode(listItem, true)) {
+          // Convert list item to paragraph
+          const paragraph = document.createElement('p');
+          paragraph.textContent = listItem.textContent || '';
+          listItem.parentNode?.replaceChild(paragraph, listItem);
+        }
+      });
+
       // Remove any remaining style attributes
       const styledElements = editorContainer.querySelectorAll('[style]');
       styledElements.forEach((element: Element) => {

@@ -171,37 +171,65 @@ export const useEditorHandlers = ({
       }
     }
 
-    // Handle Escape key to exit code blocks
+    // Handle Escape key to exit code blocks and lists
     if (key === 'Escape') {
+      event.preventDefault();
+
+      // Direct DOM manipulation for escape
+      if (editorRef.current) {
+        try {
+          // Create a new paragraph element
+          const newParagraph = document.createElement('p');
+          newParagraph.innerHTML = '<br>';
+
+          // Append it to the end of the editor
+          editorRef.current.appendChild(newParagraph);
+
+          // Move cursor to the new paragraph
+          const range = document.createRange();
+          range.setStart(newParagraph, 0);
+          range.collapse(true);
+
+          const selection = window.getSelection();
+          if (selection) {
+            selection.removeAllRanges();
+            selection.addRange(range);
+          }
+
+          // Focus the editor
+          editorRef.current.focus();
+
+          // Scroll to the new paragraph
+          newParagraph.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+          handleInput();
+        } catch (_error) {
+          // Ultimate fallback: focus editor and scroll to bottom
+          editorRef.current.focus();
+          editorRef.current.scrollTop = editorRef.current.scrollHeight;
+        }
+      }
+      return;
+    }
+
+    // Handle Enter key in code blocks and lists
+    if (key === 'Enter') {
       const selection = window.getSelection();
       if (selection && selection.rangeCount > 0) {
         const range = selection.getRangeAt(0);
         let node = range.startContainer;
+        let codeElement: Element | null = null;
+        let listElement: Element | null = null;
 
-        // Check if we're inside a code block
+        // Check if we're inside a code block or list
         while (node && node !== editorRef.current) {
           if (node.nodeType === Node.ELEMENT_NODE) {
             const element = node as Element;
             if (element.tagName === 'PRE' || element.tagName === 'CODE') {
-              event.preventDefault();
-
-              // Move cursor to after the code block
-              const newRange = document.createRange();
-              newRange.setStartAfter(element);
-              newRange.collapse(true);
-              selection.removeAllRanges();
-              selection.addRange(newRange);
-
-              // Insert a line break to ensure cursor positioning
-              const br = document.createElement('br');
-              newRange.insertNode(br);
-              newRange.setStartAfter(br);
-              newRange.collapse(true);
-              selection.removeAllRanges();
-              selection.addRange(newRange);
-
-              handleInput();
-              return;
+              codeElement = element;
+            }
+            if (element.tagName === 'UL' || element.tagName === 'OL' || element.tagName === 'LI') {
+              listElement = element;
             }
           }
           const parentNode = node.parentNode;
@@ -210,30 +238,142 @@ export const useEditorHandlers = ({
           }
           node = parentNode;
         }
-      }
-    }
 
-    // Handle Enter key in code blocks
-    if (key === 'Enter') {
-      const selection = window.getSelection();
-      if (selection && selection.rangeCount > 0) {
-        const range = selection.getRangeAt(0);
-        let node = range.startContainer;
+        // Shift+Enter always escapes from code blocks and lists
+        if (event.shiftKey) {
+          event.preventDefault();
 
-        // Check if we're inside a code block
-        while (node && node !== editorRef.current) {
-          if (node.nodeType === Node.ELEMENT_NODE) {
-            const element = node as Element;
-            if (element.tagName === 'PRE' || element.tagName === 'CODE') {
-              // We're in a code block, allow default behavior
+          // Direct DOM manipulation for Shift+Enter
+          if (editorRef.current) {
+            try {
+              // Create a new paragraph element
+              const newParagraph = document.createElement('p');
+              newParagraph.innerHTML = '<br>';
+
+              // Append it to the end of the editor
+              editorRef.current.appendChild(newParagraph);
+
+              // Move cursor to the new paragraph
+              const range = document.createRange();
+              range.setStart(newParagraph, 0);
+              range.collapse(true);
+
+              const selection = window.getSelection();
+              if (selection) {
+                selection.removeAllRanges();
+                selection.addRange(range);
+              }
+
+              // Focus the editor
+              editorRef.current.focus();
+
+              // Scroll to the new paragraph
+              newParagraph.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+              handleInput();
+            } catch (_error) {
+              // Ultimate fallback: focus editor and scroll to bottom
+              editorRef.current.focus();
+              editorRef.current.scrollTop = editorRef.current.scrollHeight;
+            }
+          }
+          return;
+        }
+
+        // Handle Enter in code blocks
+        if (codeElement) {
+          const parentElement = codeElement.tagName === 'CODE' ? codeElement.parentElement : codeElement;
+          if (parentElement && parentElement.tagName === 'PRE') {
+            // Check if user pressed Enter twice (double Enter to escape)
+            const codeContent = parentElement.textContent || '';
+            const endsWithDoubleNewline = codeContent.endsWith('\n\n') || codeContent.endsWith('\n ');
+
+            if (endsWithDoubleNewline) {
+              // Double Enter pressed - escape from code block
+              event.preventDefault();
+
+              // Remove the extra newlines from the code block
+              const cleanContent = codeContent.replace(/\n\n$/, '\n').replace(/\n $/, '');
+              if (parentElement.firstChild) {
+                parentElement.firstChild.textContent = cleanContent;
+              }
+
+              // Create a new paragraph after the code block
+              const paragraph = document.createElement('p');
+              paragraph.appendChild(document.createTextNode(''));
+              parentElement.parentNode?.insertBefore(paragraph, parentElement.nextSibling);
+
+              // Move cursor to the new paragraph
+              const newRange = document.createRange();
+              newRange.setStart(paragraph, 0);
+              newRange.collapse(true);
+              selection.removeAllRanges();
+              selection.addRange(newRange);
+
+              handleInput();
               return;
             }
           }
-          const parentNode = node.parentNode;
-          if (!parentNode) {
-            break;
+          // Allow default behavior (line break within code block)
+          return;
+        }
+
+        // Handle Enter in lists
+        if (listElement) {
+          // Find the list item we're in
+          let listItem: Element | null = null;
+          let currentNode = range.startContainer;
+
+          while (currentNode && currentNode !== editorRef.current) {
+            if (currentNode.nodeType === Node.ELEMENT_NODE && (currentNode as Element).tagName === 'LI') {
+              listItem = currentNode as Element;
+              break;
+            }
+            const parentNode = currentNode.parentNode;
+            if (!parentNode) {
+              break;
+            }
+            currentNode = parentNode;
           }
-          node = parentNode;
+
+          if (listItem) {
+            const listItemContent = listItem.textContent || '';
+            const isEmptyListItem = listItemContent.trim() === '';
+
+            if (isEmptyListItem) {
+              // Empty list item - break out of the list
+              event.preventDefault();
+
+              const list = listItem.parentElement;
+              if (list) {
+                // Create a new paragraph after the list
+                const paragraph = document.createElement('p');
+                paragraph.appendChild(document.createTextNode(''));
+
+                // Remove the empty list item
+                listItem.remove();
+
+                // If the list is now empty, remove it entirely
+                if (list.children.length === 0) {
+                  list.parentNode?.replaceChild(paragraph, list);
+                } else {
+                  list.parentNode?.insertBefore(paragraph, list.nextSibling);
+                }
+
+                // Move cursor to the new paragraph
+                const newRange = document.createRange();
+                newRange.setStart(paragraph, 0);
+                newRange.collapse(true);
+                selection.removeAllRanges();
+                selection.addRange(newRange);
+
+                handleInput();
+                return;
+              }
+            }
+          }
+          // If not an empty list item, allow default behavior (new list item)
+          return;
         }
       }
     }
@@ -306,6 +446,42 @@ export const useEditorHandlers = ({
       case 'emoji':
         setSavedEmojiRange(saveSelection());
         setShowEmojiPicker(true);
+        break;
+      case 'escape':
+        // Force create a new paragraph using direct DOM manipulation
+        if (editorRef.current) {
+          try {
+            // Create a new paragraph element
+            const newParagraph = document.createElement('p');
+            newParagraph.innerHTML = '<br>';
+
+            // Append it to the end of the editor
+            editorRef.current.appendChild(newParagraph);
+
+            // Move cursor to the new paragraph
+            const range = document.createRange();
+            range.setStart(newParagraph, 0);
+            range.collapse(true);
+
+            const selection = window.getSelection();
+            if (selection) {
+              selection.removeAllRanges();
+              selection.addRange(range);
+            }
+
+            // Focus the editor
+            editorRef.current.focus();
+
+            // Scroll to the new paragraph
+            newParagraph.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+            handleInput();
+          } catch (_error) {
+            // Ultimate fallback: focus editor and scroll to bottom
+            editorRef.current.focus();
+            editorRef.current.scrollTop = editorRef.current.scrollHeight;
+          }
+        }
         break;
       case 'removeFormatting':
         removeFormatting();
