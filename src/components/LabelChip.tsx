@@ -87,10 +87,9 @@ const LabelChip = memo<LabelChipProps>(
             icon={X}
             onClick={handleRemove}
             ariaLabel={`${label.name}ラベルを削除`}
-            variant="muted"
             size="small"
             style={removeButtonStyles}
-            className="h-4 w-4 p-0"
+            className="h-4 w-4 p-0 hover:bg-transparent"
           />
         )}
       </Element>

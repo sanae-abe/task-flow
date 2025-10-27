@@ -436,6 +436,7 @@ export const BoardSettingsPanel: React.FC = () => {
             ariaLabel="カラムを追加"
             onClick={handleAddColumn}
             disabled={!newColumnName.trim()}
+            className="bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground w-10 h-10"
           />
         </div>
         {addColumnError && (
