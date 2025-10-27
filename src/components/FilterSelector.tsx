@@ -25,6 +25,7 @@ import { memo, useMemo } from "react";
 
 import type { TaskFilter, FilterConfig, Label, Priority } from "../types";
 import { priorityConfig } from "../utils/priorityConfig";
+import { getLabelColors } from "../utils/labelHelpers";
 
 interface FilterSelectorProps {
   currentFilter: TaskFilter;
@@ -236,19 +237,25 @@ const FilterSelector = memo<FilterSelectorProps>(
                             すべてのラベル
                           </DropdownMenuCheckboxItem>
                           <DropdownMenuSeparator />
-                          {availableLabels.map((label) => (
-                            <DropdownMenuCheckboxItem
-                              key={label.id}
-                              checked={currentFilter.selectedLabelNames?.includes(label.name) || false}
-                              onCheckedChange={() => handleLabelToggle(label.name)}
-                            >
-                              <div
-                                style={{ backgroundColor: label.color }}
-                                className="mr-2 w-3 h-3 rounded-xs"
-                              />
-                              {label.name}
-                            </DropdownMenuCheckboxItem>
-                          ))}
+                          {availableLabels.map((label) => {
+                            const colors = getLabelColors(label.color);
+                            return (
+                              <DropdownMenuCheckboxItem
+                                key={label.id}
+                                checked={currentFilter.selectedLabelNames?.includes(label.name) || false}
+                                onCheckedChange={() => handleLabelToggle(label.name)}
+                              >
+                                <div
+                                  style={{
+                                    backgroundColor: colors.bg,
+                                    borderColor: colors.color
+                                  }}
+                                  className="mr-2 w-3 h-3 rounded-xs border"
+                                />
+                                {label.name}
+                              </DropdownMenuCheckboxItem>
+                            );
+                          })}
                         </DropdownMenuSubContent>
                       </DropdownMenuPortal>
                     </DropdownMenuSub>

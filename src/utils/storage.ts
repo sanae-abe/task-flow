@@ -188,7 +188,7 @@ const createDemoBoard = (): KanbanBoard[] => {
           {
             id: uuidv4(),
             title: 'TaskFlow リッチテキスト機能の実装',
-            description: `<p>TaskFlowアプリにリッチテキスト編集機能を追加する。</p><p><strong>要件：</strong></p><ul><li>太字、斜体、下線のサポート</li><li>リンク挿入機能</li><li>コードブロック対応</li><li>HTML出力とMarkdown変換</li></ul><p><strong>技術調査：</strong></p><ul><li><a href="https://lexical.dev/" target="_blank" rel="noopener noreferrer">Lexical Editor</a> - Meta製の高性能エディタ</li><li><a href="https://quilljs.com/" target="_blank" rel="noopener noreferrer">React Quill</a> - 軽量なリッチテキストエディタ</li></ul><p><code style="background-color: var(--muted); color: #e01e5a; padding: 2px 4px; border-radius: 4px; font-family: 'Monaco', 'Menlo', 'Consolas', monospace; font-size: 0.875em; border: 1px solid #d0d7de;">npm install @lexical/react lexical</code></p><div style="margin: 0 0 8px; border-radius: 6px; font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', 'Menlo', monospace; font-size: 13px; line-height: 1.45; overflow-x: auto; color: #24292f; background-color: var(--muted);"><pre style="margin: 0 !important; white-space: pre; overflow-wrap: normal; color: inherit; background: transparent; border: none;" contenteditable="true" spellcheck="false">// エディタコンポーネントの基本実装<br>import { LexicalComposer } from '@lexical/react/LexicalComposer';<br>import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';<br><br>const RichTextEditor = () =&gt; {<br>  return (<br>    &lt;LexicalComposer initialConfig={config}&gt;<br>      &lt;RichTextPlugin /&gt;<br>    &lt;/LexicalComposer&gt;<br>  );<br>};</pre></div>`,
+            description: `<p>TaskFlowアプリにリッチテキスト編集機能を追加する。</p><p><strong>要件：</strong></p><ul><li>太字、斜体、下線のサポート</li><li>リンク挿入機能</li><li>コードブロック対応</li><li>HTML出力とMarkdown変換</li></ul><p><strong>技術調査：</strong></p><ul><li><a href="https://lexical.dev/" target="_blank" rel="noopener noreferrer">Lexical Editor</a> - Meta製の高性能エディタ</li><li><a href="https://quilljs.com/" target="_blank" rel="noopener noreferrer">React Quill</a> - 軽量なリッチテキストエディタ</li></ul><p><code style="background-color: var(--muted); color: #e01e5a; padding: 2px 4px; border-radius: 4px; font-family: 'Monaco', 'Menlo', 'Consolas', monospace; font-size: 0.875em; border: 1px solid #d0d7de;">npm install @lexical/react lexical</code></p><pre style="margin: 0 !important; white-space: pre; overflow-wrap: normal; color: inherit; background: transparent; border: none;" contenteditable="true" spellcheck="false">// エディタコンポーネントの基本実装<br>import { LexicalComposer } from '@lexical/react/LexicalComposer';<br>import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';<br><br>const RichTextEditor = () =&gt; {<br>  return (<br>    &lt;LexicalComposer initialConfig={config}&gt;<br>      &lt;RichTextPlugin /&gt;<br>    &lt;/LexicalComposer&gt;<br>  );<br>};</pre>`,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
             dueDate: yesterday.toISOString(), // 昨日の17:00(期限切れ)
@@ -205,7 +205,7 @@ const createDemoBoard = (): KanbanBoard[] => {
           {
             id: uuidv4(),
             title: '週次レポートの作成',
-            description: `<p>チーム進捗と課題を整理した週次レポートの作成と共有。</p><p><strong>レポート内容：</strong></p><ul><li>完了タスクと進捗状況</li><li>発生した課題と解決策</li><li>来週の計画と目標</li></ul><p><strong>共有方法：</strong></p><div style="margin: 0 0 8px; font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', 'Menlo', monospace; font-size: 13px; line-height: 1.45; overflow-x: auto; color: #24292f; background-color: var(--muted);"><pre style="margin: 0 !important; white-space: pre; overflow-wrap: normal; color: inherit; background: transparent; border: none; padding: 0;" contenteditable="true" spellcheck="false">// レポート自動生成スクリプト例
+            description: `<p>チーム進捗と課題を整理した週次レポートの作成と共有。</p><p><strong>レポート内容：</strong></p><ul><li>完了タスクと進捗状況</li><li>発生した課題と解決策</li><li>来週の計画と目標</li></ul><p><strong>共有方法：</strong></p><pre style="margin: 0 !important; white-space: pre; overflow-wrap: normal; color: inherit; background: transparent; border: none; padding: 0;" contenteditable="true" spellcheck="false">// レポート自動生成スクリプト例
 const generateWeeklyReport = () => {
   const completedTasks = getCompletedTasks(lastWeek);
   const upcomingTasks = getUpcomingTasks(nextWeek);
@@ -216,7 +216,7 @@ const generateWeeklyReport = () => {
     upcoming: upcomingTasks,
     issues: getIssues()
   };
-};</pre></div>`,
+};</pre>`,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
             dueDate: todayEvening.toISOString(), // 今日の18:00
@@ -298,7 +298,7 @@ const optimizedQuery = await db.task.findMany({
           {
             id: uuidv4(),
             title: 'ユーザー認証システムの実装',
-            description: `<p>JWT ベースの認証システムを実装完了。</p><p><strong>実装内容：</strong></p><ul><li>ログイン・ログアウト機能</li><li>トークンベース認証</li><li>パスワードハッシュ化</li></ul><p><strong>使用技術：</strong></p><ul><li><a href="https://jwt.io/" target="_blank" rel="noopener noreferrer">JSON Web Tokens</a></li><li><a href="https://github.com/kelektiv/node.bcrypt.js" target="_blank" rel="noopener noreferrer">bcrypt</a> - パスワードハッシュ化</li></ul><div style="margin: 0 0 8px; border-radius: 6px; font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', 'Menlo', monospace; font-size: 13px; line-height: 1.45; overflow-x: auto; color: #24292f; background-color: var(--muted);"><pre style="margin: 0 !important; white-space: pre; overflow-wrap: normal; color: inherit; background: transparent; border: none; padding: 0;" contenteditable="true" spellcheck="false">// JWT 認証の実装例
+            description: `<p>JWT ベースの認証システムを実装完了。</p><p><strong>実装内容：</strong></p><ul><li>ログイン・ログアウト機能</li><li>トークンベース認証</li><li>パスワードハッシュ化</li></ul><p><strong>使用技術：</strong></p><ul><li><a href="https://jwt.io/" target="_blank" rel="noopener noreferrer">JSON Web Tokens</a></li><li><a href="https://github.com/kelektiv/node.bcrypt.js" target="_blank" rel="noopener noreferrer">bcrypt</a> - パスワードハッシュ化</li></ul><pre style="margin: 0 !important; white-space: pre; overflow-wrap: normal; color: inherit; background: transparent; border: none; padding: 0;" contenteditable="true" spellcheck="false">// JWT 認証の実装例
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
@@ -309,7 +309,7 @@ const authenticateUser = async (email, password) => {
     return jwt.sign({ userId: user.id }, process.env.JWT_SECRET);
   }
   throw new Error('Invalid credentials');
-};</pre></div>`,
+};</pre>`,
             createdAt: new Date(today.getTime() - 86400000 * 5).toISOString(), // 5日前
             updatedAt: new Date(today.getTime() - 86400000 * 2).toISOString(), // 2日前
             dueDate: new Date(today.getTime() - 86400000 * 3).toISOString(),

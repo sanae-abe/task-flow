@@ -1,4 +1,4 @@
-import { memo, useMemo, useCallback } from 'react';
+import { memo, useMemo, useCallback, useState } from 'react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
 import type { TaskTemplate } from '../../types/template';
@@ -33,6 +33,9 @@ const TaskCreateDialog = memo(() => {
   const { state, closeTaskForm, createTask } = useKanban();
   const { state: boardState, setCurrentBoard } = useBoard();
   const notify = useSonnerNotify();
+
+  // タブ状態管理
+  const [activeTab, setActiveTab] = useState<string>('normal');
 
   // カスタムフック: フォーム状態管理
   const { formState, formActions, handleTimeChange, isFormValid } = useTaskForm(
@@ -99,12 +102,15 @@ const TaskCreateDialog = memo(() => {
   // テンプレート選択時の処理
   const handleTemplateSelect = (template: TaskTemplate) => {
     templateActions.handleTemplateSelect(template);
+    // テンプレート選択後、通常作成タブに自動切り替え
+    setActiveTab('normal');
   };
 
   // ダイアログが閉じられた時の処理（確認機能付き）
   const handleDialogClose = useCallback(() => {
     const closeAction = () => {
       resetTemplateSelection();
+      setActiveTab('normal'); // タブを通常作成にリセット
       closeTaskForm();
     };
     handleClose(closeAction);
@@ -135,7 +141,7 @@ const TaskCreateDialog = memo(() => {
         actions={actions}
       >
         <div className="flex flex-col min-w-[600px]">
-          <Tabs defaultValue="normal" className="w-full">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             {/* タブナビゲーション */}
             <TabsList className="grid w-full grid-cols-2 mb-4">
               <TabsTrigger value="normal">通常作成</TabsTrigger>

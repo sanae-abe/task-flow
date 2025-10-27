@@ -11,6 +11,7 @@ import { Edit, Trash2 } from "lucide-react";
 import { DataTable } from "@/components/ui/data-table";
 import type { LabelWithInfo } from "../../../types/labelManagement";
 import IconButton from "../../shared/IconButton";
+import { getLabelColors } from "../../../utils/labelHelpers";
 
 interface LabelDataTableProps {
   labels: LabelWithInfo[];
@@ -29,11 +30,15 @@ export const LabelDataTable: React.FC<LabelDataTableProps> = ({
       header: "ラベル",
       cell: ({ row }) => {
         const label = row.original;
+        const colors = getLabelColors(label.color);
         return (
           <div className="flex items-center gap-2">
             <div
-              className="w-4 h-4 rounded-full"
-              style={{ backgroundColor: label.color }}
+              className="w-4 h-4 rounded-full border"
+              style={{
+                backgroundColor: colors.bg,
+                borderColor: colors.color
+              }}
             />
             <span className="font-medium">{label.name}</span>
           </div>
