@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 
-import { UnifiedForm, createSubTaskFormFields } from "./shared/Form";
+import { UnifiedForm, type FormFieldConfig } from "./shared/Form";
 
 interface SubTaskFormProps {
   title: string;
@@ -17,20 +17,24 @@ const SubTaskForm: React.FC<SubTaskFormProps> = ({
   onCancel,
   onKeyDown,
 }) => {
-  // フォームフィールド設定を生成
+  // フォームフィールドを直接定義
   const formFields = useMemo(
-    () =>
-      createSubTaskFormFields(
-        {
-          title,
-        },
-        {
-          setTitle: onTitleChange,
-        },
-        {
-          onKeyDown,
-        },
-      ),
+    (): FormFieldConfig[] => [
+      {
+        id: "subtask-title",
+        name: "title",
+        type: "text",
+        label: "サブタスク名",
+        value: title,
+        placeholder: "サブタスク名を入力...",
+        onChange: onTitleChange as (value: unknown) => void,
+        onKeyDown,
+        autoFocus: true,
+        hideLabel: true,
+        disabled: false,
+        validation: { required: true, minLength: 1, maxLength: 100 },
+      },
+    ],
     [title, onTitleChange, onKeyDown],
   );
 
