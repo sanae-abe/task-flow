@@ -7,6 +7,7 @@
 
 import { useCallback } from 'react';
 import type { Task } from '../../types';
+import type { TaskWithColumn } from '../../types/table';
 import { fromDateTimeLocalString } from '../../utils/dateHelpers';
 import { useKanban } from '../../contexts/KanbanContext';
 import type { UseTaskFormStateReturn } from './useTaskFormState';
@@ -86,7 +87,7 @@ export const useTaskHandlers = ({
         moveTask(task.id, currentColumn.id, formState.columnId, 0);
       }
 
-      const updatedTask: Task = {
+      const updatedTask: TaskWithColumn = {
         ...task,
         title: formState.title.trim(),
         description: formState.description.trim() || "",
@@ -96,6 +97,9 @@ export const useTaskHandlers = ({
         labels: formState.labels,
         files: formState.attachments,
         recurrence: formState.recurrence?.enabled && dueDateObj ? formState.recurrence : undefined,
+        columnId: formState.columnId, // ステータス（カラムID）を追加
+        columnTitle: state.currentBoard?.columns.find(col => col.id === formState.columnId)?.title || '',
+        status: state.currentBoard?.columns.find(col => col.id === formState.columnId)?.title || '',
         updatedAt: new Date().toISOString(),
       };
 

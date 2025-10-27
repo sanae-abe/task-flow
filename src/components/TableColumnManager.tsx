@@ -332,7 +332,7 @@ const TableColumnManager: React.FC = () => {
                 onDragEnd={handleDragEnd}
                 className={`flex flex-wrap items-center gap-1 p-2 border border-border rounded-lg transition-all duration-200 ease ${
                   isDragging
-                    ? 'border-blue-600 bg-blue-50 cursor-grabbing opacity-50'
+                    ? 'border-primary bg-blue-50 cursor-grabbing opacity-50'
                     : 'border-gray-300 bg-gray-50 cursor-grab hover:bg-gray-100'
                 }`}
               >

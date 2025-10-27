@@ -13,8 +13,8 @@ const OfflineIndicator: React.FC = () => {
   const indicatorClassName = `
     flex items-center gap-2 px-3 py-1 mr-1 border border-border rounded-md transition-all duration-300 ease-in-out right-[10px]
     ${isOffline
-      ? "border-red-600 text-destructive"
-      : "border-green-600 text-white"
+      ? "border-destructive text-destructive"
+      : "border-success text-white"
     }
     ${wasOffline && isOnline ? "animate-slide-in" : ""}
   `.trim().replace(/\s+/g, ' ');

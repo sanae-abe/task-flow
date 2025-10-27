@@ -56,9 +56,9 @@ const SortableBoardTab: React.FC<SortableBoardTabProps> = memo(
         className={cn(
           "h-full flex items-center transition-transform duration-200",
           isSelected
-            ? "py-3 border-b-2 border-blue-600"
+            ? "py-3 border-b-2 border-primary"
             : "py-3 border-b-0",
-          isDragging && "opacity-50 rotate-[5deg] z-900"
+          isDragging && "opacity-50 z-900"
         )}
         aria-selected={isSelected}
         // eslint-disable-next-line react/jsx-props-no-spreading
@@ -72,7 +72,7 @@ const SortableBoardTab: React.FC<SortableBoardTabProps> = memo(
           onClick={() => onSelect(board.id)}
           className={cn(
             "text-sm rounded-md px-1 py-0 whitespace-nowrap translate-y-0.5 flex-shrink-0 cursor-grab hover:bg-gray-100 hover:text-foreground active:cursor-grabbing",
-            isSelected ? "font-semibold text-foreground" : "font-normal text-gray-600"
+            isSelected ? "font-semibold text-primary" : "font-normal text-gray-600"
           )}
           aria-label={`${board.title}ボードを選択`}
         >
@@ -90,7 +90,7 @@ interface DragOverlayBoardTabProps {
 
 const DragOverlayBoardTab: React.FC<DragOverlayBoardTabProps> = memo(
   ({ board }) => (
-    <div className="h-full flex items-center py-3 border-b-2 border-blue-600">
+    <div className="h-full flex items-center py-3 border-b-2 border-primary">
       <Button
         variant="ghost"
         size="sm"

@@ -101,7 +101,7 @@ const SortableColumnItem: React.FC<SortableColumnItemProps> = ({
       style={style}
       className={`flex items-center gap-2 p-2 mb-3 border border-border rounded-lg ${
         isDragging
-          ? 'border-blue-600 bg-gray-100 cursor-grabbing'
+          ? 'border-primary bg-gray-100 cursor-grabbing'
           : 'border-gray-300 bg-gray-50 cursor-grab'
       }`}
     >

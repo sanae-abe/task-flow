@@ -58,7 +58,7 @@ export const ImportSection = memo<ImportSectionProps>(({ onMessage }) => {
               value="merge"
               checked={state.mode === 'merge'}
               onChange={(e) => setImportMode(e.target.value as 'merge' | 'replace')}
-              className="h-4 w-4 text-primary focus:ring-blue-500 border-gray-300"
+              className="h-4 w-4 text-primary focus:ring-primary border-gray-300"
             />
             <label htmlFor="merge" className="text-sm text-foreground">
               既存データに追加（推奨）
@@ -72,7 +72,7 @@ export const ImportSection = memo<ImportSectionProps>(({ onMessage }) => {
               value="replace"
               checked={state.mode === 'replace'}
               onChange={(e) => setImportMode(e.target.value as 'merge' | 'replace')}
-              className="h-4 w-4 text-primary focus:ring-blue-500 border-gray-300"
+              className="h-4 w-4 text-primary focus:ring-primary border-gray-300"
             />
             <label htmlFor="replace" className="text-sm text-foreground">
               既存データを置換

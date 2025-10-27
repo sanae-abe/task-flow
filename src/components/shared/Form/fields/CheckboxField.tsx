@@ -70,7 +70,7 @@ export const CheckboxField: React.FC<CheckboxFieldProps> = React.memo(
         onFocus={handleFocus}
         disabled={disabled}
         className={cn(
-          hasError && "border-red-500 focus:border-red-500 focus:ring-red-500"
+          hasError && "border-destructive focus:border-destructive focus:ring-destructive"
         )}
         aria-required={validation?.required}
         aria-invalid={hasError}

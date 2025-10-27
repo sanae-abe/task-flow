@@ -111,7 +111,7 @@ const LinkInsertDialog: React.FC<LinkInsertDialogProps> = ({
             autoFocus
             className={cn(
               "w-full",
-              url && !isValidUrl && "border-red-500 focus:border-red-500 focus:ring-red-500/30"
+              url && !isValidUrl && "border-destructive focus:border-destructive focus:ring-destructive/30"
             )}
           />
           {url && !isValidUrl && (

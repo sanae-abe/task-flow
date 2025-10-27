@@ -212,7 +212,7 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
               placeholder="例: 週次レポート作成"
               autoFocus
               disabled={isLoading}
-              className={`w-full ${errors.name ? 'border-red-500' : ''}`}
+              className={`w-full ${errors.name ? 'border-destructive' : ''}`}
             />
             {errors.name && (
               <InlineMessage variant="critical" message={errors.name} size="small" />
@@ -266,7 +266,7 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
                 }
               }}
               placeholder="例: 週次レポートを作成する"
-              className={`w-full ${errors.taskTitle ? 'border-red-500' : ''}`}
+              className={`w-full ${errors.taskTitle ? 'border-destructive' : ''}`}
               disabled={isLoading}
             />
             {errors.taskTitle && (

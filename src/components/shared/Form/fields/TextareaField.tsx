@@ -95,7 +95,7 @@ export const TextareaField: React.FC<TextareaFieldProps> = React.memo(
         rows={rows}
         className={cn(
           "resize-none",
-          hasError && "border-red-500 focus:border-red-500 focus:ring-red-500"
+          hasError && "border-destructive focus:border-destructive focus:ring-destructive"
         )}
         style={style ? (style as React.CSSProperties) : undefined}
         aria-required={validation?.required}

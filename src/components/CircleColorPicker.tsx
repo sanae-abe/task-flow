@@ -38,7 +38,7 @@ const CircleColorPicker = memo<CircleColorPickerProps>(
               aria-label={`${color.name}色を選択`}
               className={cn(
                 'w-6 h-6 rounded-full border-2 transition-all duration-200 ease-in-out shadow-none',
-                'hover:scale-110 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2',
+                'hover:scale-110 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2',
               )}
               style={{
                 background: isSelected ? "#ffffff" : colors.bg,

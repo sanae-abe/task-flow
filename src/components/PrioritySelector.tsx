@@ -49,7 +49,7 @@ const PrioritySelector: React.FC<PrioritySelectorProps> = ({
               onChange={() => handleChange(option.value)}
               disabled={disabled}
               className={cn(
-                "h-4 w-4 text-primary focus:ring-blue-500 border-gray-300",
+                "h-4 w-4 text-primary focus:ring-primary border-gray-300",
                 disabled && "opacity-50 cursor-not-allowed"
               )}
             />

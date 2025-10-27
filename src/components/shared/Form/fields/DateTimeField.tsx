@@ -95,7 +95,7 @@ export const DateTimeField: React.FC<DateTimeFieldProps> = React.memo(
         autoFocus={autoFocus}
         disabled={disabled}
         className={cn(
-          hasError && "border-red-500 focus:border-red-500 focus:ring-red-500"
+          hasError && "border-destructive focus:border-destructive focus:ring-destructive"
         )}
         style={style ? (style as React.CSSProperties) : undefined}
         aria-required={validation?.required}

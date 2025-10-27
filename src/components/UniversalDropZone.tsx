@@ -117,7 +117,7 @@ const UniversalDropZone: React.FC<UniversalDropZoneProps> = ({
         "flex flex-col items-center justify-center gap-2 p-4 text-center transition-all duration-200 rounded-md",
         shouldShowDropZone ? "border-2 border-dashed" : "border-2 border-solid",
         isLoading && "opacity-70 cursor-not-allowed",
-        isDragOver && "border-blue-600 bg-blue-50",
+        isDragOver && "border-primary bg-blue-50",
         !isDragOver && !isLoading && "border-gray-300 bg-gray-50",
         isLoading && "border-gray-200 bg-gray-100",
         shouldAllowClick && !isLoading && "cursor-pointer"
