@@ -56,7 +56,7 @@ const ImportModeSelector: React.FC<ImportModeSelectorProps> = ({
   return (
     <div className="flex flex-col gap-2">
       {showModeIndicator && (
-        <div className="flex items-center gap-2 p-2 bg-gray-50 rounded-md border border-gray-200">
+        <div className="flex items-center gap-2 p-2 bg-gray-50 rounded-md border border-border border-gray-200">
           {getModeIcon(selectedMode)}
           <div>
             <p className="font-semibold text-sm">現在のインポートモード</p>

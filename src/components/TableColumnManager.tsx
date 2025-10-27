@@ -245,7 +245,7 @@ const TableColumnManager: React.FC = () => {
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-64 max-h-80 overflow-y-auto">
           <DropdownMenuGroup>
-            <div className="px-2 py-1.5 text-sm font-semibold text-gray-700 sticky top-0 bg-white border-b border-gray-100">
+            <div className="px-2 py-1.5 text-sm font-semibold text-gray-700 sticky top-0 bg-white border-b border-border border-gray-100">
               表示カラム
             </div>
             <div className="max-h-48 overflow-y-auto">
@@ -330,7 +330,7 @@ const TableColumnManager: React.FC = () => {
                 onDragOver={handleDragOver}
                 onDrop={(e: React.DragEvent) => handleDrop(e, column.id)}
                 onDragEnd={handleDragEnd}
-                className={`flex flex-wrap items-center gap-1 p-2 border rounded-lg transition-all duration-200 ease ${
+                className={`flex flex-wrap items-center gap-1 p-2 border border-border rounded-lg transition-all duration-200 ease ${
                   isDragging
                     ? 'border-blue-600 bg-blue-50 cursor-grabbing opacity-50'
                     : 'border-gray-300 bg-gray-50 cursor-grab hover:bg-gray-100'

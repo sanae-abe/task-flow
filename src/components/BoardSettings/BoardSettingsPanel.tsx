@@ -99,7 +99,7 @@ const SortableColumnItem: React.FC<SortableColumnItemProps> = ({
     <div
       ref={setNodeRef}
       style={style}
-      className={`flex items-center gap-2 p-2 mb-3 border rounded-lg ${
+      className={`flex items-center gap-2 p-2 mb-3 border border-border rounded-lg ${
         isDragging
           ? 'border-blue-600 bg-gray-100 cursor-grabbing'
           : 'border-gray-300 bg-gray-50 cursor-grab'
@@ -401,7 +401,7 @@ export const BoardSettingsPanel: React.FC = () => {
   if (isLoading) {
     return (
       <div className="p-3">
-        <div className="bg-blue-50 border border-blue-200 rounded-md p-3 text-blue-800">
+        <div className="bg-blue-50 border border-border border-blue-200 rounded-md p-3 text-blue-800">
           設定を読み込み中...
         </div>
       </div>

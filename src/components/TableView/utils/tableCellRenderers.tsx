@@ -183,7 +183,7 @@ export const renderLabelsCell = (task: TaskWithColumn) => (
       <LabelChip key={label.id} label={label} />
     ))}
     {task.labels && task.labels.length > 2 && (
-      <span className="text-xs text-gray-900 px-2 py-1 border border-gray-200 rounded">
+      <span className="text-xs text-gray-900 px-2 py-1 border border-border border-gray-200 rounded">
         +{task.labels.length - 2}
       </span>
     )}

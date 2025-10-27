@@ -29,7 +29,7 @@ const CalendarTask: React.FC<CalendarTaskProps> = React.memo(
     const taskItemClassName = `
       text-[13px] px-2 py-0.5 rounded-md whitespace-nowrap overflow-hidden text-ellipsis transition-opacity duration-200
       ${isVirtual
-        ? "bg-gray-200 text-gray-500 border border-dashed border-gray-300 opacity-70 cursor-pointer"
+        ? "bg-gray-200 text-gray-500 border border-border border-dashed border-gray-300 opacity-70 cursor-pointer"
         : "bg-blue-100 text-blue-600 border-none cursor-grab"
       }
       ${isDragging && !isVirtual ? "opacity-50 cursor-grabbing" : ""}

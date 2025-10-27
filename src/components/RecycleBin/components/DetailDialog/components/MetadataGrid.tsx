@@ -60,7 +60,7 @@ export const MetadataGrid: React.FC<MetadataGridProps> = ({ item }) => {
   }
 
   return (
-    <section className="p-4 max-[543px]:p-3 bg-background border border-border rounded-md">
+    <section className="p-4 max-[543px]:p-3 bg-background border border-borderborder-border rounded-md">
       {/* セクションヘッダー */}
       <span className="block text-sm font-bold text-foreground m-0 mb-4">
         詳細情報
@@ -70,7 +70,7 @@ export const MetadataGrid: React.FC<MetadataGridProps> = ({ item }) => {
       <div className="flex flex-col gap-3">
         {/* 削除日時 */}
         {formattedDeletedAt && (
-          <div className="flex justify-between items-center py-3 border-b border-border">
+          <div className="flex justify-between items-center py-3 border-b border-border border-border">
             <span className="text-sm text-muted-foreground m-0">
               削除日時
             </span>
@@ -85,7 +85,7 @@ export const MetadataGrid: React.FC<MetadataGridProps> = ({ item }) => {
           <div
             key={meta.key}
             className={`flex justify-between items-center py-3 ${
-              index === metadata.length - 1 ? '' : 'border-b border-border'
+              index === metadata.length - 1 ? '' : 'border-b border-border border-border'
             } ${index === metadata.length - 1 ? 'pb-0' : ''}`}
           >
             <span className="text-sm text-muted-foreground m-0">

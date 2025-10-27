@@ -104,7 +104,7 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
     <div
       className={`
         ${compact ? 'p-2' : 'p-3'}
-        border border-gray-200 rounded-lg bg-white
+        border border-border border-gray-200 rounded-lg bg-white
         ${onSelect ? 'cursor-pointer hover:border-blue-600 hover:bg-gray-50' : 'cursor-default'}
         transition-all duration-200 ease-in-out
         hover:[&_.template-actions]:opacity-100

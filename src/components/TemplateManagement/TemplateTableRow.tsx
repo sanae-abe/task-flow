@@ -31,7 +31,7 @@ const TemplateTableRow: React.FC<TemplateTableRowProps> = ({
       className={cn(
         "grid grid-cols-[1fr_100px_80px_100px] gap-2 p-2 items-center",
         "hover:bg-gray-50 hover:[&_.template-actions]:opacity-100",
-        !isLast && "border-b border-gray-200"
+        !isLast && "border-b border-border border-gray-200"
       )}
     >
       {/* テンプレート名 */}

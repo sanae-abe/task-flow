@@ -31,7 +31,7 @@ const TemplateTable: React.FC<TemplateTableProps> = ({
   // 空状態の表示
   if (templates.length === 0) {
     return (
-      <div className="text-center p-6 border border-dashed border-border rounded-md flex flex-col gap-2 justify-center items-center">
+      <div className="text-center p-6 border border-border border-dashed rounded-md flex flex-col gap-2 justify-center items-center">
         <span className="text-muted-foreground">
           {hasActiveFilters
             ? '条件に一致するテンプレートが見つかりません'
@@ -47,7 +47,7 @@ const TemplateTable: React.FC<TemplateTableProps> = ({
   }
 
   return (
-    <div className="border border-border rounded-md overflow-hidden">
+    <div className="border border-borderborder-border rounded-md overflow-hidden">
       {/* テーブルヘッダー */}
       <TemplateTableHeader
         sortField={sortField}

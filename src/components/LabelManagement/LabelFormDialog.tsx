@@ -140,7 +140,7 @@ const LabelFormDialog: React.FC<LabelFormDialogProps> = ({
   const previewComponent = useMemo(() => {
     const previewLabel = createPreviewLabel(form.state.values);
     return (
-      <div className="rounded-lg p-4 border border-gray-200">
+      <div className="rounded-lg p-4 border border-border border-gray-200">
         <div className="flex justify-center">
           <LabelChip label={previewLabel} />
         </div>

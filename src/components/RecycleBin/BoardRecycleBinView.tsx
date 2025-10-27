@@ -153,7 +153,7 @@ const BoardRecycleBinView: React.FC<BoardRecycleBinViewProps> = ({
         {deletedBoards.map((board) => (
           <div
             key={board.id}
-            className="p-3 border border-gray-200 rounded-md bg-gray-50"
+            className="p-3 border border-border border-gray-200 rounded-md bg-gray-50"
           >
             <div className="flex justify-between items-start gap-3">
               <div className="flex-1 min-w-0">

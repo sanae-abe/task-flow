@@ -67,7 +67,7 @@ const LoadingState = memo<LoadingStateProps>(({
         };
       default:
         return {
-          className: 'bg-gray-50 rounded-md border border-gray-200',
+          className: 'bg-gray-50 rounded-md border border-border border-gray-200',
           style: { minHeight }
         };
     }

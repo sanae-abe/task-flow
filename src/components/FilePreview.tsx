@@ -133,13 +133,13 @@ const FilePreview: React.FC<FilePreviewProps> = ({
           onClick={handleClosePreview}
         >
           <div
-            className="bg-white border border-gray-200 rounded-md shadow-2xl max-w-[90vw] max-h-[90vh] overflow-hidden flex flex-col"
+            className="bg-white border border-border border-gray-200 rounded-md shadow-2xl max-w-[90vw] max-h-[90vh] overflow-hidden flex flex-col"
             onClick={(e: React.MouseEvent) => e.stopPropagation()}
             role="dialog"
             aria-modal="true"
             aria-labelledby="file-preview-title"
           >
-            <div className="flex items-center justify-between p-3 border-b border-gray-200">
+            <div className="flex items-center justify-between p-3 border-b border-border border-gray-200">
               <h2
                 id="file-preview-title"
                 className="text-base font-bold"

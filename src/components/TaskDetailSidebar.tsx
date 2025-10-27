@@ -103,7 +103,7 @@ const TaskDetailSidebar = memo<TaskDetailSidebarProps>(
       >
         <div className="flex h-full flex-col">
           {/* Header */}
-          <div className="flex p-5 items-start justify-between border-b border-gray-200 flex-shrink-0">
+          <div className="flex p-5 items-start justify-between border-b border-border border-gray-200 flex-shrink-0">
             <h2 className="text-lg font-bold m-0 pr-3 break-words">
               {task.title}
             </h2>

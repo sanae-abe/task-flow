@@ -92,7 +92,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
   };
 
   return (
-    <div className="w-full border rounded-md">
+    <div className="w-full border border-border rounded-md">
       {/* Toolbar */}
       <Toolbar
         onButtonClick={handlers.handleToolbarButtonClick}

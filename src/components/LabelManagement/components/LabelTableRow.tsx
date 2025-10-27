@@ -25,7 +25,7 @@ const LabelTableRow: React.FC<LabelTableRowProps> = ({
     className={cn(
       "grid grid-cols-[1fr_200px_60px_50px] gap-2 p-2 items-center",
       "hover:bg-gray-50 hover:[&_.label-actions]:opacity-100",
-      index < totalCount - 1 && "border-b border-gray-200"
+      index < totalCount - 1 && "border-b border-border border-gray-200"
     )}
   >
     {/* ラベル表示 */}

@@ -10,7 +10,7 @@ export const itemTypeColors = {
   task: {
     icon: 'var(--primary)', // primary blue
     border: 'var(--accent)', // accent blue
-    background: 'var(--accent) / 0.5', // light accent blue
+    backgroundClass: 'bg-blue-50', // light accent blue
     badge: {
       bg: 'var(--accent)', // accent blue
       fg: 'var(--primary)', // primary blue
@@ -19,7 +19,7 @@ export const itemTypeColors = {
   board: {
     icon: 'rgb(245 158 11)', // amber-500
     border: 'rgb(254 243 199)', // amber-100
-    background: 'rgb(255 251 235)', // amber-50
+    backgroundClass: 'bg-amber-50', // amber-50
     badge: {
       bg: 'rgb(254 243 199)', // amber-100
       fg: 'rgb(245 158 11)', // amber-500
@@ -28,7 +28,7 @@ export const itemTypeColors = {
   column: {
     icon: 'rgb(34 197 94)', // green-500
     border: 'rgb(220 252 231)', // green-100
-    background: 'rgb(240 253 244)', // green-50
+    backgroundClass: 'bg-green-50', // green-50
     badge: {
       bg: 'rgb(220 252 231)', // green-100
       fg: 'rgb(34 197 94)', // green-500
@@ -144,5 +144,4 @@ export const getResponsiveValue = <T>(
   defaultValue: T
 ): T => 
   // 簡易実装: 実際のブレークポイント判定は CSS-in-JS で行う
-   values.md || values.sm || values.xs || defaultValue
-;
+  values.md || values.sm || values.xs || defaultValue;

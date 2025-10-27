@@ -32,8 +32,8 @@ const CalendarDay: React.FC<CalendarDayProps> = React.memo(
         : "bg-gray-100"
       }
       ${isOver
-        ? "border border-dashed border-blue-600"
-        : "border border-transparent"
+        ? "border border-border border-dashed border-blue-600"
+        : "border border-border border-transparent"
       }
     `.trim().replace(/\s+/g, ' ');
 

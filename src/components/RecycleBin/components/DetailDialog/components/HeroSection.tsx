@@ -21,8 +21,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ item }) => {
     <section className="flex items-center gap-4 max-[543px]:p-4 max-[543px]:gap-3">
       {/* アイコン */}
       <div
-        className="flex items-center justify-center w-10 h-10 rounded-md flex-shrink-0"
-        style={{ backgroundColor: colors.background }}
+        className={`flex items-center justify-center w-10 h-10 rounded-md flex-shrink-0 ${colors.backgroundClass}`}
       >
         <Icon
           {...heroIconProps}

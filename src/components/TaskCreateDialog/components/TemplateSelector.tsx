@@ -98,7 +98,7 @@ interface TemplateCardProps {
 const TemplateCard: React.FC<TemplateCardProps> = ({ template, onSelect, isFavorite }) => (
     <div
       className={cn(
-        "border border-gray-200 rounded-md p-4 cursor-pointer transition-all duration-200 ease-in-out bg-white",
+        "border border-border border-gray-200 rounded-md p-4 cursor-pointer transition-all duration-200 ease-in-out bg-white",
         "hover:border-gray-300 hover:bg-gray-50",
         isFavorite && "bg-yellow-50"
       )}

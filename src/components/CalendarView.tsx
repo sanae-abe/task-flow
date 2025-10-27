@@ -95,7 +95,7 @@ const CalendarView: React.FC = () => {
         </div>
 
         <div className="overflow-hidden rounded-md shadow-sm">
-          <div className="grid grid-cols-7 gap-px bg-border border-b border-border rounded-t-md mb-0">
+          <div className="grid grid-cols-7 gap-px bg-border border-border border-b rounded-t-md mb-0">
             {weekDays.map((day) => (
               <div key={day} className="p-2 bg-background text-center font-semibold text-xs text-muted-foreground">
                 {day}
@@ -103,7 +103,7 @@ const CalendarView: React.FC = () => {
             ))}
           </div>
 
-          <div className="grid grid-cols-7 gap-px bg-border overflow-hidden flex-1">
+          <div className="grid grid-cols-7 gap-px bg-border border-border overflow-hidden flex-1">
             {calendarDays.map(({ date, isCurrentMonth, isToday }, index) => {
               const dateKey = date.toDateString();
               const tasksForDate = tasksGroupedByDate.get(dateKey) || [];

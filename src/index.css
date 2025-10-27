@@ -6,7 +6,7 @@
   --container-padding: 2rem;
   --container-screen-2xl: 1400px;
 
-  /* Border radius configuration */
+  /* border border-border radius configuration */
   --radius: 0.65rem;
   --radius-lg: var(--radius);
   --radius-md: calc(var(--radius) - 2px);

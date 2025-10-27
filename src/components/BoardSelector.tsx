@@ -94,7 +94,7 @@ const DragOverlayBoardTab: React.FC<DragOverlayBoardTabProps> = memo(
       <Button
         variant="ghost"
         size="sm"
-        className="text-sm rounded-md px-1 py-0 whitespace-nowrap flex-shrink-0 font-semibold text-gray-900 bg-white border border-gray-300 shadow-md"
+        className="text-sm rounded-md px-1 py-0 whitespace-nowrap flex-shrink-0 font-semibold text-gray-900 bg-white border border-border border-gray-300 shadow-md"
       >
         {board.title}
       </Button>

@@ -27,7 +27,7 @@ const TemplateSearchFilter: React.FC<TemplateSearchFilterProps> = ({
   onFilterCategoryChange,
   onFilterFavoriteChange
 }) => (
-  <div className="flex gap-2 flex-wrap items-center p-3 bg-gray-50 rounded-md border border-gray-200">
+  <div className="flex gap-2 flex-wrap items-center p-3 bg-gray-50 rounded-md border border-border border-gray-200">
     {/* 検索 */}
     <div className="flex-1 min-w-[200px] relative">
       <Search size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
@@ -44,7 +44,7 @@ const TemplateSearchFilter: React.FC<TemplateSearchFilterProps> = ({
       <select
         value={filterCategory}
         onChange={(e) => onFilterCategoryChange(e.target.value as TemplateCategory | 'all')}
-        className="w-[180px] h-10 px-3 py-2 border border-gray-200 rounded-md bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        className="w-[180px] h-10 px-3 py-2 border border-border border-gray-200 rounded-md bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
       >
         <option value="all">すべてのカテゴリー</option>
         {TEMPLATE_CATEGORIES.map((cat) => (

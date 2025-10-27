@@ -120,7 +120,7 @@ export const ImportSection = memo<ImportSectionProps>(({ onMessage }) => {
           <p className="text-sm font-bold">
             選択されたファイル
           </p>
-          <div className="flex items-center justify-between p-2 bg-gray-50 rounded-md border border-gray-200">
+          <div className="flex items-center justify-between p-2 bg-gray-50 rounded-md border border-border border-gray-200">
             <div className="flex items-center gap-2 flex-1 min-w-0">
               <File size={24} />
               <div className="min-w-0 flex-1 flex flex-col gap-1">
