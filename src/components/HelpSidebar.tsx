@@ -25,14 +25,13 @@ const TITLE_MIN_WIDTH = "120px";
 
 // セクション背景色定数
 const SECTION_COLORS = {
-  PRIMARY_BLUE: "rgb(29 78 216)",    // ビュー切り替え、タスク管理
-  SUCCESS_GREEN: "rgb(34 197 94)",   // 基本操作、便利なヒント
-  ATTENTION_YELLOW: "rgb(212 167 44)", // ファイル添付
-  ACCENT_PURPLE: "rgb(130 80 223)",   // カレンダー機能
-  DANGER_RED: "rgb(218 54 51)",       // フィルタリング・ソート
-  MUTED_GRAY: "rgb(101 109 118)",     // テンプレート管理
-  SPONSOR_ORANGE: "rgb(219 109 40)",  // データ管理
-  GITHUB_BLUE: "#0969DA",             // GitHubブルー（デフォルト、テーブルビュー）
+  PRIMARY_BLUE: "bg-primary",    // ビュー切り替え、タスク管理
+  SUCCESS_GREEN: "bg-success",   // 基本操作、便利なヒント
+  ATTENTION_YELLOW: "bg-warning", // ファイル添付
+  ACCENT_PURPLE: "bg-purple-600",   // カレンダー機能
+  DANGER_RED: "bg-destructive",       // フィルタリング・ソート
+  MUTED_GRAY: "bg-gray-600",     // テンプレート管理
+  SPONSOR_ORANGE: "bg-orange-600",  // データ管理
 } as const;
 
 interface HelpSidebarProps {
@@ -44,22 +43,19 @@ interface HelpSectionProps {
   title: string;
   icon: React.ComponentType<{ size?: number }>;
   children: React.ReactNode;
-  background?: string;
+  backgroundClass?: string;
 }
 
 const HelpSection: React.FC<HelpSectionProps> = ({
   title,
   icon: Icon,
   children,
-  background = SECTION_COLORS.GITHUB_BLUE,
+  backgroundClass = SECTION_COLORS.PRIMARY_BLUE,
 }) => (
   <>
     <div className="flex items-center gap-2 mb-3">
       <div
-        style={{
-          background
-        }}
-        className="p-2 flex items-center justify-center rounded-full text-white"
+        className={`p-2 flex items-center justify-center rounded-full text-white ${backgroundClass}`}
       >
         <Icon size={14} />
       </div>
@@ -163,7 +159,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
           <HelpSection
             title="ビュー切り替え"
             icon={Video}
-            background={SECTION_COLORS.PRIMARY_BLUE}
+            backgroundClass={SECTION_COLORS.PRIMARY_BLUE}
           >
             <HelpItem
               title="カンバンビュー"
@@ -186,7 +182,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
           <HelpSection
             title="基本操作"
             icon={MousePointer}
-            background={SECTION_COLORS.SUCCESS_GREEN}
+            backgroundClass={SECTION_COLORS.SUCCESS_GREEN}
           >
             <HelpItem
               title="ボード作成"
@@ -219,7 +215,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
           <HelpSection
             title="タスク管理"
             icon={List}
-            background={SECTION_COLORS.PRIMARY_BLUE}
+            backgroundClass={SECTION_COLORS.PRIMARY_BLUE}
           >
             <HelpItem
               title="タスク編集"
@@ -258,7 +254,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
           <HelpSection
             title="ファイル添付"
             icon={Paperclip}
-            background={SECTION_COLORS.ATTENTION_YELLOW}
+            backgroundClass={SECTION_COLORS.ATTENTION_YELLOW}
           >
             <HelpItem
               title="ファイル管理"
@@ -269,7 +265,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
           <HelpSection
             title="カレンダー機能"
             icon={Calendar}
-            background={SECTION_COLORS.ACCENT_PURPLE}
+            backgroundClass={SECTION_COLORS.ACCENT_PURPLE}
           >
             <HelpItem
               title="月次表示"
@@ -280,7 +276,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
           <HelpSection
             title="フィルタリング・ソート"
             icon={Filter}
-            background={SECTION_COLORS.DANGER_RED}
+            backgroundClass={SECTION_COLORS.DANGER_RED}
           >
             <HelpItem
               title="絞り込み・並び替え"
@@ -291,7 +287,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
           <HelpSection
             title="テンプレート管理"
             icon={FileText}
-            background={SECTION_COLORS.MUTED_GRAY}
+            backgroundClass={SECTION_COLORS.MUTED_GRAY}
           >
             <HelpItem
               title="テンプレート機能"
@@ -302,7 +298,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
           <HelpSection
             title="テーブルビュー"
             icon={Table}
-            background={SECTION_COLORS.GITHUB_BLUE}
+            backgroundClass={SECTION_COLORS.PRIMARY_BLUE}
           >
             <HelpItem
               title="カラム管理"
@@ -313,7 +309,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
           <HelpSection
             title="データ管理"
             icon={Database}
-            background={SECTION_COLORS.SPONSOR_ORANGE}
+            backgroundClass={SECTION_COLORS.SPONSOR_ORANGE}
           >
             <HelpItem
               title="ローカル保存"
@@ -356,7 +352,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
           <HelpSection
             title="便利なヒント"
             icon={Info}
-            background={SECTION_COLORS.SUCCESS_GREEN}
+            backgroundClass={SECTION_COLORS.SUCCESS_GREEN}
           >
             <HelpItem
               title="キーボード操作"
