@@ -24,10 +24,10 @@ root.render(
 // Service Worker registration - temporarily disabled for debugging
 // serviceWorker.register({
 //   onSuccess: () => {
-//     console.log('Service Worker registered successfully');
+//     // Service Worker registered successfully
 //   },
 //   onUpdate: () => {
-//     console.log('New content is available; please refresh');
+//     // New content is available; please refresh
 //   },
 // });
 

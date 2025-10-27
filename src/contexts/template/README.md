@@ -188,10 +188,10 @@ const template = getTemplateById(templateId);
 
 ```typescript
 const info = getStorageInfo();
-console.log(info.templatesCount); // テンプレート数
-console.log(info.storageSize); // ストレージサイズ（バイト）
-console.log(info.version); // ストレージバージョン
-console.log(info.lastUpdated); // 最終更新日時
+// info.templatesCount - テンプレート数
+// info.storageSize - ストレージサイズ（バイト）
+// info.version - ストレージバージョン
+// info.lastUpdated - 最終更新日時
 ```
 
 ## 型定義
@@ -277,8 +277,9 @@ interface TemplateSortConfig {
 ```typescript
 import { RELATIVE_DATE_PRESETS } from "./utils/templateToTask";
 
+// プリセット一覧
 RELATIVE_DATE_PRESETS.forEach((preset) => {
-  console.log(`${preset.label}: ${preset.value}`);
+  // preset.label と preset.value を使用
 });
 ```
 

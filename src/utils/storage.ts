@@ -247,7 +247,7 @@ const generateWeeklyReport = () => {
           {
             id: uuidv4(),
             title: 'UI/UXデザイン改善',
-            description: `<p>ユーザビリティテストの結果を基にインターフェースを改善。</p><p><strong>改善対象：</strong></p><ul><li>タスク作成フローの簡素化</li><li>ナビゲーションの直感性向上</li><li>レスポンシブデザインの最適化</li></ul><p><strong>参考：</strong></p><ul><li><a href="https://material.io/design" target="_blank" rel="noopener noreferrer">Material Design</a></li><li><a href="https://primer.style/" target="_blank" rel="noopener noreferrer">Primer Design System</a></li></ul>`,
+            description: `<p>ユーザビリティテストの結果を基にインターフェースを改善</p><p><strong>改善対象</strong></p><ul><li>タスク作成フローの簡素化</li><li>ナビゲーションの直感性向上</li><li>レスポンシブデザインの最適化</li></ul><p><strong>参考</strong></p><ul><li><a href="https://material.io/design" target="_blank" rel="noopener noreferrer">Material Design</a></li><li><a href="https://primer.style/" target="_blank" rel="noopener noreferrer">Primer Design System</a></li></ul>`,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
             dueDate: tomorrowMorning.toISOString(), // 明日の10:00

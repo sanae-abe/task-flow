@@ -14,7 +14,7 @@ import type { UnifiedMenuProps, MenuItem, MenuGroup, MenuTrigger } from '../../.
 /**
  * メニュートリガー内容コンポーネント（ボタン要素は含まない）
  */
-const MenuTriggerContent = React.forwardRef<HTMLElement, {
+const MenuTriggerContent = React.forwardRef<HTMLButtonElement, {
   trigger: MenuTrigger;
   children?: React.ReactNode;
 }>(({ trigger, children }, ref) => {
@@ -22,7 +22,8 @@ const MenuTriggerContent = React.forwardRef<HTMLElement, {
 
   if (trigger.customTrigger) {
     if (React.isValidElement(trigger.customTrigger)) {
-      return React.cloneElement(trigger.customTrigger, { ref } as React.HTMLAttributes<HTMLElement>);
+      // @ts-ignore ref forwarding for custom trigger
+      return React.cloneElement(trigger.customTrigger, { ref });
     }
     return <>{trigger.customTrigger}</>;
   }
@@ -83,7 +84,7 @@ const renderMenuItem = (item: MenuItem): React.ReactNode => {
               item.onSelect(item.id);
             }
           }}
-          className={item.selected ? 'bg-primary' : ''}
+          className={item.selected ? 'bg-accent text-accent-foreground' : ''}
         >
           {item.icon && React.createElement(item.icon, { size: 16, className: "mr-2" })}
           {item.label}
@@ -178,7 +179,10 @@ const UnifiedMenu = memo<UnifiedMenuProps>(({
         asChild={trigger.type === 'custom' && !!trigger.customTrigger}
         className={trigger.type === 'custom' && trigger.customTrigger ? undefined : cn("flex items-center gap-1", trigger.className)}
       >
-        <MenuTriggerContent trigger={trigger} />
+        {trigger.type === 'custom' && trigger.customTrigger ?
+          trigger.customTrigger :
+          <MenuTriggerContent trigger={trigger} />
+        }
       </DropdownMenuTrigger>
       <DropdownMenuContent
         style={{ zIndex, ...overlayProps }}

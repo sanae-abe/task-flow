@@ -221,7 +221,7 @@ const FilterSelector = memo<FilterSelectorProps>(
                   <DropdownMenuTrigger asChild>
                     <DropdownMenuSub>
                       <DropdownMenuSubTrigger
-                        className={`cursor-pointer ${currentFilter.type === "label" ? 'bg-primary' : ''}`}
+                        className={`cursor-pointer ${(currentFilter.type === "label" || currentFilter.type === "has-labels") ? 'bg-accent' : ''}`}
                         onSelect={(e) => e.preventDefault()}
                       >
                         <Tag size={16} className="mr-2" />
@@ -232,7 +232,7 @@ const FilterSelector = memo<FilterSelectorProps>(
                           <DropdownMenuCheckboxItem
                             checked={currentFilter.type === "has-labels"}
                             onCheckedChange={() => handleFilterSelect("label")}
-                            className={currentFilter.type === "has-labels" ? 'bg-primary' : ''}
+                            className={currentFilter.type === "has-labels" ? 'bg-accent' : ''}
                           >
                             すべてのラベル
                           </DropdownMenuCheckboxItem>
@@ -270,7 +270,7 @@ const FilterSelector = memo<FilterSelectorProps>(
             <DropdownMenuGroup>
               <DropdownMenuTrigger asChild>
                 <DropdownMenuSub>
-                  <DropdownMenuSubTrigger className={`cursor-pointer ${currentFilter.type === "priority" ? 'bg-primary' : ''}`}
+                  <DropdownMenuSubTrigger className={`cursor-pointer ${currentFilter.type === "priority" ? 'bg-accent' : ''}`}
                     onSelect={(e) => e.preventDefault()}
                   >
                     <Star size={16} className="mr-2" />

@@ -99,7 +99,6 @@ export const TaskBoardMover: React.FC<TaskBoardMoverProps> = ({
     <UnifiedMenu
       groups={menuGroups}
       trigger={trigger}
-      zIndex={150}
     />
   );
 };
