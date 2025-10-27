@@ -49,12 +49,12 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
 
   const getPriorityColorClass = (priority: string | undefined) => {
     if (!priority) {
-      return 'text-gray-500';
+      return 'text-zinc-500';
     }
     const colors: Record<string, string> = {
-      low: 'text-gray-500',
-      medium: 'text-yellow-600',
-      high: 'text-destructive',
+      low: 'text-primary',
+      medium: 'text-success',
+      high: 'text-warning',
       critical: 'text-destructive'
     };
     return colors[priority] || 'text-foreground';
@@ -131,11 +131,11 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
 
           {/* カテゴリーと使用回数 */}
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-xs text-gray-600 px-2 py-1 bg-gray-100 rounded-md">
+            <span className="text-xs text-zinc-700 px-2 py-1 bg-gray-100 rounded-md">
               {categoryInfo?.label || template.category}
             </span>
             {template.usageCount > 0 && (
-              <span className="text-xs text-gray-600">
+              <span className="text-xs text-zinc-700">
                 使用回数: {template.usageCount}
               </span>
             )}
@@ -156,7 +156,7 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
                 onClick={handleToggleFavorite}
                 aria-label={template.isFavorite ? 'お気に入りから削除' : 'お気に入りに追加'}
                 className={`p-1 h-auto min-w-0 ${
-                  template.isFavorite ? 'text-warning' : 'text-gray-500'
+                  template.isFavorite ? 'text-warning' : 'text-zinc-500'
                 }`}
               >
                 {template.isFavorite ? <Star size={16} fill="currentColor" /> : <Star size={16} />}
@@ -187,7 +187,7 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
       {/* 説明 */}
       {!compact && template.description && (
         <div className="mb-2">
-          <p className="text-sm text-gray-600 line-clamp-2">
+          <p className="text-sm text-zinc-700 line-clamp-2">
             {template.description}
           </p>
         </div>
@@ -215,7 +215,7 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
                   <LabelChip key={label.id} label={label} />
                 ))}
                 {template.labels.length > 3 && (
-                  <span className="text-xs text-gray-500">
+                  <span className="text-xs text-zinc-500">
                     +{template.labels.length - 3}
                   </span>
                 )}

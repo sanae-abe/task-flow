@@ -127,7 +127,7 @@ export const ImportSection = memo<ImportSectionProps>(({ onMessage }) => {
                 <p className="text-sm font-semibold break-words leading-tight">
                   {state.selectedFile.name}
                 </p>
-                <p className="text-xs text-gray-600">
+                <p className="text-xs text-zinc-700">
                   {(state.selectedFile.size / 1024).toFixed(1)} KB
                 </p>
               </div>

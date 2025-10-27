@@ -4,6 +4,7 @@ import React, {
   useReducer,
   useMemo,
   useCallback,
+  useRef,
   type ReactNode,
 } from "react";
 import { v4 as uuidv4 } from "uuid";
@@ -89,6 +90,9 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   const [state] = useReducer(taskReducer, {
     isProcessing: false,
   });
+
+  // 重複実行防止のためのRef
+  const processingTasksRef = useRef<Set<string>>(new Set());
 
   // ヘルパー関数: タスクをIDで検索
   const findTaskById = useCallback(
@@ -191,33 +195,129 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
         return;
       }
 
-      // 早期リターンで不要な処理を回避
-      if (sourceColumnId === targetColumnId) {
-        // 同じカラム内での移動は位置変更のみ
-        const column = boardState.currentBoard.columns.find(
+      // 🔧 ULTIMATE FIX: より強力な重複実行防止
+      const operationKey = `${taskId}:${sourceColumnId}:${targetColumnId}`;
+      
+      // 重複実行防止チェック
+      if (processingTasksRef.current.has(operationKey)) {
+        return;
+      }
+
+      // 処理開始をマーク
+      processingTasksRef.current.add(operationKey);
+
+      // 🔧 CRITICAL FIX: 1つのタイムスタンプを使い回す
+      const now = new Date();
+      const currentTimestamp = now.toISOString();
+
+      // 2秒後に自動的にロックを解除（React Strict Mode対策強化）
+      const lockTimer = setTimeout(() => {
+        processingTasksRef.current.delete(operationKey);
+      }, 2000); // より長い時間
+
+      try {
+        // 早期リターンで不要な処理を回避
+        if (sourceColumnId === targetColumnId) {
+          // 同じカラム内での移動は位置変更のみ
+          const column = boardState.currentBoard.columns.find(
+            (col) => col.id === sourceColumnId,
+          );
+          if (!column) {
+            logger._error("Column not found for same column move", { sourceColumnId, taskId });
+            return;
+          }
+
+          const taskIndex = column.tasks.findIndex((task) => task.id === taskId);
+          if (taskIndex === -1 || taskIndex === targetIndex) {
+            return;
+          }
+
+          const newTasks = [...column.tasks];
+          const [movedTask] = newTasks.splice(taskIndex, 1);
+          const safeTargetIndex = Math.max(0, Math.min(targetIndex, newTasks.length));
+          newTasks.splice(safeTargetIndex, 0, {
+            ...movedTask,
+            updatedAt: currentTimestamp, // 🔧 統一されたタイムスタンプ使用
+          } as Task);
+
+          // 該当カラムのみを更新
+          const updatedColumns = boardState.currentBoard.columns.map((col) =>
+            col.id === sourceColumnId ? { ...col, tasks: newTasks } : col
+          );
+
+          boardDispatch({
+            type: "UPDATE_BOARD",
+            payload: {
+              boardId: boardState.currentBoard.id,
+              updates: {
+                ...boardState.currentBoard,
+                columns: updatedColumns,
+                updatedAt: currentTimestamp, // 🔧 統一されたタイムスタンプ使用
+              },
+            },
+          });
+          return;
+        }
+
+        // 異なるカラム間での移動
+        const taskToMove = findTaskById(taskId);
+        if (!taskToMove) {
+          logger._error("Task not found for different column move", { taskId, sourceColumnId, targetColumnId });
+          return;
+        }
+
+        const sourceColumn = boardState.currentBoard.columns.find(
           (col) => col.id === sourceColumnId,
         );
-        if (!column) {
-          return;
-        }
-
-        const taskIndex = column.tasks.findIndex((task) => task.id === taskId);
-        if (taskIndex === -1 || taskIndex === targetIndex) {
-          return;
-        }
-
-        const newTasks = [...column.tasks];
-        const [movedTask] = newTasks.splice(taskIndex, 1);
-        const safeTargetIndex = Math.max(0, Math.min(targetIndex, newTasks.length));
-        newTasks.splice(safeTargetIndex, 0, {
-          ...movedTask,
-          updatedAt: new Date().toISOString(),
-        } as Task);
-
-        // 該当カラムのみを更新
-        const updatedColumns = boardState.currentBoard.columns.map((col) =>
-          col.id === sourceColumnId ? { ...col, tasks: newTasks } : col
+        const targetColumn = boardState.currentBoard.columns.find(
+          (col) => col.id === targetColumnId,
         );
+
+        if (!sourceColumn || !targetColumn) {
+          return;
+        }
+
+        // 完了状態の判定（最適化）
+        const rightmostColumnIndex = boardState.currentBoard.columns.length - 1;
+        const targetColumnIndex = boardState.currentBoard.columns.findIndex(
+          (col) => col.id === targetColumnId,
+        );
+        const sourceColumnIndex = boardState.currentBoard.columns.findIndex(
+          (col) => col.id === sourceColumnId,
+        );
+
+        const isMovingToCompleted = targetColumnIndex === rightmostColumnIndex;
+        const isMovingFromCompleted = sourceColumnIndex === rightmostColumnIndex;
+
+        const updatedTask = {
+          ...taskToMove,
+          updatedAt: currentTimestamp, // 🔧 統一されたタイムスタンプ使用
+          completedAt: isMovingToCompleted
+            ? currentTimestamp // 🔧 統一されたタイムスタンプ使用
+            : isMovingFromCompleted
+              ? null
+              : taskToMove.completedAt,
+        };
+
+        // 最小限の更新：影響を受けるカラムのみを変更
+        const updatedColumns = boardState.currentBoard.columns.map((column) => {
+          if (column.id === sourceColumnId) {
+            return {
+              ...column,
+              tasks: column.tasks.filter((task) => task.id !== taskId),
+            };
+          }
+          if (column.id === targetColumnId) {
+            const newTasks = [...column.tasks];
+            const safeTargetIndex = Math.max(0, Math.min(targetIndex, newTasks.length));
+            newTasks.splice(safeTargetIndex, 0, updatedTask);
+            return {
+              ...column,
+              tasks: newTasks,
+            };
+          }
+          return column; // 変更なしのカラムはそのまま返す
+        });
 
         boardDispatch({
           type: "UPDATE_BOARD",
@@ -226,93 +326,27 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
             updates: {
               ...boardState.currentBoard,
               columns: updatedColumns,
-              updatedAt: new Date().toISOString(),
+              updatedAt: currentTimestamp, // 🔧 統一されたタイムスタンプ使用
             },
           },
         });
-        return;
+
+        logger.debug("Task moved successfully:", {
+          taskId,
+          sourceColumnId,
+          targetColumnId,
+          targetIndex,
+          operationKey,
+        });
+      } finally {
+        // タイマーをクリア
+        clearTimeout(lockTimer);
+        // 処理完了をマーク（成功・失敗に関わらず）
+        processingTasksRef.current.delete(operationKey);
       }
-
-      // 異なるカラム間での移動
-      const taskToMove = findTaskById(taskId);
-      if (!taskToMove) {
-        return;
-      }
-
-      const sourceColumn = boardState.currentBoard.columns.find(
-        (col) => col.id === sourceColumnId,
-      );
-      const targetColumn = boardState.currentBoard.columns.find(
-        (col) => col.id === targetColumnId,
-      );
-
-      if (!sourceColumn || !targetColumn) {
-        return;
-      }
-
-      // 完了状態の判定（最適化）
-      const rightmostColumnIndex = boardState.currentBoard.columns.length - 1;
-      const targetColumnIndex = boardState.currentBoard.columns.findIndex(
-        (col) => col.id === targetColumnId,
-      );
-      const sourceColumnIndex = boardState.currentBoard.columns.findIndex(
-        (col) => col.id === sourceColumnId,
-      );
-
-      const isMovingToCompleted = targetColumnIndex === rightmostColumnIndex;
-      const isMovingFromCompleted = sourceColumnIndex === rightmostColumnIndex;
-
-      const updatedTask = {
-        ...taskToMove,
-        updatedAt: new Date().toISOString(),
-        completedAt: isMovingToCompleted
-          ? new Date().toISOString()
-          : isMovingFromCompleted
-            ? null
-            : taskToMove.completedAt,
-      };
-
-      // 最小限の更新：影響を受けるカラムのみを変更
-      const updatedColumns = boardState.currentBoard.columns.map((column) => {
-        if (column.id === sourceColumnId) {
-          return {
-            ...column,
-            tasks: column.tasks.filter((task) => task.id !== taskId),
-          };
-        }
-        if (column.id === targetColumnId) {
-          const newTasks = [...column.tasks];
-          const safeTargetIndex = Math.max(0, Math.min(targetIndex, newTasks.length));
-          newTasks.splice(safeTargetIndex, 0, updatedTask);
-          return {
-            ...column,
-            tasks: newTasks,
-          };
-        }
-        return column; // 変更なしのカラムはそのまま返す
-      });
-
-      boardDispatch({
-        type: "UPDATE_BOARD",
-        payload: {
-          boardId: boardState.currentBoard.id,
-          updates: {
-            ...boardState.currentBoard,
-            columns: updatedColumns,
-            updatedAt: new Date().toISOString(),
-          },
-        },
-      });
-
-      logger.debug("Task moved successfully:", {
-        taskId,
-        sourceColumnId,
-        targetColumnId,
-        targetIndex,
-      });
     },
     [boardState.currentBoard, findTaskById, boardDispatch, notify],
-  );
+  );;;;;
 
   // タスク更新
   const updateTask = useCallback(

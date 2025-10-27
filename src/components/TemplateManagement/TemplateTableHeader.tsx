@@ -28,7 +28,7 @@ const SortableHeader: React.FC<SortableHeaderProps> = ({
     <button
       onClick={() => onSort(field)}
       aria-label={`${children}でソート`}
-      className={`w-full p-2 font-bold border-0 text-xs text-muted-foreground bg-transparent appearance-none ${
+      className={`w-full p-2 font-bold border-0 text-xs text-zinc-700 bg-transparent appearance-none ${
         align === 'center' ? 'justify-center' : 'justify-start'
       } flex`}
     >
@@ -62,7 +62,7 @@ const TemplateTableHeader: React.FC<TemplateTableHeaderProps> = ({
   sortDirection,
   onSort
 }) => (
-  <div className="grid grid-cols-[1fr_120px_80px_100px] gap-2 bg-neutral-100 border-b border-border text-xs font-bold text-muted-foreground">
+  <div className="grid grid-cols-[1fr_120px_80px_100px] gap-2 bg-neutral-100 border-b border-border text-xs font-bold text-zinc-700">
     <SortableHeader
       field="favorite"
       currentSortField={sortField}

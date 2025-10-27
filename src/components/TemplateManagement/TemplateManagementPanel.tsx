@@ -114,7 +114,7 @@ const TemplateManagementPanel: React.FC<TemplateManagementPanelProps> = ({ onMes
   if (loading) {
     return (
       <div className="flex justify-center p-6">
-        <p className="text-gray-600">テンプレートを読み込み中...</p>
+        <p className="text-muted-foreground">テンプレートを読み込み中...</p>
       </div>
     );
   }

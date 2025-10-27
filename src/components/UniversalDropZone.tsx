@@ -132,7 +132,7 @@ const UniversalDropZone: React.FC<UniversalDropZoneProps> = ({
       tabIndex={isLoading ? -1 : 0}
       aria-label={getAriaLabel()}
     >
-      <div className={cn(isDragOver ? "text-primary" : "text-gray-500")}>
+      <div className={cn(isDragOver ? "text-primary" : "text-zinc-500")}>
         <Upload size={24} />
       </div>
       <p
@@ -143,7 +143,7 @@ const UniversalDropZone: React.FC<UniversalDropZoneProps> = ({
       >
         {getDisplayTitle()}
       </p>
-      <p className="text-xs text-gray-600">
+      <p className="text-xs text-zinc-700">
         {subtitle ?? getDefaultSubtitle()}
       </p>
       {showButton && !isDragOver && (

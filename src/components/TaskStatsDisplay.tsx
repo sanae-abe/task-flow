@@ -72,9 +72,9 @@ const TaskStatsDisplay: React.FC<TaskStatsDisplayProps> = ({ stats }) => {
 
   return (
     <div className="flex items-center gap-4 flex-shrink-0">
-      <div className="flex items-center gap-1 flex-shrink-0 text-xs text-muted-foreground">
+      <div className="flex items-center gap-1 flex-shrink-0 text-xs text-zinc-700">
         <CircleCheck size={16} />
-        <span className="text-xs text-muted-foreground">
+        <span className="text-xs text-zinc-700">
           未完了タスク数: {totalTasks}
         </span>
       </div>
@@ -94,9 +94,9 @@ const TaskStatsDisplay: React.FC<TaskStatsDisplayProps> = ({ stats }) => {
       )}
 
       {!hasUrgentTasks && totalTasks > 0 && (
-        <div className="flex items-center gap-1 text-xs text-muted-foreground">
+        <div className="flex items-center gap-1 text-xs text-zinc-700">
           <Info size={16} />
-          <span className="text-xs text-muted-foreground">
+          <span className="text-xs text-zinc-700">
             緊急なタスクはありません
           </span>
         </div>

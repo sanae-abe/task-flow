@@ -141,7 +141,7 @@ export const ExportSection = memo<ExportSectionProps>(({
   return (
     <div className="flex flex-col gap-4">
       {/* セクション概要 */}
-      <p className="text-sm text-gray-600">
+      <p className="text-sm text-zinc-700">
         タスク管理データをJSON形式でエクスポートします。<br />バックアップや他の環境への移行にご利用ください。
       </p>
 

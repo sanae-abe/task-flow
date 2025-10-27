@@ -411,7 +411,7 @@ export const BoardSettingsPanel: React.FC = () => {
   return (
     <div className="p-3">
       <h2 className="text-base font-bold m-0 mb-2">デフォルトカラム設定</h2>
-      <span className="text-sm text-muted-foreground mb-5 block">
+      <span className="text-sm text-zinc-700 mb-5 block">
         新しいボードを作成する際のデフォルトカラムを設定できます。
       </span>
 

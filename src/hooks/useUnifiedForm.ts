@@ -294,13 +294,19 @@ export const useUnifiedForm = (
     if (initialValues) {
       const initialValuesString = JSON.stringify(initialValues);
 
-      // 前回の値と比較して変更があった場合のみリセット
+      // 前回の値と比較して変更があった場合のみ更新
       if (prevInitialValuesRef.current !== initialValuesString) {
         prevInitialValuesRef.current = initialValuesString;
-        resetForm(initialValues);
+
+        // フォーム全体をリセットするのではなく、個別フィールドを更新
+        Object.entries(initialValues).forEach(([fieldName, value]) => {
+          if (state.values[fieldName] !== value) {
+            setValue(fieldName, value);
+          }
+        });
       }
     }
-  }, [initialValues, resetForm]);
+  }, [initialValues, setValue, state.values]);
 
   return {
     state,

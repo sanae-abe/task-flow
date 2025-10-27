@@ -19,7 +19,7 @@ export const DataStatistics = memo<DataStatisticsProps>(({
 }) => (
     <div className="flex flex-col gap-2">
       {title && (
-        <span className="text-sm font-semibold text-muted-foreground">
+        <span className="text-sm font-semibold text-zinc-700">
           {title}
         </span>
       )}

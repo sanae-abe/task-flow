@@ -101,7 +101,7 @@ const renderMenuItem = (item: MenuItem): React.ReactNode => {
         >
           {item.icon && React.createElement(item.icon, { size: 16, className: "mr-2" })}
           {item.label}
-          <span className="ml-auto text-xs text-muted-foreground">→</span>
+          <span className="ml-auto text-xs text-zinc-700">→</span>
         </DropdownMenuItem>
       );
 

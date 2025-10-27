@@ -47,7 +47,7 @@ const TemplateTableRow: React.FC<TemplateTableRowProps> = ({
           </span>
         </div>
         {template.description && (
-          <span className="text-xs text-gray-600 overflow-hidden text-ellipsis whitespace-nowrap">
+          <span className="text-xs text-zinc-700 overflow-hidden text-ellipsis whitespace-nowrap">
             {template.description}
           </span>
         )}
@@ -55,7 +55,7 @@ const TemplateTableRow: React.FC<TemplateTableRowProps> = ({
 
       {/* カテゴリー */}
       <div className="flex items-center gap-1">
-        <span className="text-sm text-gray-600 inline-block">
+        <span className="text-sm text-zinc-700 inline-block">
           {categoryInfo?.label || template.category}
         </span>
       </div>
@@ -65,7 +65,7 @@ const TemplateTableRow: React.FC<TemplateTableRowProps> = ({
         <span
           className={cn(
             "text-sm",
-            template.usageCount > 0 ? "font-bold text-foreground" : "font-normal text-gray-600"
+            template.usageCount > 0 ? "font-bold text-foreground" : "font-normal text-zinc-700"
           )}
         >
           {template.usageCount}
@@ -81,7 +81,7 @@ const TemplateTableRow: React.FC<TemplateTableRowProps> = ({
           onClick={() => onToggleFavorite(template)}
           className={cn(
             "p-1 h-auto min-w-0",
-            template.isFavorite ? "text-warning" : "text-gray-600"
+            template.isFavorite ? "text-warning" : "text-zinc-700"
           )}
         >
           <Star size={16} fill={template.isFavorite ? "currentColor" : "none"} />

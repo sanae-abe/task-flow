@@ -44,7 +44,7 @@ const CalendarDay: React.FC<CalendarDayProps> = React.memo(
         ? "text-white bg-primary rounded-full w-6 h-6 flex items-center justify-center"
         : isCurrentMonth
           ? "text-foreground"
-          : "text-muted-foreground"
+          : "text-zinc-700"
       }
     `.trim().replace(/\s+/g, ' ');
 
@@ -70,7 +70,7 @@ const CalendarDay: React.FC<CalendarDayProps> = React.memo(
         <div className="flex justify-between items-center min-h-6 mb-2">
           <span className={dayNumberClassName}>{date.getDate()}</span>
           {tasks.length > 3 && (
-            <span className="text-xs text-muted-foreground">
+            <span className="text-xs text-zinc-700">
               他 {tasks.length - 3} 件
             </span>
           )}

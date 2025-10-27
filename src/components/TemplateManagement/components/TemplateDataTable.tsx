@@ -49,7 +49,7 @@ export const TemplateDataTable: React.FC<TemplateDataTableProps> = ({
             title={template.isFavorite ? "お気に入りから削除" : "お気に入りに追加"}
           >
             <Star
-              className={`h-4 w-4 ${template.isFavorite ? 'fill-yellow-400 text-yellow-500' : 'text-gray-400'}`}
+              className={`h-4 w-4 ${template.isFavorite ? 'fill-yellow-400 text-yellow-500' : 'text-zinc-400'}`}
               fill={template.isFavorite ? "currentColor" : "none"}
             />
           </Button>
@@ -65,7 +65,7 @@ export const TemplateDataTable: React.FC<TemplateDataTableProps> = ({
           <div className="flex flex-col">
             <span className="font-medium text-foreground">{template.name}</span>
             {template.description && (
-              <span className="text-xs text-muted-foreground line-clamp-1">
+              <span className="text-xs text-zinc-700 line-clamp-1">
                 {template.description}
               </span>
             )}
@@ -87,7 +87,7 @@ export const TemplateDataTable: React.FC<TemplateDataTableProps> = ({
         };
         const category = row.getValue("category") as string;
         return (
-          <span className="text-sm text-muted-foreground">
+          <span className="text-sm text-zinc-700">
             {categoryMap[category as keyof typeof categoryMap] || category}
           </span>
         );

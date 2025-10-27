@@ -59,9 +59,14 @@ export const useTaskFormState = (): UseTaskFormStateReturn => {
   // Complex form state
   const [labels, setLabels] = useState<Label[]>([]);
   const [attachments, setAttachments] = useState<FileAttachment[]>([]);
-  const [columnId, setColumnId] = useState("");
+  const [columnId, setColumnIdState] = useState("");
   const [recurrence, setRecurrence] = useState<RecurrenceConfig | undefined>(undefined);
   const [priority, setPriority] = useState<Priority | undefined>(undefined);
+
+  // Wrapper for setColumnId
+  const setColumnId = (value: string) => {
+    setColumnIdState(value);
+  };
 
   // Dialog state
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -78,7 +83,7 @@ export const useTaskFormState = (): UseTaskFormStateReturn => {
     setAttachments([]);
     setRecurrence(undefined);
     setPriority(undefined);
-    setColumnId("");
+    setColumnIdState("");
     setShowDeleteConfirm(false);
   };
 
