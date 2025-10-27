@@ -286,6 +286,7 @@ export const UnifiedTaskForm = memo<UnifiedTaskFormProps>(({
           touched={field.type !== 'custom' ? form.state.touched[field.name] : undefined}
           disabled={field.type !== 'custom' ? form.state.isSubmitting : undefined}
           hideLabel={field.label === ''}
+          className={field.name === 'dueDate' ? '!mb-4' : undefined}
         />
       ))}
     </div>
