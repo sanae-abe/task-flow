@@ -101,11 +101,70 @@ export const toggleList = (type: 'unordered' | 'ordered'): void => {
 };
 
 /**
- * Remove formatting from selected text
+ * Remove formatting from selected text (including code blocks and inline code)
  */
 export const removeFormatting = (): void => {
+  const selection = window.getSelection();
+  if (!selection || selection.rangeCount === 0) {
+    return;
+  }
+
+  // If no text is selected, select all content in the editor
+  if (selection.toString().trim() === '') {
+    const editorElement = selection.focusNode?.parentElement?.closest('[contenteditable="true"]');
+    if (editorElement) {
+      const range = document.createRange();
+      range.selectNodeContents(editorElement);
+      selection.removeAllRanges();
+      selection.addRange(range);
+    }
+  }
+
   try {
+    // First try the standard removeFormat command
     document.execCommand('removeFormat', false);
+
+    // Additional cleanup for code elements that might not be removed by removeFormat
+    const range = selection.getRangeAt(0);
+    const container = range.commonAncestorContainer;
+
+    // Find the editor container
+    let editorContainer: HTMLElement | null = null;
+    let currentNode: Node | null = container;
+
+    if (currentNode.nodeType === Node.TEXT_NODE) {
+      currentNode = currentNode.parentElement;
+    }
+
+    while (currentNode && currentNode.nodeType === Node.ELEMENT_NODE) {
+      const element = currentNode as HTMLElement;
+      if (element.matches && element.matches('[contenteditable="true"]')) {
+        editorContainer = element;
+        break;
+      }
+      currentNode = currentNode.parentElement;
+    }
+
+    if (editorContainer) {
+      // Remove code blocks and inline code within the selection
+      const codeElements = editorContainer.querySelectorAll('pre, code');
+      codeElements.forEach((codeElement: Element) => {
+        if (selection.containsNode(codeElement, true)) {
+          // Replace code element with its text content
+          const textContent = codeElement.textContent || '';
+          const textNode = document.createTextNode(textContent);
+          codeElement.parentNode?.replaceChild(textNode, codeElement);
+        }
+      });
+
+      // Remove any remaining style attributes
+      const styledElements = editorContainer.querySelectorAll('[style]');
+      styledElements.forEach((element: Element) => {
+        if (selection.containsNode(element, true)) {
+          element.removeAttribute('style');
+        }
+      });
+    }
   } catch (_error) {
     // eslint-disable-next-line no-console
     console.warn('Failed to remove formatting:', _error);

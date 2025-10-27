@@ -8,7 +8,7 @@
 import { useCallback } from 'react';
 import type { UseEditorStateReturn } from './useEditorState';
 import { executeEditorCommand, saveSelection, restoreRange, getSelectedText } from '../utils/editor';
-import { applyInlineCode, insertCodeBlock } from '../utils/formatting';
+import { applyInlineCode, insertCodeBlock, removeFormatting } from '../utils/formatting';
 
 export interface UseEditorHandlersProps {
   editorState: UseEditorStateReturn;
@@ -111,6 +111,108 @@ export const useEditorHandlers = ({
       }
     }
 
+    // Handle Delete and Backspace keys for code blocks
+    if (key === 'Delete' || key === 'Backspace') {
+      const selection = window.getSelection();
+      if (selection && selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0);
+
+        // Check if we're deleting an empty code block
+        if (range.collapsed) {
+          const container = range.startContainer;
+          let codeElement: Element | null = null;
+
+          // Find if we're inside a code block
+          let node = container;
+          while (node && node !== editorRef.current) {
+            if (node.nodeType === Node.ELEMENT_NODE) {
+              const element = node as Element;
+              if (element.tagName === 'PRE' || element.tagName === 'CODE') {
+                codeElement = element;
+                break;
+              }
+            }
+            const parentNode = node.parentNode;
+            if (!parentNode) {
+              break;
+            }
+            node = parentNode;
+          }
+
+          // If we're in an empty code block, remove it entirely
+          if (codeElement && codeElement.textContent?.trim() === '') {
+            event.preventDefault();
+            const textNode = document.createTextNode('');
+            codeElement.parentNode?.replaceChild(textNode, codeElement);
+
+            // Position cursor after the replacement
+            const newRange = document.createRange();
+            newRange.setStartAfter(textNode);
+            newRange.collapse(true);
+            selection.removeAllRanges();
+            selection.addRange(newRange);
+
+            handleInput();
+            return;
+          }
+
+          // If we're at the boundary of a code block, handle deletion specially
+          if (codeElement) {
+            const isAtStart = range.startOffset === 0;
+            const isAtEnd = range.startOffset === (container.textContent?.length || 0);
+
+            if ((key === 'Backspace' && isAtStart) || (key === 'Delete' && isAtEnd)) {
+              // Allow deletion to potentially break out of code block
+              // This will be handled by the browser's default behavior
+              return;
+            }
+          }
+        }
+      }
+    }
+
+    // Handle Escape key to exit code blocks
+    if (key === 'Escape') {
+      const selection = window.getSelection();
+      if (selection && selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0);
+        let node = range.startContainer;
+
+        // Check if we're inside a code block
+        while (node && node !== editorRef.current) {
+          if (node.nodeType === Node.ELEMENT_NODE) {
+            const element = node as Element;
+            if (element.tagName === 'PRE' || element.tagName === 'CODE') {
+              event.preventDefault();
+
+              // Move cursor to after the code block
+              const newRange = document.createRange();
+              newRange.setStartAfter(element);
+              newRange.collapse(true);
+              selection.removeAllRanges();
+              selection.addRange(newRange);
+
+              // Insert a line break to ensure cursor positioning
+              const br = document.createElement('br');
+              newRange.insertNode(br);
+              newRange.setStartAfter(br);
+              newRange.collapse(true);
+              selection.removeAllRanges();
+              selection.addRange(newRange);
+
+              handleInput();
+              return;
+            }
+          }
+          const parentNode = node.parentNode;
+          if (!parentNode) {
+            break;
+          }
+          node = parentNode;
+        }
+      }
+    }
+
     // Handle Enter key in code blocks
     if (key === 'Enter') {
       const selection = window.getSelection();
@@ -204,6 +306,10 @@ export const useEditorHandlers = ({
       case 'emoji':
         setSavedEmojiRange(saveSelection());
         setShowEmojiPicker(true);
+        break;
+      case 'removeFormatting':
+        removeFormatting();
+        handleInput();
         break;
     }
 
