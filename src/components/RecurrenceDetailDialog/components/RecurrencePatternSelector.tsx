@@ -118,7 +118,7 @@ const RecurrencePatternSelector: React.FC<RecurrencePatternSelectorProps> = ({
         touched={form.state.touched['pattern']}
         disabled={form.state.isSubmitting}
         hideLabel={false}
-        className="flex items-center gap-1 [&>label]:w-[80px] [&>label]:mb-0 [&>select]:w-auto"
+        className="flex flex-row items-center gap-1 [&>label]:w-[80px] [&>label]:mb-0 [&>select]:w-auto"
       />
       <UnifiedFormField
         id={intervalField.id}
@@ -135,7 +135,7 @@ const RecurrencePatternSelector: React.FC<RecurrencePatternSelectorProps> = ({
         touched={form.state.touched['interval']}
         disabled={form.state.isSubmitting}
         hideLabel={false}
-        className="flex items-center gap-1 [&>label]:w-[80px] [&>label]:mb-0 [&>input]:w-auto"
+        className="flex flex-row items-center gap-1 [&>label]:w-[80px] [&>label]:mb-0 [&>input]:w-auto"
       />
       <span className="text-sm">{getIntervalUnit(currentPattern)}</span>
     </div>

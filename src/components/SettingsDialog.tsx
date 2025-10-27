@@ -55,7 +55,7 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
                 "flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors text-left",
                 activeTab === "board"
                   ? "bg-accent text-foreground"
-                  : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+                  : "text-foreground hover:bg-accent/50"
               )}
               onClick={() => setActiveTab("board")}
               aria-current={activeTab === "board" ? "page" : undefined}
@@ -68,7 +68,7 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
                 "flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors text-left",
                 activeTab === "templates"
                   ? "bg-accent text-foreground"
-                  : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+                  : "text-foreground hover:bg-accent/50"
               )}
               onClick={() => setActiveTab("templates")}
               aria-current={activeTab === "templates" ? "page" : undefined}
@@ -81,7 +81,7 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
                 "flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors text-left",
                 activeTab === "labels"
                   ? "bg-accent text-foreground"
-                  : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+                  : "text-foreground hover:bg-accent/50"
               )}
               onClick={() => setActiveTab("labels")}
               aria-current={activeTab === "labels" ? "page" : undefined}
@@ -94,7 +94,7 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
                 "flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors text-left",
                 activeTab === "recycleBin"
                   ? "bg-accent text-foreground"
-                  : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+                  : "text-foreground hover:bg-accent/50"
               )}
               onClick={() => setActiveTab("recycleBin")}
               aria-current={activeTab === "recycleBin" ? "page" : undefined}
@@ -107,7 +107,7 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
                 "flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors text-left",
                 activeTab === "data"
                   ? "bg-accent text-foreground"
-                  : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+                  : "text-foreground hover:bg-accent/50"
               )}
               onClick={() => setActiveTab("data")}
               aria-current={activeTab === "data" ? "page" : undefined}

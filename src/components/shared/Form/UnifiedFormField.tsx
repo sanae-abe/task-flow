@@ -58,7 +58,7 @@ const UnifiedFormField = memo<UnifiedFormFieldProps>(
     step,
     min,
     max,
-    className
+    className = ""
   }) => {
     // エラー表示判定
     const showError = shouldShowError(touched, _error);
@@ -155,7 +155,7 @@ const UnifiedFormField = memo<UnifiedFormFieldProps>(
 
     return (
       <div
-        className={`space-y-2 ${className}`}
+        className={`flex flex-col space-y-2 ${className}`}
         style={style}
       >
         {!hideLabel && (
