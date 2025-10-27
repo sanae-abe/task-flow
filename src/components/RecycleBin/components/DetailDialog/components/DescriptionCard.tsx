@@ -21,7 +21,7 @@ export const DescriptionCard: React.FC<DescriptionCardProps> = ({ item }) => {
   }
 
   return (
-    <section className="p-4 max-[543px]:p-2 bg-background border border-borderborder-border rounded-md">
+    <section className="p-4 max-[543px]:p-2 bg-background border border-border rounded-md">
       {/* セクションヘッダー */}
       <span className="block text-sm font-bold text-foreground m-0 mb-2">
         説明

@@ -100,7 +100,7 @@ const LinkInsertDialog: React.FC<LinkInsertDialogProps> = ({
       <div className="flex flex-col gap-4 mb-6">
         <div className="flex flex-col gap-2">
           <Label htmlFor="url-input" className="text-sm font-medium">
-            URL <span className="text-red-500">*</span>
+            URL <span className="text-destructive">*</span>
           </Label>
           <Input
             id="url-input"

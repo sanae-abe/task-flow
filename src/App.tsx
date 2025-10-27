@@ -22,21 +22,6 @@ import { useTaskFinder } from './hooks/useTaskFinder';
 import { useFirstTimeUser } from './hooks/useFirstTimeUser';
 import { useSubHeader } from './hooks/useSubHeader';
 
-// 定数定義
-const Z_INDEX = 100;
-
-// スタイル定義
-const styles = {
-  fixedHeader: {
-    position: 'fixed' as const,
-    top: 0,
-    left: 0,
-    right: 0,
-    zIndex: Z_INDEX,
-    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-  },
-} as const;
-
 const AppContent: React.FC = () => {
   const { state } = useKanban();
   const { openHelp, closeHelp, closeTaskDetail, state: uiState } = useUI();
@@ -84,7 +69,7 @@ const AppContent: React.FC = () => {
 
   return (
     <div className="app" role="application" aria-label="TaskFlowアプリケーション">
-      <div style={styles.fixedHeader}>
+      <div className="fixed inset-0">
         <Header onHelpClick={handleOpenHelp} onSettingsClick={openSettings} />
         <SubHeader />
       </div>

@@ -27,7 +27,7 @@ import SubTaskProgressBar from "../../SubTaskProgressBar";
 import {
   getPriorityText,
   getCompletionRate,
-  getDateColor,
+  getDateColorClass,
 } from "./tableHelpers";
 import IconButton from "@/components/shared/IconButton";
 
@@ -149,25 +149,11 @@ export const renderDueDateCell = (task: TaskWithColumn) => {
   const dueDate = new Date(task.dueDate);
   const { isOverdue, isDueToday, isDueTomorrow } = getDateStatus(dueDate);
   const formattedDate = formatDate(task.dueDate, "MM/dd HH:mm");
-  const dateColor = getDateColor(isOverdue, isDueToday, isDueTomorrow);
-
-  // Convert Primer color to Tailwind classes
-  const getColorClass = (color: string) => {
-    if (color === "danger.fg") {
-      return "text-red-600";
-    }
-    if (color === "attention.fg") {
-      return "text-yellow-600";
-    }
-    if (color === "success.fg") {
-      return "text-green-600";
-    }
-    return "text-foreground";
-  };
+  const dateColorClass = getDateColorClass(isOverdue, isDueToday, isDueTomorrow);
 
   return (
     <span
-      className={`flex items-center gap-2 text-sm ${getColorClass(dateColor)}`}
+      className={`flex items-center gap-2 text-sm ${dateColorClass}`}
     >
       {formattedDate}
     </span>

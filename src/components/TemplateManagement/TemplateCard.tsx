@@ -54,8 +54,8 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
     const colors: Record<string, string> = {
       low: 'text-gray-500',
       medium: 'text-yellow-600',
-      high: 'text-red-600',
-      critical: 'text-red-600'
+      high: 'text-destructive',
+      critical: 'text-destructive'
     };
     return colors[priority] || 'text-foreground';
   };

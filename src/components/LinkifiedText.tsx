@@ -317,7 +317,7 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({ children, className = "",
 
   return (
     <span
-      className={`prose prose-sm max-w-none text-foreground ${className}`}
+      className={`block prose prose-sm max-w-none text-foreground ${className} [&_p]:mb-[1em] [&_ul]:mb-[1em] [&_ol]:mb-[1em] [&_ul]:ml-[1em] [&_ol]:ml-[1em]] [&_ul]:list-disc [&_ol]:list-disc [&_a]:underline [&_a]:font-medium`}
       style={combinedStyle}
       dangerouslySetInnerHTML={{ __html: processedContent }}
     />

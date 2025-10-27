@@ -2,7 +2,7 @@ import React, { memo } from "react";
 
 interface ContentBoxProps {
   children: React.ReactNode;
-  background?: string;
+  backgroundClass?: string;
   emptyText?: string;
   isEmpty?: boolean;
 }
@@ -10,17 +10,11 @@ interface ContentBoxProps {
 const ContentBox = memo<ContentBoxProps>(
   ({
     children,
-    background = "var(--muted)",
+    backgroundClass = "bg-muted",
     emptyText,
     isEmpty = false,
   }) => (
-    <div
-      style={{
-        background,
-        borderRadius: "0.5rem",
-      }}
-      className="p-3"
-    >
+    <div className={`p-3 rounded-md ${backgroundClass}`}>
       {isEmpty && emptyText ? (
         <span className="text-sm text-gray-500 italic">
           {emptyText}

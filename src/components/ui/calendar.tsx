@@ -49,11 +49,11 @@ function Calendar({
         range_end: "day-range-end",
         selected:
           "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground",
-        today: "bg-primary text-accent-foreground",
+        today: "bg-primary text-foreground",
         outside: "day-outside text-muted-foreground opacity-50 aria-selected:bg-primary/50 aria-selected:text-muted-foreground aria-selected:opacity-30",
         disabled: "text-muted-foreground opacity-50",
         range_middle:
-          "aria-selected:bg-primary aria-selected:text-accent-foreground",
+          "aria-selected:bg-primary aria-selected:text-foreground",
         hidden: "invisible",
         ...classNames,
       }}

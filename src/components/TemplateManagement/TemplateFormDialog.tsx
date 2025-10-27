@@ -198,7 +198,7 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
           <div className="flex flex-col gap-1">
             <label className="text-sm font-medium" htmlFor="template-name">
               テンプレート名
-              <span className="text-red-500 ml-1">*</span>
+              <span className="text-destructive ml-1">*</span>
             </label>
             <Input
               id="template-name"
@@ -254,7 +254,7 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
           <div className="flex flex-col gap-1">
             <label className="text-sm font-medium" htmlFor="task-title">
               タスクタイトル
-              <span className="text-red-500 ml-1">*</span>
+              <span className="text-destructive ml-1">*</span>
             </label>
             <Input
               id="task-title"

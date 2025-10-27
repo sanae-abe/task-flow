@@ -200,7 +200,7 @@ const BoardRecycleBinView: React.FC<BoardRecycleBinViewProps> = ({
                       <DropdownMenuSeparator />
                       <DropdownMenuItem
                         onClick={() => setShowDeleteConfirm(board.id)}
-                        className="text-red-600 focus:text-red-600"
+                        className="text-destructive focus:text-destructive"
                       >
                         <Trash2 size={16} className="mr-2" />
                         完全に削除

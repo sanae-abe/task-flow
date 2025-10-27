@@ -63,10 +63,8 @@ const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(({
         return 'text-success hover:text-success/90';
       case 'warning':
         return 'text-warning hover:text-warning/90';
-      case 'muted':
-        return 'text-muted hover:text-muted/90';
       default:
-        return 'text-foreground hover:text-foreground/90';
+        return 'text-foreground';
     }
   };
 

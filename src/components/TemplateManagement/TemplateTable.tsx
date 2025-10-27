@@ -47,7 +47,7 @@ const TemplateTable: React.FC<TemplateTableProps> = ({
   }
 
   return (
-    <div className="border border-borderborder-border rounded-md overflow-hidden">
+    <div className="border border-border rounded-md overflow-hidden">
       {/* テーブルヘッダー */}
       <TemplateTableHeader
         sortField={sortField}

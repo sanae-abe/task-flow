@@ -137,7 +137,7 @@ export const ImportSection = memo<ImportSectionProps>(({ onMessage }) => {
               size="sm"
               onClick={clearSelection}
               disabled={state.isLoading}
-              className="p-1 h-auto min-w-0 text-red-600 hover:text-red-700"
+              className="p-1 h-auto min-w-0 text-destructive hover:text-destructive"
               aria-label="ファイルを削除"
             >
               <X size={16} />

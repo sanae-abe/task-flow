@@ -63,7 +63,7 @@ const renderMenuItem = (item: MenuItem): React.ReactNode => {
               item.onSelect();
             }
           }}
-          className={item.variant === 'danger' ? 'text-red-600 focus:text-red-600' : ''}
+          className={item.variant === 'danger' ? 'text-destructive focus:text-destructive' : ''}
         >
           {item.icon && React.createElement(item.icon, { size: 16, className: "mr-2" })}
           {item.label}

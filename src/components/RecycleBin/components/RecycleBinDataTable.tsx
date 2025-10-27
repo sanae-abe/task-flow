@@ -58,7 +58,7 @@ export const RecycleBinDataTable: React.FC<RecycleBinDataTableProps> = ({
               <List size={16} />
             )}
             <span
-              className={`text-sm px-2 py-1 rounded text-foreground ${
+              className={`text-sm px-2 py-1 rounded text-foreground whitespace-nowrap ${
                 item.type === 'board'
                   ? 'bg-yellow-100'
                   : item.type === 'column'
@@ -90,7 +90,7 @@ export const RecycleBinDataTable: React.FC<RecycleBinDataTableProps> = ({
       cell: ({ row }) => {
         const item = row.original;
         return (
-          <div className="flex items-center justify-center gap-1 text-sm">
+          <div className="flex items-center justify-center gap-1 text-sm whitespace-nowrap">
             {item.timeUntilDeletion ? (
               <>
                 <Clock size={14} />

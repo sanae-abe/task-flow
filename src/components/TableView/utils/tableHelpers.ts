@@ -47,19 +47,19 @@ export const getCompletionRate = (task: Task): number => {
  * @param isDueTomorrow 明日が期限かどうか
  * @returns カラープロパティ
  */
-export const getDateColor = (
+export const getDateColorClass = (
   isOverdue: boolean,
   isDueToday: boolean,
   isDueTomorrow: boolean,
 ): string => {
   if (isOverdue) {
-    return "danger.emphasis";
+    return "text-destructive";
   }
   if (isDueToday) {
-    return "attention.emphasis";
+    return "text-warning";
   }
   if (isDueTomorrow) {
-    return "accent.emphasis";
+    return "text-success";
   }
-  return "fg.default";
+  return "text-foreground";
 };

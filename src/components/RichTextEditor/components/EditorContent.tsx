@@ -62,7 +62,7 @@ const EditorContent: React.FC<EditorContentProps> = ({
         className={`
           outline-none p-3 rounded-b-md
           ${disabled ? 'bg-muted cursor-not-allowed' : 'bg-background'}
-          prose prose-sm max-w-none text-foreground [&_a]:font-normal`}
+          prose prose-sm max-w-none text-foreground [&_a]:font-normal [&_p]:mb-[1em] [&_ul]:mb-[1em] [&_ol]:mb-[1em] [&_ul]:ml-[1.5em] [&_ol]:ml-[1.5em] [&_ul]:list-disc [&_ol]:list-disc [&_a]:underline [&_a]:font-medium`}
         style={{
           minHeight,
           fontSize: '14px',

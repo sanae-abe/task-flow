@@ -384,7 +384,7 @@ const TableColumnManager: React.FC = () => {
                         handleMoveUp(column.id);
                       }}
                       disabled={isFirst}
-                      className={cn("p-2 hover:bg-gray-200", isFirst ? "text-gray-300" : "text-default")}
+                      className={cn("p-2 hover:bg-gray-200", isFirst ? "text-gray-300" : "text-foreground")}
                     />
                     <IconButton
                       icon={ChevronDown}
@@ -395,7 +395,7 @@ const TableColumnManager: React.FC = () => {
                         handleMoveDown(column.id);
                       }}
                       disabled={isLast}
-                      className={cn("p-2 hover:bg-gray-200", isLast ? "text-gray-300" : "text-default")}
+                      className={cn("p-2 hover:bg-gray-200", isLast ? "text-gray-300" : "text-foreground")}
                     />
                   </div>
 

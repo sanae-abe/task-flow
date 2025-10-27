@@ -163,7 +163,7 @@ const UnifiedFormField = memo<UnifiedFormFieldProps>(
             htmlFor={id}
             className={cn(
               "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
-              validation?.required && "after:content-['*'] after:ml-0.5 after:text-red-500"
+              validation?.required && "after:content-['*'] after:ml-0.5 after:text-destructive"
             )}
           >
             {label}

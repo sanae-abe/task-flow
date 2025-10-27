@@ -191,7 +191,7 @@ input[type="number"]::-moz-number-spinner {
 
 /* Prose内のコードブロック - リッチテキストエディタと統一 */
 .prose pre {
-  margin: 0 0 8px !important;
+  margin: 0 0 1em !important;
   border: 1px solid #d0d7de !important;
   border-radius: 6px !important;
   padding: 8px !important;

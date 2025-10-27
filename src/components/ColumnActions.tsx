@@ -115,7 +115,7 @@ const ColumnActions: React.FC<ColumnActionsProps> = ({
         onClick={onAddTask}
         size="icon"
         ariaLabel="タスクを作成"
-        className="hover:text-default w-6 h-6 p-0"
+        className="text-foreground hover:text-foreground w-6 h-6 p-0"
       />
 
       {/* カラム設定メニュー */}

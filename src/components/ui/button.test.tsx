@@ -66,7 +66,7 @@ describe('Button', () => {
       render(<Button variant="ghost">ゴースト</Button>)
 
       const button = screen.getByRole('button')
-      expect(button).toHaveClass('hover:bg-primary', 'hover:text-accent-foreground')
+      expect(button).toHaveClass('hover:bg-primary', 'hover:text-foreground')
     })
 
     it('should apply link variant classes', () => {

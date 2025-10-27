@@ -54,7 +54,7 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
               className={cn(
                 "flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors text-left",
                 activeTab === "board"
-                  ? "bg-accent text-accent-foreground"
+                  ? "bg-accent text-foreground"
                   : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
               )}
               onClick={() => setActiveTab("board")}
@@ -67,7 +67,7 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
               className={cn(
                 "flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors text-left",
                 activeTab === "templates"
-                  ? "bg-accent text-accent-foreground"
+                  ? "bg-accent text-foreground"
                   : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
               )}
               onClick={() => setActiveTab("templates")}
@@ -80,7 +80,7 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
               className={cn(
                 "flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors text-left",
                 activeTab === "labels"
-                  ? "bg-accent text-accent-foreground"
+                  ? "bg-accent text-foreground"
                   : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
               )}
               onClick={() => setActiveTab("labels")}
@@ -93,7 +93,7 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
               className={cn(
                 "flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors text-left",
                 activeTab === "recycleBin"
-                  ? "bg-accent text-accent-foreground"
+                  ? "bg-accent text-foreground"
                   : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
               )}
               onClick={() => setActiveTab("recycleBin")}
@@ -106,7 +106,7 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
               className={cn(
                 "flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors text-left",
                 activeTab === "data"
-                  ? "bg-accent text-accent-foreground"
+                  ? "bg-accent text-foreground"
                   : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
               )}
               onClick={() => setActiveTab("data")}

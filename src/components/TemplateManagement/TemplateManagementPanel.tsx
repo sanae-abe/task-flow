@@ -122,7 +122,7 @@ const TemplateManagementPanel: React.FC<TemplateManagementPanelProps> = ({ onMes
   if (_error) {
     return (
       <div className="text-center p-6">
-        <p className="text-red-600 text-sm font-bold">
+        <p className="text-destructive text-sm font-bold">
           {_error}
         </p>
         <Button variant="outline" className="mt-2" onClick={() => window.location.reload()}>
