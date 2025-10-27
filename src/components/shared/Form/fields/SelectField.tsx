@@ -33,7 +33,7 @@ export const SelectField: React.FC<SelectFieldProps> = React.memo(
     validation,
     _error,
     touched,
-    sx,
+    style,
     options = [],
   }) => {
     /**
@@ -80,7 +80,7 @@ export const SelectField: React.FC<SelectFieldProps> = React.memo(
         className={cn(
           "w-full"
         )}
-        style={sx ? (sx as React.CSSProperties) : undefined}
+        style={style ? (style as React.CSSProperties) : undefined}
         aria-required={validation?.required}
         aria-invalid={hasError}
         aria-describedby={hasError ? `${id}-_error` : undefined}

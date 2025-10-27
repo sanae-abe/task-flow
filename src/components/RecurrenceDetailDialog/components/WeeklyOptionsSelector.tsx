@@ -31,7 +31,7 @@ const WeeklyOptionsSelector: React.FC<WeeklyOptionsSelectorProps> = ({
       : "曜日を選択";
 
   return (
-    <div className="flex flex-row items-center gap-2">
+    <div className="flex items-center gap-2">
       <label className="self-center min-w-[80px] text-sm">曜日選択</label>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>

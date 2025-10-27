@@ -23,7 +23,7 @@ const RecurrenceEndConditions: React.FC<RecurrenceEndConditionsProps> = ({
       </h3>
     </div>
     <div className="flex flex-col gap-3">
-      <div className="flex flex-row items-center gap-2">
+      <div className="flex tems-center gap-2">
         <label className="self-center min-w-[80px] text-sm">終了日</label>
         <DatePicker
           value={config.endDate || ""}
@@ -31,7 +31,7 @@ const RecurrenceEndConditions: React.FC<RecurrenceEndConditionsProps> = ({
           placeholder="期限を選択"
         />
       </div>
-      <div className="flex flex-row items-center gap-2">
+      <div className="flex items-center gap-2">
         <label className="self-center min-w-[80px] text-sm">最大回数</label>
         <Input
           type="number"

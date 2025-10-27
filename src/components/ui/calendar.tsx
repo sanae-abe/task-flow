@@ -49,7 +49,7 @@ function Calendar({
         range_end: "day-range-end",
         selected:
           "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground",
-        today: "bg-primary text-foreground",
+        today: "bg-accent text-foreground",
         outside: "day-outside text-muted-foreground opacity-50 aria-selected:bg-primary/50 aria-selected:text-muted-foreground aria-selected:opacity-30",
         disabled: "text-muted-foreground opacity-50",
         range_middle:
@@ -64,7 +64,7 @@ function Calendar({
           <NativeSelect
             value={value}
             onChange={onChange}
-            className="py-0 px-1 relative"
+            className="py-0 relative"
           >
             {options?.map((option) => (
               <NativeSelectOption

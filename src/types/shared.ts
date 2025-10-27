@@ -11,8 +11,6 @@ export type IconButtonVariant =
 
 export type IconButtonSize = "small" | "medium" | "large" | "icon";
 
-export type IconButtonStyle = "primer" | "custom";
-
 export type StatusBadgeVariant =
   | "default"
   | "danger"
@@ -35,8 +33,6 @@ export type FlexJustify =
   | "space-between"
   | "space-around"
   | "space-evenly";
-
-export type FlexWrap = "nowrap" | "wrap" | "wrap-reverse";
 
 export type LoadingStateSize = "small" | "medium" | "large";
 

@@ -36,7 +36,7 @@ const TaskCardContent: React.FC<TaskDisplayProps> = ({
           }
           variant="success"
           size="icon"
-          sx={{
+          style={{
             pl: 0,
             pt: 0,
             width: "26px",

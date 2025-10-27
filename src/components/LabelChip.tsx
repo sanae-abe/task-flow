@@ -89,7 +89,7 @@ const LabelChip = memo<LabelChipProps>(
             ariaLabel={`${label.name}ラベルを削除`}
             variant="muted"
             size="small"
-            sx={removeButtonStyles}
+            style={removeButtonStyles}
             className="h-4 w-4 p-0"
           />
         )}

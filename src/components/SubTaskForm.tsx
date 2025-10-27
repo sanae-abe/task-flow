@@ -44,7 +44,7 @@ const SubTaskForm: React.FC<SubTaskFormProps> = ({
         cancelText="キャンセル"
         validateOnChange={false}
         validateOnBlur={false}
-        sx={{
+        style={{
           "& > div > div": { mb: 0 }, // フォームコンテナの下マージン削除
           "& form": { display: "flex", alignItems: "center", gap: 2 },
         }}

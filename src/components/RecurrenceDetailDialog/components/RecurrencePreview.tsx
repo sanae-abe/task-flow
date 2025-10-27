@@ -13,7 +13,7 @@ const RecurrencePreview: React.FC<RecurrencePreviewProps> = ({ config }) => {
 
   return (
     <div className="mt-5 p-2 bg-neutral-100 rounded-md border border-border">
-      <span className="text-sm text-muted-foreground">
+      <span className="text-sm">
         設定内容: {getRecurrenceDescription(config)}
       </span>
     </div>

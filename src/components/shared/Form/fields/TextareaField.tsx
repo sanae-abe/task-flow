@@ -34,7 +34,7 @@ export const TextareaField: React.FC<TextareaFieldProps> = React.memo(
     validation,
     _error,
     touched,
-    sx,
+    style,
     rows = 3,
   }) => {
     /**
@@ -97,7 +97,7 @@ export const TextareaField: React.FC<TextareaFieldProps> = React.memo(
           "resize-none",
           hasError && "border-red-500 focus:border-red-500 focus:ring-red-500"
         )}
-        style={sx ? (sx as React.CSSProperties) : undefined}
+        style={style ? (style as React.CSSProperties) : undefined}
         aria-required={validation?.required}
         aria-invalid={hasError}
         aria-describedby={hasError ? `${id}-_error` : undefined}

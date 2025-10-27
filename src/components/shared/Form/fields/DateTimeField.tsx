@@ -34,7 +34,7 @@ export const DateTimeField: React.FC<DateTimeFieldProps> = React.memo(
     validation,
     _error,
     touched,
-    sx,
+    style,
     step,
     min,
     max,
@@ -97,7 +97,7 @@ export const DateTimeField: React.FC<DateTimeFieldProps> = React.memo(
         className={cn(
           hasError && "border-red-500 focus:border-red-500 focus:ring-red-500"
         )}
-        style={sx ? (sx as React.CSSProperties) : undefined}
+        style={style ? (style as React.CSSProperties) : undefined}
         aria-required={validation?.required}
         aria-invalid={hasError}
         aria-describedby={hasError ? `${id}-_error` : undefined}

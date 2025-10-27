@@ -22,6 +22,8 @@ interface UnifiedFormFieldProps extends FormFieldConfig {
   touched?: boolean;
   onBlur?: () => void;
   onFocus?: () => void;
+  style?: React.CSSProperties;
+  className?: string;
 }
 
 /**
@@ -45,7 +47,7 @@ const UnifiedFormField = memo<UnifiedFormFieldProps>(
     disabled = false,
     hideLabel = false,
     customComponent,
-    sx,
+    style,
     onChange,
     onKeyDown,
     onBlur,
@@ -56,6 +58,7 @@ const UnifiedFormField = memo<UnifiedFormFieldProps>(
     step,
     min,
     max,
+    className
   }) => {
     // エラー表示判定
     const showError = shouldShowError(touched, _error);
@@ -79,7 +82,7 @@ const UnifiedFormField = memo<UnifiedFormFieldProps>(
         validation,
         _error,
         touched,
-        sx,
+        style
       };
 
       switch (type) {
@@ -152,11 +155,8 @@ const UnifiedFormField = memo<UnifiedFormFieldProps>(
 
     return (
       <div
-        className={cn(
-          "space-y-2",
-          sx && "custom-styles" // 後で処理
-        )}
-        style={sx ? (sx as React.CSSProperties) : undefined}
+        className={`space-y-2 ${className}`}
+        style={style}
       >
         {!hideLabel && (
           <label

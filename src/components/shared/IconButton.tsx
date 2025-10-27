@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { forwardRef } from 'react';
 import { cn } from '@/lib/utils';
 
-import type { IconButtonVariant, IconButtonSize, IconButtonStyle } from '../../types/shared';
+import type { IconButtonVariant, IconButtonSize } from '../../types/shared';
 
 interface IconButtonProps {
   /** アイコンコンポーネント（Lucide Reactアイコンまたはカスタムアイコン） */
@@ -16,12 +16,10 @@ interface IconButtonProps {
   variant?: IconButtonVariant;
   /** ボタンのサイズ */
   size?: IconButtonSize;
-  /** ボタンのスタイル（Primerスタイルまたはカスタムスタイル） */
-  style?: IconButtonStyle;
   /** 無効状態 */
   disabled?: boolean;
   /** 追加のCSS */
-  sx?: Record<string, unknown>;
+  style?: Record<string, unknown>;
   /** クリック伝播を停止するか */
   stopPropagation?: boolean;
   /** 追加のクラス名 */
@@ -41,7 +39,7 @@ const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(({
   variant = 'default',
   size = 'medium',
   disabled = false,
-  sx,
+  style,
   stopPropagation = false,
   className
 }, ref) => {
@@ -110,7 +108,7 @@ const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(({
         size === 'icon' && 'p-1',
         className
       )}
-      style={sx ? (sx as React.CSSProperties) : undefined}
+      style={style ? (style as React.CSSProperties) : undefined}
     >
       <IconComponent size={getIconSize()} />
     </Button>
