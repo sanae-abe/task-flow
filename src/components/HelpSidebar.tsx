@@ -127,10 +127,10 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
         right: 0,
         width: SIDEBAR_WIDTH,
         height: "100vh",
-        backgroundColor: "hsl(var(--background))",
+        backgroundColor: "var(--background)",
         boxShadow: "0 16px 32px rgba(0, 0, 0, 0.24)",
         borderLeft: "1px solid",
-        borderColor: "hsl(var(--border))",
+        borderColor: "var(--border)",
         zIndex: SIDEBAR_Z_INDEX,
         overflowY: "auto",
         animation:

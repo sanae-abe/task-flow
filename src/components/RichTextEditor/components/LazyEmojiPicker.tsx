@@ -25,7 +25,7 @@ interface LazyEmojiPickerProps {
 // Loading component shown while emoji picker is loading
 const EmojiPickerLoading: React.FC = () => (
   <div
-    className="fixed z-[500] border border-border rounded-lg bg-background animate-in fade-in duration-200"
+    className="fixed z-500 border border-border rounded-lg bg-background animate-in fade-in duration-200"
     style={{
       width: 350,
       height: 400,
@@ -70,7 +70,7 @@ const EmojiPickerContent: React.FC<Omit<LazyEmojiPickerProps, 'isOpen'>> = ({
   return (
     <div
       data-emoji-picker
-      className="fixed z-[500] border border-border rounded-lg bg-background animate-in fade-in duration-200"
+      className="fixed z-500 border border-border rounded-lg bg-background animate-in fade-in duration-200"
       style={{
         top: position.top,
         left: position.left,

@@ -60,14 +60,14 @@ const Logo: React.FC<LogoProps> = ({ size = "medium" }) => {
       </div>
       <h1
         style={{
-          color: "hsl(var(--foreground))",
+          color: "var(--foreground)",
           fontFamily:
             '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif',
           fontSize: `${fontSize}`
         }}
         className="font-semibold m-0 leading-[condensed] translate-[0 -2px]"
       >
-        Task<span style={{ color: "hsl(var(--primary))" }}>Flow</span>
+        Task<span style={{ color: "var(--primary)" }}>Flow</span>
       </h1>
     </div>
   );

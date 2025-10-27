@@ -47,7 +47,7 @@ const EmojiPickerWrapper: React.FC<EmojiPickerWrapperProps> = ({
   return (
     <div
       data-emoji-picker
-      className="fixed z-[500] border border-border rounded-lg bg-background animate-in fade-in duration-200"
+      className="fixed z-500 border border-border rounded-lg bg-background animate-in fade-in duration-200"
       style={{
         top: position.top,
         left: position.left,

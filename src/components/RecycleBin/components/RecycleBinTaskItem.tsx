@@ -47,7 +47,7 @@ export const RecycleBinTaskItem: React.FC<RecycleBinTaskItemProps> = ({
   onRestore,
   onDeleteConfirm,
 }) => (
-    <div className="bg-background border border-border rounded-md p-4 mb-3 hover:bg-accent/50 transition-colors">
+    <div className="bg-background border border-border rounded-md p-4 mb-3 hover:bg-primary/50 transition-colors">
       <div className="flex items-start justify-between gap-3 mb-3">
         <div className="flex-1 min-w-0">
           <h3 className="text-sm font-medium text-foreground m-0 line-clamp-2 break-words">

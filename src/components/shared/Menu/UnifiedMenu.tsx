@@ -83,7 +83,7 @@ const renderMenuItem = (item: MenuItem): React.ReactNode => {
               item.onSelect(item.id);
             }
           }}
-          className={item.selected ? 'bg-accent' : ''}
+          className={item.selected ? 'bg-primary' : ''}
         >
           {item.icon && React.createElement(item.icon, { size: 16, className: "mr-2" })}
           {item.label}

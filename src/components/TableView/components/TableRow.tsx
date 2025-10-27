@@ -35,13 +35,13 @@ export const TableRow: React.FC<TableRowProps> = ({
         alignItems: "center",
         borderBottom:
           index < totalTasks - 1
-            ? "1px solid hsl(var(--border))"
+            ? "1px solid var(--border)"
             : "none",
         cursor: "pointer",
         minWidth: "fit-content",
       }}
       onMouseEnter={(e) => {
-        e.currentTarget.style.backgroundColor = "hsl(var(--muted))";
+        e.currentTarget.style.backgroundColor = "var(--muted)";
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.backgroundColor = "";

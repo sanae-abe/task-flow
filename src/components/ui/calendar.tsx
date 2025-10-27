@@ -49,17 +49,17 @@ function Calendar({
         range_end: "day-range-end",
         selected:
           "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground",
-        today: "bg-accent text-accent-foreground",
-        outside: "day-outside text-muted-foreground opacity-50 aria-selected:bg-accent/50 aria-selected:text-muted-foreground aria-selected:opacity-30",
+        today: "bg-primary text-accent-foreground",
+        outside: "day-outside text-muted-foreground opacity-50 aria-selected:bg-primary/50 aria-selected:text-muted-foreground aria-selected:opacity-30",
         disabled: "text-muted-foreground opacity-50",
         range_middle:
-          "aria-selected:bg-accent aria-selected:text-accent-foreground",
+          "aria-selected:bg-primary aria-selected:text-accent-foreground",
         hidden: "invisible",
         ...classNames,
       }}
       components={{
-        PreviousMonthButton: ({ onClick }) => <IconButton icon={ChevronLeft} ariaLabel="Previous month" className="hover:bg-gray-100 hover:text-gray-900 w-8 h-8 select-none focus-visible:ring-[3px] absolute left-0 z-[400]" onClick={onClick} />,
-        NextMonthButton: ({ onClick }) => <IconButton icon={ChevronRight} ariaLabel="Next month" className="shadow-xs hover:bg-gray-100 hover:text-gray-900 w-8 h-8 select-none focus-visible:ring-[3px] absolute right-0 z-[400]" onClick={onClick} />,
+        PreviousMonthButton: ({ onClick }) => <IconButton icon={ChevronLeft} ariaLabel="Previous month" className="hover:bg-gray-100 hover:text-gray-900 w-8 h-8 select-none focus-visible:ring-[3px] absolute left-0 z-400" onClick={onClick} />,
+        NextMonthButton: ({ onClick }) => <IconButton icon={ChevronRight} ariaLabel="Next month" className="shadow-xs hover:bg-gray-100 hover:text-gray-900 w-8 h-8 select-none focus-visible:ring-[3px] absolute right-0 z-400" onClick={onClick} />,
         Dropdown: ({ options, value, onChange }) => (
           <NativeSelect
             value={value}

@@ -8,14 +8,14 @@ export const KANBAN_BOARD_STYLES = {
       height: "8px",
     },
     "&::WebkitScrollbarTrack": {
-      background: "hsl(var(--muted))",
+      background: "var(--muted)",
     },
     "&::WebkitScrollbarThumb": {
-      background: "hsl(var(--border))",
+      background: "var(--border)",
       borderRadius: "0.25rem",
     },
     "&::WebkitScrollbarThumb:hover": {
-      background: "hsl(var(--border))",
+      background: "var(--border)",
     },
   },
 
@@ -28,6 +28,6 @@ export const KANBAN_BOARD_STYLES = {
 
   emptyStateText: {
     fontSize: "16px",
-    color: "hsl(var(--muted-foreground))",
+    color: "var(--muted-foreground)",
   },
 } as const;

@@ -8,12 +8,12 @@ import type { RecycleBinItem } from '../../../../../types/recycleBin';
 // アイテム種別別のカラーパレット
 export const itemTypeColors = {
   task: {
-    icon: 'hsl(var(--primary))', // primary blue
-    border: 'hsl(var(--accent))', // accent blue
-    background: 'hsl(var(--accent) / 0.5)', // light accent blue
+    icon: 'var(--primary)', // primary blue
+    border: 'var(--accent)', // accent blue
+    background: 'var(--accent) / 0.5', // light accent blue
     badge: {
-      bg: 'hsl(var(--accent))', // accent blue
-      fg: 'hsl(var(--primary))', // primary blue
+      bg: 'var(--accent)', // accent blue
+      fg: 'var(--primary)', // primary blue
     },
   },
   board: {

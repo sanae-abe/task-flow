@@ -96,7 +96,7 @@ const TaskDetailSidebar = memo<TaskDetailSidebarProps>(
     return (
       <div
         ref={sidebarRef}
-        className="fixed top-0 right-0 w-[440px] h-screen bg-white shadow-2xl border-l border-gray-200 z-[300] overflow-y-auto animate-[sidebar-slide-in-right_250ms_cubic-bezier(0.33,1,0.68,1)]"
+        className="fixed top-0 right-0 w-[440px] h-screen bg-white shadow-2xl border-l border-gray-200 z-300 overflow-y-auto animate-[sidebar-slide-in-right_250ms_cubic-bezier(0.33,1,0.68,1)]"
         role="dialog"
         aria-label="タスク詳細"
         aria-modal="true"

@@ -65,7 +65,7 @@ export const ActionFooter: React.FC<ActionFooterProps> = ({
     <footer
       role="group"
       aria-label="アクション"
-      className="flex gap-2 p-4 border-t border-gray-200 bg-gray-50 rounded-b-md sticky bottom-0 z-[210] max-sm:p-3 max-sm:gap-1"
+      className="flex gap-2 p-4 border-t border-gray-200 bg-gray-50 rounded-b-md sticky bottom-0 z-210 max-sm:p-3 max-sm:gap-1"
     >
       {/* 復元ボタン */}
       <Button
@@ -163,7 +163,7 @@ export const ActionFooter: React.FC<ActionFooterProps> = ({
           e.preventDefault();
           onClose();
         }}
-        className="absolute -left-[10000px] w-px h-px overflow-hidden focus:static focus:left-auto focus:w-auto focus:h-auto focus:overflow-visible focus:p-1 focus:bg-blue-600 focus:text-white focus:rounded-sm focus:no-underline focus:text-xs focus:font-bold"
+        className="absolute -left-[10000px] w-px h-px overflow-hidden focus:static focus:left-auto focus:w-auto focus:h-auto focus:overflow-visible focus:p-1 focus:bg-primary focus:text-white focus:rounded-sm focus:no-underline focus:text-xs focus:font-bold"
       >
         ダイアログを閉じる (Escape)
       </a>

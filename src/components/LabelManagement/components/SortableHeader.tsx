@@ -26,7 +26,7 @@ const SortableHeader: React.FC<SortableHeaderProps> = ({
       type="button"
       onClick={() => onSort(field)}
       style={{
-        color: 'hsl(var(--muted-foreground))'
+        color: 'var(--muted-foreground)'
       }}
       className={`bg-transparent border-0 cursor-pointer flex w-full p-0 font-xs font-bold font-[inherit] ${
         align === 'center' ? 'justify-center' : 'justify-start'

@@ -121,7 +121,7 @@ const TableView: React.FC = () => {
           alignItems: "center",
           justifyContent: "center",
           height: "calc(100vh - 112px)",
-          color: "hsl(var(--foreground))",
+          color: "var(--foreground)",
         }}
       >
         <span className="text-foreground">ボードを選択してください</span>
@@ -133,7 +133,7 @@ const TableView: React.FC = () => {
     <div
       key={`tableview-${tableColumnsData.forceRender}`}
       style={{
-        backgroundColor: "hsl(var(--muted))"
+        backgroundColor: "var(--muted)"
       }}
       className="h-[calc(100vh-120px)] overflow-auto p-8"
     >
@@ -143,7 +143,7 @@ const TableView: React.FC = () => {
         style={{
           borderRadius: 2,
           overflow: "auto",
-          backgroundColor: "hsl(var(--background))",
+          backgroundColor: "var(--background)",
           boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
           minWidth: "fit-content",
         }}

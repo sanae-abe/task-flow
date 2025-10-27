@@ -44,7 +44,7 @@ const RightSection: React.FC<RightSectionProps> = ({
       onClick={onCreateClick}
       variant="default"
       aria-label="タスク作成"
-      className="bg-blue-600 text-white hover:bg-blue-700 flex items-center gap-2"
+      className="bg-primary text-white hover:bg-blue-700 flex items-center gap-2"
     >
       <Plus size={16} />
       タスク作成

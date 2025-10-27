@@ -20,8 +20,7 @@ const LoadingButton: React.FC<LoadingButtonProps> = ({
   loading = false,
   onClick,
   disabled = false
-}) => {
-  return (
+}) => (
     <button
       onClick={onClick}
       disabled={disabled || loading}
@@ -34,7 +33,6 @@ const LoadingButton: React.FC<LoadingButtonProps> = ({
       )}
     </button>
   )
-}
 
 describe('LoadingButton', () => {
   it('should render children when not loading', () => {

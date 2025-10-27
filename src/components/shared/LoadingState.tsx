@@ -57,7 +57,7 @@ const LoadingState = memo<LoadingStateProps>(({
     switch (variant) {
       case 'overlay':
         return {
-          className: 'absolute inset-0 bg-white/80 z-[100]',
+          className: 'absolute inset-0 bg-white/80 z-100',
           style: {}
         };
       case 'inline':

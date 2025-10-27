@@ -196,7 +196,7 @@ const FilterSelector = memo<FilterSelectorProps>(
             {getCurrentFilterLabel()}
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="z-[400] w-56">
+        <DropdownMenuContent className="z-400 w-56">
           <DropdownMenuRadioGroup value={currentFilter.type} onValueChange={(value) => handleFilterSelect(value)}>
             {/* 期限でフィルター */}
             {filterConfigs.slice(0, 4).map((config) => {
@@ -220,7 +220,7 @@ const FilterSelector = memo<FilterSelectorProps>(
                   <DropdownMenuTrigger asChild>
                     <DropdownMenuSub>
                       <DropdownMenuSubTrigger
-                        className={`cursor-pointer ${currentFilter.type === "label" ? 'bg-accent' : ''}`}
+                        className={`cursor-pointer ${currentFilter.type === "label" ? 'bg-primary' : ''}`}
                         onSelect={(e) => e.preventDefault()}
                       >
                         <Tag size={16} className="mr-2" />
@@ -231,7 +231,7 @@ const FilterSelector = memo<FilterSelectorProps>(
                           <DropdownMenuCheckboxItem
                             checked={currentFilter.type === "has-labels"}
                             onCheckedChange={() => handleFilterSelect("label")}
-                            className={currentFilter.type === "has-labels" ? 'bg-accent' : ''}
+                            className={currentFilter.type === "has-labels" ? 'bg-primary' : ''}
                           >
                             すべてのラベル
                           </DropdownMenuCheckboxItem>
@@ -263,7 +263,7 @@ const FilterSelector = memo<FilterSelectorProps>(
             <DropdownMenuGroup>
               <DropdownMenuTrigger asChild>
                 <DropdownMenuSub>
-                  <DropdownMenuSubTrigger className={`cursor-pointer ${currentFilter.type === "priority" ? 'bg-accent' : ''}`}
+                  <DropdownMenuSubTrigger className={`cursor-pointer ${currentFilter.type === "priority" ? 'bg-primary' : ''}`}
                     onSelect={(e) => e.preventDefault()}
                   >
                     <Star size={16} className="mr-2" />

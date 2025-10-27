@@ -6,13 +6,9 @@
 import { describe, it, expect } from 'vitest'
 
 // Simple utility functions for testing
-const formatTaskTitle = (title: string): string => {
-  return title.trim().length > 0 ? title.trim() : '無題のタスク'
-}
+const formatTaskTitle = (title: string): string => title.trim().length > 0 ? title.trim() : '無題のタスク'
 
-const isValidTaskId = (id: string): boolean => {
-  return id.length > 0 && /^[a-zA-Z0-9_-]+$/.test(id)
-}
+const isValidTaskId = (id: string): boolean => id.length > 0 && /^[a-zA-Z0-9_-]+$/.test(id)
 
 const getPriorityLevel = (priority: string): number => {
   const levels = { 'critical': 4, 'high': 3, 'medium': 2, 'low': 1 }

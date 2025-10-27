@@ -3,7 +3,7 @@
  */
 export const EDITOR_STYLES = {
   code: {
-    backgroundColor: 'hsl(var(--muted))',
+    backgroundColor: 'var(--muted)',
     color: '#e01e5a',
     padding: '2px 4px',
     borderRadius: '0.25rem',
@@ -21,7 +21,7 @@ export const EDITOR_STYLES = {
     lineHeight: '1.45',
     overflowX: 'auto',
     color: '#24292f',
-    backgroundColor: 'hsl(var(--muted))',
+    backgroundColor: 'var(--muted)',
   },
 } as const;;
 

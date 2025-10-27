@@ -73,7 +73,7 @@ const getDialogStyles = (variant: DialogVariant, size: DialogSize) => {
         borderRadius: '0.75rem',
       },
       content: {
-        backgroundColor: 'hsl(var(--muted))',
+        backgroundColor: 'var(--muted)',
         borderRadius: '0.5rem',
         padding: '12px'
       }
@@ -116,9 +116,9 @@ const DialogHeader = memo<{
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: 'hsl(var(--background))',
+    backgroundColor: 'var(--background)',
     borderRadius: '0.75rem 0.75rem 0 0',
-    boxShadow: '0 1px 0 hsl(var(--border))'
+    boxShadow: '0 1px 0 var(--border)'
   }}>
     <h2
       id={titleId}
@@ -237,7 +237,7 @@ const UnifiedDialog = memo<UnifiedDialogProps>(({
         "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
         "data-[state=closed]:duration-300 data-[state=open]:duration-300",
         // ベースレイアウト
-        "fixed inset-0 z-[400] bg-black/50 flex",
+        "fixed inset-0 z-400 bg-black/50 flex",
         // バリアント別のレイアウト
         variant === 'overlay' && "items-start justify-center pt-0",
         variant === 'modal' && "items-center justify-center",
@@ -254,7 +254,7 @@ const UnifiedDialog = memo<UnifiedDialogProps>(({
           "data-[state=open]:animate-in data-[state=closed]:animate-out",
           "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
           "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
-          "data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-top-[48%]",
+          "data-state=closed]:slide-out-to-top-[48% data-[state=open]:slide-in-from-top-[48%]",
           "data-[state=closed]:duration-300 data-[state=open]:duration-300",
           // ベースレイアウト
           "flex flex-col bg-white rounded-lg shadow-lg",

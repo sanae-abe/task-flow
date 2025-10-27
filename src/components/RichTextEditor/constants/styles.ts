@@ -9,7 +9,7 @@ import type { EditorStyles } from '../types';
 // Main editor style constants
 export const EDITOR_STYLES: EditorStyles = {
   code: {
-    backgroundColor: "hsl(var(--muted))",
+    backgroundColor: "var(--muted)",
     color: "#e01e5a",
     padding: "2px 4px",
     borderRadius: "0.25rem",
@@ -21,7 +21,7 @@ export const EDITOR_STYLES: EditorStyles = {
     textDecoration: "underline",
   },
   codeBlock: {
-    backgroundColor: "hsl(var(--muted))",
+    backgroundColor: "var(--muted)",
     padding: "8px",
     borderRadius: "0.5rem",
     border: "1px solid #d0d7de",
@@ -50,7 +50,7 @@ export const TOOLBAR_STYLES = {
     gap: '4px',
     padding: '8px',
     borderBottom: '1px solid #d0d7de',
-    backgroundColor: 'hsl(var(--muted))',
+    backgroundColor: 'var(--muted)',
     borderTopLeftRadius: '0.5rem',
     borderTopRightRadius: '0.5rem',
   },
