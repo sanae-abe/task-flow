@@ -81,7 +81,7 @@ export const saveBoards = (
   } catch (_error) {
     logger.warn("Failed to save boards to localStorage:", _error);
   }
-};;
+};
 
 export const loadBoards = (): KanbanBoard[] => {
   try {
@@ -144,7 +144,7 @@ export const loadBoards = (): KanbanBoard[] => {
     logger.warn("Failed to load boards from localStorage:", _error);
     return createDemoBoard();
   }
-};;
+};
 
 /**
  * デモボードを作成する関数
@@ -364,7 +364,7 @@ const authenticateUser = async (email, password) => {
 
   logger.info("📖 Demo board created successfully");
   return [demoBoard];
-};;
+};
 
 export const clearStorage = (): void => {
   try {

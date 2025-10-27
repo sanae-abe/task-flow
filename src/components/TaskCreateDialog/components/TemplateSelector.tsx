@@ -5,6 +5,14 @@ import type { TemplateSelectorProps } from '../types';
 import type { TaskTemplate } from '../../../types/template';
 
 /**
+ * HTMLタグを除去してプレーンテキストを取得する関数
+ */
+const stripHtmlTags = (html: string): string => {
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  return doc.body.textContent || doc.body.innerText || '';
+};
+
+/**
  * テンプレート選択コンポーネント
  *
  * お気に入りテンプレートを優先表示し、その後使用回数順でソート表示します。
@@ -113,7 +121,9 @@ const TemplateCard: React.FC<TemplateCardProps> = ({ template, onSelect, isFavor
         <span>{template.name}</span>
       </div>
       <div className="text-sm text-gray-600 mb-2">
-        {template.description || template.taskDescription.slice(0, 100)}...
+        {template.description
+          ? stripHtmlTags(template.description).slice(0, 100) + '...'
+          : stripHtmlTags(template.taskDescription).slice(0, 100) + '...'}
       </div>
       <div className="text-xs text-gray-500">
         カテゴリー: {template.category} | 使用回数: {template.usageCount}回

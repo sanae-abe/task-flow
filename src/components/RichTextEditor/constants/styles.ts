@@ -40,7 +40,7 @@ export const EDITOR_STYLES: EditorStyles = {
     fontFamily: "inherit !important",
     border: "0 !important",
   },
-} as const;;
+} as const;
 
 // Utility function to create inline style strings
 export const createInlineStyleString = (styles: Record<string, string | number>): string =>

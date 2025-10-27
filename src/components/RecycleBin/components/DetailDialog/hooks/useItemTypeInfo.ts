@@ -84,7 +84,7 @@ export const useItemTypeInfo = (type: RecycleBinItem['type']) => useMemo(() => {
         },
       },
     };
-  }, [type]);;
+  }, [type]);
 
 /**
  * 複数アイテムのメタデータを生成するヘルパー

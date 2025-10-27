@@ -23,7 +23,7 @@ export const EDITOR_STYLES = {
     color: '#24292f',
     backgroundColor: 'var(--muted)',
   },
-} as const;;
+} as const;
 
 /**
  * スタイル文字列生成関数

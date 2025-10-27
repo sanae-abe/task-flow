@@ -34,7 +34,7 @@ export const itemTypeColors = {
       fg: 'rgb(34 197 94)', // green-500
     },
   },
-} as const;;
+} as const;
 
 // スペーシングトークン（Primer準拠）
 export const spacing = {
