@@ -40,7 +40,7 @@ const TaskSortSelector: React.FC<TaskSortSelectorProps> = ({
           variant="ghost"
           size="sm"
           aria-label={`現在のソート: ${currentSortConfig?.label ?? "手動"}`}
-          className="flex items-center gap-1 text-neutral-600 "
+          className="flex items-center gap-1 text-neutral-600 text-xs"
         >
           <ArrowUpDown size={16} />
           {currentSortConfig?.label ?? "手動"}

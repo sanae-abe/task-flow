@@ -18,7 +18,7 @@ const SubHeaderButton = React.forwardRef<HTMLButtonElement, SubHeaderButtonProps
     ref={ref}
     size="sm"
     variant="ghost"
-    className={cn("flex items-center gap-1 text-neutral-600", className)}
+    className={cn("flex items-center gap-1 text-neutral-600 text-xs", className)}
     {...props}
   >
     <IconComponent size={16} />

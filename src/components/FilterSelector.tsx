@@ -187,7 +187,7 @@ const FilterSelector = memo<FilterSelectorProps>(
             variant="ghost"
             size="sm"
             aria-label="タスクフィルターを選択"
-            className={`flex items-center gap-1 ${currentFilter.type !== "all"
+            className={`flex items-center gap-1 text-xs ${currentFilter.type !== "all"
               ? "text-primary font-semibold"
               : "text-neutral-600 font-normal"
               }`}

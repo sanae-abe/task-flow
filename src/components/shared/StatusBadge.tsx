@@ -37,19 +37,15 @@ const StatusBadge = memo<StatusBadgeProps>(({
   const getVariantColor = (): string => {
     switch (variant) {
       case 'danger':
-        return '#d1242f';
+        return 'text-destructive';
       case 'warning':
-        return '#9a6700';
+        return 'text-warning';
       case 'success':
-        return '#1a7f37';
+        return 'text-success';
       case 'info':
-        return '#0969da';
-      case 'neutral':
-        return '#656d76';
-      case 'emphasis':
-        return '#ffffff';
+        return 'text-primary';
       default:
-        return '#1f2328';
+        return 'text-default';
     }
   };
 
@@ -77,7 +73,7 @@ const StatusBadge = memo<StatusBadgeProps>(({
     }
   };
 
-  const color = getVariantColor();
+  const colorClass = getVariantColor();
   const { containerClass, textClass, iconSize } = getSizeClasses();
 
   return (
@@ -86,10 +82,10 @@ const StatusBadge = memo<StatusBadgeProps>(({
         'inline-flex items-center self-start gap-1',
         containerClass,
         textClass,
-        className
+        className,
+        colorClass
       )}
       style={{
-        color,
         fontWeight
       }}
     >
