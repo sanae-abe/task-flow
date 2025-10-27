@@ -39,22 +39,16 @@ const SubTaskForm: React.FC<SubTaskFormProps> = ({
   );
 
   return (
-    <div className="flex items-center gap-2 rounded-md bg-background">
-      <UnifiedForm
-        fields={formFields}
-        onSubmit={onSubmit}
-        onCancel={onCancel}
-        submitText="追加"
-        cancelText="キャンセル"
-        validateOnChange={false}
-        validateOnBlur={false}
-        style={{
-          "& > div > div": { mb: 0 }, // フォームコンテナの下マージン削除
-          "& form": { display: "flex", alignItems: "center", gap: 2 },
-        }}
-        className="flex-1 "
-      />
-    </div>
+    <UnifiedForm
+      fields={formFields}
+      onSubmit={onSubmit}
+      onCancel={onCancel}
+      submitText="追加"
+      cancelText="キャンセル"
+      validateOnChange={false}
+      validateOnBlur={false}
+      className="flex-1 mb-0 [&>div]:flex [&>div]:flex-col [&>div]:gap-2 [&_div_div]:mt-0 [&_div_div]:mb-0"
+    />
   );
 };
 

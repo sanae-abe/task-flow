@@ -31,6 +31,15 @@ export const EDITOR_STYLES: EditorStyles = {
     margin: "0 0 8px",
     display: 'block',
   },
+  codeBlockInner: {
+    backgroundColor: "inherit !important",
+    color: "inherit !important",
+    padding: "inherit !important",
+    borderRadius: "inherit !important",
+    fontSize: "inherit !important",
+    fontFamily: "inherit !important",
+    border: "0 !important",
+  },
 } as const;;
 
 // Utility function to create inline style strings

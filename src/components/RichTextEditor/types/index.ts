@@ -47,6 +47,15 @@ export interface EditorStyles {
     margin: string;
     display: 'block';
   };
+  codeBlockInner: {
+    backgroundColor: string;
+    color: string;
+    padding: string;
+    borderRadius: string;
+    fontSize: string;
+    fontFamily: string;
+    border: string;
+  };
 }
 
 // Link editing state

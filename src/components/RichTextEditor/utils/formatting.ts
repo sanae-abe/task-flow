@@ -21,8 +21,9 @@ export const createInlineCode = (text: string): string => {
  * Create a code block element with proper styling
  */
 export const createCodeBlock = (content: string): string => {
-  const styleString = createInlineStyleString(EDITOR_STYLES.codeBlock);
-  return `<pre style="${styleString}"><code>${content}</code></pre>`;
+  const preStyleString = createInlineStyleString(EDITOR_STYLES.codeBlock);
+  const codeStyleString = createInlineStyleString(EDITOR_STYLES.codeBlockInner);
+  return `<pre style="${preStyleString}"><code style="${codeStyleString}">${content}</code></pre>`;
 };
 
 /**
