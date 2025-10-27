@@ -65,7 +65,7 @@ export const TemplateSelector: React.FC<TemplateSelectorProps> = ({
         {otherTemplates.length > 0 && (
           <div>
             {favoriteTemplates.length > 0 && (
-              <div className="text-sm font-semibold mb-3 text-gray-900">
+              <div className="text-sm font-semibold mb-3 text-foreground">
                 その他のテンプレート
               </div>
             )}

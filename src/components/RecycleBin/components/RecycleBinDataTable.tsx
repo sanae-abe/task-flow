@@ -58,7 +58,7 @@ export const RecycleBinDataTable: React.FC<RecycleBinDataTableProps> = ({
               <List size={16} />
             )}
             <span
-              className={`text-sm px-2 py-1 rounded text-gray-900 ${
+              className={`text-sm px-2 py-1 rounded text-foreground ${
                 item.type === 'board'
                   ? 'bg-yellow-100'
                   : item.type === 'column'
@@ -96,7 +96,7 @@ export const RecycleBinDataTable: React.FC<RecycleBinDataTableProps> = ({
                 <Clock size={14} />
                 <span
                   className={`${
-                    recycleBinSettings.retentionDays === null ? 'text-gray-500' : 'text-gray-900'
+                    recycleBinSettings.retentionDays === null ? 'text-gray-500' : 'text-foreground'
                   }`}
                 >
                   {item.timeUntilDeletion}

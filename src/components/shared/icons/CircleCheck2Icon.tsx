@@ -10,7 +10,7 @@ interface CircleCheck2IconProps {
  * 色反転版のCircleCheckアイコン - 緑い背景に白いチェックマーク
  * lucide-reactのCircleCheckの反転バージョン
  */
-const CircleCheck2Icon: React.FC<CircleCheck2IconProps> = ({ size = 16, className, color = "var(--bg-green-700)" }) => (
+const CircleCheck2Icon: React.FC<CircleCheck2IconProps> = ({ size = 16, className, color = "var(--bg-success)" }) => (
     <svg
       width={size}
       height={size}

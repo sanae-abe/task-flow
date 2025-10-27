@@ -129,7 +129,7 @@ const CalendarView: React.FC = () => {
 
         <DragOverlay>
           {activeTask ? (
-            <div className="text-[13px] px-2 py-0.5 rounded-md bg-blue-100 text-blue-600 whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px] shadow-lg opacity-50 transition-all duration-200">
+            <div className="text-[13px] px-2 py-0.5 rounded-md bg-blue-100 text-primary whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px] shadow-lg opacity-50 transition-all duration-200">
               {activeTask.title}
             </div>
           ) : null}

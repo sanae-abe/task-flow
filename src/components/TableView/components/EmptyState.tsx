@@ -18,7 +18,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
     : "タスクがありません";
 
   return (
-    <div className="flex flex-col items-center justify-center py-8 text-gray-900">
+    <div className="flex flex-col items-center justify-center py-8 text-foreground">
       <p className="text-sm mb-2">{message}</p>
       {isFiltered && (
         <Button variant="ghost" size="sm" onClick={onClearFilter}>

@@ -63,7 +63,7 @@ const HelpSection: React.FC<HelpSectionProps> = ({
       >
         <Icon size={14} />
       </div>
-      <h3 className="text-base font-semibold text-gray-900 m-0">
+      <h3 className="text-base font-semibold m-0">
         {title}
       </h3>
     </div>
@@ -82,11 +82,11 @@ const HelpItem: React.FC<HelpItemProps> = ({ title, description }) => (
   <div className="p-2 flex gap-3 items-start mb-2 bg-neutral-100 rounded-md">
     <span
       style={{ minWidth: TITLE_MIN_WIDTH }}
-      className={cn(`text-sm font-semibold text-blue-700 flex-shrink-0 break-words`)}
+      className={cn(`text-sm font-semibold text-primary flex-shrink-0 break-words`)}
     >
       {title}
     </span>
-    <span className="text-xs leading-6 text-gray-900 flex-1">
+    <span className="text-xs leading-6 flex-1">
       {description}
     </span>
   </div>

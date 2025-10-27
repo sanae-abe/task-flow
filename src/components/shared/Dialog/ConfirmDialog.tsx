@@ -46,7 +46,7 @@ const ConfirmDialog = memo<ConfirmDialogProps>(({
       closeOnBackdropClick
     >
       {message && (
-        <p className="text-gray-600 block leading-6">
+        <p className="leading-6 text-sm">
           {message}
         </p>
       )}

@@ -56,7 +56,7 @@ const LabelSelector = memo<LabelSelectorProps>(
             <DropdownMenuTrigger asChild>
               <Button
                 variant="outline"
-                className="hover:text-gray-900 hover:bg-gray-100"
+                className="hover:text-foreground hover:bg-gray-100"
                 aria-label="ラベル選択メニューを開く"
               >
                 <Tag size={16} className="mr-2" />
@@ -89,7 +89,7 @@ const LabelSelector = memo<LabelSelectorProps>(
           <Button
             variant="outline"
             onClick={handleAddDialogOpen}
-            className="hover:text-gray-900 hover:bg-gray-100"
+            className="hover:text-foreground hover:bg-gray-100"
             aria-label="新しいラベルを作成"
           >
             <Plus size={16} className="mr-2" />

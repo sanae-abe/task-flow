@@ -58,15 +58,15 @@ const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(({
   const getVariantClasses = () => {
     switch (variant) {
       case 'danger':
-        return 'text-red-600 hover:text-red-700';
+        return 'text-destructive hover:destructive/90';
       case 'success':
-        return 'text-green-700 hover:text-green-800';
+        return 'text-success hover:text-success/90';
       case 'warning':
-        return 'text-yellow-600 hover:text-yellow-700';
+        return 'text-warning hover:text-warning/90';
       case 'muted':
-        return 'text-gray-500 hover:text-gray-700';
+        return 'text-muted hover:text-muted/90';
       default:
-        return 'text-gray-900 hover:text-gray-700';
+        return 'text-foreground hover:text-foreground/90';
     }
   };
 

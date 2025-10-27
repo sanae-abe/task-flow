@@ -72,7 +72,7 @@ export const renderEditCell = (
  */
 export const renderTitleCell = (task: TaskWithColumn) => (
   <span
-    className={`block overflow-hidden text-ellipsis whitespace-nowrap text-gray-900 text-sm ${
+    className={`block overflow-hidden text-ellipsis whitespace-nowrap text-foreground text-sm ${
       task.completedAt ? "line-through" : ""
     }`}
   >
@@ -125,11 +125,11 @@ export const renderStatusCell = (
 export const renderPriorityCell = (task: TaskWithColumn) => (
   <div>
     {task.priority ? (
-      <span className="text-gray-900 text-sm">
+      <span className="text-foreground text-sm">
         {getPriorityText(task.priority)}
       </span>
     ) : (
-      <span className="text-gray-900 text-sm">-</span>
+      <span className="text-foreground text-sm">-</span>
     )}
   </div>
 );
@@ -141,7 +141,7 @@ export const renderDueDateCell = (task: TaskWithColumn) => {
   if (!task.dueDate) {
     return (
       <div>
-        <span className="text-gray-900 text-sm">-</span>
+        <span className="text-foreground text-sm">-</span>
       </div>
     );
   }
@@ -162,7 +162,7 @@ export const renderDueDateCell = (task: TaskWithColumn) => {
     if (color === "success.fg") {
       return "text-green-600";
     }
-    return "text-gray-900";
+    return "text-foreground";
   };
 
   return (
@@ -183,7 +183,7 @@ export const renderLabelsCell = (task: TaskWithColumn) => (
       <LabelChip key={label.id} label={label} />
     ))}
     {task.labels && task.labels.length > 2 && (
-      <span className="text-xs text-gray-900 px-2 py-1 border border-border border-gray-200 rounded">
+      <span className="text-xs text-foreground px-2 py-1 border border-border border-gray-200 rounded">
         +{task.labels.length - 2}
       </span>
     )}
@@ -198,13 +198,13 @@ export const renderSubTasksCell = (task: TaskWithColumn) => (
     {task.subTasks && task.subTasks.length > 0 ? (
       <>
         <Check size={12} />
-        <span className="text-sm text-gray-900">
+        <span className="text-sm text-foreground">
           {task.subTasks.filter((sub) => sub.completed).length}/
           {task.subTasks.length}
         </span>
       </>
     ) : (
-      <span className="text-gray-900 text-sm">-</span>
+      <span className="text-foreground text-sm">-</span>
     )}
   </div>
 );
@@ -217,12 +217,12 @@ export const renderFilesCell = (task: TaskWithColumn) => (
     {task.files && task.files.length > 0 ? (
       <>
         <Paperclip size={12} />
-        <span className="text-sm text-gray-900">
+        <span className="text-sm text-foreground">
           {task.files.length}
         </span>
       </>
     ) : (
-      <span className="text-gray-900 text-sm">-</span>
+      <span className="text-foreground text-sm">-</span>
     )}
   </div>
 );
@@ -238,12 +238,12 @@ export const renderProgressCell = (task: TaskWithColumn) => (
           completedCount={task.subTasks.filter((sub) => sub.completed).length}
           totalCount={task.subTasks.length}
         />
-        <span className="text-sm text-gray-900">
+        <span className="text-sm text-foreground">
           {getCompletionRate(task)}%
         </span>
       </div>
     ) : (
-      <span className="text-gray-900 text-sm">-</span>
+      <span className="text-foreground text-sm">-</span>
     )}
   </div>
 );
@@ -252,7 +252,7 @@ export const renderProgressCell = (task: TaskWithColumn) => (
  * 作成日セルの描画
  */
 export const renderCreatedAtCell = (task: TaskWithColumn) => (
-  <span className="text-sm text-gray-900">
+  <span className="text-sm text-foreground">
     {formatDate(task.createdAt, "MM/dd HH:mm")}
   </span>
 );
@@ -261,7 +261,7 @@ export const renderCreatedAtCell = (task: TaskWithColumn) => (
  * 更新日セルの描画
  */
 export const renderUpdatedAtCell = (task: TaskWithColumn) => (
-  <span className="text-sm text-gray-900">
+  <span className="text-sm text-foreground">
     {formatDate(task.updatedAt, "MM/dd HH:mm")}
   </span>
 );
@@ -272,11 +272,11 @@ export const renderUpdatedAtCell = (task: TaskWithColumn) => (
 export const renderCompletedAtCell = (task: TaskWithColumn) => (
   <div>
     {task.completedAt ? (
-      <span className="text-sm text-gray-900">
+      <span className="text-sm text-foreground">
         {formatDate(task.completedAt, "MM/dd HH:mm")}
       </span>
     ) : (
-      <span className="text-gray-900 text-sm">-</span>
+      <span className="text-foreground text-sm">-</span>
     )}
   </div>
 );
@@ -288,13 +288,13 @@ export const renderDescriptionCell = (task: TaskWithColumn) => (
   <div>
     {task.description ? (
       <span
-        className="block text-xs text-gray-900 overflow-hidden text-ellipsis whitespace-nowrap max-w-[580px]"
+        className="block text-xs text-foreground overflow-hidden text-ellipsis whitespace-nowrap max-w-[580px]"
         title={stripHtml(task.description)}
       >
         {stripHtml(task.description)}
       </span>
     ) : (
-      <span className="text-gray-900 text-xs">-</span>
+      <span className="text-foreground text-xs">-</span>
     )}
   </div>
 );
@@ -320,7 +320,7 @@ export const renderRecurrenceCell = (task: TaskWithColumn) => (
         </span>
       </>
     ) : (
-      <span className="text-gray-900 text-sm">-</span>
+      <span className="text-foreground text-sm">-</span>
     )}
   </div>
 );
@@ -329,5 +329,5 @@ export const renderRecurrenceCell = (task: TaskWithColumn) => (
  * デフォルトセルの描画
  */
 export const renderDefaultCell = () => (
-  <span className="text-sm text-gray-900">-</span>
+  <span className="text-sm text-foreground">-</span>
 );

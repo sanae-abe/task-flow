@@ -57,7 +57,7 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
       high: 'text-red-600',
       critical: 'text-red-600'
     };
-    return colors[priority] || 'text-gray-900';
+    return colors[priority] || 'text-foreground';
   };
 
   // お気に入りトグル
@@ -117,13 +117,13 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
           {/* テンプレート名 */}
           <div className="flex items-center gap-1 mb-1">
             {template.isFavorite && (
-              <div className="text-yellow-700">
+              <div className="text-warning">
                 <Star size={14} fill="currentColor" />
               </div>
             )}
             <h3 className={`
               ${compact ? 'text-sm' : 'text-base'}
-              font-bold text-gray-900 truncate
+              font-bold truncate
             `}>
               {template.name}
             </h3>
@@ -156,7 +156,7 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
                 onClick={handleToggleFavorite}
                 aria-label={template.isFavorite ? 'お気に入りから削除' : 'お気に入りに追加'}
                 className={`p-1 h-auto min-w-0 ${
-                  template.isFavorite ? 'text-yellow-700' : 'text-gray-500'
+                  template.isFavorite ? 'text-warning' : 'text-gray-500'
                 }`}
               >
                 {template.isFavorite ? <Star size={16} fill="currentColor" /> : <Star size={16} />}
@@ -197,7 +197,7 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
       {!compact && (
         <div className="pt-2 border-t border-border flex flex-col gap-1">
           {/* タスクタイトル */}
-          <h4 className="text-sm font-semibold text-gray-900 truncate">
+          <h4 className="text-sm font-semibold text-foreground truncate">
             {template.taskTitle}
           </h4>
 
@@ -224,7 +224,7 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(({
 
             {/* 繰り返し設定 */}
             {template.recurrence?.enabled && (
-              <span className="text-xs text-blue-600 px-1 py-0.5 bg-blue-50 rounded">
+              <span className="text-xs text-primary px-1 py-0.5 bg-blue-50 rounded">
                 繰り返し
               </span>
             )}

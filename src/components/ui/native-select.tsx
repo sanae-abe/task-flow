@@ -9,7 +9,7 @@ const NativeSelect = React.forwardRef<
   HTMLSelectElement,
   React.SelectHTMLAttributes<HTMLSelectElement>
 >(({ className, children, ...props }, ref) => (
-  <div className="group/native-select relative w-fit has-[select:disabled]:opacity-50">
+  <div className="group/native-select relative w-auto has-[select:disabled]:opacity-50">
     <select
       ref={ref}
       className={cn(

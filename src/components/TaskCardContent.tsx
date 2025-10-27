@@ -49,7 +49,7 @@ const TaskCardContent: React.FC<TaskDisplayProps> = ({
           }}
         />
       )}
-      <h2 className="text-sm m-0 font-medium text-gray-900 leading-snug flex-1 break-words">
+      <h2 className="text-sm m-0 font-medium text-foreground leading-snug flex-1 break-words">
         {task.title}
       </h2>
     </div>

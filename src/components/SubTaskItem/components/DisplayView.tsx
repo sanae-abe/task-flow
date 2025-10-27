@@ -18,7 +18,7 @@ export const DisplayView: React.FC<DisplayViewProps> = ({
     <>
       <span
         className={cn(
-          "flex-1 text-sm text-gray-900 cursor-pointer",
+          "flex-1 text-sm text-foreground cursor-pointer",
           subTask.completed && "opacity-60 line-through"
         )}
       >

@@ -63,10 +63,10 @@ const getTextColor = (
     return "text-destructive";
   }
   if (isDueToday) {
-    return "text-yellow-700";
+    return "text-warning";
   }
   if (isDueTomorrow) {
-    return "text-blue-600";
+    return "text-primary";
   }
   return "text-inherit";
 };

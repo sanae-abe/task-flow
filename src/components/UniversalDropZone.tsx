@@ -132,13 +132,13 @@ const UniversalDropZone: React.FC<UniversalDropZoneProps> = ({
       tabIndex={isLoading ? -1 : 0}
       aria-label={getAriaLabel()}
     >
-      <div className={cn(isDragOver ? "text-blue-600" : "text-gray-500")}>
+      <div className={cn(isDragOver ? "text-primary" : "text-gray-500")}>
         <Upload size={24} />
       </div>
       <p
         className={cn(
           "block font-normal tracking-tight text-sm",
-          isDragOver ? "text-blue-600" : "text-gray-900"
+          isDragOver ? "text-primary" : "text-foreground"
         )}
       >
         {getDisplayTitle()}

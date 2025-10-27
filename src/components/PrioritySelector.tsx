@@ -35,8 +35,7 @@ const PrioritySelector: React.FC<PrioritySelectorProps> = ({
         role="radiogroup"
         aria-labelledby="priority-label"
         className={cn(
-          "flex flex-col space-y-2",
-          "flex-row space-y-0 space-x-3"
+          "flex flex-row space-y-0 space-x-3 mt-2"
         )}
       >
         {prioritySelectorOptions.map((option) => (
@@ -50,14 +49,14 @@ const PrioritySelector: React.FC<PrioritySelectorProps> = ({
               onChange={() => handleChange(option.value)}
               disabled={disabled}
               className={cn(
-                "h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300",
+                "h-4 w-4 text-primary focus:ring-blue-500 border-gray-300",
                 disabled && "opacity-50 cursor-not-allowed"
               )}
             />
             <label
               htmlFor={`priority-${option.value || "none"}`}
               className={cn(
-                "text-sm font-medium text-gray-900 cursor-pointer",
+                "text-sm font-medium text-foreground cursor-pointer",
                 disabled && "opacity-50 cursor-not-allowed"
               )}
             >

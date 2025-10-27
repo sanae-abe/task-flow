@@ -58,8 +58,8 @@ function Calendar({
         ...classNames,
       }}
       components={{
-        PreviousMonthButton: ({ onClick }) => <IconButton icon={ChevronLeft} ariaLabel="Previous month" className="hover:bg-gray-100 hover:text-gray-900 w-8 h-8 select-none focus-visible:ring-[3px] absolute left-0 z-400" onClick={onClick} />,
-        NextMonthButton: ({ onClick }) => <IconButton icon={ChevronRight} ariaLabel="Next month" className="shadow-xs hover:bg-gray-100 hover:text-gray-900 w-8 h-8 select-none focus-visible:ring-[3px] absolute right-0 z-400" onClick={onClick} />,
+        PreviousMonthButton: ({ onClick }) => <IconButton icon={ChevronLeft} ariaLabel="Previous month" className="hover:bg-gray-100 hover:text-foreground w-8 h-8 select-none focus-visible:ring-[3px] absolute left-0 z-400" onClick={onClick} />,
+        NextMonthButton: ({ onClick }) => <IconButton icon={ChevronRight} ariaLabel="Next month" className="shadow-xs hover:bg-gray-100 hover:text-foreground w-8 h-8 select-none focus-visible:ring-[3px] absolute right-0 z-400" onClick={onClick} />,
         Dropdown: ({ options, value, onChange }) => (
           <NativeSelect
             value={value}

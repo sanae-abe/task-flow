@@ -38,7 +38,7 @@ const TemplateTableRow: React.FC<TemplateTableRowProps> = ({
       <div className="flex flex-col gap-1">
         <div className="flex items-center gap-1">
           {template.isFavorite && (
-            <div className="text-yellow-700">
+            <div className="text-warning">
               <Star size={14} fill="currentColor" />
             </div>
           )}
@@ -65,7 +65,7 @@ const TemplateTableRow: React.FC<TemplateTableRowProps> = ({
         <span
           className={cn(
             "text-sm",
-            template.usageCount > 0 ? "font-bold text-gray-900" : "font-normal text-gray-600"
+            template.usageCount > 0 ? "font-bold text-foreground" : "font-normal text-gray-600"
           )}
         >
           {template.usageCount}
@@ -81,7 +81,7 @@ const TemplateTableRow: React.FC<TemplateTableRowProps> = ({
           onClick={() => onToggleFavorite(template)}
           className={cn(
             "p-1 h-auto min-w-0",
-            template.isFavorite ? "text-yellow-700" : "text-gray-600"
+            template.isFavorite ? "text-warning" : "text-gray-600"
           )}
         >
           <Star size={16} fill={template.isFavorite ? "currentColor" : "none"} />
