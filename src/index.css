@@ -133,7 +133,7 @@ body,
     Helvetica,
     Arial,
     sans-serif;
-  padding-top: 112px; /* ヘッダー(67px) + サブヘッダー(53px) の高さ分 */
+  padding-top: 97px; /* ヘッダー(52px) + サブヘッダー(53px) の高さ分 */
 }
 
 /* Sidebar Animation Keyframes */

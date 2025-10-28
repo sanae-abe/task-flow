@@ -69,7 +69,7 @@ const AppContent: React.FC = () => {
 
   return (
     <div className="app" role="application" aria-label="TaskFlowアプリケーション">
-      <div className="fixed inset-0 z-1 h-[112px]">
+      <div className="fixed inset-0 z-1 h-[97px]">
         <Header onHelpClick={handleOpenHelp} onSettingsClick={openSettings} />
         <SubHeader />
       </div>
