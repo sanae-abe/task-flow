@@ -118,7 +118,7 @@ export const ActionFooter: React.FC<ActionFooterProps> = ({
         size="default"
         disabled={isCloseDisabled}
         onClick={onClose}
-        className="flex items-center gap-1 flex-shrink-0 transition-all min-w-auto max-sm:text-sm max-sm:py-2 max-sm:px-3"
+        className="flex items-center gap-1 shrink-0 transition-all min-w-auto max-sm:text-sm max-sm:py-2 max-sm:px-3"
         aria-label="ダイアログを閉じる"
       >
         {loadingAction === 'close' ? (

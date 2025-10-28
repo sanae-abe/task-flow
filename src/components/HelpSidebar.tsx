@@ -78,7 +78,7 @@ const HelpItem: React.FC<HelpItemProps> = ({ title, description }) => (
   <div className="p-2 flex gap-3 items-start bg-neutral-100 rounded-md">
     <span
       style={{ minWidth: TITLE_MIN_WIDTH }}
-      className={cn(`text-sm font-semibold text-primary flex-shrink-0 break-words`)}
+      className={cn(`text-sm font-semibold text-primary shrink-0 break-words`)}
     >
       {title}
     </span>
@@ -135,7 +135,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
     >
       <div className="flex h-full flex-col">
         {/* Header */}
-        <div className="flex items-start justify-between border-b border-border flex-shrink-0 pt-[17px] pb-4 px-4">
+        <div className="flex items-start justify-between border-b border-border shrink-0 pt-[17px] pb-4 px-4">
           <h1
             id="help-title"
             className="flex items-center gap-2 text-xl font-bold"
@@ -148,7 +148,7 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
             variant="ghost"
             size="sm"
             aria-label="ヘルプを閉じる"
-            className="flex-shrink-0 p-1 h-auto min-w-0"
+            className="shrink-0 p-1 h-auto min-w-0"
           >
             <X size={16} />
           </Button>

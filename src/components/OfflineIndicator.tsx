@@ -11,7 +11,7 @@ const OfflineIndicator: React.FC = () => {
 
   // Dynamic className generation for indicator
   const indicatorClassName = `
-    flex items-center gap-2 px-3 py-1 mr-1 border border-border rounded-md transition-all duration-300 ease-in-out right-[10px]
+    flex items-center gap-2 px-3 py-1 mr-2 border border-border rounded-md transition-all duration-300 ease-in-out right-[10px]
     ${isOffline
       ? "border-destructive text-destructive"
       : "border-success text-white"

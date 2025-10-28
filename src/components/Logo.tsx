@@ -41,34 +41,20 @@ const CustomLogo: React.FC<{ size: number }> = ({ size }) => (
 
 const Logo: React.FC<LogoProps> = ({ size = "medium" }) => {
   const sizeConfig = {
-    small: { iconSize: 24, fontSize: "18px", gap: "2px" },
-    medium: { iconSize: 28, fontSize: "22px", gap: "4px" },
-    large: { iconSize: 32, fontSize: "24px", gap: "8px" },
+    small: { iconSize: 24 },
+    medium: { iconSize: 28 },
+    large: { iconSize: 32 },
   };
 
-  const { iconSize, fontSize, gap } = sizeConfig[size];
+  const { iconSize } = sizeConfig[size];
 
   return (
     <div
       role="banner"
       aria-label="TaskFlowアプリケーションロゴ"
-      style={{ gap }}
-      className={`flex items-end select-none`}
+      className="flex items-center select-none"
     >
-      <div className="flex items-center">
-        <CustomLogo size={iconSize} />
-      </div>
-      <h1
-        style={{
-          color: "var(--foreground)",
-          fontFamily:
-            '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif',
-          fontSize: `${fontSize}`
-        }}
-        className="font-semibold m-0 leading-[condensed] translate-[0 -2px]"
-      >
-        Task<span style={{ color: "var(--primary)" }}>Flow</span>
-      </h1>
+      <CustomLogo size={iconSize} />
     </div>
   );
 };

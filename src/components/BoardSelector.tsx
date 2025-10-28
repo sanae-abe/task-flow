@@ -71,7 +71,7 @@ const SortableBoardTab: React.FC<SortableBoardTabProps> = memo(
           size="sm"
           onClick={() => onSelect(board.id)}
           className={cn(
-            "text-sm rounded-md px-1 py-0 whitespace-nowrap translate-y-0.5 flex-shrink-0 cursor-grab hover:text-foreground/70 hover:bg-transparent active:cursor-grabbing focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
+            "text-sm rounded-md px-1 py-0 whitespace-nowrap translate-y-0.5 shrink-0 cursor-grab hover:text-foreground/70 hover:bg-transparent active:cursor-grabbing focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
             isSelected ? "font-semibold" : "font-normal"
           )}
           aria-label={`${board.title}ボードを選択`}
@@ -94,7 +94,7 @@ const DragOverlayBoardTab: React.FC<DragOverlayBoardTabProps> = memo(
       <Button
         variant="ghost"
         size="sm"
-        className="text-sm rounded-md px-1 py-0 whitespace-nowrap flex-shrink-0 font-semibold text-foreground bg-white hover:bg-white"
+        className="text-sm rounded-md px-1 py-0 whitespace-nowrap shrink-0 font-semibold text-foreground bg-white hover:bg-white"
       >
         {board.title}
       </Button>

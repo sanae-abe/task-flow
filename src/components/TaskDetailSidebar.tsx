@@ -103,7 +103,7 @@ const TaskDetailSidebar = memo<TaskDetailSidebarProps>(
       >
         <div className="flex h-full flex-col">
           {/* Header */}
-          <div className="flex p-5 items-start justify-between border-b border-border border-gray-200 flex-shrink-0">
+          <div className="flex p-5 items-start justify-between border-b border-border border-gray-200 shrink-0">
             <h2 className="text-lg font-bold m-0 pr-3 break-words">
               {task.title}
             </h2>
@@ -112,7 +112,7 @@ const TaskDetailSidebar = memo<TaskDetailSidebarProps>(
               variant="ghost"
               size="sm"
               aria-label="タスク詳細を閉じる"
-              className="flex-shrink-0 p-1 h-auto min-w-0"
+              className="shrink-0 p-1 h-auto min-w-0"
             >
               <X size={16} />
             </Button>
@@ -137,7 +137,7 @@ const TaskDetailSidebar = memo<TaskDetailSidebarProps>(
           </div>
 
           {/* Actions */}
-          <div className="p-3 border-t border-gray-200 flex-shrink-0">
+          <div className="p-3 border-t border-gray-200 shrink-0">
             <div className="flex gap-2">
               <Button
                 onClick={handleEdit}

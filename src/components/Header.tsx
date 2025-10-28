@@ -20,7 +20,7 @@ const VerticalDivider: React.FC = () => (
 // 左側セクションコンポーネント
 const LeftSection: React.FC = () => (
   <div className="flex items-center gap-4 flex-1 min-w-0 pr-4 w-full h-full">
-    <Logo size="large" />
+    <Logo size="medium" />
     <VerticalDivider />
     <BoardSelector />
   </div>
@@ -38,13 +38,13 @@ const RightSection: React.FC<RightSectionProps> = ({
   onHelpClick,
   onSettingsClick,
 }) => (
-  <div className="flex items-center flex-shrink-0">
+  <div className="flex items-center shrink-0">
     <OfflineIndicator />
     <Button
       onClick={onCreateClick}
       variant="default"
       aria-label="タスク作成"
-      className="bg-primary text-white hover:bg-primary/90 flex items-center gap-2"
+      className="bg-primary text-white hover:bg-primary/90 flex items-center gap-1"
     >
       <Plus size={16} />
       タスク作成
@@ -84,7 +84,7 @@ const Header: React.FC<HeaderProps> = ({ onHelpClick, onSettingsClick }) => {
 
   return (
     <header
-      className="px-6 bg-white border-b border-border border-gray-200 h-[67px]"
+      className="px-6 bg-white border-b border-border border-gray-200 h-[52px]"
       role="banner"
     >
       <div className="flex items-center justify-between max-w-full mx-auto h-full">
