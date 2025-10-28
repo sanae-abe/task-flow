@@ -36,7 +36,7 @@ export const RecycleBinSettingsPanel: React.FC<RecycleBinSettingsPanelProps> = (
     <div className="pb-4">
       {/* ヘッダー */}
       <div className="flex items-center gap-2 mb-2">
-        <h2 className="text-base font-bold m-0">
+        <h2 className="text-lg font-bold">
           {UI_TEXT.PANEL.TITLE}
         </h2>
       </div>

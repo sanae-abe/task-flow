@@ -177,7 +177,7 @@ const UnifiedMenu = memo<UnifiedMenuProps>(({
     <DropdownMenu>
       <DropdownMenuTrigger
         asChild={trigger.type === 'custom' && !!trigger.customTrigger}
-        className={trigger.type === 'custom' && trigger.customTrigger ? undefined : cn("flex items-center gap-1", trigger.className)}
+        className={trigger.type === 'custom' && trigger.customTrigger ? undefined : cn("flex items-center gap-1 cursor-pointer", trigger.className)}
       >
         {trigger.type === 'custom' && trigger.customTrigger ?
           trigger.customTrigger :

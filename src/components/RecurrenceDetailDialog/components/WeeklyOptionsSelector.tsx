@@ -1,11 +1,10 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
-  DropdownMenuItem,
+  DropdownMenuCheckboxItem,
 } from "@/components/ui/dropdown-menu";
 import type { RecurrenceConfig } from "../types";
 import { WEEKDAYS } from "../utils/constants";
@@ -41,23 +40,15 @@ const WeeklyOptionsSelector: React.FC<WeeklyOptionsSelectorProps> = ({
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56">
           {WEEKDAYS.map((day) => (
-            <DropdownMenuItem
+            <DropdownMenuCheckboxItem
               key={day.value}
-              onClick={() =>
-                onDaysOfWeekChange(
-                  day.value,
-                  !config.daysOfWeek?.includes(day.value)
-                )
+              checked={config.daysOfWeek?.includes(day.value) || false}
+              onCheckedChange={(checked) =>
+                onDaysOfWeekChange(day.value, checked)
               }
             >
-              <div className="flex items-center gap-2 w-full">
-                <Checkbox
-                  checked={config.daysOfWeek?.includes(day.value) || false}
-                  onChange={() => {}}
-                />
-                {day.label}
-              </div>
-            </DropdownMenuItem>
+              {day.label}
+            </DropdownMenuCheckboxItem>
           ))}
         </DropdownMenuContent>
       </DropdownMenu>
