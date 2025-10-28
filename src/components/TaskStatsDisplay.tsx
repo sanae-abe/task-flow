@@ -71,8 +71,8 @@ const TaskStatsDisplay: React.FC<TaskStatsDisplayProps> = ({ stats }) => {
   ].filter((item) => item.condition);
 
   return (
-    <div className="flex items-center gap-4 flex-shrink-0">
-      <div className="flex items-center gap-1 flex-shrink-0 text-xs text-zinc-700">
+    <div className="flex items-center gap-4 shrink-0">
+      <div className="flex items-center gap-1 shrink-0 text-xs text-zinc-700">
         <CircleCheck size={16} />
         <span className="text-xs text-zinc-700">
           未完了タスク数: {totalTasks}
