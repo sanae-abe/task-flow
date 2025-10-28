@@ -28,7 +28,7 @@ export const DataManagementPanel = memo<DataManagementPanelProps>(({
     <div className="flex flex-col gap-3">
       {/* ヘッダー */}
       <div className="flex items-center gap-2">
-        <h2 className="text-base font-bold m-0">
+        <h2 className="text-lg font-bold">
           データ管理
         </h2>
       </div>
