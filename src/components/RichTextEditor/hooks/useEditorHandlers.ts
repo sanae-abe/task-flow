@@ -311,6 +311,9 @@ export const useEditorHandlers = ({
                 ? codeElement.parentElement
                 : codeElement;
             if (parentElement && parentElement.tagName === 'PRE') {
+              // Always prevent default behavior to avoid creating new <pre> tags
+              event.preventDefault();
+
               // Check if user pressed Enter twice (double Enter to escape)
               const codeContent = parentElement.textContent || '';
               const endsWithDoubleNewline =
@@ -318,8 +321,6 @@ export const useEditorHandlers = ({
 
               if (endsWithDoubleNewline) {
                 // Double Enter pressed - escape from code block
-                event.preventDefault();
-
                 // Remove the extra newlines from the code block
                 const cleanContent = codeContent
                   .replace(/\n\n$/, '\n')
@@ -345,10 +346,25 @@ export const useEditorHandlers = ({
 
                 handleInput();
                 return;
+              } else {
+                // Single Enter - add line break within code block
+                const range = selection.getRangeAt(0);
+
+                // Insert a plain newline character
+                const textNode = document.createTextNode('\n');
+                range.deleteContents();
+                range.insertNode(textNode);
+
+                // Position cursor after the newline
+                range.setStartAfter(textNode);
+                range.collapse(true);
+                selection.removeAllRanges();
+                selection.addRange(range);
+
+                handleInput();
+                return;
               }
             }
-            // Allow default behavior (line break within code block)
-            return;
           }
 
           // Handle Enter in lists
