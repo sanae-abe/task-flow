@@ -33,7 +33,7 @@ interface ToolbarProps {
 const Toolbar: React.FC<ToolbarProps> = ({
   onButtonClick,
   disabled = false,
-  className = "",
+  className = '',
   emojiButtonRef,
 }) => {
   const formatState = getCurrentFormatState();
@@ -118,8 +118,10 @@ const Toolbar: React.FC<ToolbarProps> = ({
   ];
 
   return (
-    <div className={`flex gap-1 p-1 border-b border-border bg-muted/50 rounded-t-md ${className}`}>
-      {toolbarButtons.map((button) => {
+    <div
+      className={`flex gap-1 p-1 border-b border-border bg-muted/50 rounded-t-md ${className}`}
+    >
+      {toolbarButtons.map(button => {
         const IconComponent = button.icon;
         const isEmojiButton = button.id === 'emoji';
 
@@ -128,11 +130,11 @@ const Toolbar: React.FC<ToolbarProps> = ({
             icon={IconComponent}
             key={button.id}
             ref={isEmojiButton ? emojiButtonRef : undefined}
-            size="icon"
+            size='icon'
             onClick={button.action}
             disabled={disabled}
             ariaLabel={button.title}
-            className={button.isActive ? "bg-gray-200" : "bg-transparent"}
+            className={button.isActive ? 'bg-gray-200' : 'bg-transparent'}
           />
         );
       })}

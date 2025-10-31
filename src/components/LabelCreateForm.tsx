@@ -1,6 +1,6 @@
-import React, { memo, useMemo } from "react";
+import React, { memo, useMemo } from 'react';
 
-import { UnifiedForm, type FormFieldConfig } from "./shared/Form";
+import { UnifiedForm, type FormFieldConfig } from './shared/Form';
 
 interface LabelCreateFormProps {
   labelName: string;
@@ -28,12 +28,12 @@ const LabelCreateForm = memo<LabelCreateFormProps>(
     const formFields = useMemo(
       (): FormFieldConfig[] => [
         {
-          id: "label-name",
-          name: "name",
-          type: "text",
-          label: "ラベル名",
+          id: 'label-name',
+          name: 'name',
+          type: 'text',
+          label: 'ラベル名',
           value: labelName,
-          placeholder: "ラベル名を入力",
+          placeholder: 'ラベル名を入力',
           onChange: onLabelNameChange as (value: unknown) => void,
           onKeyDown,
           autoFocus: true,
@@ -42,10 +42,10 @@ const LabelCreateForm = memo<LabelCreateFormProps>(
           validation: { required: true, minLength: 1, maxLength: 50 },
         },
         {
-          id: "label-color",
-          name: "color",
-          type: "color-selector",
-          label: "色",
+          id: 'label-color',
+          name: 'color',
+          type: 'color-selector',
+          label: '色',
           value: selectedColor,
           onChange: onColorSelect as (value: unknown) => void,
           autoFocus: false,
@@ -53,26 +53,24 @@ const LabelCreateForm = memo<LabelCreateFormProps>(
           disabled: false,
         },
       ],
-      [labelName, selectedColor, onLabelNameChange, onColorSelect, onKeyDown],
+      [labelName, selectedColor, onLabelNameChange, onColorSelect, onKeyDown]
     );
 
     return (
-      <div
-        className={`p-3 bg-neutral-100 rounded-md border`}
-      >
+      <div className={`p-3 bg-neutral-100 rounded-md border`}>
         <UnifiedForm
           fields={formFields}
           onSubmit={onSave}
           onCancel={onCancel}
-          submitText="作成"
-          cancelText="キャンセル"
+          submitText='作成'
+          cancelText='キャンセル'
           disabled={!isValid}
           validateOnChange
           validateOnBlur
         />
       </div>
     );
-  },
+  }
 );
 
 export default LabelCreateForm;

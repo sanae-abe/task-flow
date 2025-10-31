@@ -1,5 +1,5 @@
 import React, { memo, useMemo } from 'react';
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils';
 
 import {
   DropdownMenu,
@@ -9,15 +9,23 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-import type { UnifiedMenuProps, MenuItem, MenuGroup, MenuTrigger } from '../../../types/unified-menu';
+import type {
+  UnifiedMenuProps,
+  MenuItem,
+  MenuGroup,
+  MenuTrigger,
+} from '../../../types/unified-menu';
 
 /**
  * メニュートリガー内容コンポーネント（ボタン要素は含まない）
  */
-const MenuTriggerContent = React.forwardRef<HTMLButtonElement, {
-  trigger: MenuTrigger;
-  children?: React.ReactNode;
-}>(({ trigger, children }, ref) => {
+const MenuTriggerContent = React.forwardRef<
+  HTMLButtonElement,
+  {
+    trigger: MenuTrigger;
+    children?: React.ReactNode;
+  }
+>(({ trigger, children }, ref) => {
   const { label, icon, className } = trigger;
 
   if (trigger.customTrigger) {
@@ -30,7 +38,7 @@ const MenuTriggerContent = React.forwardRef<HTMLButtonElement, {
 
   // DropdownMenuTrigger内で使用するため、ボタン要素は含まずコンテンツのみ返す
   return (
-    <span ref={ref} className={cn("flex items-center gap-2", className)}>
+    <span ref={ref} className={cn('flex items-center gap-2', className)}>
       {icon && React.createElement(icon, { size: 16 })}
       {label}
       {children}
@@ -57,16 +65,21 @@ const renderMenuItem = (item: MenuItem): React.ReactNode => {
           key={item.id}
           disabled={item.disabled}
           onSelect={item.onSelect}
-          onClick={(event) => {
+          onClick={event => {
             event.preventDefault();
             event.stopPropagation();
             if (item.onSelect) {
               item.onSelect();
             }
           }}
-          className={item.variant === 'danger' ? 'text-destructive focus:text-destructive' : ''}
+          className={
+            item.variant === 'danger'
+              ? 'text-destructive focus:text-destructive'
+              : ''
+          }
         >
-          {item.icon && React.createElement(item.icon, { size: 16, className: "mr-2" })}
+          {item.icon &&
+            React.createElement(item.icon, { size: 16, className: 'mr-2' })}
           {item.label}
         </DropdownMenuItem>
       );
@@ -77,7 +90,7 @@ const renderMenuItem = (item: MenuItem): React.ReactNode => {
           key={item.id}
           disabled={item.disabled}
           onSelect={() => item.onSelect(item.id)}
-          onClick={(event) => {
+          onClick={event => {
             event.preventDefault();
             event.stopPropagation();
             if (item.onSelect) {
@@ -86,7 +99,8 @@ const renderMenuItem = (item: MenuItem): React.ReactNode => {
           }}
           className={item.selected ? 'bg-accent text-accent-foreground' : ''}
         >
-          {item.icon && React.createElement(item.icon, { size: 16, className: "mr-2" })}
+          {item.icon &&
+            React.createElement(item.icon, { size: 16, className: 'mr-2' })}
           {item.label}
         </DropdownMenuItem>
       );
@@ -95,13 +109,11 @@ const renderMenuItem = (item: MenuItem): React.ReactNode => {
       // ネストメニューは将来のバージョンで実装予定
       // 現在はフラットなアイテムとして表示
       return (
-        <DropdownMenuItem
-          key={item.id}
-          disabled={item.disabled}
-        >
-          {item.icon && React.createElement(item.icon, { size: 16, className: "mr-2" })}
+        <DropdownMenuItem key={item.id} disabled={item.disabled}>
+          {item.icon &&
+            React.createElement(item.icon, { size: 16, className: 'mr-2' })}
           {item.label}
-          <span className="ml-auto text-xs text-zinc-700">→</span>
+          <span className='ml-auto text-xs text-zinc-700'>→</span>
         </DropdownMenuItem>
       );
 
@@ -119,7 +131,7 @@ const renderMenuGroup = (group: MenuGroup): React.ReactNode[] => {
   }
 
   const items = group.items.map(renderMenuItem).filter(Boolean);
-  
+
   if (items.length === 0) {
     return [];
   }
@@ -130,68 +142,74 @@ const renderMenuGroup = (group: MenuGroup): React.ReactNode[] => {
 
 /**
  * 統合メニューコンポーネント
- * 
+ *
  * 様々な形式のメニューを統一されたAPIで提供します。
  * アクションメニュー、セレクター、ドロップダウンに対応し、
  * 一貫したメニュー体験を提供します。
  */
-const UnifiedMenu = memo<UnifiedMenuProps>(({
-  items = [],
-  groups = [],
-  trigger,
-  placement: _placement,
-  zIndex = 500,
-  overlayProps = {}
-}) => {
-  const menuContent = useMemo(() => {
-    // グループが指定されている場合はグループ単位でレンダリング
-    if (groups.length > 0) {
-      const allItems: React.ReactNode[] = [];
-      let isFirstGroup = true;
+const UnifiedMenu = memo<UnifiedMenuProps>(
+  ({
+    items = [],
+    groups = [],
+    trigger,
+    placement: _placement,
+    zIndex = 500,
+    overlayProps = {},
+  }) => {
+    const menuContent = useMemo(() => {
+      // グループが指定されている場合はグループ単位でレンダリング
+      if (groups.length > 0) {
+        const allItems: React.ReactNode[] = [];
+        let isFirstGroup = true;
 
-      groups.forEach((group) => {
-        if (group.condition === false) {
-          return;
-        }
-
-        const groupItems = renderMenuGroup(group);
-        if (groupItems.length > 0) {
-          // 最初のグループ以外は区切り線を追加
-          if (!isFirstGroup) {
-            allItems.push(<DropdownMenuSeparator key={`divider-${group.id}`} />);
+        groups.forEach(group => {
+          if (group.condition === false) {
+            return;
           }
-          allItems.push(...groupItems);
-          isFirstGroup = false;
-        }
-      });
 
-      return allItems;
-    }
+          const groupItems = renderMenuGroup(group);
+          if (groupItems.length > 0) {
+            // 最初のグループ以外は区切り線を追加
+            if (!isFirstGroup) {
+              allItems.push(
+                <DropdownMenuSeparator key={`divider-${group.id}`} />
+              );
+            }
+            allItems.push(...groupItems);
+            isFirstGroup = false;
+          }
+        });
 
-    // アイテムが直接指定されている場合
-    return items.map(renderMenuItem).filter(Boolean);
-  }, [items, groups]);
+        return allItems;
+      }
 
+      // アイテムが直接指定されている場合
+      return items.map(renderMenuItem).filter(Boolean);
+    }, [items, groups]);
 
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger
-        asChild={trigger.type === 'custom' && !!trigger.customTrigger}
-        className={trigger.type === 'custom' && trigger.customTrigger ? undefined : cn("flex items-center gap-1 cursor-pointer", trigger.className)}
-      >
-        {trigger.type === 'custom' && trigger.customTrigger ?
-          trigger.customTrigger :
-          <MenuTriggerContent trigger={trigger} />
-        }
-      </DropdownMenuTrigger>
-      <DropdownMenuContent
-        style={{ zIndex, ...overlayProps }}
-      >
-        {menuContent}
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
-});
+    return (
+      <DropdownMenu>
+        <DropdownMenuTrigger
+          asChild={trigger.type === 'custom' && !!trigger.customTrigger}
+          className={
+            trigger.type === 'custom' && trigger.customTrigger
+              ? undefined
+              : cn('flex items-center gap-1 cursor-pointer', trigger.className)
+          }
+        >
+          {trigger.type === 'custom' && trigger.customTrigger ? (
+            trigger.customTrigger
+          ) : (
+            <MenuTriggerContent trigger={trigger} />
+          )}
+        </DropdownMenuTrigger>
+        <DropdownMenuContent style={{ zIndex, ...overlayProps }}>
+          {menuContent}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    );
+  }
+);
 
 UnifiedMenu.displayName = 'UnifiedMenu';
 MenuTriggerContent.displayName = 'MenuTriggerContent';

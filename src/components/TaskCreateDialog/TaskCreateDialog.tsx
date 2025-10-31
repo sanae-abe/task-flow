@@ -40,15 +40,15 @@ const TaskCreateDialog = memo(() => {
   // カスタムフック: フォーム状態管理
   const { formState, formActions, handleTimeChange, isFormValid } = useTaskForm(
     state.isTaskFormOpen,
-    state.taskFormDefaultDate ? state.taskFormDefaultDate.toISOString().split('T')[0] : undefined,
+    state.taskFormDefaultDate
+      ? state.taskFormDefaultDate.toISOString().split('T')[0]
+      : undefined,
     state.currentBoard?.id
   );
 
   // カスタムフック: テンプレート選択管理
-  const { templateState, templateActions, resetTemplateSelection } = useTemplateSelection(
-    state.isTaskFormOpen,
-    formActions
-  );
+  const { templateState, templateActions, resetTemplateSelection } =
+    useTemplateSelection(state.isTaskFormOpen, formActions);
 
   // カスタムフック: タスク保存・送信処理
   const { handleKeyPress, actions } = useTaskSubmission(
@@ -65,31 +65,34 @@ const TaskCreateDialog = memo(() => {
   );
 
   // フォーム変更検知のためのデータ
-  const formDataForDetection = useMemo(() => ({
-    title: formState.title,
-    description: formState.description,
-    dueDate: formState.dueDate,
-    dueTime: formState.dueTime,
-    hasTime: formState.hasTime,
-    labels: formState.labels,
-    attachments: formState.attachments,
-    recurrence: formState.recurrence,
-    priority: formState.priority,
-    selectedTemplate: templateState.selectedTemplate,
-    selectedBoardId: formState.selectedBoardId,
-  }), [
-    formState.title,
-    formState.description,
-    formState.dueDate,
-    formState.dueTime,
-    formState.hasTime,
-    formState.labels,
-    formState.attachments,
-    formState.recurrence,
-    formState.priority,
-    formState.selectedBoardId,
-    templateState.selectedTemplate,
-  ]);
+  const formDataForDetection = useMemo(
+    () => ({
+      title: formState.title,
+      description: formState.description,
+      dueDate: formState.dueDate,
+      dueTime: formState.dueTime,
+      hasTime: formState.hasTime,
+      labels: formState.labels,
+      attachments: formState.attachments,
+      recurrence: formState.recurrence,
+      priority: formState.priority,
+      selectedTemplate: templateState.selectedTemplate,
+      selectedBoardId: formState.selectedBoardId,
+    }),
+    [
+      formState.title,
+      formState.description,
+      formState.dueDate,
+      formState.dueTime,
+      formState.hasTime,
+      formState.labels,
+      formState.attachments,
+      formState.recurrence,
+      formState.priority,
+      formState.selectedBoardId,
+      templateState.selectedTemplate,
+    ]
+  );
 
   // フォーム変更検知
   const {
@@ -117,12 +120,14 @@ const TaskCreateDialog = memo(() => {
   }, [handleClose, resetTemplateSelection, closeTaskForm]);
 
   // 利用可能なボード一覧（現在のボード以外）
-  const availableBoards = useMemo(() =>
-    boardState.boards.map(board => ({
-      id: board.id,
-      title: board.title
-    }))
-  , [boardState.boards]);
+  const availableBoards = useMemo(
+    () =>
+      boardState.boards.map(board => ({
+        id: board.id,
+        title: board.title,
+      })),
+    [boardState.boards]
+  );
 
   // 早期リターン：ダイアログが開いていない場合
   if (!state.isTaskFormOpen || !state.currentBoard) {
@@ -132,24 +137,28 @@ const TaskCreateDialog = memo(() => {
   return (
     <>
       <UnifiedDialog
-        variant="modal"
+        variant='modal'
         isOpen={state.isTaskFormOpen}
-        title="新しいタスクを作成"
+        title='新しいタスクを作成'
         onClose={handleDialogClose}
-        ariaLabelledBy="task-create-dialog-title"
-        size="large"
+        ariaLabelledBy='task-create-dialog-title'
+        size='large'
         actions={actions}
       >
-        <div className="flex flex-col min-w-[600px]">
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <div className='flex flex-col min-w-[600px]'>
+          <Tabs
+            value={activeTab}
+            onValueChange={setActiveTab}
+            className='w-full'
+          >
             {/* タブナビゲーション */}
-            <TabsList className="grid w-full grid-cols-2 mb-4">
-              <TabsTrigger value="normal">通常作成</TabsTrigger>
-              <TabsTrigger value="template">テンプレートから作成</TabsTrigger>
+            <TabsList className='grid w-full grid-cols-2 mb-4'>
+              <TabsTrigger value='normal'>通常作成</TabsTrigger>
+              <TabsTrigger value='template'>テンプレートから作成</TabsTrigger>
             </TabsList>
 
             {/* 通常作成フォーム */}
-            <TabsContent value="normal">
+            <TabsContent value='normal'>
               <TaskCreateForm
                 formState={formState}
                 formActions={formActions}
@@ -161,8 +170,8 @@ const TaskCreateDialog = memo(() => {
             </TabsContent>
 
             {/* テンプレート選択モード */}
-            <TabsContent value="template">
-              <div className="mb-6 flex-1 min-h-[500px]">
+            <TabsContent value='template'>
+              <div className='mb-6 flex-1 min-h-[500px]'>
                 <TemplateSelector
                   templates={templateState.templates}
                   onSelect={handleTemplateSelect}
@@ -175,10 +184,10 @@ const TaskCreateDialog = memo(() => {
 
       <ConfirmDialog
         isOpen={showCloseConfirm}
-        title="変更を破棄しますか？"
-        message="編集した内容が失われますが、よろしいですか？"
-        confirmText="破棄する"
-        cancelText="戻る"
+        title='変更を破棄しますか？'
+        message='編集した内容が失われますが、よろしいですか？'
+        confirmText='破棄する'
+        cancelText='戻る'
         onConfirm={handleConfirmClose}
         onCancel={handleCancelClose}
       />

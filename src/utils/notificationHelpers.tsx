@@ -1,11 +1,6 @@
-import React from "react";
-import {
-  CircleCheck,
-  Info,
-  AlertTriangle,
-  XCircle,
-} from "lucide-react";
-import type { NotificationType } from "../types";
+import React from 'react';
+import { CircleCheck, Info, AlertTriangle, XCircle } from 'lucide-react';
+import type { NotificationType } from '../types';
 
 /**
  * 通知タイプに応じたアイコンを返す
@@ -14,21 +9,21 @@ import type { NotificationType } from "../types";
  * @returns 対応するLucide Reactアイコンコンポーネント
  */
 export const getNotificationIcon = (
-  type: NotificationType,
+  type: NotificationType
 ): React.ReactElement => {
   switch (type) {
-    case "success":
-      return <CircleCheck size={16} aria-hidden="true" />;
-    case "info":
-      return <Info size={16} aria-hidden="true" />;
-    case "warning":
-      return <AlertTriangle size={16} aria-hidden="true" />;
-    case "critical":
-      return <XCircle size={16} aria-hidden="true" />;
-    case "upsell":
-      return <Info size={16} aria-hidden="true" />;
+    case 'success':
+      return <CircleCheck size={16} aria-hidden='true' />;
+    case 'info':
+      return <Info size={16} aria-hidden='true' />;
+    case 'warning':
+      return <AlertTriangle size={16} aria-hidden='true' />;
+    case 'critical':
+      return <XCircle size={16} aria-hidden='true' />;
+    case 'upsell':
+      return <Info size={16} aria-hidden='true' />;
     default:
-      return <Info size={16} aria-hidden="true" />;
+      return <Info size={16} aria-hidden='true' />;
   }
 };
 
@@ -39,19 +34,19 @@ export const getNotificationIcon = (
  * @returns Primer Flash componentに対応するvariant文字列
  */
 export const getFlashVariant = (
-  type: NotificationType,
-): "default" | "warning" | "danger" | "success" => {
+  type: NotificationType
+): 'default' | 'warning' | 'danger' | 'success' => {
   switch (type) {
-    case "success":
-      return "success";
-    case "warning":
-      return "warning";
-    case "critical":
-      return "danger";
-    case "info":
-    case "upsell":
+    case 'success':
+      return 'success';
+    case 'warning':
+      return 'warning';
+    case 'critical':
+      return 'danger';
+    case 'info':
+    case 'upsell':
     default:
-      return "default";
+      return 'default';
   }
 };
 
@@ -62,18 +57,18 @@ export const getFlashVariant = (
  * @returns Primer Banner componentに対応するvariant文字列
  */
 export const getBannerVariant = (
-  type: NotificationType,
-): "info" | "warning" | "critical" | "success" => {
+  type: NotificationType
+): 'info' | 'warning' | 'critical' | 'success' => {
   switch (type) {
-    case "success":
-      return "success";
-    case "warning":
-      return "warning";
-    case "critical":
-      return "critical";
-    case "info":
-    case "upsell":
+    case 'success':
+      return 'success';
+    case 'warning':
+      return 'warning';
+    case 'critical':
+      return 'critical';
+    case 'info':
+    case 'upsell':
     default:
-      return "info";
+      return 'info';
   }
 };

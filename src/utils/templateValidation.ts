@@ -2,8 +2,8 @@ import type {
   TaskTemplate,
   TemplateFormData,
   TemplateCategory,
-} from "../types/template";
-import type { Priority } from "../types";
+} from '../types/template';
+import type { Priority } from '../types';
 
 /**
  * バリデーションエラー
@@ -25,23 +25,23 @@ export interface ValidationResult {
  * カテゴリーの有効性チェック
  */
 const VALID_CATEGORIES: TemplateCategory[] = [
-  "work",
-  "personal",
-  "project",
-  "meeting",
-  "routine",
-  "other",
+  'work',
+  'personal',
+  'project',
+  'meeting',
+  'routine',
+  'other',
 ];
 
 export const isValidCategory = (
-  category: string,
+  category: string
 ): category is TemplateCategory =>
   VALID_CATEGORIES.includes(category as TemplateCategory);
 
 /**
  * プライオリティの有効性チェック
  */
-const VALID_PRIORITIES: Priority[] = ["low", "medium", "high", "critical"];
+const VALID_PRIORITIES: Priority[] = ['low', 'medium', 'high', 'critical'];
 
 export const isValidPriority = (priority: string | undefined): boolean => {
   if (!priority) {
@@ -74,17 +74,17 @@ export const isValidRelativeDate = (dateStr: string): boolean => {
  * テンプレート名のバリデーション
  */
 export const validateTemplateName = (name: string): ValidationError | null => {
-  if (!name || name.trim() === "") {
+  if (!name || name.trim() === '') {
     return {
-      field: "name",
-      message: "テンプレート名は必須です",
+      field: 'name',
+      message: 'テンプレート名は必須です',
     };
   }
 
   if (name.length > 100) {
     return {
-      field: "name",
-      message: "テンプレート名は100文字以内で入力してください",
+      field: 'name',
+      message: 'テンプレート名は100文字以内で入力してください',
     };
   }
 
@@ -95,12 +95,12 @@ export const validateTemplateName = (name: string): ValidationError | null => {
  * テンプレート説明のバリデーション
  */
 export const validateTemplateDescription = (
-  description: string,
+  description: string
 ): ValidationError | null => {
   if (description.length > 500) {
     return {
-      field: "description",
-      message: "テンプレート説明は500文字以内で入力してください",
+      field: 'description',
+      message: 'テンプレート説明は500文字以内で入力してください',
     };
   }
 
@@ -111,17 +111,17 @@ export const validateTemplateDescription = (
  * タスクタイトルのバリデーション
  */
 export const validateTaskTitle = (title: string): ValidationError | null => {
-  if (!title || title.trim() === "") {
+  if (!title || title.trim() === '') {
     return {
-      field: "taskTitle",
-      message: "タスクタイトルは必須です",
+      field: 'taskTitle',
+      message: 'タスクタイトルは必須です',
     };
   }
 
   if (title.length > 200) {
     return {
-      field: "taskTitle",
-      message: "タスクタイトルは200文字以内で入力してください",
+      field: 'taskTitle',
+      message: 'タスクタイトルは200文字以内で入力してください',
     };
   }
 
@@ -132,12 +132,12 @@ export const validateTaskTitle = (title: string): ValidationError | null => {
  * タスク説明のバリデーション
  */
 export const validateTaskDescription = (
-  description: string,
+  description: string
 ): ValidationError | null => {
   if (description.length > 10000) {
     return {
-      field: "taskDescription",
-      message: "タスク説明は10000文字以内で入力してください",
+      field: 'taskDescription',
+      message: 'タスク説明は10000文字以内で入力してください',
     };
   }
 
@@ -150,15 +150,15 @@ export const validateTaskDescription = (
 export const validateCategory = (category: string): ValidationError | null => {
   if (!category) {
     return {
-      field: "category",
-      message: "カテゴリーは必須です",
+      field: 'category',
+      message: 'カテゴリーは必須です',
     };
   }
 
   if (!isValidCategory(category)) {
     return {
-      field: "category",
-      message: "無効なカテゴリーです",
+      field: 'category',
+      message: '無効なカテゴリーです',
     };
   }
 
@@ -169,7 +169,7 @@ export const validateCategory = (category: string): ValidationError | null => {
  * プライオリティのバリデーション
  */
 export const validatePriority = (
-  priority: string | undefined,
+  priority: string | undefined
 ): ValidationError | null => {
   // 優先度は任意なので未設定を許可
   if (!priority) {
@@ -178,8 +178,8 @@ export const validatePriority = (
 
   if (!isValidPriority(priority)) {
     return {
-      field: "priority",
-      message: "無効な優先度です",
+      field: 'priority',
+      message: '無効な優先度です',
     };
   }
 
@@ -190,16 +190,16 @@ export const validatePriority = (
  * 期限のバリデーション
  */
 export const validateDueDate = (
-  dueDate: string | null,
+  dueDate: string | null
 ): ValidationError | null => {
-  if (dueDate === null || dueDate === "") {
+  if (dueDate === null || dueDate === '') {
     return null; // 期限なしは許可
   }
 
   if (!isValidRelativeDate(dueDate)) {
     return {
-      field: "dueDate",
-      message: "期限の形式が不正です（例：+1d, +1w, +1m, +1y）",
+      field: 'dueDate',
+      message: '期限の形式が不正です（例：+1d, +1w, +1m, +1y）',
     };
   }
 
@@ -210,39 +210,39 @@ export const validateDueDate = (
  * テンプレートフォームデータのバリデーション
  */
 export const validateTemplateFormData = (
-  formData: Partial<TemplateFormData>,
+  formData: Partial<TemplateFormData>
 ): ValidationResult => {
   const errors: ValidationError[] = [];
 
   // テンプレート名
-  const nameError = validateTemplateName(formData.name || "");
+  const nameError = validateTemplateName(formData.name || '');
   if (nameError) {
     errors.push(nameError);
   }
 
   // テンプレート説明
   const descriptionError = validateTemplateDescription(
-    formData.description || "",
+    formData.description || ''
   );
   if (descriptionError) {
     errors.push(descriptionError);
   }
 
   // カテゴリー
-  const categoryError = validateCategory(formData.category || "");
+  const categoryError = validateCategory(formData.category || '');
   if (categoryError) {
     errors.push(categoryError);
   }
 
   // タスクタイトル
-  const taskTitleError = validateTaskTitle(formData.taskTitle || "");
+  const taskTitleError = validateTaskTitle(formData.taskTitle || '');
   if (taskTitleError) {
     errors.push(taskTitleError);
   }
 
   // タスク説明
   const taskDescriptionError = validateTaskDescription(
-    formData.taskDescription || "",
+    formData.taskDescription || ''
   );
   if (taskDescriptionError) {
     errors.push(taskDescriptionError);
@@ -270,13 +270,13 @@ export const validateTemplateFormData = (
  * テンプレート全体のバリデーション
  */
 export const validateTemplate = (
-  template: Partial<TaskTemplate>,
+  template: Partial<TaskTemplate>
 ): ValidationResult => {
   const errors: ValidationError[] = [];
 
   // ID
-  if (!template.id || typeof template.id !== "string") {
-    errors.push({ field: "id", message: "IDは必須です" });
+  if (!template.id || typeof template.id !== 'string') {
+    errors.push({ field: 'id', message: 'IDは必須です' });
   }
 
   // フォームデータのバリデーション
@@ -299,51 +299,51 @@ export const validateTemplate = (
 
   // createdAt
   if (!template.createdAt) {
-    errors.push({ field: "createdAt", message: "作成日時は必須です" });
+    errors.push({ field: 'createdAt', message: '作成日時は必須です' });
   } else {
     try {
       const date = new Date(template.createdAt);
       if (isNaN(date.getTime())) {
         errors.push({
-          field: "createdAt",
-          message: "作成日時の形式が不正です",
+          field: 'createdAt',
+          message: '作成日時の形式が不正です',
         });
       }
     } catch {
-      errors.push({ field: "createdAt", message: "作成日時の形式が不正です" });
+      errors.push({ field: 'createdAt', message: '作成日時の形式が不正です' });
     }
   }
 
   // updatedAt
   if (!template.updatedAt) {
-    errors.push({ field: "updatedAt", message: "更新日時は必須です" });
+    errors.push({ field: 'updatedAt', message: '更新日時は必須です' });
   } else {
     try {
       const date = new Date(template.updatedAt);
       if (isNaN(date.getTime())) {
         errors.push({
-          field: "updatedAt",
-          message: "更新日時の形式が不正です",
+          field: 'updatedAt',
+          message: '更新日時の形式が不正です',
         });
       }
     } catch {
-      errors.push({ field: "updatedAt", message: "更新日時の形式が不正です" });
+      errors.push({ field: 'updatedAt', message: '更新日時の形式が不正です' });
     }
   }
 
   // usageCount
-  if (typeof template.usageCount !== "number" || template.usageCount < 0) {
+  if (typeof template.usageCount !== 'number' || template.usageCount < 0) {
     errors.push({
-      field: "usageCount",
-      message: "使用回数は0以上の数値である必要があります",
+      field: 'usageCount',
+      message: '使用回数は0以上の数値である必要があります',
     });
   }
 
   // isFavorite
-  if (typeof template.isFavorite !== "boolean") {
+  if (typeof template.isFavorite !== 'boolean') {
     errors.push({
-      field: "isFavorite",
-      message: "お気に入りはboolean型である必要があります",
+      field: 'isFavorite',
+      message: 'お気に入りはboolean型である必要があります',
     });
   }
 
@@ -358,15 +358,15 @@ export const validateTemplate = (
  * 不正な値を安全な値に変換
  */
 export const sanitizeTemplateFormData = (
-  formData: Partial<TemplateFormData>,
+  formData: Partial<TemplateFormData>
 ): TemplateFormData => ({
-  name: (formData.name || "").trim().substring(0, 100),
-  description: (formData.description || "").trim().substring(0, 500),
-  category: isValidCategory(formData.category || "")
+  name: (formData.name || '').trim().substring(0, 100),
+  description: (formData.description || '').trim().substring(0, 500),
+  category: isValidCategory(formData.category || '')
     ? (formData.category as TemplateCategory)
-    : "other",
-  taskTitle: (formData.taskTitle || "").trim().substring(0, 200),
-  taskDescription: (formData.taskDescription || "").substring(0, 10000),
+    : 'other',
+  taskTitle: (formData.taskTitle || '').trim().substring(0, 200),
+  taskDescription: (formData.taskDescription || '').substring(0, 10000),
   priority:
     formData.priority && isValidPriority(formData.priority)
       ? formData.priority
@@ -384,17 +384,17 @@ export const sanitizeTemplateFormData = (
  */
 export const formatValidationErrors = (errors: ValidationError[]): string => {
   if (errors.length === 0) {
-    return "";
+    return '';
   }
 
-  return errors.map((_error) => _error.message).join("\n");
+  return errors.map(_error => _error.message).join('\n');
 };
 
 /**
  * 複数のテンプレートをバリデーション
  */
 export const validateTemplates = (
-  templates: Partial<TaskTemplate>[],
+  templates: Partial<TaskTemplate>[]
 ): {
   validTemplates: TaskTemplate[];
   invalidTemplates: Array<{
@@ -408,7 +408,7 @@ export const validateTemplates = (
     errors: ValidationError[];
   }> = [];
 
-  templates.forEach((template) => {
+  templates.forEach(template => {
     const validation = validateTemplate(template);
     if (validation.isValid) {
       validTemplates.push(template as TaskTemplate);
@@ -424,7 +424,7 @@ export const validateTemplates = (
  * インポートデータのバリデーション
  */
 export const validateImportData = (
-  data: unknown,
+  data: unknown
 ): {
   isValid: boolean;
   templates: TaskTemplate[];
@@ -433,28 +433,28 @@ export const validateImportData = (
   const errors: string[] = [];
 
   // データが存在するかチェック
-  if (!data || typeof data !== "object") {
-    errors.push("インポートデータが不正です");
+  if (!data || typeof data !== 'object') {
+    errors.push('インポートデータが不正です');
     return { isValid: false, templates: [], errors };
   }
 
   const importData = data as Record<string, unknown>;
 
   // templatesフィールドのチェック（ブラケット記法を使用）
-  if (!Array.isArray(importData["templates"])) {
-    errors.push("templatesフィールドが配列ではありません");
+  if (!Array.isArray(importData['templates'])) {
+    errors.push('templatesフィールドが配列ではありません');
     return { isValid: false, templates: [], errors };
   }
 
   // 各テンプレートをバリデーション
   const { validTemplates, invalidTemplates } = validateTemplates(
-    importData["templates"] as Partial<TaskTemplate>[],
+    importData['templates'] as Partial<TaskTemplate>[]
   );
 
   if (invalidTemplates.length > 0) {
     invalidTemplates.forEach(({ template, errors: templateErrors }) => {
       errors.push(
-        `テンプレート「${(template as { name?: string }).name || "名前なし"}」: ${formatValidationErrors(templateErrors)}`,
+        `テンプレート「${(template as { name?: string }).name || '名前なし'}」: ${formatValidationErrors(templateErrors)}`
       );
     });
   }

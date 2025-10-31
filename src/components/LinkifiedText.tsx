@@ -1,5 +1,5 @@
-import React, { useMemo } from "react";
-import DOMPurify from "dompurify";
+import React, { useMemo } from 'react';
+import DOMPurify from 'dompurify';
 
 interface LinkifiedTextProps {
   children: string;
@@ -12,20 +12,24 @@ interface LinkifiedTextProps {
  * リッチテキストエディタで作成されたHTMLコンテンツの表示に対応
  * DOMPurifyによるXSS攻撃からの保護機能付き
  */
-const LinkifiedText: React.FC<LinkifiedTextProps> = ({ children, className = "", style = {} }) => {
+const LinkifiedText: React.FC<LinkifiedTextProps> = ({
+  children,
+  className = '',
+  style = {},
+}) => {
   const processedContent = useMemo(() => {
     // URL自動リンク化を実行する関数（コード記述を除外）
     const linkifyUrls = (text: string) =>
       text.replace(
         /(?<!\w\.)(?:https?:\/\/[^\s]+|www\.[^\s]+(?![A-Z_])|(?<!\w\.)[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(?![A-Z_])[^\s]*)/g,
-        (url) => {
+        url => {
           // process.env.JWT_SECRET のようなコード記述を除外
           if (/^[a-zA-Z0-9_]+\.[A-Z_][A-Z0-9_]*$/.test(url)) {
             return url; // コード記述として判定、リンク化しない
           }
-          const href = url.startsWith("http") ? url : `https://${url}`;
+          const href = url.startsWith('http') ? url : `https://${url}`;
           return `<a href="${href}" target="_blank" rel="noopener noreferrer">${url}</a>`;
-        },
+        }
       );
 
     // インラインコードとブロックコードを分けて処理
@@ -34,17 +38,17 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({ children, className = "",
         /<code([^>]*)>([\s\S]*?)<\/code>/gi,
         (_match, attributes, content) => {
           // リッチテキストエディタのすべての<br>タグを改行に変換
-          const processedContent = content.replace(/<br\s*\/?>/gi, "\n");
+          const processedContent = content.replace(/<br\s*\/?>/gi, '\n');
 
           // HTMLタグをエスケープ
           const escapedContent = processedContent
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/\{/g, "&#123;")
-            .replace(/\}/g, "&#125;");
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/\{/g, '&#123;')
+            .replace(/\}/g, '&#125;');
 
           return `<code${attributes}>${escapedContent}</code>`;
-        },
+        }
       );
 
     // div+pre構造のコードブロック処理（リッチテキストエディタ由来）
@@ -54,22 +58,22 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({ children, className = "",
         (_match, _preAttributes, content) => {
           // ステップ1: エディタ由来の属性を削除
           let cleanContent = content
-            .replace(/contenteditable="[^"]*"/gi, "")
-            .replace(/spellcheck="[^"]*"/gi, "")
-            .replace(/style="[^"]*"/gi, "");
+            .replace(/contenteditable="[^"]*"/gi, '')
+            .replace(/spellcheck="[^"]*"/gi, '')
+            .replace(/style="[^"]*"/gi, '');
 
           // ステップ2: リッチテキストエディタの<br>タグを改行に変換
-          cleanContent = cleanContent.replace(/<br\s*\/?>/gi, "\n");
+          cleanContent = cleanContent.replace(/<br\s*\/?>/gi, '\n');
 
           // ステップ3: HTMLタグをエスケープ（改行は保持）
           const escapedContent = cleanContent
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/\{/g, "&#123;")
-            .replace(/\}/g, "&#125;");
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/\{/g, '&#123;')
+            .replace(/\}/g, '&#125;');
 
           return `<pre>${escapedContent}</pre>`;
-        },
+        }
       );
 
     // <pre><code>構造の処理（リッチテキストエディタ由来）
@@ -79,21 +83,21 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({ children, className = "",
         (_match, preAttributes, codeAttributes, content) => {
           // ステップ1: エディタ由来の属性を削除
           let cleanContent = content
-            .replace(/contenteditable="[^"]*"/gi, "")
-            .replace(/spellcheck="[^"]*"/gi, "");
+            .replace(/contenteditable="[^"]*"/gi, '')
+            .replace(/spellcheck="[^"]*"/gi, '');
 
           // ステップ2: リッチテキストエディタの<br>タグを改行に変換
-          cleanContent = cleanContent.replace(/<br\s*\/?>/gi, "\n");
+          cleanContent = cleanContent.replace(/<br\s*\/?>/gi, '\n');
 
           // ステップ3: HTMLタグをエスケープ（codeタグ内のコンテンツのみ）
           const escapedContent = cleanContent
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/\{/g, "&#123;")
-            .replace(/\}/g, "&#125;");
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/\{/g, '&#123;')
+            .replace(/\}/g, '&#125;');
 
           return `<pre${preAttributes}><code${codeAttributes}>${escapedContent}</code></pre>`;
-        },
+        }
       );
 
     const processBlockCode = (html: string): string =>
@@ -102,27 +106,27 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({ children, className = "",
         (_match, attributes, content) => {
           // ステップ1: エディタ由来の属性を削除
           let cleanContent = content
-            .replace(/contenteditable="[^"]*"/gi, "")
-            .replace(/spellcheck="[^"]*"/gi, "")
-            .replace(/style="[^"]*"/gi, "");
+            .replace(/contenteditable="[^"]*"/gi, '')
+            .replace(/spellcheck="[^"]*"/gi, '')
+            .replace(/style="[^"]*"/gi, '');
 
           // ステップ2: リッチテキストエディタの<br>タグを改行に変換
           // ただし、連続する<br>タグは1つの改行として処理し、コードブロックの分割を防ぐ
           cleanContent = cleanContent.replace(
             /<br\s*\/?>\s*<br\s*\/?>/gi,
-            "\n",
+            '\n'
           );
-          cleanContent = cleanContent.replace(/<br\s*\/?>/gi, "\n");
+          cleanContent = cleanContent.replace(/<br\s*\/?>/gi, '\n');
 
           // ステップ3: HTMLタグをエスケープ
           const escapedContent = cleanContent
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/\{/g, "&#123;")
-            .replace(/\}/g, "&#125;");
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/\{/g, '&#123;')
+            .replace(/\}/g, '&#125;');
 
           return `<pre${attributes}>${escapedContent}</pre>`;
-        },
+        }
       );
 
     // HTMLタグが含まれているかチェック
@@ -133,7 +137,7 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({ children, className = "",
     if (isHtml) {
       // ステップ1: 既存のリンクタグを保護
       const linkMap = new Map<string, string>();
-      content = children.replace(/<a\s[^>]*href[^>]*>.*?<\/a>/gi, (match) => {
+      content = children.replace(/<a\s[^>]*href[^>]*>.*?<\/a>/gi, match => {
         const placeholder = `__LINK_PLACEHOLDER_${Math.random().toString(36).substring(2, 11)}__`;
         linkMap.set(placeholder, match);
         return placeholder;
@@ -145,41 +149,38 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({ children, className = "",
       // div+pre構造を保護（リッチテキストエディタ由来）
       content = content.replace(
         /<div[^>]*><pre(?:\s[^>]*)?>[\s\S]*?<\/pre><\/div>/gi,
-        (match) => {
+        match => {
           const placeholder = `__DIV_PRE_BLOCK_PLACEHOLDER_${Math.random().toString(36).substring(2, 11)}__`;
           codeBlockMap.set(placeholder, match);
           return placeholder;
-        },
+        }
       );
 
       // pre+code構造を保護（リッチテキストエディタ由来、最優先）
       content = content.replace(
         /<pre(?:\s[^>]*)?><code(?:\s[^>]*)?>[\s\S]*?<\/code><\/pre>/gi,
-        (match) => {
+        match => {
           const placeholder = `__PRE_CODE_BLOCK_PLACEHOLDER_${Math.random().toString(36).substring(2, 11)}__`;
           codeBlockMap.set(placeholder, match);
           return placeholder;
-        },
+        }
       );
 
       // 単独preタグを保護
-      content = content.replace(
-        /<pre(?:\s[^>]*)?>[\s\S]*?<\/pre>/gi,
-        (match) => {
-          const placeholder = `__PRE_BLOCK_PLACEHOLDER_${Math.random().toString(36).substring(2, 11)}__`;
-          codeBlockMap.set(placeholder, match);
-          return placeholder;
-        },
-      );
+      content = content.replace(/<pre(?:\s[^>]*)?>[\s\S]*?<\/pre>/gi, match => {
+        const placeholder = `__PRE_BLOCK_PLACEHOLDER_${Math.random().toString(36).substring(2, 11)}__`;
+        codeBlockMap.set(placeholder, match);
+        return placeholder;
+      });
 
       // codeタグを保護
       content = content.replace(
         /<code(?:\s[^>]*)?>[\s\S]*?<\/code>/gi,
-        (match) => {
+        match => {
           const placeholder = `__CODE_PLACEHOLDER_${Math.random().toString(36).substring(2, 11)}__`;
           codeBlockMap.set(placeholder, match);
           return placeholder;
-        },
+        }
       );
 
       // ステップ3: URL自動リンク化（コードブロック以外）
@@ -189,15 +190,15 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({ children, className = "",
       codeBlockMap.forEach((originalCode, placeholder) => {
         let processedCode = originalCode;
 
-        if (originalCode.startsWith("<div")) {
+        if (originalCode.startsWith('<div')) {
           // div+pre構造のコードブロック処理
           processedCode = processDivPreCodeBlock(originalCode);
-        } else if (placeholder.includes("PRE_CODE_BLOCK")) {
+        } else if (placeholder.includes('PRE_CODE_BLOCK')) {
           // pre+code構造のコードブロック処理（最優先）
           processedCode = processPreCodeBlock(originalCode);
-        } else if (originalCode.startsWith("<pre")) {
+        } else if (originalCode.startsWith('<pre')) {
           processedCode = processBlockCode(originalCode);
-        } else if (originalCode.startsWith("<code")) {
+        } else if (originalCode.startsWith('<code')) {
           processedCode = processInlineCode(originalCode);
         }
 
@@ -213,53 +214,50 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({ children, className = "",
       // div+pre構造を一時的に保護（既に処理済み）
       content = content.replace(
         /<div[^>]*><pre(?:\s[^>]*)?>[\s\S]*?<\/pre><\/div>/gi,
-        (match) => {
+        match => {
           const placeholder = `__FINAL_DIV_PRE_BLOCK_${placeholderIndex}__`;
           finalCodeBlocks.push(match);
           finalPlaceholders.push(placeholder);
           placeholderIndex++;
           return placeholder;
-        },
+        }
       );
 
       // pre+code構造を一時的に保護（最優先）
       content = content.replace(
         /<pre(?:\s[^>]*)?><code(?:\s[^>]*)?>[\s\S]*?<\/code><\/pre>/gi,
-        (match) => {
+        match => {
           const placeholder = `__FINAL_PRE_CODE_BLOCK_${placeholderIndex}__`;
           finalCodeBlocks.push(match);
           finalPlaceholders.push(placeholder);
           placeholderIndex++;
           return placeholder;
-        },
+        }
       );
 
       // preブロックを一時的に保護
-      content = content.replace(
-        /<pre(?:\s[^>]*)?>[\s\S]*?<\/pre>/gi,
-        (match) => {
-          const placeholder = `__FINAL_PRE_BLOCK_${placeholderIndex}__`;
-          finalCodeBlocks.push(match);
-          finalPlaceholders.push(placeholder);
-          placeholderIndex++;
-          return placeholder;
-        },
-      );
+      content = content.replace(/<pre(?:\s[^>]*)?>[\s\S]*?<\/pre>/gi, match => {
+        const placeholder = `__FINAL_PRE_BLOCK_${placeholderIndex}__`;
+        finalCodeBlocks.push(match);
+        finalPlaceholders.push(placeholder);
+        placeholderIndex++;
+        return placeholder;
+      });
 
       // インラインコードを一時的に保護
       content = content.replace(
         /<code(?:\s[^>]*)?>[\s\S]*?<\/code>/gi,
-        (match) => {
+        match => {
           const placeholder = `__FINAL_INLINE_CODE_${placeholderIndex}__`;
           finalCodeBlocks.push(match);
           finalPlaceholders.push(placeholder);
           placeholderIndex++;
           return placeholder;
-        },
+        }
       );
 
       // コードブロック以外の改行を<br>に変換
-      content = content.replace(/\n/g, "<br>");
+      content = content.replace(/\n/g, '<br>');
 
       // コードブロックを復元
       finalPlaceholders.forEach((placeholder, index) => {
@@ -275,69 +273,69 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({ children, className = "",
       });
     } else {
       // プレーンテキストの場合は改行を<br>に変換してからURL自動リンク化
-      content = children.replace(/\n/g, "<br>");
+      content = children.replace(/\n/g, '<br>');
       content = linkifyUrls(content);
     }
 
     // XSS攻撃からの保護：DOMPurifyでHTMLをサニタイズ
     const sanitizedContent = DOMPurify.sanitize(content, {
       ALLOWED_TAGS: [
-        "p",
-        "br",
-        "strong",
-        "em",
-        "u",
-        "a",
-        "code",
-        "pre",
-        "div",
-        "ul",
-        "ol",
-        "li",
-        "h1",
-        "h2",
-        "h3",
-        "h4",
-        "h5",
-        "h6",
-        "blockquote",
-        "span",
-        "html",
-        "head",
-        "body",
-        "title",
-        "meta",
+        'p',
+        'br',
+        'strong',
+        'em',
+        'u',
+        'a',
+        'code',
+        'pre',
+        'div',
+        'ul',
+        'ol',
+        'li',
+        'h1',
+        'h2',
+        'h3',
+        'h4',
+        'h5',
+        'h6',
+        'blockquote',
+        'span',
+        'html',
+        'head',
+        'body',
+        'title',
+        'meta',
       ],
       ALLOWED_ATTR: [
-        "href",
-        "target",
-        "rel",
-        "class",
+        'href',
+        'target',
+        'rel',
+        'class',
         // JSX/仮想DOM表示のための属性（表示専用、実際の実行はしない）
-        "classname",
-        "onclick",
-        "onsubmit",
-        "onchange",
-        "onfocus",
-        "onblur",
-        "onkeydown",
-        "onkeyup",
-        "onmouseover",
-        "onmouseout",
-        "onmouseenter",
-        "onmouseleave",
-        "key",
-        "ref",
-        "htmlfor",
-        "defaultvalue",
-        "defaultchecked",
-        "data-*",
-        "aria-*",
-        "id",
-        "name",
-        "value",
-        "type",
-        "placeholder",
+        'classname',
+        'onclick',
+        'onsubmit',
+        'onchange',
+        'onfocus',
+        'onblur',
+        'onkeydown',
+        'onkeyup',
+        'onmouseover',
+        'onmouseout',
+        'onmouseenter',
+        'onmouseleave',
+        'key',
+        'ref',
+        'htmlfor',
+        'defaultvalue',
+        'defaultchecked',
+        'data-*',
+        'aria-*',
+        'id',
+        'name',
+        'value',
+        'type',
+        'placeholder',
       ],
       // より寛容な設定でJSX属性を保護
       ALLOW_DATA_ATTR: true,
@@ -346,11 +344,11 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({ children, className = "",
       ALLOWED_URI_REGEXP:
         /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|sms|cid|xmpp):|[^a-z]|[a-z+.-]+(?:[^a-z+.-:]|$))/i,
       // 悪意のあるプロトコルをブロック（コードブロック内では表示のみなので安全）
-      FORBID_ATTR: ["onerror", "onload"],
+      FORBID_ATTR: ['onerror', 'onload'],
       // DOM操作を防ぐ
-      FORBID_TAGS: ["script", "object", "embed", "form", "input", "button"],
+      FORBID_TAGS: ['script', 'object', 'embed', 'form', 'input', 'button'],
       // 新しいウィンドウで開くリンクにセキュリティ属性を追加
-      ADD_ATTR: ["target", "rel"],
+      ADD_ATTR: ['target', 'rel'],
       // DOMオブジェクトではなく文字列を返す
       RETURN_DOM: false,
       RETURN_DOM_FRAGMENT: false,

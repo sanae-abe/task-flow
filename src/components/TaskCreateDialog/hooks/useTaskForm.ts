@@ -1,6 +1,11 @@
 import { useState, useCallback, useEffect } from 'react';
 import type { TaskFormState, TaskFormActions } from '../types';
-import type { Label as LabelType, FileAttachment, RecurrenceConfig, Priority } from '../../../types';
+import type {
+  Label as LabelType,
+  FileAttachment,
+  RecurrenceConfig,
+  Priority,
+} from '../../../types';
 
 /**
  * タスクフォーム状態管理カスタムフック
@@ -23,7 +28,9 @@ export const useTaskForm = (
   const [attachments, setAttachments] = useState<FileAttachment[]>([]);
   const [recurrence, setRecurrence] = useState<RecurrenceConfig | undefined>();
   const [priority, setPriority] = useState<Priority | undefined>();
-  const [selectedBoardId, setSelectedBoardId] = useState<string | undefined>(currentBoardId);
+  const [selectedBoardId, setSelectedBoardId] = useState<string | undefined>(
+    currentBoardId
+  );
 
   // ダイアログが開かれた時の初期化処理
   const [isDialogFirstOpen, setIsDialogFirstOpen] = useState(false);
@@ -66,10 +73,13 @@ export const useTaskForm = (
   }, [isDialogOpen, defaultDate, isDialogFirstOpen, resetForm]);
 
   // 時刻変更ハンドラー
-  const handleTimeChange = useCallback((newHasTime: boolean, newTime: string) => {
-    setHasTime(newHasTime);
-    setDueTime(newTime);
-  }, []);
+  const handleTimeChange = useCallback(
+    (newHasTime: boolean, newTime: string) => {
+      setHasTime(newHasTime);
+      setDueTime(newTime);
+    },
+    []
+  );
 
   // フォーム状態とアクション
   const formState: TaskFormState = {
@@ -82,7 +92,7 @@ export const useTaskForm = (
     attachments,
     recurrence,
     priority,
-    selectedBoardId
+    selectedBoardId,
   };
 
   // DatePicker対応のラッパー関数
@@ -101,7 +111,7 @@ export const useTaskForm = (
     setRecurrence,
     setPriority,
     setSelectedBoardId,
-    resetForm
+    resetForm,
   };
 
   // バリデーション
@@ -111,6 +121,6 @@ export const useTaskForm = (
     formState,
     formActions,
     handleTimeChange,
-    isFormValid
+    isFormValid,
   };
 };

@@ -3,7 +3,15 @@ import type { RecycleBinItem } from '../../../../../types/recycleBin';
 import { useItemMetadata } from '../hooks/useItemTypeInfo';
 
 interface MetadataGridProps {
-  item: Pick<RecycleBinItem, 'type' | 'boardTitle' | 'columnTitle' | 'columnsCount' | 'taskCount' | 'deletedAt'>;
+  item: Pick<
+    RecycleBinItem,
+    | 'type'
+    | 'boardTitle'
+    | 'columnTitle'
+    | 'columnsCount'
+    | 'taskCount'
+    | 'deletedAt'
+  >;
 }
 
 /**
@@ -19,7 +27,9 @@ export const MetadataGrid: React.FC<MetadataGridProps> = ({ item }) => {
 
   // 削除日時をフォーマット
   const formatDeletedAt = (deletedAt: string | null | undefined) => {
-    if (!deletedAt) {return null;}
+    if (!deletedAt) {
+      return null;
+    }
 
     try {
       const date = new Date(deletedAt);
@@ -39,14 +49,13 @@ export const MetadataGrid: React.FC<MetadataGridProps> = ({ item }) => {
       } else if (diffInDays < 7) {
         return `${diffInDays}日前`;
       }
-        return date.toLocaleDateString('ja-JP', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit',
-        });
-
+      return date.toLocaleDateString('ja-JP', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      });
     } catch {
       return '不明';
     }
@@ -60,21 +69,19 @@ export const MetadataGrid: React.FC<MetadataGridProps> = ({ item }) => {
   }
 
   return (
-    <section className="p-4 max-[543px]:p-3 bg-background border border-border rounded-md">
+    <section className='p-4 max-[543px]:p-3 bg-background border border-border rounded-md'>
       {/* セクションヘッダー */}
-      <span className="block text-sm font-bold text-foreground m-0 mb-4">
+      <span className='block text-sm font-bold text-foreground m-0 mb-4'>
         詳細情報
       </span>
 
       {/* メタデータリスト */}
-      <div className="flex flex-col gap-3">
+      <div className='flex flex-col gap-3'>
         {/* 削除日時 */}
         {formattedDeletedAt && (
-          <div className="flex justify-between items-center py-3 border-b border-border border-border">
-            <span className="text-sm text-zinc-700 m-0">
-              削除日時
-            </span>
-            <span className="text-sm text-foreground m-0 font-semibold">
+          <div className='flex justify-between items-center py-3 border-b border-border border-border'>
+            <span className='text-sm text-zinc-700 m-0'>削除日時</span>
+            <span className='text-sm text-foreground m-0 font-semibold'>
               {formattedDeletedAt}
             </span>
           </div>
@@ -85,13 +92,13 @@ export const MetadataGrid: React.FC<MetadataGridProps> = ({ item }) => {
           <div
             key={meta.key}
             className={`flex justify-between items-center py-3 ${
-              index === metadata.length - 1 ? '' : 'border-b border-border border-border'
+              index === metadata.length - 1
+                ? ''
+                : 'border-b border-border border-border'
             } ${index === metadata.length - 1 ? 'pb-0' : ''}`}
           >
-            <span className="text-sm text-zinc-700 m-0">
-              {meta.label}
-            </span>
-            <span className="text-sm text-foreground m-0 font-semibold">
+            <span className='text-sm text-zinc-700 m-0'>{meta.label}</span>
+            <span className='text-sm text-foreground m-0 font-semibold'>
               {meta.value}
             </span>
           </div>

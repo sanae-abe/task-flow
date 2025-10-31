@@ -1,13 +1,13 @@
-import { v4 as uuidv4 } from "uuid";
-import type { KanbanState, KanbanAction, KanbanBoard } from "../types";
-import logger from "../utils/logger";
+import { v4 as uuidv4 } from 'uuid';
+import type { KanbanState, KanbanAction, KanbanBoard } from '../types';
+import logger from '../utils/logger';
 
 export const handleBoardActions = (
   state: KanbanState,
-  action: KanbanAction,
+  action: KanbanAction
 ): KanbanState => {
   switch (action.type) {
-    case "SET_BOARDS": {
+    case 'SET_BOARDS': {
       const boards = action.payload;
       return {
         ...state,
@@ -16,7 +16,7 @@ export const handleBoardActions = (
       };
     }
 
-    case "CREATE_BOARD": {
+    case 'CREATE_BOARD': {
       const { title } = action.payload;
       const newBoard: KanbanBoard = {
         id: uuidv4(),
@@ -24,17 +24,17 @@ export const handleBoardActions = (
         columns: [
           {
             id: uuidv4(),
-            title: "To Do",
+            title: 'To Do',
             tasks: [],
           },
           {
             id: uuidv4(),
-            title: "In Progress",
+            title: 'In Progress',
             tasks: [],
           },
           {
             id: uuidv4(),
-            title: "Done",
+            title: 'Done',
             tasks: [],
           },
         ],
@@ -50,29 +50,27 @@ export const handleBoardActions = (
       };
     }
 
-    case "SWITCH_BOARD": {
+    case 'SWITCH_BOARD': {
       const { boardId } = action.payload;
-      const board = state.boards.find((b) => b.id === boardId);
+      const board = state.boards.find(b => b.id === boardId);
       return {
         ...state,
         currentBoard: board || null,
       };
     }
 
-    case "UPDATE_BOARD": {
+    case 'UPDATE_BOARD': {
       const { boardId, updates } = action.payload;
-      const boardIndex = state.boards.findIndex(
-        (board) => board.id === boardId,
-      );
+      const boardIndex = state.boards.findIndex(board => board.id === boardId);
 
       if (boardIndex === -1) {
-        logger.warn("Board not found for update:", boardId);
+        logger.warn('Board not found for update:', boardId);
         return state;
       }
 
       const baseBoard = state.boards[boardIndex];
       if (!baseBoard) {
-        logger.warn("Board not found at index:", boardIndex);
+        logger.warn('Board not found at index:', boardIndex);
         return state;
       }
 
@@ -99,9 +97,9 @@ export const handleBoardActions = (
       };
     }
 
-    case "DELETE_BOARD": {
+    case 'DELETE_BOARD': {
       const { boardId } = action.payload;
-      const newBoards = state.boards.filter((board) => board.id !== boardId);
+      const newBoards = state.boards.filter(board => board.id !== boardId);
 
       let newCurrentBoard: KanbanBoard | null = state.currentBoard;
       if (state.currentBoard?.id === boardId) {

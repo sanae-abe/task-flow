@@ -52,9 +52,11 @@ export const useEditorState = (): UseEditorStateReturn => {
   // State
   const [isEditorFocused, setIsEditorFocused] = useState(false);
   const [showLinkDialog, setShowLinkDialog] = useState(false);
-  const [selectedText, setSelectedText] = useState("");
+  const [selectedText, setSelectedText] = useState('');
   const [savedRange, setSavedRange] = useState<Range | null>(null);
-  const [editingLink, setEditingLink] = useState<HTMLAnchorElement | null>(null);
+  const [editingLink, setEditingLink] = useState<HTMLAnchorElement | null>(
+    null
+  );
   const [showLinkEditDialog, setShowLinkEditDialog] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [savedEmojiRange, setSavedEmojiRange] = useState<Range | null>(null);
@@ -64,7 +66,7 @@ export const useEditorState = (): UseEditorStateReturn => {
   const resetState = () => {
     setIsEditorFocused(false);
     setShowLinkDialog(false);
-    setSelectedText("");
+    setSelectedText('');
     setSavedRange(null);
     setEditingLink(null);
     setShowLinkEditDialog(false);

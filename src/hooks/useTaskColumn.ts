@@ -1,7 +1,7 @@
-import { useMemo } from "react";
+import { useMemo } from 'react';
 
-import { useKanban } from "../contexts/KanbanContext";
-import type { Task, Column } from "../types";
+import { useKanban } from '../contexts/KanbanContext';
+import type { Task, Column } from '../types';
 
 interface UseTaskColumnReturn {
   column: Column | undefined;
@@ -20,8 +20,8 @@ export const useTaskColumn = (task: Task | null): UseTaskColumnReturn => {
     }
 
     // 効率的な検索: early returnでパフォーマンス向上
-    return state.currentBoard.columns.find((col) =>
-      col.tasks.some((t) => t.id === task.id),
+    return state.currentBoard.columns.find(col =>
+      col.tasks.some(t => t.id === task.id)
     );
   }, [task?.id, state.currentBoard?.columns]);
 

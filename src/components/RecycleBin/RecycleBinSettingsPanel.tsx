@@ -1,11 +1,11 @@
-import React from "react";
-import { type RecycleBinSettings } from "../../types/settings";
-import { UI_TEXT } from "../../constants/recycleBin";
-import { useSettingsForm } from "../../hooks/useSettingsForm";
-import { InlineMessage } from "../shared";
-import { SettingsPresetButtons } from "./settings/SettingsPresetButtons";
-import { SettingsRetentionInput } from "./settings/SettingsRetentionInput";
-import { SettingsSaveSection } from "./settings/SettingsSaveSection";
+import React from 'react';
+import { type RecycleBinSettings } from '../../types/settings';
+import { UI_TEXT } from '../../constants/recycleBin';
+import { useSettingsForm } from '../../hooks/useSettingsForm';
+import { InlineMessage } from '../shared';
+import { SettingsPresetButtons } from './settings/SettingsPresetButtons';
+import { SettingsRetentionInput } from './settings/SettingsRetentionInput';
+import { SettingsSaveSection } from './settings/SettingsSaveSection';
 
 interface RecycleBinSettingsPanelProps {
   onSave?: (settings: RecycleBinSettings) => void;
@@ -15,9 +15,9 @@ interface RecycleBinSettingsPanelProps {
  * シンプルなゴミ箱設定パネル
  * 複雑なAutoDeletionSettingsPanelを置き換える軽量版
  */
-export const RecycleBinSettingsPanel: React.FC<RecycleBinSettingsPanelProps> = ({
-  onSave,
-}) => {
+export const RecycleBinSettingsPanel: React.FC<
+  RecycleBinSettingsPanelProps
+> = ({ onSave }) => {
   const {
     settings,
     isLoading,
@@ -33,16 +33,14 @@ export const RecycleBinSettingsPanel: React.FC<RecycleBinSettingsPanelProps> = (
   };
 
   return (
-    <div className="pb-4">
+    <div className='pb-4'>
       {/* ヘッダー */}
-      <div className="flex items-center gap-2 mb-2">
-        <h2 className="text-lg font-bold">
-          {UI_TEXT.PANEL.TITLE}
-        </h2>
+      <div className='flex items-center gap-2 mb-2'>
+        <h2 className='text-lg font-bold'>{UI_TEXT.PANEL.TITLE}</h2>
       </div>
 
       {/* 説明 */}
-      <span className="text-sm text-zinc-700 mb-5 block">
+      <span className='text-sm text-zinc-700 mb-5 block'>
         {UI_TEXT.PANEL.DESCRIPTION_WITH_UNLIMITED}
       </span>
 
@@ -68,8 +66,11 @@ export const RecycleBinSettingsPanel: React.FC<RecycleBinSettingsPanelProps> = (
       />
 
       {/* 注意事項 */}
-      <div className="mt-5">
-        <InlineMessage variant="warning" message={UI_TEXT.PANEL.IMPORTANT_NOTE_TEXT} />
+      <div className='mt-5'>
+        <InlineMessage
+          variant='warning'
+          message={UI_TEXT.PANEL.IMPORTANT_NOTE_TEXT}
+        />
       </div>
     </div>
   );

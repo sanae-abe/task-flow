@@ -27,11 +27,11 @@ import { insertEmoji } from './utils/formatting';
  * - Paste handling
  */
 const RichTextEditor: React.FC<RichTextEditorProps> = ({
-  value = "",
+  value = '',
   onChange,
-  placeholder = "説明を入力してください...",
+  placeholder = '説明を入力してください...',
   disabled = false,
-  minHeight = "120px",
+  minHeight = '120px',
 }) => {
   // State management
   const editorState = useEditorState();
@@ -63,19 +63,19 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
     };
 
     if (editorState.showEmojiPicker) {
-      document.addEventListener("mousedown", handleClickOutside);
-      document.addEventListener("keydown", handleKeyDown);
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('keydown', handleKeyDown);
     }
 
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-      document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     editorState.showEmojiPicker,
     editorState.emojiButtonRef,
-    editorState.setShowEmojiPicker
+    editorState.setShowEmojiPicker,
     // editorState is intentionally omitted to prevent unnecessary re-renders
   ]);
 
@@ -92,7 +92,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
   };
 
   return (
-    <div className="w-full border border-border rounded-md">
+    <div className='w-full border border-border rounded-md'>
       {/* Toolbar */}
       <Toolbar
         onButtonClick={handlers.handleToolbarButtonClick}
@@ -120,7 +120,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           }}
           onCancel={() => {
             editorState.setShowLinkDialog(false);
-            editorState.setSelectedText("");
+            editorState.setSelectedText('');
             editorState.setSavedRange(null);
           }}
         />
@@ -130,7 +130,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
       {editorState.showLinkEditDialog && editorState.editingLink && (
         <LinkInsertDialog
           isOpen={editorState.showLinkEditDialog}
-          initialText={editorState.editingLink.textContent || ""}
+          initialText={editorState.editingLink.textContent || ''}
           initialUrl={editorState.editingLink.href}
           onInsert={(url: string) => {
             handlers.handleLinkEdit(url);

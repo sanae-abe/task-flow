@@ -1,11 +1,11 @@
 /**
  * 統合メニューシステムの型定義
  */
-import type { LucideIcon } from "lucide-react";
+import type { LucideIcon } from 'lucide-react';
 
-export type MenuVariant = "default" | "danger" | "invisible";
-export type MenuSize = "small" | "medium" | "large" | "icon";
-export type TriggerType = "button" | "icon-button" | "custom";
+export type MenuVariant = 'default' | 'danger' | 'invisible';
+export type MenuSize = 'small' | 'medium' | 'large' | 'icon';
+export type TriggerType = 'button' | 'icon-button' | 'custom';
 
 // ベースメニューアイテム
 export interface BaseMenuItem {
@@ -26,17 +26,17 @@ export interface BaseMenuItem {
 // アクションメニューアイテム
 export interface ActionMenuItem extends BaseMenuItem {
   /** アイテムの種類 */
-  type: "action";
+  type: 'action';
   /** クリック時のコールバック */
   onSelect: () => void;
   /** アイテムのバリアント */
-  variant?: "default" | "danger";
+  variant?: 'default' | 'danger';
 }
 
 // 選択可能メニューアイテム
 export interface SelectableMenuItem extends BaseMenuItem {
   /** アイテムの種類 */
-  type: "selectable";
+  type: 'selectable';
   /** 選択状態 */
   selected?: boolean;
   /** 選択時のコールバック */
@@ -48,7 +48,7 @@ export interface SelectableMenuItem extends BaseMenuItem {
 // ネストメニューアイテム
 export interface NestedMenuItem extends BaseMenuItem {
   /** アイテムの種類 */
-  type: "nested";
+  type: 'nested';
   /** サブメニューアイテム */
   children: MenuItem[];
 }
@@ -56,7 +56,7 @@ export interface NestedMenuItem extends BaseMenuItem {
 // 区切り線
 export interface MenuDivider {
   /** アイテムの種類 */
-  type: "divider";
+  type: 'divider';
   /** アイテムID（一意識別子） */
   id: string;
 }
@@ -109,7 +109,7 @@ export interface UnifiedMenuProps {
   /** トリガーボタンの設定 */
   trigger: MenuTrigger;
   /** メニューの配置 */
-  placement?: "auto" | "top" | "bottom" | "left" | "right";
+  placement?: 'auto' | 'top' | 'bottom' | 'left' | 'right';
   /** z-index */
   zIndex?: number;
   /** 追加のスタイル */

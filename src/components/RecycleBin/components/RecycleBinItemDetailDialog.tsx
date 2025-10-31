@@ -21,25 +21,30 @@ interface RecycleBinItemDetailDialogProps {
  * ゴミ箱アイテムの詳細表示ダイアログコンポーネント
  * 新しいモジュラーコンポーネントを使用した改善版UI
  */
-export const RecycleBinItemDetailDialog: React.FC<RecycleBinItemDetailDialogProps> = ({
-  item,
-  isOpen,
-  onClose,
-  onRestore,
-  onDelete,
-}) => {
+export const RecycleBinItemDetailDialog: React.FC<
+  RecycleBinItemDetailDialogProps
+> = ({ item, isOpen, onClose, onRestore, onDelete }) => {
   // ローディング状態の管理
   const [isLoading, setIsLoading] = useState(false);
-  const [loadingAction, setLoadingAction] = useState<'restore' | 'delete' | null>(null);
+  const [loadingAction, setLoadingAction] = useState<
+    'restore' | 'delete' | null
+  >(null);
 
   // ゴミ箱設定を取得
   const recycleBinSettings = useRecycleBinSettingsReadOnly();
 
-  const itemTypeText = item?.type === 'board' ? 'ボード' : item?.type === 'column' ? 'カラム' : 'タスク';
+  const itemTypeText =
+    item?.type === 'board'
+      ? 'ボード'
+      : item?.type === 'column'
+        ? 'カラム'
+        : 'タスク';
 
   // 復元処理
   const handleRestore = useCallback(() => {
-    if (!item) { return; }
+    if (!item) {
+      return;
+    }
     setIsLoading(true);
     setLoadingAction('restore');
     try {
@@ -56,7 +61,9 @@ export const RecycleBinItemDetailDialog: React.FC<RecycleBinItemDetailDialogProp
 
   // 削除処理
   const handleDelete = useCallback(() => {
-    if (!item) { return; }
+    if (!item) {
+      return;
+    }
     setIsLoading(true);
     setLoadingAction('delete');
     try {
@@ -72,24 +79,27 @@ export const RecycleBinItemDetailDialog: React.FC<RecycleBinItemDetailDialogProp
   }, [item, onClose, onDelete]);
 
   // UnifiedDialogのアクション定義
-  const actions = useMemo<DialogAction[]>(() => [
-    {
-      label: loadingAction === 'restore' ? '復元中...' : '復元',
-      onClick: handleRestore,
-      variant: 'default',
-      disabled: !item?.canRestore || isLoading,
-      loading: loadingAction === 'restore',
-      icon: RotateCcw,
-    },
-    {
-      label: loadingAction === 'delete' ? '削除中...' : '完全に削除',
-      onClick: handleDelete,
-      variant: 'destructive',
-      disabled: isLoading,
-      loading: loadingAction === 'delete',
-      icon: Trash2,
-    },
-  ], [handleRestore, handleDelete, item?.canRestore, isLoading, loadingAction]);
+  const actions = useMemo<DialogAction[]>(
+    () => [
+      {
+        label: loadingAction === 'restore' ? '復元中...' : '復元',
+        onClick: handleRestore,
+        variant: 'default',
+        disabled: !item?.canRestore || isLoading,
+        loading: loadingAction === 'restore',
+        icon: RotateCcw,
+      },
+      {
+        label: loadingAction === 'delete' ? '削除中...' : '完全に削除',
+        onClick: handleDelete,
+        variant: 'destructive',
+        disabled: isLoading,
+        loading: loadingAction === 'delete',
+        icon: Trash2,
+      },
+    ],
+    [handleRestore, handleDelete, item?.canRestore, isLoading, loadingAction]
+  );
 
   if (!item) {
     return null;
@@ -100,11 +110,11 @@ export const RecycleBinItemDetailDialog: React.FC<RecycleBinItemDetailDialogProp
       isOpen={isOpen}
       onClose={onClose}
       title={`${itemTypeText}詳細`}
-      variant="modal"
-      size="large"
+      variant='modal'
+      size='large'
       actions={actions}
     >
-      <div className="flex flex-col gap-4">
+      <div className='flex flex-col gap-4'>
         {/* Hero Section - タイトルエリア */}
         <HeroSection item={item} />
 

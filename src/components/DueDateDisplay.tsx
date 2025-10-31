@@ -1,12 +1,12 @@
-import { AlertTriangle, Clock, XCircle } from "lucide-react";
-import { memo } from "react";
+import { AlertTriangle, Clock, XCircle } from 'lucide-react';
+import { memo } from 'react';
 
 import {
   getDateStatus,
   formatDueDate,
   formatDueDateWithYear,
-} from "../utils/dateHelpers";
-import StatusBadge from "./shared/StatusBadge";
+} from '../utils/dateHelpers';
+import StatusBadge from './shared/StatusBadge';
 
 interface DueDateDisplayProps {
   dueDate: Date;
@@ -14,25 +14,25 @@ interface DueDateDisplayProps {
 }
 
 interface BadgeConfig {
-  variant: "danger" | "warning" | "info";
+  variant: 'danger' | 'warning' | 'info';
   text: string;
   icon: React.ComponentType<{ size: number }>;
 }
 
 const BADGE_CONFIGS = {
   overdue: {
-    variant: "danger" as const,
-    text: "期限切れ",
+    variant: 'danger' as const,
+    text: '期限切れ',
     icon: XCircle,
   },
   today: {
-    variant: "warning" as const,
-    text: "本日期限",
+    variant: 'warning' as const,
+    text: '本日期限',
     icon: AlertTriangle,
   },
   tomorrow: {
-    variant: "info" as const,
-    text: "明日期限",
+    variant: 'info' as const,
+    text: '明日期限',
     icon: Clock,
   },
 } as const;
@@ -40,16 +40,16 @@ const BADGE_CONFIGS = {
 const getBadgeConfig = (
   isOverdue: boolean,
   isDueToday: boolean,
-  isDueTomorrow: boolean,
+  isDueTomorrow: boolean
 ): BadgeConfig | null => {
   if (isOverdue) {
-    return BADGE_CONFIGS["overdue"];
+    return BADGE_CONFIGS['overdue'];
   }
   if (isDueToday) {
-    return BADGE_CONFIGS["today"];
+    return BADGE_CONFIGS['today'];
   }
   if (isDueTomorrow) {
-    return BADGE_CONFIGS["tomorrow"];
+    return BADGE_CONFIGS['tomorrow'];
   }
   return null;
 };
@@ -57,18 +57,18 @@ const getBadgeConfig = (
 const getTextColor = (
   isOverdue: boolean,
   isDueToday: boolean,
-  isDueTomorrow: boolean,
+  isDueTomorrow: boolean
 ): string => {
   if (isOverdue) {
-    return "text-destructive";
+    return 'text-destructive';
   }
   if (isDueToday) {
-    return "text-warning";
+    return 'text-warning';
   }
   if (isDueTomorrow) {
-    return "text-primary";
+    return 'text-primary';
   }
-  return "text-inherit";
+  return 'text-inherit';
 };
 
 const DueDateDisplay = memo<DueDateDisplayProps>(
@@ -82,22 +82,19 @@ const DueDateDisplay = memo<DueDateDisplayProps>(
 
     return (
       <div className={`flex items-center gap-1 text-sm ${textColorClass}`}>
-        <div className="flex items-center gap-2 flex-1">
-          <span className="text-sm">{formattedDate}</span>
+        <div className='flex items-center gap-2 flex-1'>
+          <span className='text-sm'>{formattedDate}</span>
         </div>
         {badgeConfig && (
-          <StatusBadge
-            variant={badgeConfig.variant}
-            icon={badgeConfig.icon}
-          >
+          <StatusBadge variant={badgeConfig.variant} icon={badgeConfig.icon}>
             {badgeConfig.text}
           </StatusBadge>
         )}
       </div>
     );
-  },
+  }
 );
 
-DueDateDisplay.displayName = "DueDateDisplay";
+DueDateDisplay.displayName = 'DueDateDisplay';
 
 export default DueDateDisplay;

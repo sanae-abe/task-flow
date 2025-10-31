@@ -27,7 +27,7 @@ export const useTaskInitialization = ({
   formState,
 }: UseTaskInitializationProps): UseTaskInitializationReturn => {
   const { state } = useKanban();
-  
+
   // 前の値を追跡するためのref
   const prevIsOpenRef = useRef(isOpen);
   const prevTaskIdRef = useRef(task?.id);
@@ -44,13 +44,13 @@ export const useTaskInitialization = ({
       if (isOpen && task) {
         // タスクデータの初期化
         formState.setTitle(task.title);
-        formState.setDescription(task.description ?? "");
+        formState.setDescription(task.description ?? '');
 
         // 期限の処理
         if (task.dueDate) {
           const dueDate = new Date(task.dueDate);
-          const dateStr = dueDate.toISOString().split("T")[0]; // YYYY-MM-DD形式
-          formState.setDueDate(dateStr || "");
+          const dateStr = dueDate.toISOString().split('T')[0]; // YYYY-MM-DD形式
+          formState.setDueDate(dateStr || '');
 
           // 時刻チェック（23:59:59以外の場合は時刻を設定）
           const is23_59_59 =
@@ -59,22 +59,22 @@ export const useTaskInitialization = ({
             dueDate.getSeconds() === 59;
           if (!is23_59_59) {
             formState.setHasTime(true);
-            const timeStr = `${String(dueDate.getHours()).padStart(2, "0")}:${String(dueDate.getMinutes()).padStart(2, "0")}`;
+            const timeStr = `${String(dueDate.getHours()).padStart(2, '0')}:${String(dueDate.getMinutes()).padStart(2, '0')}`;
             formState.setDueTime(timeStr);
           } else {
             formState.setHasTime(false);
-            formState.setDueTime("");
+            formState.setDueTime('');
           }
         } else {
-          formState.setDueDate("");
-          formState.setDueTime("");
+          formState.setDueDate('');
+          formState.setDueTime('');
           formState.setHasTime(false);
         }
 
         // completedAtをdatetime-local形式（YYYY-MM-DDTHH:mm）にフォーマット
         const completedAtValue = task.completedAt
           ? toDateTimeLocalString(new Date(task.completedAt))
-          : "";
+          : '';
         formState.setCompletedAt(completedAtValue);
 
         formState.setAttachments(task.files ?? []);
@@ -90,10 +90,10 @@ export const useTaskInitialization = ({
 
         // ColumnIdの初期化: タスクが属するカラムのIDを設定
         if (state.currentBoard?.columns) {
-          const currentColumn = state.currentBoard.columns.find((column) =>
-            column.tasks.some((t) => t.id === task.id)
+          const currentColumn = state.currentBoard.columns.find(column =>
+            column.tasks.some(t => t.id === task.id)
           );
-          formState.setColumnId(currentColumn?.id ?? "");
+          formState.setColumnId(currentColumn?.id ?? '');
         }
       } else if (!isOpen && prevIsOpen) {
         // ダイアログが閉じられた時にフォームをリセット（前回開いていた場合のみ）
@@ -107,4 +107,4 @@ export const useTaskInitialization = ({
   }, [isOpen, task, formState, state.currentBoard]);
 
   return {};
-};;
+};

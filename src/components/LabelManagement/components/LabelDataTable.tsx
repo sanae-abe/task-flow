@@ -4,14 +4,14 @@
  * shadcn/ui data-table ベースのラベル管理テーブル
  */
 
-import React from "react";
-import { ColumnDef } from "@tanstack/react-table";
-import { Edit, Trash2 } from "lucide-react";
+import React from 'react';
+import { ColumnDef } from '@tanstack/react-table';
+import { Edit, Trash2 } from 'lucide-react';
 
-import { DataTable } from "@/components/ui/data-table";
-import type { LabelWithInfo } from "../../../types/labelManagement";
-import IconButton from "../../shared/IconButton";
-import { getLabelColors } from "../../../utils/labelHelpers";
+import { DataTable } from '@/components/ui/data-table';
+import type { LabelWithInfo } from '../../../types/labelManagement';
+import IconButton from '../../shared/IconButton';
+import { getLabelColors } from '../../../utils/labelHelpers';
 
 interface LabelDataTableProps {
   labels: LabelWithInfo[];
@@ -26,45 +26,43 @@ export const LabelDataTable: React.FC<LabelDataTableProps> = ({
 }) => {
   const columns: ColumnDef<LabelWithInfo>[] = [
     {
-      accessorKey: "name",
-      header: "ラベル",
+      accessorKey: 'name',
+      header: 'ラベル',
       cell: ({ row }) => {
         const label = row.original;
         const colors = getLabelColors(label.color);
         return (
-          <div className="flex items-center gap-2">
+          <div className='flex items-center gap-2'>
             <div
-              className="w-4 h-4 rounded-full border"
+              className='w-4 h-4 rounded-full border'
               style={{
                 backgroundColor: colors.bg,
-                borderColor: colors.color
+                borderColor: colors.color,
               }}
             />
-            <span className="font-medium">{label.name}</span>
+            <span className='font-medium'>{label.name}</span>
           </div>
         );
       },
     },
     {
-      accessorKey: "boardName",
-      header: "所属ボード",
+      accessorKey: 'boardName',
+      header: '所属ボード',
       cell: ({ row }) => {
-        const boardName = row.getValue("boardName") as string;
-        return (
-          <>
-            {boardName || "不明"}
-          </>
-        );
+        const boardName = row.getValue('boardName') as string;
+        return <>{boardName || '不明'}</>;
       },
     },
     {
-      accessorKey: "usageCount",
-      header: "使用数",
+      accessorKey: 'usageCount',
+      header: '使用数',
       cell: ({ row }) => {
-        const count = row.getValue("usageCount") as number;
+        const count = row.getValue('usageCount') as number;
         return (
-          <div className="text-center">
-            <span className={`text-sm ${count > 0 ? 'font-bold text-foreground' : 'font-normal text-zinc-700'}`}>
+          <div className='text-center'>
+            <span
+              className={`text-sm ${count > 0 ? 'font-bold text-foreground' : 'font-normal text-zinc-700'}`}
+            >
               {count}
             </span>
           </div>
@@ -72,25 +70,25 @@ export const LabelDataTable: React.FC<LabelDataTableProps> = ({
       },
     },
     {
-      id: "actions",
-      header: "",
+      id: 'actions',
+      header: '',
       cell: ({ row }) => {
         const label = row.original;
         return (
-          <div className="flex items-center justify-center gap-1">
+          <div className='flex items-center justify-center gap-1'>
             <IconButton
               icon={Edit}
-              size="icon"
+              size='icon'
               onClick={() => onEdit(label)}
-              className="h-8 w-8 p-0"
-              ariaLabel="編集"
+              className='h-8 w-8 p-0'
+              ariaLabel='編集'
             />
             <IconButton
               icon={Trash2}
-              size="icon"
+              size='icon'
               onClick={() => onDelete(label)}
-              className="h-8 w-8 p-0"
-              ariaLabel="削除"
+              className='h-8 w-8 p-0'
+              ariaLabel='削除'
             />
           </div>
         );
@@ -102,8 +100,8 @@ export const LabelDataTable: React.FC<LabelDataTableProps> = ({
     <DataTable
       columns={columns}
       data={labels}
-      emptyMessage="ラベルがありません"
-      className="border-border"
+      emptyMessage='ラベルがありません'
+      className='border-border'
     />
   );
 };

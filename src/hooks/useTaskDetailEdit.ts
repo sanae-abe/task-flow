@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo } from 'react';
 
-import type { Task, Label } from "../types";
+import type { Task, Label } from '../types';
 
 interface UseTaskDetailEditResult {
   isEditing: boolean;
@@ -18,12 +18,12 @@ interface UseTaskDetailEditResult {
 }
 
 export const useTaskDetailEdit = (
-  task: Task | null,
+  task: Task | null
 ): UseTaskDetailEditResult => {
   const [isEditing, setIsEditing] = useState(false);
-  const [editTitle, setEditTitle] = useState("");
-  const [editDescription, setEditDescription] = useState("");
-  const [editDueDate, setEditDueDate] = useState("");
+  const [editTitle, setEditTitle] = useState('');
+  const [editDescription, setEditDescription] = useState('');
+  const [editDueDate, setEditDueDate] = useState('');
   const [editLabels, setEditLabels] = useState<Label[]>([]);
 
   // フォームをタスクデータでリセットするヘルパー関数
@@ -33,10 +33,10 @@ export const useTaskDetailEdit = (
     }
 
     setEditTitle(task.title);
-    setEditDescription(task.description ?? "");
+    setEditDescription(task.description ?? '');
     const editDueDateValue = task.dueDate
-      ? new Date(task.dueDate).toISOString().split("T")[0]
-      : "";
+      ? new Date(task.dueDate).toISOString().split('T')[0]
+      : '';
     setEditDueDate(editDueDateValue as string);
     setEditLabels(task.labels ?? []);
   }, [task]);

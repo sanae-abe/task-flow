@@ -1,7 +1,13 @@
-import { useState, useCallback, useEffect } from "react";
-import { DEFAULT_RECYCLE_BIN_SETTINGS, type RecycleBinSettings } from "../types/settings";
-import { RECYCLE_BIN_STORAGE_KEY, RECYCLE_BIN_SETTINGS_CHANGED_EVENT } from "../constants/recycleBin";
-import { logger } from "../utils/logger";
+import { useState, useCallback, useEffect } from 'react';
+import {
+  DEFAULT_RECYCLE_BIN_SETTINGS,
+  type RecycleBinSettings,
+} from '../types/settings';
+import {
+  RECYCLE_BIN_STORAGE_KEY,
+  RECYCLE_BIN_SETTINGS_CHANGED_EVENT,
+} from '../constants/recycleBin';
+import { logger } from '../utils/logger';
 
 const STORAGE_KEY = RECYCLE_BIN_STORAGE_KEY;
 
@@ -16,7 +22,10 @@ export const useRecycleBinSettings = () => {
       if (stored) {
         const parsed = JSON.parse(stored) as RecycleBinSettings;
         // 型安全性のための検証
-        if (typeof parsed.retentionDays === 'number' || parsed.retentionDays === null) {
+        if (
+          typeof parsed.retentionDays === 'number' ||
+          parsed.retentionDays === null
+        ) {
           return parsed;
         }
       }
@@ -32,31 +41,37 @@ export const useRecycleBinSettings = () => {
   /**
    * 設定をLocalStorageに保存
    */
-  const saveSettings = useCallback(async (newSettings: RecycleBinSettings): Promise<boolean> => {
-    setIsLoading(true);
-    setError(null);
+  const saveSettings = useCallback(
+    async (newSettings: RecycleBinSettings): Promise<boolean> => {
+      setIsLoading(true);
+      setError(null);
 
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(newSettings));
-      setSettings(newSettings);
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(newSettings));
+        setSettings(newSettings);
 
-      // 同一タブ内での更新通知のためカスタムイベントを発行
-      const customEvent = new CustomEvent(RECYCLE_BIN_SETTINGS_CHANGED_EVENT, {
-        detail: newSettings,
-      });
-      window.dispatchEvent(customEvent);
+        // 同一タブ内での更新通知のためカスタムイベントを発行
+        const customEvent = new CustomEvent(
+          RECYCLE_BIN_SETTINGS_CHANGED_EVENT,
+          {
+            detail: newSettings,
+          }
+        );
+        window.dispatchEvent(customEvent);
 
-      logger.info('ゴミ箱設定を保存しました:', newSettings);
-      return true;
-    } catch (_error) {
-      const errorMessage = 'ゴミ箱設定の保存に失敗しました';
-      logger._error(errorMessage, _error);
-      setError(errorMessage);
-      return false;
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+        logger.info('ゴミ箱設定を保存しました:', newSettings);
+        return true;
+      } catch (_error) {
+        const errorMessage = 'ゴミ箱設定の保存に失敗しました';
+        logger._error(errorMessage, _error);
+        setError(errorMessage);
+        return false;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    []
+  );
 
   /**
    * 設定を更新（LocalStorageへの保存は行わない）
@@ -68,7 +83,10 @@ export const useRecycleBinSettings = () => {
   /**
    * 設定をリセット
    */
-  const resetSettings = useCallback(async (): Promise<boolean> => saveSettings(DEFAULT_RECYCLE_BIN_SETTINGS), [saveSettings]);
+  const resetSettings = useCallback(
+    async (): Promise<boolean> => saveSettings(DEFAULT_RECYCLE_BIN_SETTINGS),
+    [saveSettings]
+  );
 
   /**
    * LocalStorageの変更を監視してリアルタイム更新
@@ -109,7 +127,10 @@ export const useRecycleBinSettingsReadOnly = (): RecycleBinSettings => {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
         const parsed = JSON.parse(stored) as RecycleBinSettings;
-        if (typeof parsed.retentionDays === 'number' || parsed.retentionDays === null) {
+        if (
+          typeof parsed.retentionDays === 'number' ||
+          parsed.retentionDays === null
+        ) {
           return parsed;
         }
       }
@@ -142,11 +163,17 @@ export const useRecycleBinSettingsReadOnly = (): RecycleBinSettings => {
     };
 
     window.addEventListener('storage', handleStorageChange);
-    window.addEventListener(RECYCLE_BIN_SETTINGS_CHANGED_EVENT, handleCustomEvent as EventListener);
-    
+    window.addEventListener(
+      RECYCLE_BIN_SETTINGS_CHANGED_EVENT,
+      handleCustomEvent as EventListener
+    );
+
     return () => {
       window.removeEventListener('storage', handleStorageChange);
-      window.removeEventListener(RECYCLE_BIN_SETTINGS_CHANGED_EVENT, handleCustomEvent as EventListener);
+      window.removeEventListener(
+        RECYCLE_BIN_SETTINGS_CHANGED_EVENT,
+        handleCustomEvent as EventListener
+      );
     };
   }, []);
 

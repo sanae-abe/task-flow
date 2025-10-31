@@ -15,7 +15,7 @@ export const UNIFIED_FORM_STYLES = {
   },
   /** 入力フィールドスタイル - 幅100%を設定 */
   input: {
-    width: "100%",
+    width: '100%',
   },
 } as const;
 
@@ -44,9 +44,9 @@ export const FIELD_TYPE_STYLES = {
  */
 export const VALIDATION_STYLES = {
   _error: {
-    borderColor: "danger.emphasis",
+    borderColor: 'danger.emphasis',
   },
   valid: {
-    borderColor: "success.emphasis",
+    borderColor: 'success.emphasis',
   },
 } as const;

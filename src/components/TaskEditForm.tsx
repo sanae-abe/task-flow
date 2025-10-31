@@ -1,13 +1,13 @@
-import React, { memo } from "react";
+import React, { memo } from 'react';
 
 import type {
   Label,
   FileAttachment,
   RecurrenceConfig,
   Priority,
-} from "../types";
+} from '../types';
 
-import UnifiedTaskForm from "./shared/Form/UnifiedTaskForm";
+import UnifiedTaskForm from './shared/Form/UnifiedTaskForm';
 
 interface TaskEditFormProps {
   title: string;
@@ -64,7 +64,7 @@ const TaskEditForm = memo<TaskEditFormProps>(
     onKeyPress,
   }) => (
     <UnifiedTaskForm
-      mode="edit"
+      mode='edit'
       title={title}
       setTitle={setTitle}
       description={description}
@@ -95,7 +95,7 @@ const TaskEditForm = memo<TaskEditFormProps>(
         statusOptions,
       }}
     />
-  ),
+  )
 );
 
 export default TaskEditForm;

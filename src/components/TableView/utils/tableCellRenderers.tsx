@@ -1,5 +1,5 @@
-import React from "react";
-import { Button } from "@/components/ui/button";
+import React from 'react';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -7,7 +7,7 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuLabel,
-} from "@/components/ui/dropdown-menu";
+} from '@/components/ui/dropdown-menu';
 import {
   Trash2,
   Check,
@@ -15,36 +15,36 @@ import {
   ChevronDown,
   RotateCcw,
   Edit,
-} from "lucide-react";
+} from 'lucide-react';
 
-import type { TaskWithColumn } from "../../../types/table";
-import type { KanbanBoard } from "../../../types";
-import { formatDate, getDateStatus } from "../../../utils/dateHelpers";
-import { stripHtml } from "../../../utils/textHelpers";
-import LabelChip from "../../LabelChip";
-import StatusBadge from "../../shared/StatusBadge";
-import SubTaskProgressBar from "../../SubTaskProgressBar";
+import type { TaskWithColumn } from '../../../types/table';
+import type { KanbanBoard } from '../../../types';
+import { formatDate, getDateStatus } from '../../../utils/dateHelpers';
+import { stripHtml } from '../../../utils/textHelpers';
+import LabelChip from '../../LabelChip';
+import StatusBadge from '../../shared/StatusBadge';
+import SubTaskProgressBar from '../../SubTaskProgressBar';
 import {
   getPriorityText,
   getCompletionRate,
   getDateColorClass,
-} from "./tableHelpers";
-import IconButton from "@/components/shared/IconButton";
+} from './tableHelpers';
+import IconButton from '@/components/shared/IconButton';
 
 /**
  * アクションセル（削除ボタン）の描画
  */
 export const renderActionsCell = (
   task: TaskWithColumn,
-  onDeleteClick: (task: TaskWithColumn) => void,
+  onDeleteClick: (task: TaskWithColumn) => void
 ) => (
   <div onClick={(e: React.MouseEvent) => e.stopPropagation()}>
     <IconButton
       icon={Trash2}
-      size="icon"
-      ariaLabel="タスクを削除"
+      size='icon'
+      ariaLabel='タスクを削除'
       onClick={() => onDeleteClick(task)}
-      className="w-8 h-8 p-2 hover:bg-gray-200"
+      className='w-8 h-8 p-2 hover:bg-gray-200'
     />
   </div>
 );
@@ -54,15 +54,15 @@ export const renderActionsCell = (
  */
 export const renderEditCell = (
   task: TaskWithColumn,
-  onEditClick: (task: TaskWithColumn) => void,
+  onEditClick: (task: TaskWithColumn) => void
 ) => (
   <div onClick={(e: React.MouseEvent) => e.stopPropagation()}>
     <IconButton
       icon={Edit}
-      size="icon"
-      ariaLabel="タスクを編集"
+      size='icon'
+      ariaLabel='タスクを編集'
       onClick={() => onEditClick(task)}
-      className="w-8 h-8 p-2 hover:bg-gray-200"
+      className='w-8 h-8 p-2 hover:bg-gray-200'
     />
   </div>
 );
@@ -73,7 +73,7 @@ export const renderEditCell = (
 export const renderTitleCell = (task: TaskWithColumn) => (
   <span
     className={`block overflow-hidden text-ellipsis whitespace-nowrap text-foreground text-sm ${
-      task.completedAt ? "line-through" : ""
+      task.completedAt ? 'line-through' : ''
     }`}
   >
     {task.title}
@@ -86,30 +86,30 @@ export const renderTitleCell = (task: TaskWithColumn) => (
 export const renderStatusCell = (
   task: TaskWithColumn,
   currentBoard: KanbanBoard | null,
-  onStatusChange: (task: TaskWithColumn, newColumnId: string) => void,
+  onStatusChange: (task: TaskWithColumn, newColumnId: string) => void
 ) => (
   <div onClick={(e: React.MouseEvent) => e.stopPropagation()}>
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
-          variant="ghost"
-          size="sm"
-          className="p-0 h-auto min-h-0 border-none"
+          variant='ghost'
+          size='sm'
+          className='p-0 h-auto min-h-0 border-none'
         >
-          <StatusBadge size="medium" variant="default" fontWeight="400">
+          <StatusBadge size='medium' variant='default' fontWeight='400'>
             {task.status}
           </StatusBadge>
-          <ChevronDown size={12} className="ml-1" />
+          <ChevronDown size={12} className='ml-1' />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuRadioGroup value={task.columnId} onValueChange={(value) => onStatusChange(task, value)}>
+        <DropdownMenuRadioGroup
+          value={task.columnId}
+          onValueChange={value => onStatusChange(task, value)}
+        >
           <DropdownMenuLabel>ステータス変更</DropdownMenuLabel>
-          {currentBoard?.columns.map((column) => (
-            <DropdownMenuRadioItem
-              value={column.id}
-              key={column.id}
-            >
+          {currentBoard?.columns.map(column => (
+            <DropdownMenuRadioItem value={column.id} key={column.id}>
               {column.title}
             </DropdownMenuRadioItem>
           ))}
@@ -125,11 +125,11 @@ export const renderStatusCell = (
 export const renderPriorityCell = (task: TaskWithColumn) => (
   <div>
     {task.priority ? (
-      <span className="text-foreground text-sm">
+      <span className='text-foreground text-sm'>
         {getPriorityText(task.priority)}
       </span>
     ) : (
-      <span className="text-foreground text-sm">-</span>
+      <span className='text-foreground text-sm'>-</span>
     )}
   </div>
 );
@@ -141,20 +141,22 @@ export const renderDueDateCell = (task: TaskWithColumn) => {
   if (!task.dueDate) {
     return (
       <div>
-        <span className="text-foreground text-sm">-</span>
+        <span className='text-foreground text-sm'>-</span>
       </div>
     );
   }
 
   const dueDate = new Date(task.dueDate);
   const { isOverdue, isDueToday, isDueTomorrow } = getDateStatus(dueDate);
-  const formattedDate = formatDate(task.dueDate, "MM/dd HH:mm");
-  const dateColorClass = getDateColorClass(isOverdue, isDueToday, isDueTomorrow);
+  const formattedDate = formatDate(task.dueDate, 'MM/dd HH:mm');
+  const dateColorClass = getDateColorClass(
+    isOverdue,
+    isDueToday,
+    isDueTomorrow
+  );
 
   return (
-    <span
-      className={`flex items-center gap-2 text-sm ${dateColorClass}`}
-    >
+    <span className={`flex items-center gap-2 text-sm ${dateColorClass}`}>
       {formattedDate}
     </span>
   );
@@ -164,12 +166,12 @@ export const renderDueDateCell = (task: TaskWithColumn) => {
  * ラベルセルの描画
  */
 export const renderLabelsCell = (task: TaskWithColumn) => (
-  <div className="flex flex-wrap items-center gap-1">
-    {task.labels?.slice(0, 2).map((label) => (
+  <div className='flex flex-wrap items-center gap-1'>
+    {task.labels?.slice(0, 2).map(label => (
       <LabelChip key={label.id} label={label} />
     ))}
     {task.labels && task.labels.length > 2 && (
-      <span className="text-xs text-foreground px-2 py-1 border border-border border-gray-200 rounded">
+      <span className='text-xs text-foreground px-2 py-1 border border-border border-gray-200 rounded'>
         +{task.labels.length - 2}
       </span>
     )}
@@ -180,17 +182,17 @@ export const renderLabelsCell = (task: TaskWithColumn) => (
  * サブタスクセルの描画
  */
 export const renderSubTasksCell = (task: TaskWithColumn) => (
-  <div className="flex items-center gap-1">
+  <div className='flex items-center gap-1'>
     {task.subTasks && task.subTasks.length > 0 ? (
       <>
         <Check size={12} />
-        <span className="text-sm text-foreground">
-          {task.subTasks.filter((sub) => sub.completed).length}/
+        <span className='text-sm text-foreground'>
+          {task.subTasks.filter(sub => sub.completed).length}/
           {task.subTasks.length}
         </span>
       </>
     ) : (
-      <span className="text-foreground text-sm">-</span>
+      <span className='text-foreground text-sm'>-</span>
     )}
   </div>
 );
@@ -199,16 +201,14 @@ export const renderSubTasksCell = (task: TaskWithColumn) => (
  * ファイルセルの描画
  */
 export const renderFilesCell = (task: TaskWithColumn) => (
-  <div className="flex items-center gap-1">
+  <div className='flex items-center gap-1'>
     {task.files && task.files.length > 0 ? (
       <>
         <Paperclip size={12} />
-        <span className="text-sm text-foreground">
-          {task.files.length}
-        </span>
+        <span className='text-sm text-foreground'>{task.files.length}</span>
       </>
     ) : (
-      <span className="text-foreground text-sm">-</span>
+      <span className='text-foreground text-sm'>-</span>
     )}
   </div>
 );
@@ -219,17 +219,17 @@ export const renderFilesCell = (task: TaskWithColumn) => (
 export const renderProgressCell = (task: TaskWithColumn) => (
   <div>
     {task.subTasks && task.subTasks.length > 0 ? (
-      <div className="flex items-center gap-2">
+      <div className='flex items-center gap-2'>
         <SubTaskProgressBar
-          completedCount={task.subTasks.filter((sub) => sub.completed).length}
+          completedCount={task.subTasks.filter(sub => sub.completed).length}
           totalCount={task.subTasks.length}
         />
-        <span className="text-sm text-foreground">
+        <span className='text-sm text-foreground'>
           {getCompletionRate(task)}%
         </span>
       </div>
     ) : (
-      <span className="text-foreground text-sm">-</span>
+      <span className='text-foreground text-sm'>-</span>
     )}
   </div>
 );
@@ -238,8 +238,8 @@ export const renderProgressCell = (task: TaskWithColumn) => (
  * 作成日セルの描画
  */
 export const renderCreatedAtCell = (task: TaskWithColumn) => (
-  <span className="text-sm text-foreground">
-    {formatDate(task.createdAt, "MM/dd HH:mm")}
+  <span className='text-sm text-foreground'>
+    {formatDate(task.createdAt, 'MM/dd HH:mm')}
   </span>
 );
 
@@ -247,8 +247,8 @@ export const renderCreatedAtCell = (task: TaskWithColumn) => (
  * 更新日セルの描画
  */
 export const renderUpdatedAtCell = (task: TaskWithColumn) => (
-  <span className="text-sm text-foreground">
-    {formatDate(task.updatedAt, "MM/dd HH:mm")}
+  <span className='text-sm text-foreground'>
+    {formatDate(task.updatedAt, 'MM/dd HH:mm')}
   </span>
 );
 
@@ -258,11 +258,11 @@ export const renderUpdatedAtCell = (task: TaskWithColumn) => (
 export const renderCompletedAtCell = (task: TaskWithColumn) => (
   <div>
     {task.completedAt ? (
-      <span className="text-sm text-foreground">
-        {formatDate(task.completedAt, "MM/dd HH:mm")}
+      <span className='text-sm text-foreground'>
+        {formatDate(task.completedAt, 'MM/dd HH:mm')}
       </span>
     ) : (
-      <span className="text-foreground text-sm">-</span>
+      <span className='text-foreground text-sm'>-</span>
     )}
   </div>
 );
@@ -274,13 +274,13 @@ export const renderDescriptionCell = (task: TaskWithColumn) => (
   <div>
     {task.description ? (
       <span
-        className="block text-xs text-foreground overflow-hidden text-ellipsis whitespace-nowrap max-w-[580px]"
+        className='block text-xs text-foreground overflow-hidden text-ellipsis whitespace-nowrap max-w-[580px]'
         title={stripHtml(task.description)}
       >
         {stripHtml(task.description)}
       </span>
     ) : (
-      <span className="text-foreground text-xs">-</span>
+      <span className='text-foreground text-xs'>-</span>
     )}
   </div>
 );
@@ -291,22 +291,22 @@ export const renderDescriptionCell = (task: TaskWithColumn) => (
 export const renderRecurrenceCell = (task: TaskWithColumn) => (
   <div
     style={{
-      color: "var(--foreground)",
+      color: 'var(--foreground)',
     }}
-    className="flex items-center gap-1"
+    className='flex items-center gap-1'
   >
     {task.recurrence?.enabled ? (
       <>
         <RotateCcw size={12} />
-        <span className="text-sm">
-          {task.recurrence.pattern === "daily" && "毎日"}
-          {task.recurrence.pattern === "weekly" && "毎週"}
-          {task.recurrence.pattern === "monthly" && "毎月"}
-          {task.recurrence.pattern === "yearly" && "毎年"}
+        <span className='text-sm'>
+          {task.recurrence.pattern === 'daily' && '毎日'}
+          {task.recurrence.pattern === 'weekly' && '毎週'}
+          {task.recurrence.pattern === 'monthly' && '毎月'}
+          {task.recurrence.pattern === 'yearly' && '毎年'}
         </span>
       </>
     ) : (
-      <span className="text-foreground text-sm">-</span>
+      <span className='text-foreground text-sm'>-</span>
     )}
   </div>
 );
@@ -315,5 +315,5 @@ export const renderRecurrenceCell = (task: TaskWithColumn) => (
  * デフォルトセルの描画
  */
 export const renderDefaultCell = () => (
-  <span className="text-sm text-foreground">-</span>
+  <span className='text-sm text-foreground'>-</span>
 );

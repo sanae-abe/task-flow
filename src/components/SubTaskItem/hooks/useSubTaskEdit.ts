@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from 'react';
 
 interface UseSubTaskEditOptions {
   initialTitle: string;
@@ -39,10 +39,10 @@ export const useSubTaskEdit = ({
 
   // キーボードイベント処理
   const handleKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key === "Enter") {
+    if (event.key === 'Enter') {
       event.preventDefault();
       saveEdit();
-    } else if (event.key === "Escape") {
+    } else if (event.key === 'Escape') {
       event.preventDefault();
       cancelEdit();
     }

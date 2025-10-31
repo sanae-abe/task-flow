@@ -9,29 +9,29 @@ import {
   List,
   Paperclip,
   MousePointer,
-  FileText
-} from "lucide-react";
+  FileText,
+} from 'lucide-react';
 
-import { Button } from "@/components/ui/button";
-import React, { useEffect, useCallback } from "react";
-import { cn } from "@/lib/utils";
+import { Button } from '@/components/ui/button';
+import React, { useEffect, useCallback } from 'react';
+import { cn } from '@/lib/utils';
 
-import Logo from "./Logo";
+import Logo from './Logo';
 
 // 定数定義
-const SIDEBAR_WIDTH = "440px";
+const SIDEBAR_WIDTH = '440px';
 const SIDEBAR_Z_INDEX = 400;
-const TITLE_MIN_WIDTH = "120px";
+const TITLE_MIN_WIDTH = '120px';
 
 // セクション背景色定数
 const SECTION_COLORS = {
-  PRIMARY_BLUE: "bg-primary",    // ビュー切り替え、タスク管理
-  SUCCESS_GREEN: "bg-success",   // 基本操作、便利なヒント
-  ATTENTION_YELLOW: "bg-warning", // ファイル添付
-  ACCENT_PURPLE: "bg-purple-600",   // カレンダー機能
-  DANGER_RED: "bg-destructive",       // フィルタリング・ソート
-  MUTED_GRAY: "bg-gray-600",     // テンプレート管理
-  SPONSOR_ORANGE: "bg-orange-600",  // データ管理
+  PRIMARY_BLUE: 'bg-primary', // ビュー切り替え、タスク管理
+  SUCCESS_GREEN: 'bg-success', // 基本操作、便利なヒント
+  ATTENTION_YELLOW: 'bg-warning', // ファイル添付
+  ACCENT_PURPLE: 'bg-purple-600', // カレンダー機能
+  DANGER_RED: 'bg-destructive', // フィルタリング・ソート
+  MUTED_GRAY: 'bg-gray-600', // テンプレート管理
+  SPONSOR_ORANGE: 'bg-orange-600', // データ管理
 } as const;
 
 interface HelpSidebarProps {
@@ -53,18 +53,16 @@ const HelpSection: React.FC<HelpSectionProps> = ({
   backgroundClass = SECTION_COLORS.PRIMARY_BLUE,
 }) => (
   <>
-    <div className="flex items-center gap-2 mb-3">
+    <div className='flex items-center gap-2 mb-3'>
       <div
         className={`p-2 flex items-center justify-center rounded-full text-white ${backgroundClass}`}
       >
         <Icon size={14} />
       </div>
-      <h3 className="text-base font-semibold m-0">
-        {title}
-      </h3>
+      <h3 className='text-base font-semibold m-0'>{title}</h3>
     </div>
-    <div className="mb-5 p-3 bg-neutral-100 rounded-md">
-      <div className="pl-0">{children}</div>
+    <div className='mb-5 p-3 bg-neutral-100 rounded-md'>
+      <div className='pl-0'>{children}</div>
     </div>
   </>
 );
@@ -75,34 +73,32 @@ interface HelpItemProps {
 }
 
 const HelpItem: React.FC<HelpItemProps> = ({ title, description }) => (
-  <div className="p-2 flex gap-3 items-start bg-neutral-100 rounded-md">
+  <div className='p-2 flex gap-3 items-start bg-neutral-100 rounded-md'>
     <span
       style={{ minWidth: TITLE_MIN_WIDTH }}
       className={cn(`text-sm font-semibold text-primary shrink-0 break-words`)}
     >
       {title}
     </span>
-    <span className="text-xs leading-6 flex-1">
-      {description}
-    </span>
+    <span className='text-xs leading-6 flex-1'>{description}</span>
   </div>
 );
 
 const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
   const handleEscape = useCallback(
     (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
+      if (event.key === 'Escape') {
         onClose();
       }
     },
-    [onClose],
+    [onClose]
   );
 
   useEffect(() => {
     if (isOpen) {
-      document.addEventListener("keydown", handleEscape);
+      document.addEventListener('keydown', handleEscape);
       return () => {
-        document.removeEventListener("keydown", handleEscape);
+        document.removeEventListener('keydown', handleEscape);
       };
     }
     return undefined;
@@ -114,87 +110,87 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
 
   return (
     <div
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="help-title"
+      role='dialog'
+      aria-modal='true'
+      aria-labelledby='help-title'
       style={{
-        position: "fixed",
+        position: 'fixed',
         top: 0,
         right: 0,
         width: SIDEBAR_WIDTH,
-        height: "100vh",
-        backgroundColor: "var(--background)",
-        boxShadow: "0 16px 32px rgba(0, 0, 0, 0.24)",
-        borderLeft: "1px solid",
-        borderColor: "var(--border)",
+        height: '100vh',
+        backgroundColor: 'var(--background)',
+        boxShadow: '0 16px 32px rgba(0, 0, 0, 0.24)',
+        borderLeft: '1px solid',
+        borderColor: 'var(--border)',
         zIndex: SIDEBAR_Z_INDEX,
-        overflowY: "auto",
+        overflowY: 'auto',
         animation:
-          "sidebar-slide-in-right 250ms cubic-bezier(0.33, 1, 0.68, 1)",
+          'sidebar-slide-in-right 250ms cubic-bezier(0.33, 1, 0.68, 1)',
       }}
     >
-      <div className="flex h-full flex-col">
+      <div className='flex h-full flex-col'>
         {/* Header */}
-        <div className="flex items-start justify-between border-b border-border shrink-0 pt-[17px] pb-4 px-4">
+        <div className='flex items-start justify-between border-b border-border shrink-0 pt-[17px] pb-4 px-4'>
           <h1
-            id="help-title"
-            className="flex items-center gap-2 text-xl font-bold"
+            id='help-title'
+            className='flex items-center gap-2 text-xl font-bold'
           >
             <Logo />
             使い方ガイド
           </h1>
           <Button
             onClick={onClose}
-            variant="ghost"
-            size="sm"
-            aria-label="ヘルプを閉じる"
-            className="shrink-0 p-1 h-auto min-w-0"
+            variant='ghost'
+            size='sm'
+            aria-label='ヘルプを閉じる'
+            className='shrink-0 p-1 h-auto min-w-0'
           >
             <X size={16} />
           </Button>
         </div>
 
         {/* Content */}
-        <div className="flex-1 p-5 overflow-y-auto">
+        <div className='flex-1 p-5 overflow-y-auto'>
           <HelpSection
-            title="ビュー切り替え"
+            title='ビュー切り替え'
             icon={Video}
             backgroundClass={SECTION_COLORS.PRIMARY_BLUE}
           >
             <HelpItem
-              title="カンバンビュー"
-              description="カラム単位でタスクを管理するプロジェクト管理方式"
+              title='カンバンビュー'
+              description='カラム単位でタスクを管理するプロジェクト管理方式'
             />
             <HelpItem
-              title="カレンダービュー"
-              description="期限日ベースでタスクを月次カレンダー表示"
+              title='カレンダービュー'
+              description='期限日ベースでタスクを月次カレンダー表示'
             />
             <HelpItem
-              title="テーブルビュー"
-              description="全タスクを一覧表形式で表示・管理、カラム表示のカスタマイズが可能"
+              title='テーブルビュー'
+              description='全タスクを一覧表形式で表示・管理、カラム表示のカスタマイズが可能'
             />
             <HelpItem
-              title="切り替え方法"
-              description="サブヘッダー右端のメニューからビューを選択"
+              title='切り替え方法'
+              description='サブヘッダー右端のメニューからビューを選択'
             />
           </HelpSection>
 
           <HelpSection
-            title="基本操作"
+            title='基本操作'
             icon={MousePointer}
             backgroundClass={SECTION_COLORS.SUCCESS_GREEN}
           >
             <HelpItem
-              title="ボード作成"
-              description="サブヘッダーの「ボード作成」ボタンでプロジェクトボードを作成"
+              title='ボード作成'
+              description='サブヘッダーの「ボード作成」ボタンでプロジェクトボードを作成'
             />
             <HelpItem
-              title="カラム追加"
-              description="サブヘッダーの「カラムを追加」ボタンで作業段階を追加（カンバンビュー時）"
+              title='カラム追加'
+              description='サブヘッダーの「カラムを追加」ボタンで作業段階を追加（カンバンビュー時）'
             />
             <HelpItem
-              title="タスク作成"
-              description="ヘッダーの「タスク作成」ボタンまたは各カラムの「+」ボタンでタスクを作成"
+              title='タスク作成'
+              description='ヘッダーの「タスク作成」ボタンまたは各カラムの「+」ボタンでタスクを作成'
             />
             <HelpItem
               title={
@@ -204,120 +200,120 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
                   ドロップ
                 </>
               }
-              description="タスクをドラッグしてカラム間を移動（カンバンビューで直感的操作）"
+              description='タスクをドラッグしてカラム間を移動（カンバンビューで直感的操作）'
             />
             <HelpItem
-              title="カラム移動"
-              description="カラムヘッダーのkebabアイコン（⋯）から「左に移動」「右に移動」でカラムの順序変更が可能"
+              title='カラム移動'
+              description='カラムヘッダーのkebabアイコン（⋯）から「左に移動」「右に移動」でカラムの順序変更が可能'
             />
           </HelpSection>
 
           <HelpSection
-            title="タスク管理"
+            title='タスク管理'
             icon={List}
             backgroundClass={SECTION_COLORS.PRIMARY_BLUE}
           >
             <HelpItem
-              title="タスク編集"
-              description="タスクカードをクリックして詳細表示・編集"
+              title='タスク編集'
+              description='タスクカードをクリックして詳細表示・編集'
             />
             <HelpItem
-              title="タスク複製"
-              description="タスク詳細サイドバーの複製ボタンで既存タスクを同じカラムに複製。タイトルに「(コピー)」が付与され、サブタスクも未完了状態で複製される"
+              title='タスク複製'
+              description='タスク詳細サイドバーの複製ボタンで既存タスクを同じカラムに複製。タイトルに「(コピー)」が付与され、サブタスクも未完了状態で複製される'
             />
             <HelpItem
-              title="説明欄エディタ"
-              description="タスク説明欄で太字・斜体・リンク・絵文字などの書式設定が可能"
+              title='説明欄エディタ'
+              description='タスク説明欄で太字・斜体・リンク・絵文字などの書式設定が可能'
             />
             <HelpItem
-              title="完了機能"
-              description="タスク名左のチェックアイコンで即座に完了状態に移動。完了したタスクは完了カラムの一番上に配置される"
+              title='完了機能'
+              description='タスク名左のチェックアイコンで即座に完了状態に移動。完了したタスクは完了カラムの一番上に配置される'
             />
             <HelpItem
-              title="サブタスク"
-              description="タスク詳細画面でチェックリスト形式のサブタスクを管理。ドラッグハンドル（⋮⋮）をドラッグして順序変更が可能"
+              title='サブタスク'
+              description='タスク詳細画面でチェックリスト形式のサブタスクを管理。ドラッグハンドル（⋮⋮）をドラッグして順序変更が可能'
             />
             <HelpItem
-              title="ラベル"
-              description="色付きラベルでタスクを分類・整理"
+              title='ラベル'
+              description='色付きラベルでタスクを分類・整理'
             />
             <HelpItem
-              title="期限・繰り返し設定"
-              description="期限日時の設定と毎日・毎週・毎月・毎年の繰り返しパターンを設定。期限切れタスクは自動警告"
+              title='期限・繰り返し設定'
+              description='期限日時の設定と毎日・毎週・毎月・毎年の繰り返しパターンを設定。期限切れタスクは自動警告'
             />
             <HelpItem
-              title="優先度設定"
-              description="Critical（緊急）・High（高）・Medium（中）・Low（低）の4段階で優先度を設定。優先度によるフィルタリング・ソート機能も利用可能"
+              title='優先度設定'
+              description='Critical（緊急）・High（高）・Medium（中）・Low（低）の4段階で優先度を設定。優先度によるフィルタリング・ソート機能も利用可能'
             />
           </HelpSection>
 
           <HelpSection
-            title="ファイル添付"
+            title='ファイル添付'
             icon={Paperclip}
             backgroundClass={SECTION_COLORS.ATTENTION_YELLOW}
           >
             <HelpItem
-              title="ファイル管理"
-              description="ドラッグ&ドロップでファイル添付、画像・テキストのプレビュー表示、ダウンロード機能"
+              title='ファイル管理'
+              description='ドラッグ&ドロップでファイル添付、画像・テキストのプレビュー表示、ダウンロード機能'
             />
           </HelpSection>
 
           <HelpSection
-            title="カレンダー機能"
+            title='カレンダー機能'
             icon={Calendar}
             backgroundClass={SECTION_COLORS.ACCENT_PURPLE}
           >
             <HelpItem
-              title="月次表示"
-              description="期限日のあるタスクを月単位のカレンダーで表示、タスクをクリックして詳細確認・編集"
+              title='月次表示'
+              description='期限日のあるタスクを月単位のカレンダーで表示、タスクをクリックして詳細確認・編集'
             />
           </HelpSection>
 
           <HelpSection
-            title="フィルタリング・ソート"
+            title='フィルタリング・ソート'
             icon={Filter}
             backgroundClass={SECTION_COLORS.DANGER_RED}
           >
             <HelpItem
-              title="絞り込み・並び替え"
-              description="期限・ラベル・優先度・完了状態でフィルタ、作成日・更新日・期限・名前・優先度順でソート可能"
+              title='絞り込み・並び替え'
+              description='期限・ラベル・優先度・完了状態でフィルタ、作成日・更新日・期限・名前・優先度順でソート可能'
             />
           </HelpSection>
 
           <HelpSection
-            title="テンプレート管理"
+            title='テンプレート管理'
             icon={FileText}
             backgroundClass={SECTION_COLORS.MUTED_GRAY}
           >
             <HelpItem
-              title="テンプレート機能"
-              description="よく使うタスクパターンをテンプレートとして保存・管理。カテゴリー分類、お気に入り登録、検索機能で効率的に活用"
+              title='テンプレート機能'
+              description='よく使うタスクパターンをテンプレートとして保存・管理。カテゴリー分類、お気に入り登録、検索機能で効率的に活用'
             />
           </HelpSection>
 
           <HelpSection
-            title="テーブルビュー"
+            title='テーブルビュー'
             icon={Table}
             backgroundClass={SECTION_COLORS.PRIMARY_BLUE}
           >
             <HelpItem
-              title="カラム管理"
-              description="右上の設定ボタンから表示項目をカスタマイズ、タスク数・進捗状況を一覧表示"
+              title='カラム管理'
+              description='右上の設定ボタンから表示項目をカスタマイズ、タスク数・進捗状況を一覧表示'
             />
           </HelpSection>
 
           <HelpSection
-            title="データ管理"
+            title='データ管理'
             icon={Database}
             backgroundClass={SECTION_COLORS.SPONSOR_ORANGE}
           >
             <HelpItem
-              title="ローカル保存"
-              description="すべてのデータはブラウザに自動保存"
+              title='ローカル保存'
+              description='すべてのデータはブラウザに自動保存'
             />
             <HelpItem
-              title="データインポート"
-              description="JSONファイルでデータの一括インポート。インポート結果・エラー情報は設定画面上部にメッセージで表示"
+              title='データインポート'
+              description='JSONファイルでデータの一括インポート。インポート結果・エラー情報は設定画面上部にメッセージで表示'
             />
             <HelpItem
               title={
@@ -327,11 +323,11 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
                   エクスポート
                 </>
               }
-              description="設定画面のデータ管理から、任意のボードを選択してJSONファイルとしてエクスポート"
+              description='設定画面のデータ管理から、任意のボードを選択してJSONファイルとしてエクスポート'
             />
             <HelpItem
-              title="ラベル管理"
-              description="設定画面のラベル管理で全ボードのラベルを一覧表示。ラベル名・所属ボード・使用数でソート可能、新しいラベルの作成・編集・削除が可能。操作結果は設定画面上部にメッセージで表示"
+              title='ラベル管理'
+              description='設定画面のラベル管理で全ボードのラベルを一覧表示。ラベル名・所属ボード・使用数でソート可能、新しいラベルの作成・編集・削除が可能。操作結果は設定画面上部にメッセージで表示'
             />
             <HelpItem
               title={
@@ -341,30 +337,30 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
                   カラム設定
                 </>
               }
-              description="設定画面のカンバン設定で、新しいボード作成時に使用されるデフォルトカラムを設定。カラム名の編集・追加・削除・順序変更（ドラッグ&ドロップ対応）が可能"
+              description='設定画面のカンバン設定で、新しいボード作成時に使用されるデフォルトカラムを設定。カラム名の編集・追加・削除・順序変更（ドラッグ&ドロップ対応）が可能'
             />
             <HelpItem
-              title="管理機能"
-              description="ごみ箱でのタスク復元、完了タスククリア、テンプレートのバックアップ・復元が可能"
+              title='管理機能'
+              description='ごみ箱でのタスク復元、完了タスククリア、テンプレートのバックアップ・復元が可能'
             />
           </HelpSection>
 
           <HelpSection
-            title="便利なヒント"
+            title='便利なヒント'
             icon={Info}
             backgroundClass={SECTION_COLORS.SUCCESS_GREEN}
           >
             <HelpItem
-              title="キーボード操作"
-              description="Escapeキーでダイアログやサイドバーを閉じる"
+              title='キーボード操作'
+              description='Escapeキーでダイアログやサイドバーを閉じる'
             />
             <HelpItem
-              title="オフライン対応"
-              description="データはブラウザに保存されオフラインでも使用可能"
+              title='オフライン対応'
+              description='データはブラウザに保存されオフラインでも使用可能'
             />
             <HelpItem
-              title="効率化のコツ"
-              description="テンプレート機能、タスク複製、優先度フィルターを活用して作業効率をアップ"
+              title='効率化のコツ'
+              description='テンプレート機能、タスク複製、優先度フィルターを活用して作業効率をアップ'
             />
           </HelpSection>
         </div>

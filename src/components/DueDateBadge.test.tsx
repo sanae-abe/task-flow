@@ -3,15 +3,15 @@
  * 期限バッジコンポーネントの包括的テスト
  */
 
-import { describe, it, expect, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
-import '@testing-library/jest-dom'
-import DueDateBadge from './DueDateBadge'
-import { DueDateBadgeProps } from '../types/date'
+import { describe, it, expect, vi } from 'vitest';
+import { render, screen } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import DueDateBadge from './DueDateBadge';
+import { DueDateBadgeProps } from '../types/date';
 
 describe('DueDateBadge', () => {
-  const mockDueDate = new Date('2025-01-15T10:00:00.000Z')
-  const mockFormatDueDate = vi.fn((_date: Date) => '2025/01/15')
+  const mockDueDate = new Date('2025-01-15T10:00:00.000Z');
+  const mockFormatDueDate = vi.fn((_date: Date) => '2025/01/15');
 
   const defaultProps: DueDateBadgeProps = {
     dueDate: mockDueDate,
@@ -20,19 +20,19 @@ describe('DueDateBadge', () => {
     isDueTomorrow: vi.fn(() => false),
     formatDueDate: mockFormatDueDate,
     isRecurrence: false,
-  }
+  };
 
   describe('Basic rendering', () => {
     it('should render due date with formatted text', () => {
-      render(<DueDateBadge {...defaultProps} />)
+      render(<DueDateBadge {...defaultProps} />);
 
-      expect(screen.getByText('期限: 2025/01/15')).toBeInTheDocument()
-      expect(mockFormatDueDate).toHaveBeenCalledWith(mockDueDate)
-    })
+      expect(screen.getByText('期限: 2025/01/15')).toBeInTheDocument();
+      expect(mockFormatDueDate).toHaveBeenCalledWith(mockDueDate);
+    });
 
     it('should call formatDueDate with correct date', () => {
-      const customDate = new Date('2025-12-25T15:30:00.000Z')
-      const customFormatDueDate = vi.fn((_date: Date) => '2025/12/25')
+      const customDate = new Date('2025-12-25T15:30:00.000Z');
+      const customFormatDueDate = vi.fn((_date: Date) => '2025/12/25');
 
       render(
         <DueDateBadge
@@ -40,11 +40,11 @@ describe('DueDateBadge', () => {
           dueDate={customDate}
           formatDueDate={customFormatDueDate}
         />
-      )
+      );
 
-      expect(customFormatDueDate).toHaveBeenCalledWith(customDate)
-    })
-  })
+      expect(customFormatDueDate).toHaveBeenCalledWith(customDate);
+    });
+  });
 
   describe('Variant selection based on date status', () => {
     it('should use danger variant when overdue', () => {
@@ -53,14 +53,14 @@ describe('DueDateBadge', () => {
         isOverdue: vi.fn(() => true),
         isDueToday: vi.fn(() => false),
         isDueTomorrow: vi.fn(() => false),
-      }
+      };
 
-      render(<DueDateBadge {...overdueProps} />)
+      render(<DueDateBadge {...overdueProps} />);
 
       // StatusBadgeがdangerバリアント（赤色）でレンダリングされることを確認
-      const badge = screen.getByText('期限: 2025/01/15').closest('div')
-      expect(badge).toHaveStyle({ color: '#d1242f' })
-    })
+      const badge = screen.getByText('期限: 2025/01/15').closest('div');
+      expect(badge).toHaveStyle({ color: '#d1242f' });
+    });
 
     it('should use warning variant when due today', () => {
       const todayProps = {
@@ -68,14 +68,14 @@ describe('DueDateBadge', () => {
         isOverdue: vi.fn(() => false),
         isDueToday: vi.fn(() => true),
         isDueTomorrow: vi.fn(() => false),
-      }
+      };
 
-      render(<DueDateBadge {...todayProps} />)
+      render(<DueDateBadge {...todayProps} />);
 
       // StatusBadgeがwarningバリアント（黄色）でレンダリングされることを確認
-      const badge = screen.getByText('期限: 2025/01/15').closest('div')
-      expect(badge).toHaveStyle({ color: '#9a6700' })
-    })
+      const badge = screen.getByText('期限: 2025/01/15').closest('div');
+      expect(badge).toHaveStyle({ color: '#9a6700' });
+    });
 
     it('should use info variant when due tomorrow', () => {
       const tomorrowProps = {
@@ -83,14 +83,14 @@ describe('DueDateBadge', () => {
         isOverdue: vi.fn(() => false),
         isDueToday: vi.fn(() => false),
         isDueTomorrow: vi.fn(() => true),
-      }
+      };
 
-      render(<DueDateBadge {...tomorrowProps} />)
+      render(<DueDateBadge {...tomorrowProps} />);
 
       // StatusBadgeがinfoバリアント（青色）でレンダリングされることを確認
-      const badge = screen.getByText('期限: 2025/01/15').closest('div')
-      expect(badge).toHaveStyle({ color: '#0969da' })
-    })
+      const badge = screen.getByText('期限: 2025/01/15').closest('div');
+      expect(badge).toHaveStyle({ color: '#0969da' });
+    });
 
     it('should use neutral variant for normal dates', () => {
       const neutralProps = {
@@ -98,15 +98,15 @@ describe('DueDateBadge', () => {
         isOverdue: vi.fn(() => false),
         isDueToday: vi.fn(() => false),
         isDueTomorrow: vi.fn(() => false),
-      }
+      };
 
-      render(<DueDateBadge {...neutralProps} />)
+      render(<DueDateBadge {...neutralProps} />);
 
       // StatusBadgeがneutralバリアント（グレー）でレンダリングされることを確認
-      const badge = screen.getByText('期限: 2025/01/15').closest('div')
-      expect(badge).toHaveStyle({ color: '#656d76' })
-    })
-  })
+      const badge = screen.getByText('期限: 2025/01/15').closest('div');
+      expect(badge).toHaveStyle({ color: '#656d76' });
+    });
+  });
 
   describe('Variant priority (overdue has highest priority)', () => {
     it('should prioritize overdue over today', () => {
@@ -115,14 +115,14 @@ describe('DueDateBadge', () => {
         isOverdue: vi.fn(() => true),
         isDueToday: vi.fn(() => true),
         isDueTomorrow: vi.fn(() => false),
-      }
+      };
 
-      render(<DueDateBadge {...overdueAndTodayProps} />)
+      render(<DueDateBadge {...overdueAndTodayProps} />);
 
       // overdueが優先されてdangerバリアント（赤色）になることを確認
-      const badge = screen.getByText('期限: 2025/01/15').closest('div')
-      expect(badge).toHaveStyle({ color: '#d1242f' })
-    })
+      const badge = screen.getByText('期限: 2025/01/15').closest('div');
+      expect(badge).toHaveStyle({ color: '#d1242f' });
+    });
 
     it('should prioritize today over tomorrow', () => {
       const todayAndTomorrowProps = {
@@ -130,46 +130,50 @@ describe('DueDateBadge', () => {
         isOverdue: vi.fn(() => false),
         isDueToday: vi.fn(() => true),
         isDueTomorrow: vi.fn(() => true),
-      }
+      };
 
-      render(<DueDateBadge {...todayAndTomorrowProps} />)
+      render(<DueDateBadge {...todayAndTomorrowProps} />);
 
       // todayが優先されてwarningバリアント（黄色）になることを確認
-      const badge = screen.getByText('期限: 2025/01/15').closest('div')
-      expect(badge).toHaveStyle({ color: '#9a6700' })
-    })
-  })
+      const badge = screen.getByText('期限: 2025/01/15').closest('div');
+      expect(badge).toHaveStyle({ color: '#9a6700' });
+    });
+  });
 
   describe('Recurrence icon display', () => {
     it('should show recurrence icon when isRecurrence is true', () => {
-      render(<DueDateBadge {...defaultProps} isRecurrence />)
+      render(<DueDateBadge {...defaultProps} isRecurrence />);
 
       // RotateCcwアイコン（SVG要素）がレンダリングされていることを確認
-      const badgeContainer = screen.getByText('期限: 2025/01/15').closest('div')
-      const icon = badgeContainer?.querySelector('svg')
-      expect(icon).toBeInTheDocument()
-    })
+      const badgeContainer = screen
+        .getByText('期限: 2025/01/15')
+        .closest('div');
+      const icon = badgeContainer?.querySelector('svg');
+      expect(icon).toBeInTheDocument();
+    });
 
     it('should not show recurrence icon when isRecurrence is false', () => {
-      render(<DueDateBadge {...defaultProps} isRecurrence={false} />)
+      render(<DueDateBadge {...defaultProps} isRecurrence={false} />);
 
       // RotateCcwアイコンがレンダリングされていないことを確認
-      const icon = document.querySelector('[data-lucide="rotate-ccw"]') ||
-                   document.querySelector('svg[data-testid="rotate-ccw-icon"]')
+      const icon =
+        document.querySelector('[data-lucide="rotate-ccw"]') ||
+        document.querySelector('svg[data-testid="rotate-ccw-icon"]');
 
-      expect(icon).not.toBeInTheDocument()
-    })
+      expect(icon).not.toBeInTheDocument();
+    });
 
     it('should not show recurrence icon by default', () => {
-      render(<DueDateBadge {...defaultProps} />)
+      render(<DueDateBadge {...defaultProps} />);
 
       // isRecurrence未指定時はアイコンが表示されないことを確認
-      const icon = document.querySelector('[data-lucide="rotate-ccw"]') ||
-                   document.querySelector('svg[data-testid="rotate-ccw-icon"]')
+      const icon =
+        document.querySelector('[data-lucide="rotate-ccw"]') ||
+        document.querySelector('svg[data-testid="rotate-ccw-icon"]');
 
-      expect(icon).not.toBeInTheDocument()
-    })
-  })
+      expect(icon).not.toBeInTheDocument();
+    });
+  });
 
   describe('Function calls', () => {
     it('should call status check functions for variant determination', () => {
@@ -178,14 +182,14 @@ describe('DueDateBadge', () => {
         isOverdue: vi.fn(() => false),
         isDueToday: vi.fn(() => false),
         isDueTomorrow: vi.fn(() => false),
-      }
+      };
 
-      render(<DueDateBadge {...spyProps} />)
+      render(<DueDateBadge {...spyProps} />);
 
-      expect(spyProps.isOverdue).toHaveBeenCalled()
-      expect(spyProps.isDueToday).toHaveBeenCalled()
-      expect(spyProps.isDueTomorrow).toHaveBeenCalled()
-    })
+      expect(spyProps.isOverdue).toHaveBeenCalled();
+      expect(spyProps.isDueToday).toHaveBeenCalled();
+      expect(spyProps.isDueTomorrow).toHaveBeenCalled();
+    });
 
     it('should stop checking after finding overdue', () => {
       const spyProps = {
@@ -193,56 +197,60 @@ describe('DueDateBadge', () => {
         isOverdue: vi.fn(() => true),
         isDueToday: vi.fn(() => true),
         isDueTomorrow: vi.fn(() => true),
-      }
+      };
 
-      render(<DueDateBadge {...spyProps} />)
+      render(<DueDateBadge {...spyProps} />);
 
-      expect(spyProps.isOverdue).toHaveBeenCalled()
+      expect(spyProps.isOverdue).toHaveBeenCalled();
       // overdueが真の場合、残りの関数は呼ばれない
-      expect(spyProps.isDueToday).not.toHaveBeenCalled()
-      expect(spyProps.isDueTomorrow).not.toHaveBeenCalled()
-    })
-  })
+      expect(spyProps.isDueToday).not.toHaveBeenCalled();
+      expect(spyProps.isDueTomorrow).not.toHaveBeenCalled();
+    });
+  });
 
   describe('CSS classes and styling', () => {
     it('should apply correct StatusBadge props', () => {
-      render(<DueDateBadge {...defaultProps} />)
+      render(<DueDateBadge {...defaultProps} />);
 
-      const badgeElement = screen.getByText('期限: 2025/01/15').closest('[class*="border-0"]')
-      expect(badgeElement).toBeInTheDocument()
+      const badgeElement = screen
+        .getByText('期限: 2025/01/15')
+        .closest('[class*="border-0"]');
+      expect(badgeElement).toBeInTheDocument();
 
-      const transparentBadge = screen.getByText('期限: 2025/01/15').closest('[class*="bg-transparent"]')
-      expect(transparentBadge).toBeInTheDocument()
-    })
-  })
+      const transparentBadge = screen
+        .getByText('期限: 2025/01/15')
+        .closest('[class*="bg-transparent"]');
+      expect(transparentBadge).toBeInTheDocument();
+    });
+  });
 
   describe('Date formatting edge cases', () => {
     it('should handle different date formats', () => {
-      const customFormatDueDate = vi.fn((date: Date) => date.toLocaleDateString())
+      const customFormatDueDate = vi.fn((date: Date) =>
+        date.toLocaleDateString()
+      );
 
       render(
-        <DueDateBadge
-          {...defaultProps}
-          formatDueDate={customFormatDueDate}
-        />
-      )
+        <DueDateBadge {...defaultProps} formatDueDate={customFormatDueDate} />
+      );
 
-      expect(customFormatDueDate).toHaveBeenCalledWith(mockDueDate)
-      expect(screen.getByText(`期限: ${mockDueDate.toLocaleDateString()}`)).toBeInTheDocument()
-    })
+      expect(customFormatDueDate).toHaveBeenCalledWith(mockDueDate);
+      expect(
+        screen.getByText(`期限: ${mockDueDate.toLocaleDateString()}`)
+      ).toBeInTheDocument();
+    });
 
     it('should handle empty or null formatted dates gracefully', () => {
-      const emptyFormatDueDate = vi.fn(() => '')
+      const emptyFormatDueDate = vi.fn(() => '');
 
       render(
-        <DueDateBadge
-          {...defaultProps}
-          formatDueDate={emptyFormatDueDate}
-        />
-      )
+        <DueDateBadge {...defaultProps} formatDueDate={emptyFormatDueDate} />
+      );
 
       // 空文字列でも期限テキストが表示されることを確認（部分一致）
-      expect(screen.getByText((content, _element) => content.includes('期限:'))).toBeInTheDocument()
-    })
-  })
-})
+      expect(
+        screen.getByText((content, _element) => content.includes('期限:'))
+      ).toBeInTheDocument();
+    });
+  });
+});

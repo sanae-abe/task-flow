@@ -1,10 +1,10 @@
-import { X } from "lucide-react";
-import { memo, useCallback, useMemo } from "react";
-import { cn } from "@/lib/utils";
+import { X } from 'lucide-react';
+import { memo, useCallback, useMemo } from 'react';
+import { cn } from '@/lib/utils';
 
-import type { Label } from "../types";
-import { getLabelColors } from "../utils/labelHelpers";
-import IconButton from "./shared/IconButton";
+import type { Label } from '../types';
+import { getLabelColors } from '../utils/labelHelpers';
+import IconButton from './shared/IconButton';
 
 interface LabelChipProps {
   label: Label;
@@ -35,13 +35,13 @@ const LabelChip = memo<LabelChipProps>(
         if (
           clickable &&
           onClick &&
-          (event.key === "Enter" || event.key === " ")
+          (event.key === 'Enter' || event.key === ' ')
         ) {
           event.preventDefault();
           onClick();
         }
       },
-      [clickable, onClick],
+      [clickable, onClick]
     );
 
     // スタイルオブジェクトをメモ化してパフォーマンス向上
@@ -50,51 +50,51 @@ const LabelChip = memo<LabelChipProps>(
         backgroundColor: colors.bg,
         color: colors.color,
       }),
-      [colors.bg, colors.color],
+      [colors.bg, colors.color]
     );
 
     const removeButtonStyles = useMemo(
       () => ({
         color: colors.color,
-        "&:hover": {
-          bg: "rgba(0, 0, 0, 0.1)",
+        '&:hover': {
+          bg: 'rgba(0, 0, 0, 0.1)',
           color: colors.color,
         },
       }),
-      [colors.color],
+      [colors.color]
     );
 
-    const Element = clickable ? "button" : "div";
+    const Element = clickable ? 'button' : 'div';
 
     return (
       <Element
         onClick={handleClick}
         onKeyDown={handleKeyDown}
         tabIndex={clickable ? 0 : undefined}
-        role={clickable ? "button" : undefined}
+        role={clickable ? 'button' : undefined}
         aria-label={clickable ? `${label.name}ラベル` : undefined}
         className={cn(
-          "inline-flex items-center px-2 py-1 rounded text-xs font-normal border-none outline-none",
+          'inline-flex items-center px-2 py-1 rounded text-xs font-normal border-none outline-none',
           clickable
-            ? "cursor-pointer hover:opacity-80 hover:scale-[1.02] focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500 focus-visible:outline-offset-2 transition-all duration-150"
-            : "cursor-default"
+            ? 'cursor-pointer hover:opacity-80 hover:scale-[1.02] focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500 focus-visible:outline-offset-2 transition-all duration-150'
+            : 'cursor-default'
         )}
         style={chipStyle}
       >
-        <span className="text-xs">{label.name}</span>
+        <span className='text-xs'>{label.name}</span>
         {showRemove && onRemove && (
           <IconButton
             icon={X}
             onClick={handleRemove}
             ariaLabel={`${label.name}ラベルを削除`}
-            size="small"
+            size='small'
             style={removeButtonStyles}
-            className="h-4 w-4 p-0 hover:bg-transparent"
+            className='h-4 w-4 p-0 hover:bg-transparent'
           />
         )}
       </Element>
     );
-  },
+  }
 );
 
 export default LabelChip;

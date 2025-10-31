@@ -11,7 +11,9 @@ export const useLinkManagement = (
   const [showLinkDialog, setShowLinkDialog] = useState(false);
   const [selectedText, setSelectedText] = useState('');
   const [savedRange, setSavedRange] = useState<Range | null>(null);
-  const [editingLink, setEditingLink] = useState<HTMLAnchorElement | null>(null);
+  const [editingLink, setEditingLink] = useState<HTMLAnchorElement | null>(
+    null
+  );
   const [showLinkEditDialog, setShowLinkEditDialog] = useState(false);
 
   const insertLink = useCallback(() => {
@@ -32,50 +34,56 @@ export const useLinkManagement = (
     setShowLinkDialog(true);
   }, []);
 
-  const handleLinkInsert = useCallback((url: string, linkText?: string) => {
-    if (editorRef.current) {
-      editorRef.current.focus();
+  const handleLinkInsert = useCallback(
+    (url: string, linkText?: string) => {
+      if (editorRef.current) {
+        editorRef.current.focus();
 
-      // 保存されたカーソル位置を復元
-      if (savedRange) {
-        const selection = window.getSelection();
-        if (selection) {
-          selection.removeAllRanges();
-          selection.addRange(savedRange);
+        // 保存されたカーソル位置を復元
+        if (savedRange) {
+          const selection = window.getSelection();
+          if (selection) {
+            selection.removeAllRanges();
+            selection.addRange(savedRange);
+          }
         }
-      }
 
-      if (selectedText) {
-        // 選択されたテキストがある場合はそれをリンクに変換
-        const linkHtml = `<a href="${url}" target="_blank" rel="noopener noreferrer">${linkText || selectedText}</a>`;
-        insertHtmlAtCursor(linkHtml);
-      } else {
-        // 選択がない場合は新しいリンクを挿入
-        const linkHtml = `<a href="${url}" target="_blank" rel="noopener noreferrer">${linkText || url}</a>`;
-        insertHtmlAtCursor(linkHtml);
-      }
+        if (selectedText) {
+          // 選択されたテキストがある場合はそれをリンクに変換
+          const linkHtml = `<a href="${url}" target="_blank" rel="noopener noreferrer">${linkText || selectedText}</a>`;
+          insertHtmlAtCursor(linkHtml);
+        } else {
+          // 選択がない場合は新しいリンクを挿入
+          const linkHtml = `<a href="${url}" target="_blank" rel="noopener noreferrer">${linkText || url}</a>`;
+          insertHtmlAtCursor(linkHtml);
+        }
 
-      handleInput();
-    }
-    setShowLinkDialog(false);
-    setSelectedText('');
-    setSavedRange(null);
-  }, [selectedText, savedRange, handleInput, editorRef]);
+        handleInput();
+      }
+      setShowLinkDialog(false);
+      setSelectedText('');
+      setSavedRange(null);
+    },
+    [selectedText, savedRange, handleInput, editorRef]
+  );
 
   // リンク編集用の関数
-  const handleLinkEdit = useCallback((url: string, linkText?: string) => {
-    if (editingLink && editorRef.current) {
-      editorRef.current.focus();
+  const handleLinkEdit = useCallback(
+    (url: string, linkText?: string) => {
+      if (editingLink && editorRef.current) {
+        editorRef.current.focus();
 
-      // リンクの内容を更新
-      editingLink.href = url.startsWith('http') ? url : `https://${url}`;
-      editingLink.textContent = linkText || url;
+        // リンクの内容を更新
+        editingLink.href = url.startsWith('http') ? url : `https://${url}`;
+        editingLink.textContent = linkText || url;
 
-      handleInput();
-    }
-    setShowLinkEditDialog(false);
-    setEditingLink(null);
-  }, [editingLink, handleInput, editorRef]);
+        handleInput();
+      }
+      setShowLinkEditDialog(false);
+      setEditingLink(null);
+    },
+    [editingLink, handleInput, editorRef]
+  );
 
   // リンククリックハンドラ
   const handleLinkClick = useCallback((e: React.MouseEvent) => {

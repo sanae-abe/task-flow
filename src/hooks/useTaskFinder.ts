@@ -1,26 +1,26 @@
-import { useMemo } from "react";
+import { useMemo } from 'react';
 
-import type { Task, KanbanBoard } from "../types";
+import type { Task, KanbanBoard } from '../types';
 
 interface UseTaskFinderReturn {
   findTaskById: (taskId: string) => Task | null;
   findTaskColumnId: (taskId: string) => string | null;
   findTaskWithColumn: (
-    taskId: string,
+    taskId: string
   ) => { task: Task; columnId: string } | null;
 }
 
 export const useTaskFinder = (board: KanbanBoard | null): UseTaskFinderReturn =>
   useMemo(() => {
     const findTaskWithColumn = (
-      taskId: string,
+      taskId: string
     ): { task: Task; columnId: string } | null => {
       if (!board) {
         return null;
       }
 
       for (const column of board.columns) {
-        const task = column.tasks.find((task) => task.id === taskId);
+        const task = column.tasks.find(task => task.id === taskId);
         if (task) {
           return { task, columnId: column.id };
         }

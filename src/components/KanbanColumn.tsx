@@ -1,30 +1,30 @@
-import { useDroppable } from "@dnd-kit/core";
+import { useDroppable } from '@dnd-kit/core';
 import {
   SortableContext,
   verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import React, { useMemo, useCallback } from "react";
+} from '@dnd-kit/sortable';
+import React, { useMemo, useCallback } from 'react';
 
-import { useUI } from "../contexts/UIContext";
-import { useBoard } from "../contexts/BoardContext";
-import { useColumnState } from "../hooks/useColumnState";
-import type { Column, Task } from "../types";
-import { sortTasks } from "../utils/taskSort";
-import { filterTasks } from "../utils/taskFilter";
+import { useUI } from '../contexts/UIContext';
+import { useBoard } from '../contexts/BoardContext';
+import { useColumnState } from '../hooks/useColumnState';
+import type { Column, Task } from '../types';
+import { sortTasks } from '../utils/taskSort';
+import { filterTasks } from '../utils/taskFilter';
 
-import ColumnEditDialog from "./ColumnEditDialog";
-import ColumnHeader from "./ColumnHeader";
-import ConfirmDialog from "./ConfirmDialog";
-import DropIndicator from "./DropIndicator";
-import TaskCard from "./TaskCard";
+import ColumnEditDialog from './ColumnEditDialog';
+import ColumnHeader from './ColumnHeader';
+import ConfirmDialog from './ConfirmDialog';
+import DropIndicator from './DropIndicator';
+import TaskCard from './TaskCard';
 
 const COLUMN_CONFIG = {
-  WIDTH: "320px",
-  MIN_HEIGHT: "calc(100vh - 97px - 48px)", // ヘッダーとフッターの高さとpaddingBlockを考慮
-  PADDING_BOTTOM: "100px", // 下に100pxの余白を追加
-  TASK_LIST_MIN_HEIGHT: "calc(100vh - 97px - 48px -40px)", // ヘッダーとフッターとカラムヘッダーの高さとpaddingBlockを考慮
-  HORIZONTAL_PADDING: "8px",
-  TASK_GAP: "16px",
+  WIDTH: '320px',
+  MIN_HEIGHT: 'calc(100vh - 97px - 48px)', // ヘッダーとフッターの高さとpaddingBlockを考慮
+  PADDING_BOTTOM: '100px', // 下に100pxの余白を追加
+  TASK_LIST_MIN_HEIGHT: 'calc(100vh - 97px - 48px -40px)', // ヘッダーとフッターとカラムヘッダーの高さとpaddingBlockを考慮
+  HORIZONTAL_PADDING: '8px',
+  TASK_GAP: '16px',
 } as const;
 
 const COLUMN_STYLES = {
@@ -34,24 +34,24 @@ const COLUMN_STYLES = {
     width: COLUMN_CONFIG.WIDTH,
     flexShrink: 0,
     minHeight: COLUMN_CONFIG.MIN_HEIGHT,
-    backgroundColor: "transparent",
+    backgroundColor: 'transparent',
     paddingTop: 0,
     paddingBottom: 0, // ドロップエリア拡張のためpadding-bottomを削除
     paddingLeft: COLUMN_CONFIG.HORIZONTAL_PADDING,
     paddingRight: COLUMN_CONFIG.HORIZONTAL_PADDING,
-    overflow: "hidden",
-    display: "flex",
-    flexDirection: "column",
-    contain: "layout style", // レンダリング最適化
+    overflow: 'hidden',
+    display: 'flex',
+    flexDirection: 'column',
+    contain: 'layout style', // レンダリング最適化
   },
   taskList: {
     minHeight: COLUMN_CONFIG.TASK_LIST_MIN_HEIGHT,
-    display: "flex",
-    flexDirection: "column",
+    display: 'flex',
+    flexDirection: 'column',
     gap: COLUMN_CONFIG.TASK_GAP,
     flex: 1, // 残り空間を最大限活用
-    contain: "layout style", // レンダリング最適化
-    willChange: "contents", // タスクの追加・削除・移動を最適化
+    contain: 'layout style', // レンダリング最適化
+    willChange: 'contents', // タスクの追加・削除・移動を最適化
   },
 } as const;
 
@@ -96,7 +96,7 @@ const ColumnDialogs: React.FC<ColumnDialogsProps> = ({
 
     <ConfirmDialog
       isOpen={showDeleteConfirm}
-      title="カラムを削除"
+      title='カラムを削除'
       message={`「${column.title}」カラムを削除しますか？このカラム内のすべてのタスクも削除されます。`}
       onConfirm={onConfirmDeleteColumn}
       onCancel={onCancelDeleteColumn}
@@ -127,7 +127,7 @@ const KanbanColumn: React.FC<KanbanColumnProps> = React.memo(
     const { sortedTasks, taskIds } = useMemo(() => {
       const filteredTasks = filterTasks(column.tasks, taskFilter);
       const sortedTasks = sortTasks(filteredTasks, sortOption);
-      const taskIds = sortedTasks.map((task) => task.id);
+      const taskIds = sortedTasks.map(task => task.id);
       return { sortedTasks, taskIds };
     }, [column.tasks, taskFilter, sortOption]);
 
@@ -137,11 +137,11 @@ const KanbanColumn: React.FC<KanbanColumnProps> = React.memo(
 
     // カラム移動のハンドラー
     const handleMoveLeft = useCallback(() => {
-      moveColumn(column.id, "left");
+      moveColumn(column.id, 'left');
     }, [moveColumn, column.id]);
 
     const handleMoveRight = useCallback(() => {
-      moveColumn(column.id, "right");
+      moveColumn(column.id, 'right');
     }, [moveColumn, column.id]);
 
     // 移動可能かどうかの判定
@@ -169,7 +169,7 @@ const KanbanColumn: React.FC<KanbanColumnProps> = React.memo(
             {/* カラムが空の場合のドロップインジケーター */}
             {sortedTasks.length === 0 && <DropIndicator isVisible={isOver} />}
 
-            {sortedTasks.map((task) => (
+            {sortedTasks.map(task => (
               <TaskCard
                 key={task.id}
                 task={task}
@@ -181,9 +181,7 @@ const KanbanColumn: React.FC<KanbanColumnProps> = React.memo(
 
             {/* カラムの一番下のドロップエリア - 残り空間を最大活用 */}
             {sortedTasks.length > 0 && (
-              <div
-                className="flex-1 min-h-[200px] h-auto flex items-center justify-center rounded-sm mt-2 mb-[100px]"
-              />
+              <div className='flex-1 min-h-[200px] h-auto flex items-center justify-center rounded-sm mt-2 mb-[100px]' />
             )}
           </SortableContext>
         </div>
@@ -199,9 +197,9 @@ const KanbanColumn: React.FC<KanbanColumnProps> = React.memo(
         />
       </div>
     );
-  },
+  }
 );
 
-KanbanColumn.displayName = "KanbanColumn";
+KanbanColumn.displayName = 'KanbanColumn';
 
 export default KanbanColumn;

@@ -1,4 +1,4 @@
-import type { Task, TaskFilter } from "../types";
+import type { Task, TaskFilter } from '../types';
 
 /**
  * タスクフィルタリング関数
@@ -6,9 +6,9 @@ import type { Task, TaskFilter } from "../types";
  */
 export const filterTasks = (tasks: Task[], filter: TaskFilter): Task[] => {
   // 最初に削除されたタスクを除外（ゴミ箱のタスクは表示しない）
-  const activeTasks = tasks.filter((task) => task.deletionState !== "deleted");
+  const activeTasks = tasks.filter(task => task.deletionState !== 'deleted');
 
-  if (filter.type === "all") {
+  if (filter.type === 'all') {
     return activeTasks;
   }
 
@@ -19,8 +19,8 @@ export const filterTasks = (tasks: Task[], filter: TaskFilter): Task[] => {
   threeDaysFromNow.setDate(today.getDate() + 3);
 
   switch (filter.type) {
-    case "due-within-3-days": {
-      return activeTasks.filter((task) => {
+    case 'due-within-3-days': {
+      return activeTasks.filter(task => {
         if (!task.dueDate) {
           return false;
         }
@@ -30,8 +30,8 @@ export const filterTasks = (tasks: Task[], filter: TaskFilter): Task[] => {
       });
     }
 
-    case "due-today": {
-      return activeTasks.filter((task) => {
+    case 'due-today': {
+      return activeTasks.filter(task => {
         if (!task.dueDate) {
           return false;
         }
@@ -41,8 +41,8 @@ export const filterTasks = (tasks: Task[], filter: TaskFilter): Task[] => {
       });
     }
 
-    case "overdue": {
-      return activeTasks.filter((task) => {
+    case 'overdue': {
+      return activeTasks.filter(task => {
         if (!task.dueDate) {
           return false;
         }
@@ -52,37 +52,33 @@ export const filterTasks = (tasks: Task[], filter: TaskFilter): Task[] => {
       });
     }
 
-    case "label": {
+    case 'label': {
       // ラベル名ベースのフィルタリングを優先し、IDベースもサポート
       if (filter.selectedLabelNames && filter.selectedLabelNames.length > 0) {
-        return activeTasks.filter((task) =>
-          task.labels?.some((label) =>
-            filter.selectedLabelNames?.includes(label.name),
-          ),
+        return activeTasks.filter(task =>
+          task.labels?.some(label =>
+            filter.selectedLabelNames?.includes(label.name)
+          )
         );
       }
       if (filter.selectedLabels && filter.selectedLabels.length > 0) {
-        return activeTasks.filter((task) =>
-          task.labels?.some((label) =>
-            filter.selectedLabels?.includes(label.id),
-          ),
+        return activeTasks.filter(task =>
+          task.labels?.some(label => filter.selectedLabels?.includes(label.id))
         );
       }
       return activeTasks;
     }
 
-    case "has-labels": {
-      return activeTasks.filter(
-        (task) => task.labels && task.labels.length > 0,
-      );
+    case 'has-labels': {
+      return activeTasks.filter(task => task.labels && task.labels.length > 0);
     }
 
-    case "priority": {
+    case 'priority': {
       if (filter.selectedPriorities && filter.selectedPriorities.length > 0) {
         return activeTasks.filter(
-          (task) =>
+          task =>
             // 優先度が未設定のタスクを除外し、選択された優先度のみを表示
-            task.priority && filter.selectedPriorities?.includes(task.priority),
+            task.priority && filter.selectedPriorities?.includes(task.priority)
         );
       }
       return activeTasks;
@@ -98,23 +94,23 @@ export const filterTasks = (tasks: Task[], filter: TaskFilter): Task[] => {
  */
 export const getFilteredTaskCount = (
   tasks: Task[],
-  filter: TaskFilter,
+  filter: TaskFilter
 ): number => filterTasks(tasks, filter).length;
 
 /**
  * フィルターが有効かどうかを判定
  */
 export const isFilterActive = (filter: TaskFilter): boolean => {
-  if (filter.type === "all") {
+  if (filter.type === 'all') {
     return false;
   }
-  if (filter.type === "label") {
+  if (filter.type === 'label') {
     return (
       (filter.selectedLabelNames?.length ?? 0) > 0 ||
       (filter.selectedLabels?.length ?? 0) > 0
     );
   }
-  if (filter.type === "priority") {
+  if (filter.type === 'priority') {
     return (filter.selectedPriorities?.length ?? 0) > 0;
   }
   return true;

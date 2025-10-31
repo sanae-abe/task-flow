@@ -7,9 +7,7 @@ interface CounterLabelProps {
 const CounterLabel: React.FC<CounterLabelProps> = ({ count }) => (
   <span
     className={`text-sm ${
-      count > 0
-        ? 'text-foreground'
-        : 'text-muted-foreground'
+      count > 0 ? 'text-foreground' : 'text-muted-foreground'
     }`}
   >
     {count}

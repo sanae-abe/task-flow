@@ -4,14 +4,12 @@
  * text, email, password, number 入力タイプに対応
  */
 
-import React, { useCallback } from "react";
-import { Input } from "@/components/ui/input";
+import React, { useCallback } from 'react';
+import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 
-import {
-  toStringValue,
-} from "../../../../utils/formHelpers";
-import type { TextFieldProps } from "./types";
+import { toStringValue } from '../../../../utils/formHelpers';
+import type { TextFieldProps } from './types';
 
 /**
  * テキスト系入力フィールドコンポーネント
@@ -47,7 +45,7 @@ export const TextField: React.FC<TextFieldProps> = React.memo(
       (e: React.ChangeEvent<HTMLInputElement>) => {
         onChange(e.target.value);
       },
-      [onChange],
+      [onChange]
     );
 
     /**
@@ -59,7 +57,7 @@ export const TextField: React.FC<TextFieldProps> = React.memo(
           onKeyDown(e);
         }
       },
-      [onKeyDown],
+      [onKeyDown]
     );
 
     /**
@@ -97,7 +95,8 @@ export const TextField: React.FC<TextFieldProps> = React.memo(
         autoFocus={autoFocus}
         disabled={disabled}
         className={cn(
-          hasError && "border-destructive focus:border-destructive focus:ring-destructive"
+          hasError &&
+            'border-destructive focus:border-destructive focus:ring-destructive'
         )}
         style={style ? (style as React.CSSProperties) : undefined}
         aria-required={validation?.required}
@@ -108,8 +107,8 @@ export const TextField: React.FC<TextFieldProps> = React.memo(
         {...(max ? { max } : {})}
       />
     );
-  },
+  }
 );
 
 // デバッグ用のdisplayName設定
-TextField.displayName = "TextField";
+TextField.displayName = 'TextField';

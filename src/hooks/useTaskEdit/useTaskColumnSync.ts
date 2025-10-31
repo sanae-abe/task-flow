@@ -33,7 +33,7 @@ export const useTaskColumnSync = ({
   useEffect(() => {
     if (state.currentBoard?.columns && formState.columnId) {
       const targetColumn = state.currentBoard.columns.find(
-        (col) => col.id === formState.columnId,
+        col => col.id === formState.columnId
       );
       const isLastColumn =
         targetColumn &&
@@ -50,7 +50,7 @@ export const useTaskColumnSync = ({
         }
         // 完了カラム以外に移動した場合で、完了日時が設定されている場合
         else if (!isLastColumn && currentCompletedAt) {
-          return "";
+          return '';
         }
         // 変更が不要な場合は現在の値をそのまま返す
         return currentCompletedAt;
@@ -62,15 +62,19 @@ export const useTaskColumnSync = ({
   // 期限が削除された場合、繰り返し設定を無効化
   useEffect(() => {
     if (!formState.dueDate) {
-      formState.setRecurrence((currentRecurrence: import('../../types').RecurrenceConfig | undefined) => {
-        if (currentRecurrence && currentRecurrence.enabled) {
-          return {
-            ...currentRecurrence,
-            enabled: false,
-          };
+      formState.setRecurrence(
+        (
+          currentRecurrence: import('../../types').RecurrenceConfig | undefined
+        ) => {
+          if (currentRecurrence && currentRecurrence.enabled) {
+            return {
+              ...currentRecurrence,
+              enabled: false,
+            };
+          }
+          return currentRecurrence;
         }
-        return currentRecurrence;
-      });
+      );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formState.dueDate, formState.setRecurrence]); // formState is intentionally omitted to prevent infinite loops
@@ -78,7 +82,7 @@ export const useTaskColumnSync = ({
   // 時刻設定がオフになった場合、時刻をクリア
   useEffect(() => {
     if (!formState.hasTime) {
-      formState.setDueTime("");
+      formState.setDueTime('');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formState.hasTime, formState.setDueTime]); // formState is intentionally omitted to prevent infinite loops
@@ -95,7 +99,7 @@ export const useTaskColumnSync = ({
       return false;
     }
 
-    return rightmostColumn.tasks.some((t) => t.id === task.id);
+    return rightmostColumn.tasks.some(t => t.id === task.id);
   }, [task, state.currentBoard]);
 
   // ステータス選択肢を生成（ゴミ箱に入っているカラムを除外）
@@ -105,8 +109,8 @@ export const useTaskColumnSync = ({
     }
 
     return state.currentBoard.columns
-      .filter((column) => column.deletionState !== 'deleted')
-      .map((column) => ({
+      .filter(column => column.deletionState !== 'deleted')
+      .map(column => ({
         value: column.id,
         label: column.title,
       }));
@@ -116,4 +120,4 @@ export const useTaskColumnSync = ({
     isCompleted,
     statusOptions,
   };
-};;;;
+};

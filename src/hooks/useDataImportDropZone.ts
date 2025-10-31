@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useRef, useState } from 'react';
 
 interface UseDataImportDropZoneOptions {
   maxFileSize: number;
@@ -17,8 +17,8 @@ export const useDataImportDropZone = ({
 
   const validateFile = useCallback(
     (file: File): string | null => {
-      if (!file.type.includes("json") && !file.name.endsWith(".json")) {
-        return "JSONファイルを選択してください";
+      if (!file.type.includes('json') && !file.name.endsWith('.json')) {
+        return 'JSONファイルを選択してください';
       }
 
       if (file.size > maxFileSize) {
@@ -27,7 +27,7 @@ export const useDataImportDropZone = ({
 
       return null;
     },
-    [maxFileSize],
+    [maxFileSize]
   );
 
   const handleDragOver = useCallback(
@@ -40,10 +40,10 @@ export const useDataImportDropZone = ({
       e.stopPropagation();
 
       if (e.dataTransfer) {
-        e.dataTransfer.dropEffect = "copy";
+        e.dataTransfer.dropEffect = 'copy';
       }
     },
-    [disabled],
+    [disabled]
   );
 
   const handleDragEnter = useCallback(
@@ -61,7 +61,7 @@ export const useDataImportDropZone = ({
         setIsDragOver(true);
       }
     },
-    [disabled],
+    [disabled]
   );
 
   const handleDragLeave = useCallback(
@@ -79,7 +79,7 @@ export const useDataImportDropZone = ({
         setIsDragOver(false);
       }
     },
-    [disabled],
+    [disabled]
   );
 
   const handleDrop = useCallback(
@@ -110,7 +110,7 @@ export const useDataImportDropZone = ({
 
       onFileSelected(file);
     },
-    [disabled, validateFile, onFileSelected],
+    [disabled, validateFile, onFileSelected]
   );
 
   const handleFileSelect = useCallback(() => {
@@ -140,7 +140,7 @@ export const useDataImportDropZone = ({
 
       onFileSelected(file);
     },
-    [disabled, validateFile, onFileSelected],
+    [disabled, validateFile, onFileSelected]
   );
 
   return {

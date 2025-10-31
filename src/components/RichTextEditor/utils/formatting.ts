@@ -91,7 +91,8 @@ const isCommandActive = (command: string): boolean => {
  * Toggle list formatting (unordered/ordered)
  */
 export const toggleList = (type: 'unordered' | 'ordered'): void => {
-  const command = type === 'unordered' ? 'insertUnorderedList' : 'insertOrderedList';
+  const command =
+    type === 'unordered' ? 'insertUnorderedList' : 'insertOrderedList';
   try {
     document.execCommand(command, false);
   } catch (_error) {
@@ -111,7 +112,9 @@ export const removeFormatting = (): void => {
 
   // If no text is selected, select all content in the editor
   if (selection.toString().trim() === '') {
-    const editorElement = selection.focusNode?.parentElement?.closest('[contenteditable="true"]');
+    const editorElement = selection.focusNode?.parentElement?.closest(
+      '[contenteditable="true"]'
+    );
     if (editorElement) {
       const range = document.createRange();
       range.selectNodeContents(editorElement);
@@ -222,7 +225,10 @@ export const getCurrentLink = (): HTMLAnchorElement | null => {
 
   // Traverse up the DOM tree to find a link element
   while (node && node !== document.body) {
-    if (node.nodeType === Node.ELEMENT_NODE && (node as Element).tagName === 'A') {
+    if (
+      node.nodeType === Node.ELEMENT_NODE &&
+      (node as Element).tagName === 'A'
+    ) {
       return node as HTMLAnchorElement;
     }
     const parentNode = node.parentNode;
@@ -238,6 +244,9 @@ export const getCurrentLink = (): HTMLAnchorElement | null => {
 /**
  * Update existing link URL
  */
-export const updateLinkUrl = (link: HTMLAnchorElement, newUrl: string): void => {
+export const updateLinkUrl = (
+  link: HTMLAnchorElement,
+  newUrl: string
+): void => {
   link.href = newUrl;
 };

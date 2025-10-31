@@ -21,7 +21,12 @@ export interface ImportModeConfig {
   description: string;
 }
 
-export type NotificationType = 'critical' | 'info' | 'success' | 'upsell' | 'warning';
+export type NotificationType =
+  | 'critical'
+  | 'info'
+  | 'success'
+  | 'upsell'
+  | 'warning';
 
 export interface Notification {
   id: string;
@@ -85,7 +90,13 @@ export interface Column {
   deletedAt?: string | null; // 削除日時（猶予期間計算用）
 }
 
-export type SortOption = 'manual' | 'dueDate' | 'createdAt' | 'updatedAt' | 'title' | 'priority';
+export type SortOption =
+  | 'manual'
+  | 'dueDate'
+  | 'createdAt'
+  | 'updatedAt'
+  | 'title'
+  | 'priority';
 
 export interface SortConfig {
   option: SortOption;
@@ -93,7 +104,14 @@ export interface SortConfig {
   icon?: string;
 }
 
-export type FilterType = 'all' | 'due-within-3-days' | 'due-today' | 'overdue' | 'label' | 'has-labels' | 'priority';
+export type FilterType =
+  | 'all'
+  | 'due-within-3-days'
+  | 'due-today'
+  | 'overdue'
+  | 'label'
+  | 'has-labels'
+  | 'priority';
 
 export interface TaskFilter {
   type: FilterType;
@@ -144,25 +162,55 @@ export type KanbanAction =
   | { type: 'SET_BOARDS'; payload: KanbanBoard[] }
   | { type: 'CREATE_BOARD'; payload: { title: string } }
   | { type: 'SWITCH_BOARD'; payload: { boardId: string } }
-  | { type: 'UPDATE_BOARD'; payload: { boardId: string; updates: Partial<KanbanBoard> } }
+  | {
+      type: 'UPDATE_BOARD';
+      payload: { boardId: string; updates: Partial<KanbanBoard> };
+    }
   | { type: 'DELETE_BOARD'; payload: { boardId: string } }
   | { type: 'ADD_COLUMN'; payload: { title: string } }
   | { type: 'UPDATE_COLUMN'; payload: { columnId: string; title: string } }
   | { type: 'DELETE_COLUMN'; payload: { columnId: string } }
-  | { type: 'REORDER_COLUMNS'; payload: { sourceIndex: number; targetIndex: number } }
-  | { type: 'ADD_TASK'; payload: { columnId: string; title: string; description?: string; dueDate?: Date; priority?: Priority; labels?: Label[]; files?: FileAttachment[] } }
+  | {
+      type: 'REORDER_COLUMNS';
+      payload: { sourceIndex: number; targetIndex: number };
+    }
+  | {
+      type: 'ADD_TASK';
+      payload: {
+        columnId: string;
+        title: string;
+        description?: string;
+        dueDate?: Date;
+        priority?: Priority;
+        labels?: Label[];
+        files?: FileAttachment[];
+      };
+    }
   | { type: 'UPDATE_TASK'; payload: { taskId: string; updates: Partial<Task> } }
   | { type: 'DELETE_TASK'; payload: { taskId: string } }
-  | { type: 'MOVE_TASK'; payload: { taskId: string; sourceColumnId: string; targetColumnId: string; targetIndex: number } }
+  | {
+      type: 'MOVE_TASK';
+      payload: {
+        taskId: string;
+        sourceColumnId: string;
+        targetColumnId: string;
+        targetIndex: number;
+      };
+    }
   | { type: 'ADD_LABEL'; payload: { label: Label } }
-  | { type: 'UPDATE_LABEL'; payload: { labelId: string; updates: Partial<Label> } }
+  | {
+      type: 'UPDATE_LABEL';
+      payload: { labelId: string; updates: Partial<Label> };
+    }
   | { type: 'DELETE_LABEL'; payload: { labelId: string } }
   | { type: 'DELETE_LABEL_FROM_ALL_BOARDS'; payload: { labelId: string } }
   | { type: 'ADD_SUBTASK'; payload: { taskId: string; subTask: SubTask } }
-  | { type: 'UPDATE_SUBTASK'; payload: { taskId: string; subTaskId: string; updates: Partial<SubTask> } }
+  | {
+      type: 'UPDATE_SUBTASK';
+      payload: { taskId: string; subTaskId: string; updates: Partial<SubTask> };
+    }
   | { type: 'DELETE_SUBTASK'; payload: { taskId: string; subTaskId: string } }
   | { type: 'SET_SORT_OPTION'; payload: SortOption }
   | { type: 'SET_TASK_FILTER'; payload: KanbanState['taskFilter'] }
   | { type: 'CLEAR_TASK_FILTER' }
   | { type: 'SET_VIEW_MODE'; payload: ViewMode };
-

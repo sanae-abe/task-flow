@@ -1,7 +1,7 @@
-import { useEffect, useCallback } from "react";
-import { indexedDBManager } from "../utils/indexedDB";
-import { useKanban } from "../contexts/KanbanContext";
-import { useOffline } from "./useOffline";
+import { useEffect, useCallback } from 'react';
+import { indexedDBManager } from '../utils/indexedDB';
+import { useKanban } from '../contexts/KanbanContext';
+import { useOffline } from './useOffline';
 
 export const useDataSync = () => {
   const { state } = useKanban();
@@ -24,10 +24,10 @@ export const useDataSync = () => {
         await indexedDBManager.init();
       }
 
-      const allTasks = state.boards.flatMap((board) =>
-        board.columns.flatMap((column) => column.tasks),
+      const allTasks = state.boards.flatMap(board =>
+        board.columns.flatMap(column => column.tasks)
       );
-      const allColumns = state.boards.flatMap((board) => board.columns);
+      const allColumns = state.boards.flatMap(board => board.columns);
 
       const dataToSave = {
         tasks: allTasks,

@@ -1,7 +1,7 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo } from 'react';
 
-import { useKanban } from "../contexts/KanbanContext";
-import type { Task } from "../types";
+import { useKanban } from '../contexts/KanbanContext';
+import type { Task } from '../types';
 
 // 日付を正規化するヘルパー関数
 const normalizeDate = (date: Date): Date => {
@@ -29,7 +29,7 @@ interface UseTaskCardReturn {
 
 export const useTaskCard = (
   task: Task,
-  columnId: string,
+  columnId: string
 ): UseTaskCardReturn => {
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -46,21 +46,21 @@ export const useTaskCard = (
       // カラム移動が必要な場合
       if (targetColumnId && targetColumnId !== columnId) {
         const targetColumn = state.currentBoard?.columns.find(
-          (col) => col.id === targetColumnId,
+          col => col.id === targetColumnId
         );
         if (targetColumn) {
           moveTask(
             task.id,
             columnId,
             targetColumnId,
-            targetColumn.tasks.length,
+            targetColumn.tasks.length
           );
         }
       }
 
       setShowEditDialog(false);
     },
-    [task.id, columnId, updateTask, moveTask, state.currentBoard],
+    [task.id, columnId, updateTask, moveTask, state.currentBoard]
   );
 
   const handleCancel = useCallback(() => {
@@ -82,7 +82,7 @@ export const useTaskCard = (
       deleteTask(taskId, columnId);
       setShowEditDialog(false);
     },
-    [columnId, deleteTask],
+    [columnId, deleteTask]
   );
 
   const handleCancelDelete = useCallback(() => {
@@ -96,7 +96,7 @@ export const useTaskCard = (
     }
 
     const { columns } = currentBoard;
-    const currentIndex = columns.findIndex((col) => col.id === columnId);
+    const currentIndex = columns.findIndex(col => col.id === columnId);
 
     if (currentIndex === -1) {
       return;

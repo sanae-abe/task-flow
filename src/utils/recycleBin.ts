@@ -1,7 +1,7 @@
-import type { Task, KanbanBoard, Column } from "../types";
-import type { RecycleBinSettings } from "../types/settings";
-import type { RecycleBinItemWithMeta } from "../types/recycleBin";
-import { logger } from "./logger";
+import type { Task, KanbanBoard, Column } from '../types';
+import type { RecycleBinSettings } from '../types/settings';
+import type { RecycleBinItemWithMeta } from '../types/recycleBin';
+import { logger } from './logger';
 
 /**
  * シンプルなゴミ箱自動削除システム
@@ -12,14 +12,14 @@ import { logger } from "./logger";
  * ゴミ箱のタスクを取得
  */
 export const getRecycleBinTasks = (
-  boards: KanbanBoard[],
+  boards: KanbanBoard[]
 ): (Task & { boardId: string; columnId: string })[] => {
   const deletedTasks: (Task & { boardId: string; columnId: string })[] = [];
 
-  boards.forEach((board) => {
-    board.columns.forEach((column) => {
-      column.tasks.forEach((task) => {
-        if (task.deletionState === "deleted") {
+  boards.forEach(board => {
+    board.columns.forEach(column => {
+      column.tasks.forEach(task => {
+        if (task.deletionState === 'deleted') {
           deletedTasks.push({
             ...task,
             boardId: board.id,
@@ -43,7 +43,7 @@ export const getRecycleBinTasks = (
  */
 export const getExpiredTasks = (
   boards: KanbanBoard[],
-  settings: RecycleBinSettings,
+  settings: RecycleBinSettings
 ): (Task & { boardId: string; columnId: string })[] => {
   // 無制限の場合は期限切れタスクなし
   if (settings.retentionDays === null) {
@@ -53,10 +53,10 @@ export const getExpiredTasks = (
   const deletedTasks = getRecycleBinTasks(boards);
   const now = new Date();
   const expirationDate = new Date(
-    now.getTime() - settings.retentionDays * 24 * 60 * 60 * 1000,
+    now.getTime() - settings.retentionDays * 24 * 60 * 60 * 1000
   );
 
-  return deletedTasks.filter((task) => {
+  return deletedTasks.filter(task => {
     if (!task.deletedAt) {
       return false;
     }
@@ -70,7 +70,7 @@ export const getExpiredTasks = (
  */
 export const deleteExpiredTasks = (
   boards: KanbanBoard[],
-  settings: RecycleBinSettings,
+  settings: RecycleBinSettings
 ): { updatedBoards: KanbanBoard[]; deletedCount: number } => {
   const expiredTasks = getExpiredTasks(boards, settings);
 
@@ -78,18 +78,18 @@ export const deleteExpiredTasks = (
     return { updatedBoards: boards, deletedCount: 0 };
   }
 
-  const expiredTaskIds = new Set(expiredTasks.map((task) => task.id));
+  const expiredTaskIds = new Set(expiredTasks.map(task => task.id));
 
-  const updatedBoards = boards.map((board) => ({
+  const updatedBoards = boards.map(board => ({
     ...board,
-    columns: board.columns.map((column) => ({
+    columns: board.columns.map(column => ({
       ...column,
-      tasks: column.tasks.filter((task) => !expiredTaskIds.has(task.id)),
+      tasks: column.tasks.filter(task => !expiredTaskIds.has(task.id)),
     })),
   }));
 
   logger.info(
-    `🗑️ Auto-deleted ${expiredTasks.length} expired tasks from recycle bin`,
+    `🗑️ Auto-deleted ${expiredTasks.length} expired tasks from recycle bin`
   );
 
   return { updatedBoards, deletedCount: expiredTasks.length };
@@ -99,7 +99,7 @@ export const deleteExpiredTasks = (
  * ゴミ箱を完全に空にする
  */
 export const emptyRecycleBin = (
-  boards: KanbanBoard[],
+  boards: KanbanBoard[]
 ): { updatedBoards: KanbanBoard[]; deletedCount: number } => {
   const deletedTasks = getRecycleBinTasks(boards);
 
@@ -107,18 +107,18 @@ export const emptyRecycleBin = (
     return { updatedBoards: boards, deletedCount: 0 };
   }
 
-  const deletedTaskIds = new Set(deletedTasks.map((task) => task.id));
+  const deletedTaskIds = new Set(deletedTasks.map(task => task.id));
 
-  const updatedBoards = boards.map((board) => ({
+  const updatedBoards = boards.map(board => ({
     ...board,
-    columns: board.columns.map((column) => ({
+    columns: board.columns.map(column => ({
       ...column,
-      tasks: column.tasks.filter((task) => !deletedTaskIds.has(task.id)),
+      tasks: column.tasks.filter(task => !deletedTaskIds.has(task.id)),
     })),
   }));
 
   logger.info(
-    `🗑️ Manually emptied recycle bin: ${deletedTasks.length} tasks permanently deleted`,
+    `🗑️ Manually emptied recycle bin: ${deletedTasks.length} tasks permanently deleted`
   );
 
   return { updatedBoards, deletedCount: deletedTasks.length };
@@ -128,21 +128,19 @@ export const emptyRecycleBin = (
  */
 export const permanentlyDeleteTask = (
   boards: KanbanBoard[],
-  taskId: string,
+  taskId: string
 ): { updatedBoards: KanbanBoard[]; success: boolean } => {
-  const updatedBoards = boards.map((board) => ({
+  const updatedBoards = boards.map(board => ({
     ...board,
-    columns: board.columns.map((column) => ({
+    columns: board.columns.map(column => ({
       ...column,
-      tasks: column.tasks.filter((task) => task.id !== taskId),
+      tasks: column.tasks.filter(task => task.id !== taskId),
     })),
   }));
 
   // タスクが実際に削除されたかチェック
   const taskStillExists = updatedBoards.some(board =>
-    board.columns.some(column =>
-      column.tasks.some(task => task.id === taskId)
-    )
+    board.columns.some(column => column.tasks.some(task => task.id === taskId))
   );
 
   const success = !taskStillExists;
@@ -159,17 +157,17 @@ export const permanentlyDeleteTask = (
  */
 export const restoreTaskFromRecycleBin = (
   boards: KanbanBoard[],
-  taskId: string,
+  taskId: string
 ): KanbanBoard[] | null => {
-  const updatedBoards = boards.map((board) => ({
+  const updatedBoards = boards.map(board => ({
     ...board,
-    columns: board.columns.map((column) => ({
+    columns: board.columns.map(column => ({
       ...column,
-      tasks: column.tasks.map((task) => {
-        if (task.id === taskId && task.deletionState === "deleted") {
+      tasks: column.tasks.map(task => {
+        if (task.id === taskId && task.deletionState === 'deleted') {
           const restoredTask: Task = {
             ...task,
-            deletionState: "active",
+            deletionState: 'active',
             deletedAt: null,
             updatedAt: new Date().toISOString(),
           };
@@ -188,7 +186,7 @@ export const restoreTaskFromRecycleBin = (
  */
 export const calculateDeletionTime = (
   deletedAt: string,
-  retentionDays: number | null,
+  retentionDays: number | null
 ): Date | null => {
   // 無制限の場合は削除予定なし
   if (retentionDays === null) {
@@ -204,11 +202,11 @@ export const calculateDeletionTime = (
  */
 export const formatTimeUntilDeletion = (
   deletedAt: string,
-  retentionDays: number | null,
+  retentionDays: number | null
 ): string => {
   // 無制限の場合
   if (retentionDays === null) {
-    return "無制限（自動削除されません）";
+    return '無制限（自動削除されません）';
   }
 
   const deletionTime = calculateDeletionTime(deletedAt, retentionDays);
@@ -216,11 +214,11 @@ export const formatTimeUntilDeletion = (
 
   // deletionTime が null の場合（理論的にはありえないが安全のため）
   if (!deletionTime) {
-    return "無制限（自動削除されません）";
+    return '無制限（自動削除されません）';
   }
 
   if (deletionTime <= now) {
-    return "削除予定時刻を過ぎています";
+    return '削除予定時刻を過ぎています';
   }
 
   const diffMs = deletionTime.getTime() - now.getTime();
@@ -244,10 +242,10 @@ export const formatTimeUntilDeletion = (
 /**
  * ゴミ箱のボードを取得
  */
-export const getRecycleBinBoards = (
-  boards: KanbanBoard[],
-): KanbanBoard[] => {
-  const deletedBoards = boards.filter(board => board.deletionState === "deleted");
+export const getRecycleBinBoards = (boards: KanbanBoard[]): KanbanBoard[] => {
+  const deletedBoards = boards.filter(
+    board => board.deletionState === 'deleted'
+  );
 
   // 削除日時順でソート（新しいものから）
   return deletedBoards.sort((a, b) => {
@@ -262,7 +260,7 @@ export const getRecycleBinBoards = (
  */
 export const getExpiredBoards = (
   boards: KanbanBoard[],
-  settings: RecycleBinSettings,
+  settings: RecycleBinSettings
 ): KanbanBoard[] => {
   // 無制限の場合は期限切れボードなし
   if (settings.retentionDays === null) {
@@ -272,10 +270,10 @@ export const getExpiredBoards = (
   const deletedBoards = getRecycleBinBoards(boards);
   const now = new Date();
   const expirationDate = new Date(
-    now.getTime() - settings.retentionDays * 24 * 60 * 60 * 1000,
+    now.getTime() - settings.retentionDays * 24 * 60 * 60 * 1000
   );
 
-  return deletedBoards.filter((board) => {
+  return deletedBoards.filter(board => {
     if (!board.deletedAt) {
       return false;
     }
@@ -289,7 +287,7 @@ export const getExpiredBoards = (
  */
 export const deleteExpiredBoards = (
   boards: KanbanBoard[],
-  settings: RecycleBinSettings,
+  settings: RecycleBinSettings
 ): { updatedBoards: KanbanBoard[]; deletedCount: number } => {
   const expiredBoards = getExpiredBoards(boards, settings);
 
@@ -297,12 +295,12 @@ export const deleteExpiredBoards = (
     return { updatedBoards: boards, deletedCount: 0 };
   }
 
-  const expiredBoardIds = new Set(expiredBoards.map((board) => board.id));
+  const expiredBoardIds = new Set(expiredBoards.map(board => board.id));
 
   const updatedBoards = boards.filter(board => !expiredBoardIds.has(board.id));
 
   logger.info(
-    `🗑️ Auto-deleted ${expiredBoards.length} expired boards from recycle bin`,
+    `🗑️ Auto-deleted ${expiredBoards.length} expired boards from recycle bin`
   );
 
   return { updatedBoards, deletedCount: expiredBoards.length };
@@ -313,13 +311,13 @@ export const deleteExpiredBoards = (
  */
 export const moveBoardToRecycleBin = (
   boards: KanbanBoard[],
-  boardId: string,
+  boardId: string
 ): KanbanBoard[] =>
   boards.map(board => {
     if (board.id === boardId) {
       return {
         ...board,
-        deletionState: "deleted" as const,
+        deletionState: 'deleted' as const,
         deletedAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
@@ -332,13 +330,13 @@ export const moveBoardToRecycleBin = (
  */
 export const restoreBoardFromRecycleBin = (
   boards: KanbanBoard[],
-  boardId: string,
+  boardId: string
 ): KanbanBoard[] =>
   boards.map(board => {
-    if (board.id === boardId && board.deletionState === "deleted") {
+    if (board.id === boardId && board.deletionState === 'deleted') {
       return {
         ...board,
-        deletionState: "active" as const,
+        deletionState: 'active' as const,
         deletedAt: null,
         updatedAt: new Date().toISOString(),
       };
@@ -351,7 +349,7 @@ export const restoreBoardFromRecycleBin = (
  */
 export const permanentlyDeleteBoard = (
   boards: KanbanBoard[],
-  boardId: string,
+  boardId: string
 ): { updatedBoards: KanbanBoard[]; success: boolean } => {
   const updatedBoards = boards.filter(board => board.id !== boardId);
   const success = updatedBoards.length < boards.length;
@@ -367,7 +365,7 @@ export const permanentlyDeleteBoard = (
  * ゴミ箱のボードを完全に空にする
  */
 export const emptyBoardRecycleBin = (
-  boards: KanbanBoard[],
+  boards: KanbanBoard[]
 ): { updatedBoards: KanbanBoard[]; deletedCount: number } => {
   const deletedBoards = getRecycleBinBoards(boards);
 
@@ -379,7 +377,7 @@ export const emptyBoardRecycleBin = (
   const updatedBoards = boards.filter(board => !deletedBoardIds.has(board.id));
 
   logger.info(
-    `🗑️ Manually emptied board recycle bin: ${deletedBoards.length} boards permanently deleted`,
+    `🗑️ Manually emptied board recycle bin: ${deletedBoards.length} boards permanently deleted`
   );
 
   return { updatedBoards, deletedCount: deletedBoards.length };
@@ -393,13 +391,13 @@ export const emptyBoardRecycleBin = (
  * ゴミ箱のカラムを取得
  */
 export const getRecycleBinColumns = (
-  boards: KanbanBoard[],
+  boards: KanbanBoard[]
 ): (Column & { boardId: string })[] => {
   const deletedColumns: (Column & { boardId: string })[] = [];
 
-  boards.forEach((board) => {
-    board.columns.forEach((column) => {
-      if (column.deletionState === "deleted") {
+  boards.forEach(board => {
+    board.columns.forEach(column => {
+      if (column.deletionState === 'deleted') {
         deletedColumns.push({
           ...column,
           boardId: board.id,
@@ -421,7 +419,7 @@ export const getRecycleBinColumns = (
  */
 export const getExpiredColumns = (
   boards: KanbanBoard[],
-  settings: RecycleBinSettings,
+  settings: RecycleBinSettings
 ): (Column & { boardId: string })[] => {
   // 無制限の場合は期限切れカラムなし
   if (settings.retentionDays === null) {
@@ -431,10 +429,10 @@ export const getExpiredColumns = (
   const deletedColumns = getRecycleBinColumns(boards);
   const now = new Date();
   const expirationDate = new Date(
-    now.getTime() - settings.retentionDays * 24 * 60 * 60 * 1000,
+    now.getTime() - settings.retentionDays * 24 * 60 * 60 * 1000
   );
 
-  return deletedColumns.filter((column) => {
+  return deletedColumns.filter(column => {
     if (!column.deletedAt) {
       return false;
     }
@@ -448,7 +446,7 @@ export const getExpiredColumns = (
  */
 export const deleteExpiredColumns = (
   boards: KanbanBoard[],
-  settings: RecycleBinSettings,
+  settings: RecycleBinSettings
 ): { updatedBoards: KanbanBoard[]; deletedCount: number } => {
   const expiredColumns = getExpiredColumns(boards, settings);
 
@@ -456,15 +454,15 @@ export const deleteExpiredColumns = (
     return { updatedBoards: boards, deletedCount: 0 };
   }
 
-  const expiredColumnIds = new Set(expiredColumns.map((column) => column.id));
+  const expiredColumnIds = new Set(expiredColumns.map(column => column.id));
 
-  const updatedBoards = boards.map((board) => ({
+  const updatedBoards = boards.map(board => ({
     ...board,
-    columns: board.columns.filter((column) => !expiredColumnIds.has(column.id)),
+    columns: board.columns.filter(column => !expiredColumnIds.has(column.id)),
   }));
 
   logger.info(
-    `🗑️ Auto-deleted ${expiredColumns.length} expired columns from recycle bin`,
+    `🗑️ Auto-deleted ${expiredColumns.length} expired columns from recycle bin`
   );
 
   return { updatedBoards, deletedCount: expiredColumns.length };
@@ -475,7 +473,7 @@ export const deleteExpiredColumns = (
  */
 export const moveColumnToRecycleBin = (
   boards: KanbanBoard[],
-  columnId: string,
+  columnId: string
 ): KanbanBoard[] =>
   boards.map(board => ({
     ...board,
@@ -483,7 +481,7 @@ export const moveColumnToRecycleBin = (
       if (column.id === columnId) {
         return {
           ...column,
-          deletionState: "deleted" as const,
+          deletionState: 'deleted' as const,
           deletedAt: new Date().toISOString(),
         };
       }
@@ -497,15 +495,15 @@ export const moveColumnToRecycleBin = (
  */
 export const restoreColumnFromRecycleBin = (
   boards: KanbanBoard[],
-  columnId: string,
+  columnId: string
 ): KanbanBoard[] =>
   boards.map(board => ({
     ...board,
     columns: board.columns.map(column => {
-      if (column.id === columnId && column.deletionState === "deleted") {
+      if (column.id === columnId && column.deletionState === 'deleted') {
         return {
           ...column,
-          deletionState: "active" as const,
+          deletionState: 'active' as const,
           deletedAt: null,
         };
       }
@@ -519,7 +517,7 @@ export const restoreColumnFromRecycleBin = (
  */
 export const permanentlyDeleteColumn = (
   boards: KanbanBoard[],
-  columnId: string,
+  columnId: string
 ): { updatedBoards: KanbanBoard[]; success: boolean } => {
   const updatedBoards = boards.map(board => ({
     ...board,
@@ -545,7 +543,7 @@ export const permanentlyDeleteColumn = (
  * ゴミ箱のカラムを完全に空にする
  */
 export const emptyColumnRecycleBin = (
-  boards: KanbanBoard[],
+  boards: KanbanBoard[]
 ): { updatedBoards: KanbanBoard[]; deletedCount: number } => {
   const deletedColumns = getRecycleBinColumns(boards);
 
@@ -562,7 +560,7 @@ export const emptyColumnRecycleBin = (
   }));
 
   logger.info(
-    `🗑️ Manually emptied column recycle bin: ${deletedColumns.length} columns permanently deleted`,
+    `🗑️ Manually emptied column recycle bin: ${deletedColumns.length} columns permanently deleted`
   );
 
   return { updatedBoards, deletedCount: deletedColumns.length };
@@ -574,13 +572,13 @@ export const emptyColumnRecycleBin = (
  */
 export const getAllRecycleBinItems = (
   boards: KanbanBoard[],
-  settings: RecycleBinSettings,
+  settings: RecycleBinSettings
 ): RecycleBinItemWithMeta[] => {
   const allItems: RecycleBinItemWithMeta[] = [];
 
   // 削除されたタスクを追加
   const deletedTasks = getRecycleBinTasks(boards);
-  deletedTasks.forEach((task) => {
+  deletedTasks.forEach(task => {
     const board = boards.find(b => b.id === task.boardId);
     const column = board?.columns.find(c => c.id === task.columnId);
 
@@ -592,8 +590,8 @@ export const getAllRecycleBinItems = (
       deletedAt: task.deletedAt,
       boardId: task.boardId,
       columnId: task.columnId,
-      boardTitle: board?.title || "不明なボード",
-      columnTitle: column?.title || "不明なカラム",
+      boardTitle: board?.title || '不明なボード',
+      columnTitle: column?.title || '不明なカラム',
       canRestore: true,
       timeUntilDeletion: task.deletedAt
         ? formatTimeUntilDeletion(task.deletedAt, settings.retentionDays)
@@ -603,9 +601,12 @@ export const getAllRecycleBinItems = (
 
   // 削除されたボードを追加
   const deletedBoards = getRecycleBinBoards(boards);
-  deletedBoards.forEach((board) => {
+  deletedBoards.forEach(board => {
     // ボード内の全タスク数を計算
-    const taskCount = board.columns.reduce((total, column) => total + column.tasks.length, 0);
+    const taskCount = board.columns.reduce(
+      (total, column) => total + column.tasks.length,
+      0
+    );
 
     allItems.push({
       id: board.id,
@@ -624,7 +625,7 @@ export const getAllRecycleBinItems = (
 
   // 削除されたカラムを追加
   const deletedColumns = getRecycleBinColumns(boards);
-  deletedColumns.forEach((column) => {
+  deletedColumns.forEach(column => {
     const board = boards.find(b => b.id === column.boardId);
 
     allItems.push({
@@ -634,7 +635,7 @@ export const getAllRecycleBinItems = (
       description: `${column.tasks.length}個のタスクを含むカラム`,
       deletedAt: column.deletedAt,
       boardId: column.boardId,
-      boardTitle: board?.title || "不明なボード",
+      boardTitle: board?.title || '不明なボード',
       taskCount: column.tasks.length,
       canRestore: true,
       timeUntilDeletion: column.deletedAt

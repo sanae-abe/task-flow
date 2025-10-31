@@ -1,5 +1,5 @@
-import { useState } from "react";
-import type { DeleteConfirmState } from "../types";
+import { useState } from 'react';
+import type { DeleteConfirmState } from '../types';
 
 /**
  * 削除確認ダイアログ管理カスタムフック

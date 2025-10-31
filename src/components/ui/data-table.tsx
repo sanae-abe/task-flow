@@ -5,7 +5,7 @@
  * ソート、フィルタリング、ページネーション機能を含む
  */
 
-import React from "react";
+import React from 'react';
 import {
   ColumnDef,
   flexRender,
@@ -13,8 +13,8 @@ import {
   getSortedRowModel,
   SortingState,
   useReactTable,
-} from "@tanstack/react-table";
-import { ChevronsUpDown, ChevronUp, ChevronDown } from "lucide-react";
+} from '@tanstack/react-table';
+import { ChevronsUpDown, ChevronUp, ChevronDown } from 'lucide-react';
 
 import {
   Table,
@@ -23,8 +23,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
+} from '@/components/ui/table';
+import { Button } from '@/components/ui/button';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -40,18 +40,22 @@ export function DataTable<TData, TValue>({
   data,
   initialSorting = [],
   onSortingChange,
-  emptyMessage = "データがありません",
-  className = "",
+  emptyMessage = 'データがありません',
+  className = '',
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>(initialSorting);
 
-  const handleSortingChange = React.useCallback((updaterOrValue: SortingState | ((prev: SortingState) => SortingState)) => {
-    const newSorting = typeof updaterOrValue === 'function'
-      ? updaterOrValue(sorting)
-      : updaterOrValue;
-    setSorting(newSorting);
-    onSortingChange?.(newSorting);
-  }, [onSortingChange, sorting]);
+  const handleSortingChange = React.useCallback(
+    (updaterOrValue: SortingState | ((prev: SortingState) => SortingState)) => {
+      const newSorting =
+        typeof updaterOrValue === 'function'
+          ? updaterOrValue(sorting)
+          : updaterOrValue;
+      setSorting(newSorting);
+      onSortingChange?.(newSorting);
+    },
+    [onSortingChange, sorting]
+  );
 
   const table = useReactTable({
     data,
@@ -68,36 +72,35 @@ export function DataTable<TData, TValue>({
     <div className={`rounded-md border border-border ${className}`}>
       <Table>
         <TableHeader>
-          {table.getHeaderGroups().map((headerGroup) => (
+          {table.getHeaderGroups().map(headerGroup => (
             <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => {
+              {headerGroup.headers.map(header => {
                 const canSort = header.column.getCanSort();
                 const sortDirection = header.column.getIsSorted();
 
                 return (
                   <TableHead key={header.id}>
                     {header.isPlaceholder ? null : (
-                      <div className="flex items-center gap-2">
+                      <div className='flex items-center gap-2'>
                         {canSort ? (
                           <Button
-                            variant="ghost"
-                            size="sm"
-                            className="p-1 h-auto font-medium"
+                            variant='ghost'
+                            size='sm'
+                            className='p-1 h-auto font-medium'
                             onClick={() => header.column.toggleSorting()}
                           >
-                            <span className="flex items-center gap-1">
+                            <span className='flex items-center gap-1'>
                               {flexRender(
                                 header.column.columnDef.header,
                                 header.getContext()
                               )}
-                              {sortDirection === "asc" ? (
-                                <ChevronUp className="h-4 w-4" />
-                              ) : sortDirection === "desc" ? (
-                                <ChevronDown className="h-4 w-4" />
-                              ) : 
-                                <ChevronsUpDown className="h-4 w-4" />
-                              }
-                              
+                              {sortDirection === 'asc' ? (
+                                <ChevronUp className='h-4 w-4' />
+                              ) : sortDirection === 'desc' ? (
+                                <ChevronDown className='h-4 w-4' />
+                              ) : (
+                                <ChevronsUpDown className='h-4 w-4' />
+                              )}
                             </span>
                           </Button>
                         ) : (
@@ -116,12 +119,12 @@ export function DataTable<TData, TValue>({
         </TableHeader>
         <TableBody>
           {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
+            table.getRowModel().rows.map(row => (
               <TableRow
                 key={row.id}
-                data-state={row.getIsSelected() && "selected"}
+                data-state={row.getIsSelected() && 'selected'}
               >
-                {row.getVisibleCells().map((cell) => (
+                {row.getVisibleCells().map(cell => (
                   <TableCell key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
@@ -130,7 +133,7 @@ export function DataTable<TData, TValue>({
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
+              <TableCell colSpan={columns.length} className='h-24 text-center'>
                 {emptyMessage}
               </TableCell>
             </TableRow>

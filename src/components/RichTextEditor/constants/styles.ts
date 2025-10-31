@@ -9,41 +9,44 @@ import type { EditorStyles } from '../types';
 // Main editor style constants
 export const EDITOR_STYLES: EditorStyles = {
   code: {
-    backgroundColor: "var(--muted)",
-    color: "#e01e5a",
-    padding: "2px 4px",
-    borderRadius: "0.25rem",
+    backgroundColor: 'var(--muted)',
+    color: '#e01e5a',
+    padding: '2px 4px',
+    borderRadius: '0.25rem',
     fontFamily: "'Monaco', 'Menlo', 'Consolas', monospace",
-    fontSize: "0.875em",
+    fontSize: '0.875em',
   },
   link: {
-    color: "#0969da",
-    textDecoration: "underline",
+    color: '#0969da',
+    textDecoration: 'underline',
   },
   codeBlock: {
-    backgroundColor: "var(--muted)",
-    padding: "8px",
-    borderRadius: "0.5rem",
-    border: "1px solid #d0d7de",
-    fontFamily: "'SFMono-Regular', 'Consolas', 'Liberation Mono', 'Menlo', monospace",
-    fontSize: "13px",
+    backgroundColor: 'var(--muted)',
+    padding: '8px',
+    borderRadius: '0.5rem',
+    border: '1px solid #d0d7de',
+    fontFamily:
+      "'SFMono-Regular', 'Consolas', 'Liberation Mono', 'Menlo', monospace",
+    fontSize: '13px',
     whiteSpace: 'pre-wrap',
-    margin: "0 0 8px",
+    margin: '0 0 8px',
     display: 'block',
   },
   codeBlockInner: {
-    backgroundColor: "inherit !important",
-    color: "inherit !important",
-    padding: "inherit !important",
-    borderRadius: "inherit !important",
-    fontSize: "inherit !important",
-    fontFamily: "inherit !important",
-    border: "0 !important",
+    backgroundColor: 'inherit !important',
+    color: 'inherit !important',
+    padding: 'inherit !important',
+    borderRadius: 'inherit !important',
+    fontSize: 'inherit !important',
+    fontFamily: 'inherit !important',
+    border: '0 !important',
   },
 } as const;
 
 // Utility function to create inline style strings
-export const createInlineStyleString = (styles: Record<string, string | number>): string =>
+export const createInlineStyleString = (
+  styles: Record<string, string | number>
+): string =>
   Object.entries(styles)
     .map(([key, value]) => {
       // Convert camelCase to kebab-case
@@ -93,7 +96,8 @@ export const EDITOR_CONTAINER_STYLES = {
     outline: 'none',
     fontSize: '14px',
     lineHeight: '1.5',
-    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+    fontFamily:
+      '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
   },
   placeholder: {
     color: '#656d76',

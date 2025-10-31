@@ -1,20 +1,20 @@
-import React, { useCallback, useState } from "react";
-import type { TaskWithColumn } from "../../types/table";
-import type { Task } from "../../types";
+import React, { useCallback, useState } from 'react';
+import type { TaskWithColumn } from '../../types/table';
+import type { Task } from '../../types';
 
-import { useKanban } from "../../contexts/KanbanContext";
-import { useTableColumns } from "../../contexts/TableColumnsContext";
-import DeleteConfirmDialog from "../DeleteConfirmDialog";
-import TaskEditDialog from "../TaskEditDialog";
+import { useKanban } from '../../contexts/KanbanContext';
+import { useTableColumns } from '../../contexts/TableColumnsContext';
+import DeleteConfirmDialog from '../DeleteConfirmDialog';
+import TaskEditDialog from '../TaskEditDialog';
 
 // カスタムフック
-import { useTableData, useTableActions, useDeleteConfirm } from "./hooks";
+import { useTableData, useTableActions, useDeleteConfirm } from './hooks';
 
 // コンポーネント
-import { TableCell, TableRow, TableHeader, EmptyState } from "./components";
+import { TableCell, TableRow, TableHeader, EmptyState } from './components';
 
 // ユーティリティ
-import { getCompletionRate } from "./utils/tableHelpers";
+import { getCompletionRate } from './utils/tableHelpers';
 
 /**
  * テーブルビューコンポーネント
@@ -30,8 +30,14 @@ import { getCompletionRate } from "./utils/tableHelpers";
  * - EmptyState：空状態の表示
  */
 const TableView: React.FC = () => {
-  const { state, moveTask, deleteTask, updateTask, setTaskFilter, openTaskDetail } =
-    useKanban();
+  const {
+    state,
+    moveTask,
+    deleteTask,
+    updateTask,
+    setTaskFilter,
+    openTaskDetail,
+  } = useKanban();
   const tableColumnsData = useTableColumns();
 
   // TaskEditDialog状態管理
@@ -45,7 +51,7 @@ const TableView: React.FC = () => {
   const { filteredAndSortedTasks } = useTableData(
     state.currentBoard,
     state.taskFilter,
-    state.sortOption,
+    state.sortOption
   );
 
   // カスタムフック: テーブルアクション管理
@@ -55,7 +61,7 @@ const TableView: React.FC = () => {
     deleteTask,
     openTaskDetail,
     deleteConfirmDialog,
-    setDeleteConfirmDialog,
+    setDeleteConfirmDialog
   );
 
   // タスク編集ハンドラー - TaskEditDialogを直接開く
@@ -65,20 +71,26 @@ const TableView: React.FC = () => {
   }, []);
 
   // TaskEditDialog: 保存ハンドラー
-  const handleEditSave = useCallback((updatedTask: Task) => {
-    updateTask(updatedTask.id, updatedTask);
-    setIsEditDialogOpen(false);
-    setEditingTask(null);
-  }, [updateTask]);
-
-  // TaskEditDialog: 削除ハンドラー
-  const handleEditDelete = useCallback((taskId: string) => {
-    if (editingTask) {
-      deleteTask(taskId, editingTask.columnId);
+  const handleEditSave = useCallback(
+    (updatedTask: Task) => {
+      updateTask(updatedTask.id, updatedTask);
       setIsEditDialogOpen(false);
       setEditingTask(null);
-    }
-  }, [deleteTask, editingTask]);
+    },
+    [updateTask]
+  );
+
+  // TaskEditDialog: 削除ハンドラー
+  const handleEditDelete = useCallback(
+    (taskId: string) => {
+      if (editingTask) {
+        deleteTask(taskId, editingTask.columnId);
+        setIsEditDialogOpen(false);
+        setEditingTask(null);
+      }
+    },
+    [deleteTask, editingTask]
+  );
 
   // TaskEditDialog: キャンセルハンドラー
   const handleEditCancel = useCallback(() => {
@@ -104,12 +116,12 @@ const TableView: React.FC = () => {
       tableActions.handleStatusChange,
       tableActions.handleTaskDeleteClick,
       handleTaskEdit,
-    ],
+    ]
   );
 
   // フィルタクリア処理
   const handleClearFilter = useCallback(() => {
-    setTaskFilter({ type: "all", label: "すべてのタスク" });
+    setTaskFilter({ type: 'all', label: 'すべてのタスク' });
   }, [setTaskFilter]);
 
   // 早期リターン：ボードが選択されていない場合
@@ -117,14 +129,14 @@ const TableView: React.FC = () => {
     return (
       <div
         style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          height: "calc(100vh - 97px)",
-          color: "var(--foreground)",
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: 'calc(100vh - 97px)',
+          color: 'var(--foreground)',
         }}
       >
-        <span className="text-foreground">ボードを選択してください</span>
+        <span className='text-foreground'>ボードを選択してください</span>
       </div>
     );
   }
@@ -133,19 +145,19 @@ const TableView: React.FC = () => {
     <div
       key={`tableview-${tableColumnsData.forceRender}`}
       style={{
-        backgroundColor: "var(--muted)"
+        backgroundColor: 'var(--muted)',
       }}
-      className="h-[calc(100vh-120px)] overflow-auto p-8"
+      className='h-[calc(100vh-120px)] overflow-auto p-8'
     >
       {/* メインテーブル */}
       <div
         key={`table-${tableColumnsData.forceRender}`}
         style={{
           borderRadius: 2,
-          overflow: "auto",
-          backgroundColor: "var(--background)",
-          boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-          minWidth: "fit-content",
+          overflow: 'auto',
+          backgroundColor: 'var(--background)',
+          boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+          minWidth: 'fit-content',
         }}
       >
         {/* ヘッダー行 */}
@@ -183,7 +195,7 @@ const TableView: React.FC = () => {
         isOpen={deleteConfirmDialog.isOpen}
         onClose={tableActions.handleDeleteDialogClose}
         onConfirm={tableActions.handleTaskDelete}
-        taskTitle={deleteConfirmDialog.task?.title || ""}
+        taskTitle={deleteConfirmDialog.task?.title || ''}
       />
 
       {/* タスク編集ダイアログ */}

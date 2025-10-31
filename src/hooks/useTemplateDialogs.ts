@@ -1,10 +1,10 @@
-import { useState, useCallback } from "react";
-import type { TaskTemplate } from "../types/template";
+import { useState, useCallback } from 'react';
+import type { TaskTemplate } from '../types/template';
 
 interface EditDialogState {
   isOpen: boolean;
   template: TaskTemplate | null;
-  mode: "create" | "edit";
+  mode: 'create' | 'edit';
 }
 
 interface DeleteDialogState {
@@ -35,7 +35,7 @@ export const useTemplateDialogs = (): UseTemplateDialogsReturn => {
   const [editDialog, setEditDialog] = useState<EditDialogState>({
     isOpen: false,
     template: null,
-    mode: "create",
+    mode: 'create',
   });
 
   // 削除ダイアログ状態
@@ -49,7 +49,7 @@ export const useTemplateDialogs = (): UseTemplateDialogsReturn => {
     setEditDialog({
       isOpen: true,
       template: null,
-      mode: "create",
+      mode: 'create',
     });
   }, []);
 
@@ -58,7 +58,7 @@ export const useTemplateDialogs = (): UseTemplateDialogsReturn => {
     setEditDialog({
       isOpen: true,
       template,
-      mode: "edit",
+      mode: 'edit',
     });
   }, []);
 
@@ -67,7 +67,7 @@ export const useTemplateDialogs = (): UseTemplateDialogsReturn => {
     setEditDialog({
       isOpen: false,
       template: null,
-      mode: "create",
+      mode: 'create',
     });
   }, []);
 

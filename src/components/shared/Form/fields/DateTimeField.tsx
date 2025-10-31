@@ -4,14 +4,12 @@
  * date, datetime-local, time 入力タイプに対応
  */
 
-import React, { useCallback } from "react";
-import { Input } from "@/components/ui/input";
+import React, { useCallback } from 'react';
+import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 
-import {
-  toStringValue,
-} from "../../../../utils/formHelpers";
-import type { DateTimeFieldProps } from "./types";
+import { toStringValue } from '../../../../utils/formHelpers';
+import type { DateTimeFieldProps } from './types';
 
 /**
  * 日付・時刻入力フィールドコンポーネント
@@ -46,7 +44,7 @@ export const DateTimeField: React.FC<DateTimeFieldProps> = React.memo(
       (e: React.ChangeEvent<HTMLInputElement>) => {
         onChange(e.target.value);
       },
-      [onChange],
+      [onChange]
     );
 
     /**
@@ -58,7 +56,7 @@ export const DateTimeField: React.FC<DateTimeFieldProps> = React.memo(
           onKeyDown(e);
         }
       },
-      [onKeyDown],
+      [onKeyDown]
     );
 
     /**
@@ -95,7 +93,8 @@ export const DateTimeField: React.FC<DateTimeFieldProps> = React.memo(
         autoFocus={autoFocus}
         disabled={disabled}
         className={cn(
-          hasError && "border-destructive focus:border-destructive focus:ring-destructive"
+          hasError &&
+            'border-destructive focus:border-destructive focus:ring-destructive'
         )}
         style={style ? (style as React.CSSProperties) : undefined}
         aria-required={validation?.required}
@@ -106,8 +105,8 @@ export const DateTimeField: React.FC<DateTimeFieldProps> = React.memo(
         {...(max ? { max } : {})}
       />
     );
-  },
+  }
 );
 
 // デバッグ用のdisplayName設定
-DateTimeField.displayName = "DateTimeField";
+DateTimeField.displayName = 'DateTimeField';

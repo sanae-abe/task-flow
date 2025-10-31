@@ -4,11 +4,11 @@
  * checkbox 入力タイプに対応
  */
 
-import React, { useCallback } from "react";
-import { Checkbox } from "@/components/ui/checkbox";
+import React, { useCallback } from 'react';
+import { Checkbox } from '@/components/ui/checkbox';
 import { cn } from '@/lib/utils';
 
-import type { CheckboxFieldProps } from "./types";
+import type { CheckboxFieldProps } from './types';
 
 /**
  * チェックボックス入力フィールドコンポーネント
@@ -36,7 +36,7 @@ export const CheckboxField: React.FC<CheckboxFieldProps> = React.memo(
       (checked: boolean) => {
         onChange(checked);
       },
-      [onChange],
+      [onChange]
     );
 
     /**
@@ -70,15 +70,16 @@ export const CheckboxField: React.FC<CheckboxFieldProps> = React.memo(
         onFocus={handleFocus}
         disabled={disabled}
         className={cn(
-          hasError && "border-destructive focus:border-destructive focus:ring-destructive"
+          hasError &&
+            'border-destructive focus:border-destructive focus:ring-destructive'
         )}
         aria-required={validation?.required}
         aria-invalid={hasError}
         aria-describedby={hasError ? `${id}-_error` : undefined}
       />
     );
-  },
+  }
 );
 
 // デバッグ用のdisplayName設定
-CheckboxField.displayName = "CheckboxField";
+CheckboxField.displayName = 'CheckboxField';

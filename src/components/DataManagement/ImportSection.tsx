@@ -12,7 +12,17 @@ import DialogFlashMessage from '../shared/DialogFlashMessage';
  */
 interface ImportSectionProps {
   /** メッセージ表示時のコールバック */
-  onMessage?: (message: { type: 'success' | 'critical' | 'warning' | 'danger' | 'default' | 'info' | 'upsell'; text: string }) => void;
+  onMessage?: (message: {
+    type:
+      | 'success'
+      | 'critical'
+      | 'warning'
+      | 'danger'
+      | 'default'
+      | 'info'
+      | 'upsell';
+    text: string;
+  }) => void;
 }
 
 export const ImportSection = memo<ImportSectionProps>(({ onMessage }) => {
@@ -22,7 +32,7 @@ export const ImportSection = memo<ImportSectionProps>(({ onMessage }) => {
     setImportMode,
     clearSelection,
     executeImport,
-    maxFileSize
+    maxFileSize,
   } = useDataImport({
     onSuccess: () => {
       // 成功後に少し待ってから選択をクリア
@@ -33,48 +43,50 @@ export const ImportSection = memo<ImportSectionProps>(({ onMessage }) => {
     onError: () => {
       // エラー処理は useDataImport 内で統一して実行
     },
-    onMessage
+    onMessage,
   });
 
   const dropZoneProps = useDataImportDropZone({
     maxFileSize,
     onFileSelected: selectFile,
-    disabled: state.isLoading
+    disabled: state.isLoading,
   });
 
   return (
-    <div className="flex flex-col gap-3 w-full">
+    <div className='flex flex-col gap-3 w-full'>
       {/* インポートモード選択 */}
       <div>
-        <label className="text-sm font-semibold">
-          インポートモード
-        </label>
-        <div className="mt-1 space-y-2">
-          <div className="flex items-center space-x-2">
+        <label className='text-sm font-semibold'>インポートモード</label>
+        <div className='mt-1 space-y-2'>
+          <div className='flex items-center space-x-2'>
             <input
-              type="radio"
-              id="merge"
-              name="importMode"
-              value="merge"
+              type='radio'
+              id='merge'
+              name='importMode'
+              value='merge'
               checked={state.mode === 'merge'}
-              onChange={(e) => setImportMode(e.target.value as 'merge' | 'replace')}
-              className="h-4 w-4 text-primary focus:ring-primary border-gray-300"
+              onChange={e =>
+                setImportMode(e.target.value as 'merge' | 'replace')
+              }
+              className='h-4 w-4 text-primary focus:ring-primary border-gray-300'
             />
-            <label htmlFor="merge" className="text-sm text-foreground">
+            <label htmlFor='merge' className='text-sm text-foreground'>
               既存データに追加（推奨）
             </label>
           </div>
-          <div className="flex items-center space-x-2">
+          <div className='flex items-center space-x-2'>
             <input
-              type="radio"
-              id="replace"
-              name="importMode"
-              value="replace"
+              type='radio'
+              id='replace'
+              name='importMode'
+              value='replace'
               checked={state.mode === 'replace'}
-              onChange={(e) => setImportMode(e.target.value as 'merge' | 'replace')}
-              className="h-4 w-4 text-primary focus:ring-primary border-gray-300"
+              onChange={e =>
+                setImportMode(e.target.value as 'merge' | 'replace')
+              }
+              className='h-4 w-4 text-primary focus:ring-primary border-gray-300'
             />
-            <label htmlFor="replace" className="text-sm text-foreground">
+            <label htmlFor='replace' className='text-sm text-foreground'>
               既存データを置換
             </label>
           </div>
@@ -83,11 +95,12 @@ export const ImportSection = memo<ImportSectionProps>(({ onMessage }) => {
 
       {/* 警告メッセージ - 置換モード時のみ表示 */}
       {state.mode === 'replace' && (
-        <DialogFlashMessage message={{
-          type: 'warning',
-          title: '危険: データの置換操作',
-          text: `現在のすべてのデータが削除されます。この操作は元に戻せません。`,
-        }}
+        <DialogFlashMessage
+          message={{
+            type: 'warning',
+            title: '危険: データの置換操作',
+            text: `現在のすべてのデータが削除されます。この操作は元に戻せません。`,
+          }}
           isStatic
         />
       )}
@@ -107,38 +120,36 @@ export const ImportSection = memo<ImportSectionProps>(({ onMessage }) => {
           onClick={dropZoneProps.handleFileSelect}
           fileInputRef={dropZoneProps.fileInputRef}
           onFileInputChange={dropZoneProps.handleFileInputChange}
-          importMode="both"
-          title="JSONファイルをドラッグ&ドロップ"
-          subtitle="または クリックしてファイルを選択"
-          ariaLabel="JSONファイルを選択してデータをインポート"
+          importMode='both'
+          title='JSONファイルをドラッグ&ドロップ'
+          subtitle='または クリックしてファイルを選択'
+          ariaLabel='JSONファイルを選択してデータをインポート'
         />
       )}
 
       {/* 選択されたファイル表示 - AttachmentList風スタイル */}
       {state.selectedFile && (
-        <div className="flex flex-col gap-2">
-          <p className="text-sm font-bold">
-            選択されたファイル
-          </p>
-          <div className="flex items-center justify-between p-2 bg-gray-50 rounded-md border border-border border-gray-200">
-            <div className="flex items-center gap-2 flex-1 min-w-0">
+        <div className='flex flex-col gap-2'>
+          <p className='text-sm font-bold'>選択されたファイル</p>
+          <div className='flex items-center justify-between p-2 bg-gray-50 rounded-md border border-border border-gray-200'>
+            <div className='flex items-center gap-2 flex-1 min-w-0'>
               <File size={24} />
-              <div className="min-w-0 flex-1 flex flex-col gap-1">
-                <p className="text-sm font-semibold break-words leading-tight">
+              <div className='min-w-0 flex-1 flex flex-col gap-1'>
+                <p className='text-sm font-semibold break-words leading-tight'>
                   {state.selectedFile.name}
                 </p>
-                <p className="text-xs text-zinc-700">
+                <p className='text-xs text-zinc-700'>
                   {(state.selectedFile.size / 1024).toFixed(1)} KB
                 </p>
               </div>
             </div>
             <Button
-              variant="ghost"
-              size="sm"
+              variant='ghost'
+              size='sm'
               onClick={clearSelection}
               disabled={state.isLoading}
-              className="p-1 h-auto min-w-0 text-destructive hover:text-destructive"
-              aria-label="ファイルを削除"
+              className='p-1 h-auto min-w-0 text-destructive hover:text-destructive'
+              aria-label='ファイルを削除'
             >
               <X size={16} />
             </Button>
@@ -148,9 +159,9 @@ export const ImportSection = memo<ImportSectionProps>(({ onMessage }) => {
 
       {/* ローディング表示 */}
       {state.isLoading && (
-        <div className="flex items-center gap-2">
-          <Loader2 className="h-4 w-4 animate-spin" />
-          <p className="text-sm">処理中...</p>
+        <div className='flex items-center gap-2'>
+          <Loader2 className='h-4 w-4 animate-spin' />
+          <p className='text-sm'>処理中...</p>
         </div>
       )}
 
@@ -160,13 +171,12 @@ export const ImportSection = memo<ImportSectionProps>(({ onMessage }) => {
           variant={state.mode === 'replace' ? 'destructive' : 'default'}
           onClick={executeImport}
           disabled={state.isLoading}
-          className="self-start"
+          className='self-start'
         >
-          <Upload size={16} className="mr-2" />
+          <Upload size={16} className='mr-2' />
           {state.isLoading ? 'インポート中...' : 'インポート実行'}
         </Button>
       )}
-
     </div>
   );
 });

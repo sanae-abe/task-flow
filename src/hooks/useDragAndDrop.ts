@@ -6,13 +6,13 @@ import {
   type DragEndEvent,
   type DragStartEvent,
   type DragOverEvent,
-} from "@dnd-kit/core";
-import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
-import { useState } from "react";
+} from '@dnd-kit/core';
+import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
+import { useState } from 'react';
 
-import type { Task, KanbanBoard } from "../types";
+import type { Task, KanbanBoard } from '../types';
 
-import { useTaskFinder } from "./useTaskFinder";
+import { useTaskFinder } from './useTaskFinder';
 
 interface UseDragAndDropProps {
   board: KanbanBoard | null;
@@ -20,7 +20,7 @@ interface UseDragAndDropProps {
     taskId: string,
     sourceColumnId: string,
     targetColumnId: string,
-    targetIndex: number,
+    targetIndex: number
   ) => void;
   onSortToManual?: () => void;
 }
@@ -49,7 +49,7 @@ export const useDragAndDrop = ({
     }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    }),
+    })
   );
 
   const handleDragStart = (event: DragStartEvent): void => {
@@ -96,21 +96,21 @@ export const useDragAndDrop = ({
     let targetIndex: number;
 
     // カラムにドロップした場合
-    const targetColumn = board.columns.find((col) => col.id === overId);
+    const targetColumn = board.columns.find(col => col.id === overId);
     if (targetColumn) {
       targetColumnId = overId;
       targetIndex = targetColumn.tasks.length; // カラムの最後に追加
     } else {
       // タスクにドロップした場合、そのタスクの位置を特定
-      targetColumnId = findTaskColumnId(overId) ?? "";
-      const targetCol = board.columns.find((col) => col.id === targetColumnId);
+      targetColumnId = findTaskColumnId(overId) ?? '';
+      const targetCol = board.columns.find(col => col.id === targetColumnId);
 
       if (!targetCol) {
         return;
       }
 
       const targetTaskIndex = targetCol.tasks.findIndex(
-        (task: Task) => task.id === overId,
+        (task: Task) => task.id === overId
       );
 
       if (targetTaskIndex === -1) {
@@ -119,15 +119,13 @@ export const useDragAndDrop = ({
 
       // 同じカラム内でドラッグした場合
       if (sourceColumnId === targetColumnId) {
-        const sourceCol = board.columns.find(
-          (col) => col.id === sourceColumnId,
-        );
+        const sourceCol = board.columns.find(col => col.id === sourceColumnId);
         if (!sourceCol) {
           return;
         }
 
         const oldIndex = sourceCol.tasks.findIndex(
-          (task: Task) => task.id === activeTaskId,
+          (task: Task) => task.id === activeTaskId
         );
 
         if (oldIndex === -1) {

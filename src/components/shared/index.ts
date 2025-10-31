@@ -1,6 +1,9 @@
 // Shared components for reuse across the application
 export { default as DialogFlashMessage } from './DialogFlashMessage';
-export type { DialogFlashMessageData, DialogMessageType } from './DialogFlashMessage';
+export type {
+  DialogFlashMessageData,
+  DialogMessageType,
+} from './DialogFlashMessage';
 export { default as InlineMessage } from './InlineMessage';
 export { default as StatusBadge } from './StatusBadge';
 export { default as IconButton } from './IconButton';

@@ -5,7 +5,7 @@
  */
 
 import React from 'react';
-import EmojiPicker, { EmojiClickData, EmojiStyle } from "emoji-picker-react";
+import EmojiPicker, { EmojiClickData, EmojiStyle } from 'emoji-picker-react';
 
 interface EmojiPickerWrapperProps {
   isOpen: boolean;
@@ -47,15 +47,18 @@ const EmojiPickerWrapper: React.FC<EmojiPickerWrapperProps> = ({
   return (
     <div
       data-emoji-picker
-      className="fixed z-500 border border-border rounded-lg bg-background animate-in fade-in duration-200"
-      style={{
-        top: position.top,
-        left: position.left,
-        boxShadow: '0 20px 80px rgba(0, 0, 0, 0.2), 0 10px 40px rgba(0, 0, 0, 0.15), 0 5px 20px rgba(0, 0, 0, 0.1)',
-        // Emoji Picker CSS variables - 24px強制適用
-        '--epr-emoji-size': '22px !important',
-        '--epr-category-navigation-button-size': '32px !important',
-      } as React.CSSProperties}
+      className='fixed z-500 border border-border rounded-lg bg-background animate-in fade-in duration-200'
+      style={
+        {
+          top: position.top,
+          left: position.left,
+          boxShadow:
+            '0 20px 80px rgba(0, 0, 0, 0.2), 0 10px 40px rgba(0, 0, 0, 0.15), 0 5px 20px rgba(0, 0, 0, 0.1)',
+          // Emoji Picker CSS variables - 24px強制適用
+          '--epr-emoji-size': '22px !important',
+          '--epr-category-navigation-button-size': '32px !important',
+        } as React.CSSProperties
+      }
     >
       <style>
         {`
@@ -98,7 +101,7 @@ const EmojiPickerWrapper: React.FC<EmojiPickerWrapperProps> = ({
         searchDisabled={false}
         skinTonesDisabled
         previewConfig={{
-          showPreview: false
+          showPreview: false,
         }}
       />
     </div>

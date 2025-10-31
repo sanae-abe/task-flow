@@ -1,10 +1,10 @@
-import React from "react";
-import type { SubTask } from "../../types";
-import { useSubTaskEdit } from "./hooks/useSubTaskEdit";
-import { useSubTaskDrag } from "./hooks/useSubTaskDrag";
-import { EditingView } from "./components/EditingView";
-import { DisplayView } from "./components/DisplayView";
-import { DragHandleAndToggle } from "./components/DragHandleAndToggle";
+import React from 'react';
+import type { SubTask } from '../../types';
+import { useSubTaskEdit } from './hooks/useSubTaskEdit';
+import { useSubTaskDrag } from './hooks/useSubTaskDrag';
+import { EditingView } from './components/EditingView';
+import { DisplayView } from './components/DisplayView';
+import { DragHandleAndToggle } from './components/DragHandleAndToggle';
 
 interface SubTaskItemProps {
   subTask: SubTask;
@@ -55,7 +55,7 @@ const SubTaskItem: React.FC<SubTaskItemProps> = ({
     <div
       ref={setNodeRef}
       style={style}
-      className="group flex items-center p-1 rounded bg-background cursor-pointer relative hover:bg-muted transition-colors"
+      className='group flex items-center p-1 rounded bg-background cursor-pointer relative hover:bg-muted transition-colors'
     >
       {/* ドラッグハンドルとトグルボタン */}
       <DragHandleAndToggle

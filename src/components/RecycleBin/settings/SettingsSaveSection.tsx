@@ -1,7 +1,7 @@
-import React from "react";
-import { MESSAGES, UI_TEXT } from "../../../constants/recycleBin";
-import { LoadingButton } from "../../shared/LoadingButton";
-import { InlineMessage } from "../../shared";
+import React from 'react';
+import { MESSAGES, UI_TEXT } from '../../../constants/recycleBin';
+import { LoadingButton } from '../../shared/LoadingButton';
+import { InlineMessage } from '../../shared';
 
 export interface SettingsSaveSectionProps {
   /** ローディング状態 */
@@ -9,7 +9,10 @@ export interface SettingsSaveSectionProps {
   /** バリデーションエラーがあるかどうか */
   hasValidationError: boolean;
   /** 表示するメッセージ */
-  message: { text: string; type: 'success' | '_error' | 'warning' | 'info' } | null;
+  message: {
+    text: string;
+    type: 'success' | '_error' | 'warning' | 'info';
+  } | null;
   /** 保存ハンドラ */
   onSave: () => Promise<void>;
 }
@@ -24,24 +27,24 @@ export const SettingsSaveSection: React.FC<SettingsSaveSectionProps> = ({
   message,
   onSave,
 }) => (
-    <div className="mt-6">
-      <LoadingButton
-        primerVariant="primary"
-        isLoading={isLoading}
-        loadingText={MESSAGES.SAVE.IN_PROGRESS}
-        onClick={onSave}
-        disabled={hasValidationError}
-      >
-        {UI_TEXT.PANEL.SAVE_BUTTON}
-      </LoadingButton>
-      <div className="mt-3">
-        {message && (
-          <InlineMessage
-            variant={message.type === 'success' ? "success" : "critical"}
-            message={message.text}
-            size="small"
-          />
-        )}
-      </div>
+  <div className='mt-6'>
+    <LoadingButton
+      primerVariant='primary'
+      isLoading={isLoading}
+      loadingText={MESSAGES.SAVE.IN_PROGRESS}
+      onClick={onSave}
+      disabled={hasValidationError}
+    >
+      {UI_TEXT.PANEL.SAVE_BUTTON}
+    </LoadingButton>
+    <div className='mt-3'>
+      {message && (
+        <InlineMessage
+          variant={message.type === 'success' ? 'success' : 'critical'}
+          message={message.text}
+          size='small'
+        />
+      )}
     </div>
-  );
+  </div>
+);

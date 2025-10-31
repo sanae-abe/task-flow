@@ -1,9 +1,9 @@
-import React, { useMemo } from "react";
-import type { FormFieldConfig } from "../../../types/unified-form";
-import { useUnifiedForm } from "../../../hooks/useUnifiedForm";
-import UnifiedFormField from "../../shared/Form/UnifiedFormField";
-import type { RecurrenceConfig } from "../types";
-import { PATTERN_OPTIONS } from "../utils/constants";
+import React, { useMemo } from 'react';
+import type { FormFieldConfig } from '../../../types/unified-form';
+import { useUnifiedForm } from '../../../hooks/useUnifiedForm';
+import UnifiedFormField from '../../shared/Form/UnifiedFormField';
+import type { RecurrenceConfig } from '../types';
+import { PATTERN_OPTIONS } from '../utils/constants';
 
 interface RecurrencePatternSelectorProps {
   config: RecurrenceConfig;
@@ -17,63 +17,71 @@ const RecurrencePatternSelector: React.FC<RecurrencePatternSelectorProps> = ({
   onIntervalChange,
 }) => {
   // 初期値の設定
-  const initialValues = useMemo(() => ({
-    pattern: config.pattern || 'daily',
-    interval: (config.interval || 1).toString()
-  }), [config.pattern, config.interval]);
+  const initialValues = useMemo(
+    () => ({
+      pattern: config.pattern || 'daily',
+      interval: (config.interval || 1).toString(),
+    }),
+    [config.pattern, config.interval]
+  );
 
   // パターンオプションの変換
-  const patternOptions = useMemo(() =>
-    PATTERN_OPTIONS.map(option => ({
-      value: option.value,
-      label: option.label
-    })), []
+  const patternOptions = useMemo(
+    () =>
+      PATTERN_OPTIONS.map(option => ({
+        value: option.value,
+        label: option.label,
+      })),
+    []
   );
 
   // 間隔単位の取得
   const getIntervalUnit = (pattern: string) => {
     switch (pattern) {
-      case "daily":
-        return "日ごと";
-      case "weekly":
-        return "週間ごと";
-      case "monthly":
-        return "ヶ月ごと";
-      case "yearly":
-        return "年ごと";
+      case 'daily':
+        return '日ごと';
+      case 'weekly':
+        return '週間ごと';
+      case 'monthly':
+        return 'ヶ月ごと';
+      case 'yearly':
+        return '年ごと';
       default:
-        return "日ごと";
+        return '日ごと';
     }
   };
 
   // フィールド設定
-  const fields: FormFieldConfig[] = useMemo(() => [
-    // パターン選択
-    {
-      id: 'pattern',
-      name: 'pattern',
-      type: 'select',
-      label: 'パターン',
-      value: initialValues.pattern,
-      options: patternOptions,
-      onChange: () => { }, // フォームで管理
-    },
-    // 間隔設定
-    {
-      id: 'interval',
-      name: 'interval',
-      type: 'number',
-      label: '間隔',
-      value: initialValues.interval,
-      validation: {
-        required: true,
-        min: 1,
+  const fields: FormFieldConfig[] = useMemo(
+    () => [
+      // パターン選択
+      {
+        id: 'pattern',
+        name: 'pattern',
+        type: 'select',
+        label: 'パターン',
+        value: initialValues.pattern,
+        options: patternOptions,
+        onChange: () => {}, // フォームで管理
       },
-      min: 1,
-      step: 1,
-      onChange: () => { }, // フォームで管理
-    },
-  ], [initialValues, patternOptions]);
+      // 間隔設定
+      {
+        id: 'interval',
+        name: 'interval',
+        type: 'number',
+        label: '間隔',
+        value: initialValues.interval,
+        validation: {
+          required: true,
+          min: 1,
+        },
+        min: 1,
+        step: 1,
+        onChange: () => {}, // フォームで管理
+      },
+    ],
+    [initialValues, patternOptions]
+  );
 
   // 統合フォーム管理
   const form = useUnifiedForm(fields, initialValues);
@@ -104,7 +112,7 @@ const RecurrencePatternSelector: React.FC<RecurrencePatternSelectorProps> = ({
   }
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className='flex flex-col gap-2'>
       <UnifiedFormField
         id={patternField.id}
         name={patternField.name}
@@ -118,7 +126,7 @@ const RecurrencePatternSelector: React.FC<RecurrencePatternSelectorProps> = ({
         touched={form.state.touched['pattern']}
         disabled={form.state.isSubmitting}
         hideLabel={false}
-        className="flex flex-row items-center gap-1 [&>label]:w-[80px] [&>label]:mb-0 [&>select]:w-auto"
+        className='flex flex-row items-center gap-1 [&>label]:w-[80px] [&>label]:mb-0 [&>select]:w-auto'
       />
       <UnifiedFormField
         id={intervalField.id}
@@ -135,9 +143,9 @@ const RecurrencePatternSelector: React.FC<RecurrencePatternSelectorProps> = ({
         touched={form.state.touched['interval']}
         disabled={form.state.isSubmitting}
         hideLabel={false}
-        className="flex flex-row items-center gap-1 [&>label]:w-[80px] [&>label]:mb-0 [&>input]:w-auto"
+        className='flex flex-row items-center gap-1 [&>label]:w-[80px] [&>label]:mb-0 [&>input]:w-auto'
       />
-      <span className="text-sm">{getIntervalUnit(currentPattern)}</span>
+      <span className='text-sm'>{getIntervalUnit(currentPattern)}</span>
     </div>
   );
 };

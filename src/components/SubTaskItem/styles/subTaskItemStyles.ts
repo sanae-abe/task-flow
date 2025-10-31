@@ -1,46 +1,46 @@
 export const subTaskItemStyles = {
   container: {
-    display: "flex",
-    alignItems: "center",
+    display: 'flex',
+    alignItems: 'center',
     gap: 2,
     borderRadius: 2,
-    bg: "canvas.default",
-    cursor: "pointer",
-    position: "relative",
-    "&:hover": {
-      bg: "canvas.subtle",
+    bg: 'canvas.default',
+    cursor: 'pointer',
+    position: 'relative',
+    '&:hover': {
+      bg: 'canvas.subtle',
     },
-    "&:hover .action-buttons": {
-      opacity: "1 !important",
+    '&:hover .action-buttons': {
+      opacity: '1 !important',
     },
-    "&:hover .drag-handle": {
-      opacity: "1 !important",
+    '&:hover .drag-handle': {
+      opacity: '1 !important',
     },
   },
 
   dragHandle: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
     width: 24,
     height: 24,
-    color: "fg.muted",
+    color: 'fg.muted',
     opacity: 0,
-    transition: "opacity 0.2s ease",
-    cursor: "grab",
+    transition: 'opacity 0.2s ease',
+    cursor: 'grab',
     borderRadius: 1,
-    "&:active": {
-      cursor: "grabbing",
+    '&:active': {
+      cursor: 'grabbing',
     },
-    "&:hover": {
-      bg: "neutral.muted",
-      color: "accent.fg",
+    '&:hover': {
+      bg: 'neutral.muted',
+      color: 'accent.fg',
     },
   },
 
   toggleButton: {
-    "&:hover": {
-      bg: "transparent",
+    '&:hover': {
+      bg: 'transparent',
     },
   },
 
@@ -52,53 +52,53 @@ export const subTaskItemStyles = {
   },
 
   editActionsContainer: {
-    display: "flex",
+    display: 'flex',
     gap: 1,
     opacity: 1,
   },
 
   saveButton: {
-    color: "success.fg",
-    "&:hover": {
-      bg: "transparent",
-      color: "success.emphasis",
+    color: 'success.fg',
+    '&:hover': {
+      bg: 'transparent',
+      color: 'success.emphasis',
     },
   },
 
   cancelButton: {
-    color: "fg.muted",
-    "&:hover": {
-      bg: "transparent",
-      color: "danger.fg",
+    color: 'fg.muted',
+    '&:hover': {
+      bg: 'transparent',
+      color: 'danger.fg',
     },
   },
 
   taskText: {
     flex: 1,
-    textDecoration: "none",
+    textDecoration: 'none',
     fontSize: 1,
   },
 
   actionButtons: {
-    display: "flex",
+    display: 'flex',
     gap: 1,
     opacity: 0,
-    transition: "opacity 0.2s ease",
+    transition: 'opacity 0.2s ease',
   },
 
   editButton: {
-    color: "fg.muted",
-    "&:hover": {
-      bg: "transparent",
-      color: "accent.fg",
+    color: 'fg.muted',
+    '&:hover': {
+      bg: 'transparent',
+      color: 'accent.fg',
     },
   },
 
   deleteButton: {
-    color: "fg.muted",
-    "&:hover": {
-      bg: "transparent",
-      color: "danger.fg",
+    color: 'fg.muted',
+    '&:hover': {
+      bg: 'transparent',
+      color: 'danger.fg',
     },
   },
 } as const;

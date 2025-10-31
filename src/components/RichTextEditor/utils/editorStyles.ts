@@ -16,7 +16,8 @@ export const EDITOR_STYLES = {
     border: '1px solid #d0d7de',
     borderRadius: '0.5rem',
     padding: '8px',
-    fontFamily: "'SFMono-Regular', 'Consolas', 'Liberation Mono', 'Menlo', monospace",
+    fontFamily:
+      "'SFMono-Regular', 'Consolas', 'Liberation Mono', 'Menlo', monospace",
     fontSize: '13px',
     lineHeight: '1.45',
     overflowX: 'auto',
@@ -28,7 +29,10 @@ export const EDITOR_STYLES = {
 /**
  * スタイル文字列生成関数
  */
-export const createInlineStyleString = (styles: Record<string, string | number>) => Object.entries(styles)
+export const createInlineStyleString = (
+  styles: Record<string, string | number>
+) =>
+  Object.entries(styles)
     .map(([key, value]) => {
       const cssKey = key.replace(/([A-Z])/g, '-$1').toLowerCase();
       return `${cssKey}: ${value}`;

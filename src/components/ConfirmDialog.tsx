@@ -1,6 +1,6 @@
-import { memo } from "react";
+import { memo } from 'react';
 
-import { ConfirmDialog as UnifiedConfirmDialog } from "./shared/Dialog";
+import { ConfirmDialog as UnifiedConfirmDialog } from './shared/Dialog';
 
 interface ConfirmDialogProps {
   isOpen: boolean;
@@ -17,8 +17,8 @@ const ConfirmDialog = memo<ConfirmDialogProps>(
     isOpen,
     title,
     message,
-    confirmText = "削除",
-    cancelText = "キャンセル",
+    confirmText = '削除',
+    cancelText = 'キャンセル',
     onConfirm,
     onCancel,
   }) => (
@@ -31,9 +31,9 @@ const ConfirmDialog = memo<ConfirmDialogProps>(
       onClose={onCancel}
       confirmText={confirmText}
       cancelText={cancelText}
-      confirmVariant="danger"
+      confirmVariant='danger'
     />
-  ),
+  )
 );
 
 export default ConfirmDialog;

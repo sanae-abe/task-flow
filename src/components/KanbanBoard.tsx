@@ -3,18 +3,18 @@ import {
   DragOverlay,
   pointerWithin,
   type CollisionDetection,
-} from "@dnd-kit/core";
-import React from "react";
+} from '@dnd-kit/core';
+import React from 'react';
 
-import { useBoard } from "../contexts/BoardContext";
-import { useTask } from "../contexts/TaskContext";
-import { useUI } from "../contexts/UIContext";
-import { useDragAndDrop } from "../hooks/useDragAndDrop";
-import { useKeyboardDragAndDrop } from "../hooks/useKeyboardDragAndDrop";
-import type { Task } from "../types";
+import { useBoard } from '../contexts/BoardContext';
+import { useTask } from '../contexts/TaskContext';
+import { useUI } from '../contexts/UIContext';
+import { useDragAndDrop } from '../hooks/useDragAndDrop';
+import { useKeyboardDragAndDrop } from '../hooks/useKeyboardDragAndDrop';
+import type { Task } from '../types';
 
-import KanbanColumn from "./KanbanColumn";
-import TaskCard from "./TaskCard";
+import KanbanColumn from './KanbanColumn';
+import TaskCard from './TaskCard';
 
 const KanbanBoard: React.FC = () => {
   const { currentBoard } = useBoard();
@@ -30,21 +30,19 @@ const KanbanBoard: React.FC = () => {
   } = useDragAndDrop({
     board: currentBoard,
     onMoveTask: moveTask,
-    onSortToManual: () => setSortOption("manual"),
+    onSortToManual: () => setSortOption('manual'),
   });
 
   const keyboardDragAndDrop = useKeyboardDragAndDrop({
     board: currentBoard,
     onMoveTask: moveTask,
-    onSortToManual: () => setSortOption("manual"),
+    onSortToManual: () => setSortOption('manual'),
   });
 
   if (!currentBoard) {
     return (
-      <div className="flex items-center justify-center h-96">
-        <p className="text-base text-zinc-500">
-          Please select a board
-        </p>
+      <div className='flex items-center justify-center h-96'>
+        <p className='text-base text-zinc-500'>Please select a board</p>
       </div>
     );
   }
@@ -54,18 +52,18 @@ const KanbanBoard: React.FC = () => {
   };
 
   // 厳密な衝突検出 - pointerWithinのみ使用で範囲外ドロップを正確に検出
-  const collisionDetectionStrategy: CollisionDetection = (args) => {
+  const collisionDetectionStrategy: CollisionDetection = args => {
     // pointerWithinのみを使用して最も厳密な検出
     const pointerIntersections = pointerWithin(args);
 
     if (pointerIntersections.length > 0) {
       // タスクとカラムが重なっている場合、タスクを優先（削除済みカラムは除外）
-      const taskIntersections = pointerIntersections.filter((intersection) =>
+      const taskIntersections = pointerIntersections.filter(intersection =>
         currentBoard?.columns
-          .filter(column => column.deletionState !== "deleted")
-          .some((column) =>
-            column.tasks.some((task) => task.id === intersection.id),
-          ),
+          .filter(column => column.deletionState !== 'deleted')
+          .some(column =>
+            column.tasks.some(task => task.id === intersection.id)
+          )
       );
 
       if (taskIntersections.length > 0) {
@@ -80,7 +78,7 @@ const KanbanBoard: React.FC = () => {
   };
 
   return (
-    <div className="bg-neutral-100 w-screen">
+    <div className='bg-neutral-100 w-screen'>
       <DndContext
         sensors={sensors}
         collisionDetection={collisionDetectionStrategy}
@@ -89,20 +87,24 @@ const KanbanBoard: React.FC = () => {
         onDragEnd={handleDragEnd}
       >
         <div
-          className="flex overflow-auto gap-4 p-5 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
+          className='flex overflow-auto gap-4 p-5 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100'
           style={{
             willChange: 'scroll-position',
             contain: 'layout style paint',
           }}
         >
           {currentBoard.columns
-            .filter(column => column.deletionState !== "deleted")
+            .filter(column => column.deletionState !== 'deleted')
             .map((column, index) => (
               <KanbanColumn
                 key={column.id}
                 column={column}
                 columnIndex={index}
-                totalColumns={currentBoard.columns.filter(col => col.deletionState !== "deleted").length}
+                totalColumns={
+                  currentBoard.columns.filter(
+                    col => col.deletionState !== 'deleted'
+                  ).length
+                }
                 onTaskClick={handleTaskClick}
                 keyboardDragAndDrop={keyboardDragAndDrop}
               />
@@ -110,7 +112,7 @@ const KanbanBoard: React.FC = () => {
         </div>
 
         <DragOverlay>
-          {activeTask ? <TaskCard task={activeTask} columnId="" /> : null}
+          {activeTask ? <TaskCard task={activeTask} columnId='' /> : null}
         </DragOverlay>
       </DndContext>
     </div>

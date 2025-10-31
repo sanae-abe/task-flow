@@ -26,27 +26,27 @@ export const RETENTION_PRESETS: readonly RetentionPreset[] = [
   {
     label: '1週間',
     days: 7,
-    description: '短期間の保持。頻繁に整理したい場合に適しています'
+    description: '短期間の保持。頻繁に整理したい場合に適しています',
   },
   {
     label: '2週間',
     days: 14,
-    description: '適度な保持期間。日常的な作業に適しています'
+    description: '適度な保持期間。日常的な作業に適しています',
   },
   {
     label: '1ヶ月',
     days: 30,
-    description: '推奨設定。多くの用途に適したバランスの良い期間'
+    description: '推奨設定。多くの用途に適したバランスの良い期間',
   },
   {
     label: '3ヶ月',
     days: 90,
-    description: '長期保持。重要なタスクを扱う場合に適しています'
+    description: '長期保持。重要なタスクを扱う場合に適しています',
   },
   {
     label: '無制限',
     days: null,
-    description: '自動削除されません。手動で管理する必要があります'
+    description: '自動削除されません。手動で管理する必要があります',
   },
 ] as const;
 
@@ -85,31 +85,42 @@ export const MESSAGES = {
 export const UI_TEXT = {
   PANEL: {
     TITLE: 'ゴミ箱設定',
-    DESCRIPTION: '削除したボード、カラム、タスクをゴミ箱に保持する期間を設定します。',
-    DESCRIPTION_WITH_UNLIMITED: '削除したボード、カラム、タスクをゴミ箱に保持する期間を設定します。\n期間を過ぎたデータは自動的に完全削除されます。無制限を選択すると自動削除されません。',
+    DESCRIPTION:
+      '削除したボード、カラム、タスクをゴミ箱に保持する期間を設定します。',
+    DESCRIPTION_WITH_UNLIMITED:
+      '削除したボード、カラム、タスクをゴミ箱に保持する期間を設定します。\n期間を過ぎたデータは自動的に完全削除されます。無制限を選択すると自動削除されません。',
     PRESET_TITLE: 'よく使われる設定',
     RETENTION_LABEL: '保持期間',
     RETENTION_UNIT: '日間',
-    RETENTION_HELP: '1〜365日の範囲で設定、または「無制限」ボタンで無制限に設定できます（推奨: 30日）',
+    RETENTION_HELP:
+      '1〜365日の範囲で設定、または「無制限」ボタンで無制限に設定できます（推奨: 30日）',
     SAVE_BUTTON: '設定を保存',
-    IMPORTANT_NOTE_TEXT: '保持期間を短くすると、既にゴミ箱にあるデータも新しい期間で再計算されます。必要なデータは期間変更前に復元することをお勧めします。',
+    IMPORTANT_NOTE_TEXT:
+      '保持期間を短くすると、既にゴミ箱にあるデータも新しい期間で再計算されます。必要なデータは期間変更前に復元することをお勧めします。',
   },
   VIEW: {
     TITLE: 'ゴミ箱',
     EMPTY_TITLE: 'ゴミ箱は空です',
     EMPTY_DESCRIPTION: '削除されたタスクはありません。',
     TASK_COUNT: (count: number) => `${count}件のタスクがゴミ箱にあります`,
-    WARNING_LIMITED: (days: number) => `これらのタスクは${days}日後に自動的に完全削除されます。`,
-    WARNING_UNLIMITED: 'これらのタスクは無制限に保持されます。手動で削除するまで自動削除されません。',
+    WARNING_LIMITED: (days: number) =>
+      `これらのタスクは${days}日後に自動的に完全削除されます。`,
+    WARNING_UNLIMITED:
+      'これらのタスクは無制限に保持されます。手動で削除するまで自動削除されません。',
     EMPTY_BIN_BUTTON: 'ゴミ箱を空にする',
     RESTORE_BUTTON: '復元',
     DELETION_SCHEDULE: '削除予定:',
-    CONFIRM_EMPTY_MESSAGE: (count: number) => `ゴミ箱内の${count}件のタスクをすべて完全削除します。この操作は取り消すことができません。本当に実行しますか？`,
+    CONFIRM_EMPTY_MESSAGE: (count: number) =>
+      `ゴミ箱内の${count}件のタスクをすべて完全削除します。この操作は取り消すことができません。本当に実行しますか？`,
   },
 } as const;
 
 // プリセット検索ヘルパー
-export const findPresetByDays = (days: number | null): RetentionPreset | undefined => RETENTION_PRESETS.find(preset => preset.days === days);
+export const findPresetByDays = (
+  days: number | null
+): RetentionPreset | undefined =>
+  RETENTION_PRESETS.find(preset => preset.days === days);
 
 // プリセットの値のみを取得
-export const getPresetValues = (): (number | null)[] => RETENTION_PRESETS.map(preset => preset.days);
+export const getPresetValues = (): (number | null)[] =>
+  RETENTION_PRESETS.map(preset => preset.days);

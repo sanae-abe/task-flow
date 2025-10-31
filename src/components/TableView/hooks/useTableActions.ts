@@ -1,7 +1,7 @@
-import { useCallback } from "react";
-import type { Task, KanbanBoard } from "../../../types";
-import type { TaskWithColumn } from "../../../types/table";
-import type { TableActions, DeleteConfirmState } from "../types";
+import { useCallback } from 'react';
+import type { Task, KanbanBoard } from '../../../types';
+import type { TaskWithColumn } from '../../../types/table';
+import type { TableActions, DeleteConfirmState } from '../types';
 
 /**
  * テーブルアクション管理カスタムフック
@@ -14,19 +14,19 @@ export const useTableActions = (
     taskId: string,
     sourceColumnId: string,
     targetColumnId: string,
-    targetIndex: number,
+    targetIndex: number
   ) => void,
   deleteTask: (taskId: string, columnId: string) => void,
   openTaskDetail: (taskId: string) => void,
   deleteConfirmDialog: DeleteConfirmState,
-  setDeleteConfirmDialog: (state: DeleteConfirmState) => void,
+  setDeleteConfirmDialog: (state: DeleteConfirmState) => void
 ): TableActions => {
   // タスククリック処理
   const handleTaskClick = useCallback(
     (task: Task) => {
       openTaskDetail(task.id);
     },
-    [openTaskDetail],
+    [openTaskDetail]
   );
 
   // ステータス変更処理
@@ -37,18 +37,18 @@ export const useTableActions = (
       }
 
       const targetColumn = currentBoard?.columns.find(
-        (col) => col.id === newColumnId,
+        col => col.id === newColumnId
       );
       if (targetColumn) {
         moveTask(
           task.id,
           task.columnId,
           newColumnId,
-          targetColumn.tasks.length,
+          targetColumn.tasks.length
         );
       }
     },
-    [currentBoard, moveTask],
+    [currentBoard, moveTask]
   );
 
   // タスク削除クリック処理
@@ -56,7 +56,7 @@ export const useTableActions = (
     (task: TaskWithColumn) => {
       setDeleteConfirmDialog({ isOpen: true, task });
     },
-    [setDeleteConfirmDialog],
+    [setDeleteConfirmDialog]
   );
 
   // タスク削除実行処理
@@ -64,7 +64,7 @@ export const useTableActions = (
     if (deleteConfirmDialog.task) {
       deleteTask(
         deleteConfirmDialog.task.id,
-        deleteConfirmDialog.task.columnId,
+        deleteConfirmDialog.task.columnId
       );
     }
   }, [deleteTask, deleteConfirmDialog.task]);

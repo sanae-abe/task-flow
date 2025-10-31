@@ -4,25 +4,23 @@
  * shadcn/ui data-table ベースのごみ箱テーブル
  */
 
-import React from "react";
-import { ColumnDef, SortingState } from "@tanstack/react-table";
-import {
-  FolderKanban,
-  List,
-  Columns,
-  Clock
-} from "lucide-react";
+import React from 'react';
+import { ColumnDef, SortingState } from '@tanstack/react-table';
+import { FolderKanban, List, Columns, Clock } from 'lucide-react';
 
-import { DataTable } from "@/components/ui/data-table";
-import { RecycleBinItemActions } from "./RecycleBinItemActions";
-import type { RecycleBinItemWithMeta } from "../../../types/recycleBin";
-import type { RecycleBinSettings } from "../../../types/settings";
-import type { SortField } from "../../../hooks/useRecycleBinSort";
+import { DataTable } from '@/components/ui/data-table';
+import { RecycleBinItemActions } from './RecycleBinItemActions';
+import type { RecycleBinItemWithMeta } from '../../../types/recycleBin';
+import type { RecycleBinSettings } from '../../../types/settings';
+import type { SortField } from '../../../hooks/useRecycleBinSort';
 
 interface RecycleBinDataTableProps {
   items: RecycleBinItemWithMeta[];
   recycleBinSettings: RecycleBinSettings;
-  getItemLoadingState: (item: RecycleBinItemWithMeta) => { isLoading: boolean; loadingText: string };
+  getItemLoadingState: (item: RecycleBinItemWithMeta) => {
+    isLoading: boolean;
+    loadingText: string;
+  };
   onRestore: (item: RecycleBinItemWithMeta) => void;
   onDelete: (item: RecycleBinItemWithMeta) => void;
   onShowDetail: (item: RecycleBinItemWithMeta) => void;
@@ -44,12 +42,12 @@ export const RecycleBinDataTable: React.FC<RecycleBinDataTableProps> = ({
 }) => {
   const columns: ColumnDef<RecycleBinItemWithMeta>[] = [
     {
-      accessorKey: "type",
-      header: "種別",
+      accessorKey: 'type',
+      header: '種別',
       cell: ({ row }) => {
         const item = row.original;
         return (
-          <div className="flex items-center gap-1">
+          <div className='flex items-center gap-1'>
             {item.type === 'board' ? (
               <FolderKanban size={16} />
             ) : item.type === 'column' ? (
@@ -62,62 +60,62 @@ export const RecycleBinDataTable: React.FC<RecycleBinDataTableProps> = ({
                 item.type === 'board'
                   ? 'bg-yellow-100'
                   : item.type === 'column'
-                  ? 'bg-green-100'
-                  : 'bg-blue-100'
+                    ? 'bg-green-100'
+                    : 'bg-blue-100'
               }`}
             >
-              {item.type === 'board' ? 'ボード' : item.type === 'column' ? 'カラム' : 'タスク'}
+              {item.type === 'board'
+                ? 'ボード'
+                : item.type === 'column'
+                  ? 'カラム'
+                  : 'タスク'}
             </span>
           </div>
         );
       },
     },
     {
-      accessorKey: "title",
-      header: "タイトル",
+      accessorKey: 'title',
+      header: 'タイトル',
       cell: ({ row }) => {
         const item = row.original;
-        return (
-          <>
-            {item.title}
-          </>
-        );
+        return <>{item.title}</>;
       },
     },
     {
-      accessorKey: "timeUntilDeletion",
-      header: "削除予定",
+      accessorKey: 'timeUntilDeletion',
+      header: '削除予定',
       cell: ({ row }) => {
         const item = row.original;
         return (
-          <div className="flex items-center justify-center gap-1 text-sm whitespace-nowrap">
+          <div className='flex items-center justify-center gap-1 text-sm whitespace-nowrap'>
             {item.timeUntilDeletion ? (
               <>
                 <Clock size={14} />
                 <span
                   className={`${
-                    recycleBinSettings.retentionDays === null ? 'text-zinc-500' : 'text-foreground'
+                    recycleBinSettings.retentionDays === null
+                      ? 'text-zinc-500'
+                      : 'text-foreground'
                   }`}
                 >
                   {item.timeUntilDeletion}
                 </span>
               </>
             ) : (
-              <span className="text-zinc-500 text-center">
-                未設定
-              </span>
+              <span className='text-zinc-500 text-center'>未設定</span>
             )}
           </div>
         );
       },
     },
     {
-      id: "actions",
-      header: "",
+      id: 'actions',
+      header: '',
       cell: ({ row }) => {
         const item = row.original;
         return (
-          <div className="flex justify-center">
+          <div className='flex justify-center'>
             <RecycleBinItemActions
               item={item}
               isLoading={getItemLoadingState(item).isLoading}
@@ -133,9 +131,10 @@ export const RecycleBinDataTable: React.FC<RecycleBinDataTableProps> = ({
   ];
 
   // 初期ソート状態を作成
-  const initialSorting: SortingState = sortField && sortDirection ? [
-    { id: sortField, desc: sortDirection === 'desc' }
-  ] : [];
+  const initialSorting: SortingState =
+    sortField && sortDirection
+      ? [{ id: sortField, desc: sortDirection === 'desc' }]
+      : [];
 
   // ソート変更ハンドラー
   const handleSortingChange = (sorting: SortingState) => {
@@ -153,8 +152,8 @@ export const RecycleBinDataTable: React.FC<RecycleBinDataTableProps> = ({
       data={items}
       initialSorting={initialSorting}
       onSortingChange={handleSortingChange}
-      emptyMessage="ゴミ箱にアイテムはありません"
-      className="border-border max-h-[500px] overflow-auto"
+      emptyMessage='ゴミ箱にアイテムはありません'
+      className='border-border max-h-[500px] overflow-auto'
     />
   );
 };

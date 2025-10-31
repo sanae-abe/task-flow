@@ -1,16 +1,20 @@
 /**
  * 統合ダイアログシステム
- * 
+ *
  * 一貫したダイアログ体験を提供する統合システムです。
  * 以下のダイアログタイプをサポートします：
- * 
+ *
  * - UnifiedDialog: ベースダイアログ（カスタマイズ可能）
  * - ConfirmDialog: 確認ダイアログ（危険な操作用）
  * - SimpleFormDialog: シンプルフォーム（単一入力）
  */
 
 // ベースダイアログ
-export { default as UnifiedDialog, DialogHeader, DialogFooter } from './UnifiedDialog';
+export {
+  default as UnifiedDialog,
+  DialogHeader,
+  DialogFooter,
+} from './UnifiedDialog';
 
 // 特化ダイアログ
 export { default as ConfirmDialog } from './ConfirmDialog';
@@ -28,5 +32,5 @@ export type {
   DialogAction,
   DialogVariant,
   DialogSize,
-  DialogType
+  DialogType,
 } from '../../../types/unified-dialog';

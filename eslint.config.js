@@ -5,6 +5,7 @@ import tseslint from '@typescript-eslint/eslint-plugin';
 import tsparser from '@typescript-eslint/parser';
 import react from 'eslint-plugin-react';
 import prettier from 'eslint-plugin-prettier';
+import prettierConfig from 'eslint-config-prettier';
 import security from 'eslint-plugin-security';
 
 export default [
@@ -123,9 +124,15 @@ export default [
       'object-shorthand': 'error',
 
       // セキュリティルール
-      ...security.configs.recommended.rules
+      ...security.configs.recommended.rules,
+
+      // Prettierルール
+      'prettier/prettier': 'error'
     }
   },
+
+  // Prettier設定（競合回避）
+  prettierConfig,
 
   // テストファイル専用設定（Vitest対応）
   {

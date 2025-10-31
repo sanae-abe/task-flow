@@ -1,16 +1,16 @@
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import React, { useCallback } from "react";
-import { cn } from "@/lib/utils";
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import React, { useCallback } from 'react';
+import { cn } from '@/lib/utils';
 
-import { useTaskCard } from "../hooks/useTaskCard";
-import type { Task } from "../types";
-import { formatDueDate } from "../utils/dateHelpers";
+import { useTaskCard } from '../hooks/useTaskCard';
+import type { Task } from '../types';
+import { formatDueDate } from '../utils/dateHelpers';
 
-import ConfirmDialog from "./ConfirmDialog";
-import DropIndicator from "./DropIndicator";
-import TaskCardContent from "./TaskCardContent";
-import TaskEditDialog from "./TaskEditDialog";
+import ConfirmDialog from './ConfirmDialog';
+import DropIndicator from './DropIndicator';
+import TaskCardContent from './TaskCardContent';
+import TaskEditDialog from './TaskEditDialog';
 
 interface TaskCardProps {
   task: Task;
@@ -27,7 +27,7 @@ const getCardDynamicStyles = (
   isRightmostColumn: boolean,
   isDragging: boolean,
   transform: { x: number; y: number; scaleX: number; scaleY: number } | null,
-  transition: string | undefined,
+  transition: string | undefined
 ) => ({
   transform: CSS.Transform.toString(transform),
   transition,
@@ -60,7 +60,7 @@ const TaskCard: React.FC<TaskCardProps> = React.memo(
           keyboardDragAndDrop.handleKeyDown(event, task.id);
         }
       },
-      [keyboardDragAndDrop, task.id],
+      [keyboardDragAndDrop, task.id]
     );
 
     // キーボードドラッグ&ドロップ用のスタイル
@@ -70,9 +70,9 @@ const TaskCard: React.FC<TaskCardProps> = React.memo(
     const keyboardDragStyles =
       isKeyboardSelected && isInDragMode
         ? {
-            outline: "2px solid #0969da",
-            outlineOffset: "2px",
-            boxShadow: "0 0 0 4px rgba(9, 105, 218, 0.3)",
+            outline: '2px solid #0969da',
+            outlineOffset: '2px',
+            boxShadow: '0 0 0 4px rgba(9, 105, 218, 0.3)',
           }
         : {};
 
@@ -84,17 +84,17 @@ const TaskCard: React.FC<TaskCardProps> = React.memo(
         <div
           ref={setNodeRef}
           className={cn(
-            "bg-white p-3 rounded-md cursor-grab shadow-[0px_1px_3px_rgba(0,0,0,0.1)] transition-all duration-200 ease-out",
-            "w-full max-w-full min-w-0 min-h-fit h-auto",
-            "break-words overflow-wrap-break-word flex flex-col",
-            "hover:shadow-[0px_1px_8px_rgba(0,0,0,0.15)] active:cursor-grabbing"
+            'bg-white p-3 rounded-md cursor-grab shadow-[0px_1px_3px_rgba(0,0,0,0.1)] transition-all duration-200 ease-out',
+            'w-full max-w-full min-w-0 min-h-fit h-auto',
+            'break-words overflow-wrap-break-word flex flex-col',
+            'hover:shadow-[0px_1px_8px_rgba(0,0,0,0.15)] active:cursor-grabbing'
           )}
           style={{
             ...getCardDynamicStyles(
               taskCardData.isRightmostColumn,
               isDragging,
               transform,
-              transition,
+              transition
             ),
             ...keyboardDragStyles,
           }}
@@ -105,7 +105,7 @@ const TaskCard: React.FC<TaskCardProps> = React.memo(
           onClick={handleTaskClick}
           onKeyDown={handleKeyDown}
           tabIndex={0}
-          role="button"
+          role='button'
           aria-label={`タスク: ${task.title}. キーボードでの移動にはSpaceキーまたはEnterキーを押してください。`}
           aria-pressed={isKeyboardSelected}
           data-task-id={task.id}
@@ -142,16 +142,16 @@ const TaskCard: React.FC<TaskCardProps> = React.memo(
 
         <ConfirmDialog
           isOpen={taskCardData.showDeleteConfirm}
-          title="タスクを削除"
+          title='タスクを削除'
           message={`「${task.title}」を削除しますか？`}
           onConfirm={taskCardData.handleConfirmDelete}
           onCancel={taskCardData.handleCancelDelete}
         />
       </>
     );
-  },
+  }
 );
 
-TaskCard.displayName = "TaskCard";
+TaskCard.displayName = 'TaskCard';
 
 export default TaskCard;

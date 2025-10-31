@@ -1,0 +1,46 @@
+# Build outputs
+build/
+dist/
+*.min.js
+*.min.css
+
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Testing
+coverage/
+
+# Misc
+.DS_Store
+.env*
+.vscode/
+.idea/
+
+# Generated files
+*.log
+*.tgz
+*.tar.gz
+
+# Temporary files
+.tmp/
+.cache/
+
+# Git
+.git/
+
+# Package manager
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Build tools
+.next/
+.nuxt/
+.output/
+.vercel/
+
+# Documentation build
+docs/.vitepress/cache
+docs/.vitepress/dist

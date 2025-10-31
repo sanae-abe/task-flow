@@ -2,7 +2,7 @@ import React from 'react';
 import { RotateCcw, Trash2, Eye } from 'lucide-react';
 import { LoadingButton } from '../../shared/LoadingButton';
 import type { RecycleBinItemWithMeta } from '../../../types/recycleBin';
-import IconButton from "../../shared/IconButton";
+import IconButton from '../../shared/IconButton';
 
 interface RecycleBinItemActionsProps {
   item: RecycleBinItemWithMeta;
@@ -29,18 +29,23 @@ export const RecycleBinItemActions: React.FC<RecycleBinItemActionsProps> = ({
       <LoadingButton
         disabled
         isLoading
-        loadingText={loadingText || "処理中..."}
-        primerSize="small"
+        loadingText={loadingText || '処理中...'}
+        primerSize='small'
       >
         処理中
       </LoadingButton>
     );
   }
 
-  const itemTypeText = item.type === 'board' ? 'ボード' : item.type === 'column' ? 'カラム' : 'タスク';
+  const itemTypeText =
+    item.type === 'board'
+      ? 'ボード'
+      : item.type === 'column'
+        ? 'カラム'
+        : 'タスク';
 
   return (
-    <div className="flex justify-center">
+    <div className='flex justify-center'>
       <IconButton
         icon={Eye}
         ariaLabel={`${itemTypeText}「${item.title}」の詳細を表示`}
@@ -48,13 +53,13 @@ export const RecycleBinItemActions: React.FC<RecycleBinItemActionsProps> = ({
       />
       <IconButton
         icon={RotateCcw}
-        size="icon"
+        size='icon'
         ariaLabel={`${itemTypeText}「${item.title}」を復元`}
         onClick={() => onRestore(item)}
       />
       <IconButton
         icon={Trash2}
-        size="icon"
+        size='icon'
         ariaLabel={`${itemTypeText}「${item.title}」を完全に削除`}
         onClick={() => onDelete(item)}
       />

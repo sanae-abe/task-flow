@@ -6,12 +6,12 @@
  */
 
 import React, { Suspense } from 'react';
-import { EmojiClickData, EmojiStyle } from "emoji-picker-react";
+import { EmojiClickData, EmojiStyle } from 'emoji-picker-react';
 
 // Lazy load the EmojiPicker component
 const EmojiPicker = React.lazy(() =>
-  import("emoji-picker-react").then(module => ({
-    default: module.default
+  import('emoji-picker-react').then(module => ({
+    default: module.default,
   }))
 );
 
@@ -25,17 +25,18 @@ interface LazyEmojiPickerProps {
 // Loading component shown while emoji picker is loading
 const EmojiPickerLoading: React.FC = () => (
   <div
-    className="fixed z-500 border border-border rounded-lg bg-background animate-in fade-in duration-200"
+    className='fixed z-500 border border-border rounded-lg bg-background animate-in fade-in duration-200'
     style={{
       width: 350,
       height: 400,
-      boxShadow: '0 20px 80px rgba(0, 0, 0, 0.2), 0 10px 40px rgba(0, 0, 0, 0.15), 0 5px 20px rgba(0, 0, 0, 0.1)',
+      boxShadow:
+        '0 20px 80px rgba(0, 0, 0, 0.2), 0 10px 40px rgba(0, 0, 0, 0.15), 0 5px 20px rgba(0, 0, 0, 0.1)',
     }}
   >
-    <div className="flex items-center justify-center h-full">
-      <div className="flex flex-col items-center space-y-2">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-600" />
-        <p className="text-sm text-zinc-700">絵文字ピッカーを読み込み中...</p>
+    <div className='flex items-center justify-center h-full'>
+      <div className='flex flex-col items-center space-y-2'>
+        <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-gray-600' />
+        <p className='text-sm text-zinc-700'>絵文字ピッカーを読み込み中...</p>
       </div>
     </div>
   </div>
@@ -70,15 +71,18 @@ const EmojiPickerContent: React.FC<Omit<LazyEmojiPickerProps, 'isOpen'>> = ({
   return (
     <div
       data-emoji-picker
-      className="fixed z-500 border border-border rounded-lg bg-background animate-in fade-in duration-200"
-      style={{
-        top: position.top,
-        left: position.left,
-        boxShadow: '0 20px 80px rgba(0, 0, 0, 0.2), 0 10px 40px rgba(0, 0, 0, 0.15), 0 5px 20px rgba(0, 0, 0, 0.1)',
-        // Emoji Picker CSS variables - 24px強制適用
-        '--epr-emoji-size': '22px !important',
-        '--epr-category-navigation-button-size': '32px !important',
-      } as React.CSSProperties}
+      className='fixed z-500 border border-border rounded-lg bg-background animate-in fade-in duration-200'
+      style={
+        {
+          top: position.top,
+          left: position.left,
+          boxShadow:
+            '0 20px 80px rgba(0, 0, 0, 0.2), 0 10px 40px rgba(0, 0, 0, 0.15), 0 5px 20px rgba(0, 0, 0, 0.1)',
+          // Emoji Picker CSS variables - 24px強制適用
+          '--epr-emoji-size': '22px !important',
+          '--epr-category-navigation-button-size': '32px !important',
+        } as React.CSSProperties
+      }
     >
       <style>
         {`
@@ -121,7 +125,7 @@ const EmojiPickerContent: React.FC<Omit<LazyEmojiPickerProps, 'isOpen'>> = ({
         searchDisabled={false}
         skinTonesDisabled
         previewConfig={{
-          showPreview: false
+          showPreview: false,
         }}
       />
     </div>

@@ -1,9 +1,9 @@
-import React, { createContext, useContext, useMemo } from "react";
+import React, { createContext, useContext, useMemo } from 'react';
 
-import { useBoard } from "./BoardContext";
-import { useTask } from "./TaskContext";
-import { useLabel } from "./LabelContext";
-import { useUI } from "./UIContext";
+import { useBoard } from './BoardContext';
+import { useTask } from './TaskContext';
+import { useLabel } from './LabelContext';
+import { useUI } from './UIContext';
 import type {
   KanbanBoard,
   Task,
@@ -15,7 +15,7 @@ import type {
   SortOption,
   TaskFilter,
   Priority,
-} from "../types";
+} from '../types';
 
 // KanbanContextのレガシー互換性を保つためのブリッジ
 interface KanbanContextType {
@@ -48,7 +48,7 @@ interface KanbanContextType {
     labels?: Label[],
     attachments?: FileAttachment[],
     recurrence?: RecurrenceConfig,
-    priority?: Priority,
+    priority?: Priority
   ) => void;
   updateTask: (taskId: string, updates: Partial<Task>) => void;
   deleteTask: (taskId: string, columnId: string) => void;
@@ -57,7 +57,7 @@ interface KanbanContextType {
     taskId: string,
     sourceColumnId: string,
     targetColumnId: string,
-    targetIndex: number,
+    targetIndex: number
   ) => void;
   clearCompletedTasks: () => void;
   addSubTask: (taskId: string, title: string) => void;
@@ -70,7 +70,7 @@ interface KanbanContextType {
   updateColumn: (columnId: string, updates: Partial<Column>) => void;
   deleteColumn: (columnId: string) => void;
   // Label関連のメソッド
-  createLabel: (label: Omit<Label, "id">) => void;
+  createLabel: (label: Omit<Label, 'id'>) => void;
   updateLabel: (labelId: string, updates: Partial<Label>) => void;
   deleteLabel: (labelId: string) => void;
   getAllLabels: () => Label[];
@@ -103,7 +103,7 @@ export const KanbanProvider: React.FC<KanbanProviderProps> = ({ children }) => {
         currentBoard: board.currentBoard,
         labels: label.labels,
         isLoading: false,
-        viewMode: ui.state.viewMode || "kanban",
+        viewMode: ui.state.viewMode || 'kanban',
         taskFilter: ui.taskFilter,
         sortOption: ui.sortOption,
         isTaskDetailOpen: ui.state.isTaskDetailOpen || false,
@@ -135,7 +135,7 @@ export const KanbanProvider: React.FC<KanbanProviderProps> = ({ children }) => {
       updateColumn: board.updateColumn,
       deleteColumn: board.deleteColumn,
       // Label関連のメソッド
-      createLabel: (labelData: Omit<Label, "id">) =>
+      createLabel: (labelData: Omit<Label, 'id'>) =>
         label.createLabel(labelData.name, labelData.color),
       updateLabel: label.updateLabel,
       deleteLabel: label.deleteLabel,
@@ -149,7 +149,7 @@ export const KanbanProvider: React.FC<KanbanProviderProps> = ({ children }) => {
       openTaskForm: ui.openTaskForm,
       closeTaskForm: ui.closeTaskForm,
     }),
-    [board, task, label, ui],
+    [board, task, label, ui]
   );
 
   return (
@@ -160,7 +160,7 @@ export const KanbanProvider: React.FC<KanbanProviderProps> = ({ children }) => {
 export const useKanban = (): KanbanContextType => {
   const context = useContext(KanbanContext);
   if (!context) {
-    throw new Error("useKanban must be used within a KanbanProvider");
+    throw new Error('useKanban must be used within a KanbanProvider');
   }
   return context;
 };

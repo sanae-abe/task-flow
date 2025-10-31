@@ -2,9 +2,9 @@
  * 統合ダイアログシステムの型定義
  */
 
-export type DialogVariant = "modal" | "overlay" | "inline";
-export type DialogSize = "small" | "medium" | "large" | "xl";
-export type DialogType = "confirm" | "form" | "complex" | "custom";
+export type DialogVariant = 'modal' | 'overlay' | 'inline';
+export type DialogSize = 'small' | 'medium' | 'large' | 'xl';
+export type DialogType = 'confirm' | 'form' | 'complex' | 'custom';
 
 // ベースダイアログプロパティ
 export interface BaseUnifiedDialogProps {
@@ -29,7 +29,15 @@ export interface DialogAction {
   /** クリック時のコールバック */
   onClick: () => void;
   /** ボタンのバリアント */
-  variant?: "default" | "primary" | "danger" | "outline" | "secondary" | "destructive" | "ghost" | "link";
+  variant?:
+    | 'default'
+    | 'primary'
+    | 'danger'
+    | 'outline'
+    | 'secondary'
+    | 'destructive'
+    | 'ghost'
+    | 'link';
   /** 無効状態 */
   disabled?: boolean;
   /** ローディング状態 */
@@ -37,7 +45,7 @@ export interface DialogAction {
   /** アイコン（オプション） */
   icon?: React.ComponentType<{ size: number }>;
   /** ボタンの位置（splitレイアウト用） */
-  position?: "left" | "right";
+  position?: 'left' | 'right';
 }
 
 // 確認ダイアログ
@@ -53,9 +61,16 @@ export interface ConfirmDialogProps extends BaseUnifiedDialogProps {
   /** キャンセルボタンのテキスト */
   cancelText?: string;
   /** 確認ボタンのバリアント */
-  confirmVariant?: "default" | "primary" | "danger" | "outline" | "secondary" | "destructive" | "ghost" | "link";
+  confirmVariant?:
+    | 'default'
+    | 'primary'
+    | 'danger'
+    | 'outline'
+    | 'secondary'
+    | 'destructive'
+    | 'ghost'
+    | 'link';
 }
-
 
 // シンプルフォームダイアログ（単一入力フィールド）
 export interface SimpleFormDialogProps extends BaseUnifiedDialogProps {
@@ -96,7 +111,7 @@ export interface UnifiedDialogProps extends BaseUnifiedDialogProps {
   /** アクション定義 */
   actions?: DialogAction[];
   /** アクションレイアウト */
-  actionsLayout?: "standard" | "split";
+  actionsLayout?: 'standard' | 'split';
   /** フッターを非表示にするか */
   hideFooter?: boolean;
   /** ヘッダーを非表示にするか */

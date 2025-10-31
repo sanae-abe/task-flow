@@ -22,7 +22,9 @@ interface TemplateManagementPanelProps {
  * テンプレート管理パネル
  * テンプレートの一覧表示、作成、編集、削除を行うパネル
  */
-const TemplateManagementPanel: React.FC<TemplateManagementPanelProps> = ({ onMessage }) => {
+const TemplateManagementPanel: React.FC<TemplateManagementPanelProps> = ({
+  onMessage,
+}) => {
   // カスタムフック
   const {
     templates,
@@ -31,7 +33,7 @@ const TemplateManagementPanel: React.FC<TemplateManagementPanelProps> = ({ onMes
     createTemplate,
     updateTemplate,
     deleteTemplate,
-    toggleFavorite
+    toggleFavorite,
   } = useTemplateManagement();
 
   const {
@@ -45,7 +47,7 @@ const TemplateManagementPanel: React.FC<TemplateManagementPanelProps> = ({ onMes
     setFilterCategory,
     setFilterFavorite,
     handleSort,
-    clearFilters
+    clearFilters,
   } = useTemplateFiltering(templates);
 
   const {
@@ -55,7 +57,7 @@ const TemplateManagementPanel: React.FC<TemplateManagementPanelProps> = ({ onMes
     openEditDialog,
     closeEditDialog,
     openDeleteDialog,
-    closeDeleteDialog
+    closeDeleteDialog,
   } = useTemplateDialogs();
 
   // 保存ハンドラー
@@ -67,17 +69,29 @@ const TemplateManagementPanel: React.FC<TemplateManagementPanelProps> = ({ onMes
       template = await createTemplate(data);
       success = template !== null;
       if (success && template) {
-        onMessage?.({ type: 'success', text: `テンプレート「${template.name}」を作成しました` });
+        onMessage?.({
+          type: 'success',
+          text: `テンプレート「${template.name}」を作成しました`,
+        });
       } else {
-        onMessage?.({ type: 'danger', text: 'テンプレートの作成に失敗しました' });
+        onMessage?.({
+          type: 'danger',
+          text: 'テンプレートの作成に失敗しました',
+        });
       }
     } else if (editDialog.template) {
       template = await updateTemplate(editDialog.template.id, data);
       success = template !== null;
       if (success && template) {
-        onMessage?.({ type: 'success', text: `テンプレート「${template.name}」を更新しました` });
+        onMessage?.({
+          type: 'success',
+          text: `テンプレート「${template.name}」を更新しました`,
+        });
       } else {
-        onMessage?.({ type: 'danger', text: 'テンプレートの更新に失敗しました' });
+        onMessage?.({
+          type: 'danger',
+          text: 'テンプレートの更新に失敗しました',
+        });
       }
     }
 
@@ -92,10 +106,16 @@ const TemplateManagementPanel: React.FC<TemplateManagementPanelProps> = ({ onMes
       const templateName = deleteDialog.template.name;
       const success = await deleteTemplate(deleteDialog.template.id);
       if (success) {
-        onMessage?.({ type: 'success', text: `テンプレート「${templateName}」を削除しました` });
+        onMessage?.({
+          type: 'success',
+          text: `テンプレート「${templateName}」を削除しました`,
+        });
         closeDeleteDialog();
       } else {
-        onMessage?.({ type: 'danger', text: 'テンプレートの削除に失敗しました' });
+        onMessage?.({
+          type: 'danger',
+          text: 'テンプレートの削除に失敗しました',
+        });
       }
     }
   };
@@ -104,28 +124,34 @@ const TemplateManagementPanel: React.FC<TemplateManagementPanelProps> = ({ onMes
   const handleToggleFavorite = async (template: TaskTemplate) => {
     const newFavoriteState = await toggleFavorite(template.id);
     const action = newFavoriteState ? 'お気に入りに追加' : 'お気に入りから削除';
-    onMessage?.({ type: 'success', text: `テンプレート「${template.name}」を${action}しました` });
+    onMessage?.({
+      type: 'success',
+      text: `テンプレート「${template.name}」を${action}しました`,
+    });
   };
 
   // アクティブなフィルターの有無
-  const hasActiveFilters = searchQuery.trim() !== '' || filterCategory !== 'all' || filterFavorite;
+  const hasActiveFilters =
+    searchQuery.trim() !== '' || filterCategory !== 'all' || filterFavorite;
 
   // ローディングやエラー状態の表示
   if (loading) {
     return (
-      <div className="flex justify-center p-6">
-        <p className="text-muted-foreground">テンプレートを読み込み中...</p>
+      <div className='flex justify-center p-6'>
+        <p className='text-muted-foreground'>テンプレートを読み込み中...</p>
       </div>
     );
   }
 
   if (_error) {
     return (
-      <div className="text-center p-6">
-        <p className="text-destructive text-sm font-bold">
-          {_error}
-        </p>
-        <Button variant="outline" className="mt-2" onClick={() => window.location.reload()}>
+      <div className='text-center p-6'>
+        <p className='text-destructive text-sm font-bold'>{_error}</p>
+        <Button
+          variant='outline'
+          className='mt-2'
+          onClick={() => window.location.reload()}
+        >
           再読み込み
         </Button>
       </div>
@@ -133,12 +159,12 @@ const TemplateManagementPanel: React.FC<TemplateManagementPanelProps> = ({ onMes
   }
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className='flex flex-col gap-3'>
       {/* ヘッダー */}
-      <div className="flex items-center justify-between gap-2 flex-wrap">
-        <h2 className="text-lg font-bold">テンプレート管理</h2>
-        <Button variant="default" size="sm" onClick={openCreateDialog}>
-          <Plus size={16} className="mr-2" />
+      <div className='flex items-center justify-between gap-2 flex-wrap'>
+        <h2 className='text-lg font-bold'>テンプレート管理</h2>
+        <Button variant='default' size='sm' onClick={openCreateDialog}>
+          <Plus size={16} className='mr-2' />
           テンプレートを作成
         </Button>
       </div>
@@ -178,7 +204,7 @@ const TemplateManagementPanel: React.FC<TemplateManagementPanelProps> = ({ onMes
       {/* 削除確認ダイアログ */}
       <ConfirmDialog
         isOpen={deleteDialog.isOpen}
-        title="テンプレートの削除"
+        title='テンプレートの削除'
         message={
           deleteDialog.template
             ? `テンプレート「${deleteDialog.template.name}」を削除しますか？この操作は元に戻せません。`
@@ -187,9 +213,9 @@ const TemplateManagementPanel: React.FC<TemplateManagementPanelProps> = ({ onMes
         onClose={closeDeleteDialog}
         onConfirm={handleConfirmDelete}
         onCancel={closeDeleteDialog}
-        confirmText="削除"
-        cancelText="キャンセル"
-        confirmVariant="danger"
+        confirmText='削除'
+        cancelText='キャンセル'
+        confirmVariant='danger'
       />
     </div>
   );

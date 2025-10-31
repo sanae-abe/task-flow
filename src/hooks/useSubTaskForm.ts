@@ -1,11 +1,11 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback } from 'react';
 
 export const useSubTaskForm = () => {
   const [isAdding, setIsAdding] = useState(false);
-  const [title, setTitle] = useState("");
+  const [title, setTitle] = useState('');
 
   const resetForm = useCallback((): void => {
-    setTitle("");
+    setTitle('');
     setIsAdding(false);
   }, []);
 
@@ -17,23 +17,23 @@ export const useSubTaskForm = () => {
         resetForm();
       }
     },
-    [title, resetForm],
+    [title, resetForm]
   );
 
   const handleKeyPress = useCallback(
     (
       event: React.KeyboardEvent,
-      _onAddSubTask: (title: string) => void,
+      _onAddSubTask: (title: string) => void
     ): void => {
-      if (event.key === "Enter") {
+      if (event.key === 'Enter') {
         event.preventDefault();
         // Enterキーでの自動作成を無効化（ボタンクリックのみで作成）
-      } else if (event.key === "Escape") {
+      } else if (event.key === 'Escape') {
         event.preventDefault();
         resetForm();
       }
     },
-    [resetForm],
+    [resetForm]
   );
 
   const startAdding = useCallback((): void => {

@@ -1,11 +1,11 @@
 import {
   DropdownMenuCheckboxItem,
-  DropdownMenuLabel
- } from "@/components/ui/dropdown-menu";
-import React from "react";
+  DropdownMenuLabel,
+} from '@/components/ui/dropdown-menu';
+import React from 'react';
 
-import type { Label } from "../../types";
-import { LabelColorCircle } from "./LabelColorCircle";
+import type { Label } from '../../types';
+import { LabelColorCircle } from './LabelColorCircle';
 
 interface CurrentBoardLabelSectionProps {
   labels: Label[];
@@ -13,11 +13,9 @@ interface CurrentBoardLabelSectionProps {
   onToggleLabel: (label: Label) => void;
 }
 
-export const CurrentBoardLabelSection: React.FC<CurrentBoardLabelSectionProps> = ({
-  labels,
-  selectedLabelIds,
-  onToggleLabel,
-}) => {
+export const CurrentBoardLabelSection: React.FC<
+  CurrentBoardLabelSectionProps
+> = ({ labels, selectedLabelIds, onToggleLabel }) => {
   if (labels.length === 0) {
     return null;
   }
@@ -25,7 +23,7 @@ export const CurrentBoardLabelSection: React.FC<CurrentBoardLabelSectionProps> =
   return (
     <>
       <DropdownMenuLabel>現在のボード</DropdownMenuLabel>
-      {labels.map((label) => {
+      {labels.map(label => {
         const isSelected = selectedLabelIds.has(label.id);
         return (
           <DropdownMenuCheckboxItem
@@ -34,7 +32,7 @@ export const CurrentBoardLabelSection: React.FC<CurrentBoardLabelSectionProps> =
             onCheckedChange={() => onToggleLabel(label)}
           >
             <LabelColorCircle color={label.color} />
-            <span className="ml-2 flex-1">{label.name}</span>
+            <span className='ml-2 flex-1'>{label.name}</span>
           </DropdownMenuCheckboxItem>
         );
       })}

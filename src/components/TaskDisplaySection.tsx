@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo } from 'react';
 
 interface TaskDisplaySectionProps {
   title: string;
@@ -7,16 +7,14 @@ interface TaskDisplaySectionProps {
 }
 
 const TaskDisplaySection = memo<TaskDisplaySectionProps>(
-  ({ title, children, marginBottom = "16px" }) => (
+  ({ title, children, marginBottom = '16px' }) => (
     <div style={{ marginBottom }}>
-      <h3 className="text-sm m-0 mb-2 font-bold">
-        {title}
-      </h3>
+      <h3 className='text-sm m-0 mb-2 font-bold'>{title}</h3>
       {children}
     </div>
-  ),
+  )
 );
 
-TaskDisplaySection.displayName = "TaskDisplaySection";
+TaskDisplaySection.displayName = 'TaskDisplaySection';
 
 export default TaskDisplaySection;

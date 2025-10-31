@@ -1,5 +1,5 @@
-import React from "react";
-import InlineMessage from "../../shared/InlineMessage";
+import React from 'react';
+import InlineMessage from '../../shared/InlineMessage';
 
 interface RecurrenceErrorDisplayProps {
   errors: string[];
@@ -13,13 +13,13 @@ const RecurrenceErrorDisplay: React.FC<RecurrenceErrorDisplayProps> = ({
   }
 
   return (
-    <div className="mt-2">
+    <div className='mt-2'>
       {errors.map((_error, index) => (
         <InlineMessage
           key={index}
-          variant="critical"
+          variant='critical'
           message={_error}
-          size="small"
+          size='small'
         />
       ))}
     </div>

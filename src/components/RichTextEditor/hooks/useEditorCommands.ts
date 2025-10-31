@@ -10,57 +10,62 @@ export const useEditorCommands = (
   handleInput: () => void
 ) => {
   // モダンなSelection APIベースのコマンド実行
-  const executeCommand = useCallback((command: string, value?: string) => {
-    if (editorRef.current) {
-      editorRef.current.focus();
+  const executeCommand = useCallback(
+    (command: string, value?: string) => {
+      if (editorRef.current) {
+        editorRef.current.focus();
 
-      const selection = window.getSelection();
-      if (!selection) {return;}
+        const selection = window.getSelection();
+        if (!selection) {
+          return;
+        }
 
-      try {
-        switch (command) {
-          case 'bold':
-            document.execCommand('bold', false);
-            break;
-          case 'italic':
-            document.execCommand('italic', false);
-            break;
-          case 'underline':
-            document.execCommand('underline', false);
-            break;
-          case 'strikeThrough':
-            document.execCommand('strikeThrough', false);
-            break;
-          case 'insertUnorderedList':
-            document.execCommand('insertUnorderedList', false);
-            break;
-          case 'insertOrderedList':
-            document.execCommand('insertOrderedList', false);
-            break;
-          default:
-            // フォールバック: 従来のdocument.execCommand
+        try {
+          switch (command) {
+            case 'bold':
+              document.execCommand('bold', false);
+              break;
+            case 'italic':
+              document.execCommand('italic', false);
+              break;
+            case 'underline':
+              document.execCommand('underline', false);
+              break;
+            case 'strikeThrough':
+              document.execCommand('strikeThrough', false);
+              break;
+            case 'insertUnorderedList':
+              document.execCommand('insertUnorderedList', false);
+              break;
+            case 'insertOrderedList':
+              document.execCommand('insertOrderedList', false);
+              break;
+            default:
+              // フォールバック: 従来のdocument.execCommand
+              if (value) {
+                document.execCommand(command, false, value);
+              } else {
+                document.execCommand(command);
+              }
+          }
+          handleInput();
+        } catch (_error) {
+          // コマンド実行失敗、フォールバック処理
+          try {
             if (value) {
               document.execCommand(command, false, value);
             } else {
               document.execCommand(command);
             }
-        }
-        handleInput();
-      } catch (_error) {
-        // コマンド実行失敗、フォールバック処理
-        try {
-          if (value) {
-            document.execCommand(command, false, value);
-          } else {
-            document.execCommand(command);
+            handleInput();
+          } catch (_fallbackError) {
+            // フォールバックも失敗 - プロダクションではサイレント
           }
-          handleInput();
-        } catch (_fallbackError) {
-          // フォールバックも失敗 - プロダクションではサイレント
         }
       }
-    }
-  }, [editorRef, handleInput]);
+    },
+    [editorRef, handleInput]
+  );
 
   const insertCode = useCallback(() => {
     if (editorRef.current) {
@@ -97,7 +102,7 @@ export const useEditorCommands = (
       // コードブロックを挿入（GitHub風）
       const blockStyle = createInlineStyleString({
         ...EDITOR_STYLES.codeBlock,
-        border: '1px solid #d0d7de !important'
+        border: '1px solid #d0d7de !important',
       });
       const preStyle = createInlineStyleString({
         margin: '0 !important',
@@ -106,7 +111,7 @@ export const useEditorCommands = (
         color: 'inherit',
         background: 'transparent',
         border: 'none',
-        padding: '0'
+        padding: '0',
       });
       const codeBlockHtml = `<div style="${blockStyle}"><pre style="${preStyle}" contenteditable="true" spellcheck="false">${initialCode}</pre></div>`;
       insertHtmlAtCursor(codeBlockHtml);

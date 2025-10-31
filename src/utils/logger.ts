@@ -5,14 +5,14 @@
 
 export const logger = {
   debug: (message: string, ...args: unknown[]) => {
-    if (process.env.NODE_ENV === "development") {
+    if (process.env.NODE_ENV === 'development') {
       // eslint-disable-next-line no-console
       console.log(`[DEBUG] ${message}`, ...args);
     }
   },
 
   info: (message: string, ...args: unknown[]) => {
-    if (process.env.NODE_ENV === "development") {
+    if (process.env.NODE_ENV === 'development') {
       // eslint-disable-next-line no-console
       console.info(`[INFO] ${message}`, ...args);
     }

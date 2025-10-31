@@ -1,8 +1,8 @@
-import React from "react";
+import React from 'react';
 
-import type { Priority } from "../types";
-import { priorityConfig } from "../utils/priorityConfig";
-import { cn } from "@/lib/utils";
+import type { Priority } from '../types';
+import { priorityConfig } from '../utils/priorityConfig';
+import { cn } from '@/lib/utils';
 
 interface PriorityBadgeProps {
   priority?: Priority;
@@ -36,16 +36,16 @@ const PriorityBadge: React.FC<PriorityBadgeProps> = ({
     <div
       style={{
         backgroundColor: colors.bg,
-        color: colors.text
+        color: colors.text,
       }}
       className={cn(
         `inline-flex items-center gap-1 px-2 py-1 rounded text-xs border-none outline-none`,
-        showLabel ? "font-medium" : "font-normal",
+        showLabel ? 'font-medium' : 'font-normal',
         `line-height-[1.5]`,
         `cursor-default`
       )}
       aria-label={`優先度: ${displayLabel} - ${config.description}`}
-      role="status"
+      role='status'
     >
       {showIcon && <Icon aria-hidden size={14} />}
       {showLabel && <span>{displayLabel}</span>}

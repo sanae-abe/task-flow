@@ -1,16 +1,16 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState } from 'react';
 
 import {
   useFileUpload,
   DEFAULT_MAX_FILE_SIZE,
   DEFAULT_ALLOWED_TYPES,
-} from "../hooks/useFileUpload";
-import type { FileAttachment, ImportMode } from "../types";
+} from '../hooks/useFileUpload';
+import type { FileAttachment, ImportMode } from '../types';
 
-import AttachmentList from "./AttachmentList";
-import InlineMessage from "./shared/InlineMessage";
-import UniversalDropZone from "./UniversalDropZone";
-import ImportModeSelector from "./ImportModeSelector";
+import AttachmentList from './AttachmentList';
+import InlineMessage from './shared/InlineMessage';
+import UniversalDropZone from './UniversalDropZone';
+import ImportModeSelector from './ImportModeSelector';
 
 interface FileUploaderProps {
   attachments: FileAttachment[];
@@ -27,7 +27,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({
   maxFileSize = DEFAULT_MAX_FILE_SIZE,
   allowedTypes = DEFAULT_ALLOWED_TYPES,
   showModeSelector = true,
-  defaultImportMode = "both",
+  defaultImportMode = 'both',
 }) => {
   const [importMode, setImportMode] = useState<ImportMode>(defaultImportMode);
   const {
@@ -46,13 +46,13 @@ const FileUploader: React.FC<FileUploaderProps> = ({
 
   const handleRemoveAttachment = useCallback(
     (attachmentId: string) => {
-      onAttachmentsChange(attachments.filter((att) => att.id !== attachmentId));
+      onAttachmentsChange(attachments.filter(att => att.id !== attachmentId));
     },
-    [attachments, onAttachmentsChange],
+    [attachments, onAttachmentsChange]
   );
 
   return (
-    <div className="flex flex-col gap-6 w-full">
+    <div className='flex flex-col gap-6 w-full'>
       {showModeSelector && (
         <ImportModeSelector
           selectedMode={importMode}
@@ -80,7 +80,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({
         onRemoveAttachment={handleRemoveAttachment}
       />
 
-      <InlineMessage variant="critical" message={_error} size="small" />
+      <InlineMessage variant='critical' message={_error} size='small' />
     </div>
   );
 };

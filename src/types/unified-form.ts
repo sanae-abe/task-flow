@@ -1,24 +1,24 @@
-import type { ReactNode } from "react";
-import type { Label, FileAttachment } from "../types";
+import type { ReactNode } from 'react';
+import type { Label, FileAttachment } from '../types';
 
 // 基本フォームフィールド型
 export type FieldType =
-  | "text"
-  | "textarea"
-  | "date"
-  | "datetime-local"
-  | "time"
-  | "password"
-  | "email"
-  | "number"
-  | "select"
-  | "checkbox"
-  | "radio"
-  | "file"
-  | "label-selector"
-  | "color-selector"
-  | "recurrence-selector"
-  | "custom";
+  | 'text'
+  | 'textarea'
+  | 'date'
+  | 'datetime-local'
+  | 'time'
+  | 'password'
+  | 'email'
+  | 'number'
+  | 'select'
+  | 'checkbox'
+  | 'radio'
+  | 'file'
+  | 'label-selector'
+  | 'color-selector'
+  | 'recurrence-selector'
+  | 'custom';
 
 // バリデーションルール
 export interface ValidationRule {
@@ -71,13 +71,13 @@ export interface FormState {
 
 // フォームアクション
 export type FormAction =
-  | { type: "SET_FIELD_VALUE"; fieldId: string; value: unknown }
-  | { type: "SET_FIELD_ERROR"; fieldId: string; _error: string | null }
-  | { type: "SET_FIELD_TOUCHED"; fieldId: string; touched: boolean }
-  | { type: "SET_SUBMITTING"; isSubmitting: boolean }
-  | { type: "SET_ERRORS"; errors: FormError[] }
-  | { type: "RESET_FORM"; newState: FormState }
-  | { type: "VALIDATE_FORM" };
+  | { type: 'SET_FIELD_VALUE'; fieldId: string; value: unknown }
+  | { type: 'SET_FIELD_ERROR'; fieldId: string; _error: string | null }
+  | { type: 'SET_FIELD_TOUCHED'; fieldId: string; touched: boolean }
+  | { type: 'SET_SUBMITTING'; isSubmitting: boolean }
+  | { type: 'SET_ERRORS'; errors: FormError[] }
+  | { type: 'RESET_FORM'; newState: FormState }
+  | { type: 'VALIDATE_FORM' };
 
 // 統合フォームプロパティ
 export interface UnifiedFormProps {
@@ -116,10 +116,10 @@ export interface ColorSelectorFieldProps {
 
 // フォームレイアウト設定
 export interface FormLayoutConfig {
-  direction?: "column" | "row";
+  direction?: 'column' | 'row';
   spacing?: number;
   showLabels?: boolean;
-  fieldWidth?: "auto" | "full" | string;
+  fieldWidth?: 'auto' | 'full' | string;
   groupSpacing?: number;
 }
 
@@ -162,7 +162,7 @@ export interface UseFormReturn {
   validateForm: () => boolean;
   resetForm: (initialValues?: Record<string, unknown>) => void;
   handleSubmit: (
-    onSubmit: (values: Record<string, unknown>) => void | Promise<void>,
+    onSubmit: (values: Record<string, unknown>) => void | Promise<void>
   ) => (e?: React.FormEvent) => void;
   isFieldValid: (fieldId: string) => boolean;
   getFieldError: (fieldId: string) => string | null;

@@ -56,14 +56,14 @@ export const createStatusField = (
   value: string,
   options: Array<{ value: string; label: string }>
 ): FormFieldConfig => ({
-    id: 'columnId',
-    name: 'columnId',
-    type: 'select',
-    label: 'ステータス',
-    value,
-    options,
-    onChange: () => {}, // フォームで管理
-  });
+  id: 'columnId',
+  name: 'columnId',
+  type: 'select',
+  label: 'ステータス',
+  value,
+  options,
+  onChange: () => {}, // フォームで管理
+});
 
 // ボード選択フィールド（作成モード用）
 export const createBoardField = (
@@ -74,7 +74,7 @@ export const createBoardField = (
   boards.forEach(board => {
     options.push({
       value: board.id,
-      label: board.title
+      label: board.title,
     });
   });
 
@@ -144,20 +144,26 @@ export interface TaskFormFieldsConfig {
   };
 }
 
-export const createTaskFormFields = (config: TaskFormFieldsConfig): FormFieldConfig[] => {
+export const createTaskFormFields = (
+  config: TaskFormFieldsConfig
+): FormFieldConfig[] => {
   const fields: FormFieldConfig[] = [];
 
   // 1. タイトル（共通）
   fields.push(createTitleField(config.title));
 
   // 2. ボード選択（作成モードのみ・条件付き）
-  if (config.mode === 'create' &&
-      config.createOptions?.availableBoards &&
-      config.createOptions.availableBoards.length > 1) {
-    fields.push(createBoardField(
-      config.createOptions.selectedBoardId || '',
-      config.createOptions.availableBoards
-    ));
+  if (
+    config.mode === 'create' &&
+    config.createOptions?.availableBoards &&
+    config.createOptions.availableBoards.length > 1
+  ) {
+    fields.push(
+      createBoardField(
+        config.createOptions.selectedBoardId || '',
+        config.createOptions.availableBoards
+      )
+    );
   }
 
   // 3. 説明（共通）
@@ -171,10 +177,12 @@ export const createTaskFormFields = (config: TaskFormFieldsConfig): FormFieldCon
 
   // 6. ステータス（編集モードのみ）
   if (config.mode === 'edit' && config.editOptions) {
-    fields.push(createStatusField(
-      config.editOptions.columnId,
-      config.editOptions.statusOptions
-    ));
+    fields.push(
+      createStatusField(
+        config.editOptions.columnId,
+        config.editOptions.statusOptions
+      )
+    );
   }
 
   // 7. ラベル（共通）

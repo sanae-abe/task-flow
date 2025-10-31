@@ -1,9 +1,5 @@
 import { useMemo } from 'react';
-import {
-  FolderKanban,
-  Columns,
-  ListTodo,
-} from 'lucide-react';
+import { FolderKanban, Columns, ListTodo } from 'lucide-react';
 import type { RecycleBinItem } from '../../../../../types/recycleBin';
 import { getItemTypeColors } from '../styles/designTokens';
 
@@ -11,7 +7,8 @@ import { getItemTypeColors } from '../styles/designTokens';
  * アイテム種別に応じた情報を取得するカスタムフック
  * パフォーマンス最適化のためuseMemoを使用
  */
-export const useItemTypeInfo = (type: RecycleBinItem['type']) => useMemo(() => {
+export const useItemTypeInfo = (type: RecycleBinItem['type']) =>
+  useMemo(() => {
     const baseInfo = (() => {
       switch (type) {
         case 'task':
@@ -69,7 +66,7 @@ export const useItemTypeInfo = (type: RecycleBinItem['type']) => useMemo(() => {
       iconProps: {
         size: 20,
         'aria-hidden': true,
-        style: { 
+        style: {
           flexShrink: 0,
           color: colors.icon,
         },
@@ -78,7 +75,7 @@ export const useItemTypeInfo = (type: RecycleBinItem['type']) => useMemo(() => {
       heroIconProps: {
         size: 24,
         'aria-hidden': true,
-        style: { 
+        style: {
           flexShrink: 0,
           color: colors.icon,
         },
@@ -90,8 +87,12 @@ export const useItemTypeInfo = (type: RecycleBinItem['type']) => useMemo(() => {
  * 複数アイテムのメタデータを生成するヘルパー
  */
 export const useItemMetadata = (
-  item: Pick<RecycleBinItem, 'type' | 'boardTitle' | 'columnTitle' | 'columnsCount' | 'taskCount'>
-) => useMemo(() => {
+  item: Pick<
+    RecycleBinItem,
+    'type' | 'boardTitle' | 'columnTitle' | 'columnsCount' | 'taskCount'
+  >
+) =>
+  useMemo(() => {
     const metadata: Array<{
       label: string;
       value: string | number;

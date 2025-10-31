@@ -1,4 +1,4 @@
-import type { Task } from "../types";
+import type { Task } from '../types';
 
 export interface TableColumn {
   id: string;
@@ -7,13 +7,13 @@ export interface TableColumn {
   visible: boolean;
   sortable: boolean;
   type:
-    | "text"
-    | "date"
-    | "number"
-    | "status"
-    | "labels"
-    | "progress"
-    | "actions";
+    | 'text'
+    | 'date'
+    | 'number'
+    | 'status'
+    | 'labels'
+    | 'progress'
+    | 'actions';
   accessor?: string;
   render?: (task: Task) => React.ReactNode;
 }
@@ -31,7 +31,7 @@ export interface TableColumnsHookReturn {
   toggleColumnVisibility: (columnId: string) => void;
   updateColumnWidth: (columnId: string, width: string) => void;
   reorderColumns: (newOrder: string[]) => void;
-  addCustomColumn: (column: Omit<TableColumn, "id">) => void;
+  addCustomColumn: (column: Omit<TableColumn, 'id'>) => void;
   removeColumn: (columnId: string) => void;
   resetToDefaults: () => void;
   _forceRender: number;
@@ -40,131 +40,131 @@ export interface TableColumnsHookReturn {
 
 export const DEFAULT_COLUMNS: TableColumn[] = [
   {
-    id: "title",
-    label: "タスク",
-    width: "480px",
+    id: 'title',
+    label: 'タスク',
+    width: '480px',
     visible: true,
     sortable: true,
-    type: "text",
-    accessor: "title",
+    type: 'text',
+    accessor: 'title',
   },
   {
-    id: "description",
-    label: "説明",
-    width: "600px",
+    id: 'description',
+    label: '説明',
+    width: '600px',
     visible: false,
     sortable: false,
-    type: "text",
-    accessor: "description",
+    type: 'text',
+    accessor: 'description',
   },
   {
-    id: "dueDate",
-    label: "期限",
-    width: "160px",
+    id: 'dueDate',
+    label: '期限',
+    width: '160px',
     visible: true,
     sortable: true,
-    type: "date",
-    accessor: "dueDate",
+    type: 'date',
+    accessor: 'dueDate',
   },
   {
-    id: "recurrence",
-    label: "繰り返し",
-    width: "160px",
+    id: 'recurrence',
+    label: '繰り返し',
+    width: '160px',
     visible: false,
     sortable: false,
-    type: "text",
+    type: 'text',
   },
   {
-    id: "status",
-    label: "ステータス",
-    width: "120px",
+    id: 'status',
+    label: 'ステータス',
+    width: '120px',
     visible: true,
     sortable: true,
-    type: "status",
+    type: 'status',
   },
   {
-    id: "priority",
-    label: "優先度",
-    width: "100px",
+    id: 'priority',
+    label: '優先度',
+    width: '100px',
     visible: true,
     sortable: true,
-    type: "text",
-    accessor: "priority",
+    type: 'text',
+    accessor: 'priority',
   },
   {
-    id: "progress",
-    label: "進捗",
-    width: "80px",
+    id: 'progress',
+    label: '進捗',
+    width: '80px',
     visible: false,
     sortable: true,
-    type: "progress",
+    type: 'progress',
   },
   {
-    id: "completedAt",
-    label: "完了日",
-    width: "160px",
+    id: 'completedAt',
+    label: '完了日',
+    width: '160px',
     visible: false,
     sortable: true,
-    type: "date",
-    accessor: "completedAt",
+    type: 'date',
+    accessor: 'completedAt',
   },
   {
-    id: "labels",
-    label: "ラベル",
-    width: "200px",
+    id: 'labels',
+    label: 'ラベル',
+    width: '200px',
     visible: true,
     sortable: false,
-    type: "labels",
+    type: 'labels',
   },
   {
-    id: "createdAt",
-    label: "作成日",
-    width: "160px",
+    id: 'createdAt',
+    label: '作成日',
+    width: '160px',
     visible: false,
     sortable: true,
-    type: "date",
-    accessor: "createdAt",
+    type: 'date',
+    accessor: 'createdAt',
   },
   {
-    id: "updatedAt",
-    label: "更新日",
-    width: "160px",
+    id: 'updatedAt',
+    label: '更新日',
+    width: '160px',
     visible: false,
     sortable: true,
-    type: "date",
-    accessor: "updatedAt",
+    type: 'date',
+    accessor: 'updatedAt',
   },
   {
-    id: "subTasks",
-    label: "サブタスク",
-    width: "100px",
+    id: 'subTasks',
+    label: 'サブタスク',
+    width: '100px',
     visible: false,
     sortable: false,
-    type: "text",
+    type: 'text',
   },
   {
-    id: "files",
-    label: "添付",
-    width: "80px",
+    id: 'files',
+    label: '添付',
+    width: '80px',
     visible: false,
     sortable: false,
-    type: "text",
+    type: 'text',
   },
   {
-    id: "edit",
-    label: "編集",
-    width: "40px",
+    id: 'edit',
+    label: '編集',
+    width: '40px',
     visible: true,
     sortable: false,
-    type: "actions",
+    type: 'actions',
   },
   {
-    id: "actions",
-    label: "削除",
-    width: "40px",
+    id: 'actions',
+    label: '削除',
+    width: '40px',
     visible: false,
     sortable: false,
-    type: "actions",
+    type: 'actions',
   },
 ];
 

@@ -1,8 +1,15 @@
 import { useMemo } from 'react';
-import type { SortField, SortDirection, LabelWithInfo } from '../../../types/labelManagement';
+import type {
+  SortField,
+  SortDirection,
+  LabelWithInfo,
+} from '../../../types/labelManagement';
 import { useLabel } from '../../../contexts/LabelContext';
 
-export const useLabelData = (sortField: SortField, sortDirection: SortDirection) => {
+export const useLabelData = (
+  sortField: SortField,
+  sortDirection: SortDirection
+) => {
   const { getAllLabelsWithBoardInfo, getAllLabelUsageCount } = useLabel();
 
   // 全ボードのラベルデータを取得してusageCountを追加、ソート適用
@@ -22,7 +29,7 @@ export const useLabelData = (sortField: SortField, sortDirection: SortDirection)
         // 新しいラベルの場合、使用数を計算して追加
         labelsMap.set(labelWithBoard.id, {
           ...labelWithBoard,
-          usageCount: getAllLabelUsageCount(labelWithBoard.id)
+          usageCount: getAllLabelUsageCount(labelWithBoard.id),
         });
       }
     });
@@ -49,9 +56,14 @@ export const useLabelData = (sortField: SortField, sortDirection: SortDirection)
     });
 
     return sortedLabels;
-  }, [getAllLabelsWithBoardInfo, getAllLabelUsageCount, sortField, sortDirection]);
+  }, [
+    getAllLabelsWithBoardInfo,
+    getAllLabelUsageCount,
+    sortField,
+    sortDirection,
+  ]);
 
   return {
-    allLabelsWithInfo
+    allLabelsWithInfo,
   };
 };

@@ -1,6 +1,6 @@
-import { Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import React from "react";
+import { Plus } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import React from 'react';
 
 interface SubTaskHeaderProps {
   completedCount: number;
@@ -15,17 +15,17 @@ const SubTaskHeader: React.FC<SubTaskHeaderProps> = ({
   isAdding,
   onStartAdding,
 }) => (
-  <div className="flex items-center justify-between mb-2">
-    <h3 className="text-sm font-bold">
+  <div className='flex items-center justify-between mb-2'>
+    <h3 className='text-sm font-bold'>
       サブタスク {totalCount > 0 && `(${completedCount}/${totalCount})`}
     </h3>
     {!isAdding && (
       <Button
         onClick={onStartAdding}
-        variant="ghost"
-        size="sm"
-        aria-label="サブタスクを作成"
-        className="flex items-center gap-1"
+        variant='ghost'
+        size='sm'
+        aria-label='サブタスクを作成'
+        className='flex items-center gap-1'
       >
         <Plus size={16} />
         追加

@@ -1,7 +1,7 @@
-import { useState, useCallback, useMemo, useRef, useEffect } from "react";
+import { useState, useCallback, useMemo, useRef, useEffect } from 'react';
 
-import { useLabel } from "../../contexts/LabelContext";
-import type { Label } from "../../types";
+import { useLabel } from '../../contexts/LabelContext';
+import type { Label } from '../../types';
 
 interface UseLabelManagementProps {
   selectedLabels: Label[];
@@ -31,8 +31,8 @@ export const useLabelManagement = ({
 
   const allLabels = useMemo(() => getAllLabels(), [getAllLabels]);
   const selectedLabelIds = useMemo(
-    () => new Set(selectedLabels.map((label) => label.id)),
-    [selectedLabels],
+    () => new Set(selectedLabels.map(label => label.id)),
+    [selectedLabels]
   );
 
   // ラベルを現在のボードとその他に分類
@@ -40,7 +40,7 @@ export const useLabelManagement = ({
     const current: Label[] = [];
     const other: Label[] = [];
 
-    allLabels.forEach((label) => {
+    allLabels.forEach(label => {
       if (isLabelInCurrentBoard(label.id)) {
         current.push(label);
       } else {
@@ -57,7 +57,14 @@ export const useLabelManagement = ({
   // LabelContextからのメッセージを受信する設定
   useEffect(() => {
     const messageCallback = (_message: {
-      type: 'success' | 'danger' | 'warning' | 'critical' | 'default' | 'info' | 'upsell';
+      type:
+        | 'success'
+        | 'danger'
+        | 'warning'
+        | 'critical'
+        | 'default'
+        | 'info'
+        | 'upsell';
       text: string;
       title?: string;
     }) => {
@@ -85,15 +92,15 @@ export const useLabelManagement = ({
     if (pendingAutoSelect) {
       // 作成されたラベルを名前と色で検索
       const createdLabel = allLabels.find(
-        (label) =>
+        label =>
           label.name === pendingAutoSelect.name &&
-          label.color === pendingAutoSelect.color,
+          label.color === pendingAutoSelect.color
       );
 
       if (createdLabel) {
         const currentSelectedLabels = selectedLabelsRef.current;
         const isAlreadySelected = currentSelectedLabels.some(
-          (selected) => selected.id === createdLabel.id,
+          selected => selected.id === createdLabel.id
         );
 
         if (!isAlreadySelected) {
@@ -121,27 +128,26 @@ export const useLabelManagement = ({
     (label: Label) => {
       if (selectedLabelIds.has(label.id)) {
         // 削除
-        onLabelsChange(selectedLabels.filter((l) => l.id !== label.id));
+        onLabelsChange(selectedLabels.filter(l => l.id !== label.id));
       } else {
         // 追加
         onLabelsChange([...selectedLabels, label]);
       }
     },
-    [selectedLabels, selectedLabelIds, onLabelsChange],
+    [selectedLabels, selectedLabelIds, onLabelsChange]
   );
 
   // ラベル削除
   const removeLabel = useCallback(
     (labelId: string) => {
-      onLabelsChange(selectedLabels.filter((label) => label.id !== labelId));
+      onLabelsChange(selectedLabels.filter(label => label.id !== labelId));
     },
-    [selectedLabels, onLabelsChange],
+    [selectedLabels, onLabelsChange]
   );
 
   // 新しいラベル作成後の処理
   const handleLabelCreated = useCallback(
     (labelData: { name: string; color: string }) => {
-
       // LabelContextのcreateLabelでボード状態に保存
       createLabel(labelData.name, labelData.color);
 
@@ -151,7 +157,7 @@ export const useLabelManagement = ({
       // 自動選択用の状態を設定（useEffectで監視される）
       setPendingAutoSelect(labelData);
     },
-    [createLabel],
+    [createLabel]
   );
 
   // 他のボードのラベルをコピーして選択
@@ -162,7 +168,7 @@ export const useLabelManagement = ({
       // コピー後に自動選択（少し遅延させて新しいラベルが作成されるのを待つ）
       setPendingAutoSelect({ name: label.name, color: label.color });
     },
-    [copyLabelToCurrentBoard],
+    [copyLabelToCurrentBoard]
   );
 
   return {
