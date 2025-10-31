@@ -18,11 +18,11 @@ React + TypeScriptで構築されたモダンなタスク管理アプリケー�
 - Package Manager: npm
 - Drag & Drop: @dnd-kit
 - Icons: lucide-react (完全統一済み)
-- Color Picker: @uiw/react-color
+- Color Picker: カスタム実装（CircleColorPicker）
 - Emoji Picker: emoji-picker-react
 - Rich Text Editor: Lexical 0.35.0
 - Date Utilities: date-fns 4.1.0 + react-day-picker
-- Security: DOMPurify (HTMLサニタイズ)
+- Security: DOMPurify (HTMLサニタイズ) + ESLint security plugin
 
 ## 開発コマンド
 ```bash
@@ -47,7 +47,7 @@ npm run test:run      # 単発テスト実行
 npm run test:ui       # Vitest UIダッシュボード
 
 # Bundle分析
-npm run analyze:size  # Bundle分析レポート
+npm run analyze       # ANALYZE=true でビルド分析
 ```
 
 ## 主要機能
@@ -68,7 +68,7 @@ npm run analyze:size  # Bundle分析レポート
 - **設定管理**: デフォルトカラム設定・ごみ箱設定・各種カスタマイズ
 - **データ管理**: ローカル保存・ボード選択エクスポート・インポート機能
 - **通知システム**: DialogFlashMessage統合による統一されたメッセージ表示
-- **セキュリティ**: DOMPurifyによるHTMLサニタイズ機能
+- **セキュリティ**: DOMPurifyによるHTMLサニタイズ機能（ESLintセキュリティ警告の段階的改善中）
 
 ## ビュー詳細
 
@@ -96,7 +96,6 @@ npm run analyze:size  # Bundle分析レポート
 ### フォーム・ダイアログ
 - `TaskCreateDialog`/`TaskEditDialog`: タスクの作成・編集フォーム（モジュラー分割済み）
 - `TemplateFormDialog`: テンプレート作成・編集フォーム
-- `CommonDialog`: 共通ダイアログコンポーネント
 
 ### エディタ・表示
 - `RichTextEditor`: Lexicalベースのリッチテキストエディタ（emoji picker対応・12モジュール分割）
@@ -157,6 +156,11 @@ npm run analyze:size  # Bundle分析レポート
 - `FlexBox`: レイアウト用フレックスコンテナ
 
 ### その他
+- `Header`: アプリケーションヘッダー
+- `Logo`: アプリケーションロゴコンポーネント
 - `HelpSidebar`: 機能説明サイドバー
 - `SettingsDialog`: 設定ダイアログ（タブ形式・DialogFlashMessage統合）
+- `OfflineIndicator`: オフライン状態表示
+- `TaskStatsDisplay`: タスク統計表示
+- `BoardSelector`: ボード選択コンポーネント
 - `LinkifiedText`: リンク対応・HTMLサニタイズテキスト表示
