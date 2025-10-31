@@ -21,14 +21,18 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({
     // URL自動リンク化を実行する関数（コード記述を除外）
     const linkifyUrls = (text: string) =>
       text.replace(
-        /(?<!\w\.)(?:https?:\/\/[^\s]+|www\.[^\s]+(?![A-Z_])|(?<!\w\.)[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(?![A-Z_])[^\s]*)/g,
+        /(?<!\w\.)(?:https?:\/\/[^ \t\r\n<>]+|www\.[^ \t\r\n<>]+(?![A-Z_])|(?<!\w\.)[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(?![A-Z_])[^ \t\r\n<>]*)/g,
         url => {
           // process.env.JWT_SECRET のようなコード記述を除外
           if (/^[a-zA-Z0-9_]+\.[A-Z_][A-Z0-9_]*$/.test(url)) {
             return url; // コード記述として判定、リンク化しない
           }
-          const href = url.startsWith('http') ? url : `https://${url}`;
-          return `<a href="${href}" target="_blank" rel="noopener noreferrer">${url}</a>`;
+          // URLの末尾から句読点や括弧を除去
+          const cleanUrl = url.replace(/[.,;:!?)\]}>]+$/, '');
+          const href = cleanUrl.startsWith('http')
+            ? cleanUrl
+            : `https://${cleanUrl}`;
+          return `<a href="${href}" target="_blank" rel="noopener noreferrer">${cleanUrl}</a>`;
         }
       );
 
