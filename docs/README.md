@@ -29,7 +29,7 @@ TaskFlowアプリケーションの開発者向けドキュメント集です。
 ## 🔗 関連ドキュメント
 
 - [README.md](../README.md) - プロジェクト概要・クイックスタート・機能紹介
-- [CLAUDE.md](../CLAUDE.md) - 開発者向け技術詳細・コンポーネント構造・開発設定
+- [CLAUDE.md](../.claude/CLAUDE.md) - Claude Code向け技術詳細・コンポーネント構造・開発設定
 
 ## 🎯 将来の拡張予定
 
