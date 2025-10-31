@@ -1,5 +1,5 @@
-import { useCallback } from "react";
-import type { RecurrenceConfig, RecurrencePattern } from "../../../types";
+import { useCallback } from 'react';
+import type { RecurrenceConfig, RecurrencePattern } from '../../../types';
 
 interface UseRecurrenceHandlersProps {
   setConfig: React.Dispatch<React.SetStateAction<RecurrenceConfig>>;
@@ -19,11 +19,11 @@ export const useRecurrenceHandlers = ({
 }: UseRecurrenceHandlersProps): RecurrenceHandlers => {
   const handlePatternChange = useCallback(
     (value: string) => {
-      setConfig((prev) => ({
+      setConfig(prev => ({
         ...prev,
         pattern: value as RecurrencePattern,
-        daysOfWeek: value === "weekly" ? [new Date().getDay()] : undefined,
-        dayOfMonth: value === "monthly" ? new Date().getDate() : undefined,
+        daysOfWeek: value === 'weekly' ? [new Date().getDay()] : undefined,
+        dayOfMonth: value === 'monthly' ? new Date().getDate() : undefined,
       }));
     },
     [setConfig]
@@ -33,7 +33,7 @@ export const useRecurrenceHandlers = ({
     (value: string) => {
       const interval = parseInt(value, 10);
       if (!isNaN(interval) && interval > 0) {
-        setConfig((prev) => ({ ...prev, interval }));
+        setConfig(prev => ({ ...prev, interval }));
       }
     },
     [setConfig]
@@ -41,11 +41,11 @@ export const useRecurrenceHandlers = ({
 
   const handleDaysOfWeekChange = useCallback(
     (day: number, checked: boolean) => {
-      setConfig((prev) => {
+      setConfig(prev => {
         const daysOfWeek = prev.daysOfWeek || [];
         const newDaysOfWeek = checked
           ? [...daysOfWeek, day].sort((a, b) => a - b)
-          : daysOfWeek.filter((d) => d !== day);
+          : daysOfWeek.filter(d => d !== day);
 
         return { ...prev, daysOfWeek: newDaysOfWeek };
       });
@@ -57,7 +57,7 @@ export const useRecurrenceHandlers = ({
     (value: string) => {
       const dayOfMonth = parseInt(value, 10);
       if (!isNaN(dayOfMonth) && dayOfMonth >= 1 && dayOfMonth <= 31) {
-        setConfig((prev) => ({ ...prev, dayOfMonth }));
+        setConfig(prev => ({ ...prev, dayOfMonth }));
       }
     },
     [setConfig]
@@ -65,7 +65,7 @@ export const useRecurrenceHandlers = ({
 
   const handleEndDateChange = useCallback(
     (value: string | null) => {
-      setConfig((prev) => ({
+      setConfig(prev => ({
         ...prev,
         endDate: value || undefined,
         maxOccurrences: value ? undefined : prev.maxOccurrences,
@@ -77,11 +77,11 @@ export const useRecurrenceHandlers = ({
   const handleMaxOccurrencesChange = useCallback(
     (value: string) => {
       const maxOccurrences = parseInt(value, 10);
-      if (value === "" || (!isNaN(maxOccurrences) && maxOccurrences > 0)) {
-        setConfig((prev) => ({
+      if (value === '' || (!isNaN(maxOccurrences) && maxOccurrences > 0)) {
+        setConfig(prev => ({
           ...prev,
-          maxOccurrences: value === "" ? undefined : maxOccurrences,
-          endDate: value !== "" ? undefined : prev.endDate,
+          maxOccurrences: value === '' ? undefined : maxOccurrences,
+          endDate: value !== '' ? undefined : prev.endDate,
         }));
       }
     },

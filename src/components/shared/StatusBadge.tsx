@@ -25,77 +25,81 @@ interface StatusBadgeProps {
  * 期限、ラベル、統計表示などの状態を一貫したデザインで表示します。
  * Primerデザインシステムの色トークンを使用してアクセシビリティを確保。
  */
-const StatusBadge = memo<StatusBadgeProps>(({
-  variant,
-  size = 'medium',
-  icon: IconComponent,
-  children,
-  fontWeight = '600',
-  className
-}) => {
-  // バリアント別の色定義
-  const getVariantColor = (): string => {
-    switch (variant) {
-      case 'danger':
-        return 'text-destructive';
-      case 'warning':
-        return 'text-warning';
-      case 'success':
-        return 'text-success';
-      case 'info':
-        return 'text-primary';
-      default:
-        return 'text-default';
-    }
-  };
+const StatusBadge = memo<StatusBadgeProps>(
+  ({
+    variant,
+    size = 'medium',
+    icon: IconComponent,
+    children,
+    fontWeight = '600',
+    className,
+  }) => {
+    // バリアント別の色定義
+    const getVariantColor = (): string => {
+      switch (variant) {
+        case 'danger':
+          return 'text-destructive';
+        case 'warning':
+          return 'text-warning';
+        case 'success':
+          return 'text-success';
+        case 'info':
+          return 'text-primary';
+        default:
+          return 'text-default';
+      }
+    };
 
-  // サイズ別のスタイル定義
-  const getSizeClasses = (): { containerClass: string; textClass: string; iconSize: number } => {
-    switch (size) {
-      case 'small':
-        return {
-          containerClass: 'px-1 py-0',
-          textClass: 'text-xs',
-          iconSize: 16
-        };
-      case 'large':
-        return {
-          containerClass: 'px-3 py-2',
-          textClass: 'text-base',
-          iconSize: 16
-        };
-      default: // medium
-        return {
-          containerClass: 'px-2 py-1',
-          textClass: 'text-sm',
-          iconSize: 16
-        };
-    }
-  };
+    // サイズ別のスタイル定義
+    const getSizeClasses = (): {
+      containerClass: string;
+      textClass: string;
+      iconSize: number;
+    } => {
+      switch (size) {
+        case 'small':
+          return {
+            containerClass: 'px-1 py-0',
+            textClass: 'text-xs',
+            iconSize: 16,
+          };
+        case 'large':
+          return {
+            containerClass: 'px-3 py-2',
+            textClass: 'text-base',
+            iconSize: 16,
+          };
+        default: // medium
+          return {
+            containerClass: 'px-2 py-1',
+            textClass: 'text-sm',
+            iconSize: 16,
+          };
+      }
+    };
 
-  const colorClass = getVariantColor();
-  const { containerClass, textClass, iconSize } = getSizeClasses();
+    const colorClass = getVariantColor();
+    const { containerClass, textClass, iconSize } = getSizeClasses();
 
-  return (
-    <div
-      className={cn(
-        'inline-flex items-center self-start gap-1',
-        containerClass,
-        textClass,
-        className,
-        colorClass
-      )}
-      style={{
-        fontWeight
-      }}
-    >
-      {IconComponent && (
-        <IconComponent size={iconSize} />
-      )}
+    return (
+      <div
+        className={cn(
+          'inline-flex items-center self-start gap-1',
+          containerClass,
+          textClass,
+          className,
+          colorClass
+        )}
+        style={{
+          fontWeight,
+        }}
+      >
+        {IconComponent && <IconComponent size={iconSize} />}
         {children}
-    </div>
-  );
-});
+      </div>
+    );
+  }
+);
 
 StatusBadge.displayName = 'StatusBadge';
 

@@ -1,10 +1,10 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback } from 'react';
 
-import { useKanban } from "../contexts/KanbanContext";
-import { useBoard } from "../contexts/BoardContext";
-import type { Task } from "../types";
+import { useKanban } from '../contexts/KanbanContext';
+import { useBoard } from '../contexts/BoardContext';
+import type { Task } from '../types';
 
-import { useTaskColumn } from "./useTaskColumn";
+import { useTaskColumn } from './useTaskColumn';
 
 interface UseTaskActionsReturn {
   readonly showDeleteConfirm: boolean;
@@ -30,7 +30,7 @@ interface UseTaskActionsReturn {
  */
 export const useTaskActions = (
   task: Task | null,
-  onClose?: () => void,
+  onClose?: () => void
 ): UseTaskActionsReturn => {
   const {
     deleteTask,
@@ -82,21 +82,21 @@ export const useTaskActions = (
       // カラム移動が必要な場合
       if (targetColumnId && column && targetColumnId !== column.id) {
         const targetColumn = state.currentBoard?.columns.find(
-          (col) => col.id === targetColumnId,
+          col => col.id === targetColumnId
         );
         if (targetColumn) {
           moveTask(
             updatedTask.id,
             column.id,
             targetColumnId,
-            targetColumn.tasks.length,
+            targetColumn.tasks.length
           );
         }
       }
 
       setShowEditDialog(false);
     },
-    [updateTask, moveTask, column, state.currentBoard],
+    [updateTask, moveTask, column, state.currentBoard]
   );
 
   const handleDeleteEdit = useCallback(
@@ -109,7 +109,7 @@ export const useTaskActions = (
       onClose?.();
       setShowEditDialog(false);
     },
-    [task, column, deleteTask, onClose],
+    [task, column, deleteTask, onClose]
   );
 
   const handleAddSubTask = useCallback(
@@ -119,7 +119,7 @@ export const useTaskActions = (
       }
       addSubTask(task.id, title);
     },
-    [task, addSubTask],
+    [task, addSubTask]
   );
 
   const handleToggleSubTask = useCallback(
@@ -129,7 +129,7 @@ export const useTaskActions = (
       }
       toggleSubTask(task.id, subTaskId);
     },
-    [task, toggleSubTask],
+    [task, toggleSubTask]
   );
 
   const handleEditSubTask = useCallback(
@@ -139,7 +139,7 @@ export const useTaskActions = (
       }
       updateSubTask(task.id, subTaskId, newTitle);
     },
-    [task, updateSubTask],
+    [task, updateSubTask]
   );
 
   const handleDeleteSubTask = useCallback(
@@ -149,7 +149,7 @@ export const useTaskActions = (
       }
       deleteSubTask(task.id, subTaskId);
     },
-    [task, deleteSubTask],
+    [task, deleteSubTask]
   );
 
   const handleReorderSubTasks = useCallback(
@@ -159,7 +159,7 @@ export const useTaskActions = (
       }
       reorderSubTasks(task.id, oldIndex, newIndex);
     },
-    [task, reorderSubTasks],
+    [task, reorderSubTasks]
   );
 
   const handleMoveToBoard = useCallback(
@@ -173,7 +173,7 @@ export const useTaskActions = (
       // タスク詳細サイドバーを閉じる
       onClose?.();
     },
-    [task, column, currentBoard, moveTaskToBoard, onClose],
+    [task, column, currentBoard, moveTaskToBoard, onClose]
   );
 
   return {

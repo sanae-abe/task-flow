@@ -31,7 +31,12 @@ export const ActionFooter: React.FC<ActionFooterProps> = ({
   onDelete,
   onClose,
 }) => {
-  const itemTypeText = item.type === 'task' ? 'タスク' : item.type === 'board' ? 'ボード' : 'カラム';
+  const itemTypeText =
+    item.type === 'task'
+      ? 'タスク'
+      : item.type === 'board'
+        ? 'ボード'
+        : 'カラム';
 
   // ボタンの状態を判定
   const isRestoreDisabled = !item.canRestore || isLoading;
@@ -63,82 +68,73 @@ export const ActionFooter: React.FC<ActionFooterProps> = ({
 
   return (
     <footer
-      role="group"
-      aria-label="アクション"
-      className="flex gap-2 p-4 border-t border-gray-200 bg-gray-50 rounded-b-md sticky bottom-0 z-210 max-sm:p-3 max-sm:gap-1"
+      role='group'
+      aria-label='アクション'
+      className='flex gap-2 p-4 border-t border-gray-200 bg-gray-50 rounded-b-md sticky bottom-0 z-210 max-sm:p-3 max-sm:gap-1'
     >
       {/* 復元ボタン */}
       <Button
-        variant="default"
-        size="default"
+        variant='default'
+        size='default'
         disabled={isRestoreDisabled}
         onClick={() => onRestore(item)}
         className={cn(
-          "flex items-center gap-1 flex-1 transition-all",
-          !item.canRestore && "opacity-60 cursor-not-allowed",
-          "max-sm:text-sm max-sm:py-2"
+          'flex items-center gap-1 flex-1 transition-all',
+          !item.canRestore && 'opacity-60 cursor-not-allowed',
+          'max-sm:text-sm max-sm:py-2'
         )}
         aria-label={`${itemTypeText}「${item.title}」を復元`}
-        aria-describedby={item.canRestore ? undefined : 'restore-disabled-reason'}
+        aria-describedby={
+          item.canRestore ? undefined : 'restore-disabled-reason'
+        }
       >
         {loadingAction === 'restore' ? (
-          <Loader2 size={16} className="animate-spin" />
+          <Loader2 size={16} className='animate-spin' />
         ) : (
-          <RotateCcw
-            size={16}
-            aria-hidden="true"
-          />
+          <RotateCcw size={16} aria-hidden='true' />
         )}
         {getButtonText('restore')}
       </Button>
 
       {/* 完全削除ボタン */}
       <Button
-        variant="destructive"
-        size="default"
+        variant='destructive'
+        size='default'
         disabled={isDeleteDisabled}
         onClick={() => onDelete(item)}
-        className="flex items-center gap-1 flex-1 transition-all max-sm:text-sm max-sm:py-2"
+        className='flex items-center gap-1 flex-1 transition-all max-sm:text-sm max-sm:py-2'
         aria-label={`${itemTypeText}「${item.title}」を完全に削除`}
       >
         {loadingAction === 'delete' ? (
-          <Loader2 size={16} className="animate-spin" />
+          <Loader2 size={16} className='animate-spin' />
         ) : (
-          <Trash2
-            size={16}
-            aria-hidden="true"
-          />
+          <Trash2 size={16} aria-hidden='true' />
         )}
         {getButtonText('delete')}
       </Button>
 
       {/* 閉じるボタン */}
       <Button
-        variant="ghost"
-        size="default"
+        variant='ghost'
+        size='default'
         disabled={isCloseDisabled}
         onClick={onClose}
-        className="flex items-center gap-1 shrink-0 transition-all min-w-auto max-sm:text-sm max-sm:py-2 max-sm:px-3"
-        aria-label="ダイアログを閉じる"
+        className='flex items-center gap-1 shrink-0 transition-all min-w-auto max-sm:text-sm max-sm:py-2 max-sm:px-3'
+        aria-label='ダイアログを閉じる'
       >
         {loadingAction === 'close' ? (
-          <Loader2 size={16} className="animate-spin" />
+          <Loader2 size={16} className='animate-spin' />
         ) : (
-          <X
-            size={16}
-            aria-hidden="true"
-          />
+          <X size={16} aria-hidden='true' />
         )}
-        <span className="hidden sm:block">
-          {getButtonText('close')}
-        </span>
+        <span className='hidden sm:block'>{getButtonText('close')}</span>
       </Button>
 
       {/* 復元不可能な理由の説明（スクリーンリーダー用） */}
       {!item.canRestore && (
         <div
-          id="restore-disabled-reason"
-          className="absolute -left-[10000px] w-px h-px overflow-hidden"
+          id='restore-disabled-reason'
+          className='absolute -left-[10000px] w-px h-px overflow-hidden'
         >
           このアイテムは復元できません。関連するデータが見つからないか、破損している可能性があります。
         </div>
@@ -146,24 +142,24 @@ export const ActionFooter: React.FC<ActionFooterProps> = ({
 
       {/* ローディング状態のライブリージョン */}
       <div
-        role="status"
-        aria-live="polite"
-        aria-atomic="true"
-        className="absolute -left-[10000px] w-px h-px overflow-hidden"
+        role='status'
+        aria-live='polite'
+        aria-atomic='true'
+        className='absolute -left-[10000px] w-px h-px overflow-hidden'
       >
-        {isLoading && loadingAction && (
-          `${loadingAction === 'restore' ? '復元' : loadingAction === 'delete' ? '削除' : '処理'}を実行中です`
-        )}
+        {isLoading &&
+          loadingAction &&
+          `${loadingAction === 'restore' ? '復元' : loadingAction === 'delete' ? '削除' : '処理'}を実行中です`}
       </div>
 
       {/* キーボードナビゲーション用のスキップリンク */}
       <a
-        href="#dialog-close"
+        href='#dialog-close'
         onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
           e.preventDefault();
           onClose();
         }}
-        className="absolute -left-[10000px] w-px h-px overflow-hidden focus:static focus:left-auto focus:w-auto focus:h-auto focus:overflow-visible focus:p-1 focus:bg-primary focus:text-white focus:rounded-sm focus:no-underline focus:text-xs focus:font-bold"
+        className='absolute -left-[10000px] w-px h-px overflow-hidden focus:static focus:left-auto focus:w-auto focus:h-auto focus:overflow-visible focus:p-1 focus:bg-primary focus:text-white focus:rounded-sm focus:no-underline focus:text-xs focus:font-bold'
       >
         ダイアログを閉じる (Escape)
       </a>

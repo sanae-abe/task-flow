@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback } from 'react';
 import {
   DragStartEvent,
   DragOverEvent,
@@ -8,19 +8,19 @@ import {
   PointerSensor,
   KeyboardSensor,
   TouchSensor,
-} from "@dnd-kit/core";
-import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
+} from '@dnd-kit/core';
+import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 
-import type { Task } from "../types";
-import type { VirtualRecurringTask } from "../utils/calendarRecurrence";
+import type { Task } from '../types';
+import type { VirtualRecurringTask } from '../utils/calendarRecurrence';
 
 // 型ガード関数: タスクオブジェクトの妥当性をチェック
 function isValidTask(obj: unknown): obj is Task | VirtualRecurringTask {
   return (
     obj !== null &&
-    typeof obj === "object" &&
-    "id" in obj &&
-    typeof (obj as { id: unknown }).id === "string"
+    typeof obj === 'object' &&
+    'id' in obj &&
+    typeof (obj as { id: unknown }).id === 'string'
   );
 }
 
@@ -57,15 +57,15 @@ export const useCalendarDragAndDrop = ({
         delay: 250,
         tolerance: 5,
       },
-    }),
+    })
   );
 
   const handleDragStart = useCallback((event: DragStartEvent) => {
     const { active } = event;
 
     // active.dataからタスク情報を取得
-    if (active.data.current?.["type"] === "calendar-task") {
-      const task = active.data.current["task"];
+    if (active.data.current?.['type'] === 'calendar-task') {
+      const task = active.data.current['task'];
       if (isValidTask(task)) {
         // 仮想タスクの場合はドラッグ無効だが、型の安全性のため設定
         setActiveTask(task);
@@ -88,15 +88,15 @@ export const useCalendarDragAndDrop = ({
       }
 
       // ドロップターゲットが日付セルの場合
-      if (over.data.current?.["type"] === "calendar-date") {
+      if (over.data.current?.['type'] === 'calendar-date') {
         const taskId = active.id as string;
-        const targetDate = over.data.current["date"] as Date;
+        const targetDate = over.data.current['date'] as Date;
 
         // タスクの期限を新しい日付に更新
         onTaskDateChange(taskId, targetDate);
       }
     },
-    [onTaskDateChange],
+    [onTaskDateChange]
   );
 
   return {

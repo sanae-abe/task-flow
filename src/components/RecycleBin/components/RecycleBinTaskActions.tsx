@@ -1,19 +1,15 @@
-import React from "react";
-import { Button } from "@/components/ui/button";
+import React from 'react';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  MoreHorizontal,
-  RotateCcw,
-  Trash2,
-} from "lucide-react";
-import { LoadingButton } from "../../shared/LoadingButton";
-import { MESSAGES } from "../../../constants/recycleBin";
+} from '@/components/ui/dropdown-menu';
+import { MoreHorizontal, RotateCcw, Trash2 } from 'lucide-react';
+import { LoadingButton } from '../../shared/LoadingButton';
+import { MESSAGES } from '../../../constants/recycleBin';
 
 export interface RecycleBinTaskActionsProps {
   /** タスクID */
@@ -43,14 +39,14 @@ export const RecycleBinTaskActions: React.FC<RecycleBinTaskActionsProps> = ({
 
   if (isLoading) {
     return (
-      <div className="flex gap-2">
+      <div className='flex gap-2'>
         <LoadingButton
           disabled
           isLoading
           loadingText={
             restoringTaskId === taskId
               ? MESSAGES.RESTORE.IN_PROGRESS
-              : "削除中..."
+              : '削除中...'
           }
         >
           処理中
@@ -60,25 +56,22 @@ export const RecycleBinTaskActions: React.FC<RecycleBinTaskActionsProps> = ({
   }
 
   return (
-    <div className="flex gap-2">
+    <div className='flex gap-2'>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button
-            size="sm"
-            variant="outline"
-          >
-            <MoreHorizontal size={16} className="mr-2" />
+          <Button size='sm' variant='outline'>
+            <MoreHorizontal size={16} className='mr-2' />
             操作
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuItem onClick={() => onRestore(taskId)}>
-            <RotateCcw size={16} className="mr-2" />
+            <RotateCcw size={16} className='mr-2' />
             復元
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => onDeleteConfirm(taskId)}>
-            <Trash2 size={16} className="mr-2" />
+            <Trash2 size={16} className='mr-2' />
             完全に削除
           </DropdownMenuItem>
         </DropdownMenuContent>

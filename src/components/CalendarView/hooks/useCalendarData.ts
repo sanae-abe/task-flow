@@ -1,21 +1,21 @@
-import { useMemo } from "react";
-import type { Task, Column } from "../../../types";
-import { sortTasks } from "../../../utils/taskSort";
-import { filterTasks } from "../../../utils/taskFilter";
+import { useMemo } from 'react';
+import type { Task, Column } from '../../../types';
+import { sortTasks } from '../../../utils/taskSort';
+import { filterTasks } from '../../../utils/taskFilter';
 import {
   generateCalendarTasks,
   getCalendarDateRange,
   type VirtualRecurringTask,
-} from "../../../utils/calendarRecurrence";
+} from '../../../utils/calendarRecurrence';
 
 interface KanbanState {
-  boards: import("../../../types").KanbanBoard[];
-  currentBoard: import("../../../types").KanbanBoard | null;
-  labels: import("../../../types").Label[];
+  boards: import('../../../types').KanbanBoard[];
+  currentBoard: import('../../../types').KanbanBoard | null;
+  labels: import('../../../types').Label[];
   isLoading: boolean;
-  viewMode: import("../../../types").ViewMode;
-  taskFilter: import("../../../types").TaskFilter;
-  sortOption: import("../../../types").SortOption;
+  viewMode: import('../../../types').ViewMode;
+  taskFilter: import('../../../types').TaskFilter;
+  sortOption: import('../../../types').SortOption;
   isTaskDetailOpen: boolean;
   selectedTaskId: string | null;
   isTaskFormOpen: boolean;
@@ -52,20 +52,20 @@ export const useCalendarData = ({
       year: currentDate.getFullYear(),
       month: currentDate.getMonth(),
     }),
-    [currentDate],
+    [currentDate]
   );
 
   const firstDayOfMonth = useMemo(
     () => new Date(year, month, 1),
-    [year, month],
+    [year, month]
   );
   const lastDayOfMonth = useMemo(
     () => new Date(year, month + 1, 0),
-    [year, month],
+    [year, month]
   );
   const firstDayOfWeek = useMemo(
     () => firstDayOfMonth.getDay(),
-    [firstDayOfMonth],
+    [firstDayOfMonth]
   );
   const daysInMonth = useMemo(() => lastDayOfMonth.getDate(), [lastDayOfMonth]);
 
@@ -123,11 +123,11 @@ export const useCalendarData = ({
     const calendarTasks = generateCalendarTasks(
       sortedTasks,
       startDate,
-      endDate,
+      endDate
     );
 
     // タスクを日付ごとにグループ化
-    calendarTasks.forEach((task) => {
+    calendarTasks.forEach(task => {
       if (task.dueDate) {
         const dateKey = new Date(task.dueDate).toDateString();
         const existingTasks = taskMap.get(dateKey) || [];
@@ -140,25 +140,25 @@ export const useCalendarData = ({
 
   const monthNames = useMemo(
     () => [
-      "1月",
-      "2月",
-      "3月",
-      "4月",
-      "5月",
-      "6月",
-      "7月",
-      "8月",
-      "9月",
-      "10月",
-      "11月",
-      "12月",
+      '1月',
+      '2月',
+      '3月',
+      '4月',
+      '5月',
+      '6月',
+      '7月',
+      '8月',
+      '9月',
+      '10月',
+      '11月',
+      '12月',
     ],
-    [],
+    []
   );
 
   const weekDays = useMemo(
-    () => ["日", "月", "火", "水", "木", "金", "土"],
-    [],
+    () => ['日', '月', '火', '水', '木', '金', '土'],
+    []
   );
 
   return {

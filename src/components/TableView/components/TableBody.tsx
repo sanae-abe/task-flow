@@ -1,7 +1,7 @@
-import React from "react";
-import type { Task } from "../../../types";
-import type { TaskWithColumn, TableColumn } from "../../../types/table";
-import { TableRow } from "./TableRow";
+import React from 'react';
+import type { Task } from '../../../types';
+import type { TaskWithColumn, TableColumn } from '../../../types/table';
+import { TableRow } from './TableRow';
 
 /**
  * テーブルボディコンポーネントのProps

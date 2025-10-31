@@ -5,12 +5,12 @@ import {
   MoreHorizontal,
   ChevronLeft,
   ChevronRight,
-} from "lucide-react";
-import React, { useMemo } from "react";
+} from 'lucide-react';
+import React, { useMemo } from 'react';
 
-import type { MenuGroup, MenuTrigger } from "../types/unified-menu";
-import UnifiedMenu from "./shared/Menu/UnifiedMenu";
-import IconButton from "./shared/IconButton";
+import type { MenuGroup, MenuTrigger } from '../types/unified-menu';
+import UnifiedMenu from './shared/Menu/UnifiedMenu';
+import IconButton from './shared/IconButton';
 
 interface ColumnActionsProps {
   onAddTask: () => void;
@@ -32,14 +32,17 @@ const ColumnActions: React.FC<ColumnActionsProps> = ({
   canMoveRight = true,
 }) => {
   // メニュートリガー設定
-  const trigger: MenuTrigger = useMemo(() => ({
-    type: 'custom',
-    icon: MoreHorizontal,
-    variant: 'invisible',
-    size: 'icon',
-    ariaLabel: 'カラム設定',
-    className: 'w-6 h-6 p-0 hover:bg-transparent justify-center',
-  }), []);
+  const trigger: MenuTrigger = useMemo(
+    () => ({
+      type: 'custom',
+      icon: MoreHorizontal,
+      variant: 'invisible',
+      size: 'icon',
+      ariaLabel: 'カラム設定',
+      className: 'w-6 h-6 p-0 hover:bg-transparent justify-center',
+    }),
+    []
+  );
 
   // メニューグループ設定
   const menuGroups: MenuGroup[] = useMemo(() => {
@@ -57,7 +60,7 @@ const ColumnActions: React.FC<ColumnActionsProps> = ({
           label: '左に移動',
           icon: ChevronLeft,
           disabled: !canMoveLeft,
-          onSelect: onMoveLeft
+          onSelect: onMoveLeft,
         });
       }
 
@@ -68,7 +71,7 @@ const ColumnActions: React.FC<ColumnActionsProps> = ({
           label: '右に移動',
           icon: ChevronRight,
           disabled: !canMoveRight,
-          onSelect: onMoveRight
+          onSelect: onMoveRight,
         });
       }
 
@@ -76,7 +79,7 @@ const ColumnActions: React.FC<ColumnActionsProps> = ({
         groups.push({
           id: 'column-movement',
           label: 'カラム移動',
-          items: moveItems
+          items: moveItems,
         });
       }
     }
@@ -91,7 +94,7 @@ const ColumnActions: React.FC<ColumnActionsProps> = ({
           type: 'action',
           label: 'カラム名を編集',
           icon: Edit,
-          onSelect: onTitleEdit
+          onSelect: onTitleEdit,
         },
         {
           id: 'delete-column',
@@ -99,31 +102,34 @@ const ColumnActions: React.FC<ColumnActionsProps> = ({
           label: 'カラムを削除',
           icon: Trash2,
           variant: 'danger',
-          onSelect: onDeleteColumn
-        }
-      ]
+          onSelect: onDeleteColumn,
+        },
+      ],
     });
 
     return groups;
-  }, [onMoveLeft, onMoveRight, canMoveLeft, canMoveRight, onTitleEdit, onDeleteColumn]);
+  }, [
+    onMoveLeft,
+    onMoveRight,
+    canMoveLeft,
+    canMoveRight,
+    onTitleEdit,
+    onDeleteColumn,
+  ]);
 
   return (
-    <div className="flex items-center">
+    <div className='flex items-center'>
       {/* タスク追加ボタン */}
       <IconButton
         icon={Plus}
         onClick={onAddTask}
-        size="icon"
-        ariaLabel="タスクを作成"
-        className="text-foreground hover:text-foreground w-6 h-6 p-0"
+        size='icon'
+        ariaLabel='タスクを作成'
+        className='text-foreground hover:text-foreground w-6 h-6 p-0'
       />
 
       {/* カラム設定メニュー */}
-      <UnifiedMenu
-        groups={menuGroups}
-        trigger={trigger}
-        zIndex={150}
-      />
+      <UnifiedMenu groups={menuGroups} trigger={trigger} zIndex={150} />
     </div>
   );
 };

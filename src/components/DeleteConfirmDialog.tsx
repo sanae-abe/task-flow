@@ -1,7 +1,7 @@
-import React, { useMemo, useCallback } from "react";
+import React, { useMemo, useCallback } from 'react';
 
-import UnifiedDialog from "./shared/Dialog/UnifiedDialog";
-import type { DialogAction } from "../types/unified-dialog";
+import UnifiedDialog from './shared/Dialog/UnifiedDialog';
+import type { DialogAction } from '../types/unified-dialog';
 
 interface DeleteConfirmDialogProps {
   isOpen: boolean;
@@ -24,25 +24,25 @@ const DeleteConfirmDialog: React.FC<DeleteConfirmDialogProps> = ({
   const actions: DialogAction[] = useMemo(
     () => [
       {
-        label: "キャンセル",
+        label: 'キャンセル',
         onClick: onClose,
-        variant: "outline",
+        variant: 'outline',
       },
       {
-        label: "削除",
+        label: '削除',
         onClick: handleConfirm,
-        variant: "destructive",
+        variant: 'destructive',
       },
     ],
-    [onClose, handleConfirm],
+    [onClose, handleConfirm]
   );
 
   return (
     <UnifiedDialog
       isOpen={isOpen}
-      title="タスクの削除"
+      title='タスクの削除'
       onClose={onClose}
-      variant="modal"
+      variant='modal'
       actions={actions}
     >
       <p>「{taskTitle}」を削除しますか？</p>

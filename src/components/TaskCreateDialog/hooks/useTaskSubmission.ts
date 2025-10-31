@@ -74,7 +74,11 @@ export const useTaskSubmission = (
 
     if (targetColumnId) {
       // 選択されたボードが現在のボードと異なる場合は、ボードを切り替え
-      if (formState.selectedBoardId && formState.selectedBoardId !== currentBoard?.id && setCurrentBoard) {
+      if (
+        formState.selectedBoardId &&
+        formState.selectedBoardId !== currentBoard?.id &&
+        setCurrentBoard
+      ) {
         setCurrentBoard(formState.selectedBoardId);
       }
 
@@ -94,7 +98,10 @@ export const useTaskSubmission = (
       if (selectedTemplate) {
         message = `テンプレート「${selectedTemplate.name}」からタスク「${formState.title.trim()}」を作成しました`;
       }
-      if (formState.selectedBoardId && formState.selectedBoardId !== currentBoard?.id) {
+      if (
+        formState.selectedBoardId &&
+        formState.selectedBoardId !== currentBoard?.id
+      ) {
         message += `（ボード「${targetBoard.title}」に作成）`;
       }
       notify.success(message);
@@ -102,7 +109,9 @@ export const useTaskSubmission = (
       closeTaskForm();
     } else {
       // カラムが存在しない場合のエラーハンドリング
-      notify._error('タスクを作成するためのカラムが存在しません。最初にカラムを作成してください。');
+      notify._error(
+        'タスクを作成するためのカラムが存在しません。最初にカラムを作成してください。'
+      );
     }
   }, [
     formState,
@@ -113,38 +122,44 @@ export const useTaskSubmission = (
     taskFormDefaultStatus,
     availableBoards,
     setCurrentBoard,
-    notify
+    notify,
   ]);
 
   // キーボードショートカット処理
-  const handleKeyPress = useCallback((event: React.KeyboardEvent) => {
-    if (event.key === 'Escape') {
-      closeTaskForm();
-    }
-    if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
-      event.preventDefault();
-      handleSave();
-    }
-  }, [closeTaskForm, handleSave]);
+  const handleKeyPress = useCallback(
+    (event: React.KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        closeTaskForm();
+      }
+      if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
+        event.preventDefault();
+        handleSave();
+      }
+    },
+    [closeTaskForm, handleSave]
+  );
 
   // ダイアログアクション
-  const actions: DialogAction[] = useMemo(() => [
-    {
-      label: 'キャンセル',
-      onClick: closeTaskForm,
-      variant: 'outline'
-    },
-    {
-      label: '追加',
-      onClick: handleSave,
-      variant: 'primary',
-      disabled: !isFormValid
-    }
-  ], [closeTaskForm, handleSave, isFormValid]);
+  const actions: DialogAction[] = useMemo(
+    () => [
+      {
+        label: 'キャンセル',
+        onClick: closeTaskForm,
+        variant: 'outline',
+      },
+      {
+        label: '追加',
+        onClick: handleSave,
+        variant: 'primary',
+        disabled: !isFormValid,
+      },
+    ],
+    [closeTaskForm, handleSave, isFormValid]
+  );
 
   return {
     handleSave,
     handleKeyPress,
-    actions
+    actions,
   };
 };

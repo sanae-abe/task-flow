@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback } from 'react';
 
 /**
  * 非同期操作の状態管理を行うカスタムフック
@@ -21,21 +21,25 @@ export const useAsyncOperation = <T = void>(): UseAsyncOperationResult<T> => {
   const [isLoading, setIsLoading] = useState(false);
   const [_error, setError] = useState<string | null>(null);
 
-  const execute = useCallback(async (operation: () => Promise<T>): Promise<T> => {
-    setIsLoading(true);
-    setError(null);
+  const execute = useCallback(
+    async (operation: () => Promise<T>): Promise<T> => {
+      setIsLoading(true);
+      setError(null);
 
-    try {
-      const result = await operation();
-      return result;
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "操作に失敗しました";
-      setError(errorMessage);
-      throw err;
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+      try {
+        const result = await operation();
+        return result;
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : '操作に失敗しました';
+        setError(errorMessage);
+        throw err;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    []
+  );
 
   const clearError = useCallback(() => {
     setError(null);

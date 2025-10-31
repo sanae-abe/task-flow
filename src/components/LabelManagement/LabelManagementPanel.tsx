@@ -10,24 +10,51 @@ import { useLabelDialogs, useLabelData } from './hooks';
 
 interface LabelManagementPanelProps {
   /** メッセージ表示時のコールバック */
-  onMessage?: (message: { type: 'success' | 'danger' | 'warning' | 'critical' | 'default' | 'info' | 'upsell'; text: string }) => void;
+  onMessage?: (message: {
+    type:
+      | 'success'
+      | 'danger'
+      | 'warning'
+      | 'critical'
+      | 'default'
+      | 'info'
+      | 'upsell';
+    text: string;
+  }) => void;
 }
 
-const LabelManagementPanel: React.FC<LabelManagementPanelProps> = ({ onMessage }) => {
+const LabelManagementPanel: React.FC<LabelManagementPanelProps> = ({
+  onMessage,
+}) => {
   const { allLabelsWithInfo } = useLabelData('name', 'asc');
 
   // メッセージコールバック
-  const handleMessage = useCallback((message: { type: 'success' | 'danger' | 'warning' | 'critical' | 'default' | 'info' | 'upsell'; text: string } | null) => {
-    // nullチェックを追加してランタイムエラーを防ぐ
-    if (!message) {
-      return;
-    }
+  const handleMessage = useCallback(
+    (
+      message: {
+        type:
+          | 'success'
+          | 'danger'
+          | 'warning'
+          | 'critical'
+          | 'default'
+          | 'info'
+          | 'upsell';
+        text: string;
+      } | null
+    ) => {
+      // nullチェックを追加してランタイムエラーを防ぐ
+      if (!message) {
+        return;
+      }
 
-    // 親のSettingsDialogのDialogFlashMessageに送信
-    if (onMessage) {
-      onMessage(message);
-    }
-  }, [onMessage]);
+      // 親のSettingsDialogのDialogFlashMessageに送信
+      if (onMessage) {
+        onMessage(message);
+      }
+    },
+    [onMessage]
+  );
 
   const {
     editDialog,
@@ -38,24 +65,18 @@ const LabelManagementPanel: React.FC<LabelManagementPanelProps> = ({ onMessage }
     handleCloseEditDialog,
     handleCloseDeleteDialog,
     handleSave,
-    handleConfirmDelete
+    handleConfirmDelete,
   } = useLabelDialogs(handleMessage);
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className='flex flex-col gap-3'>
       {/* ヘッダー */}
-      <div className="flex items-center justify-between gap-2">
-        <div className="flex items-center gap-2">
-          <h2 className="text-lg font-bold">
-            ラベル管理
-          </h2>
+      <div className='flex items-center justify-between gap-2'>
+        <div className='flex items-center gap-2'>
+          <h2 className='text-lg font-bold'>ラベル管理</h2>
         </div>
-        <Button
-          variant="default"
-          onClick={handleCreate}
-          size="sm"
-        >
-          <Plus size={16} className="mr-2" />
+        <Button variant='default' onClick={handleCreate} size='sm'>
+          <Plus size={16} className='mr-2' />
           ラベルを作成
         </Button>
       </div>
@@ -84,18 +105,18 @@ const LabelManagementPanel: React.FC<LabelManagementPanelProps> = ({ onMessage }
       {/* 削除確認ダイアログ */}
       <ConfirmDialog
         isOpen={deleteDialog.isOpen}
-        title="ラベルの削除"
+        title='ラベルの削除'
         message={
           deleteDialog.label
-            ? `ラベル「${deleteDialog.label.name}」を全ボードから削除しますか？この操作は元に戻せません。${('usageCount' in deleteDialog.label && typeof deleteDialog.label.usageCount === 'number' && deleteDialog.label.usageCount > 0) ? `\n\n${deleteDialog.label.usageCount}個のタスクからも削除されます。` : ''}`
+            ? `ラベル「${deleteDialog.label.name}」を全ボードから削除しますか？この操作は元に戻せません。${'usageCount' in deleteDialog.label && typeof deleteDialog.label.usageCount === 'number' && deleteDialog.label.usageCount > 0 ? `\n\n${deleteDialog.label.usageCount}個のタスクからも削除されます。` : ''}`
             : ''
         }
         onClose={handleCloseDeleteDialog}
         onConfirm={handleConfirmDelete}
         onCancel={handleCloseDeleteDialog}
-        confirmText="削除"
-        cancelText="キャンセル"
-        confirmVariant="danger"
+        confirmText='削除'
+        cancelText='キャンセル'
+        confirmVariant='danger'
       />
     </div>
   );

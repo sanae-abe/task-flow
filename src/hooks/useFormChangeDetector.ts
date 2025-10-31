@@ -67,14 +67,17 @@ export const useFormChangeDetector = <T extends Record<string, unknown>>(
    * ダイアログを閉じる処理
    * 変更がある場合は確認ダイアログを表示
    */
-  const handleClose = useCallback((onClose: () => void) => {
-    if (hasChanges) {
-      onCloseCallbackRef.current = onClose;
-      setShowCloseConfirm(true);
-    } else {
-      onClose();
-    }
-  }, [hasChanges]);
+  const handleClose = useCallback(
+    (onClose: () => void) => {
+      if (hasChanges) {
+        onCloseCallbackRef.current = onClose;
+        setShowCloseConfirm(true);
+      } else {
+        onClose();
+      }
+    },
+    [hasChanges]
+  );
 
   /**
    * 確認ダイアログで「はい」を選択した時の処理

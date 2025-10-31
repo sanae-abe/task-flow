@@ -44,7 +44,9 @@ export interface UseTaskEditReturn {
   columnId: string;
   setColumnId: (value: string) => void;
   recurrence: import('../../types').RecurrenceConfig | undefined;
-  setRecurrence: (recurrence: import('../../types').RecurrenceConfig | undefined) => void;
+  setRecurrence: (
+    recurrence: import('../../types').RecurrenceConfig | undefined
+  ) => void;
   priority: import('../../types').Priority | undefined;
   setPriority: (priority: import('../../types').Priority | undefined) => void;
 

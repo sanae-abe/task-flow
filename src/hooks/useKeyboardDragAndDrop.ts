@@ -1,6 +1,6 @@
-import { useState, useCallback, useRef } from "react";
-import type { Task, KanbanBoard } from "../types";
-import { logger } from "../utils/logger";
+import { useState, useCallback, useRef } from 'react';
+import type { Task, KanbanBoard } from '../types';
+import { logger } from '../utils/logger';
 
 interface UseKeyboardDragAndDropProps {
   board: KanbanBoard | null;
@@ -8,7 +8,7 @@ interface UseKeyboardDragAndDropProps {
     taskId: string,
     sourceColumnId: string,
     targetColumnId: string,
-    targetIndex: number,
+    targetIndex: number
   ) => void;
   onSortToManual?: () => void;
 }
@@ -38,26 +38,26 @@ export const useKeyboardDragAndDrop = ({
   const announceToScreenReader = useCallback((message: string) => {
     // ライブリージョンが存在しない場合は作成
     if (!announcementRef.current) {
-      const announcement = document.createElement("div");
-      announcement.setAttribute("aria-live", "assertive");
-      announcement.setAttribute("aria-atomic", "true");
-      announcement.style.position = "absolute";
-      announcement.style.left = "-10000px";
-      announcement.style.width = "1px";
-      announcement.style.height = "1px";
-      announcement.style.overflow = "hidden";
+      const announcement = document.createElement('div');
+      announcement.setAttribute('aria-live', 'assertive');
+      announcement.setAttribute('aria-atomic', 'true');
+      announcement.style.position = 'absolute';
+      announcement.style.left = '-10000px';
+      announcement.style.width = '1px';
+      announcement.style.height = '1px';
+      announcement.style.overflow = 'hidden';
       document.body.appendChild(announcement);
       announcementRef.current = announcement;
     }
 
     // メッセージをアナウンス
     announcementRef.current.textContent = message;
-    logger.debug("Screen reader announcement:", message);
+    logger.debug('Screen reader announcement:', message);
 
     // 3秒後にクリア
     setTimeout(() => {
       if (announcementRef.current) {
-        announcementRef.current.textContent = "";
+        announcementRef.current.textContent = '';
       }
     }, 3000);
   }, []);
@@ -69,14 +69,14 @@ export const useKeyboardDragAndDrop = ({
         return null;
       }
       for (const column of board.columns) {
-        const task = column.tasks.find((t) => t.id === taskId);
+        const task = column.tasks.find(t => t.id === taskId);
         if (task) {
           return task;
         }
       }
       return null;
     },
-    [board],
+    [board]
   );
 
   // 現在のタスクの位置情報を取得
@@ -95,7 +95,7 @@ export const useKeyboardDragAndDrop = ({
         if (!column) {
           continue;
         }
-        const taskIndex = column.tasks.findIndex((t) => t.id === taskId);
+        const taskIndex = column.tasks.findIndex(t => t.id === taskId);
         if (taskIndex !== -1) {
           return {
             columnIndex,
@@ -109,14 +109,14 @@ export const useKeyboardDragAndDrop = ({
       }
       return null;
     },
-    [board],
+    [board]
   );
 
   // 矢印キーによるナビゲーション
   const navigateTask = useCallback(
     (
       currentTaskId: string,
-      direction: "up" | "down" | "left" | "right",
+      direction: 'up' | 'down' | 'left' | 'right'
     ): string | null => {
       if (!board) {
         return null;
@@ -130,7 +130,7 @@ export const useKeyboardDragAndDrop = ({
       const { columnIndex, taskIndex } = position;
 
       switch (direction) {
-        case "up":
+        case 'up':
           // 同じカラムの上のタスク
           if (taskIndex > 0) {
             const currentColumn = board.columns[columnIndex];
@@ -138,7 +138,7 @@ export const useKeyboardDragAndDrop = ({
           }
           break;
 
-        case "down":
+        case 'down':
           // 同じカラムの下のタスク
           const currentColumn = board.columns[columnIndex];
           if (currentColumn && taskIndex < currentColumn.tasks.length - 1) {
@@ -146,28 +146,28 @@ export const useKeyboardDragAndDrop = ({
           }
           break;
 
-        case "left":
+        case 'left':
           // 左のカラムの同じ位置（またはなければ最後）のタスク
           if (columnIndex > 0) {
             const leftColumn = board.columns[columnIndex - 1];
             if (leftColumn && leftColumn.tasks.length > 0) {
               const targetIndex = Math.min(
                 taskIndex,
-                leftColumn.tasks.length - 1,
+                leftColumn.tasks.length - 1
               );
               return leftColumn.tasks[targetIndex]?.id || null;
             }
           }
           break;
 
-        case "right":
+        case 'right':
           // 右のカラムの同じ位置（またはなければ最後）のタスク
           if (columnIndex < board.columns.length - 1) {
             const rightColumn = board.columns[columnIndex + 1];
             if (rightColumn && rightColumn.tasks.length > 0) {
               const targetIndex = Math.min(
                 taskIndex,
-                rightColumn.tasks.length - 1,
+                rightColumn.tasks.length - 1
               );
               return rightColumn.tasks[targetIndex]?.id || null;
             }
@@ -177,12 +177,12 @@ export const useKeyboardDragAndDrop = ({
 
       return null;
     },
-    [board, getTaskPosition],
+    [board, getTaskPosition]
   );
 
   // タスクの移動実行
   const moveSelectedTask = useCallback(
-    (direction: "up" | "down" | "left" | "right") => {
+    (direction: 'up' | 'down' | 'left' | 'right') => {
       if (!selectedTaskId || !board) {
         return;
       }
@@ -198,21 +198,21 @@ export const useKeyboardDragAndDrop = ({
 
       // 移動先を計算
       switch (direction) {
-        case "up":
+        case 'up':
           targetTaskIndex = Math.max(0, taskIndex - 1);
           break;
-        case "down":
+        case 'down':
           {
             const currentCol = board.columns[columnIndex];
             if (currentCol) {
               targetTaskIndex = Math.min(
                 currentCol.tasks.length - 1,
-                taskIndex + 1,
+                taskIndex + 1
               );
             }
           }
           break;
-        case "left":
+        case 'left':
           targetColumnIndex = Math.max(0, columnIndex - 1);
           {
             const targetCol = board.columns[targetColumnIndex];
@@ -221,10 +221,10 @@ export const useKeyboardDragAndDrop = ({
             }
           }
           break;
-        case "right":
+        case 'right':
           targetColumnIndex = Math.min(
             board.columns.length - 1,
-            columnIndex + 1,
+            columnIndex + 1
           );
           {
             const targetCol = board.columns[targetColumnIndex];
@@ -254,10 +254,10 @@ export const useKeyboardDragAndDrop = ({
 
         const task = findTaskById(selectedTaskId);
         announceToScreenReader(
-          `タスク「${task?.title || "タスク"}」を${targetColumnTitle}の${targetTaskIndex + 1}番目に移動しました`,
+          `タスク「${task?.title || 'タスク'}」を${targetColumnTitle}の${targetTaskIndex + 1}番目に移動しました`
         );
 
-        logger.debug("Keyboard move task:", {
+        logger.debug('Keyboard move task:', {
           taskId: selectedTaskId,
           from: { columnIndex, taskIndex },
           to: { columnIndex: targetColumnIndex, taskIndex: targetTaskIndex },
@@ -272,14 +272,14 @@ export const useKeyboardDragAndDrop = ({
       onSortToManual,
       findTaskById,
       announceToScreenReader,
-    ],
+    ]
   );
 
   // ドラッグ状態のリセット
   const resetDragState = useCallback(() => {
     setSelectedTaskId(null);
     setIsDragMode(false);
-    announceToScreenReader("ドラッグ操作を終了しました");
+    announceToScreenReader('ドラッグ操作を終了しました');
   }, [announceToScreenReader]);
 
   // キーボードイベントハンドラー
@@ -291,8 +291,8 @@ export const useKeyboardDragAndDrop = ({
       }
 
       switch (event.key) {
-        case " ":
-        case "Enter":
+        case ' ':
+        case 'Enter':
           event.preventDefault();
           if (selectedTaskId === taskId) {
             // 選択解除
@@ -302,21 +302,21 @@ export const useKeyboardDragAndDrop = ({
             setSelectedTaskId(taskId);
             setIsDragMode(true);
             announceToScreenReader(
-              `タスク「${task.title}」を選択しました。矢印キーで移動位置を選択し、SpaceキーまたはEnterキーで移動を確定してください。Escapeキーで操作をキャンセルできます。`,
+              `タスク「${task.title}」を選択しました。矢印キーで移動位置を選択し、SpaceキーまたはEnterキーで移動を確定してください。Escapeキーで操作をキャンセルできます。`
             );
           }
           break;
 
-        case "ArrowUp":
+        case 'ArrowUp':
           event.preventDefault();
           if (isDragMode && selectedTaskId === taskId) {
-            moveSelectedTask("up");
+            moveSelectedTask('up');
           } else {
             // ナビゲーションモード
-            const nextTaskId = navigateTask(taskId, "up");
+            const nextTaskId = navigateTask(taskId, 'up');
             if (nextTaskId) {
               const nextElement = document.querySelector(
-                `[data-task-id="${nextTaskId}"]`,
+                `[data-task-id="${nextTaskId}"]`
               );
               if (nextElement instanceof HTMLElement) {
                 nextElement.focus();
@@ -325,16 +325,16 @@ export const useKeyboardDragAndDrop = ({
           }
           break;
 
-        case "ArrowDown":
+        case 'ArrowDown':
           event.preventDefault();
           if (isDragMode && selectedTaskId === taskId) {
-            moveSelectedTask("down");
+            moveSelectedTask('down');
           } else {
             // ナビゲーションモード
-            const nextTaskId = navigateTask(taskId, "down");
+            const nextTaskId = navigateTask(taskId, 'down');
             if (nextTaskId) {
               const nextElement = document.querySelector(
-                `[data-task-id="${nextTaskId}"]`,
+                `[data-task-id="${nextTaskId}"]`
               );
               if (nextElement instanceof HTMLElement) {
                 nextElement.focus();
@@ -343,16 +343,16 @@ export const useKeyboardDragAndDrop = ({
           }
           break;
 
-        case "ArrowLeft":
+        case 'ArrowLeft':
           event.preventDefault();
           if (isDragMode && selectedTaskId === taskId) {
-            moveSelectedTask("left");
+            moveSelectedTask('left');
           } else {
             // ナビゲーションモード
-            const nextTaskId = navigateTask(taskId, "left");
+            const nextTaskId = navigateTask(taskId, 'left');
             if (nextTaskId) {
               const nextElement = document.querySelector(
-                `[data-task-id="${nextTaskId}"]`,
+                `[data-task-id="${nextTaskId}"]`
               );
               if (nextElement instanceof HTMLElement) {
                 nextElement.focus();
@@ -361,16 +361,16 @@ export const useKeyboardDragAndDrop = ({
           }
           break;
 
-        case "ArrowRight":
+        case 'ArrowRight':
           event.preventDefault();
           if (isDragMode && selectedTaskId === taskId) {
-            moveSelectedTask("right");
+            moveSelectedTask('right');
           } else {
             // ナビゲーションモード
-            const nextTaskId = navigateTask(taskId, "right");
+            const nextTaskId = navigateTask(taskId, 'right');
             if (nextTaskId) {
               const nextElement = document.querySelector(
-                `[data-task-id="${nextTaskId}"]`,
+                `[data-task-id="${nextTaskId}"]`
               );
               if (nextElement instanceof HTMLElement) {
                 nextElement.focus();
@@ -379,7 +379,7 @@ export const useKeyboardDragAndDrop = ({
           }
           break;
 
-        case "Escape":
+        case 'Escape':
           event.preventDefault();
           if (isDragMode) {
             resetDragState();
@@ -398,7 +398,7 @@ export const useKeyboardDragAndDrop = ({
       navigateTask,
       resetDragState,
       announceToScreenReader,
-    ],
+    ]
   );
 
   return {

@@ -1,7 +1,7 @@
-import React from "react";
-import type { TableRowProps } from "../types";
-import { isTaskWithColumn } from "../utils/tableHelpers";
-import { logger } from "../../../utils/logger";
+import React from 'react';
+import type { TableRowProps } from '../types';
+import { isTaskWithColumn } from '../utils/tableHelpers';
+import { logger } from '../../../utils/logger';
 
 /**
  * テーブル行コンポーネント
@@ -20,7 +20,7 @@ export const TableRow: React.FC<TableRowProps> = ({
 }) => {
   // 型ガードチェック
   if (!isTaskWithColumn(task)) {
-    logger.warn("Task is missing required column properties:", task);
+    logger.warn('Task is missing required column properties:', task);
     return null;
   }
 
@@ -29,26 +29,24 @@ export const TableRow: React.FC<TableRowProps> = ({
       key={task.id}
       style={{
         gridTemplateColumns,
-        display: "grid",
-        padding: "8px 12px",
-        gap: "8px",
-        alignItems: "center",
+        display: 'grid',
+        padding: '8px 12px',
+        gap: '8px',
+        alignItems: 'center',
         borderBottom:
-          index < totalTasks - 1
-            ? "1px solid var(--border)"
-            : "none",
-        cursor: "pointer",
-        minWidth: "fit-content",
+          index < totalTasks - 1 ? '1px solid var(--border)' : 'none',
+        cursor: 'pointer',
+        minWidth: 'fit-content',
       }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.backgroundColor = "var(--muted)";
+      onMouseEnter={e => {
+        e.currentTarget.style.backgroundColor = 'var(--muted)';
       }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.backgroundColor = "";
+      onMouseLeave={e => {
+        e.currentTarget.style.backgroundColor = '';
       }}
       onClick={() => onTaskClick(task)}
     >
-      {visibleColumns.map((column) => (
+      {visibleColumns.map(column => (
         <div key={column.id}>{renderCell(task, column.id)}</div>
       ))}
     </div>

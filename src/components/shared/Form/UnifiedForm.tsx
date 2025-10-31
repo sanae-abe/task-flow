@@ -1,13 +1,13 @@
-import { Button } from "@/components/ui/button";
-import React, { memo, useCallback } from "react";
+import { Button } from '@/components/ui/button';
+import React, { memo, useCallback } from 'react';
 
 import type {
   UnifiedFormProps,
   FormFieldConfig,
-} from "../../../types/unified-form";
+} from '../../../types/unified-form';
 
-import { useUnifiedForm } from "../../../hooks/useUnifiedForm";
-import UnifiedFormField from "./UnifiedFormField";
+import { useUnifiedForm } from '../../../hooks/useUnifiedForm';
+import UnifiedFormField from './UnifiedFormField';
 
 /**
  * 統合フォームコンポーネント
@@ -21,8 +21,8 @@ const UnifiedForm = memo<UnifiedFormProps>(
     onSubmit,
     onCancel,
     initialValues,
-    submitText = "保存",
-    cancelText = "キャンセル",
+    submitText = '保存',
+    cancelText = 'キャンセル',
     showCancelButton = true,
     disabled = false,
     className,
@@ -51,7 +51,7 @@ const UnifiedForm = memo<UnifiedFormProps>(
           fieldConfig.onChange(value);
         }
       },
-      [setValue],
+      [setValue]
     );
 
     // フィールドブラーハンドラー
@@ -63,7 +63,7 @@ const UnifiedForm = memo<UnifiedFormProps>(
           validateField(fieldConfig.name);
         }
       },
-      [setTouched, validateField, validateOnBlur],
+      [setTouched, validateField, validateOnBlur]
     );
 
     // フィールドキーダウンハンドラー
@@ -74,7 +74,7 @@ const UnifiedForm = memo<UnifiedFormProps>(
           fieldConfig.onKeyDown(event);
         }
       },
-      [],
+      []
     );
 
     // フォーム送信ハンドラー
@@ -91,10 +91,10 @@ const UnifiedForm = memo<UnifiedFormProps>(
       <form
         onSubmit={onFormSubmit}
         className={className}
-        autoComplete={autoComplete ? "on" : "off"}
+        autoComplete={autoComplete ? 'on' : 'off'}
       >
-        <div className="flex flex-col space-y-4 mt-2">
-          {fields.map((fieldConfig) => {
+        <div className='flex flex-col space-y-4 mt-2'>
+          {fields.map(fieldConfig => {
             const fieldValue = state.values[fieldConfig.name];
             const fieldError = getFieldError(fieldConfig.name);
             const fieldTouched = state.touched[fieldConfig.name];
@@ -117,16 +117,16 @@ const UnifiedForm = memo<UnifiedFormProps>(
           {children}
 
           {(showCancelButton || onCancel) && (
-            <div className="flex gap-2 mt-3">
+            <div className='flex gap-2 mt-3'>
               <Button
-                type="submit"
-                variant="default"
+                type='submit'
+                variant='default'
                 disabled={disabled || state.isSubmitting || !state.isValid}
               >
                 {submitText}
               </Button>
               {showCancelButton && onCancel && (
-                <Button onClick={handleCancel} variant="outline">
+                <Button onClick={handleCancel} variant='outline'>
                   {cancelText}
                 </Button>
               )}
@@ -135,9 +135,9 @@ const UnifiedForm = memo<UnifiedFormProps>(
         </div>
       </form>
     );
-  },
+  }
 );
 
-UnifiedForm.displayName = "UnifiedForm";
+UnifiedForm.displayName = 'UnifiedForm';
 
 export default UnifiedForm;

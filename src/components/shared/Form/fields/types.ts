@@ -5,7 +5,7 @@
  * 個別フィールドコンポーネントで使用される共通の型定義を提供します。
  */
 
-import type { ValidationRule } from "../../../../types/unified-form";
+import type { ValidationRule } from '../../../../types/unified-form';
 
 /**
  * 基本フィールドプロパティ
@@ -49,7 +49,7 @@ export interface BaseFieldProps {
  */
 export interface TextFieldProps extends BaseFieldProps {
   /** 入力タイプ */
-  type: "text" | "email" | "password" | "number";
+  type: 'text' | 'email' | 'password' | 'number';
   /** ステップ値（number用） */
   step?: string | number;
   /** 最小値 */
@@ -63,7 +63,7 @@ export interface TextFieldProps extends BaseFieldProps {
  */
 export interface DateTimeFieldProps extends BaseFieldProps {
   /** 入力タイプ */
-  type: "date" | "datetime-local" | "time";
+  type: 'date' | 'datetime-local' | 'time';
   /** ステップ値 */
   step?: string | number;
   /** 最小値 */

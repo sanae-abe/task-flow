@@ -1,30 +1,30 @@
-import React from "react";
+import React from 'react';
 
-import type { Task, Priority } from "../types";
-import type { VirtualRecurringTask } from "../utils/calendarRecurrence";
+import type { Task, Priority } from '../types';
+import type { VirtualRecurringTask } from '../utils/calendarRecurrence';
 
-import { formatDateTime } from "../utils/dateHelpers";
-import { getRecurrenceDescription } from "../utils/recurrence";
-import ContentBox from "./ContentBox";
-import DueDateDisplay from "./DueDateDisplay";
-import FileList from "./FileList";
-import LinkifiedText from "./LinkifiedText";
-import TaskDisplaySection from "./TaskDisplaySection";
-import TaskLabels from "./TaskLabels";
+import { formatDateTime } from '../utils/dateHelpers';
+import { getRecurrenceDescription } from '../utils/recurrence';
+import ContentBox from './ContentBox';
+import DueDateDisplay from './DueDateDisplay';
+import FileList from './FileList';
+import LinkifiedText from './LinkifiedText';
+import TaskDisplaySection from './TaskDisplaySection';
+import TaskLabels from './TaskLabels';
 
 // 優先度を日本語テキストに変換
 const getPriorityText = (priority: Priority): string => {
   switch (priority) {
-    case "low":
-      return "低";
-    case "medium":
-      return "中";
-    case "high":
-      return "高";
-    case "critical":
-      return "緊急";
+    case 'low':
+      return '低';
+    case 'medium':
+      return '中';
+    case 'high':
+      return '高';
+    case 'critical':
+      return '緊急';
     default:
-      return "";
+      return '';
   }
 };
 
@@ -41,15 +41,13 @@ const TaskDisplayContent = React.memo<TaskDisplayContentProps>(
 
     return (
       <>
-        <TaskDisplaySection title="説明">
+        <TaskDisplaySection title='説明'>
           <ContentBox
             isEmpty={!task.description}
-            emptyText="説明が設定されていません"
+            emptyText='説明が設定されていません'
           >
             {task.description && (
-              <LinkifiedText
-                className="text-sm whitespace-pre-wrap break-anywhere"
-              >
+              <LinkifiedText className='text-sm whitespace-pre-wrap break-anywhere'>
                 {task.description}
               </LinkifiedText>
             )}
@@ -57,7 +55,7 @@ const TaskDisplayContent = React.memo<TaskDisplayContentProps>(
         </TaskDisplaySection>
 
         {displayDueDate && (
-          <TaskDisplaySection title="期限">
+          <TaskDisplaySection title='期限'>
             <ContentBox>
               <DueDateDisplay dueDate={new Date(displayDueDate)} showYear />
             </ContentBox>
@@ -65,9 +63,9 @@ const TaskDisplayContent = React.memo<TaskDisplayContentProps>(
         )}
 
         {task.recurrence && (
-          <TaskDisplaySection title="繰り返し設定">
+          <TaskDisplaySection title='繰り返し設定'>
             <ContentBox>
-              <span className="text-sm">
+              <span className='text-sm'>
                 {getRecurrenceDescription(task.recurrence)}
               </span>
             </ContentBox>
@@ -75,25 +73,25 @@ const TaskDisplayContent = React.memo<TaskDisplayContentProps>(
         )}
 
         {columnName && (
-          <TaskDisplaySection title="ステータス">
+          <TaskDisplaySection title='ステータス'>
             <ContentBox>
-              <span className="text-sm">{columnName}</span>
+              <span className='text-sm'>{columnName}</span>
             </ContentBox>
           </TaskDisplaySection>
         )}
 
         {task.priority && (
-          <TaskDisplaySection title="優先度">
+          <TaskDisplaySection title='優先度'>
             <ContentBox>
-              <span className="text-sm">{getPriorityText(task.priority)}</span>
+              <span className='text-sm'>{getPriorityText(task.priority)}</span>
             </ContentBox>
           </TaskDisplaySection>
         )}
 
         {task.completedAt && (
-          <TaskDisplaySection title="完了日時">
+          <TaskDisplaySection title='完了日時'>
             <ContentBox>
-              <span className="text-sm">
+              <span className='text-sm'>
                 {formatDateTime(task.completedAt)}
               </span>
             </ContentBox>
@@ -101,19 +99,19 @@ const TaskDisplayContent = React.memo<TaskDisplayContentProps>(
         )}
 
         {task.labels && task.labels.length > 0 && (
-          <TaskDisplaySection title="ラベル">
+          <TaskDisplaySection title='ラベル'>
             <TaskLabels labels={task.labels} />
           </TaskDisplaySection>
         )}
 
         {task.files && task.files.length > 0 && (
-          <TaskDisplaySection title="ファイル添付">
+          <TaskDisplaySection title='ファイル添付'>
             <FileList attachments={task.files} />
           </TaskDisplaySection>
         )}
       </>
     );
-  },
+  }
 );
 
 export default TaskDisplayContent;

@@ -1,4 +1,4 @@
-import { useCallback, useReducer, useEffect, useRef } from "react";
+import { useCallback, useReducer, useEffect, useRef } from 'react';
 import type {
   FormState,
   FormAction,
@@ -6,19 +6,19 @@ import type {
   UseFormReturn,
   FormError,
   ValidationRule,
-} from "../types/unified-form";
+} from '../types/unified-form';
 
 // フォーム初期状態
 const createInitialState = (
   fields: FormFieldConfig[],
-  initialValues?: Record<string, unknown>,
+  initialValues?: Record<string, unknown>
 ): FormState => {
   const values = fields.reduce((acc, field) => {
     // initialValuesに値があるかチェック（undefinedも含む）
     const hasInitialValue = initialValues && field.name in initialValues;
     const value = hasInitialValue
       ? initialValues[field.name]
-      : (field.value ?? "");
+      : (field.value ?? '');
 
     return {
       ...acc,
@@ -39,10 +39,10 @@ const createInitialState = (
 // フォームレデューサー
 const formReducer = (state: FormState, action: FormAction): FormState => {
   switch (action.type) {
-    case "SET_FIELD_VALUE": {
+    case 'SET_FIELD_VALUE': {
       const newValues = { ...state.values, [action.fieldId]: action.value };
       const isDirty = Object.keys(newValues).some(
-        (key) => newValues[key] !== state.values[key],
+        key => newValues[key] !== state.values[key]
       );
 
       return {
@@ -52,9 +52,9 @@ const formReducer = (state: FormState, action: FormAction): FormState => {
       };
     }
 
-    case "SET_FIELD_ERROR": {
+    case 'SET_FIELD_ERROR': {
       const newErrors = state.errors.filter(
-        (_error) => _error.fieldId !== action.fieldId,
+        _error => _error.fieldId !== action.fieldId
       );
       if (action._error) {
         newErrors.push({ fieldId: action.fieldId, message: action._error });
@@ -67,21 +67,21 @@ const formReducer = (state: FormState, action: FormAction): FormState => {
       };
     }
 
-    case "SET_FIELD_TOUCHED": {
+    case 'SET_FIELD_TOUCHED': {
       return {
         ...state,
         touched: { ...state.touched, [action.fieldId]: action.touched },
       };
     }
 
-    case "SET_SUBMITTING": {
+    case 'SET_SUBMITTING': {
       return {
         ...state,
         isSubmitting: action.isSubmitting,
       };
     }
 
-    case "SET_ERRORS": {
+    case 'SET_ERRORS': {
       return {
         ...state,
         errors: action.errors,
@@ -89,12 +89,12 @@ const formReducer = (state: FormState, action: FormAction): FormState => {
       };
     }
 
-    case "RESET_FORM": {
+    case 'RESET_FORM': {
       // fieldsを参照するため、reducerの外で処理する必要がある
       return action.newState;
     }
 
-    case "VALIDATE_FORM": {
+    case 'VALIDATE_FORM': {
       // バリデーションロジックは別途実装
       return state;
     }
@@ -107,15 +107,15 @@ const formReducer = (state: FormState, action: FormAction): FormState => {
 // バリデーション関数
 const validateField = (
   value: unknown,
-  validation?: ValidationRule,
+  validation?: ValidationRule
 ): string | null => {
   if (!validation) {
     return null;
   }
 
   // 必須チェック
-  if (validation.required && (!value || value.toString().trim() === "")) {
-    return "必須項目です";
+  if (validation.required && (!value || value.toString().trim() === '')) {
+    return '必須項目です';
   }
 
   // 最小長チェック
@@ -142,7 +142,7 @@ const validateField = (
     value &&
     !validation.pattern.test(value.toString())
   ) {
-    return "入力形式が正しくありません";
+    return '入力形式が正しくありません';
   }
 
   // カスタムバリデーション
@@ -165,11 +165,11 @@ const validateField = (
  */
 export const useUnifiedForm = (
   fields: FormFieldConfig[],
-  initialValues?: Record<string, unknown>,
+  initialValues?: Record<string, unknown>
 ): UseFormReturn => {
   const [state, dispatch] = useReducer(
     formReducer,
-    createInitialState(fields, initialValues),
+    createInitialState(fields, initialValues)
   );
 
   // 前回のinitialValuesを追跡するためのref
@@ -178,52 +178,52 @@ export const useUnifiedForm = (
   // フィールド値設定
   const setValue = useCallback(
     (fieldId: string, value: unknown) => {
-      dispatch({ type: "SET_FIELD_VALUE", fieldId, value });
+      dispatch({ type: 'SET_FIELD_VALUE', fieldId, value });
 
       // リアルタイムバリデーション（フィールドがtouchedの場合のみ）
       if (state.touched[fieldId]) {
-        const field = fields.find((f) => f.name === fieldId);
+        const field = fields.find(f => f.name === fieldId);
         if (field?.validation) {
           const _error = validateField(value, field.validation);
-          dispatch({ type: "SET_FIELD_ERROR", fieldId, _error });
+          dispatch({ type: 'SET_FIELD_ERROR', fieldId, _error });
         }
       }
     },
-    [fields, state.touched],
+    [fields, state.touched]
   );
 
   // エラー設定
   const setError = useCallback((fieldId: string, _error: string | null) => {
-    dispatch({ type: "SET_FIELD_ERROR", fieldId, _error });
+    dispatch({ type: 'SET_FIELD_ERROR', fieldId, _error });
   }, []);
 
   // タッチ状態設定
   const setTouched = useCallback((fieldId: string, touched: boolean) => {
-    dispatch({ type: "SET_FIELD_TOUCHED", fieldId, touched });
+    dispatch({ type: 'SET_FIELD_TOUCHED', fieldId, touched });
   }, []);
 
   // 個別フィールドバリデーション
   const validateFieldCallback = useCallback(
     (fieldId: string): boolean => {
-      const field = fields.find((f) => f.name === fieldId);
+      const field = fields.find(f => f.name === fieldId);
       if (!field?.validation) {
         return true;
       }
 
       const value = state.values[fieldId];
       const _error = validateField(value, field.validation);
-      dispatch({ type: "SET_FIELD_ERROR", fieldId, _error });
+      dispatch({ type: 'SET_FIELD_ERROR', fieldId, _error });
 
       return !_error;
     },
-    [fields, state.values],
+    [fields, state.values]
   );
 
   // フォーム全体バリデーション
   const validateForm = useCallback((): boolean => {
     const errors: FormError[] = [];
 
-    fields.forEach((field) => {
+    fields.forEach(field => {
       if (field.validation) {
         const value = state.values[field.name];
         const _error = validateField(value, field.validation);
@@ -233,7 +233,7 @@ export const useUnifiedForm = (
       }
     });
 
-    dispatch({ type: "SET_ERRORS", errors });
+    dispatch({ type: 'SET_ERRORS', errors });
     return errors.length === 0;
   }, [fields, state.values]);
 
@@ -241,9 +241,9 @@ export const useUnifiedForm = (
   const resetForm = useCallback(
     (newInitialValues?: Record<string, unknown>) => {
       const newState = createInitialState(fields, newInitialValues);
-      dispatch({ type: "RESET_FORM", newState });
+      dispatch({ type: 'RESET_FORM', newState });
     },
-    [fields],
+    [fields]
   );
 
   // フォーム送信ハンドラー
@@ -254,7 +254,7 @@ export const useUnifiedForm = (
           e.preventDefault();
         }
 
-        dispatch({ type: "SET_SUBMITTING", isSubmitting: true });
+        dispatch({ type: 'SET_SUBMITTING', isSubmitting: true });
 
         try {
           // 送信前バリデーション
@@ -265,28 +265,28 @@ export const useUnifiedForm = (
           await onSubmit(state.values);
         } catch (_error) {
           // eslint-disable-next-line no-console
-          console.error("Form submission _error:", _error);
+          console.error('Form submission _error:', _error);
         } finally {
-          dispatch({ type: "SET_SUBMITTING", isSubmitting: false });
+          dispatch({ type: 'SET_SUBMITTING', isSubmitting: false });
         }
       },
-    [state.values, validateForm],
+    [state.values, validateForm]
   );
 
   // フィールドの有効性チェック
   const isFieldValid = useCallback(
     (fieldId: string): boolean =>
-      !state.errors.some((_error) => _error.fieldId === fieldId),
-    [state.errors],
+      !state.errors.some(_error => _error.fieldId === fieldId),
+    [state.errors]
   );
 
   // フィールドエラー取得
   const getFieldError = useCallback(
     (fieldId: string): string | null => {
-      const _error = state.errors.find((_error) => _error.fieldId === fieldId);
+      const _error = state.errors.find(_error => _error.fieldId === fieldId);
       return _error?.message ?? null;
     },
-    [state.errors],
+    [state.errors]
   );
 
   // 初期値変更時の状態更新

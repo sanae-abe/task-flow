@@ -3,10 +3,10 @@ import {
   type AppSettings,
   type DefaultColumnConfig,
   type AutoDeletionSettings,
-} from "../types/settings";
-import { logger } from "./logger";
+} from '../types/settings';
+import { logger } from './logger';
 
-const SETTINGS_STORAGE_KEY = "taskflow-app-settings";
+const SETTINGS_STORAGE_KEY = 'taskflow-app-settings';
 
 /**
  * 設定をLocalStorageに保存
@@ -16,8 +16,8 @@ export const saveSettings = (settings: AppSettings): void => {
     const serialized = JSON.stringify(settings);
     localStorage.setItem(SETTINGS_STORAGE_KEY, serialized);
   } catch (_error) {
-    logger._error("Failed to save settings:", _error);
-    throw new Error("設定の保存に失敗しました");
+    logger._error('Failed to save settings:', _error);
+    throw new Error('設定の保存に失敗しました');
   }
 };
 
@@ -34,14 +34,14 @@ export const loadSettings = (): AppSettings => {
     const parsed = JSON.parse(serialized);
 
     // 基本的なバリデーション
-    if (!parsed || typeof parsed !== "object") {
-      logger.warn("Invalid settings format, using defaults");
+    if (!parsed || typeof parsed !== 'object') {
+      logger.warn('Invalid settings format, using defaults');
       return DEFAULT_SETTINGS;
     }
 
     // デフォルトカラム設定のバリデーション
     if (!Array.isArray(parsed.defaultColumns)) {
-      logger.warn("Invalid defaultColumns format, using defaults");
+      logger.warn('Invalid defaultColumns format, using defaults');
       return DEFAULT_SETTINGS;
     }
 
@@ -50,12 +50,12 @@ export const loadSettings = (): AppSettings => {
       .filter(
         (col: unknown) =>
           col &&
-          typeof col === "object" &&
+          typeof col === 'object' &&
           col !== null &&
-          "id" in col &&
-          "name" in col &&
-          typeof (col as Record<string, unknown>)["id"] === "string" &&
-          typeof (col as Record<string, unknown>)["name"] === "string",
+          'id' in col &&
+          'name' in col &&
+          typeof (col as Record<string, unknown>)['id'] === 'string' &&
+          typeof (col as Record<string, unknown>)['name'] === 'string'
       )
       .map((col: unknown) => ({
         id: (col as { id: string; name: string }).id,
@@ -63,7 +63,7 @@ export const loadSettings = (): AppSettings => {
       }));
 
     if (validatedColumns.length === 0) {
-      logger.warn("No valid default columns found, using defaults");
+      logger.warn('No valid default columns found, using defaults');
       return DEFAULT_SETTINGS;
     }
 
@@ -71,16 +71,16 @@ export const loadSettings = (): AppSettings => {
     let autoDeletionSettings: AutoDeletionSettings =
       DEFAULT_SETTINGS.autoDeletion;
 
-    if (parsed.autoDeletion && typeof parsed.autoDeletion === "object") {
+    if (parsed.autoDeletion && typeof parsed.autoDeletion === 'object') {
       const autoDeletion = parsed.autoDeletion;
 
       // 基本的なバリデーション
       if (
-        typeof autoDeletion.enabled === "boolean" &&
-        typeof autoDeletion.retentionDays === "number" &&
+        typeof autoDeletion.enabled === 'boolean' &&
+        typeof autoDeletion.retentionDays === 'number' &&
         autoDeletion.retentionDays > 0 &&
-        typeof autoDeletion.notifyBeforeDeletion === "boolean" &&
-        typeof autoDeletion.notificationDays === "number" &&
+        typeof autoDeletion.notifyBeforeDeletion === 'boolean' &&
+        typeof autoDeletion.notificationDays === 'number' &&
         autoDeletion.notificationDays >= 0
       ) {
         autoDeletionSettings = {
@@ -89,7 +89,7 @@ export const loadSettings = (): AppSettings => {
           notifyBeforeDeletion: autoDeletion.notifyBeforeDeletion,
           notificationDays: Math.max(
             0,
-            Math.min(30, autoDeletion.notificationDays),
+            Math.min(30, autoDeletion.notificationDays)
           ), // 0-30日の範囲
           excludeLabelIds: Array.isArray(autoDeletion.excludeLabelIds)
             ? autoDeletion.excludeLabelIds
@@ -98,18 +98,18 @@ export const loadSettings = (): AppSettings => {
             ? autoDeletion.excludePriorities
             : [],
           autoExportBeforeDeletion:
-            typeof autoDeletion.autoExportBeforeDeletion === "boolean"
+            typeof autoDeletion.autoExportBeforeDeletion === 'boolean'
               ? autoDeletion.autoExportBeforeDeletion
               : true,
           enableSoftDeletion:
-            typeof autoDeletion.enableSoftDeletion === "boolean"
+            typeof autoDeletion.enableSoftDeletion === 'boolean'
               ? autoDeletion.enableSoftDeletion
               : true,
           softDeletionRetentionDays:
-            typeof autoDeletion.softDeletionRetentionDays === "number"
+            typeof autoDeletion.softDeletionRetentionDays === 'number'
               ? Math.max(
                   1,
-                  Math.min(30, autoDeletion.softDeletionRetentionDays),
+                  Math.min(30, autoDeletion.softDeletionRetentionDays)
                 )
               : 7,
         };
@@ -121,7 +121,7 @@ export const loadSettings = (): AppSettings => {
       autoDeletion: autoDeletionSettings,
     };
   } catch (_error) {
-    logger._error("Failed to load settings:", _error);
+    logger._error('Failed to load settings:', _error);
     return DEFAULT_SETTINGS;
   }
 };
@@ -149,7 +149,7 @@ export const resetSettings = (): void => {
  * 自動削除設定を更新
  */
 export const updateAutoDeletionSettings = (
-  autoDeletionSettings: AutoDeletionSettings,
+  autoDeletionSettings: AutoDeletionSettings
 ): void => {
   const currentSettings = loadSettings();
   const updatedSettings: AppSettings = {

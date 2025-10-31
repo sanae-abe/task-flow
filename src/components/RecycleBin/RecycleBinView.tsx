@@ -1,27 +1,42 @@
-import React, { useMemo, useState } from "react";
-import ConfirmDialog from "../ConfirmDialog";
-import { useBoard } from "../../contexts/BoardContext";
+import React, { useMemo, useState } from 'react';
+import ConfirmDialog from '../ConfirmDialog';
+import { useBoard } from '../../contexts/BoardContext';
+import { getRecycleBinTasks } from '../../utils/recycleBin';
+import { useRecycleBinSettingsReadOnly } from '../../hooks/useRecycleBinSettings';
+import { useRecycleBinOperations } from '../../hooks/useRecycleBinOperations';
+import { MESSAGES } from '../../constants/recycleBin';
+import { RecycleBinEmptyState } from './components/RecycleBinEmptyState';
+import { RecycleBinHeader } from './components/RecycleBinHeader';
 import {
-  getRecycleBinTasks,
-} from "../../utils/recycleBin";
-import { useRecycleBinSettingsReadOnly } from "../../hooks/useRecycleBinSettings";
-import { useRecycleBinOperations } from "../../hooks/useRecycleBinOperations";
-import { MESSAGES } from "../../constants/recycleBin";
-import { RecycleBinEmptyState } from "./components/RecycleBinEmptyState";
-import { RecycleBinHeader } from "./components/RecycleBinHeader";
-import { RecycleBinTaskItem, type DeletedTaskWithMeta } from "./components/RecycleBinTaskItem";
+  RecycleBinTaskItem,
+  type DeletedTaskWithMeta,
+} from './components/RecycleBinTaskItem';
 
 /**
  * ゴミ箱のタスクを表示・復元・完全削除するコンポーネント
  */
 interface RecycleBinViewProps {
   /** メッセージ表示時のコールバック */
-  onMessage?: (message: { type: 'success' | 'critical' | 'warning' | 'danger' | 'default' | 'info' | 'upsell'; text: string }) => void;
+  onMessage?: (message: {
+    type:
+      | 'success'
+      | 'critical'
+      | 'warning'
+      | 'danger'
+      | 'default'
+      | 'info'
+      | 'upsell';
+    text: string;
+  }) => void;
 }
 
-export const RecycleBinView: React.FC<RecycleBinViewProps> = ({ onMessage }) => {
+export const RecycleBinView: React.FC<RecycleBinViewProps> = ({
+  onMessage,
+}) => {
   const { state } = useBoard();
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(
+    null
+  );
   const [showEmptyConfirm, setShowEmptyConfirm] = useState(false);
 
   // ゴミ箱設定を読み込み
@@ -38,13 +53,21 @@ export const RecycleBinView: React.FC<RecycleBinViewProps> = ({ onMessage }) => 
   } = useRecycleBinOperations(onMessage);
 
   // ゴミ箱のタスクを取得
-  const deletedTasks = useMemo((): DeletedTaskWithMeta[] => getRecycleBinTasks(state.boards).map(task => ({
-      ...task,
-      boardTitle: state.boards.find(b => b.id === task.boardId)?.title || "不明なボード",
-      columnTitle: state.boards
-        .find(b => b.id === task.boardId)
-        ?.columns.find(c => c.id === task.columnId)?.title || "不明なカラム",
-    })), [state.boards]);
+  const deletedTasks = useMemo(
+    (): DeletedTaskWithMeta[] =>
+      getRecycleBinTasks(state.boards).map(task => ({
+        ...task,
+        boardTitle:
+          state.boards.find(b => b.id === task.boardId)?.title ||
+          '不明なボード',
+        columnTitle:
+          state.boards
+            .find(b => b.id === task.boardId)
+            ?.columns.find(c => c.id === task.columnId)?.title ||
+          '不明なカラム',
+      })),
+    [state.boards]
+  );
 
   const handleRestore = async (taskId: string) => {
     const task = deletedTasks.find(t => t.id === taskId);
@@ -65,14 +88,14 @@ export const RecycleBinView: React.FC<RecycleBinViewProps> = ({ onMessage }) => 
   // 空状態の表示
   if (deletedTasks.length === 0) {
     return (
-      <div className="pb-4">
+      <div className='pb-4'>
         <RecycleBinEmptyState />
       </div>
     );
   }
 
   return (
-    <div className="pb-4">
+    <div className='pb-4'>
       <RecycleBinHeader
         taskCount={deletedTasks.length}
         settings={recycleBinSettings}
@@ -80,8 +103,8 @@ export const RecycleBinView: React.FC<RecycleBinViewProps> = ({ onMessage }) => 
         onEmptyClick={() => setShowEmptyConfirm(true)}
       />
 
-      <div className="grid gap-3">
-        {deletedTasks.map((task) => (
+      <div className='grid gap-3'>
+        {deletedTasks.map(task => (
           <RecycleBinTaskItem
             key={task.id}
             task={task}
@@ -109,12 +132,12 @@ export const RecycleBinView: React.FC<RecycleBinViewProps> = ({ onMessage }) => 
       {showDeleteConfirm && (
         <ConfirmDialog
           isOpen={!!showDeleteConfirm}
-          title="タスクの完全削除"
+          title='タスクの完全削除'
           message={`タスク「${deletedTasks.find(t => t.id === showDeleteConfirm)?.title || ''}」を完全に削除しますか？この操作は元に戻せません。`}
           onConfirm={() => handlePermanentDelete(showDeleteConfirm)}
           onCancel={() => setShowDeleteConfirm(null)}
-          confirmText="完全に削除"
-          cancelText="キャンセル"
+          confirmText='完全に削除'
+          cancelText='キャンセル'
         />
       )}
     </div>

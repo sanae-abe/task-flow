@@ -1,6 +1,6 @@
-import React from "react";
+import React from 'react';
 
-import { getLabelColors } from "../../utils/labelHelpers";
+import { getLabelColors } from '../../utils/labelHelpers';
 
 interface LabelColorCircleProps {
   color: string;
@@ -18,9 +18,9 @@ export const LabelColorCircle: React.FC<LabelColorCircleProps> = ({
       style={{
         width: `${size}px`,
         height: `${size}px`,
-        borderRadius: "50%",
+        borderRadius: '50%',
         backgroundColor: colors.bg,
-        border: "1px solid",
+        border: '1px solid',
         borderColor: colors.color,
       }}
       aria-label={`ラベル色: ${color}`}

@@ -27,80 +27,88 @@ interface LoadingStateProps {
  * ローディング中はスピナーを表示し、完了後は子要素を表示します。
  * 一貫したローディングUXを提供します。
  */
-const LoadingState = memo<LoadingStateProps>(({
-  isLoading,
-  children,
-  loadingText = '読み込み中...',
-  size = 'medium',
-  variant = 'default',
-  minHeight = '200px',
-  sx
-}) => {
-  if (!isLoading) {
-    return <>{children}</>;
-  }
-
-  // サイズ別のスピナー設定
-  const getSpinnerConfig = () => {
-    switch (size) {
-      case 'small':
-        return { iconSize: 16, textClass: 'text-sm' };
-      case 'large':
-        return { iconSize: 32, textClass: 'text-lg' };
-      default:
-        return { iconSize: 24, textClass: 'text-base' };
+const LoadingState = memo<LoadingStateProps>(
+  ({
+    isLoading,
+    children,
+    loadingText = '読み込み中...',
+    size = 'medium',
+    variant = 'default',
+    minHeight = '200px',
+    sx,
+  }) => {
+    if (!isLoading) {
+      return <>{children}</>;
     }
-  };
 
-  // バリアント別のスタイル
-  const getVariantStyles = () => {
-    switch (variant) {
-      case 'overlay':
-        return {
-          className: 'absolute inset-0 bg-white/80 z-100',
-          style: {}
-        };
-      case 'inline':
-        return {
-          className: 'py-4 px-3',
-          style: {}
-        };
-      default:
-        return {
-          className: 'bg-gray-50 rounded-md border border-border border-gray-200',
-          style: { minHeight }
-        };
-    }
-  };
+    // サイズ別のスピナー設定
+    const getSpinnerConfig = () => {
+      switch (size) {
+        case 'small':
+          return { iconSize: 16, textClass: 'text-sm' };
+        case 'large':
+          return { iconSize: 32, textClass: 'text-lg' };
+        default:
+          return { iconSize: 24, textClass: 'text-base' };
+      }
+    };
 
-  const spinnerConfig = getSpinnerConfig();
-  const variantStyles = getVariantStyles();
+    // バリアント別のスタイル
+    const getVariantStyles = () => {
+      switch (variant) {
+        case 'overlay':
+          return {
+            className: 'absolute inset-0 bg-white/80 z-100',
+            style: {},
+          };
+        case 'inline':
+          return {
+            className: 'py-4 px-3',
+            style: {},
+          };
+        default:
+          return {
+            className:
+              'bg-gray-50 rounded-md border border-border border-gray-200',
+            style: { minHeight },
+          };
+      }
+    };
 
-  return (
-    <div
-      className={cn('flex items-center justify-center', variantStyles.className)}
-      style={{
-        ...variantStyles.style,
-        ...sx as React.CSSProperties
-      }}
-    >
-      <div className="flex flex-col items-center gap-3">
-        <Loader2
-          size={spinnerConfig.iconSize}
-          className="animate-spin text-zinc-700"
-        />
-        {loadingText && (
-          <span className={cn(
-            spinnerConfig.textClass,
-            'text-zinc-500 text-center'
-          )}>
-            {loadingText}
-          </span>
+    const spinnerConfig = getSpinnerConfig();
+    const variantStyles = getVariantStyles();
+
+    return (
+      <div
+        className={cn(
+          'flex items-center justify-center',
+          variantStyles.className
         )}
+        style={{
+          ...variantStyles.style,
+          ...(sx as React.CSSProperties),
+        }}
+      >
+        <div className='flex flex-col items-center gap-3'>
+          <Loader2
+            size={spinnerConfig.iconSize}
+            className='animate-spin text-zinc-700'
+          />
+          {loadingText && (
+            <span
+              className={cn(
+                spinnerConfig.textClass,
+                'text-zinc-500 text-center'
+              )}
+            >
+              {loadingText}
+            </span>
+          )}
+        </div>
       </div>
-    </div>
-  );
-});
+    );
+  }
+);
 
 LoadingState.displayName = 'LoadingState';
 
@@ -111,29 +119,35 @@ export default LoadingState;
 /**
  * オーバーレイ型のローディング状態
  */
-export const LoadingOverlay = memo<Omit<LoadingStateProps, 'variant'>>(({ children, ...props }) => (
-  <LoadingState variant="overlay" {...props}>
-    {children}
-  </LoadingState>
-));
+export const LoadingOverlay = memo<Omit<LoadingStateProps, 'variant'>>(
+  ({ children, ...props }) => (
+    <LoadingState variant='overlay' {...props}>
+      {children}
+    </LoadingState>
+  )
+);
 
 /**
  * インライン型のローディング状態
  */
-export const InlineLoading = memo<Omit<LoadingStateProps, 'variant'>>(({ children, ...props }) => (
-  <LoadingState variant="inline" {...props}>
-    {children}
-  </LoadingState>
-));
+export const InlineLoading = memo<Omit<LoadingStateProps, 'variant'>>(
+  ({ children, ...props }) => (
+    <LoadingState variant='inline' {...props}>
+      {children}
+    </LoadingState>
+  )
+);
 
 /**
  * 小さなローディングスピナー
  */
-export const SmallLoading = memo<Omit<LoadingStateProps, 'size'>>(({ children, ...props }) => (
-  <LoadingState size="small" {...props}>
-    {children}
-  </LoadingState>
-));
+export const SmallLoading = memo<Omit<LoadingStateProps, 'size'>>(
+  ({ children, ...props }) => (
+    <LoadingState size='small' {...props}>
+      {children}
+    </LoadingState>
+  )
+);
 
 LoadingOverlay.displayName = 'LoadingOverlay';
 InlineLoading.displayName = 'InlineLoading';

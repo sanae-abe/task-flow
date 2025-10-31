@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from "react";
+import React, { useMemo, useCallback } from 'react';
 import {
   DndContext,
   closestCenter,
@@ -7,20 +7,20 @@ import {
   useSensor,
   useSensors,
   type DragEndEvent,
-} from "@dnd-kit/core";
+} from '@dnd-kit/core';
 import {
   SortableContext,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
+} from '@dnd-kit/sortable';
 
-import { useSubTaskForm } from "../hooks/useSubTaskForm";
-import type { SubTask } from "../types";
+import { useSubTaskForm } from '../hooks/useSubTaskForm';
+import type { SubTask } from '../types';
 
-import SubTaskForm from "./SubTaskForm";
-import SubTaskHeader from "./SubTaskHeader";
-import SubTaskItem from "./SubTaskItem/SubTaskItem";
-import SubTaskProgressBar from "./SubTaskProgressBar";
+import SubTaskForm from './SubTaskForm';
+import SubTaskHeader from './SubTaskHeader';
+import SubTaskItem from './SubTaskItem/SubTaskItem';
+import SubTaskProgressBar from './SubTaskProgressBar';
 
 interface SubTaskListProps {
   subTasks: SubTask[];
@@ -51,10 +51,10 @@ const SubTaskList: React.FC<SubTaskListProps> = ({
 
   const { completedCount, totalCount } = useMemo(
     () => ({
-      completedCount: subTasks.filter((task) => task.completed).length,
+      completedCount: subTasks.filter(task => task.completed).length,
       totalCount: subTasks.length,
     }),
-    [subTasks],
+    [subTasks]
   );
 
   const handleFormSubmit = () => handleSubmit(onAddSubTask);
@@ -67,7 +67,7 @@ const SubTaskList: React.FC<SubTaskListProps> = ({
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    }),
+    })
   );
 
   // ドラッグエンドハンドラー
@@ -76,19 +76,19 @@ const SubTaskList: React.FC<SubTaskListProps> = ({
       const { active, over } = event;
 
       if (active.id !== over?.id) {
-        const oldIndex = subTasks.findIndex((item) => item.id === active.id);
-        const newIndex = subTasks.findIndex((item) => item.id === over?.id);
+        const oldIndex = subTasks.findIndex(item => item.id === active.id);
+        const newIndex = subTasks.findIndex(item => item.id === over?.id);
 
         if (oldIndex !== -1 && newIndex !== -1) {
           onReorderSubTasks(oldIndex, newIndex);
         }
       }
     },
-    [subTasks, onReorderSubTasks],
+    [subTasks, onReorderSubTasks]
   );
 
   return (
-    <div className="mb-4">
+    <div className='mb-4'>
       <SubTaskHeader
         completedCount={completedCount}
         totalCount={totalCount}
@@ -107,11 +107,11 @@ const SubTaskList: React.FC<SubTaskListProps> = ({
         onDragEnd={handleDragEnd}
       >
         <SortableContext
-          items={subTasks.map((item) => item.id)}
+          items={subTasks.map(item => item.id)}
           strategy={verticalListSortingStrategy}
         >
-          <div className="flex flex-col">
-            {subTasks.map((subTask) => (
+          <div className='flex flex-col'>
+            {subTasks.map(subTask => (
               <SubTaskItem
                 key={subTask.id}
                 subTask={subTask}

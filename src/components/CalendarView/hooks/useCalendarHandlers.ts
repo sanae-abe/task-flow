@@ -1,9 +1,9 @@
-import { useCallback } from "react";
-import type { Task } from "../../../types";
+import { useCallback } from 'react';
+import type { Task } from '../../../types';
 import {
   isVirtualTask,
   type VirtualRecurringTask,
-} from "../../../utils/calendarRecurrence";
+} from '../../../utils/calendarRecurrence';
 
 interface UseCalendarHandlersParams {
   openTaskDetail: (taskId: string) => void;
@@ -30,11 +30,11 @@ export const useCalendarHandlers = ({
       const localDateString = new Date(
         newDate.getFullYear(),
         newDate.getMonth(),
-        newDate.getDate(),
+        newDate.getDate()
       ).toISOString();
       updateTask(taskId, { dueDate: localDateString });
     },
-    [updateTask],
+    [updateTask]
   );
 
   const handleTaskClick = useCallback(
@@ -46,7 +46,7 @@ export const useCalendarHandlers = ({
         openTaskDetail(task.id);
       }
     },
-    [openTaskDetail, openVirtualTaskDetail],
+    [openTaskDetail, openVirtualTaskDetail]
   );
 
   const handleDateClick = useCallback(
@@ -54,7 +54,7 @@ export const useCalendarHandlers = ({
       // タスクのクリックと干渉しないように、日付セルの余白部分がクリックされた場合のみ処理
       openTaskForm(date);
     },
-    [openTaskForm],
+    [openTaskForm]
   );
 
   return {

@@ -14,48 +14,55 @@ interface DataManagementPanelProps {
   /** ボード選択エクスポート時のコールバック */
   onExportCurrent?: (board?: KanbanBoard) => void;
   /** メッセージ表示時のコールバック */
-  onMessage?: (message: { type: 'success' | 'critical' | 'warning' | 'danger' | 'default' | 'info' | 'upsell'; text: string }) => void;
+  onMessage?: (message: {
+    type:
+      | 'success'
+      | 'critical'
+      | 'warning'
+      | 'danger'
+      | 'default'
+      | 'info'
+      | 'upsell';
+    text: string;
+  }) => void;
 }
 
-export const DataManagementPanel = memo<DataManagementPanelProps>(({
-  onExportAll,
-  onExportCurrent,
-  onMessage
-}) => {
-  const [activeTab, setActiveTab] = useState<'export' | 'import'>('export');
+export const DataManagementPanel = memo<DataManagementPanelProps>(
+  ({ onExportAll, onExportCurrent, onMessage }) => {
+    const [activeTab, setActiveTab] = useState<'export' | 'import'>('export');
 
-  return (
-    <div className="flex flex-col gap-3">
-      {/* ヘッダー */}
-      <div className="flex items-center gap-2">
-        <h2 className="text-lg font-bold">
-          データ管理
-        </h2>
+    return (
+      <div className='flex flex-col gap-3'>
+        {/* ヘッダー */}
+        <div className='flex items-center gap-2'>
+          <h2 className='text-lg font-bold'>データ管理</h2>
+        </div>
+
+        {/* タブナビゲーション */}
+        <Tabs
+          value={activeTab}
+          onValueChange={value => setActiveTab(value as 'export' | 'import')}
+        >
+          <TabsList className='grid w-full grid-cols-2 mb-4'>
+            <TabsTrigger value='export'>エクスポート</TabsTrigger>
+            <TabsTrigger value='import'>インポート</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value='export'>
+            <ExportSection
+              onExportAll={onExportAll}
+              onExportCurrent={onExportCurrent}
+              onMessage={onMessage}
+            />
+          </TabsContent>
+
+          <TabsContent value='import'>
+            <ImportSection onMessage={onMessage} />
+          </TabsContent>
+        </Tabs>
       </div>
-
-      {/* タブナビゲーション */}
-      <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'export' | 'import')}>
-        <TabsList className="grid w-full grid-cols-2 mb-4">
-          <TabsTrigger value="export">エクスポート</TabsTrigger>
-          <TabsTrigger value="import">インポート</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="export">
-          <ExportSection
-            onExportAll={onExportAll}
-            onExportCurrent={onExportCurrent}
-            onMessage={onMessage}
-          />
-        </TabsContent>
-
-        <TabsContent value="import">
-          <ImportSection
-            onMessage={onMessage}
-          />
-        </TabsContent>
-      </Tabs>
-    </div>
-  );
-});
+    );
+  }
+);
 
 DataManagementPanel.displayName = 'DataManagementPanel';

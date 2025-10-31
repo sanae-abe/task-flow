@@ -1,17 +1,17 @@
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef } from 'react';
 
-import type { FileAttachment } from "../types";
+import type { FileAttachment } from '../types';
 
 // 定数の定義
 export const DEFAULT_MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 export const DEFAULT_ALLOWED_TYPES = [
-  "image/*",
-  "text/*",
-  "application/pdf",
-  ".doc",
-  ".docx",
-  ".xlsx",
-  ".xls",
+  'image/*',
+  'text/*',
+  'application/pdf',
+  '.doc',
+  '.docx',
+  '.xlsx',
+  '.xls',
 ];
 
 export interface UseFileUploadOptions {
@@ -35,7 +35,7 @@ export interface UseFileUploadReturn {
 export const useFileUpload = (
   attachments: FileAttachment[],
   onAttachmentsChange: (attachments: FileAttachment[]) => void,
-  options: UseFileUploadOptions = {},
+  options: UseFileUploadOptions = {}
 ): UseFileUploadReturn => {
   const {
     maxFileSize = DEFAULT_MAX_FILE_SIZE,
@@ -49,7 +49,7 @@ export const useFileUpload = (
   const generateFileId = useCallback(
     (): string =>
       Date.now().toString() + Math.random().toString(36).substr(2, 9),
-    [],
+    []
   );
 
   const validateFile = useCallback(
@@ -58,23 +58,23 @@ export const useFileUpload = (
         return `ファイルサイズが制限を超えています（${Math.round(maxFileSize / 1024 / 1024)}MB以下）`;
       }
 
-      const isValidType = allowedTypes.some((type) => {
-        if (type.endsWith("/*")) {
+      const isValidType = allowedTypes.some(type => {
+        if (type.endsWith('/*')) {
           return file.type.startsWith(type.slice(0, -1));
         }
-        if (type.startsWith(".")) {
+        if (type.startsWith('.')) {
           return file.name.toLowerCase().endsWith(type.toLowerCase());
         }
         return file.type === type;
       });
 
       if (!isValidType) {
-        return "サポートされていないファイル形式です";
+        return 'サポートされていないファイル形式です';
       }
 
       return null;
     },
-    [maxFileSize, allowedTypes],
+    [maxFileSize, allowedTypes]
   );
 
   const processFile = useCallback(
@@ -89,7 +89,7 @@ export const useFileUpload = (
         const reader = new FileReader();
         reader.onload = () => {
           const result = reader.result as string;
-          const base64Data = result.split(",")[1] ?? "";
+          const base64Data = result.split(',')[1] ?? '';
 
           resolve({
             id: generateFileId(),
@@ -101,10 +101,10 @@ export const useFileUpload = (
           });
         };
         reader.onerror = () =>
-          reject(new Error("ファイルの読み込みに失敗しました"));
+          reject(new Error('ファイルの読み込みに失敗しました'));
         reader.readAsDataURL(file);
       }),
-    [validateFile, generateFileId],
+    [validateFile, generateFileId]
   );
 
   const handleFiles = useCallback(
@@ -114,18 +114,18 @@ export const useFileUpload = (
 
       try {
         const newAttachments = await Promise.all(
-          fileArray.map((file) => processFile(file)),
+          fileArray.map(file => processFile(file))
         );
         onAttachmentsChange([...attachments, ...newAttachments]);
       } catch (err) {
         setError(
           err instanceof Error
             ? err.message
-            : "ファイルの処理中にエラーが発生しました",
+            : 'ファイルの処理中にエラーが発生しました'
         );
       }
     },
-    [attachments, onAttachmentsChange, processFile],
+    [attachments, onAttachmentsChange, processFile]
   );
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
@@ -147,7 +147,7 @@ export const useFileUpload = (
         void handleFiles(e.dataTransfer.files);
       }
     },
-    [handleFiles],
+    [handleFiles]
   );
 
   const handleFileSelect = useCallback(() => {
@@ -160,7 +160,7 @@ export const useFileUpload = (
         void handleFiles(e.target.files);
       }
     },
-    [handleFiles],
+    [handleFiles]
   );
 
   return {

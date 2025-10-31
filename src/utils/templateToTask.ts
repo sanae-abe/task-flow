@@ -1,7 +1,7 @@
-import type { TaskTemplate } from "../types/template";
-import type { Task } from "../types";
-import { v4 as uuidv4 } from "uuid";
-import { logger } from "./logger";
+import type { TaskTemplate } from '../types/template';
+import type { Task } from '../types';
+import { v4 as uuidv4 } from 'uuid';
+import { logger } from './logger';
 
 /**
  * 相対的な日付文字列をパース
@@ -13,7 +13,7 @@ const parseRelativeDate = (relativeDateStr: string | null): string | null => {
   }
 
   // 絶対日付の場合はそのまま返す
-  if (!relativeDateStr.startsWith("+") && !relativeDateStr.startsWith("-")) {
+  if (!relativeDateStr.startsWith('+') && !relativeDateStr.startsWith('-')) {
     return relativeDateStr;
   }
 
@@ -21,18 +21,18 @@ const parseRelativeDate = (relativeDateStr: string | null): string | null => {
   const match = relativeDateStr.match(regex);
 
   if (!match) {
-    logger.warn("Invalid relative date format:", relativeDateStr);
+    logger.warn('Invalid relative date format:', relativeDateStr);
     return null;
   }
 
   const [, sign, amountStr, unit] = match;
   if (!sign || !amountStr || !unit) {
-    logger.warn("Invalid match components:", match);
+    logger.warn('Invalid match components:', match);
     return null;
   }
 
   const amount = parseInt(amountStr, 10);
-  const isPositive = sign === "+";
+  const isPositive = sign === '+';
 
   const now = new Date();
   const targetDate = new Date(now);
@@ -41,24 +41,24 @@ const parseRelativeDate = (relativeDateStr: string | null): string | null => {
   targetDate.setHours(23, 59, 0, 0);
 
   switch (unit.toLowerCase()) {
-    case "d": // 日
+    case 'd': // 日
       targetDate.setDate(now.getDate() + (isPositive ? amount : -amount));
       break;
-    case "w": // 週
+    case 'w': // 週
       targetDate.setDate(
-        now.getDate() + (isPositive ? amount * 7 : -amount * 7),
+        now.getDate() + (isPositive ? amount * 7 : -amount * 7)
       );
       break;
-    case "m": // 月
+    case 'm': // 月
       targetDate.setMonth(now.getMonth() + (isPositive ? amount : -amount));
       break;
-    case "y": // 年
+    case 'y': // 年
       targetDate.setFullYear(
-        now.getFullYear() + (isPositive ? amount : -amount),
+        now.getFullYear() + (isPositive ? amount : -amount)
       );
       break;
     default:
-      logger.warn("Unknown date unit:", unit);
+      logger.warn('Unknown date unit:', unit);
       return null;
   }
 
@@ -69,15 +69,15 @@ const parseRelativeDate = (relativeDateStr: string | null): string | null => {
  * テンプレートの相対日付設定例
  */
 export const RELATIVE_DATE_PRESETS = [
-  { label: "今日", value: "+0d" },
-  { label: "明日", value: "+1d" },
-  { label: "3日後", value: "+3d" },
-  { label: "1週間後", value: "+1w" },
-  { label: "2週間後", value: "+2w" },
-  { label: "1ヶ月後", value: "+1m" },
-  { label: "3ヶ月後", value: "+3m" },
-  { label: "6ヶ月後", value: "+6m" },
-  { label: "1年後", value: "+1y" },
+  { label: '今日', value: '+0d' },
+  { label: '明日', value: '+1d' },
+  { label: '3日後', value: '+3d' },
+  { label: '1週間後', value: '+1w' },
+  { label: '2週間後', value: '+2w' },
+  { label: '1ヶ月後', value: '+1m' },
+  { label: '3ヶ月後', value: '+3m' },
+  { label: '6ヶ月後', value: '+6m' },
+  { label: '1年後', value: '+1y' },
 ] as const;
 
 /**
@@ -94,7 +94,7 @@ export interface TemplateToTaskOptions {
  */
 export const templateToTask = (
   template: TaskTemplate,
-  options: TemplateToTaskOptions = {},
+  options: TemplateToTaskOptions = {}
 ): Task => {
   const { columnId, boardId, overrides = {} } = options;
   const now = new Date().toISOString();
@@ -118,7 +118,7 @@ export const templateToTask = (
     ...overrides, // 上書き設定を適用
   };
 
-  logger.info("Task created from template:", {
+  logger.info('Task created from template:', {
     templateName: template.name,
     taskTitle: task.title,
     dueDate: task.dueDate,
@@ -134,8 +134,8 @@ export const templateToTask = (
  */
 export const templatestoTasks = (
   templates: TaskTemplate[],
-  options: TemplateToTaskOptions = {},
-): Task[] => templates.map((template) => templateToTask(template, options));
+  options: TemplateToTaskOptions = {}
+): Task[] => templates.map(template => templateToTask(template, options));
 
 /**
  * 既存のタスクからテンプレートを作成
@@ -145,12 +145,12 @@ export const taskToTemplate = (
   templateData: {
     name: string;
     description: string;
-    category: TaskTemplate["category"];
+    category: TaskTemplate['category'];
     isFavorite?: boolean;
     boardId?: string;
     columnId?: string;
-  },
-): Omit<TaskTemplate, "id" | "createdAt" | "updatedAt" | "usageCount"> => ({
+  }
+): Omit<TaskTemplate, 'id' | 'createdAt' | 'updatedAt' | 'usageCount'> => ({
   name: templateData.name,
   description: templateData.description,
   category: templateData.category,
@@ -169,13 +169,13 @@ export const taskToTemplate = (
  * 相対日付の表示用ラベルを取得
  */
 export const getRelativeDateLabel = (
-  relativeDateStr: string | null,
+  relativeDateStr: string | null
 ): string => {
   if (!relativeDateStr) {
-    return "期限なし";
+    return '期限なし';
   }
 
-  const preset = RELATIVE_DATE_PRESETS.find((p) => p.value === relativeDateStr);
+  const preset = RELATIVE_DATE_PRESETS.find(p => p.value === relativeDateStr);
   if (preset) {
     return preset.label;
   }
@@ -188,7 +188,7 @@ export const getRelativeDateLabel = (
   }
 
   const [, sign, amount, unit] = match;
-  const direction = sign === "+" ? "後" : "前";
+  const direction = sign === '+' ? '後' : '前';
 
   // unitの型安全性を確保
   if (!unit) {
@@ -196,10 +196,10 @@ export const getRelativeDateLabel = (
   }
 
   const unitLabel: Record<string, string> = {
-    d: "日",
-    w: "週間",
-    m: "ヶ月",
-    y: "年",
+    d: '日',
+    w: '週間',
+    m: 'ヶ月',
+    y: '年',
   };
 
   return `${amount}${unitLabel[unit.toLowerCase()] || unit}${direction}`;
@@ -218,8 +218,8 @@ export const isValidRelativeDate = (dateStr: string): boolean => {
  */
 export const createRelativeDate = (
   amount: number,
-  unit: "d" | "w" | "m" | "y",
-  direction: "+" | "-" = "+",
+  unit: 'd' | 'w' | 'm' | 'y',
+  direction: '+' | '-' = '+'
 ): string => `${direction}${amount}${unit}`;
 
 /**
@@ -233,27 +233,27 @@ export const previewTemplateTask = (template: TaskTemplate): Task =>
  * テンプレートの検証
  */
 export const validateTemplate = (
-  template: Partial<TaskTemplate>,
+  template: Partial<TaskTemplate>
 ): {
   isValid: boolean;
   errors: string[];
 } => {
   const errors: string[] = [];
 
-  if (!template.name || template.name.trim() === "") {
-    errors.push("テンプレート名は必須です");
+  if (!template.name || template.name.trim() === '') {
+    errors.push('テンプレート名は必須です');
   }
 
-  if (!template.taskTitle || template.taskTitle.trim() === "") {
-    errors.push("タスクタイトルは必須です");
+  if (!template.taskTitle || template.taskTitle.trim() === '') {
+    errors.push('タスクタイトルは必須です');
   }
 
   if (!template.category) {
-    errors.push("カテゴリーは必須です");
+    errors.push('カテゴリーは必須です');
   }
 
   if (!template.priority) {
-    errors.push("優先度は必須です");
+    errors.push('優先度は必須です');
   }
 
   if (template.dueDate && !isValidRelativeDate(template.dueDate)) {
@@ -261,7 +261,7 @@ export const validateTemplate = (
     try {
       new Date(template.dueDate);
     } catch {
-      errors.push("期限の形式が不正です");
+      errors.push('期限の形式が不正です');
     }
   }
 

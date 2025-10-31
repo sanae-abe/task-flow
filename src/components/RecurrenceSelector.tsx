@@ -1,10 +1,10 @@
-import { RotateCcw } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import React, { useState, useCallback } from "react";
+import { RotateCcw } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import React, { useState, useCallback } from 'react';
 
-import type { RecurrenceConfig } from "../types";
-import { getRecurrenceDescription } from "../utils/recurrence";
-import RecurrenceDetailDialog from "./RecurrenceDetailDialog";
+import type { RecurrenceConfig } from '../types';
+import { getRecurrenceDescription } from '../utils/recurrence';
+import RecurrenceDetailDialog from './RecurrenceDetailDialog';
 
 interface RecurrenceSelectorProps {
   recurrence?: RecurrenceConfig;
@@ -23,7 +23,7 @@ const RecurrenceSelector: React.FC<RecurrenceSelectorProps> = ({
     (newRecurrence: RecurrenceConfig | undefined) => {
       onRecurrenceChange(newRecurrence);
     },
-    [onRecurrenceChange],
+    [onRecurrenceChange]
   );
 
   const handleDetailDialogClose = useCallback(() => {
@@ -40,7 +40,7 @@ const RecurrenceSelector: React.FC<RecurrenceSelectorProps> = ({
     if (recurrence?.enabled) {
       return getRecurrenceDescription(recurrence);
     }
-    return "繰り返し設定";
+    return '繰り返し設定';
   };
 
   return (
@@ -48,8 +48,8 @@ const RecurrenceSelector: React.FC<RecurrenceSelectorProps> = ({
       <Button
         onClick={handleButtonClick}
         disabled={disabled}
-        variant="outline"
-        className="flex items-center gap-1"
+        variant='outline'
+        className='flex items-center gap-1'
       >
         <RotateCcw size={16} />
         {getButtonText()}

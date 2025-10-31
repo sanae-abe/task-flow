@@ -24,5 +24,5 @@ export type {
   MenuDivider,
   MenuVariant,
   MenuSize,
-  TriggerType
+  TriggerType,
 } from '../../../types/unified-menu';

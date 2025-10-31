@@ -28,7 +28,7 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
   onClose,
   onSave,
   template,
-  mode
+  mode,
 }) => {
   const [formData, setFormData] = useState<TemplateFormData>({
     name: '',
@@ -39,7 +39,7 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
     priority: undefined,
     labels: [],
     dueDate: null,
-    isFavorite: false
+    isFavorite: false,
   });
 
   const [errors, setErrors] = useState<{
@@ -64,7 +64,7 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
           dueDate: template.dueDate,
           isFavorite: template.isFavorite,
           boardId: template.boardId,
-          columnId: template.columnId
+          columnId: template.columnId,
         });
       } else {
         setFormData({
@@ -76,7 +76,7 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
           priority: undefined,
           labels: [],
           dueDate: null,
-          isFavorite: false
+          isFavorite: false,
         });
       }
       setErrors({});
@@ -125,7 +125,7 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
       onSave({
         ...formData,
         name: formData.name.trim(),
-        taskTitle: formData.taskTitle.trim()
+        taskTitle: formData.taskTitle.trim(),
       });
 
       onClose();
@@ -156,26 +156,27 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
 
   // 優先度選択
   const handlePriorityChange = useCallback((priority: Priority | undefined) => {
-    setFormData((prev) => ({ ...prev, priority }));
+    setFormData(prev => ({ ...prev, priority }));
   }, []);
 
   // ラベル変更
   const handleLabelsChange = useCallback((labels: Label[]) => {
-    setFormData((prev) => ({ ...prev, labels }));
+    setFormData(prev => ({ ...prev, labels }));
   }, []);
 
   const actions = [
     {
       label: 'キャンセル',
       variant: 'outline' as const,
-      onClick: handleCancel
+      onClick: handleCancel,
     },
     {
       label: mode === 'create' ? '作成' : '更新',
       variant: 'default' as const,
       onClick: handleSave,
-      disabled: !formData.name.trim() || !formData.taskTitle.trim() || isLoading
-    }
+      disabled:
+        !formData.name.trim() || !formData.taskTitle.trim() || isLoading,
+    },
   ];
 
   return (
@@ -183,55 +184,59 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
       isOpen={isOpen}
       onClose={onClose}
       title={mode === 'create' ? 'テンプレートを作成' : 'テンプレートを編集'}
-      variant="modal"
-      size="large"
+      variant='modal'
+      size='large'
       actions={actions}
     >
-      <div className="flex flex-col" onKeyDown={handleKeyDown}>
-        <div className="mb-3 mt-2 font-bold text-base">
-          テンプレート情報
-        </div>
+      <div className='flex flex-col' onKeyDown={handleKeyDown}>
+        <div className='mb-3 mt-2 font-bold text-base'>テンプレート情報</div>
         {/* テンプレート基本情報 */}
-        <div className="flex flex-col gap-4 p-3 rounded-md bg-neutral-100 border border-border">
-
+        <div className='flex flex-col gap-4 p-3 rounded-md bg-neutral-100 border border-border'>
           {/* テンプレート名 */}
-          <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium" htmlFor="template-name">
+          <div className='flex flex-col gap-1'>
+            <label className='text-sm font-medium' htmlFor='template-name'>
               テンプレート名
-              <span className="text-destructive ml-1">*</span>
+              <span className='text-destructive ml-1'>*</span>
             </label>
             <Input
-              id="template-name"
+              id='template-name'
               value={formData.name}
-              onChange={(e) => {
-                setFormData((prev) => ({ ...prev, name: e.target.value }));
+              onChange={e => {
+                setFormData(prev => ({ ...prev, name: e.target.value }));
                 if (errors.name) {
-                  setErrors((prev) => ({ ...prev, name: undefined }));
+                  setErrors(prev => ({ ...prev, name: undefined }));
                 }
               }}
-              placeholder="例: 週次レポート作成"
+              placeholder='例: 週次レポート作成'
               autoFocus
               disabled={isLoading}
               className={`w-full ${errors.name ? 'border-destructive' : ''}`}
             />
             {errors.name && (
-              <InlineMessage variant="critical" message={errors.name} size="small" />
+              <InlineMessage
+                variant='critical'
+                message={errors.name}
+                size='small'
+              />
             )}
           </div>
 
           {/* テンプレート説明 */}
-          <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium" htmlFor="template-description">
+          <div className='flex flex-col gap-1'>
+            <label
+              className='text-sm font-medium'
+              htmlFor='template-description'
+            >
               説明
             </label>
             <Textarea
-              id="template-description"
+              id='template-description'
               value={formData.description}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, description: e.target.value }))
+              onChange={e =>
+                setFormData(prev => ({ ...prev, description: e.target.value }))
               }
-              placeholder="このテンプレートの用途を説明..."
-              className="w-full"
+              placeholder='このテンプレートの用途を説明...'
+              className='w-full'
               rows={2}
               disabled={isLoading}
             />
@@ -240,53 +245,55 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
           {/* カテゴリー */}
           <TemplateCategorySelector
             value={formData.category}
-            onChange={(category) => setFormData((prev) => ({ ...prev, category }))}
+            onChange={category => setFormData(prev => ({ ...prev, category }))}
             disabled={isLoading}
           />
         </div>
 
         {/* タスク情報 */}
-        <div className="mt-6 mb-3 font-bold text-base">
-            作成されるタスク
-        </div>
-        <div className="flex flex-col gap-4 p-3 bg-neutral-100 rounded-md border border-border">
+        <div className='mt-6 mb-3 font-bold text-base'>作成されるタスク</div>
+        <div className='flex flex-col gap-4 p-3 bg-neutral-100 rounded-md border border-border'>
           {/* タスクタイトル */}
-          <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium" htmlFor="task-title">
+          <div className='flex flex-col gap-1'>
+            <label className='text-sm font-medium' htmlFor='task-title'>
               タスクタイトル
-              <span className="text-destructive ml-1">*</span>
+              <span className='text-destructive ml-1'>*</span>
             </label>
             <Input
-              id="task-title"
+              id='task-title'
               value={formData.taskTitle}
-              onChange={(e) => {
-                setFormData((prev) => ({ ...prev, taskTitle: e.target.value }));
+              onChange={e => {
+                setFormData(prev => ({ ...prev, taskTitle: e.target.value }));
                 if (errors.taskTitle) {
-                  setErrors((prev) => ({ ...prev, taskTitle: undefined }));
+                  setErrors(prev => ({ ...prev, taskTitle: undefined }));
                 }
               }}
-              placeholder="例: 週次レポートを作成する"
+              placeholder='例: 週次レポートを作成する'
               className={`w-full ${errors.taskTitle ? 'border-destructive' : ''}`}
               disabled={isLoading}
             />
             {errors.taskTitle && (
-              <InlineMessage variant="critical" message={errors.taskTitle} size="small" />
+              <InlineMessage
+                variant='critical'
+                message={errors.taskTitle}
+                size='small'
+              />
             )}
           </div>
 
           {/* タスク説明 */}
-          <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium" htmlFor="task-description">
+          <div className='flex flex-col gap-1'>
+            <label className='text-sm font-medium' htmlFor='task-description'>
               タスク説明
             </label>
             <RichTextEditor
               value={formData.taskDescription}
-              onChange={(value) =>
-                setFormData((prev) => ({ ...prev, taskDescription: value }))
+              onChange={value =>
+                setFormData(prev => ({ ...prev, taskDescription: value }))
               }
-              placeholder="タスクの説明を入力..."
+              placeholder='タスクの説明を入力...'
               disabled={isLoading}
-              minHeight="120px"
+              minHeight='120px'
             />
           </div>
 
@@ -295,14 +302,12 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
             priority={formData.priority}
             onPriorityChange={handlePriorityChange}
             disabled={isLoading}
-            variant="full"
+            variant='full'
           />
 
           {/* ラベル */}
           <div>
-            <label className="text-sm font-medium">
-              ラベル
-            </label>
+            <label className='text-sm font-medium'>ラベル</label>
             <LabelSelector
               selectedLabels={formData.labels}
               onLabelsChange={handleLabelsChange}

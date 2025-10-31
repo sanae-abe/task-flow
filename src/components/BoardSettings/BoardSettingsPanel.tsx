@@ -1,7 +1,14 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Plus, Trash2, GripVertical, ChevronUp, ChevronDown, Check } from 'lucide-react';
+import {
+  Plus,
+  Trash2,
+  GripVertical,
+  ChevronUp,
+  ChevronDown,
+  Check,
+} from 'lucide-react';
 import {
   DndContext,
   closestCenter,
@@ -20,28 +27,40 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import type { DefaultColumnConfig } from '../../types/settings';
-import { loadSettings, updateDefaultColumns } from '../../utils/settingsStorage';
+import {
+  loadSettings,
+  updateDefaultColumns,
+} from '../../utils/settingsStorage';
 import { useSonnerNotify } from '../../hooks/useSonnerNotify';
 import { v4 as uuidv4 } from 'uuid';
 import InlineMessage from '../shared/InlineMessage';
 import IconButton from '../shared/IconButton';
 
 // デバウンス機能
-const useDebounce = <T extends unknown[]>(callback: (...args: T) => void, delay: number) => {
+const useDebounce = <T extends unknown[]>(
+  callback: (...args: T) => void,
+  delay: number
+) => {
   const debounceTimer = React.useRef<NodeJS.Timeout | null>(null);
 
-  return useCallback((...args: T) => {
-    if (debounceTimer.current) {
-      clearTimeout(debounceTimer.current);
-    }
-    debounceTimer.current = setTimeout(() => callback(...args), delay);
-  }, [callback, delay]);
+  return useCallback(
+    (...args: T) => {
+      if (debounceTimer.current) {
+        clearTimeout(debounceTimer.current);
+      }
+      debounceTimer.current = setTimeout(() => callback(...args), delay);
+    },
+    [callback, delay]
+  );
 };
 
 // カラム名正規化関数（大文字小文字・全角半角を統一）
 const normalizeColumnName = (name: string): string =>
-  name.toLowerCase().replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) =>
-    String.fromCharCode(s.charCodeAt(0) - 0xFEE0));
+  name
+    .toLowerCase()
+    .replace(/[Ａ-Ｚａ-ｚ０-９]/g, s =>
+      String.fromCharCode(s.charCodeAt(0) - 0xfee0)
+    );
 
 // Sortable Column Item コンポーネント
 interface SortableColumnItemProps {
@@ -110,39 +129,39 @@ const SortableColumnItem: React.FC<SortableColumnItemProps> = ({
         {...attributes}
         // eslint-disable-next-line react/jsx-props-no-spreading
         {...listeners}
-        className="flex items-center cursor-grab active:cursor-grabbing"
+        className='flex items-center cursor-grab active:cursor-grabbing'
       >
         <GripVertical size={16} />
       </div>
-      <div className="flex flex-col flex-1 gap-1">
+      <div className='flex flex-col flex-1 gap-1'>
         <Input
           value={localName}
           onChange={handleInputChange}
-          placeholder="カラム名"
-          className="w-full"
+          placeholder='カラム名'
+          className='w-full'
           aria-label={`カラム「${column.name}」の名前`}
         />
         {_error && (
-          <InlineMessage variant="critical" message={_error} size="small" />
+          <InlineMessage variant='critical' message={_error} size='small' />
         )}
       </div>
-      <div className="flex">
+      <div className='flex'>
         <IconButton
           icon={ChevronUp}
-          size="icon"
+          size='icon'
           onClick={() => onMoveColumn(column.id, 'up')}
           disabled={index === 0}
           ariaLabel={`${column.name}を上に移動`}
         />
         <IconButton
           icon={ChevronDown}
-          size="icon"
+          size='icon'
           onClick={() => onMoveColumn(column.id, 'down')}
           disabled={index === totalColumns - 1}
           ariaLabel={`${column.name}を下に移動`}
         />
         <IconButton
-          size="icon"
+          size='icon'
           icon={Trash2}
           onClick={() => onDeleteColumn(column.id)}
           disabled={totalColumns <= 1}
@@ -159,7 +178,9 @@ export const BoardSettingsPanel: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
-  const [saveMessageType, setSaveMessageType] = useState<'success' | '_error' | null>(null);
+  const [saveMessageType, setSaveMessageType] = useState<
+    'success' | '_error' | null
+  >(null);
   const [addColumnError, setAddColumnError] = useState<string | null>(null);
   const [columnErrors, setColumnErrors] = useState<Record<string, string>>({});
   const [erroredColumnName, setErroredColumnName] = useState<string>('');
@@ -167,33 +188,39 @@ export const BoardSettingsPanel: React.FC = () => {
   const messageTimerRef = React.useRef<NodeJS.Timeout | null>(null);
 
   // メッセージ表示用の共通関数
-  const showMessage = useCallback((message: string, type: 'success' | '_error') => {
-    // 既存のタイマーをクリア
-    if (messageTimerRef.current) {
-      clearTimeout(messageTimerRef.current);
-    }
+  const showMessage = useCallback(
+    (message: string, type: 'success' | '_error') => {
+      // 既存のタイマーをクリア
+      if (messageTimerRef.current) {
+        clearTimeout(messageTimerRef.current);
+      }
 
-    setSaveMessage(message);
-    setSaveMessageType(type);
+      setSaveMessage(message);
+      setSaveMessageType(type);
 
-    // メッセージを自動消去（成功: 3秒、エラー: 5秒）
-    const delay = type === 'success' ? 3000 : 5000;
-    messageTimerRef.current = setTimeout(() => {
-      setSaveMessage(null);
-      setSaveMessageType(null);
-    }, delay);
-  }, []);
+      // メッセージを自動消去（成功: 3秒、エラー: 5秒）
+      const delay = type === 'success' ? 3000 : 5000;
+      messageTimerRef.current = setTimeout(() => {
+        setSaveMessage(null);
+        setSaveMessageType(null);
+      }, delay);
+    },
+    []
+  );
 
   // カラムエラー設定用の関数
-  const setColumnError = useCallback((columnId: string, _error: string | null) => {
-    setColumnErrors(prev => {
-      if (_error === null) {
-        const { [columnId]: _, ...rest } = prev;
-        return rest;
-      }
-      return { ...prev, [columnId]: _error };
-    });
-  }, []);
+  const setColumnError = useCallback(
+    (columnId: string, _error: string | null) => {
+      setColumnErrors(prev => {
+        if (_error === null) {
+          const { [columnId]: _, ...rest } = prev;
+          return rest;
+        }
+        return { ...prev, [columnId]: _error };
+      });
+    },
+    []
+  );
 
   // ドラッグ&ドロップ用のsensors設定
   const sensors = useSensors(
@@ -254,7 +281,10 @@ export const BoardSettingsPanel: React.FC = () => {
         setErroredColumnName('');
       }
       // 重複エラーの場合：エラーが発生した値と異なる値を入力した時のみクリア
-      else if (addColumnError === '同じ名前のカラムが既に存在します' && currentTrimmed !== erroredColumnName) {
+      else if (
+        addColumnError === '同じ名前のカラムが既に存在します' &&
+        currentTrimmed !== erroredColumnName
+      ) {
         setAddColumnError(null);
         setErroredColumnName('');
       }
@@ -266,9 +296,9 @@ export const BoardSettingsPanel: React.FC = () => {
     const { active, over } = event;
 
     if (over && active.id !== over.id) {
-      setColumns((items) => {
-        const oldIndex = items.findIndex((item) => item.id === active.id);
-        const newIndex = items.findIndex((item) => item.id === over.id);
+      setColumns(items => {
+        const oldIndex = items.findIndex(item => item.id === active.id);
+        const newIndex = items.findIndex(item => item.id === over.id);
 
         const newColumns = arrayMove(items, oldIndex, newIndex);
         setHasUnsavedChanges(true);
@@ -323,7 +353,7 @@ export const BoardSettingsPanel: React.FC = () => {
 
     const newColumn: DefaultColumnConfig = {
       id: uuidv4(),
-      name: trimmedName
+      name: trimmedName,
     };
 
     setColumns(prev => [...prev, newColumn]);
@@ -332,76 +362,92 @@ export const BoardSettingsPanel: React.FC = () => {
   }, [newColumnName, columns]);
 
   // カラム削除
-  const handleDeleteColumn = useCallback((columnId: string) => {
-    if (columns.length <= 1) {
-      notify._error('最低1つのカラムが必要です');
-      return;
-    }
+  const handleDeleteColumn = useCallback(
+    (columnId: string) => {
+      if (columns.length <= 1) {
+        notify._error('最低1つのカラムが必要です');
+        return;
+      }
 
-    setColumns(prev => prev.filter(col => col.id !== columnId));
-    setColumnError(columnId, null); // カラム削除時にエラーもクリア
-    setHasUnsavedChanges(true);
-  }, [columns.length, notify, setColumnError]);
+      setColumns(prev => prev.filter(col => col.id !== columnId));
+      setColumnError(columnId, null); // カラム削除時にエラーもクリア
+      setHasUnsavedChanges(true);
+    },
+    [columns.length, notify, setColumnError]
+  );
 
   // カラム名更新
-  const handleUpdateColumnName = useCallback((columnId: string, newName: string) => {
-    const trimmedName = newName.trim();
+  const handleUpdateColumnName = useCallback(
+    (columnId: string, newName: string) => {
+      const trimmedName = newName.trim();
 
-    if (!trimmedName) {
-      setColumnError(columnId, 'カラム名を入力してください');
-      return;
-    }
-
-    // 正規化した名前で重複チェック（大文字小文字・全角半角を無視）
-    const normalizedNewName = normalizeColumnName(trimmedName);
-
-    const isDuplicate = columns.some(col => {
-      if (col.id === columnId) {
-         return false; // 自分自身は除外
+      if (!trimmedName) {
+        setColumnError(columnId, 'カラム名を入力してください');
+        return;
       }
-      const normalizedExisting = normalizeColumnName(col.name);
-      return normalizedExisting === normalizedNewName;
-    });
 
-    if (isDuplicate) {
-      setColumnError(columnId, '同じ名前のカラムが既に存在します');
-      return;
-    }
+      // 正規化した名前で重複チェック（大文字小文字・全角半角を無視）
+      const normalizedNewName = normalizeColumnName(trimmedName);
 
-    // エラーをクリア
-    setColumnError(columnId, null);
+      const isDuplicate = columns.some(col => {
+        if (col.id === columnId) {
+          return false; // 自分自身は除外
+        }
+        const normalizedExisting = normalizeColumnName(col.name);
+        return normalizedExisting === normalizedNewName;
+      });
 
-    setColumns(prev => prev.map(col =>
-      col.id === columnId ? { ...col, name: trimmedName } : col
-    ));
-    setHasUnsavedChanges(true);
-  }, [columns, setColumnError]);
+      if (isDuplicate) {
+        setColumnError(columnId, '同じ名前のカラムが既に存在します');
+        return;
+      }
+
+      // エラーをクリア
+      setColumnError(columnId, null);
+
+      setColumns(prev =>
+        prev.map(col =>
+          col.id === columnId ? { ...col, name: trimmedName } : col
+        )
+      );
+      setHasUnsavedChanges(true);
+    },
+    [columns, setColumnError]
+  );
 
   // カラム順序変更
-  const handleMoveColumn = useCallback((columnId: string, direction: 'up' | 'down') => {
-    setColumns(prev => {
-      const currentIndex = prev.findIndex(col => col.id === columnId);
-      if (currentIndex === -1) { return prev; }
+  const handleMoveColumn = useCallback(
+    (columnId: string, direction: 'up' | 'down') => {
+      setColumns(prev => {
+        const currentIndex = prev.findIndex(col => col.id === columnId);
+        if (currentIndex === -1) {
+          return prev;
+        }
 
-      const newIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
-      if (newIndex < 0 || newIndex >= prev.length) { return prev; }
+        const newIndex =
+          direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+        if (newIndex < 0 || newIndex >= prev.length) {
+          return prev;
+        }
 
-      const newColumns = [...prev];
-      const currentColumn = newColumns[currentIndex];
-      const targetColumn = newColumns[newIndex];
-      if (currentColumn && targetColumn) {
-        newColumns[currentIndex] = targetColumn;
-        newColumns[newIndex] = currentColumn;
-      }
-      setHasUnsavedChanges(true);
-      return newColumns;
-    });
-  }, []);
+        const newColumns = [...prev];
+        const currentColumn = newColumns[currentIndex];
+        const targetColumn = newColumns[newIndex];
+        if (currentColumn && targetColumn) {
+          newColumns[currentIndex] = targetColumn;
+          newColumns[newIndex] = currentColumn;
+        }
+        setHasUnsavedChanges(true);
+        return newColumns;
+      });
+    },
+    []
+  );
 
   if (isLoading) {
     return (
-      <div className="p-3">
-        <div className="bg-blue-50 border border-border border-blue-200 rounded-md p-3 text-blue-800">
+      <div className='p-3'>
+        <div className='bg-blue-50 border border-border border-blue-200 rounded-md p-3 text-blue-800'>
           設定を読み込み中...
         </div>
       </div>
@@ -410,37 +456,41 @@ export const BoardSettingsPanel: React.FC = () => {
 
   return (
     <div>
-      <h2 className="text-lg font-bold mb-2">デフォルトカラム設定</h2>
-      <span className="text-sm text-zinc-700 mb-5 block">
+      <h2 className='text-lg font-bold mb-2'>デフォルトカラム設定</h2>
+      <span className='text-sm text-zinc-700 mb-5 block'>
         新しいボードを作成する際のデフォルトカラムを設定できます。
       </span>
 
       {/* カラム追加フォーム */}
-      <div className="mb-4">
-        <div className="flex items-center gap-2 mb-2">
+      <div className='mb-4'>
+        <div className='flex items-center gap-2 mb-2'>
           <Input
             value={newColumnName}
-            onChange={(e) => setNewColumnName(e.target.value)}
-            placeholder="新しいカラム名"
-            className="flex-1"
-            onKeyDown={(e) => {
+            onChange={e => setNewColumnName(e.target.value)}
+            placeholder='新しいカラム名'
+            className='flex-1'
+            onKeyDown={e => {
               if (e.key === 'Enter') {
                 handleAddColumn();
               }
             }}
-            aria-label="新しいカラム名"
+            aria-label='新しいカラム名'
           />
           <IconButton
             icon={Plus}
-            size="icon"
-            ariaLabel="カラムを追加"
+            size='icon'
+            ariaLabel='カラムを追加'
             onClick={handleAddColumn}
             disabled={!newColumnName.trim()}
-            className="bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground w-10 h-10"
+            className='bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground w-10 h-10'
           />
         </div>
         {addColumnError && (
-          <InlineMessage variant="critical" message={addColumnError} size="small" />
+          <InlineMessage
+            variant='critical'
+            message={addColumnError}
+            size='small'
+          />
         )}
       </div>
 
@@ -450,7 +500,10 @@ export const BoardSettingsPanel: React.FC = () => {
         collisionDetection={closestCenter}
         onDragEnd={handleDragEnd}
       >
-        <SortableContext items={columnIds} strategy={verticalListSortingStrategy}>
+        <SortableContext
+          items={columnIds}
+          strategy={verticalListSortingStrategy}
+        >
           {columns.map((column, index) => (
             <SortableColumnItem
               key={column.id}
@@ -467,12 +520,12 @@ export const BoardSettingsPanel: React.FC = () => {
       </DndContext>
 
       {/* 保存ボタン */}
-      <div className="flex justify-end mt-4">
+      <div className='flex justify-end mt-4'>
         <Button
-          variant="default"
+          variant='default'
           onClick={handleSave}
           disabled={!hasUnsavedChanges || columns.length === 0}
-          className="gap-2"
+          className='gap-2'
         >
           <Check size={16} />
           保存
@@ -481,11 +534,11 @@ export const BoardSettingsPanel: React.FC = () => {
 
       {/* メッセージ表示 */}
       {saveMessage && (
-        <div className="mb-4 flex justify-end mt-2">
+        <div className='mb-4 flex justify-end mt-2'>
           <InlineMessage
             variant={saveMessageType === 'success' ? 'success' : 'critical'}
             message={saveMessage}
-            size="small"
+            size='small'
           />
         </div>
       )}

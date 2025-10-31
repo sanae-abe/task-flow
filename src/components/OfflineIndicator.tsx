@@ -1,6 +1,6 @@
-import React from "react";
-import { CloudOff, Check } from "lucide-react";
-import { useOffline } from "../hooks/useOffline";
+import React from 'react';
+import { CloudOff, Check } from 'lucide-react';
+import { useOffline } from '../hooks/useOffline';
 
 const OfflineIndicator: React.FC = () => {
   const { isOnline, isOffline, wasOffline } = useOffline();
@@ -12,18 +12,21 @@ const OfflineIndicator: React.FC = () => {
   // Dynamic className generation for indicator
   const indicatorClassName = `
     flex items-center gap-2 px-3 py-1 mr-2 border border-border rounded-md transition-all duration-300 ease-in-out right-[10px]
-    ${isOffline
-      ? "border-destructive text-destructive"
-      : "border-success text-white"
+    ${
+      isOffline
+        ? 'border-destructive text-destructive'
+        : 'border-success text-white'
     }
-    ${wasOffline && isOnline ? "animate-slide-in" : ""}
-  `.trim().replace(/\s+/g, ' ');
+    ${wasOffline && isOnline ? 'animate-slide-in' : ''}
+  `
+    .trim()
+    .replace(/\s+/g, ' ');
 
   return (
     <div className={indicatorClassName}>
       {isOffline ? <CloudOff size={16} /> : <Check size={16} />}
-      <span className="text-sm font-bold">
-        {isOffline ? "オフライン" : "オンラインに復帰しました"}
+      <span className='text-sm font-bold'>
+        {isOffline ? 'オフライン' : 'オンラインに復帰しました'}
       </span>
       <style>{`
         @keyframes slideIn {

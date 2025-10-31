@@ -1,7 +1,7 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback } from 'react';
 
-import { useKanban } from "../contexts/KanbanContext";
-import type { Column, Label, FileAttachment } from "../types";
+import { useKanban } from '../contexts/KanbanContext';
+import type { Column, Label, FileAttachment } from '../types';
 
 interface UseColumnStateReturn {
   showCreateDialog: boolean;
@@ -19,7 +19,7 @@ interface UseColumnStateReturn {
     description: string,
     dueDate?: Date,
     labels?: Label[],
-    attachments?: FileAttachment[],
+    attachments?: FileAttachment[]
   ) => void;
   handleCancelCreateTask: () => void;
 }
@@ -42,7 +42,7 @@ export const useColumnState = (column: Column): UseColumnStateReturn => {
       }
       setShowEditDialog(false);
     },
-    [column.title, column.id, updateColumn],
+    [column.title, column.id, updateColumn]
   );
 
   const handleTitleCancel = useCallback(() => {
@@ -68,7 +68,7 @@ export const useColumnState = (column: Column): UseColumnStateReturn => {
       description: string,
       dueDate?: Date,
       labels?: Label[],
-      attachments?: FileAttachment[],
+      attachments?: FileAttachment[]
     ) => {
       if (title.trim()) {
         createTask(
@@ -77,12 +77,12 @@ export const useColumnState = (column: Column): UseColumnStateReturn => {
           description.trim(),
           dueDate,
           labels,
-          attachments,
+          attachments
         );
         setShowCreateDialog(false);
       }
     },
-    [column.id, createTask],
+    [column.id, createTask]
   );
 
   const handleCancelCreateTask = useCallback(() => {

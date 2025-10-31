@@ -22,7 +22,7 @@ export const insertHtmlAtCursor = (html: string): void => {
     range.deleteContents();
 
     // Parse HTML and insert as DOM elements
-    const div = document.createElement("div");
+    const div = document.createElement('div');
     div.innerHTML = html;
     const fragment = document.createDocumentFragment();
 
@@ -37,7 +37,7 @@ export const insertHtmlAtCursor = (html: string): void => {
   } catch (_error) {
     // Fallback to execCommand if modern approach fails
     try {
-      document.execCommand("insertHTML", false, html);
+      document.execCommand('insertHTML', false, html);
     } catch (_fallbackError) {
       // Silently fail in production - both approaches failed
       // eslint-disable-next-line no-console
@@ -56,23 +56,23 @@ export const executeEditorCommand = (
 ): void => {
   try {
     switch (command) {
-      case "bold":
-        document.execCommand("bold", false);
+      case 'bold':
+        document.execCommand('bold', false);
         break;
-      case "italic":
-        document.execCommand("italic", false);
+      case 'italic':
+        document.execCommand('italic', false);
         break;
-      case "underline":
-        document.execCommand("underline", false);
+      case 'underline':
+        document.execCommand('underline', false);
         break;
-      case "strikethrough":
-        document.execCommand("strikeThrough", false);
+      case 'strikethrough':
+        document.execCommand('strikeThrough', false);
         break;
-      case "unorderedList":
-        document.execCommand("insertUnorderedList", false);
+      case 'unorderedList':
+        document.execCommand('insertUnorderedList', false);
         break;
-      case "orderedList":
-        document.execCommand("insertOrderedList", false);
+      case 'orderedList':
+        document.execCommand('insertOrderedList', false);
         break;
       default:
         // Fallback for other commands

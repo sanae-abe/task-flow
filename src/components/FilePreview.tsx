@@ -1,10 +1,10 @@
-import { Eye, Image, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import React, { useState, memo, useCallback } from "react";
+import { Eye, Image, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import React, { useState, memo, useCallback } from 'react';
 
-import type { FileAttachment } from "../types";
-import { isImageFile, isTextFile, formatFileSize } from "../utils/fileUtils";
-import IconButton from "../components/shared/IconButton";
+import type { FileAttachment } from '../types';
+import { isImageFile, isTextFile, formatFileSize } from '../utils/fileUtils';
+import IconButton from '../components/shared/IconButton';
 
 interface FilePreviewProps {
   attachment: FileAttachment;
@@ -31,26 +31,26 @@ interface PreviewFooterProps {
 const PreviewButton = memo<PreviewButtonProps>(
   ({ attachment, isImage, onClick }) => (
     <Button
-      variant="ghost"
-      size="sm"
+      variant='ghost'
+      size='sm'
       onClick={onClick}
-      className="p-1"
+      className='p-1'
       aria-label={`${attachment.name}をプレビュー`}
     >
       {isImage ? <Image size={14} /> : <Eye size={14} />}
     </Button>
-  ),
+  )
 );
 
 // プレビューフッターコンポーネント
 const PreviewFooter = memo<PreviewFooterProps>(({ attachment }) => (
-  <div className="p-3 border-t border-gray-200 bg-gray-50 flex gap-3">
-    <span className="text-xs text-zinc-700">
+  <div className='p-3 border-t border-gray-200 bg-gray-50 flex gap-3'>
+    <span className='text-xs text-zinc-700'>
       ファイルサイズ: {formatFileSize(attachment.size)}
     </span>
-    <span className="text-xs text-zinc-700">
-      アップロード日:{" "}
-      {new Date(attachment.uploadedAt).toLocaleDateString("ja-JP")}
+    <span className='text-xs text-zinc-700'>
+      アップロード日:{' '}
+      {new Date(attachment.uploadedAt).toLocaleDateString('ja-JP')}
     </span>
   </div>
 ));
@@ -83,17 +83,17 @@ const FilePreview: React.FC<FilePreviewProps> = ({
         try {
           return atob(attachment.data);
         } catch (_error) {
-          return "ファイルの内容を読み込めませんでした。";
+          return 'ファイルの内容を読み込めませんでした。';
         }
       };
 
       if (isImage) {
         return (
-          <div className="text-center max-h-[70vh] overflow-auto">
+          <div className='text-center max-h-[70vh] overflow-auto'>
             <img
               src={getDataUrl()}
               alt={attachment.name}
-              className="max-w-full max-h-[60vh] object-contain rounded-md"
+              className='max-w-full max-h-[60vh] object-contain rounded-md'
             />
           </div>
         );
@@ -101,8 +101,8 @@ const FilePreview: React.FC<FilePreviewProps> = ({
 
       if (isText) {
         return (
-          <div className="max-h-[60vh] overflow-auto bg-gray-50 p-3 rounded-sm font-mono">
-            <pre className="whitespace-pre-wrap text-xs leading-6 m-0">
+          <div className='max-h-[60vh] overflow-auto bg-gray-50 p-3 rounded-sm font-mono'>
+            <pre className='whitespace-pre-wrap text-xs leading-6 m-0'>
               {getTextContent()}
             </pre>
           </div>
@@ -110,7 +110,7 @@ const FilePreview: React.FC<FilePreviewProps> = ({
       }
 
       return null;
-    },
+    }
   );
 
   if (!canPreview && showPreviewButton) {
@@ -129,32 +129,29 @@ const FilePreview: React.FC<FilePreviewProps> = ({
 
       {isPreviewOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-400 flex items-center justify-center"
+          className='fixed inset-0 bg-black/50 z-400 flex items-center justify-center'
           onClick={handleClosePreview}
         >
           <div
-            className="bg-white border border-border border-gray-200 rounded-md shadow-2xl max-w-[90vw] max-h-[90vh] overflow-hidden flex flex-col"
+            className='bg-white border border-border border-gray-200 rounded-md shadow-2xl max-w-[90vw] max-h-[90vh] overflow-hidden flex flex-col'
             onClick={(e: React.MouseEvent) => e.stopPropagation()}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="file-preview-title"
+            role='dialog'
+            aria-modal='true'
+            aria-labelledby='file-preview-title'
           >
-            <div className="flex items-center justify-between p-3 border-b border-border border-gray-200">
-              <h2
-                id="file-preview-title"
-                className="text-base font-bold"
-              >
+            <div className='flex items-center justify-between p-3 border-b border-border border-gray-200'>
+              <h2 id='file-preview-title' className='text-base font-bold'>
                 {attachment.name}
               </h2>
               <IconButton
                 icon={X}
-                size="icon"
+                size='icon'
                 onClick={handleClosePreview}
-                ariaLabel="プレビューを閉じる"
+                ariaLabel='プレビューを閉じる'
               />
             </div>
 
-            <div className="p-3 flex-1 overflow-auto">
+            <div className='p-3 flex-1 overflow-auto'>
               <PreviewContent
                 attachment={attachment}
                 isImage={isImage}

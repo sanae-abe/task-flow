@@ -1,5 +1,5 @@
-import { buttonVariants } from "@/components/ui/button";
-import { type VariantProps } from "class-variance-authority";
+import { buttonVariants } from '@/components/ui/button';
+import { type VariantProps } from 'class-variance-authority';
 
 type ButtonVariantProps = VariantProps<typeof buttonVariants>;
 
@@ -24,9 +24,7 @@ export function mapPrimerVariant(
 }
 
 // Primer React size -> Shadcn/UI size mapping
-export function mapPrimerSize(
-  primerSize?: string
-): ButtonVariantProps['size'] {
+export function mapPrimerSize(primerSize?: string): ButtonVariantProps['size'] {
   switch (primerSize) {
     case 'small':
       return 'sm';
@@ -55,6 +53,6 @@ export function extractShadcnProps(props: MigrationButtonProps) {
   return {
     variant: variant || mapPrimerVariant(primerVariant),
     size: size || mapPrimerSize(primerSize),
-    ...rest
+    ...rest,
   };
 }

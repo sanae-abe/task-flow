@@ -6,11 +6,11 @@ import React, {
   useMemo,
   useCallback,
   type ReactNode,
-} from "react";
+} from 'react';
 
-import type { SortOption, TaskFilter, ViewMode } from "../types";
-import type { VirtualRecurringTask } from "../utils/calendarRecurrence";
-import { logger } from "../utils/logger";
+import type { SortOption, TaskFilter, ViewMode } from '../types';
+import type { VirtualRecurringTask } from '../utils/calendarRecurrence';
+import { logger } from '../utils/logger';
 
 interface UIState {
   sortOption: SortOption;
@@ -26,23 +26,23 @@ interface UIState {
 }
 
 type UIAction =
-  | { type: "SET_SORT_OPTION"; payload: SortOption }
-  | { type: "SET_TASK_FILTER"; payload: TaskFilter }
-  | { type: "SET_VIEW_MODE"; payload: ViewMode }
-  | { type: "OPEN_TASK_DETAIL"; payload: { taskId: string } }
+  | { type: 'SET_SORT_OPTION'; payload: SortOption }
+  | { type: 'SET_TASK_FILTER'; payload: TaskFilter }
+  | { type: 'SET_VIEW_MODE'; payload: ViewMode }
+  | { type: 'OPEN_TASK_DETAIL'; payload: { taskId: string } }
   | {
-      type: "OPEN_VIRTUAL_TASK_DETAIL";
+      type: 'OPEN_VIRTUAL_TASK_DETAIL';
       payload: { virtualTask: VirtualRecurringTask };
     }
-  | { type: "CLOSE_TASK_DETAIL" }
+  | { type: 'CLOSE_TASK_DETAIL' }
   | {
-      type: "OPEN_TASK_FORM";
+      type: 'OPEN_TASK_FORM';
       payload?: { defaultDate?: Date; defaultStatus?: string };
     }
-  | { type: "CLOSE_TASK_FORM" }
-  | { type: "OPEN_HELP" }
-  | { type: "CLOSE_HELP" }
-  | { type: "LOAD_SORT_OPTION"; payload: SortOption };
+  | { type: 'CLOSE_TASK_FORM' }
+  | { type: 'OPEN_HELP' }
+  | { type: 'CLOSE_HELP' }
+  | { type: 'LOAD_SORT_OPTION'; payload: SortOption };
 
 interface UIContextType {
   state: UIState;
@@ -66,88 +66,88 @@ const UIContext = createContext<UIContextType | undefined>(undefined);
 // LocalStorage操作のヘルパー関数
 const saveSortOption = (sortOption: SortOption) => {
   try {
-    localStorage.setItem("sort-option", JSON.stringify(sortOption));
+    localStorage.setItem('sort-option', JSON.stringify(sortOption));
   } catch (_error) {
-    logger.warn("Failed to save sort option to localStorage:", _error);
+    logger.warn('Failed to save sort option to localStorage:', _error);
   }
 };
 
 const loadSortOption = (): SortOption => {
   try {
-    const saved = localStorage.getItem("sort-option");
-    return saved ? JSON.parse(saved) : "createdAt";
+    const saved = localStorage.getItem('sort-option');
+    return saved ? JSON.parse(saved) : 'createdAt';
   } catch (_error) {
-    logger.warn("Failed to load sort option from localStorage:", _error);
-    return "createdAt";
+    logger.warn('Failed to load sort option from localStorage:', _error);
+    return 'createdAt';
   }
 };
 
 const saveTaskFilter = (filter: TaskFilter) => {
   try {
-    localStorage.setItem("task-filter", JSON.stringify(filter));
+    localStorage.setItem('task-filter', JSON.stringify(filter));
   } catch (_error) {
-    logger.warn("Failed to save task filter to localStorage:", _error);
+    logger.warn('Failed to save task filter to localStorage:', _error);
   }
 };
 
 const loadTaskFilter = (): TaskFilter => {
   try {
-    const saved = localStorage.getItem("task-filter");
-    return saved ? JSON.parse(saved) : { type: "all", label: "すべて" };
+    const saved = localStorage.getItem('task-filter');
+    return saved ? JSON.parse(saved) : { type: 'all', label: 'すべて' };
   } catch (_error) {
-    logger.warn("Failed to load task filter from localStorage:", _error);
-    return { type: "all", label: "すべて" };
+    logger.warn('Failed to load task filter from localStorage:', _error);
+    return { type: 'all', label: 'すべて' };
   }
 };
 
 const saveViewMode = (mode: ViewMode) => {
   try {
-    localStorage.setItem("view-mode", mode);
+    localStorage.setItem('view-mode', mode);
   } catch (_error) {
-    logger.warn("Failed to save view mode to localStorage:", _error);
+    logger.warn('Failed to save view mode to localStorage:', _error);
   }
 };
 
 const loadViewMode = (): ViewMode => {
   try {
-    const saved = localStorage.getItem("view-mode") as ViewMode;
-    return saved || "kanban";
+    const saved = localStorage.getItem('view-mode') as ViewMode;
+    return saved || 'kanban';
   } catch (_error) {
-    logger.warn("Failed to load view mode from localStorage:", _error);
-    return "kanban";
+    logger.warn('Failed to load view mode from localStorage:', _error);
+    return 'kanban';
   }
 };
 
 const uiReducer = (state: UIState, action: UIAction): UIState => {
   switch (action.type) {
-    case "LOAD_SORT_OPTION":
+    case 'LOAD_SORT_OPTION':
       return {
         ...state,
         sortOption: action.payload,
       };
 
-    case "SET_SORT_OPTION":
+    case 'SET_SORT_OPTION':
       saveSortOption(action.payload);
       return {
         ...state,
         sortOption: action.payload,
       };
 
-    case "SET_TASK_FILTER":
+    case 'SET_TASK_FILTER':
       saveTaskFilter(action.payload);
       return {
         ...state,
         taskFilter: action.payload,
       };
 
-    case "SET_VIEW_MODE":
+    case 'SET_VIEW_MODE':
       saveViewMode(action.payload);
       return {
         ...state,
         viewMode: action.payload,
       };
 
-    case "OPEN_TASK_DETAIL":
+    case 'OPEN_TASK_DETAIL':
       return {
         ...state,
         selectedTaskId: action.payload.taskId,
@@ -156,7 +156,7 @@ const uiReducer = (state: UIState, action: UIAction): UIState => {
         isHelpOpen: false, // タスク詳細を開くときにヘルプを閉じる
       };
 
-    case "OPEN_VIRTUAL_TASK_DETAIL":
+    case 'OPEN_VIRTUAL_TASK_DETAIL':
       return {
         ...state,
         selectedTaskId: action.payload.virtualTask.originalTaskId,
@@ -165,7 +165,7 @@ const uiReducer = (state: UIState, action: UIAction): UIState => {
         isHelpOpen: false, // タスク詳細を開くときにヘルプを閉じる
       };
 
-    case "CLOSE_TASK_DETAIL":
+    case 'CLOSE_TASK_DETAIL':
       return {
         ...state,
         selectedTaskId: null,
@@ -173,7 +173,7 @@ const uiReducer = (state: UIState, action: UIAction): UIState => {
         isTaskDetailOpen: false,
       };
 
-    case "OPEN_HELP":
+    case 'OPEN_HELP':
       return {
         ...state,
         isHelpOpen: true,
@@ -182,13 +182,13 @@ const uiReducer = (state: UIState, action: UIAction): UIState => {
         virtualTaskInfo: null,
       };
 
-    case "CLOSE_HELP":
+    case 'CLOSE_HELP':
       return {
         ...state,
         isHelpOpen: false,
       };
 
-    case "OPEN_TASK_FORM":
+    case 'OPEN_TASK_FORM':
       return {
         ...state,
         isTaskFormOpen: true,
@@ -196,7 +196,7 @@ const uiReducer = (state: UIState, action: UIAction): UIState => {
         taskFormDefaultStatus: action.payload?.defaultStatus,
       };
 
-    case "CLOSE_TASK_FORM":
+    case 'CLOSE_TASK_FORM':
       return {
         ...state,
         isTaskFormOpen: false,
@@ -215,9 +215,9 @@ interface UIProviderProps {
 
 export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(uiReducer, {
-    sortOption: "createdAt",
-    taskFilter: { type: "all", label: "すべて" },
-    viewMode: "kanban",
+    sortOption: 'createdAt',
+    taskFilter: { type: 'all', label: 'すべて' },
+    viewMode: 'kanban',
     selectedTaskId: null,
     virtualTaskInfo: null,
     isTaskDetailOpen: false,
@@ -233,11 +233,11 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
         const taskFilter = loadTaskFilter();
         const viewMode = loadViewMode();
 
-        dispatch({ type: "LOAD_SORT_OPTION", payload: sortOption });
-        dispatch({ type: "SET_TASK_FILTER", payload: taskFilter });
-        dispatch({ type: "SET_VIEW_MODE", payload: viewMode });
+        dispatch({ type: 'LOAD_SORT_OPTION', payload: sortOption });
+        dispatch({ type: 'SET_TASK_FILTER', payload: taskFilter });
+        dispatch({ type: 'SET_VIEW_MODE', payload: viewMode });
       } catch (_error) {
-        logger._error("Failed to load initial UI data:", _error);
+        logger._error('Failed to load initial UI data:', _error);
       }
     };
 
@@ -246,52 +246,52 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
 
   // メモ化されたアクション関数
   const setSortOption = useCallback((option: SortOption) => {
-    dispatch({ type: "SET_SORT_OPTION", payload: option });
+    dispatch({ type: 'SET_SORT_OPTION', payload: option });
   }, []);
 
   const setTaskFilter = useCallback((filter: TaskFilter) => {
-    dispatch({ type: "SET_TASK_FILTER", payload: filter });
+    dispatch({ type: 'SET_TASK_FILTER', payload: filter });
   }, []);
 
   const setViewMode = useCallback((mode: ViewMode) => {
-    dispatch({ type: "SET_VIEW_MODE", payload: mode });
+    dispatch({ type: 'SET_VIEW_MODE', payload: mode });
   }, []);
 
   const openTaskDetail = useCallback((taskId: string) => {
-    dispatch({ type: "OPEN_TASK_DETAIL", payload: { taskId } });
+    dispatch({ type: 'OPEN_TASK_DETAIL', payload: { taskId } });
   }, []);
 
   const openVirtualTaskDetail = useCallback(
     (virtualTask: VirtualRecurringTask) => {
-      dispatch({ type: "OPEN_VIRTUAL_TASK_DETAIL", payload: { virtualTask } });
+      dispatch({ type: 'OPEN_VIRTUAL_TASK_DETAIL', payload: { virtualTask } });
     },
-    [],
+    []
   );
 
   const closeTaskDetail = useCallback(() => {
-    dispatch({ type: "CLOSE_TASK_DETAIL" });
+    dispatch({ type: 'CLOSE_TASK_DETAIL' });
   }, []);
 
   const openTaskForm = useCallback(
     (defaultDate?: Date, defaultStatus?: string) => {
       dispatch({
-        type: "OPEN_TASK_FORM",
+        type: 'OPEN_TASK_FORM',
         payload: { defaultDate, defaultStatus },
       });
     },
-    [],
+    []
   );
 
   const closeTaskForm = useCallback(() => {
-    dispatch({ type: "CLOSE_TASK_FORM" });
+    dispatch({ type: 'CLOSE_TASK_FORM' });
   }, []);
 
   const openHelp = useCallback(() => {
-    dispatch({ type: "OPEN_HELP" });
+    dispatch({ type: 'OPEN_HELP' });
   }, []);
 
   const closeHelp = useCallback(() => {
-    dispatch({ type: "CLOSE_HELP" });
+    dispatch({ type: 'CLOSE_HELP' });
   }, []);
 
   // メモ化されたコンテキスト値
@@ -324,7 +324,7 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
       closeTaskForm,
       openHelp,
       closeHelp,
-    ],
+    ]
   );
 
   return (
@@ -335,7 +335,7 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
 export const useUI = (): UIContextType => {
   const context = useContext(UIContext);
   if (context === undefined) {
-    throw new Error("useUI must be used within a UIProvider");
+    throw new Error('useUI must be used within a UIProvider');
   }
   return context;
 };

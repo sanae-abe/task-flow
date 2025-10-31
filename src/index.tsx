@@ -15,9 +15,9 @@ const root = ReactDOM.createRoot(
 
 root.render(
   // <React.StrictMode> - 一時的に無効化（React Hooks初期化問題のデバッグ用）
-    <HashRouter>
-      <App />
-    </HashRouter>
+  <HashRouter>
+    <App />
+  </HashRouter>
   // </React.StrictMode>
 );
 

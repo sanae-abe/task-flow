@@ -3,23 +3,23 @@
  * TypeScript 5.7.3の型安全性を活用したローカルストレージラッパー
  */
 
-import type { KanbanBoard, Label } from "../types";
+import type { KanbanBoard, Label } from '../types';
 import {
   isValidKanbanBoard,
   isValidLabel,
   parseTypedJSON,
   Result,
   StorageError,
-} from "./type-guards";
+} from './type-guards';
 
 // ストレージキーの型安全な定義
 const STORAGE_KEYS = {
-  BOARDS: "taskflow-boards",
-  CURRENT_BOARD_ID: "taskflow-current-board-id",
-  LABELS: "taskflow-labels",
-  USER_PREFERENCES: "taskflow-user-preferences",
-  TABLE_COLUMNS: "taskflow-table-columns",
-  VIEW_MODE: "taskflow-view-mode",
+  BOARDS: 'taskflow-boards',
+  CURRENT_BOARD_ID: 'taskflow-current-board-id',
+  LABELS: 'taskflow-labels',
+  USER_PREFERENCES: 'taskflow-user-preferences',
+  TABLE_COLUMNS: 'taskflow-table-columns',
+  VIEW_MODE: 'taskflow-view-mode',
 } as const;
 
 // StorageKey type (unused but kept for future use)
@@ -39,15 +39,15 @@ interface StorageSchema {
   [STORAGE_KEYS.CURRENT_BOARD_ID]: string;
   [STORAGE_KEYS.LABELS]: Label[];
   [STORAGE_KEYS.USER_PREFERENCES]: {
-    theme: "light" | "dark" | "auto";
-    language: "ja" | "en";
+    theme: 'light' | 'dark' | 'auto';
+    language: 'ja' | 'en';
     autoSave: boolean;
   };
   [STORAGE_KEYS.TABLE_COLUMNS]: {
     visibleColumns: string[];
     columnWidths: Record<string, string>;
   };
-  [STORAGE_KEYS.VIEW_MODE]: "kanban" | "table" | "calendar";
+  [STORAGE_KEYS.VIEW_MODE]: 'kanban' | 'table' | 'calendar';
 }
 
 // バリデーターマップ
@@ -57,44 +57,44 @@ const VALIDATORS: {
   [STORAGE_KEYS.BOARDS]: (value): value is KanbanBoard[] =>
     Array.isArray(value) && value.every(isValidKanbanBoard),
   [STORAGE_KEYS.CURRENT_BOARD_ID]: (value): value is string =>
-    typeof value === "string",
+    typeof value === 'string',
   [STORAGE_KEYS.LABELS]: (value): value is Label[] =>
     Array.isArray(value) && value.every(isValidLabel),
   [STORAGE_KEYS.USER_PREFERENCES]: (
-    value,
+    value
   ): value is StorageSchema[typeof STORAGE_KEYS.USER_PREFERENCES] => {
-    if (typeof value !== "object" || value === null) {
+    if (typeof value !== 'object' || value === null) {
       return false;
     }
     const obj = value as Record<string, unknown>;
     return (
-      (obj["theme"] === "light" ||
-        obj["theme"] === "dark" ||
-        obj["theme"] === "auto") &&
-      (obj["language"] === "ja" || obj["language"] === "en") &&
-      typeof obj["autoSave"] === "boolean"
+      (obj['theme'] === 'light' ||
+        obj['theme'] === 'dark' ||
+        obj['theme'] === 'auto') &&
+      (obj['language'] === 'ja' || obj['language'] === 'en') &&
+      typeof obj['autoSave'] === 'boolean'
     );
   },
   [STORAGE_KEYS.TABLE_COLUMNS]: (
-    value,
+    value
   ): value is StorageSchema[typeof STORAGE_KEYS.TABLE_COLUMNS] => {
-    if (typeof value !== "object" || value === null) {
+    if (typeof value !== 'object' || value === null) {
       return false;
     }
     const obj = value as Record<string, unknown>;
     return (
-      Array.isArray(obj["visibleColumns"]) &&
-      (obj["visibleColumns"] as unknown[]).every(
-        (item) => typeof item === "string",
+      Array.isArray(obj['visibleColumns']) &&
+      (obj['visibleColumns'] as unknown[]).every(
+        item => typeof item === 'string'
       ) &&
-      typeof obj["columnWidths"] === "object" &&
-      obj["columnWidths"] !== null
+      typeof obj['columnWidths'] === 'object' &&
+      obj['columnWidths'] !== null
     );
   },
   [STORAGE_KEYS.VIEW_MODE]: (
-    value,
+    value
   ): value is StorageSchema[typeof STORAGE_KEYS.VIEW_MODE] =>
-    value === "kanban" || value === "table" || value === "calendar",
+    value === 'kanban' || value === 'table' || value === 'calendar',
 };
 
 // チェックサム生成
@@ -110,43 +110,43 @@ const generateChecksum = (data: string): string => {
 
 // メインストレージクラス
 class TypedLocalStorage {
-  private readonly version = "1.0.0";
+  private readonly version = '1.0.0';
 
   // 型安全なアイテム取得
   getItem<K extends keyof StorageSchema>(
     key: K,
-    validator?: (value: unknown) => value is StorageSchema[K],
+    validator?: (value: unknown) => value is StorageSchema[K]
   ): Result<StorageSchema[K], StorageError> {
     try {
       const rawValue = localStorage.getItem(
-        STORAGE_KEYS[key as keyof typeof STORAGE_KEYS],
+        STORAGE_KEYS[key as keyof typeof STORAGE_KEYS]
       );
       if (rawValue === null) {
         return {
           success: false,
-          _error: new StorageError("Item not found", String(key), "get"),
+          _error: new StorageError('Item not found', String(key), 'get'),
         };
       }
 
       const parsedItem = parseTypedJSON(
         rawValue,
         (value): value is TypedStorageItem<StorageSchema[K]> => {
-          if (typeof value !== "object" || value === null) {
+          if (typeof value !== 'object' || value === null) {
             return false;
           }
           const obj = value as Record<string, unknown>;
           return (
-            "value" in obj &&
-            typeof obj["timestamp"] === "number" &&
-            typeof obj["version"] === "string"
+            'value' in obj &&
+            typeof obj['timestamp'] === 'number' &&
+            typeof obj['version'] === 'string'
           );
-        },
+        }
       );
 
       if (!parsedItem) {
         return {
           success: false,
-          _error: new StorageError("Invalid JSON format", key, "get"),
+          _error: new StorageError('Invalid JSON format', key, 'get'),
         };
       }
 
@@ -156,7 +156,7 @@ class TypedLocalStorage {
         if (generateChecksum(dataString) !== parsedItem.checksum) {
           return {
             success: false,
-            _error: new StorageError("Checksum mismatch", key, "get"),
+            _error: new StorageError('Checksum mismatch', key, 'get'),
           };
         }
       }
@@ -166,7 +166,7 @@ class TypedLocalStorage {
       if (!validatorFn(parsedItem.value)) {
         return {
           success: false,
-          _error: new StorageError("Type validation failed", key, "get"),
+          _error: new StorageError('Type validation failed', key, 'get'),
         };
       }
 
@@ -175,9 +175,9 @@ class TypedLocalStorage {
       return {
         success: false,
         _error: new StorageError(
-          _error instanceof Error ? _error.message : "Unknown _error",
+          _error instanceof Error ? _error.message : 'Unknown _error',
           key,
-          "get",
+          'get'
         ),
       };
     }
@@ -186,14 +186,14 @@ class TypedLocalStorage {
   // 型安全なアイテム保存
   setItem<K extends keyof StorageSchema>(
     key: K,
-    value: StorageSchema[K],
+    value: StorageSchema[K]
   ): Result<void, StorageError> {
     try {
       // 型検証
       if (!VALIDATORS[key](value)) {
         return {
           success: false,
-          _error: new StorageError("Type validation failed", key, "set"),
+          _error: new StorageError('Type validation failed', key, 'set'),
         };
       }
 
@@ -207,16 +207,16 @@ class TypedLocalStorage {
 
       localStorage.setItem(
         STORAGE_KEYS[key as keyof typeof STORAGE_KEYS],
-        JSON.stringify(storageItem),
+        JSON.stringify(storageItem)
       );
       return { success: true, data: undefined };
     } catch (_error) {
       return {
         success: false,
         _error: new StorageError(
-          _error instanceof Error ? _error.message : "Unknown _error",
+          _error instanceof Error ? _error.message : 'Unknown _error',
           key,
-          "set",
+          'set'
         ),
       };
     }
@@ -224,7 +224,7 @@ class TypedLocalStorage {
 
   // アイテム削除
   removeItem<K extends keyof StorageSchema>(
-    key: K,
+    key: K
   ): Result<void, StorageError> {
     try {
       localStorage.removeItem(STORAGE_KEYS[key as keyof typeof STORAGE_KEYS]);
@@ -233,9 +233,9 @@ class TypedLocalStorage {
       return {
         success: false,
         _error: new StorageError(
-          _error instanceof Error ? _error.message : "Unknown _error",
+          _error instanceof Error ? _error.message : 'Unknown _error',
           key,
-          "remove",
+          'remove'
         ),
       };
     }
@@ -252,7 +252,7 @@ class TypedLocalStorage {
   // 全アイテムクリア
   clear(): Result<void, StorageError> {
     try {
-      Object.values(STORAGE_KEYS).forEach((key) => {
+      Object.values(STORAGE_KEYS).forEach(key => {
         localStorage.removeItem(key);
       });
       return { success: true, data: undefined };
@@ -260,9 +260,9 @@ class TypedLocalStorage {
       return {
         success: false,
         _error: new StorageError(
-          _error instanceof Error ? _error.message : "Unknown _error",
-          "all",
-          "remove",
+          _error instanceof Error ? _error.message : 'Unknown _error',
+          'all',
+          'remove'
         ),
       };
     }
@@ -271,7 +271,7 @@ class TypedLocalStorage {
   // ストレージサイズ取得
   getStorageSize(): number {
     let totalSize = 0;
-    Object.values(STORAGE_KEYS).forEach((key) => {
+    Object.values(STORAGE_KEYS).forEach(key => {
       const item = localStorage.getItem(key);
       if (item) {
         totalSize += new Blob([item]).size;

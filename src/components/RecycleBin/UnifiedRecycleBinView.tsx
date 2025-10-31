@@ -1,17 +1,17 @@
-import React, { useMemo, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
+import React, { useMemo, useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Loader2 } from 'lucide-react';
 
-import { useBoard } from "../../contexts/BoardContext";
-import { getAllRecycleBinItems } from "../../utils/recycleBin";
-import { useRecycleBinSettingsReadOnly } from "../../hooks/useRecycleBinSettings";
-import { useRecycleBinOperations } from "../../hooks/useRecycleBinOperations";
-import { useRecycleBinSort } from "../../hooks/useRecycleBinSort";
-import ConfirmDialog from "../ConfirmDialog";
-import { RecycleBinDataTable } from "./components/RecycleBinDataTable";
-import { RecycleBinItemDetailDialog } from "./components/RecycleBinItemDetailDialog";
-import type { DialogFlashMessageData } from "../shared/DialogFlashMessage";
-import type { RecycleBinItemWithMeta } from "../../types/recycleBin";
+import { useBoard } from '../../contexts/BoardContext';
+import { getAllRecycleBinItems } from '../../utils/recycleBin';
+import { useRecycleBinSettingsReadOnly } from '../../hooks/useRecycleBinSettings';
+import { useRecycleBinOperations } from '../../hooks/useRecycleBinOperations';
+import { useRecycleBinSort } from '../../hooks/useRecycleBinSort';
+import ConfirmDialog from '../ConfirmDialog';
+import { RecycleBinDataTable } from './components/RecycleBinDataTable';
+import { RecycleBinItemDetailDialog } from './components/RecycleBinItemDetailDialog';
+import type { DialogFlashMessageData } from '../shared/DialogFlashMessage';
+import type { RecycleBinItemWithMeta } from '../../types/recycleBin';
 
 interface UnifiedRecycleBinViewProps {
   onMessage?: (message: DialogFlashMessageData) => void;
@@ -25,11 +25,13 @@ const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
     restoreBoard,
     permanentlyDeleteBoard,
     restoreColumn,
-    permanentlyDeleteColumn
+    permanentlyDeleteColumn,
   } = useBoard();
   const [restoringItemId, setRestoringItemId] = useState<string | null>(null);
   const [deletingItemId, setDeletingItemId] = useState<string | null>(null);
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(
+    null
+  );
   const [showEmptyConfirm, setShowEmptyConfirm] = useState(false);
   const [emptyingRecycleBin, setEmptyingRecycleBin] = useState(false);
   const [showDetailDialog, setShowDetailDialog] = useState<string | null>(null);
@@ -75,9 +77,14 @@ const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
         restoreColumn(item.id);
       }
     } catch {
-      const itemTypeText = item.type === 'task' ? 'タスク' : item.type === 'board' ? 'ボード' : 'カラム';
+      const itemTypeText =
+        item.type === 'task'
+          ? 'タスク'
+          : item.type === 'board'
+            ? 'ボード'
+            : 'カラム';
       onMessage?.({
-        type: "danger",
+        type: 'danger',
         text: `${itemTypeText}の復元に失敗しました`,
       });
     } finally {
@@ -96,9 +103,14 @@ const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
         permanentlyDeleteColumn(item.id);
       }
     } catch {
-      const itemTypeText = item.type === 'task' ? 'タスク' : item.type === 'board' ? 'ボード' : 'カラム';
+      const itemTypeText =
+        item.type === 'task'
+          ? 'タスク'
+          : item.type === 'board'
+            ? 'ボード'
+            : 'カラム';
       onMessage?.({
-        type: "danger",
+        type: 'danger',
         text: `${itemTypeText}の完全削除に失敗しました`,
       });
     } finally {
@@ -112,15 +124,17 @@ const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
     try {
       // タスクとボードの両方を空にする
       await emptyRecycleBin();
-      const boardCount = state.boards.filter(b => b.deletionState === "deleted").length;
+      const boardCount = state.boards.filter(
+        b => b.deletionState === 'deleted'
+      ).length;
       if (boardCount > 0) {
         // ボードの空にする機能を実装する必要がある場合
         // emptyBoardRecycleBin();
       }
     } catch {
       onMessage?.({
-        type: "danger",
-        text: "ゴミ箱を空にすることに失敗しました",
+        type: 'danger',
+        text: 'ゴミ箱を空にすることに失敗しました',
       });
     } finally {
       setEmptyingRecycleBin(false);
@@ -132,12 +146,13 @@ const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
     const isLoading =
       restoringItemId === item.id ||
       deletingItemId === item.id ||
-      (item.type === 'task' && (restoringTaskId === item.id || deletingTaskId === item.id));
+      (item.type === 'task' &&
+        (restoringTaskId === item.id || deletingTaskId === item.id));
 
     const loadingText =
       restoringItemId === item.id || restoringTaskId === item.id
-        ? "復元中..."
-        : "削除中...";
+        ? '復元中...'
+        : '削除中...';
 
     return { isLoading, loadingText };
   };
@@ -147,31 +162,33 @@ const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
     : null;
 
   const detailItem = showDetailDialog
-    ? allRecycleBinItems.find(item => item.id === showDetailDialog) ?? null
+    ? (allRecycleBinItems.find(item => item.id === showDetailDialog) ?? null)
     : null;
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className='flex flex-col gap-3'>
       {/* ヘッダー */}
-      <div className="flex items-center justify-between gap-2">
-        <div className="flex items-center gap-2">
-          <h2 className="text-lg font-bold text-foreground">
+      <div className='flex items-center justify-between gap-2'>
+        <div className='flex items-center gap-2'>
+          <h2 className='text-lg font-bold text-foreground'>
             ゴミ箱 ({allRecycleBinItems.length}件)
           </h2>
         </div>
         <Button
-          variant="outline"
-          size="sm"
+          variant='outline'
+          size='sm'
           onClick={() => setShowEmptyConfirm(true)}
-          disabled={emptyingRecycleBin || isEmptying || allRecycleBinItems.length === 0}
+          disabled={
+            emptyingRecycleBin || isEmptying || allRecycleBinItems.length === 0
+          }
         >
           {emptyingRecycleBin || isEmptying ? (
             <>
-              <Loader2 size={16} className="animate-spin mr-2" />
+              <Loader2 size={16} className='animate-spin mr-2' />
               削除中...
             </>
           ) : (
-            "ゴミ箱を空にする"
+            'ゴミ箱を空にする'
           )}
         </Button>
       </div>
@@ -182,8 +199,8 @@ const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
         recycleBinSettings={recycleBinSettings}
         getItemLoadingState={getItemLoadingState}
         onRestore={handleRestore}
-        onDelete={(item) => setShowDeleteConfirm(item.id)}
-        onShowDetail={(item) => setShowDetailDialog(item.id)}
+        onDelete={item => setShowDeleteConfirm(item.id)}
+        onShowDetail={item => setShowDetailDialog(item.id)}
         sortField={sortField}
         sortDirection={sortDirection}
         onSort={handleSort}
@@ -192,12 +209,12 @@ const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
       {/* ゴミ箱を空にする確認ダイアログ */}
       <ConfirmDialog
         isOpen={showEmptyConfirm}
-        title="ゴミ箱を空にする"
+        title='ゴミ箱を空にする'
         message={`ゴミ箱内の${allRecycleBinItems.length}件のアイテムをすべて完全削除します。この操作は取り消すことができません。本当に実行しますか？`}
         onConfirm={handleEmptyRecycleBin}
         onCancel={() => setShowEmptyConfirm(false)}
-        confirmText="完全削除"
-        cancelText="キャンセル"
+        confirmText='完全削除'
+        cancelText='キャンセル'
       />
 
       {/* 個別完全削除の確認ダイアログ */}
@@ -208,8 +225,8 @@ const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
           message={`${selectedItem.type === 'board' ? 'ボード' : selectedItem.type === 'column' ? 'カラム' : 'タスク'}「${selectedItem.title}」を完全に削除しますか？この操作は元に戻せません。`}
           onConfirm={() => handlePermanentDelete(selectedItem)}
           onCancel={() => setShowDeleteConfirm(null)}
-          confirmText="完全に削除"
-          cancelText="キャンセル"
+          confirmText='完全に削除'
+          cancelText='キャンセル'
         />
       )}
 
@@ -219,7 +236,7 @@ const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
         isOpen={!!showDetailDialog}
         onClose={() => setShowDetailDialog(null)}
         onRestore={handleRestore}
-        onDelete={(item) => setShowDeleteConfirm(item.id)}
+        onDelete={item => setShowDeleteConfirm(item.id)}
       />
     </div>
   );

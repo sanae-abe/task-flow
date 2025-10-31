@@ -1,28 +1,28 @@
-import type { Task, SortOption } from "../types";
-import { getPriorityWeight } from "./priorityConfig";
+import type { Task, SortOption } from '../types';
+import { getPriorityWeight } from './priorityConfig';
 
 export const sortTasks = (tasks: Task[], sortOption: SortOption): Task[] => {
   // manualの場合は元の順序を保持
-  if (sortOption === "manual") {
+  if (sortOption === 'manual') {
     return [...tasks];
   }
 
   return [...tasks].sort((a, b) => {
     switch (sortOption) {
-      case "title":
-        return a.title.localeCompare(b.title, "ja");
+      case 'title':
+        return a.title.localeCompare(b.title, 'ja');
 
-      case "createdAt":
+      case 'createdAt':
         return (
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         );
 
-      case "updatedAt":
+      case 'updatedAt':
         return (
           new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
         );
 
-      case "dueDate": {
+      case 'dueDate': {
         // 期限がないタスクは後ろに配置
         if (!a.dueDate && !b.dueDate) {
           return 0;
@@ -38,7 +38,7 @@ export const sortTasks = (tasks: Task[], sortOption: SortOption): Task[] => {
         return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
       }
 
-      case "priority": {
+      case 'priority': {
         // 優先度でソート（緊急→高→中→低→未設定の順）
         const weightA = getPriorityWeight(a.priority);
         const weightB = getPriorityWeight(b.priority);

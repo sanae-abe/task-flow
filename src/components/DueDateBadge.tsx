@@ -1,8 +1,8 @@
-import { RotateCcw } from "lucide-react";
-import React from "react";
+import { RotateCcw } from 'lucide-react';
+import React from 'react';
 
-import type { DueDateBadgeProps } from "../types/date";
-import StatusBadge from "./shared/StatusBadge";
+import type { DueDateBadgeProps } from '../types/date';
+import StatusBadge from './shared/StatusBadge';
 
 const DueDateBadge: React.FC<DueDateBadgeProps> = ({
   dueDate,
@@ -14,22 +14,22 @@ const DueDateBadge: React.FC<DueDateBadgeProps> = ({
 }) => {
   const getVariant = () => {
     if (isOverdue()) {
-      return "danger";
+      return 'danger';
     }
     if (isDueToday()) {
-      return "warning";
+      return 'warning';
     }
     if (isDueTomorrow()) {
-      return "info";
+      return 'info';
     }
-    return "neutral";
+    return 'neutral';
   };
 
   return (
     <StatusBadge
       variant={getVariant()}
-      size="small"
-      className="border-0 bg-transparent"
+      size='small'
+      className='border-0 bg-transparent'
     >
       期限: {formatDueDate(dueDate)} {isRecurrence && <RotateCcw size={12} />}
     </StatusBadge>

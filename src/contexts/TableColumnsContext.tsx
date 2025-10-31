@@ -4,14 +4,14 @@ import React, {
   useState,
   useCallback,
   useMemo,
-} from "react";
+} from 'react';
 import {
   DEFAULT_COLUMNS,
   type TableColumn,
   type TableColumnSettings,
-} from "../types/table";
+} from '../types/table';
 
-const STORAGE_KEY = "taskflow-table-columns";
+const STORAGE_KEY = 'taskflow-table-columns';
 
 interface TableColumnsContextType {
   columns: TableColumn[];
@@ -27,7 +27,7 @@ interface TableColumnsContextType {
 }
 
 const TableColumnsContext = createContext<TableColumnsContextType | undefined>(
-  undefined,
+  undefined
 );
 
 export const TableColumnsProvider: React.FC<{ children: React.ReactNode }> = ({
@@ -46,15 +46,15 @@ export const TableColumnsProvider: React.FC<{ children: React.ReactNode }> = ({
         const mergedColumns = mergeWithDefaults(parsed.columns);
 
         // 新しく追加されたカラムをcolumnOrderに追加
-        const existingOrder = parsed.columnOrder.filter((id) =>
-          mergedColumns.some((col) => col.id === id),
+        const existingOrder = parsed.columnOrder.filter(id =>
+          mergedColumns.some(col => col.id === id)
         );
         const newColumns = mergedColumns.filter(
-          (col) => !existingOrder.includes(col.id),
+          col => !existingOrder.includes(col.id)
         );
         const updatedOrder = [
           ...existingOrder,
-          ...newColumns.map((col) => col.id),
+          ...newColumns.map(col => col.id),
         ];
 
         const result = {
@@ -79,16 +79,16 @@ export const TableColumnsProvider: React.FC<{ children: React.ReactNode }> = ({
 
     const defaultSettings = {
       columns: [...DEFAULT_COLUMNS],
-      columnOrder: DEFAULT_COLUMNS.map((col) => col.id),
+      columnOrder: DEFAULT_COLUMNS.map(col => col.id),
     };
     return defaultSettings;
   });
 
   // カラムの表示/非表示を切り替え
   const toggleColumnVisibility = useCallback((columnId: string) => {
-    setSettings((currentSettings) => {
-      const newColumns = currentSettings.columns.map((col) =>
-        col.id === columnId ? { ...col, visible: !col.visible } : { ...col },
+    setSettings(currentSettings => {
+      const newColumns = currentSettings.columns.map(col =>
+        col.id === columnId ? { ...col, visible: !col.visible } : { ...col }
       );
 
       const newSettings = {
@@ -107,14 +107,14 @@ export const TableColumnsProvider: React.FC<{ children: React.ReactNode }> = ({
     });
 
     // 強制再レンダリングを発生させる
-    setForceRender((prev) => prev + 1);
+    setForceRender(prev => prev + 1);
   }, []);
 
   // カラムの幅を変更
   const updateColumnWidth = useCallback((columnId: string, width: string) => {
-    setSettings((currentSettings) => {
-      const newColumns = currentSettings.columns.map((col) =>
-        col.id === columnId ? { ...col, width } : col,
+    setSettings(currentSettings => {
+      const newColumns = currentSettings.columns.map(col =>
+        col.id === columnId ? { ...col, width } : col
       );
       const newSettings = {
         ...currentSettings,
@@ -134,7 +134,7 @@ export const TableColumnsProvider: React.FC<{ children: React.ReactNode }> = ({
 
   // カラムの順序を変更
   const reorderColumns = useCallback((newOrder: string[]) => {
-    setSettings((currentSettings) => {
+    setSettings(currentSettings => {
       const newSettings = {
         ...currentSettings,
         columnOrder: newOrder,
@@ -154,16 +154,16 @@ export const TableColumnsProvider: React.FC<{ children: React.ReactNode }> = ({
   // カラムを削除（カスタムカラムのみ）
   const removeColumn = useCallback((columnId: string) => {
     // デフォルトカラムは削除できない
-    if (DEFAULT_COLUMNS.some((col) => col.id === columnId)) {
+    if (DEFAULT_COLUMNS.some(col => col.id === columnId)) {
       return;
     }
 
-    setSettings((currentSettings) => {
+    setSettings(currentSettings => {
       const newColumns = currentSettings.columns.filter(
-        (col) => col.id !== columnId,
+        col => col.id !== columnId
       );
       const newOrder = currentSettings.columnOrder.filter(
-        (id) => id !== columnId,
+        id => id !== columnId
       );
 
       const newSettings = {
@@ -189,7 +189,7 @@ export const TableColumnsProvider: React.FC<{ children: React.ReactNode }> = ({
 
     const defaultSettings = {
       columns: [...DEFAULT_COLUMNS],
-      columnOrder: DEFAULT_COLUMNS.map((col) => col.id),
+      columnOrder: DEFAULT_COLUMNS.map(col => col.id),
     };
     setSettings(defaultSettings);
   }, []);
@@ -197,7 +197,7 @@ export const TableColumnsProvider: React.FC<{ children: React.ReactNode }> = ({
   // 表示されているカラムを順序通りに取得
   const visibleColumns = useMemo(() => {
     const result = settings.columnOrder
-      .map((id) => settings.columns.find((col) => col.id === id))
+      .map(id => settings.columns.find(col => col.id === id))
       .filter((col): col is TableColumn => col !== undefined && col.visible);
 
     return result;
@@ -205,8 +205,8 @@ export const TableColumnsProvider: React.FC<{ children: React.ReactNode }> = ({
 
   // グリッドテンプレートカラムのCSS値を生成
   const gridTemplateColumns = useMemo(
-    () => visibleColumns.map((col: TableColumn) => col.width).join(" "),
-    [visibleColumns],
+    () => visibleColumns.map((col: TableColumn) => col.width).join(' '),
+    [visibleColumns]
   );
 
   const contextValue = useMemo(
@@ -233,7 +233,7 @@ export const TableColumnsProvider: React.FC<{ children: React.ReactNode }> = ({
       removeColumn,
       resetToDefaults,
       forceRender,
-    ],
+    ]
   );
 
   return (
@@ -247,7 +247,7 @@ export const useTableColumns = () => {
   const context = useContext(TableColumnsContext);
   if (context === undefined) {
     throw new Error(
-      "useTableColumns must be used within a TableColumnsProvider",
+      'useTableColumns must be used within a TableColumnsProvider'
     );
   }
   return context;
@@ -258,8 +258,8 @@ function mergeWithDefaults(savedColumns: TableColumn[]): TableColumn[] {
   const merged = [...DEFAULT_COLUMNS];
 
   // 保存されたカスタムカラムを追加
-  savedColumns.forEach((savedCol) => {
-    const defaultIndex = merged.findIndex((col) => col.id === savedCol.id);
+  savedColumns.forEach(savedCol => {
+    const defaultIndex = merged.findIndex(col => col.id === savedCol.id);
     if (defaultIndex >= 0) {
       // デフォルトカラムの設定を更新（type, accessor, renderは保持）
       const existingCol = merged[defaultIndex];

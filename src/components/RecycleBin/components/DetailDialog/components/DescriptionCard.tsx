@@ -21,16 +21,14 @@ export const DescriptionCard: React.FC<DescriptionCardProps> = ({ item }) => {
   }
 
   return (
-    <section className="p-4 max-[543px]:p-2 bg-background border border-border rounded-md">
+    <section className='p-4 max-[543px]:p-2 bg-background border border-border rounded-md'>
       {/* セクションヘッダー */}
-      <span className="block text-sm font-bold text-foreground m-0 mb-2">
+      <span className='block text-sm font-bold text-foreground m-0 mb-2'>
         説明
       </span>
 
       {/* 説明文本文 */}
-      <LinkifiedText
-        className="text-sm whitespace-pre-wrap break-words leading-normal text-foreground m-0 max-h-[200px] sm:max-h-[200px] overflow-auto max-[543px]:max-h-[150px]"
-      >
+      <LinkifiedText className='text-sm whitespace-pre-wrap break-words leading-normal text-foreground m-0 max-h-[200px] sm:max-h-[200px] overflow-auto max-[543px]:max-h-[150px]'>
         {item.description}
       </LinkifiedText>
     </section>

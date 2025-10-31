@@ -26,10 +26,10 @@ const AppContent: React.FC = () => {
   const { state } = useKanban();
   const { openHelp, closeHelp, closeTaskDetail, state: uiState } = useUI();
   const { findTaskById } = useTaskFinder(state.currentBoard);
-  const { shouldShowHint, markAsExistingUser, markHintAsShown } = useFirstTimeUser();
+  const { shouldShowHint, markAsExistingUser, markHintAsShown } =
+    useFirstTimeUser();
   const { handlers } = useSubHeader();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-
 
   // データ同期の初期化
   useDataSync();
@@ -38,15 +38,21 @@ const AppContent: React.FC = () => {
   useViewRoute();
 
   // 選択されたタスクを取得
-  const selectedTask = uiState.selectedTaskId ? findTaskById(uiState.selectedTaskId) : null;
+  const selectedTask = uiState.selectedTaskId
+    ? findTaskById(uiState.selectedTaskId)
+    : null;
 
   // 選択されたタスクが削除された場合の処理
   useEffect(() => {
     if (uiState.selectedTaskId && !selectedTask && uiState.isTaskDetailOpen) {
       closeTaskDetail();
     }
-  }, [uiState.selectedTaskId, selectedTask, uiState.isTaskDetailOpen, closeTaskDetail]);
-
+  }, [
+    uiState.selectedTaskId,
+    selectedTask,
+    uiState.isTaskDetailOpen,
+    closeTaskDetail,
+  ]);
 
   // ヒント表示時の処理
   const handleDismissHint = () => {
@@ -65,49 +71,51 @@ const AppContent: React.FC = () => {
     openHelp();
   };
 
-
-
   return (
-    <div className="app" role="application" aria-label="TaskFlowアプリケーション">
-      <div className="fixed inset-0 z-1 h-[97px]">
+    <div
+      className='app'
+      role='application'
+      aria-label='TaskFlowアプリケーション'
+    >
+      <div className='fixed inset-0 z-1 h-[97px]'>
         <Header onHelpClick={handleOpenHelp} onSettingsClick={openSettings} />
         <SubHeader />
       </div>
       <main
         aria-label={
-          uiState.viewMode === 'kanban' ? 'カンバンボード' :
-          uiState.viewMode === 'calendar' ? 'カレンダービュー' :
-          'テーブルビュー'
+          uiState.viewMode === 'kanban'
+            ? 'カンバンボード'
+            : uiState.viewMode === 'calendar'
+              ? 'カレンダービュー'
+              : 'テーブルビュー'
         }
-        className="transition-opacity duration-150 will-change-opacity"
+        className='transition-opacity duration-150 will-change-opacity'
       >
         <Routes>
-          <Route path="/" element={<Navigate to="/kanban" replace />} />
-          <Route path="/kanban" element={<KanbanBoard />} />
-          <Route path="/calendar" element={<CalendarView />} />
-          <Route path="/table" element={<TableView />} />
-          <Route path="*" element={<Navigate to="/kanban" replace />} />
+          <Route path='/' element={<Navigate to='/kanban' replace />} />
+          <Route path='/kanban' element={<KanbanBoard />} />
+          <Route path='/calendar' element={<CalendarView />} />
+          <Route path='/table' element={<TableView />} />
+          <Route path='*' element={<Navigate to='/kanban' replace />} />
         </Routes>
       </main>
       {shouldShowHint && (
         <>
           {/* オーバーレイ背景 */}
           <div
-            className="fixed inset-0 bg-black/50 z-600 animate-fadeIn duration-200 ease-out cursor-pointer"
+            className='fixed inset-0 bg-black/50 z-600 animate-fadeIn duration-200 ease-out cursor-pointer'
             onClick={handleDismissHint}
-            role="button"
-            aria-label="ヒントを閉じる"
+            role='button'
+            aria-label='ヒントを閉じる'
           />
 
           {/* ツールチップ */}
-          <div className="fixed top-[100px] right-[80px] z-601 animate-fadeInSlide duration-300 ease-out">
-            <FirstTimeUserHint
-              onDismiss={handleDismissHint}
-            />
+          <div className='fixed top-[100px] right-[80px] z-601 animate-fadeInSlide duration-300 ease-out'>
+            <FirstTimeUserHint onDismiss={handleDismissHint} />
           </div>
         </>
       )}
-      <Toaster position="top-right" richColors closeButton />
+      <Toaster position='top-right' richColors closeButton />
       <HelpSidebar isOpen={uiState.isHelpOpen} onClose={closeHelp} />
       <TaskDetailSidebar
         task={selectedTask}

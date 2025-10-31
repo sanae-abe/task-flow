@@ -1,12 +1,12 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo } from 'react';
 
-import type { DialogAction } from "../types/unified-dialog";
-import type { RecurrenceDetailDialogProps } from "./RecurrenceDetailDialog/types";
-import UnifiedDialog from "./shared/Dialog/UnifiedDialog";
+import type { DialogAction } from '../types/unified-dialog';
+import type { RecurrenceDetailDialogProps } from './RecurrenceDetailDialog/types';
+import UnifiedDialog from './shared/Dialog/UnifiedDialog';
 import {
   useRecurrenceForm,
   useRecurrenceHandlers,
-} from "./RecurrenceDetailDialog/hooks";
+} from './RecurrenceDetailDialog/hooks';
 import {
   RecurrencePatternSelector,
   WeeklyOptionsSelector,
@@ -14,7 +14,7 @@ import {
   RecurrenceEndConditions,
   RecurrencePreview,
   RecurrenceErrorDisplay,
-} from "./RecurrenceDetailDialog/components";
+} from './RecurrenceDetailDialog/components';
 
 const RecurrenceDetailDialog: React.FC<RecurrenceDetailDialogProps> = ({
   isOpen,
@@ -55,14 +55,14 @@ const RecurrenceDetailDialog: React.FC<RecurrenceDetailDialogProps> = ({
   const actions: DialogAction[] = useMemo(() => {
     const actionList: DialogAction[] = [
       {
-        label: "キャンセル",
+        label: 'キャンセル',
         onClick: handleCancel,
-        variant: "outline",
+        variant: 'outline',
       },
       {
-        label: "保存",
+        label: '保存',
         onClick: handleSave,
-        variant: "default",
+        variant: 'default',
         disabled: !isFormValid,
       },
     ];
@@ -70,9 +70,9 @@ const RecurrenceDetailDialog: React.FC<RecurrenceDetailDialogProps> = ({
     // 既存の繰り返し設定がある場合は削除ボタンを追加
     if (recurrence?.enabled) {
       actionList.splice(1, 0, {
-        label: "削除",
+        label: '削除',
         onClick: handleDelete,
-        variant: "destructive",
+        variant: 'destructive',
       });
     }
 
@@ -87,14 +87,14 @@ const RecurrenceDetailDialog: React.FC<RecurrenceDetailDialogProps> = ({
 
   return (
     <UnifiedDialog
-      variant="modal"
+      variant='modal'
       isOpen={isOpen}
-      title="繰り返し設定の詳細"
+      title='繰り返し設定の詳細'
       onClose={onClose}
       actions={actions}
     >
-      <div className="flex flex-col gap-3">
-        <div className="flex flex-col gap-2">
+      <div className='flex flex-col gap-3'>
+        <div className='flex flex-col gap-2'>
           <RecurrencePatternSelector
             config={config}
             onPatternChange={handlePatternChange}
@@ -116,7 +116,6 @@ const RecurrenceDetailDialog: React.FC<RecurrenceDetailDialogProps> = ({
             onEndDateChange={handleEndDateChange}
             onMaxOccurrencesChange={handleMaxOccurrencesChange}
           />
-
         </div>
         <div>
           <RecurrencePreview config={config} />

@@ -3,7 +3,9 @@ import { useState, useCallback } from 'react';
 /**
  * フォーカス管理用カスタムフック
  */
-export const useFocusManagement = (editorRef: React.RefObject<HTMLDivElement>) => {
+export const useFocusManagement = (
+  editorRef: React.RefObject<HTMLDivElement>
+) => {
   const [isEditorFocused, setIsEditorFocused] = useState(false);
   const [isToolbarInteraction, setIsToolbarInteraction] = useState(false);
 
@@ -22,17 +24,20 @@ export const useFocusManagement = (editorRef: React.RefObject<HTMLDivElement>) =
   }, [isToolbarInteraction]);
 
   // ツールバーボタンクリック時のハンドラー
-  const handleToolbarButtonClick = useCallback((action: () => void) => {
-    setIsToolbarInteraction(true);
-    action();
-    // エディタにフォーカスを戻す
-    setTimeout(() => {
-      if (editorRef.current) {
-        editorRef.current.focus();
-      }
-      setIsToolbarInteraction(false);
-    }, 50);
-  }, [editorRef]);
+  const handleToolbarButtonClick = useCallback(
+    (action: () => void) => {
+      setIsToolbarInteraction(true);
+      action();
+      // エディタにフォーカスを戻す
+      setTimeout(() => {
+        if (editorRef.current) {
+          editorRef.current.focus();
+        }
+        setIsToolbarInteraction(false);
+      }, 50);
+    },
+    [editorRef]
+  );
 
   return {
     isEditorFocused,

@@ -1,7 +1,10 @@
 import React from 'react';
 import type { RecycleBinItem } from '../../../../../types/recycleBin';
 import { spacing } from '../styles/designTokens';
-import DialogFlashMessage, { type DialogFlashMessageData, type DialogMessageType } from '../../../../shared/DialogFlashMessage';
+import DialogFlashMessage, {
+  type DialogFlashMessageData,
+  type DialogMessageType,
+} from '../../../../shared/DialogFlashMessage';
 
 interface WarningCardProps {
   item: {
@@ -21,7 +24,10 @@ interface WarningCardProps {
  * - 自動削除設定の情報表示
  * - シンプルで読みやすいデザイン
  */
-export const WarningCard: React.FC<WarningCardProps> = ({ item, retentionDays }) => {
+export const WarningCard: React.FC<WarningCardProps> = ({
+  item,
+  retentionDays,
+}) => {
   // 警告レベルと内容を判定
   const getWarningInfo = () => {
     const warnings: Array<{
@@ -36,7 +42,8 @@ export const WarningCard: React.FC<WarningCardProps> = ({ item, retentionDays })
       warnings.push({
         level: 'danger',
         title: '復元不可',
-        message: 'このアイテムは復元できません。関連するデータが見つからないか、破損している可能性があります。',
+        message:
+          'このアイテムは復元できません。関連するデータが見つからないか、破損している可能性があります。',
       });
     }
 
@@ -48,14 +55,16 @@ export const WarningCard: React.FC<WarningCardProps> = ({ item, retentionDays })
         warnings.push({
           level: 'danger',
           title: '緊急: 自動削除間近',
-          message: 'このアイテムは間もなく自動的に完全削除されます。復元が必要な場合は至急実行してください。',
+          message:
+            'このアイテムは間もなく自動的に完全削除されます。復元が必要な場合は至急実行してください。',
           showTimeUntil: true,
         });
       } else if (urgencyLevel === 'warning') {
         warnings.push({
           level: 'warning',
           title: '注意: 自動削除予定',
-          message: 'このアイテムは自動削除予定です。必要に応じて復元をご検討ください。',
+          message:
+            'このアイテムは自動削除予定です。必要に応じて復元をご検討ください。',
           showTimeUntil: true,
         });
       } else {
@@ -70,7 +79,8 @@ export const WarningCard: React.FC<WarningCardProps> = ({ item, retentionDays })
       warnings.push({
         level: 'info',
         title: '手動削除のみ',
-        message: '自動削除は設定されていません。手動で完全削除するまでゴミ箱に保持されます。',
+        message:
+          '自動削除は設定されていません。手動で完全削除するまでゴミ箱に保持されます。',
       });
     }
 
@@ -81,7 +91,11 @@ export const WarningCard: React.FC<WarningCardProps> = ({ item, retentionDays })
   const getUrgencyLevel = (timeUntil: string) => {
     const timeText = timeUntil.toLowerCase();
 
-    if (timeText.includes('時間') || timeText.includes('分') || timeText === 'たった今') {
+    if (
+      timeText.includes('時間') ||
+      timeText.includes('分') ||
+      timeText === 'たった今'
+    ) {
       return 'critical';
     } else if (timeText.includes('日')) {
       const days = parseInt(timeText.match(/\d+/)?.[0] || '0');
@@ -93,7 +107,9 @@ export const WarningCard: React.FC<WarningCardProps> = ({ item, retentionDays })
   };
 
   // 警告レベルをDialogMessageTypeにマッピング
-  const getDialogMessageType = (level: 'danger' | 'warning' | 'info'): DialogMessageType => {
+  const getDialogMessageType = (
+    level: 'danger' | 'warning' | 'info'
+  ): DialogMessageType => {
     switch (level) {
       case 'danger':
         return 'critical';
@@ -114,10 +130,7 @@ export const WarningCard: React.FC<WarningCardProps> = ({ item, retentionDays })
   }
 
   return (
-    <section
-      style={{ gap: spacing.sm }}
-      className={`flex flex-col`}
-    >
+    <section style={{ gap: spacing.sm }} className={`flex flex-col`}>
       {/* 警告一覧 */}
       {warnings.map((warning, index) => {
         const messageType = getDialogMessageType(warning.level);
@@ -126,13 +139,14 @@ export const WarningCard: React.FC<WarningCardProps> = ({ item, retentionDays })
         const flashMessage: DialogFlashMessageData = {
           type: messageType,
           title: warning.title,
-          text: warning.showTimeUntil && item.timeUntilDeletion
-            ? `${warning.message}（削除予定: ${item.timeUntilDeletion}）`
-            : warning.message
+          text:
+            warning.showTimeUntil && item.timeUntilDeletion
+              ? `${warning.message}（削除予定: ${item.timeUntilDeletion}）`
+              : warning.message,
         };
 
         return (
-          <div key={index} role="alert">
+          <div key={index} role='alert'>
             <DialogFlashMessage
               message={flashMessage}
               showDismiss={false}

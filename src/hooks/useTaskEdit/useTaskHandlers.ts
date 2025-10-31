@@ -69,16 +69,20 @@ export const useTaskHandlers = ({
         : undefined;
 
       // カラムの変更があった場合は移動処理を実行
-      const currentColumn = state.currentBoard?.columns.find((column) =>
-        column.tasks.some((t) => t.id === task.id),
+      const currentColumn = state.currentBoard?.columns.find(column =>
+        column.tasks.some(t => t.id === task.id)
       );
 
       let columnMoved = false;
 
-      if (currentColumn && formState.columnId && currentColumn.id !== formState.columnId) {
+      if (
+        currentColumn &&
+        formState.columnId &&
+        currentColumn.id !== formState.columnId
+      ) {
         // 最後のカラム（完了カラム）への移動かどうかを判定
         const targetColumn = state.currentBoard?.columns.find(
-          (col) => col.id === formState.columnId,
+          col => col.id === formState.columnId
         );
         const isLastColumn =
           state.currentBoard?.columns &&
@@ -104,16 +108,23 @@ export const useTaskHandlers = ({
       const updatedTask: TaskWithColumn = {
         ...task,
         title: formState.title.trim(),
-        description: formState.description.trim() || "",
+        description: formState.description.trim() || '',
         dueDate: dueDateObj?.toISOString() || null,
         completedAt: completedAtObj?.toISOString() || null,
         priority: formState.priority,
         labels: formState.labels,
         files: formState.attachments,
-        recurrence: formState.recurrence?.enabled && dueDateObj ? formState.recurrence : undefined,
+        recurrence:
+          formState.recurrence?.enabled && dueDateObj
+            ? formState.recurrence
+            : undefined,
         columnId: formState.columnId, // ステータス（カラムID）を追加
-        columnTitle: state.currentBoard?.columns.find(col => col.id === formState.columnId)?.title || '',
-        status: state.currentBoard?.columns.find(col => col.id === formState.columnId)?.title || '',
+        columnTitle:
+          state.currentBoard?.columns.find(col => col.id === formState.columnId)
+            ?.title || '',
+        status:
+          state.currentBoard?.columns.find(col => col.id === formState.columnId)
+            ?.title || '',
         updatedAt: new Date().toISOString(),
       };
 
@@ -133,7 +144,7 @@ export const useTaskHandlers = ({
         logger._error('❌ handleSave failed', {
           taskId: task.id,
           taskTitle: task.title,
-          _error
+          _error,
         });
       } finally {
         // 保存完了をマーク（必ず実行）
@@ -174,17 +185,20 @@ export const useTaskHandlers = ({
 
   const handleKeyPress = useCallback(
     (event: React.KeyboardEvent) => {
-      if (event.key === "Escape") {
+      if (event.key === 'Escape') {
         onCancel();
       }
     },
-    [onCancel],
+    [onCancel]
   );
 
   // DatePicker対応のラッパー関数
-  const handleSetDueDate = useCallback((date: string | null) => {
-    formState.setDueDate(date || '');
-  }, [formState]);
+  const handleSetDueDate = useCallback(
+    (date: string | null) => {
+      formState.setDueDate(date || '');
+    },
+    [formState]
+  );
 
   return {
     handleSave,

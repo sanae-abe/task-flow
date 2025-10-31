@@ -1,5 +1,5 @@
-import React from "react";
-import type { TableCellProps } from "../types";
+import React from 'react';
+import type { TableCellProps } from '../types';
 import {
   renderActionsCell,
   renderEditCell,
@@ -17,7 +17,7 @@ import {
   renderDescriptionCell,
   renderRecurrenceCell,
   renderDefaultCell,
-} from "../utils/tableCellRenderers";
+} from '../utils/tableCellRenderers';
 
 /**
  * テーブルセルコンポーネント
@@ -34,49 +34,49 @@ export const TableCell: React.FC<TableCellProps> = ({
   onEditClick,
 }) => {
   switch (columnId) {
-    case "actions":
+    case 'actions':
       return renderActionsCell(task, onDeleteClick);
 
-    case "edit":
+    case 'edit':
       return renderEditCell(task, onEditClick);
 
-    case "title":
+    case 'title':
       return renderTitleCell(task);
 
-    case "status":
+    case 'status':
       return renderStatusCell(task, currentBoard, onStatusChange);
 
-    case "priority":
+    case 'priority':
       return renderPriorityCell(task);
 
-    case "dueDate":
+    case 'dueDate':
       return renderDueDateCell(task);
 
-    case "labels":
+    case 'labels':
       return renderLabelsCell(task);
 
-    case "subTasks":
+    case 'subTasks':
       return renderSubTasksCell(task);
 
-    case "files":
+    case 'files':
       return renderFilesCell(task);
 
-    case "progress":
+    case 'progress':
       return renderProgressCell(task);
 
-    case "createdAt":
+    case 'createdAt':
       return renderCreatedAtCell(task);
 
-    case "updatedAt":
+    case 'updatedAt':
       return renderUpdatedAtCell(task);
 
-    case "completedAt":
+    case 'completedAt':
       return renderCompletedAtCell(task);
 
-    case "description":
+    case 'description':
       return renderDescriptionCell(task);
 
-    case "recurrence":
+    case 'recurrence':
       return renderRecurrenceCell(task);
 
     default:

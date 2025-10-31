@@ -1,4 +1,9 @@
-import type { Label as LabelType, FileAttachment, RecurrenceConfig, Priority } from '../../../types';
+import type {
+  Label as LabelType,
+  FileAttachment,
+  RecurrenceConfig,
+  Priority,
+} from '../../../types';
 import type { TaskTemplate } from '../../../types/template';
 
 /**

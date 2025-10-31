@@ -7,21 +7,21 @@ import React, {
   useCallback,
   useRef,
   type ReactNode,
-} from "react";
-import { v4 as uuidv4 } from "uuid";
+} from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
-import type { KanbanBoard, Column, Label } from "../types";
-import { saveBoards, loadBoards, protectDemoBoard } from "../utils/storage";
-import { loadSettings } from "../utils/settingsStorage";
-import { useSonnerNotify } from "../hooks/useSonnerNotify";
-import { logger } from "../utils/logger";
+import type { KanbanBoard, Column, Label } from '../types';
+import { saveBoards, loadBoards, protectDemoBoard } from '../utils/storage';
+import { loadSettings } from '../utils/settingsStorage';
+import { useSonnerNotify } from '../hooks/useSonnerNotify';
+import { logger } from '../utils/logger';
 import {
   moveBoardToRecycleBin,
   restoreBoardFromRecycleBin,
   moveColumnToRecycleBin,
   restoreColumnFromRecycleBin,
-  permanentlyDeleteColumn
-} from "../utils/recycleBin";
+  permanentlyDeleteColumn,
+} from '../utils/recycleBin';
 
 interface BoardState {
   boards: KanbanBoard[];
@@ -29,34 +29,34 @@ interface BoardState {
 }
 
 type BoardAction =
-  | { type: "LOAD_BOARDS"; payload: KanbanBoard[] }
-  | { type: "CREATE_BOARD"; payload: { title: string } }
-  | { type: "SET_CURRENT_BOARD"; payload: string }
+  | { type: 'LOAD_BOARDS'; payload: KanbanBoard[] }
+  | { type: 'CREATE_BOARD'; payload: { title: string } }
+  | { type: 'SET_CURRENT_BOARD'; payload: string }
   | {
-      type: "UPDATE_BOARD";
+      type: 'UPDATE_BOARD';
       payload: { boardId: string; updates: Partial<KanbanBoard> };
     }
-  | { type: "DELETE_BOARD"; payload: { boardId: string } }
+  | { type: 'DELETE_BOARD'; payload: { boardId: string } }
   | {
-      type: "CREATE_COLUMN";
+      type: 'CREATE_COLUMN';
       payload: { boardId: string; title: string; insertIndex?: number };
     }
-  | { type: "DELETE_COLUMN"; payload: { columnId: string } }
+  | { type: 'DELETE_COLUMN'; payload: { columnId: string } }
   | {
-      type: "UPDATE_COLUMN";
+      type: 'UPDATE_COLUMN';
       payload: { columnId: string; updates: Partial<Column> };
     }
   | {
-      type: "MOVE_COLUMN";
-      payload: { columnId: string; direction: "left" | "right" };
+      type: 'MOVE_COLUMN';
+      payload: { columnId: string; direction: 'left' | 'right' };
     }
   | {
-      type: "IMPORT_BOARDS";
+      type: 'IMPORT_BOARDS';
       payload: { boards: KanbanBoard[]; replaceAll?: boolean };
     }
-  | { type: "REORDER_BOARDS"; payload: { boards: KanbanBoard[] } }
+  | { type: 'REORDER_BOARDS'; payload: { boards: KanbanBoard[] } }
   | {
-      type: "MOVE_TASK_TO_BOARD";
+      type: 'MOVE_TASK_TO_BOARD';
       payload: {
         taskId: string;
         sourceBoardId: string;
@@ -65,15 +65,18 @@ type BoardAction =
         targetColumnId?: string;
       };
     }
-  | { type: "ADD_LABEL"; payload: { label: Label } }
-  | { type: "UPDATE_LABEL"; payload: { labelId: string; updates: Partial<Label> } }
-  | { type: "DELETE_LABEL"; payload: { labelId: string } }
-  | { type: "DELETE_LABEL_FROM_ALL_BOARDS"; payload: { labelId: string } }
-  | { type: "RESTORE_BOARD"; payload: { boardId: string } }
-  | { type: "PERMANENTLY_DELETE_BOARD"; payload: { boardId: string } }
-  | { type: "EMPTY_BOARD_RECYCLE_BIN" }
-  | { type: "RESTORE_COLUMN"; payload: { columnId: string } }
-  | { type: "PERMANENTLY_DELETE_COLUMN"; payload: { columnId: string } };
+  | { type: 'ADD_LABEL'; payload: { label: Label } }
+  | {
+      type: 'UPDATE_LABEL';
+      payload: { labelId: string; updates: Partial<Label> };
+    }
+  | { type: 'DELETE_LABEL'; payload: { labelId: string } }
+  | { type: 'DELETE_LABEL_FROM_ALL_BOARDS'; payload: { labelId: string } }
+  | { type: 'RESTORE_BOARD'; payload: { boardId: string } }
+  | { type: 'PERMANENTLY_DELETE_BOARD'; payload: { boardId: string } }
+  | { type: 'EMPTY_BOARD_RECYCLE_BIN' }
+  | { type: 'RESTORE_COLUMN'; payload: { columnId: string } }
+  | { type: 'PERMANENTLY_DELETE_COLUMN'; payload: { columnId: string } };
 
 interface BoardContextType {
   state: BoardState;
@@ -91,7 +94,7 @@ interface BoardContextType {
   restoreColumn: (columnId: string) => void;
   permanentlyDeleteColumn: (columnId: string) => void;
   updateColumn: (columnId: string, updates: Partial<Column>) => void;
-  moveColumn: (columnId: string, direction: "left" | "right") => void;
+  moveColumn: (columnId: string, direction: 'left' | 'right') => void;
   importBoards: (boards: KanbanBoard[], replaceAll?: boolean) => void;
   reorderBoards: (boards: KanbanBoard[]) => void;
   moveTaskToBoard: (
@@ -99,7 +102,7 @@ interface BoardContextType {
     sourceBoardId: string,
     sourceColumnId: string,
     targetBoardId: string,
-    targetColumnId?: string,
+    targetColumnId?: string
   ) => void;
 }
 
@@ -113,39 +116,42 @@ const updateBoardTimestamp = (board: KanbanBoard): KanbanBoard => ({
 
 // ヘルパー関数: アクティブなボードのみを取得
 const getActiveBoards = (boards: KanbanBoard[]): KanbanBoard[] =>
-  boards.filter(board => board.deletionState !== "deleted");
+  boards.filter(board => board.deletionState !== 'deleted');
 
 // ヘルパー関数: LocalStorageのcurrent-board-idを安全に管理
 const updateCurrentBoardId = (boardId: string | null) => {
   try {
     if (boardId) {
-      localStorage.setItem("current-board-id", boardId);
+      localStorage.setItem('current-board-id', boardId);
     } else {
-      localStorage.removeItem("current-board-id");
+      localStorage.removeItem('current-board-id');
     }
   } catch (_error) {
-    logger.warn("Failed to update current board ID in localStorage:", _error);
+    logger.warn('Failed to update current board ID in localStorage:', _error);
   }
 };
 
 const getCurrentBoardId = (): string | null => {
   try {
-    return localStorage.getItem("current-board-id");
+    return localStorage.getItem('current-board-id');
   } catch (_error) {
-    logger.warn("Failed to get current board ID from localStorage:", _error);
+    logger.warn('Failed to get current board ID from localStorage:', _error);
     return null;
   }
 };
 
 // ボード操作用ヘルパー関数群
 
-const handleLoadBoards = (state: BoardState, payload: KanbanBoard[]): BoardState => {
+const handleLoadBoards = (
+  state: BoardState,
+  payload: KanbanBoard[]
+): BoardState => {
   const protectedBoards = protectDemoBoard(payload);
   const activeBoards = getActiveBoards(protectedBoards);
 
   const savedCurrentBoardId = getCurrentBoardId();
   const currentBoard = savedCurrentBoardId
-    ? activeBoards.find((board) => board.id === savedCurrentBoardId) || null
+    ? activeBoards.find(board => board.id === savedCurrentBoardId) || null
     : activeBoards.length > 0
       ? activeBoards[0]
       : null;
@@ -163,7 +169,7 @@ const handleLoadBoards = (state: BoardState, payload: KanbanBoard[]): BoardState
 
 const handleCreateBoard = (state: BoardState, title: string): BoardState => {
   const settings = loadSettings();
-  const defaultColumns = settings.defaultColumns.map((columnConfig) => ({
+  const defaultColumns = settings.defaultColumns.map(columnConfig => ({
     id: uuidv4(),
     title: columnConfig.name,
     tasks: [],
@@ -176,7 +182,7 @@ const handleCreateBoard = (state: BoardState, title: string): BoardState => {
     updatedAt: new Date().toISOString(),
     columns: defaultColumns,
     labels: [],
-    deletionState: "active",
+    deletionState: 'active',
     deletedAt: null,
   };
 
@@ -189,9 +195,13 @@ const handleCreateBoard = (state: BoardState, title: string): BoardState => {
   };
 };
 
-const handleSetCurrentBoard = (state: BoardState, boardId: string): BoardState => {
+const handleSetCurrentBoard = (
+  state: BoardState,
+  boardId: string
+): BoardState => {
   const activeBoards = getActiveBoards(state.boards);
-  const newCurrentBoard = activeBoards.find((board) => board.id === boardId) || null;
+  const newCurrentBoard =
+    activeBoards.find(board => board.id === boardId) || null;
 
   if (newCurrentBoard) {
     updateCurrentBoardId(newCurrentBoard.id);
@@ -208,7 +218,7 @@ const handleUpdateBoard = (
   boardId: string,
   updates: Partial<KanbanBoard>
 ): BoardState => {
-  const boardToUpdate = state.boards.find((board) => board.id === boardId);
+  const boardToUpdate = state.boards.find(board => board.id === boardId);
   if (!boardToUpdate) {
     return state;
   }
@@ -221,7 +231,7 @@ const handleUpdateBoard = (
 
   return {
     ...state,
-    boards: state.boards.map((board) =>
+    boards: state.boards.map(board =>
       board.id === updatedBoard.id ? updatedBoard : board
     ),
     currentBoard:
@@ -263,14 +273,15 @@ const handleCreateColumn = (
     id: uuidv4(),
     title,
     tasks: [],
-    deletionState: "active",
+    deletionState: 'active',
     deletedAt: null,
   };
 
   const currentColumns = [...state.currentBoard.columns];
-  const safeInsertIndex = insertIndex !== undefined
-    ? Math.max(0, Math.min(insertIndex, currentColumns.length))
-    : currentColumns.length;
+  const safeInsertIndex =
+    insertIndex !== undefined
+      ? Math.max(0, Math.min(insertIndex, currentColumns.length))
+      : currentColumns.length;
 
   currentColumns.splice(safeInsertIndex, 0, newColumn);
 
@@ -281,7 +292,7 @@ const handleCreateColumn = (
 
   return {
     ...state,
-    boards: state.boards.map((board) =>
+    boards: state.boards.map(board =>
       board.id === updatedBoard.id ? updatedBoard : board
     ),
     currentBoard: updatedBoard,
@@ -291,22 +302,23 @@ const handleCreateColumn = (
 const handleMoveColumn = (
   state: BoardState,
   columnId: string,
-  direction: "left" | "right"
+  direction: 'left' | 'right'
 ): BoardState => {
   if (!state.currentBoard) {
     return state;
   }
 
   const columns = [...state.currentBoard.columns];
-  const currentIndex = columns.findIndex((column) => column.id === columnId);
+  const currentIndex = columns.findIndex(column => column.id === columnId);
 
   if (currentIndex === -1) {
     return state;
   }
 
-  const newIndex = direction === "left"
-    ? Math.max(0, currentIndex - 1)
-    : Math.min(columns.length - 1, currentIndex + 1);
+  const newIndex =
+    direction === 'left'
+      ? Math.max(0, currentIndex - 1)
+      : Math.min(columns.length - 1, currentIndex + 1);
 
   if (currentIndex === newIndex) {
     return state;
@@ -324,7 +336,7 @@ const handleMoveColumn = (
 
   return {
     ...state,
-    boards: state.boards.map((board) =>
+    boards: state.boards.map(board =>
       board.id === updatedBoard.id ? updatedBoard : board
     ),
     currentBoard: updatedBoard,
@@ -338,8 +350,8 @@ const handleImportBoards = (
   importedBoards: KanbanBoard[],
   replaceAll = false
 ): BoardState => {
-  const existingBoardIds = new Set(state.boards.map((board) => board.id));
-  const boardsToImport = importedBoards.map((board) => {
+  const existingBoardIds = new Set(state.boards.map(board => board.id));
+  const boardsToImport = importedBoards.map(board => {
     if (existingBoardIds.has(board.id)) {
       return {
         ...board,
@@ -380,7 +392,7 @@ const handleAddLabel = (state: BoardState, label: Label): BoardState => {
 
   return {
     ...state,
-    boards: state.boards.map((board) =>
+    boards: state.boards.map(board =>
       board.id === updatedBoard.id ? updatedBoard : board
     ),
     currentBoard: updatedBoard,
@@ -398,14 +410,14 @@ const handleUpdateLabel = (
 
   const updatedBoard = updateBoardTimestamp({
     ...state.currentBoard,
-    labels: state.currentBoard.labels.map((label) =>
+    labels: state.currentBoard.labels.map(label =>
       label.id === labelId ? { ...label, ...updates } : label
     ),
-    columns: state.currentBoard.columns.map((column) => ({
+    columns: state.currentBoard.columns.map(column => ({
       ...column,
-      tasks: column.tasks.map((task) => ({
+      tasks: column.tasks.map(task => ({
         ...task,
-        labels: task.labels.map((label) =>
+        labels: task.labels.map(label =>
           label.id === labelId ? { ...label, ...updates } : label
         ),
       })),
@@ -414,7 +426,7 @@ const handleUpdateLabel = (
 
   return {
     ...state,
-    boards: state.boards.map((board) =>
+    boards: state.boards.map(board =>
       board.id === updatedBoard.id ? updatedBoard : board
     ),
     currentBoard: updatedBoard,
@@ -428,37 +440,40 @@ const handleDeleteLabel = (state: BoardState, labelId: string): BoardState => {
 
   const updatedBoard = updateBoardTimestamp({
     ...state.currentBoard,
-    labels: state.currentBoard.labels.filter((label) => label.id !== labelId),
-    columns: state.currentBoard.columns.map((column) => ({
+    labels: state.currentBoard.labels.filter(label => label.id !== labelId),
+    columns: state.currentBoard.columns.map(column => ({
       ...column,
-      tasks: column.tasks.map((task) => ({
+      tasks: column.tasks.map(task => ({
         ...task,
-        labels: task.labels.filter((label) => label.id !== labelId),
+        labels: task.labels.filter(label => label.id !== labelId),
       })),
     })),
   });
 
   return {
     ...state,
-    boards: state.boards.map((board) =>
+    boards: state.boards.map(board =>
       board.id === updatedBoard.id ? updatedBoard : board
     ),
     currentBoard: updatedBoard,
   };
 };
 
-const handleDeleteLabelFromAllBoards = (state: BoardState, labelId: string): BoardState => {
+const handleDeleteLabelFromAllBoards = (
+  state: BoardState,
+  labelId: string
+): BoardState => {
   const currentTime = new Date().toISOString();
 
-  const updatedBoards = state.boards.map((board) =>
+  const updatedBoards = state.boards.map(board =>
     updateBoardTimestamp({
       ...board,
-      labels: board.labels.filter((label) => label.id !== labelId),
-      columns: board.columns.map((column) => ({
+      labels: board.labels.filter(label => label.id !== labelId),
+      columns: board.columns.map(column => ({
         ...column,
-        tasks: column.tasks.map((task) => ({
+        tasks: column.tasks.map(task => ({
           ...task,
-          labels: task.labels.filter((label) => label.id !== labelId),
+          labels: task.labels.filter(label => label.id !== labelId),
         })),
       })),
       updatedAt: currentTime,
@@ -466,7 +481,7 @@ const handleDeleteLabelFromAllBoards = (state: BoardState, labelId: string): Boa
   );
 
   const updatedCurrentBoard = state.currentBoard
-    ? updatedBoards.find((board) => board.id === state.currentBoard?.id) || null
+    ? updatedBoards.find(board => board.id === state.currentBoard?.id) || null
     : null;
 
   return {
@@ -481,9 +496,10 @@ const handleDeleteLabelFromAllBoards = (state: BoardState, labelId: string): Boa
 const handleRestoreBoard = (state: BoardState, boardId: string): BoardState => {
   const restoredBoards = restoreBoardFromRecycleBin(state.boards, boardId);
   const restoredBoard = restoredBoards.find(board => board.id === boardId);
-  const newCurrentBoard = restoredBoard && restoredBoard.deletionState === "active"
-    ? restoredBoard
-    : state.currentBoard;
+  const newCurrentBoard =
+    restoredBoard && restoredBoard.deletionState === 'active'
+      ? restoredBoard
+      : state.currentBoard;
 
   if (newCurrentBoard && newCurrentBoard.id !== state.currentBoard?.id) {
     updateCurrentBoardId(newCurrentBoard.id);
@@ -496,7 +512,10 @@ const handleRestoreBoard = (state: BoardState, boardId: string): BoardState => {
   };
 };
 
-const handlePermanentlyDeleteBoard = (state: BoardState, boardId: string): BoardState => {
+const handlePermanentlyDeleteBoard = (
+  state: BoardState,
+  boardId: string
+): BoardState => {
   const updatedBoards = state.boards.filter(board => board.id !== boardId);
 
   let newCurrentBoard = state.currentBoard;
@@ -515,7 +534,8 @@ const handlePermanentlyDeleteBoard = (state: BoardState, boardId: string): Board
 
 const handleEmptyBoardRecycleBin = (state: BoardState): BoardState => {
   const activeBoards = getActiveBoards(state.boards);
-  const newCurrentBoard = activeBoards.length > 0 ? activeBoards[0] || null : null;
+  const newCurrentBoard =
+    activeBoards.length > 0 ? activeBoards[0] || null : null;
 
   if (newCurrentBoard && newCurrentBoard.id !== state.currentBoard?.id) {
     updateCurrentBoardId(newCurrentBoard.id);
@@ -532,27 +552,38 @@ const handleEmptyBoardRecycleBin = (state: BoardState): BoardState => {
 
 const boardReducer = (state: BoardState, action: BoardAction): BoardState => {
   switch (action.type) {
-    case "LOAD_BOARDS":
+    case 'LOAD_BOARDS':
       return handleLoadBoards(state, action.payload);
 
-    case "CREATE_BOARD":
+    case 'CREATE_BOARD':
       return handleCreateBoard(state, action.payload.title);
 
-    case "SET_CURRENT_BOARD":
+    case 'SET_CURRENT_BOARD':
       return handleSetCurrentBoard(state, action.payload);
 
-    case "UPDATE_BOARD":
-      return handleUpdateBoard(state, action.payload.boardId, action.payload.updates);
+    case 'UPDATE_BOARD':
+      return handleUpdateBoard(
+        state,
+        action.payload.boardId,
+        action.payload.updates
+      );
 
-    case "DELETE_BOARD":
+    case 'DELETE_BOARD':
       return handleDeleteBoard(state, action.payload.boardId);
 
-    case "CREATE_COLUMN":
-      return handleCreateColumn(state, action.payload.title, action.payload.insertIndex);
+    case 'CREATE_COLUMN':
+      return handleCreateColumn(
+        state,
+        action.payload.title,
+        action.payload.insertIndex
+      );
 
-    case "DELETE_COLUMN": {
+    case 'DELETE_COLUMN': {
       // ソフトデリート（ゴミ箱に移動）
-      const newBoards = moveColumnToRecycleBin(state.boards, action.payload.columnId);
+      const newBoards = moveColumnToRecycleBin(
+        state.boards,
+        action.payload.columnId
+      );
 
       // 現在のボードを更新
       const updatedCurrentBoard = state.currentBoard
@@ -566,36 +597,44 @@ const boardReducer = (state: BoardState, action: BoardAction): BoardState => {
       };
     }
 
-    case "UPDATE_COLUMN": {
+    case 'UPDATE_COLUMN': {
       if (!state.currentBoard) {
         return state;
       }
 
       const updatedBoard = updateBoardTimestamp({
         ...state.currentBoard,
-        columns: state.currentBoard.columns.map((column) =>
+        columns: state.currentBoard.columns.map(column =>
           column.id === action.payload.columnId
             ? { ...column, ...action.payload.updates }
-            : column,
+            : column
         ),
       });
 
       return {
         ...state,
-        boards: state.boards.map((board) =>
-          board.id === updatedBoard.id ? updatedBoard : board,
+        boards: state.boards.map(board =>
+          board.id === updatedBoard.id ? updatedBoard : board
         ),
         currentBoard: updatedBoard,
       };
     }
 
-    case "MOVE_COLUMN":
-      return handleMoveColumn(state, action.payload.columnId, action.payload.direction);
+    case 'MOVE_COLUMN':
+      return handleMoveColumn(
+        state,
+        action.payload.columnId,
+        action.payload.direction
+      );
 
-    case "IMPORT_BOARDS":
-      return handleImportBoards(state, action.payload.boards, action.payload.replaceAll);
+    case 'IMPORT_BOARDS':
+      return handleImportBoards(
+        state,
+        action.payload.boards,
+        action.payload.replaceAll
+      );
 
-    case "REORDER_BOARDS": {
+    case 'REORDER_BOARDS': {
       const { boards: reorderedBoards } = action.payload;
 
       return {
@@ -604,7 +643,7 @@ const boardReducer = (state: BoardState, action: BoardAction): BoardState => {
       };
     }
 
-    case "MOVE_TASK_TO_BOARD": {
+    case 'MOVE_TASK_TO_BOARD': {
       const {
         taskId,
         sourceBoardId,
@@ -615,10 +654,10 @@ const boardReducer = (state: BoardState, action: BoardAction): BoardState => {
 
       // ソースボードとターゲットボードを取得
       const sourceBoard = state.boards.find(
-        (board) => board.id === sourceBoardId,
+        board => board.id === sourceBoardId
       );
       const targetBoard = state.boards.find(
-        (board) => board.id === targetBoardId,
+        board => board.id === targetBoardId
       );
 
       if (!sourceBoard || !targetBoard) {
@@ -627,20 +666,20 @@ const boardReducer = (state: BoardState, action: BoardAction): BoardState => {
 
       // ソースカラムからタスクを取得
       const sourceColumn = sourceBoard.columns.find(
-        (col) => col.id === sourceColumnId,
+        col => col.id === sourceColumnId
       );
       if (!sourceColumn) {
         return state;
       }
 
-      const taskToMove = sourceColumn.tasks.find((task) => task.id === taskId);
+      const taskToMove = sourceColumn.tasks.find(task => task.id === taskId);
       if (!taskToMove) {
         return state;
       }
 
       // ターゲットカラムを決定（指定されていない場合は最初のカラムを使用）
       const targetColumnToUse = targetColumnId
-        ? targetBoard.columns.find((col) => col.id === targetColumnId)
+        ? targetBoard.columns.find(col => col.id === targetColumnId)
         : targetBoard.columns[0];
 
       if (!targetColumnToUse) {
@@ -650,10 +689,10 @@ const boardReducer = (state: BoardState, action: BoardAction): BoardState => {
       // ソースボードからタスクを削除
       const updatedSourceBoard = updateBoardTimestamp({
         ...sourceBoard,
-        columns: sourceBoard.columns.map((col) =>
+        columns: sourceBoard.columns.map(col =>
           col.id === sourceColumnId
-            ? { ...col, tasks: col.tasks.filter((task) => task.id !== taskId) }
-            : col,
+            ? { ...col, tasks: col.tasks.filter(task => task.id !== taskId) }
+            : col
         ),
       });
 
@@ -664,7 +703,7 @@ const boardReducer = (state: BoardState, action: BoardAction): BoardState => {
             completedAt: null,
             // サブタスクも未完了状態にリセット
             subTasks:
-              taskToMove.subTasks?.map((subTask) => ({
+              taskToMove.subTasks?.map(subTask => ({
                 ...subTask,
                 completed: false,
               })) || [],
@@ -673,15 +712,15 @@ const boardReducer = (state: BoardState, action: BoardAction): BoardState => {
 
       const updatedTargetBoard = updateBoardTimestamp({
         ...targetBoard,
-        columns: targetBoard.columns.map((col) =>
+        columns: targetBoard.columns.map(col =>
           col.id === targetColumnToUse.id
             ? { ...col, tasks: [...col.tasks, resetTask] }
-            : col,
+            : col
         ),
       });
 
       // 両方のボードを更新
-      const updatedBoards = state.boards.map((board) => {
+      const updatedBoards = state.boards.map(board => {
         if (board.id === sourceBoardId) {
           return updatedSourceBoard;
         }
@@ -706,33 +745,41 @@ const boardReducer = (state: BoardState, action: BoardAction): BoardState => {
       };
     }
 
-    case "ADD_LABEL":
+    case 'ADD_LABEL':
       return handleAddLabel(state, action.payload.label);
 
-    case "UPDATE_LABEL":
-      return handleUpdateLabel(state, action.payload.labelId, action.payload.updates);
+    case 'UPDATE_LABEL':
+      return handleUpdateLabel(
+        state,
+        action.payload.labelId,
+        action.payload.updates
+      );
 
-    case "DELETE_LABEL":
+    case 'DELETE_LABEL':
       return handleDeleteLabel(state, action.payload.labelId);
 
-    case "DELETE_LABEL_FROM_ALL_BOARDS":
+    case 'DELETE_LABEL_FROM_ALL_BOARDS':
       return handleDeleteLabelFromAllBoards(state, action.payload.labelId);
 
-    case "RESTORE_BOARD":
+    case 'RESTORE_BOARD':
       return handleRestoreBoard(state, action.payload.boardId);
 
-    case "PERMANENTLY_DELETE_BOARD":
+    case 'PERMANENTLY_DELETE_BOARD':
       return handlePermanentlyDeleteBoard(state, action.payload.boardId);
 
-    case "EMPTY_BOARD_RECYCLE_BIN":
+    case 'EMPTY_BOARD_RECYCLE_BIN':
       return handleEmptyBoardRecycleBin(state);
 
-    case "RESTORE_COLUMN": {
-      const restoredBoards = restoreColumnFromRecycleBin(state.boards, action.payload.columnId);
+    case 'RESTORE_COLUMN': {
+      const restoredBoards = restoreColumnFromRecycleBin(
+        state.boards,
+        action.payload.columnId
+      );
 
       // 現在のボードを更新
       const updatedCurrentBoard = state.currentBoard
-        ? restoredBoards.find(board => board.id === state.currentBoard?.id) || null
+        ? restoredBoards.find(board => board.id === state.currentBoard?.id) ||
+          null
         : null;
 
       return {
@@ -742,12 +789,16 @@ const boardReducer = (state: BoardState, action: BoardAction): BoardState => {
       };
     }
 
-    case "PERMANENTLY_DELETE_COLUMN": {
-      const { updatedBoards } = permanentlyDeleteColumn(state.boards, action.payload.columnId);
+    case 'PERMANENTLY_DELETE_COLUMN': {
+      const { updatedBoards } = permanentlyDeleteColumn(
+        state.boards,
+        action.payload.columnId
+      );
 
       // 現在のボードを更新
       const updatedCurrentBoard = state.currentBoard
-        ? updatedBoards.find(board => board.id === state.currentBoard?.id) || null
+        ? updatedBoards.find(board => board.id === state.currentBoard?.id) ||
+          null
         : null;
 
       return {
@@ -779,7 +830,7 @@ export const BoardProvider: React.FC<BoardProviderProps> = ({ children }) => {
   // 拡張されたdispatch関数（強力な重複実行防止機能付き）
   const safeDispatch = useCallback((action: BoardAction) => {
     // UPDATE_BOARDの重複実行防止（強化版）
-    if (action.type === "UPDATE_BOARD") {
+    if (action.type === 'UPDATE_BOARD') {
       const { boardId, updates } = action.payload;
 
       // 操作固有のキーを生成（タスク移動の場合）
@@ -787,9 +838,9 @@ export const BoardProvider: React.FC<BoardProviderProps> = ({ children }) => {
 
       // カラム情報が含まれている場合はより詳細なキーを生成
       if (updates.columns) {
-        const columnsSignature = updates.columns.map((col: Column) =>
-          `${col.id}:${col.tasks?.length || 0}`
-        ).join('|');
+        const columnsSignature = updates.columns
+          .map((col: Column) => `${col.id}:${col.tasks?.length || 0}`)
+          .join('|');
         operationKey = `${boardId}:${columnsSignature}:${updates.updatedAt}`;
       }
 
@@ -819,10 +870,10 @@ export const BoardProvider: React.FC<BoardProviderProps> = ({ children }) => {
     const loadInitialData = async () => {
       try {
         const boardsData = loadBoards();
-        dispatch({ type: "LOAD_BOARDS", payload: boardsData });
+        dispatch({ type: 'LOAD_BOARDS', payload: boardsData });
       } catch (_error) {
-        logger._error("Failed to load boards:", _error);
-        notify._error("ボードデータの読み込みに失敗しました");
+        logger._error('Failed to load boards:', _error);
+        notify._error('ボードデータの読み込みに失敗しました');
       }
     };
 
@@ -836,8 +887,8 @@ export const BoardProvider: React.FC<BoardProviderProps> = ({ children }) => {
       try {
         saveBoards(state.boards);
       } catch (_error) {
-        logger._error("Failed to save boards:", _error);
-        notify._error("ボードデータの保存に失敗しました");
+        logger._error('Failed to save boards:', _error);
+        notify._error('ボードデータの保存に失敗しました');
       }
     }
   }, [state.boards, notify]);
@@ -845,121 +896,118 @@ export const BoardProvider: React.FC<BoardProviderProps> = ({ children }) => {
   // アクション関数群の定義
   const createBoard = useCallback(
     (title: string) => {
-      dispatch({ type: "CREATE_BOARD", payload: { title } });
-      notify.success("新しいボードを作成しました");
+      dispatch({ type: 'CREATE_BOARD', payload: { title } });
+      notify.success('新しいボードを作成しました');
     },
-    [notify],
+    [notify]
   );
 
-  const setCurrentBoard = useCallback(
-    (boardId: string) => {
-      dispatch({ type: "SET_CURRENT_BOARD", payload: boardId });
-    },
-    [],
-  );
+  const setCurrentBoard = useCallback((boardId: string) => {
+    dispatch({ type: 'SET_CURRENT_BOARD', payload: boardId });
+  }, []);
 
   const updateBoard = useCallback(
     (boardId: string, updates: Partial<KanbanBoard>) => {
-      safeDispatch({ type: "UPDATE_BOARD", payload: { boardId, updates } });
+      safeDispatch({ type: 'UPDATE_BOARD', payload: { boardId, updates } });
     },
-    [safeDispatch],
+    [safeDispatch]
   );
 
   const deleteBoard = useCallback(
     (boardId: string) => {
-      dispatch({ type: "DELETE_BOARD", payload: { boardId } });
-      notify.success("ボードをごみ箱に移動しました");
+      dispatch({ type: 'DELETE_BOARD', payload: { boardId } });
+      notify.success('ボードをごみ箱に移動しました');
     },
-    [notify],
+    [notify]
   );
 
   const restoreBoard = useCallback(
     (boardId: string) => {
-      dispatch({ type: "RESTORE_BOARD", payload: { boardId } });
-      notify.success("ボードを復元しました");
+      dispatch({ type: 'RESTORE_BOARD', payload: { boardId } });
+      notify.success('ボードを復元しました');
     },
-    [notify],
+    [notify]
   );
 
   const permanentlyDeleteBoard = useCallback(
     (boardId: string) => {
-      dispatch({ type: "PERMANENTLY_DELETE_BOARD", payload: { boardId } });
-      notify.success("ボードを完全に削除しました");
+      dispatch({ type: 'PERMANENTLY_DELETE_BOARD', payload: { boardId } });
+      notify.success('ボードを完全に削除しました');
     },
-    [notify],
+    [notify]
   );
 
   const emptyBoardRecycleBin = useCallback(() => {
-    dispatch({ type: "EMPTY_BOARD_RECYCLE_BIN" });
-    notify.success("ボードのごみ箱を空にしました");
+    dispatch({ type: 'EMPTY_BOARD_RECYCLE_BIN' });
+    notify.success('ボードのごみ箱を空にしました');
   }, [notify]);
 
   const createColumn = useCallback(
     (title: string, insertIndex?: number) => {
       if (!currentBoard) {
-        notify._error("ボードが選択されていません");
+        notify._error('ボードが選択されていません');
         return;
       }
       dispatch({
-        type: "CREATE_COLUMN",
+        type: 'CREATE_COLUMN',
         payload: { boardId: currentBoard.id, title, insertIndex },
       });
-      notify.success("新しいカラムを作成しました");
+      notify.success('新しいカラムを作成しました');
     },
-    [currentBoard, notify],
+    [currentBoard, notify]
   );
 
   const deleteColumn = useCallback(
     (columnId: string) => {
-      dispatch({ type: "DELETE_COLUMN", payload: { columnId } });
-      notify.success("カラムをごみ箱に移動しました");
+      dispatch({ type: 'DELETE_COLUMN', payload: { columnId } });
+      notify.success('カラムをごみ箱に移動しました');
     },
-    [notify],
+    [notify]
   );
 
   const restoreColumn = useCallback(
     (columnId: string) => {
-      dispatch({ type: "RESTORE_COLUMN", payload: { columnId } });
-      notify.success("カラムを復元しました");
+      dispatch({ type: 'RESTORE_COLUMN', payload: { columnId } });
+      notify.success('カラムを復元しました');
     },
-    [notify],
+    [notify]
   );
 
   const permanentlyDeleteColumn = useCallback(
     (columnId: string) => {
-      dispatch({ type: "PERMANENTLY_DELETE_COLUMN", payload: { columnId } });
-      notify.success("カラムを完全に削除しました");
+      dispatch({ type: 'PERMANENTLY_DELETE_COLUMN', payload: { columnId } });
+      notify.success('カラムを完全に削除しました');
     },
-    [notify],
+    [notify]
   );
 
   const updateColumn = useCallback(
     (columnId: string, updates: Partial<Column>) => {
-      dispatch({ type: "UPDATE_COLUMN", payload: { columnId, updates } });
+      dispatch({ type: 'UPDATE_COLUMN', payload: { columnId, updates } });
     },
-    [],
+    []
   );
 
   const moveColumn = useCallback(
-    (columnId: string, direction: "left" | "right") => {
-      dispatch({ type: "MOVE_COLUMN", payload: { columnId, direction } });
+    (columnId: string, direction: 'left' | 'right') => {
+      dispatch({ type: 'MOVE_COLUMN', payload: { columnId, direction } });
     },
-    [],
+    []
   );
 
   const importBoards = useCallback(
     (boards: KanbanBoard[], replaceAll = false) => {
-      dispatch({ type: "IMPORT_BOARDS", payload: { boards, replaceAll } });
+      dispatch({ type: 'IMPORT_BOARDS', payload: { boards, replaceAll } });
       const message = replaceAll
-        ? "ボードデータを置き換えました"
-        : "ボードデータをインポートしました";
+        ? 'ボードデータを置き換えました'
+        : 'ボードデータをインポートしました';
       notify.success(message);
     },
-    [notify],
+    [notify]
   );
 
   const reorderBoards = useCallback((boards: KanbanBoard[]) => {
-    dispatch({ type: "REORDER_BOARDS", payload: { boards } });
+    dispatch({ type: 'REORDER_BOARDS', payload: { boards } });
   }, []);
 
   const moveTaskToBoard = useCallback(
@@ -968,10 +1016,10 @@ export const BoardProvider: React.FC<BoardProviderProps> = ({ children }) => {
       sourceBoardId: string,
       sourceColumnId: string,
       targetBoardId: string,
-      targetColumnId?: string,
+      targetColumnId?: string
     ) => {
       dispatch({
-        type: "MOVE_TASK_TO_BOARD",
+        type: 'MOVE_TASK_TO_BOARD',
         payload: {
           taskId,
           sourceBoardId,
@@ -980,9 +1028,9 @@ export const BoardProvider: React.FC<BoardProviderProps> = ({ children }) => {
           targetColumnId,
         },
       });
-      notify.success("タスクを他のボードに移動しました");
+      notify.success('タスクを他のボードに移動しました');
     },
-    [notify],
+    [notify]
   );
 
   const contextValue = useMemo(
@@ -1027,7 +1075,7 @@ export const BoardProvider: React.FC<BoardProviderProps> = ({ children }) => {
       importBoards,
       reorderBoards,
       moveTaskToBoard,
-    ],
+    ]
   );
 
   return (
@@ -1040,7 +1088,7 @@ export const BoardProvider: React.FC<BoardProviderProps> = ({ children }) => {
 export const useBoard = (): BoardContextType => {
   const context = useContext(BoardContext);
   if (context === undefined) {
-    throw new Error("useBoard must be used within a BoardProvider");
+    throw new Error('useBoard must be used within a BoardProvider');
   }
 
   return context;

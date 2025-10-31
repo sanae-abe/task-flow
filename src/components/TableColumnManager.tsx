@@ -1,6 +1,6 @@
-import React, { useState, useCallback, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import React, { useState, useCallback, useEffect } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,8 +9,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
   DropdownMenuGroup,
-  DropdownMenuLabel
-} from "@/components/ui/dropdown-menu";
+  DropdownMenuLabel,
+} from '@/components/ui/dropdown-menu';
 import {
   Settings,
   Trash2,
@@ -18,12 +18,12 @@ import {
   Eye,
   EyeOff,
   ChevronUp,
-  ChevronDown
-} from "lucide-react";
+  ChevronDown,
+} from 'lucide-react';
 
-import { useTableColumns } from "../contexts/TableColumnsContext";
-import UnifiedDialog from "./shared/Dialog/UnifiedDialog";
-import { IconButton, InlineMessage } from "./shared";
+import { useTableColumns } from '../contexts/TableColumnsContext';
+import UnifiedDialog from './shared/Dialog/UnifiedDialog';
+import { IconButton, InlineMessage } from './shared';
 import { cn } from '@/lib/utils';
 
 interface TempColumn {
@@ -71,31 +71,38 @@ const TableColumnManager: React.FC = () => {
     setHasUnsavedChanges(true);
   }, []);
 
-  const handleTempWidthChange = useCallback((columnId: string, newWidth: string) => {
-    let formattedWidth = newWidth;
+  const handleTempWidthChange = useCallback(
+    (columnId: string, newWidth: string) => {
+      let formattedWidth = newWidth;
 
-    // 空文字列でない場合はバリデーション
-    if (newWidth !== "") {
-      // pxを削除して数値のみを取得
-      const numericValue = parseInt(newWidth.replace(/px$/, ""), 10);
+      // 空文字列でない場合はバリデーション
+      if (newWidth !== '') {
+        // pxを削除して数値のみを取得
+        const numericValue = parseInt(newWidth.replace(/px$/, ''), 10);
 
-      // 50px～1000pxの範囲内かチェック
-      if (!isNaN(numericValue) && numericValue >= 50 && numericValue <= 1000) {
-        formattedWidth = `${numericValue}px`;
-      } else if (!isNaN(numericValue)) {
-        // 範囲外の場合は最小値/最大値に調整
-        const clampedValue = Math.max(50, Math.min(1000, numericValue));
-        formattedWidth = `${clampedValue}px`;
+        // 50px～1000pxの範囲内かチェック
+        if (
+          !isNaN(numericValue) &&
+          numericValue >= 50 &&
+          numericValue <= 1000
+        ) {
+          formattedWidth = `${numericValue}px`;
+        } else if (!isNaN(numericValue)) {
+          // 範囲外の場合は最小値/最大値に調整
+          const clampedValue = Math.max(50, Math.min(1000, numericValue));
+          formattedWidth = `${clampedValue}px`;
+        }
       }
-    }
 
-    setTempColumns(prev =>
-      prev.map(col =>
-        col.id === columnId ? { ...col, width: formattedWidth } : col
-      )
-    );
-    setHasUnsavedChanges(true);
-  }, []);
+      setTempColumns(prev =>
+        prev.map(col =>
+          col.id === columnId ? { ...col, width: formattedWidth } : col
+        )
+      );
+      setHasUnsavedChanges(true);
+    },
+    []
+  );
 
   const handleTempReorderColumns = useCallback((newOrder: string[]) => {
     setTempColumnOrder(newOrder);
@@ -109,35 +116,41 @@ const TableColumnManager: React.FC = () => {
   }, []);
 
   // 上下移動のハンドラー関数
-  const handleMoveUp = useCallback((columnId: string) => {
-    const currentIndex = tempColumnOrder.indexOf(columnId);
-    if (currentIndex > 0 && currentIndex < tempColumnOrder.length) {
-      const newOrder = [...tempColumnOrder];
-      // 現在のアイテムと前のアイテムを入れ替え
-      const prevItem = newOrder[currentIndex - 1];
-      const currentItem = newOrder[currentIndex];
-      if (prevItem !== undefined && currentItem !== undefined) {
-        newOrder[currentIndex - 1] = currentItem;
-        newOrder[currentIndex] = prevItem;
-        handleTempReorderColumns(newOrder);
+  const handleMoveUp = useCallback(
+    (columnId: string) => {
+      const currentIndex = tempColumnOrder.indexOf(columnId);
+      if (currentIndex > 0 && currentIndex < tempColumnOrder.length) {
+        const newOrder = [...tempColumnOrder];
+        // 現在のアイテムと前のアイテムを入れ替え
+        const prevItem = newOrder[currentIndex - 1];
+        const currentItem = newOrder[currentIndex];
+        if (prevItem !== undefined && currentItem !== undefined) {
+          newOrder[currentIndex - 1] = currentItem;
+          newOrder[currentIndex] = prevItem;
+          handleTempReorderColumns(newOrder);
+        }
       }
-    }
-  }, [tempColumnOrder, handleTempReorderColumns]);
+    },
+    [tempColumnOrder, handleTempReorderColumns]
+  );
 
-  const handleMoveDown = useCallback((columnId: string) => {
-    const currentIndex = tempColumnOrder.indexOf(columnId);
-    if (currentIndex >= 0 && currentIndex < tempColumnOrder.length - 1) {
-      const newOrder = [...tempColumnOrder];
-      // 現在のアイテムと次のアイテムを入れ替え
-      const currentItem = newOrder[currentIndex];
-      const nextItem = newOrder[currentIndex + 1];
-      if (currentItem !== undefined && nextItem !== undefined) {
-        newOrder[currentIndex] = nextItem;
-        newOrder[currentIndex + 1] = currentItem;
-        handleTempReorderColumns(newOrder);
+  const handleMoveDown = useCallback(
+    (columnId: string) => {
+      const currentIndex = tempColumnOrder.indexOf(columnId);
+      if (currentIndex >= 0 && currentIndex < tempColumnOrder.length - 1) {
+        const newOrder = [...tempColumnOrder];
+        // 現在のアイテムと次のアイテムを入れ替え
+        const currentItem = newOrder[currentIndex];
+        const nextItem = newOrder[currentIndex + 1];
+        if (currentItem !== undefined && nextItem !== undefined) {
+          newOrder[currentIndex] = nextItem;
+          newOrder[currentIndex + 1] = currentItem;
+          handleTempReorderColumns(newOrder);
+        }
       }
-    }
-  }, [tempColumnOrder, handleTempReorderColumns]);
+    },
+    [tempColumnOrder, handleTempReorderColumns]
+  );
 
   // 保存処理
   const handleSave = useCallback(() => {
@@ -158,14 +171,23 @@ const TableColumnManager: React.FC = () => {
     }
 
     // 削除されたカラムを処理
-    const removedColumns = columns.filter(col =>
-      !tempColumns.some(tempCol => tempCol.id === col.id)
+    const removedColumns = columns.filter(
+      col => !tempColumns.some(tempCol => tempCol.id === col.id)
     );
     removedColumns.forEach(col => removeColumn(col.id));
 
     setHasUnsavedChanges(false);
     setIsSettingsOpen(false);
-  }, [tempColumns, tempColumnOrder, columns, columnOrder, toggleColumnVisibility, updateColumnWidth, reorderColumns, removeColumn]);
+  }, [
+    tempColumns,
+    tempColumnOrder,
+    columns,
+    columnOrder,
+    toggleColumnVisibility,
+    updateColumnWidth,
+    reorderColumns,
+    removeColumn,
+  ]);
 
   // キャンセル処理
   const handleCancel = useCallback(() => {
@@ -175,26 +197,25 @@ const TableColumnManager: React.FC = () => {
     setIsSettingsOpen(false);
   }, []);
 
-
   const isCustomColumn = useCallback(
-    (columnId: string) => columnId.startsWith("custom-"),
-    [],
+    (columnId: string) => columnId.startsWith('custom-'),
+    []
   );
 
   // ドラッグ開始
   const handleDragStart = useCallback(
     (e: React.DragEvent, columnId: string) => {
       setDraggedColumnId(columnId);
-      e.dataTransfer.effectAllowed = "move";
-      e.dataTransfer.setData("text/plain", columnId);
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', columnId);
     },
-    [],
+    []
   );
 
   // ドラッグオーバー
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
-    e.dataTransfer.dropEffect = "move";
+    e.dataTransfer.dropEffect = 'move';
   }, []);
 
   // ドロップ（詳細設定ダイアログ用）
@@ -223,7 +244,7 @@ const TableColumnManager: React.FC = () => {
       handleTempReorderColumns(currentOrder);
       setDraggedColumnId(null);
     },
-    [draggedColumnId, tempColumnOrder, handleTempReorderColumns],
+    [draggedColumnId, tempColumnOrder, handleTempReorderColumns]
   );
 
   // ドラッグ終了
@@ -236,21 +257,19 @@ const TableColumnManager: React.FC = () => {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
-            variant="ghost"
-            size="sm"
-            aria-label="カラム詳細設定"
-            className="p-1 h-auto min-w-0"
+            variant='ghost'
+            size='sm'
+            aria-label='カラム詳細設定'
+            className='p-1 h-auto min-w-0'
           >
             <Settings size={16} />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-64 max-h-80 overflow-y-auto">
+        <DropdownMenuContent className='w-64 max-h-80 overflow-y-auto'>
           <DropdownMenuGroup>
-            <DropdownMenuLabel>
-              表示カラム
-            </DropdownMenuLabel>
-            <div className="max-h-48 overflow-y-auto">
-              {(isSettingsOpen ? tempColumns : columns).map((column) => (
+            <DropdownMenuLabel>表示カラム</DropdownMenuLabel>
+            <div className='max-h-48 overflow-y-auto'>
+              {(isSettingsOpen ? tempColumns : columns).map(column => (
                 <DropdownMenuCheckboxItem
                   checked={column.visible}
                   key={column.id}
@@ -262,20 +281,26 @@ const TableColumnManager: React.FC = () => {
                       toggleColumnVisibility(column.id);
                     }
                   }}
-                  className="cursor-pointer hover:bg-gray-50"
+                  className='cursor-pointer hover:bg-gray-50'
                 >
-                  <span className="text-sm truncate">{column.label}</span>
+                  <span className='text-sm truncate'>{column.label}</span>
                 </DropdownMenuCheckboxItem>
               ))}
             </div>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => setIsSettingsOpen(true)} className="cursor-pointer">
-            <Settings size={16} className="mr-2" />
+          <DropdownMenuItem
+            onClick={() => setIsSettingsOpen(true)}
+            className='cursor-pointer'
+          >
+            <Settings size={16} className='mr-2' />
             詳細設定
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={resetToDefaults} className="cursor-pointer">
+          <DropdownMenuItem
+            onClick={resetToDefaults}
+            className='cursor-pointer'
+          >
             デフォルトに戻す
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -285,34 +310,39 @@ const TableColumnManager: React.FC = () => {
       <UnifiedDialog
         isOpen={isSettingsOpen}
         onClose={handleCancel}
-        title="カラム詳細設定"
-        variant="modal"
-        size="large"
+        title='カラム詳細設定'
+        variant='modal'
+        size='large'
         actions={[
           {
-            label: "キャンセル",
+            label: 'キャンセル',
             onClick: handleCancel,
-            variant: "outline",
+            variant: 'outline',
           },
           {
-            label: "保存",
+            label: '保存',
             onClick: handleSave,
-            variant: "default",
-            disabled: !hasUnsavedChanges
-          }
+            variant: 'default',
+            disabled: !hasUnsavedChanges,
+          },
         ]}
       >
-        <div className="mb-5 text-zinc-700 text-sm">
-          カラムをドラッグして並び替え、表示切り替え、幅の調整ができます。<br />
+        <div className='mb-5 text-zinc-700 text-sm'>
+          カラムをドラッグして並び替え、表示切り替え、幅の調整ができます。
+          <br />
           幅は50px〜1000pxの範囲で入力してください。
           {hasUnsavedChanges && (
-            <InlineMessage variant="warning" message="未保存の変更があります" className="mt-2" />
+            <InlineMessage
+              variant='warning'
+              message='未保存の変更があります'
+              className='mt-2'
+            />
           )}
         </div>
 
-        <div className="flex flex-col gap-3 max-h-96 overflow-y-auto">
+        <div className='flex flex-col gap-3 max-h-96 overflow-y-auto'>
           {tempColumnOrder.map((columnId, index) => {
-            const column = tempColumns.find((col) => col.id === columnId);
+            const column = tempColumns.find(col => col.id === columnId);
             if (!column) {
               return null;
             }
@@ -338,75 +368,89 @@ const TableColumnManager: React.FC = () => {
                 }`}
               >
                 {/* ドラッグハンドルと表示切り替え */}
-                <div className="flex items-center gap-2">
-                  <div className="flex items-center cursor-grab active:cursor-grabbing">
+                <div className='flex items-center gap-2'>
+                  <div className='flex items-center cursor-grab active:cursor-grabbing'>
                     <GripVertical size={16} />
                   </div>
                   <IconButton
                     icon={column.visible ? Eye : EyeOff}
-                    size="icon"
-                    ariaLabel={column.visible ? 'カラムを非表示にする' : 'カラムを表示する'}
-                    onClick={(e) => {
-                    e.stopPropagation();
-                    handleTempToggleVisibility(column.id);
+                    size='icon'
+                    ariaLabel={
+                      column.visible
+                        ? 'カラムを非表示にする'
+                        : 'カラムを表示する'
+                    }
+                    onClick={e => {
+                      e.stopPropagation();
+                      handleTempToggleVisibility(column.id);
                     }}
-                    className="p-2 hover:bg-gray-200"
+                    className='p-2 hover:bg-gray-200'
                   />
                 </div>
 
                 {/* カラム名 */}
-                <div className="flex-1 min-w-0">
-                  <span className="text-sm font-medium truncate">{column.label}</span>
+                <div className='flex-1 min-w-0'>
+                  <span className='text-sm font-medium truncate'>
+                    {column.label}
+                  </span>
                 </div>
 
                 {/* 幅設定 */}
-                <div className="flex items-center gap-1">
-                  <label className="text-sm text-zinc-500 hidden sm:block">幅:</label>
+                <div className='flex items-center gap-1'>
+                  <label className='text-sm text-zinc-500 hidden sm:block'>
+                    幅:
+                  </label>
                   <Input
                     value={column.width}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                       handleTempWidthChange(column.id, e.target.value)
                     }
-                    placeholder="幅"
-                    className="w-20 h-8 text-xs"
+                    placeholder='幅'
+                    className='w-20 h-8 text-xs'
                     aria-describedby={`width-help-${column.id}`}
                   />
                 </div>
 
                 {/* 上下移動と削除ボタン */}
-                <div className="flex items-center gap-1">
-                  <div className="flex gap-0.5">
+                <div className='flex items-center gap-1'>
+                  <div className='flex gap-0.5'>
                     <IconButton
                       icon={ChevronUp}
-                      size="icon"
-                      ariaLabel="カラムを上に移動"
-                      onClick={(e) => {
+                      size='icon'
+                      ariaLabel='カラムを上に移動'
+                      onClick={e => {
                         e.stopPropagation();
                         handleMoveUp(column.id);
                       }}
                       disabled={isFirst}
-                      className={cn("p-2 hover:bg-gray-200", isFirst ? "text-zinc-300" : "text-foreground")}
+                      className={cn(
+                        'p-2 hover:bg-gray-200',
+                        isFirst ? 'text-zinc-300' : 'text-foreground'
+                      )}
                     />
                     <IconButton
                       icon={ChevronDown}
-                      size="icon"
-                      ariaLabel="カラムを下に移動"
-                      onClick={(e) => {
+                      size='icon'
+                      ariaLabel='カラムを下に移動'
+                      onClick={e => {
                         e.stopPropagation();
                         handleMoveDown(column.id);
                       }}
                       disabled={isLast}
-                      className={cn("p-2 hover:bg-gray-200", isLast ? "text-zinc-300" : "text-foreground")}
+                      className={cn(
+                        'p-2 hover:bg-gray-200',
+                        isLast ? 'text-zinc-300' : 'text-foreground'
+                      )}
                     />
                   </div>
 
                   {isCustomColumn(column.id) && (
                     <IconButton
                       icon={Trash2}
-                      size="icon"
-                      ariaLabel="カラムを削除"
+                      size='icon'
+                      ariaLabel='カラムを削除'
                       onClick={() => handleTempRemoveColumn(column.id)}
-                      className="w-8 h-8 p-2 hover:bg-gray-200"
+                      className='w-8 h-8 p-2 hover:bg-gray-200'
                     />
                   )}
                 </div>

@@ -1,13 +1,9 @@
-import React from "react";
-import {
-  FolderKanban,
-  Clock,
-  ArrowRight,
-} from "lucide-react";
-import { UI_TEXT, MESSAGES } from "../../../constants/recycleBin";
-import { type RecycleBinSettings } from "../../../types/settings";
-import { formatTimeUntilDeletion } from "../../../utils/recycleBin";
-import { RecycleBinTaskActions } from "./RecycleBinTaskActions";
+import React from 'react';
+import { FolderKanban, Clock, ArrowRight } from 'lucide-react';
+import { UI_TEXT, MESSAGES } from '../../../constants/recycleBin';
+import { type RecycleBinSettings } from '../../../types/settings';
+import { formatTimeUntilDeletion } from '../../../utils/recycleBin';
+import { RecycleBinTaskActions } from './RecycleBinTaskActions';
 
 export interface DeletedTaskWithMeta {
   id: string;
@@ -47,47 +43,46 @@ export const RecycleBinTaskItem: React.FC<RecycleBinTaskItemProps> = ({
   onRestore,
   onDeleteConfirm,
 }) => (
-    <div className="bg-background border border-border rounded-md p-4 mb-3 hover:bg-primary/50 transition-colors">
-      <div className="flex items-start justify-between gap-3 mb-3">
-        <div className="flex-1 min-w-0">
-          <h3 className="text-sm font-medium text-foreground m-0 line-clamp-2 break-words">
-            {task.title}
-          </h3>
-        </div>
-        <RecycleBinTaskActions
-          taskId={task.id}
-          restoringTaskId={restoringTaskId}
-          deletingTaskId={deletingTaskId}
-          onRestore={onRestore}
-          onDeleteConfirm={onDeleteConfirm}
-        />
+  <div className='bg-background border border-border rounded-md p-4 mb-3 hover:bg-primary/50 transition-colors'>
+    <div className='flex items-start justify-between gap-3 mb-3'>
+      <div className='flex-1 min-w-0'>
+        <h3 className='text-sm font-medium text-foreground m-0 line-clamp-2 break-words'>
+          {task.title}
+        </h3>
       </div>
-
-      <div className="flex flex-col gap-2 mb-3">
-        <div className="flex items-center gap-2 text-xs text-zinc-700">
-          <FolderKanban size={12} />
-          <span>
-            {task.boardTitle} <ArrowRight size={12} /> {task.columnTitle}
-          </span>
-        </div>
-        <div className="flex items-center gap-2 text-xs text-zinc-700">
-          <Clock size={12} />
-          <span>
-            {UI_TEXT.VIEW.DELETION_SCHEDULE}{" "}
-            {task.deletedAt
-              ? formatTimeUntilDeletion(task.deletedAt, settings.retentionDays)
-              : MESSAGES.RETENTION.UNKNOWN
-            }
-          </span>
-        </div>
-      </div>
-
-      {task.description && (
-        <div className="mt-2 pt-2 border-t border-border">
-          <p className="text-xs text-zinc-700 m-0 line-clamp-3 whitespace-pre-wrap">
-            {task.description.replace(/<[^>]*>/g, "")} {/* HTMLタグを除去 */}
-          </p>
-        </div>
-      )}
+      <RecycleBinTaskActions
+        taskId={task.id}
+        restoringTaskId={restoringTaskId}
+        deletingTaskId={deletingTaskId}
+        onRestore={onRestore}
+        onDeleteConfirm={onDeleteConfirm}
+      />
     </div>
-  );
+
+    <div className='flex flex-col gap-2 mb-3'>
+      <div className='flex items-center gap-2 text-xs text-zinc-700'>
+        <FolderKanban size={12} />
+        <span>
+          {task.boardTitle} <ArrowRight size={12} /> {task.columnTitle}
+        </span>
+      </div>
+      <div className='flex items-center gap-2 text-xs text-zinc-700'>
+        <Clock size={12} />
+        <span>
+          {UI_TEXT.VIEW.DELETION_SCHEDULE}{' '}
+          {task.deletedAt
+            ? formatTimeUntilDeletion(task.deletedAt, settings.retentionDays)
+            : MESSAGES.RETENTION.UNKNOWN}
+        </span>
+      </div>
+    </div>
+
+    {task.description && (
+      <div className='mt-2 pt-2 border-t border-border'>
+        <p className='text-xs text-zinc-700 m-0 line-clamp-3 whitespace-pre-wrap'>
+          {task.description.replace(/<[^>]*>/g, '')} {/* HTMLタグを除去 */}
+        </p>
+      </div>
+    )}
+  </div>
+);

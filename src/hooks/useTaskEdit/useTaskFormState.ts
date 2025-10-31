@@ -6,7 +6,12 @@
  */
 
 import React, { useState } from 'react';
-import type { Label, FileAttachment, RecurrenceConfig, Priority } from '../../types';
+import type {
+  Label,
+  FileAttachment,
+  RecurrenceConfig,
+  Priority,
+} from '../../types';
 
 export interface UseTaskFormStateReturn {
   // Basic form fields
@@ -33,7 +38,9 @@ export interface UseTaskFormStateReturn {
   columnId: string;
   setColumnId: (value: string) => void;
   recurrence: RecurrenceConfig | undefined;
-  setRecurrence: React.Dispatch<React.SetStateAction<RecurrenceConfig | undefined>>;
+  setRecurrence: React.Dispatch<
+    React.SetStateAction<RecurrenceConfig | undefined>
+  >;
   priority: Priority | undefined;
   setPriority: (priority: Priority | undefined) => void;
 
@@ -47,20 +54,22 @@ export interface UseTaskFormStateReturn {
 
 export const useTaskFormState = (): UseTaskFormStateReturn => {
   // Basic form state
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
 
   // Date and time state
-  const [dueDate, setDueDate] = useState("");
-  const [dueTime, setDueTime] = useState("");
+  const [dueDate, setDueDate] = useState('');
+  const [dueTime, setDueTime] = useState('');
   const [hasTime, setHasTime] = useState(false);
-  const [completedAt, setCompletedAt] = useState("");
+  const [completedAt, setCompletedAt] = useState('');
 
   // Complex form state
   const [labels, setLabels] = useState<Label[]>([]);
   const [attachments, setAttachments] = useState<FileAttachment[]>([]);
-  const [columnId, setColumnIdState] = useState("");
-  const [recurrence, setRecurrence] = useState<RecurrenceConfig | undefined>(undefined);
+  const [columnId, setColumnIdState] = useState('');
+  const [recurrence, setRecurrence] = useState<RecurrenceConfig | undefined>(
+    undefined
+  );
   const [priority, setPriority] = useState<Priority | undefined>(undefined);
 
   // Wrapper for setColumnId
@@ -73,17 +82,17 @@ export const useTaskFormState = (): UseTaskFormStateReturn => {
 
   // Reset all form state to initial values
   const resetFormState = () => {
-    setTitle("");
-    setDescription("");
-    setDueDate("");
-    setDueTime("");
+    setTitle('');
+    setDescription('');
+    setDueDate('');
+    setDueTime('');
     setHasTime(false);
-    setCompletedAt("");
+    setCompletedAt('');
     setLabels([]);
     setAttachments([]);
     setRecurrence(undefined);
     setPriority(undefined);
-    setColumnIdState("");
+    setColumnIdState('');
     setShowDeleteConfirm(false);
   };
 

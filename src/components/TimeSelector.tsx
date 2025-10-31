@@ -1,8 +1,8 @@
-import { Clock } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import React, { useState, useCallback } from "react";
+import { Clock } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import React, { useState, useCallback } from 'react';
 
-import TimeSelectorDialog from "./TimeSelectorDialog";
+import TimeSelectorDialog from './TimeSelectorDialog';
 
 interface TimeSelectorProps {
   hasTime: boolean;
@@ -23,7 +23,7 @@ const TimeSelector: React.FC<TimeSelectorProps> = ({
     (newHasTime: boolean, newTime: string) => {
       onTimeChange(newHasTime, newTime);
     },
-    [onTimeChange],
+    [onTimeChange]
   );
 
   const handleDetailDialogClose = useCallback(() => {
@@ -40,7 +40,7 @@ const TimeSelector: React.FC<TimeSelectorProps> = ({
     if (hasTime && dueTime) {
       return `${dueTime} まで`;
     }
-    return "時刻を設定";
+    return '時刻を設定';
   };
 
   return (
@@ -48,8 +48,8 @@ const TimeSelector: React.FC<TimeSelectorProps> = ({
       <Button
         onClick={handleButtonClick}
         disabled={disabled}
-        variant="outline"
-        className="flex items-center gap-2"
+        variant='outline'
+        className='flex items-center gap-2'
       >
         <Clock size={16} />
         {getButtonText()}

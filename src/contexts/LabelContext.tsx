@@ -4,10 +4,10 @@ import React, {
   useMemo,
   useRef,
   type ReactNode,
-} from "react";
+} from 'react';
 
-import type { Label } from "../types";
-import { useBoard } from "./BoardContext";
+import type { Label } from '../types';
+import { useBoard } from './BoardContext';
 
 interface LabelContextType {
   // 現在のボード対象
@@ -40,7 +40,14 @@ interface LabelContextType {
 
 // メッセージコールバックの型定義
 type MessageCallback = (message: {
-  type: 'success' | 'danger' | 'warning' | 'critical' | 'default' | 'info' | 'upsell';
+  type:
+    | 'success'
+    | 'danger'
+    | 'warning'
+    | 'critical'
+    | 'default'
+    | 'info'
+    | 'upsell';
   text: string;
   title?: string;
 }) => void;
@@ -75,8 +82,9 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
         }
         let count = 0;
         currentBoard.columns.forEach(column => {
-          count += column.tasks.filter(task =>
-            task.labels && task.labels.some(label => label.id === labelId)
+          count += column.tasks.filter(
+            task =>
+              task.labels && task.labels.some(label => label.id === labelId)
           ).length;
         });
         return count;
@@ -93,14 +101,15 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
         return allLabels;
       },
       getAllLabelsWithBoardInfo: () => {
-        const result: Array<Label & { boardName: string; boardId: string }> = [];
+        const result: Array<Label & { boardName: string; boardId: string }> =
+          [];
         boardState.boards.forEach(board => {
           if (board.labels) {
             board.labels.forEach(label => {
               result.push({
                 ...label,
                 boardName: board.title,
-                boardId: board.id
+                boardId: board.id,
               });
             });
           }
@@ -114,8 +123,9 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
         }
         let count = 0;
         board.columns.forEach(column => {
-          count += column.tasks.filter(task =>
-            task.labels && task.labels.some(label => label.id === labelId)
+          count += column.tasks.filter(
+            task =>
+              task.labels && task.labels.some(label => label.id === labelId)
           ).length;
         });
         return count;
@@ -124,8 +134,9 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
         let totalCount = 0;
         boardState.boards.forEach(board => {
           board.columns.forEach(column => {
-            totalCount += column.tasks.filter(task =>
-              task.labels && task.labels.some(label => label.id === labelId)
+            totalCount += column.tasks.filter(
+              task =>
+                task.labels && task.labels.some(label => label.id === labelId)
             ).length;
           });
         });
@@ -141,29 +152,32 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
         const newLabel: Label = {
           id: crypto.randomUUID(),
           name,
-          color
+          color,
         };
 
         boardDispatch({
           type: 'ADD_LABEL',
-          payload: { label: newLabel }
+          payload: { label: newLabel },
         });
 
         // 成功メッセージを全てのコールバックに送信
         if (_messageCallbacksRef.current.size > 0) {
           const messageToSend = {
             type: 'success' as const,
-            text: `ラベル「${name}」を作成しました`
+            text: `ラベル「${name}」を作成しました`,
           };
 
           let callbackIndex = 0;
-          _messageCallbacksRef.current.forEach((callback) => {
+          _messageCallbacksRef.current.forEach(callback => {
             callbackIndex++;
             try {
               callback(messageToSend);
             } catch (_error) {
               // eslint-disable-next-line no-console
-              console.error(`💬 createLabel: Error sending message to callback ${callbackIndex}:`, _error);
+              console.error(
+                `💬 createLabel: Error sending message to callback ${callbackIndex}:`,
+                _error
+              );
             }
           });
         }
@@ -174,29 +188,32 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
           const newLabel: Label = {
             id: crypto.randomUUID(),
             name,
-            color
+            color,
           };
 
           boardDispatch({
             type: 'ADD_LABEL',
-            payload: { label: newLabel }
+            payload: { label: newLabel },
           });
 
           // 成功メッセージを全てのコールバックに送信
           if (_messageCallbacksRef.current.size > 0) {
             const messageToSend = {
               type: 'success' as const,
-              text: `ラベル「${name}」を作成しました`
+              text: `ラベル「${name}」を作成しました`,
             };
-            
+
             let callbackIndex = 0;
-            _messageCallbacksRef.current.forEach((callback) => {
+            _messageCallbacksRef.current.forEach(callback => {
               callbackIndex++;
               try {
                 callback(messageToSend);
               } catch (_error) {
                 // eslint-disable-next-line no-console
-                console.error(`💬 createLabelInBoard: Error sending message to callback ${callbackIndex}:`, _error);
+                console.error(
+                  `💬 createLabelInBoard: Error sending message to callback ${callbackIndex}:`,
+                  _error
+                );
               }
             });
           }
@@ -206,14 +223,18 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
         if (!currentBoard) {
           return;
         }
-        const labelToUpdate = currentBoardLabels.find(label => label.id === labelId);
+        const labelToUpdate = currentBoardLabels.find(
+          label => label.id === labelId
+        );
         if (!labelToUpdate) {
           return;
         }
 
         // 変更内容を判定してメッセージを生成
-        const isNameChanged = updates.name !== undefined && updates.name !== labelToUpdate.name;
-        const isColorChanged = updates.color !== undefined && updates.color !== labelToUpdate.color;
+        const isNameChanged =
+          updates.name !== undefined && updates.name !== labelToUpdate.name;
+        const isColorChanged =
+          updates.color !== undefined && updates.color !== labelToUpdate.color;
 
         let messageText = '';
         if (isNameChanged && isColorChanged) {
@@ -229,24 +250,27 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
 
         boardDispatch({
           type: 'UPDATE_LABEL',
-          payload: { labelId, updates }
+          payload: { labelId, updates },
         });
 
         // 成功メッセージを全てのコールバックに送信
         if (_messageCallbacksRef.current.size > 0) {
           const messageToSend = {
             type: 'success' as const,
-            text: messageText
+            text: messageText,
           };
-          
+
           let callbackIndex = 0;
-          _messageCallbacksRef.current.forEach((callback) => {
+          _messageCallbacksRef.current.forEach(callback => {
             callbackIndex++;
             try {
               callback(messageToSend);
             } catch (_error) {
               // eslint-disable-next-line no-console
-              console.error(`📬 updateLabel: Error sending message to callback ${callbackIndex}:`, _error);
+              console.error(
+                `📬 updateLabel: Error sending message to callback ${callbackIndex}:`,
+                _error
+              );
             }
           });
         } else {
@@ -259,29 +283,34 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
         }
 
         // 削除前にラベル名を取得
-        const labelToDelete = currentBoardLabels.find(label => label.id === labelId);
+        const labelToDelete = currentBoardLabels.find(
+          label => label.id === labelId
+        );
         const labelName = labelToDelete?.name || 'ラベル';
 
         boardDispatch({
           type: 'DELETE_LABEL',
-          payload: { labelId }
+          payload: { labelId },
         });
 
         // 成功メッセージを全てのコールバックに送信
         if (_messageCallbacksRef.current.size > 0) {
           const messageToSend = {
             type: 'success' as const,
-            text: `ラベル「${labelName}」を削除しました`
+            text: `ラベル「${labelName}」を削除しました`,
           };
 
           let callbackIndex = 0;
-          _messageCallbacksRef.current.forEach((callback) => {
+          _messageCallbacksRef.current.forEach(callback => {
             callbackIndex++;
             try {
               callback(messageToSend);
             } catch (_error) {
               // eslint-disable-next-line no-console
-              console.error(`💬 deleteLabel: Error sending message to callback ${callbackIndex}:`, _error);
+              console.error(
+                `💬 deleteLabel: Error sending message to callback ${callbackIndex}:`,
+                _error
+              );
             }
           });
         }
@@ -295,24 +324,27 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
 
         boardDispatch({
           type: 'DELETE_LABEL_FROM_ALL_BOARDS',
-          payload: { labelId }
+          payload: { labelId },
         });
 
         // 成功メッセージを全てのコールバックに送信
         if (_messageCallbacksRef.current.size > 0) {
           const messageToSend = {
             type: 'success' as const,
-            text: `ラベル「${labelName}」を削除しました`
+            text: `ラベル「${labelName}」を削除しました`,
           };
 
           let callbackIndex = 0;
-          _messageCallbacksRef.current.forEach((callback) => {
+          _messageCallbacksRef.current.forEach(callback => {
             callbackIndex++;
             try {
               callback(messageToSend);
             } catch (_error) {
               // eslint-disable-next-line no-console
-              console.error(`💬 deleteLabelFromAllBoards: Error sending message to callback ${callbackIndex}:`, _error);
+              console.error(
+                `💬 deleteLabelFromAllBoards: Error sending message to callback ${callbackIndex}:`,
+                _error
+              );
             }
           });
         } else {
@@ -334,15 +366,16 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
         // 新しいIDでラベルをコピー（重複を避けるため）
         const copiedLabel: Label = {
           ...label,
-          id: crypto.randomUUID()
+          id: crypto.randomUUID(),
         };
 
         boardDispatch({
           type: 'ADD_LABEL',
-          payload: { label: copiedLabel }
+          payload: { label: copiedLabel },
         });
       },
-      isLabelInCurrentBoard: (labelId: string) => currentBoardLabels.some(label => label.id === labelId),
+      isLabelInCurrentBoard: (labelId: string) =>
+        currentBoardLabels.some(label => label.id === labelId),
 
       // メッセージコールバック設定
       setMessageCallback: (callback: MessageCallback | null) => {
@@ -368,7 +401,7 @@ export const LabelProvider: React.FC<LabelProviderProps> = ({ children }) => {
 export const useLabel = (): LabelContextType => {
   const context = useContext(LabelContext);
   if (context === undefined) {
-    throw new Error("useLabel must be used within a LabelProvider");
+    throw new Error('useLabel must be used within a LabelProvider');
   }
   return context;
 };

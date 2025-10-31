@@ -1,9 +1,9 @@
-import React from "react";
+import React from 'react';
 
-import type { Column } from "../types";
+import type { Column } from '../types';
 
-import ColumnActions from "./ColumnActions";
-import ColumnTitle from "./ColumnTitle";
+import ColumnActions from './ColumnActions';
+import ColumnTitle from './ColumnTitle';
 
 interface ColumnHeaderProps {
   column: Column;
@@ -26,7 +26,7 @@ const ColumnHeader: React.FC<ColumnHeaderProps> = ({
   canMoveLeft,
   canMoveRight,
 }) => (
-  <div className="flex justify-between items-center pb-4 w-full overflow-hidden">
+  <div className='flex justify-between items-center pb-4 w-full overflow-hidden'>
     <ColumnTitle column={column} />
     <ColumnActions
       onAddTask={onAddTask}

@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo } from 'react';
 
 interface ContentBoxProps {
   children: React.ReactNode;
@@ -11,23 +11,25 @@ interface ContentBoxProps {
 const ContentBox = memo<ContentBoxProps>(
   ({
     children,
-    backgroundClass = "bg-muted",
+    backgroundClass = 'bg-muted',
     emptyText,
     isEmpty = false,
-    className = "",
+    className = '',
   }) => (
-    <div className={`p-3 rounded-md wrap-anywhere ${backgroundClass} ${className}`}>
+    <div
+      className={`p-3 rounded-md wrap-anywhere ${backgroundClass} ${className}`}
+    >
       {isEmpty && emptyText ? (
-        <span className="text-sm text-muted-foreground italic">
+        <span className='text-sm text-muted-foreground italic'>
           {emptyText}
         </span>
       ) : (
         children
       )}
     </div>
-  ),
+  )
 );
 
-ContentBox.displayName = "ContentBox";
+ContentBox.displayName = 'ContentBox';
 
 export default ContentBox;

@@ -13,7 +13,12 @@ export function deepEqual(obj1: unknown, obj2: unknown): boolean {
   }
 
   // null または undefined の場合
-  if (obj1 === null || obj2 === null || obj1 === undefined || obj2 === undefined) {
+  if (
+    obj1 === null ||
+    obj2 === null ||
+    obj1 === undefined ||
+    obj2 === undefined
+  ) {
     return obj1 === obj2;
   }
 
@@ -86,7 +91,12 @@ export function fastDeepEqual(obj1: unknown, obj2: unknown): boolean {
   }
 
   // null/undefinedの場合
-  if (obj1 === null || obj1 === undefined || obj2 === null || obj2 === undefined) {
+  if (
+    obj1 === null ||
+    obj1 === undefined ||
+    obj2 === null ||
+    obj2 === undefined
+  ) {
     return obj1 === obj2;
   }
 

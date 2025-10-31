@@ -5,7 +5,7 @@ export interface DialogActionsProps {
   confirmText: string;
   cancelText?: string;
   isConfirmDisabled?: boolean;
-  confirmVariant?: "primary" | "danger";
+  confirmVariant?: 'primary' | 'danger';
   // 削除系操作（永続的な削除）
   showDelete?: boolean;
   onDelete?: () => void;

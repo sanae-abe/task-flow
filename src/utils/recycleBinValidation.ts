@@ -1,5 +1,5 @@
-import { RETENTION_DAYS_LIMITS, MESSAGES } from "../constants/recycleBin";
-import type { RecycleBinSettings } from "../types/settings";
+import { RETENTION_DAYS_LIMITS, MESSAGES } from '../constants/recycleBin';
+import type { RecycleBinSettings } from '../types/settings';
 
 /**
  * ゴミ箱設定のバリデーション結果
@@ -12,7 +12,9 @@ export interface ValidationResult {
 /**
  * 保持期間の値をバリデーション
  */
-export const validateRetentionDays = (days: number | null): ValidationResult => {
+export const validateRetentionDays = (
+  days: number | null
+): ValidationResult => {
   // 無制限の場合は有効
   if (days === null) {
     return { isValid: true };
@@ -50,7 +52,7 @@ export const validateRetentionDays = (days: number | null): ValidationResult => 
  */
 export const validateRetentionDaysInput = (value: string): ValidationResult => {
   // 空文字列は無制限として有効
-  if (value.trim() === "") {
+  if (value.trim() === '') {
     return { isValid: true };
   }
 
@@ -70,7 +72,9 @@ export const validateRetentionDaysInput = (value: string): ValidationResult => {
 /**
  * ゴミ箱設定全体をバリデーション
  */
-export const validateRecycleBinSettings = (settings: RecycleBinSettings): ValidationResult => validateRetentionDays(settings.retentionDays);
+export const validateRecycleBinSettings = (
+  settings: RecycleBinSettings
+): ValidationResult => validateRetentionDays(settings.retentionDays);
 
 /**
  * 入力値を安全な値に変換
@@ -79,7 +83,7 @@ export const sanitizeRetentionDaysInput = (value: string): number | null => {
   const trimmed = value.trim();
 
   // 空文字列は無制限
-  if (trimmed === "") {
+  if (trimmed === '') {
     return null;
   }
 

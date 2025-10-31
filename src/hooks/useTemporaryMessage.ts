@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useCallback, useRef, useEffect } from 'react';
 
 export interface TemporaryMessage {
   text: string;
@@ -30,29 +30,35 @@ export const useTemporaryMessage = (): UseTemporaryMessageResult => {
     }
   }, []);
 
-  const showMessage = useCallback((newMessage: TemporaryMessage, duration = 3000) => {
-    // 既存のタイムアウトをクリア
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-
-    setMessage(newMessage);
-
-    // 指定された時間後にメッセージをクリア
-    if (duration > 0) {
-      timeoutRef.current = setTimeout(() => {
-        setMessage(null);
-        timeoutRef.current = null;
-      }, duration);
-    }
-  }, []);
-
-  // コンポーネントのアンマウント時にタイムアウトをクリーンアップ
-  useEffect(() => () => {
+  const showMessage = useCallback(
+    (newMessage: TemporaryMessage, duration = 3000) => {
+      // 既存のタイムアウトをクリア
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
-    }, []);
+
+      setMessage(newMessage);
+
+      // 指定された時間後にメッセージをクリア
+      if (duration > 0) {
+        timeoutRef.current = setTimeout(() => {
+          setMessage(null);
+          timeoutRef.current = null;
+        }, duration);
+      }
+    },
+    []
+  );
+
+  // コンポーネントのアンマウント時にタイムアウトをクリーンアップ
+  useEffect(
+    () => () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    },
+    []
+  );
 
   return {
     message,

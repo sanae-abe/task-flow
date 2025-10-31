@@ -17,16 +17,16 @@ const SortableHeader: React.FC<SortableHeaderProps> = ({
   sortDirection,
   onSort,
   children,
-  align = 'left'
+  align = 'left',
 }) => {
   const isActive = currentSortField === field;
 
   return (
     <button
-      type="button"
+      type='button'
       onClick={() => onSort(field)}
       style={{
-        color: 'var(--muted-foreground)'
+        color: 'var(--muted-foreground)',
       }}
       className={`bg-transparent border-0 cursor-pointer flex w-full p-0 font-xs font-bold font-[inherit] ${
         align === 'center' ? 'justify-center' : 'justify-start'

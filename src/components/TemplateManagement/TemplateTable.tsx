@@ -1,5 +1,9 @@
 import React from 'react';
-import type { TaskTemplate, TemplateSortField, TemplateSortDirection } from '../../types/template';
+import type {
+  TaskTemplate,
+  TemplateSortField,
+  TemplateSortDirection,
+} from '../../types/template';
 import TemplateTableHeader from './TemplateTableHeader';
 import TemplateTableRow from './TemplateTableRow';
 
@@ -26,19 +30,19 @@ const TemplateTable: React.FC<TemplateTableProps> = ({
   onEdit,
   onDelete,
   onToggleFavorite,
-  hasActiveFilters
+  hasActiveFilters,
 }) => {
   // 空状態の表示
   if (templates.length === 0) {
     return (
-      <div className="text-center p-6 border border-border border-dashed rounded-md flex flex-col gap-2 justify-center items-center">
-        <span className="text-muted-foreground">
+      <div className='text-center p-6 border border-border border-dashed rounded-md flex flex-col gap-2 justify-center items-center'>
+        <span className='text-muted-foreground'>
           {hasActiveFilters
             ? '条件に一致するテンプレートが見つかりません'
             : 'まだテンプレートがありません'}
         </span>
         {hasActiveFilters && (
-          <span className="text-xs text-muted-foreground">
+          <span className='text-xs text-muted-foreground'>
             フィルター条件を変更して再度お試しください
           </span>
         )}
@@ -47,7 +51,7 @@ const TemplateTable: React.FC<TemplateTableProps> = ({
   }
 
   return (
-    <div className="border border-border rounded-md overflow-hidden">
+    <div className='border border-border rounded-md overflow-hidden'>
       {/* テーブルヘッダー */}
       <TemplateTableHeader
         sortField={sortField}
@@ -56,7 +60,7 @@ const TemplateTable: React.FC<TemplateTableProps> = ({
       />
 
       {/* テーブルボディ */}
-      <div className="max-h-[500px] overflow-auto">
+      <div className='max-h-[500px] overflow-auto'>
         {templates.map((template, index) => (
           <TemplateTableRow
             key={template.id}

@@ -27,27 +27,30 @@ export const useEmojiPicker = (
     setShowEmojiPicker(!showEmojiPicker);
   }, [showEmojiPicker]);
 
-  const handleEmojiClick = useCallback((emojiData: EmojiClickData) => {
-    if (editorRef.current) {
-      editorRef.current.focus();
+  const handleEmojiClick = useCallback(
+    (emojiData: EmojiClickData) => {
+      if (editorRef.current) {
+        editorRef.current.focus();
 
-      // 保存されたカーソル位置を復元
-      if (savedEmojiRange) {
-        const selection = window.getSelection();
-        if (selection) {
-          selection.removeAllRanges();
-          selection.addRange(savedEmojiRange);
+        // 保存されたカーソル位置を復元
+        if (savedEmojiRange) {
+          const selection = window.getSelection();
+          if (selection) {
+            selection.removeAllRanges();
+            selection.addRange(savedEmojiRange);
+          }
         }
+
+        // 絵文字を挿入
+        insertHtmlAtCursor(emojiData.emoji);
+
+        handleInput();
+        setShowEmojiPicker(false);
+        setSavedEmojiRange(null);
       }
-
-      // 絵文字を挿入
-      insertHtmlAtCursor(emojiData.emoji);
-
-      handleInput();
-      setShowEmojiPicker(false);
-      setSavedEmojiRange(null);
-    }
-  }, [handleInput, savedEmojiRange, editorRef]);
+    },
+    [handleInput, savedEmojiRange, editorRef]
+  );
 
   // 統合されたグローバルイベントハンドラー
   useEffect(() => {

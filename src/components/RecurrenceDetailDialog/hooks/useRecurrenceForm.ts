@@ -1,6 +1,6 @@
-import { useState, useEffect, useMemo } from "react";
-import type { RecurrenceConfig, RecurrencePattern } from "../../../types";
-import { validateRecurrenceConfig } from "../../../utils/recurrence";
+import { useState, useEffect, useMemo } from 'react';
+import type { RecurrenceConfig, RecurrencePattern } from '../../../types';
+import { validateRecurrenceConfig } from '../../../utils/recurrence';
 
 interface UseRecurrenceFormProps {
   isOpen: boolean;
@@ -22,13 +22,15 @@ export const useRecurrenceForm = ({
   const defaultConfig: RecurrenceConfig = useMemo(
     () => ({
       enabled: true,
-      pattern: "daily" as RecurrencePattern,
+      pattern: 'daily' as RecurrencePattern,
       interval: 1,
     }),
     []
   );
 
-  const [config, setConfig] = useState<RecurrenceConfig>(() => recurrence ? { ...defaultConfig, ...recurrence } : defaultConfig);
+  const [config, setConfig] = useState<RecurrenceConfig>(() =>
+    recurrence ? { ...defaultConfig, ...recurrence } : defaultConfig
+  );
 
   const [errors, setErrors] = useState<string[]>([]);
 

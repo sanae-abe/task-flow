@@ -4,13 +4,13 @@ import type {
   Label,
   SubTask,
   FileAttachment,
-} from "../types";
-import { logger } from "./logger";
+} from '../types';
+import { logger } from './logger';
 import { v4 as uuidv4 } from 'uuid';
 
-const STORAGE_KEY = "kanban-boards";
-const DEMO_BACKUP_KEY = "kanban-demo-backup";
-const DEMO_BOARD_FLAG = "__DEMO_BOARD__";
+const STORAGE_KEY = 'kanban-boards';
+const DEMO_BACKUP_KEY = 'kanban-demo-backup';
+const DEMO_BOARD_FLAG = '__DEMO_BOARD__';
 
 interface StoredTask {
   id: string;
@@ -43,17 +43,19 @@ interface StoredBoard {
 
 export const saveBoards = (
   boards: KanbanBoard[],
-  currentBoardId?: string,
+  currentBoardId?: string
 ): void => {
   try {
-    logger.debug("💾 Saving boards to localStorage:", boards.length, "boards");
-    
+    logger.debug('💾 Saving boards to localStorage:', boards.length, 'boards');
+
     // デモボードが削除されていないかチェック
-    const hasDemoBoard = boards.some((board) => (board as unknown as Record<string, unknown>)[DEMO_BOARD_FLAG]);
-    
+    const hasDemoBoard = boards.some(
+      board => (board as unknown as Record<string, unknown>)[DEMO_BOARD_FLAG]
+    );
+
     if (!hasDemoBoard) {
       // デモボードが削除されている場合、バックアップから復元を試行
-      logger.warn("Demo board missing, attempting to restore from backup");
+      logger.warn('Demo board missing, attempting to restore from backup');
       try {
         const demoBackup = localStorage.getItem(DEMO_BACKUP_KEY);
         if (demoBackup) {
@@ -61,25 +63,25 @@ export const saveBoards = (
           if (Array.isArray(backupBoards) && backupBoards.length > 0) {
             // デモボードを先頭に追加（既存のボードは保持）
             const restoredBoards = [...backupBoards, ...boards];
-            logger.info("📖 Demo board restored from backup");
+            logger.info('📖 Demo board restored from backup');
             localStorage.setItem(STORAGE_KEY, JSON.stringify(restoredBoards));
             if (currentBoardId) {
-              localStorage.setItem("current-board-id", currentBoardId);
+              localStorage.setItem('current-board-id', currentBoardId);
             }
             return;
           }
         }
       } catch (backupError) {
-        logger.warn("Failed to restore demo board from backup:", backupError);
+        logger.warn('Failed to restore demo board from backup:', backupError);
       }
     }
-    
+
     localStorage.setItem(STORAGE_KEY, JSON.stringify(boards));
     if (currentBoardId) {
-      localStorage.setItem("current-board-id", currentBoardId);
+      localStorage.setItem('current-board-id', currentBoardId);
     }
   } catch (_error) {
-    logger.warn("Failed to save boards to localStorage:", _error);
+    logger.warn('Failed to save boards to localStorage:', _error);
   }
 };
 
@@ -87,32 +89,32 @@ export const loadBoards = (): KanbanBoard[] => {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
     logger.debug(
-      "📖 Loading boards from localStorage:",
-      stored ? "found data" : "no data",
+      '📖 Loading boards from localStorage:',
+      stored ? 'found data' : 'no data'
     );
-    
+
     if (!stored) {
       // ローカルストレージにデータがない場合、デモデータを作成
-      logger.debug("📖 Creating demo data for new user");
+      logger.debug('📖 Creating demo data for new user');
       return createDemoBoard();
     }
 
     const boards = JSON.parse(stored);
     if (!Array.isArray(boards)) {
-      logger.warn("Invalid boards data in localStorage");
+      logger.warn('Invalid boards data in localStorage');
       return createDemoBoard();
     }
-    logger.debug("📖 Loaded", boards.length, "boards from localStorage");
+    logger.debug('📖 Loaded', boards.length, 'boards from localStorage');
 
     return boards.map((board: StoredBoard) => ({
       ...board,
       labels: board.labels || [],
       createdAt:
-        typeof board.createdAt === "string"
+        typeof board.createdAt === 'string'
           ? board.createdAt
           : new Date(board.createdAt).toISOString(),
       updatedAt:
-        typeof board.updatedAt === "string"
+        typeof board.updatedAt === 'string'
           ? board.updatedAt
           : new Date(board.updatedAt).toISOString(),
       columns: board.columns.map((column: StoredColumn) => ({
@@ -125,15 +127,15 @@ export const loadBoards = (): KanbanBoard[] => {
           completedAt: task.completedAt || null,
           labels: task.labels || [],
           createdAt:
-            typeof task.createdAt === "string"
+            typeof task.createdAt === 'string'
               ? task.createdAt
               : new Date(task.createdAt).toISOString(),
           updatedAt:
-            typeof task.updatedAt === "string"
+            typeof task.updatedAt === 'string'
               ? task.updatedAt
               : new Date(task.updatedAt).toISOString(),
           dueDate: task.dueDate
-            ? typeof task.dueDate === "string"
+            ? typeof task.dueDate === 'string'
               ? task.dueDate
               : new Date(task.dueDate).toISOString()
             : null,
@@ -141,7 +143,7 @@ export const loadBoards = (): KanbanBoard[] => {
       })),
     }));
   } catch (_error) {
-    logger.warn("Failed to load boards from localStorage:", _error);
+    logger.warn('Failed to load boards from localStorage:', _error);
     return createDemoBoard();
   }
 };
@@ -165,7 +167,7 @@ const createDemoBoard = (): KanbanBoard[] => {
     { id: uuidv4(), name: 'セキュリティ', color: '#d1242f' },
     { id: uuidv4(), name: '機能改善', color: '#1a7f37' },
     { id: uuidv4(), name: 'バグ修正', color: '#656d76' },
-    { id: uuidv4(), name: 'ドキュメント', color: '#0969da' }
+    { id: uuidv4(), name: 'ドキュメント', color: '#0969da' },
   ];
 
   const demoBoard: KanbanBoard = {
@@ -174,7 +176,7 @@ const createDemoBoard = (): KanbanBoard[] => {
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     labels,
-    deletionState: "active",
+    deletionState: 'active',
     deletedAt: null,
     // @ts-ignore デモデータ識別フラグ
     [DEMO_BOARD_FLAG]: true,
@@ -182,7 +184,7 @@ const createDemoBoard = (): KanbanBoard[] => {
       {
         id: uuidv4(),
         title: '📝 未着手',
-        deletionState: "active",
+        deletionState: 'active',
         deletedAt: null,
         tasks: [
           {
@@ -193,12 +195,29 @@ const createDemoBoard = (): KanbanBoard[] => {
             updatedAt: new Date().toISOString(),
             dueDate: yesterday.toISOString(), // 昨日の17:00(期限切れ)
             priority: 'high' as Priority,
-            labels: [labels[1], labels[2]].filter((label): label is Label => Boolean(label)), // 機能改善 + バグ修正
+            labels: [labels[1], labels[2]].filter((label): label is Label =>
+              Boolean(label)
+            ), // 機能改善 + バグ修正
             files: [],
             subTasks: [
-              { id: uuidv4(), title: 'Lexical vs Quill 技術調査', completed: true, createdAt: new Date().toISOString() },
-              { id: uuidv4(), title: 'プロトタイプ作成', completed: false, createdAt: new Date().toISOString() },
-              { id: uuidv4(), title: 'ユニットテスト作成', completed: false, createdAt: new Date().toISOString() }
+              {
+                id: uuidv4(),
+                title: 'Lexical vs Quill 技術調査',
+                completed: true,
+                createdAt: new Date().toISOString(),
+              },
+              {
+                id: uuidv4(),
+                title: 'プロトタイプ作成',
+                completed: false,
+                createdAt: new Date().toISOString(),
+              },
+              {
+                id: uuidv4(),
+                title: 'ユニットテスト作成',
+                completed: false,
+                createdAt: new Date().toISOString(),
+              },
             ],
             completedAt: null,
           },
@@ -221,27 +240,44 @@ const generateWeeklyReport = () => {
             updatedAt: new Date().toISOString(),
             dueDate: todayEvening.toISOString(), // 今日の18:00
             priority: 'medium' as Priority,
-            labels: [labels[3]].filter((label): label is Label => Boolean(label)), // ドキュメント
+            labels: [labels[3]].filter((label): label is Label =>
+              Boolean(label)
+            ), // ドキュメント
             files: [],
             subTasks: [
-              { id: uuidv4(), title: 'タスク完了状況の集計', completed: true, createdAt: new Date().toISOString() },
-              { id: uuidv4(), title: '課題とブロッカーの整理', completed: false, createdAt: new Date().toISOString() },
-              { id: uuidv4(), title: 'レポート作成と共有', completed: false, createdAt: new Date().toISOString() }
+              {
+                id: uuidv4(),
+                title: 'タスク完了状況の集計',
+                completed: true,
+                createdAt: new Date().toISOString(),
+              },
+              {
+                id: uuidv4(),
+                title: '課題とブロッカーの整理',
+                completed: false,
+                createdAt: new Date().toISOString(),
+              },
+              {
+                id: uuidv4(),
+                title: 'レポート作成と共有',
+                completed: false,
+                createdAt: new Date().toISOString(),
+              },
             ],
             completedAt: null,
             recurrence: {
               enabled: true,
               pattern: 'weekly',
               interval: 1,
-              endDate: undefined
-            }
-          }
-        ]
+              endDate: undefined,
+            },
+          },
+        ],
       },
       {
         id: uuidv4(),
         title: '🚀 進行中',
-        deletionState: "active",
+        deletionState: 'active',
         deletedAt: null,
         tasks: [
           {
@@ -252,12 +288,29 @@ const generateWeeklyReport = () => {
             updatedAt: new Date().toISOString(),
             dueDate: tomorrowMorning.toISOString(), // 明日の10:00
             priority: 'medium' as Priority,
-            labels: [labels[1], labels[3]].filter((label): label is Label => Boolean(label)), // 機能改善 + ドキュメント
+            labels: [labels[1], labels[3]].filter((label): label is Label =>
+              Boolean(label)
+            ), // 機能改善 + ドキュメント
             files: [],
             subTasks: [
-              { id: uuidv4(), title: 'ユーザビリティテスト分析', completed: true, createdAt: new Date().toISOString() },
-              { id: uuidv4(), title: 'ワイヤーフレーム作成', completed: true, createdAt: new Date().toISOString() },
-              { id: uuidv4(), title: 'プロトタイプ実装', completed: false, createdAt: new Date().toISOString() }
+              {
+                id: uuidv4(),
+                title: 'ユーザビリティテスト分析',
+                completed: true,
+                createdAt: new Date().toISOString(),
+              },
+              {
+                id: uuidv4(),
+                title: 'ワイヤーフレーム作成',
+                completed: true,
+                createdAt: new Date().toISOString(),
+              },
+              {
+                id: uuidv4(),
+                title: 'プロトタイプ実装',
+                completed: false,
+                createdAt: new Date().toISOString(),
+              },
             ],
             completedAt: null,
           },
@@ -282,17 +335,19 @@ const optimizedQuery = await db.task.findMany({
             updatedAt: new Date().toISOString(),
             dueDate: null, // 期限なし
             priority: 'high' as Priority,
-            labels: [labels[1], labels[2]].filter((label): label is Label => Boolean(label)), // 機能改善 + バグ修正
+            labels: [labels[1], labels[2]].filter((label): label is Label =>
+              Boolean(label)
+            ), // 機能改善 + バグ修正
             files: [],
             subTasks: [],
             completedAt: null,
-          }
-        ]
+          },
+        ],
       },
       {
         id: uuidv4(),
         title: '✅ 完了',
-        deletionState: "active",
+        deletionState: 'active',
         deletedAt: null,
         tasks: [
           {
@@ -314,15 +369,37 @@ const authenticateUser = async (email, password) => {
             updatedAt: new Date(today.getTime() - 86400000 * 2).toISOString(), // 2日前
             dueDate: new Date(today.getTime() - 86400000 * 3).toISOString(),
             priority: 'high' as Priority,
-            labels: [labels[0]].filter((label): label is Label => Boolean(label)), // セキュリティ
+            labels: [labels[0]].filter((label): label is Label =>
+              Boolean(label)
+            ), // セキュリティ
             files: [],
             subTasks: [
-              { id: uuidv4(), title: 'JWT ライブラリ選定', completed: true, createdAt: new Date().toISOString() },
-              { id: uuidv4(), title: 'ログイン画面作成', completed: true, createdAt: new Date().toISOString() },
-              { id: uuidv4(), title: '認証ミドルウェア実装', completed: true, createdAt: new Date().toISOString() },
-              { id: uuidv4(), title: 'セキュリティテスト', completed: true, createdAt: new Date().toISOString() }
+              {
+                id: uuidv4(),
+                title: 'JWT ライブラリ選定',
+                completed: true,
+                createdAt: new Date().toISOString(),
+              },
+              {
+                id: uuidv4(),
+                title: 'ログイン画面作成',
+                completed: true,
+                createdAt: new Date().toISOString(),
+              },
+              {
+                id: uuidv4(),
+                title: '認証ミドルウェア実装',
+                completed: true,
+                createdAt: new Date().toISOString(),
+              },
+              {
+                id: uuidv4(),
+                title: 'セキュリティテスト',
+                completed: true,
+                createdAt: new Date().toISOString(),
+              },
             ],
-            completedAt: new Date(today.getTime() - 86400000 * 2).toISOString()
+            completedAt: new Date(today.getTime() - 86400000 * 2).toISOString(),
           },
           {
             id: uuidv4(),
@@ -332,7 +409,9 @@ const authenticateUser = async (email, password) => {
             updatedAt: new Date(today.getTime() - 86400000 * 1).toISOString(), // 1日前
             dueDate: null, // 期限なし
             priority: 'medium' as Priority,
-            labels: [labels[3]].filter((label): label is Label => Boolean(label)),
+            labels: [labels[3]].filter((label): label is Label =>
+              Boolean(label)
+            ),
             files: [
               {
                 id: uuidv4(),
@@ -340,38 +419,48 @@ const authenticateUser = async (email, password) => {
                 size: 245760,
                 type: 'application/pdf',
                 data: '',
-                uploadedAt: new Date().toISOString()
-              }
+                uploadedAt: new Date().toISOString(),
+              },
             ],
             subTasks: [
-              { id: uuidv4(), title: 'ブランチ戦略ドキュメント作成', completed: true, createdAt: new Date().toISOString() },
-              { id: uuidv4(), title: 'PRテンプレート作成', completed: true, createdAt: new Date().toISOString() }
+              {
+                id: uuidv4(),
+                title: 'ブランチ戦略ドキュメント作成',
+                completed: true,
+                createdAt: new Date().toISOString(),
+              },
+              {
+                id: uuidv4(),
+                title: 'PRテンプレート作成',
+                completed: true,
+                createdAt: new Date().toISOString(),
+              },
             ],
             completedAt: new Date(today.getTime() - 86400000 * 1).toISOString(),
-          }
-        ]
-      }
-    ]
+          },
+        ],
+      },
+    ],
   };
 
   // デモデータをバックアップストレージに保存
   try {
     localStorage.setItem(DEMO_BACKUP_KEY, JSON.stringify([demoBoard]));
-    logger.info("📖 Demo board backup saved successfully");
+    logger.info('📖 Demo board backup saved successfully');
   } catch (_error) {
-    logger.warn("Failed to save demo board backup:", _error);
+    logger.warn('Failed to save demo board backup:', _error);
   }
 
-  logger.info("📖 Demo board created successfully");
+  logger.info('📖 Demo board created successfully');
   return [demoBoard];
 };
 
 export const clearStorage = (): void => {
   try {
     localStorage.removeItem(STORAGE_KEY);
-    localStorage.removeItem("current-board-id");
+    localStorage.removeItem('current-board-id');
   } catch (_error) {
-    logger.warn("Failed to clear localStorage:", _error);
+    logger.warn('Failed to clear localStorage:', _error);
   }
 };
 
@@ -390,9 +479,11 @@ export const hasDemoBoard = (): boolean => {
       return false;
     }
 
-    return boards.some((board) => (board as unknown as Record<string, unknown>)[DEMO_BOARD_FLAG]);
+    return boards.some(
+      board => (board as unknown as Record<string, unknown>)[DEMO_BOARD_FLAG]
+    );
   } catch (_error) {
-    logger.warn("Failed to check demo board existence:", _error);
+    logger.warn('Failed to check demo board existence:', _error);
     return false;
   }
 };
@@ -402,30 +493,34 @@ export const hasDemoBoard = (): boolean => {
  */
 export const restoreDemoBoard = (): KanbanBoard[] => {
   try {
-    logger.info("📖 Force restoring demo board");
-    
+    logger.info('📖 Force restoring demo board');
+
     // 既存のボードを取得
     const existingBoards = loadBoards();
-    
+
     // デモボードが既に存在する場合はそのまま返す
-    if (existingBoards.some((board) => (board as unknown as Record<string, unknown>)[DEMO_BOARD_FLAG])) {
-      logger.info("📖 Demo board already exists, no restoration needed");
+    if (
+      existingBoards.some(
+        board => (board as unknown as Record<string, unknown>)[DEMO_BOARD_FLAG]
+      )
+    ) {
+      logger.info('📖 Demo board already exists, no restoration needed');
       return existingBoards;
     }
-    
+
     // 新しいデモボードを作成
     const demoBoard = createDemoBoard();
-    
+
     // 既存のボードと結合（デモボードを先頭に配置）
     const allBoards = [...demoBoard, ...existingBoards];
-    
+
     // 保存
     saveBoards(allBoards);
-    
-    logger.info("📖 Demo board restored successfully");
+
+    logger.info('📖 Demo board restored successfully');
     return allBoards;
   } catch (_error) {
-    logger._error("Failed to restore demo board:", _error);
+    logger._error('Failed to restore demo board:', _error);
     // エラーの場合は既存のボードまたは新しいデモボードを返す
     try {
       const existingBoards = loadBoards();
@@ -440,10 +535,12 @@ export const restoreDemoBoard = (): KanbanBoard[] => {
  * デモデータが削除されることを防ぐ保護機能
  */
 export const protectDemoBoard = (boards: KanbanBoard[]): KanbanBoard[] => {
-  const hasDemo = boards.some((board) => (board as unknown as Record<string, unknown>)[DEMO_BOARD_FLAG]);
+  const hasDemo = boards.some(
+    board => (board as unknown as Record<string, unknown>)[DEMO_BOARD_FLAG]
+  );
 
   if (!hasDemo) {
-    logger.warn("📖 Demo board protection triggered - restoring demo board");
+    logger.warn('📖 Demo board protection triggered - restoring demo board');
     return restoreDemoBoard();
   }
 

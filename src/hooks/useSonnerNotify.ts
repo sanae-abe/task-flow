@@ -1,4 +1,4 @@
-import { toast } from "sonner";
+import { toast } from 'sonner';
 
 export interface AddNotificationOptions {
   id?: string;
@@ -11,20 +11,50 @@ export interface AddNotificationOptions {
 }
 
 export interface NotifyAPI {
-  success: (message: string, options?: AddNotificationOptions) => string | number;
-  _error: (message: string, options?: AddNotificationOptions) => string | number;
+  success: (
+    message: string,
+    options?: AddNotificationOptions
+  ) => string | number;
+  _error: (
+    message: string,
+    options?: AddNotificationOptions
+  ) => string | number;
   info: (message: string, options?: AddNotificationOptions) => string | number;
-  warning: (message: string, options?: AddNotificationOptions) => string | number;
+  warning: (
+    message: string,
+    options?: AddNotificationOptions
+  ) => string | number;
   toast: {
-    success: (message: string, options?: AddNotificationOptions) => string | number;
-    _error: (message: string, options?: AddNotificationOptions) => string | number;
-    loading: (message: string, options?: AddNotificationOptions) => string | number;
+    success: (
+      message: string,
+      options?: AddNotificationOptions
+    ) => string | number;
+    _error: (
+      message: string,
+      options?: AddNotificationOptions
+    ) => string | number;
+    loading: (
+      message: string,
+      options?: AddNotificationOptions
+    ) => string | number;
   };
   persistent: {
-    success: (message: string, options?: Omit<AddNotificationOptions, "persistent">) => string | number;
-    info: (message: string, options?: Omit<AddNotificationOptions, "persistent">) => string | number;
-    warning: (message: string, options?: Omit<AddNotificationOptions, "persistent">) => string | number;
-    _error: (message: string, options?: Omit<AddNotificationOptions, "persistent">) => string | number;
+    success: (
+      message: string,
+      options?: Omit<AddNotificationOptions, 'persistent'>
+    ) => string | number;
+    info: (
+      message: string,
+      options?: Omit<AddNotificationOptions, 'persistent'>
+    ) => string | number;
+    warning: (
+      message: string,
+      options?: Omit<AddNotificationOptions, 'persistent'>
+    ) => string | number;
+    _error: (
+      message: string,
+      options?: Omit<AddNotificationOptions, 'persistent'>
+    ) => string | number;
   };
 }
 
@@ -42,10 +72,12 @@ export const useSonnerNotify = (): NotifyAPI => {
     const toastOptions = {
       id,
       duration: persistent ? Infinity : duration,
-      action: action ? {
-        label: action.label,
-        onClick: action.onClick,
-      } : undefined,
+      action: action
+        ? {
+            label: action.label,
+            onClick: action.onClick,
+          }
+        : undefined,
     };
 
     switch (type) {
@@ -64,13 +96,18 @@ export const useSonnerNotify = (): NotifyAPI => {
   };
 
   // 型化されたトースト作成関数ファクトリー
-  const createTypedToast = (type: 'success' | '_error' | 'info' | 'warning' | 'loading', defaultOptions: AddNotificationOptions = {}) =>
+  const createTypedToast =
+    (
+      type: 'success' | '_error' | 'info' | 'warning' | 'loading',
+      defaultOptions: AddNotificationOptions = {}
+    ) =>
     (message: string, options?: AddNotificationOptions) =>
       createToast(type, message, { ...defaultOptions, ...options });
 
   // 永続化トースト作成関数ファクトリー
-  const createPersistentToast = (type: 'success' | '_error' | 'info' | 'warning') =>
-    (message: string, options?: Omit<AddNotificationOptions, "persistent">) =>
+  const createPersistentToast =
+    (type: 'success' | '_error' | 'info' | 'warning') =>
+    (message: string, options?: Omit<AddNotificationOptions, 'persistent'>) =>
       createToast(type, message, { ...options, persistent: true });
 
   return {
@@ -120,7 +157,7 @@ export const useAsyncSonnerNotify = () => {
       toast.dismiss(loadingId);
       const errorMessage = messages._error
         ? messages._error(_error as Error)
-        : "処理中にエラーが発生しました";
+        : '処理中にエラーが発生しました';
       notify._error(errorMessage);
       throw _error;
     }

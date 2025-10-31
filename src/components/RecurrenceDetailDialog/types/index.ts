@@ -1,4 +1,4 @@
-import type { RecurrenceConfig, RecurrencePattern } from "../../../types";
+import type { RecurrenceConfig, RecurrencePattern } from '../../../types';
 
 export interface RecurrenceDetailDialogProps {
   isOpen: boolean;
@@ -17,4 +17,4 @@ export interface WeekdayOption {
   label: string;
 }
 
-export * from "../../../types";
+export * from '../../../types';

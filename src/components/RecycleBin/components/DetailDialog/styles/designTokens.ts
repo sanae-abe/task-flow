@@ -38,18 +38,18 @@ export const itemTypeColors = {
 
 // スペーシングトークン（Primer準拠）
 export const spacing = {
-  xs: 1,    // 4px
-  sm: 2,    // 8px
-  md: 3,    // 16px
-  lg: 4,    // 24px
-  xl: 5,    // 32px
+  xs: 1, // 4px
+  sm: 2, // 8px
+  md: 3, // 16px
+  lg: 4, // 24px
+  xl: 5, // 32px
 } as const;
 
 // ボーダー半径トークン
 export const borderRadius = {
-  small: 1,   // 6px
-  medium: 2,  // 12px
-  large: 3,   // 16px
+  small: 1, // 6px
+  medium: 2, // 12px
+  large: 3, // 16px
 } as const;
 
 // タイポグラフィトークン
@@ -85,19 +85,19 @@ export const typography = {
 
 // レスポンシブブレークポイント（Primer準拠）
 export const breakpoints = {
-  xs: '@media (max-width: 543px)',      // ~544px
-  sm: '@media (min-width: 544px)',      // 544px~
-  md: '@media (min-width: 768px)',      // 768px~
-  lg: '@media (min-width: 1012px)',     // 1012px~
-  xl: '@media (min-width: 1280px)',     // 1280px~
+  xs: '@media (max-width: 543px)', // ~544px
+  sm: '@media (min-width: 544px)', // 544px~
+  md: '@media (min-width: 768px)', // 768px~
+  lg: '@media (min-width: 1012px)', // 1012px~
+  xl: '@media (min-width: 1280px)', // 1280px~
 } as const;
 
 // レスポンシブレイアウト設定
 export const responsiveLayout = {
   metadataGrid: {
-    xs: '1fr',                // 1カラム
-    sm: '1fr',                // 1カラム
-    md: '1fr 1fr',            // 2カラム
+    xs: '1fr', // 1カラム
+    sm: '1fr', // 1カラム
+    md: '1fr 1fr', // 2カラム
   },
   actionButtons: {
     xs: {
@@ -110,9 +110,9 @@ export const responsiveLayout = {
     },
   },
   padding: {
-    xs: spacing.sm,           // 8px
-    sm: spacing.md,           // 16px
-    md: spacing.md,           // 16px
+    xs: spacing.sm, // 8px
+    sm: spacing.md, // 16px
+    md: spacing.md, // 16px
   },
 } as const;
 
@@ -134,7 +134,8 @@ export const shadows = {
 /**
  * アイテム種別に応じたカラー情報を取得
  */
-export const getItemTypeColors = (type: RecycleBinItem['type']) => itemTypeColors[type];
+export const getItemTypeColors = (type: RecycleBinItem['type']) =>
+  itemTypeColors[type];
 
 /**
  * レスポンシブ値を取得するヘルパー
@@ -142,6 +143,6 @@ export const getItemTypeColors = (type: RecycleBinItem['type']) => itemTypeColor
 export const getResponsiveValue = <T>(
   values: { xs?: T; sm?: T; md?: T; lg?: T; xl?: T },
   defaultValue: T
-): T => 
+): T =>
   // 簡易実装: 実際のブレークポイント判定は CSS-in-JS で行う
   values.md || values.sm || values.xs || defaultValue;

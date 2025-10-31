@@ -1,8 +1,8 @@
-import { useEffect, useRef, useCallback } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useEffect, useRef, useCallback } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 
-import { useKanban } from "../contexts/KanbanContext";
-import type { ViewMode } from "../types";
+import { useKanban } from '../contexts/KanbanContext';
+import type { ViewMode } from '../types';
 
 /**
  * URLとビューモードを同期させるカスタムフック
@@ -24,29 +24,29 @@ export const useViewRoute = () => {
   // URLパスからビューモードを取得
   const getViewModeFromPath = useCallback((pathname: string): ViewMode => {
     switch (pathname) {
-      case "/kanban":
-        return "kanban";
-      case "/calendar":
-        return "calendar";
-      case "/table":
-        return "table";
-      case "/":
+      case '/kanban':
+        return 'kanban';
+      case '/calendar':
+        return 'calendar';
+      case '/table':
+        return 'table';
+      case '/':
       default:
-        return "kanban"; // デフォルトはカンバンビュー
+        return 'kanban'; // デフォルトはカンバンビュー
     }
   }, []);
 
   // ビューモードからURLパスを取得
   const getPathFromViewMode = useCallback((viewMode: ViewMode): string => {
     switch (viewMode) {
-      case "kanban":
-        return "/kanban";
-      case "calendar":
-        return "/calendar";
-      case "table":
-        return "/table";
+      case 'kanban':
+        return '/kanban';
+      case 'calendar':
+        return '/calendar';
+      case 'table':
+        return '/table';
       default:
-        return "/kanban";
+        return '/kanban';
     }
   }, []);
 
@@ -87,7 +87,7 @@ export const useViewRoute = () => {
       isNavigatingRef.current = true;
       navigate(path);
     },
-    [state.viewMode, location.pathname, navigate, getPathFromViewMode],
+    [state.viewMode, location.pathname, navigate, getPathFromViewMode]
   );
 
   return {

@@ -1,11 +1,11 @@
-import React, { type ReactNode } from "react";
+import React, { type ReactNode } from 'react';
 
-import { BoardProvider } from "./BoardContext";
-import { TaskProvider } from "./TaskContext";
-import { UIProvider } from "./UIContext";
-import { LabelProvider } from "./LabelContext";
-import { TableColumnsProvider } from "./TableColumnsContext";
-import { KanbanProvider } from "./KanbanContext";
+import { BoardProvider } from './BoardContext';
+import { TaskProvider } from './TaskContext';
+import { UIProvider } from './UIContext';
+import { LabelProvider } from './LabelContext';
+import { TableColumnsProvider } from './TableColumnsContext';
+import { KanbanProvider } from './KanbanContext';
 
 interface AppProvidersProps {
   children: ReactNode;

@@ -1,19 +1,20 @@
 import React from 'react';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { cn } from '@/lib/utils';
-import {
-  AlertTriangle,
-  CircleCheck,
-  Info,
-  XCircle,
-  X
-} from 'lucide-react';
+import { AlertTriangle, CircleCheck, Info, XCircle, X } from 'lucide-react';
 import IconButton from './IconButton';
 
 /**
  * ダイアログ内でFlashメッセージを表示するためのメッセージタイプ
  */
-export type DialogMessageType = 'success' | 'danger' | 'warning' | 'critical' | 'default' | 'info' | 'upsell';
+export type DialogMessageType =
+  | 'success'
+  | 'danger'
+  | 'warning'
+  | 'critical'
+  | 'default'
+  | 'info'
+  | 'upsell';
 
 /**
  * ダイアログFlashメッセージのプロパティ
@@ -45,7 +46,9 @@ interface DialogFlashMessageProps {
 /**
  * DialogMessageTypeをshadcn/ui Alertのvariantにマッピング
  */
-const getAlertVariant = (type: DialogMessageType): "default" | "destructive" | "warning" | "success" | "info" => {
+const getAlertVariant = (
+  type: DialogMessageType
+): 'default' | 'destructive' | 'warning' | 'success' | 'info' => {
   switch (type) {
     case 'success':
       return 'success';
@@ -69,19 +72,19 @@ const getAlertVariant = (type: DialogMessageType): "default" | "destructive" | "
 export const getMessageIcon = (type: DialogMessageType): React.ReactElement => {
   switch (type) {
     case 'success':
-      return <CircleCheck className="h-4 w-4" />;
+      return <CircleCheck className='h-4 w-4' />;
     case 'info':
     case 'upsell':
-      return <Info className="h-4 w-4" />;
+      return <Info className='h-4 w-4' />;
     case 'warning':
-      return <AlertTriangle className="h-4 w-4" />;
+      return <AlertTriangle className='h-4 w-4' />;
     case 'critical':
-      return <XCircle className="h-4 w-4" />;
+      return <XCircle className='h-4 w-4' />;
     case 'danger':
-      return <AlertTriangle className="h-4 w-4" />;
+      return <AlertTriangle className='h-4 w-4' />;
     case 'default':
     default:
-      return <Info className="h-4 w-4" />;
+      return <Info className='h-4 w-4' />;
   }
 };
 
@@ -95,7 +98,7 @@ export const DialogFlashMessage: React.FC<DialogFlashMessageProps> = ({
   className,
   showDismiss = true,
   isStatic = false,
-  onDismiss
+  onDismiss,
 }) => {
   if (!message) {
     return null;
@@ -105,28 +108,24 @@ export const DialogFlashMessage: React.FC<DialogFlashMessageProps> = ({
     <Alert
       variant={getAlertVariant(message.type)}
       className={cn(
-        isStatic ? "static" : "sticky top-0",
-        "relative",
+        isStatic ? 'static' : 'sticky top-0',
+        'relative',
         className
       )}
       style={style}
     >
       {getMessageIcon(message.type)}
-      <div className="flex-1">
-        {message.title && (
-          <AlertTitle>{message.title}</AlertTitle>
-        )}
-        <AlertDescription>
-          {message.text}
-        </AlertDescription>
+      <div className='flex-1'>
+        {message.title && <AlertTitle>{message.title}</AlertTitle>}
+        <AlertDescription>{message.text}</AlertDescription>
       </div>
       {showDismiss && onDismiss && (
         <IconButton
           icon={X}
-          size="icon"
-          ariaLabel="閉じる"
+          size='icon'
+          ariaLabel='閉じる'
           onClick={onDismiss}
-          className="absolute right-2 top-2 h-auto p-1 min-w-0"
+          className='absolute right-2 top-2 h-auto p-1 min-w-0'
         />
       )}
     </Alert>

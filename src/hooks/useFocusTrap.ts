@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback } from 'react';
 
 /**
  * フォーカストラップのカスタムフック
@@ -11,14 +11,14 @@ export const useFocusTrap = (isActive: boolean = false) => {
 
   // フォーカス可能な要素のセレクタ
   const focusableElementsSelector = [
-    "button:not([disabled])",
-    "[href]",
-    "input:not([disabled])",
-    "select:not([disabled])",
-    "textarea:not([disabled])",
+    'button:not([disabled])',
+    '[href]',
+    'input:not([disabled])',
+    'select:not([disabled])',
+    'textarea:not([disabled])',
     '[tabindex]:not([tabindex="-1"]):not([disabled])',
     '[contenteditable="true"]',
-  ].join(", ");
+  ].join(', ');
 
   // フォーカス可能な要素を取得
   const getFocusableElements = useCallback(() => {
@@ -27,7 +27,7 @@ export const useFocusTrap = (isActive: boolean = false) => {
     }
 
     const elements = containerRef.current.querySelectorAll(
-      focusableElementsSelector,
+      focusableElementsSelector
     );
     return Array.from(elements) as HTMLElement[];
   }, [focusableElementsSelector]);
@@ -53,7 +53,7 @@ export const useFocusTrap = (isActive: boolean = false) => {
   // Tabキーのハンドリング
   const handleTabKey = useCallback(
     (event: KeyboardEvent) => {
-      if (event.key !== "Tab") {
+      if (event.key !== 'Tab') {
         return;
       }
 
@@ -80,17 +80,17 @@ export const useFocusTrap = (isActive: boolean = false) => {
         }
       }
     },
-    [getFocusableElements],
+    [getFocusableElements]
   );
 
   // Escapeキーのハンドリング（オプション）
   const handleEscapeKey = useCallback(
     (event: KeyboardEvent, onEscape?: () => void) => {
-      if (event.key === "Escape" && onEscape) {
+      if (event.key === 'Escape' && onEscape) {
         onEscape();
       }
     },
-    [],
+    []
   );
 
   // フォーカストラップの有効化/無効化
@@ -112,11 +112,11 @@ export const useFocusTrap = (isActive: boolean = false) => {
       handleTabKey(event);
     };
 
-    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener('keydown', handleKeyDown);
 
     // クリーンアップ
     return () => {
-      document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener('keydown', handleKeyDown);
 
       // 前のアクティブ要素にフォーカスを戻す
       if (previousActiveElementRef.current) {
@@ -138,11 +138,11 @@ export const useFocusTrap = (isActive: boolean = false) => {
 
     // body直下の要素（ダイアログ以外）にaria-hidden="true"を設定
     const bodyChildren = Array.from(document.body.children);
-    bodyChildren.forEach((element) => {
+    bodyChildren.forEach(element => {
       if (element !== containerRef.current?.closest('[role="dialog"]')) {
-        const originalAriaHidden = element.getAttribute("aria-hidden");
+        const originalAriaHidden = element.getAttribute('aria-hidden');
         elementsToHide.push({ element, originalAriaHidden });
-        element.setAttribute("aria-hidden", "true");
+        element.setAttribute('aria-hidden', 'true');
       }
     });
 
@@ -150,9 +150,9 @@ export const useFocusTrap = (isActive: boolean = false) => {
     return () => {
       elementsToHide.forEach(({ element, originalAriaHidden }) => {
         if (originalAriaHidden !== null) {
-          element.setAttribute("aria-hidden", originalAriaHidden);
+          element.setAttribute('aria-hidden', originalAriaHidden);
         } else {
-          element.removeAttribute("aria-hidden");
+          element.removeAttribute('aria-hidden');
         }
       });
     };

@@ -1,11 +1,11 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback } from 'react';
 
-import { useKanban } from "../contexts/KanbanContext";
-import { useSonnerNotify } from "../hooks/useSonnerNotify";
-import { exportData, exportBoard } from "../utils/dataExport";
-import type { KanbanBoard } from "../types";
+import { useKanban } from '../contexts/KanbanContext';
+import { useSonnerNotify } from '../hooks/useSonnerNotify';
+import { exportData, exportBoard } from '../utils/dataExport';
+import type { KanbanBoard } from '../types';
 
-import { useTaskStats } from "./useTaskStats";
+import { useTaskStats } from './useTaskStats';
 
 type SubHeaderDialogState = {
   readonly isCreatingColumn: boolean;
@@ -36,7 +36,7 @@ type SubHeaderHandlers = {
 };
 
 type UseSubHeaderReturn = {
-  readonly state: ReturnType<typeof useKanban>["state"];
+  readonly state: ReturnType<typeof useKanban>['state'];
   readonly dialogState: SubHeaderDialogState;
   readonly taskStats: ReturnType<typeof useTaskStats>;
   readonly hasCompletedTasks: boolean;
@@ -69,7 +69,7 @@ export const useSubHeader = (): UseSubHeaderReturn => {
     }
     return state.currentBoard.columns
       .slice(0, -1)
-      .flatMap((column) => column.tasks);
+      .flatMap(column => column.tasks);
   }, [state.currentBoard?.columns]);
 
   const taskStats = useTaskStats(allTasks);
@@ -84,19 +84,18 @@ export const useSubHeader = (): UseSubHeaderReturn => {
     return (rightmostColumn?.tasks?.length ?? 0) > 0;
   }, [state.currentBoard?.columns]);
 
-  const canDeleteBoard = useMemo(
-    () => {
-      const activeBoards = state.boards.filter(board => board.deletionState !== "deleted");
-      return activeBoards.length > 1;
-    },
-    [state.boards],
-  );
+  const canDeleteBoard = useMemo(() => {
+    const activeBoards = state.boards.filter(
+      board => board.deletionState !== 'deleted'
+    );
+    return activeBoards.length > 1;
+  }, [state.boards]);
 
   const updateDialogState = useCallback(
     (updates: Partial<SubHeaderDialogState>): void => {
-      setDialogState((prev) => ({ ...prev, ...updates }));
+      setDialogState(prev => ({ ...prev, ...updates }));
     },
-    [],
+    []
   );
   const handlers = useMemo((): SubHeaderHandlers => {
     const currentBoardId = state.currentBoard?.id;
@@ -156,7 +155,7 @@ export const useSubHeader = (): UseSubHeaderReturn => {
         if (targetBoard) {
           exportBoard(targetBoard);
         } else {
-          notify._error("エクスポートするボードが選択されていません");
+          notify._error('エクスポートするボードが選択されていません');
         }
       },
     };

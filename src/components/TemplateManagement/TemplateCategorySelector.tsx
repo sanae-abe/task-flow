@@ -1,6 +1,9 @@
 import React, { useMemo } from 'react';
 
-import type { TemplateCategory, TemplateCategoryInfo } from '../../types/template';
+import type {
+  TemplateCategory,
+  TemplateCategoryInfo,
+} from '../../types/template';
 import UnifiedFormField from '../shared/Form/UnifiedFormField';
 
 interface TemplateCategorySelectorProps {
@@ -19,33 +22,33 @@ const TEMPLATE_CATEGORIES: TemplateCategoryInfo[] = [
   {
     id: 'work',
     label: '仕事',
-    description: '業務関連のタスク'
+    description: '業務関連のタスク',
   },
   {
     id: 'personal',
     label: '個人',
-    description: 'プライベートなタスク'
+    description: 'プライベートなタスク',
   },
   {
     id: 'project',
     label: 'プロジェクト',
-    description: 'プロジェクト関連のタスク'
+    description: 'プロジェクト関連のタスク',
   },
   {
     id: 'meeting',
     label: '会議',
-    description: '会議の準備や議事録'
+    description: '会議の準備や議事録',
   },
   {
     id: 'routine',
     label: 'ルーティン',
-    description: '定期的な作業'
+    description: '定期的な作業',
   },
   {
     id: 'other',
     label: 'その他',
-    description: 'その他のタスク'
-  }
+    description: 'その他のタスク',
+  },
 ];
 
 /**
@@ -58,30 +61,31 @@ const TemplateCategorySelector: React.FC<TemplateCategorySelectorProps> = ({
   disabled = false,
   required = false,
   label = 'カテゴリー',
-  showDescription = false
+  showDescription = false,
 }) => {
   // 選択中のカテゴリー情報（説明文表示用）
   const selectedCategory = useMemo(
-    () => TEMPLATE_CATEGORIES.find((cat) => cat.id === value),
+    () => TEMPLATE_CATEGORIES.find(cat => cat.id === value),
     [value]
   );
 
   // 動的な説明文
-  const helpText = showDescription && selectedCategory
-    ? selectedCategory.description
-    : undefined;
+  const helpText =
+    showDescription && selectedCategory
+      ? selectedCategory.description
+      : undefined;
 
   return (
     <UnifiedFormField
-      id="template-category"
-      name="category"
-      type="select"
+      id='template-category'
+      name='category'
+      type='select'
       label={label}
       value={value}
-      onChange={(newValue) => onChange(newValue as TemplateCategory)}
+      onChange={newValue => onChange(newValue as TemplateCategory)}
       options={TEMPLATE_CATEGORIES.map(cat => ({
         value: cat.id,
-        label: cat.label
+        label: cat.label,
       }))}
       disabled={disabled}
       validation={{ required }}

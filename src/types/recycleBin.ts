@@ -45,22 +45,30 @@ export interface RecycleBinItemWithMeta extends RecycleBinItem {
 /**
  * ゴミ箱アイテムの型ガード: タスク
  */
-export const isTaskRecycleBinItem = (item: RecycleBinItem): item is RecycleBinItem & { type: 'task' } => item.type === 'task';
+export const isTaskRecycleBinItem = (
+  item: RecycleBinItem
+): item is RecycleBinItem & { type: 'task' } => item.type === 'task';
 
 /**
  * ゴミ箱アイテムの型ガード: ボード
  */
-export const isBoardRecycleBinItem = (item: RecycleBinItem): item is RecycleBinItem & { type: 'board' } => item.type === 'board';
+export const isBoardRecycleBinItem = (
+  item: RecycleBinItem
+): item is RecycleBinItem & { type: 'board' } => item.type === 'board';
 
 /**
  * ゴミ箱アイテムの型ガード: カラム
  */
-export const isColumnRecycleBinItem = (item: RecycleBinItem): item is RecycleBinItem & { type: 'column' } => item.type === 'column';
+export const isColumnRecycleBinItem = (
+  item: RecycleBinItem
+): item is RecycleBinItem & { type: 'column' } => item.type === 'column';
 
 /**
  * 有効なゴミ箱アイテムかどうかを検証
  */
-export const isValidRecycleBinItem = (item: unknown): item is RecycleBinItem => {
+export const isValidRecycleBinItem = (
+  item: unknown
+): item is RecycleBinItem => {
   if (typeof item !== 'object' || item === null) {
     return false;
   }
@@ -71,6 +79,8 @@ export const isValidRecycleBinItem = (item: unknown): item is RecycleBinItem => 
     typeof obj['id'] === 'string' &&
     typeof obj['title'] === 'string' &&
     ['task', 'board', 'column'].includes(obj['type'] as string) &&
-    (obj['deletedAt'] === undefined || obj['deletedAt'] === null || typeof obj['deletedAt'] === 'string')
+    (obj['deletedAt'] === undefined ||
+      obj['deletedAt'] === null ||
+      typeof obj['deletedAt'] === 'string')
   );
 };

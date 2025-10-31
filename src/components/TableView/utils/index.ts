@@ -1,2 +1,2 @@
-export * from "./tableHelpers";
-export * from "./tableCellRenderers";
+export * from './tableHelpers';
+export * from './tableCellRenderers';

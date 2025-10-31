@@ -1,14 +1,14 @@
-import { Trash2 } from "lucide-react";
-import { memo, useMemo, useCallback } from "react";
+import { Trash2 } from 'lucide-react';
+import { memo, useMemo, useCallback } from 'react';
 
-import { useTaskEdit } from "../hooks/useTaskEdit";
-import { useFormChangeDetector } from "../hooks/useFormChangeDetector";
-import type { Task } from "../types";
-import type { DialogAction } from "../types/unified-dialog";
+import { useTaskEdit } from '../hooks/useTaskEdit';
+import { useFormChangeDetector } from '../hooks/useFormChangeDetector';
+import type { Task } from '../types';
+import type { DialogAction } from '../types/unified-dialog';
 
-import UnifiedDialog from "./shared/Dialog/UnifiedDialog";
-import ConfirmDialog from "./ConfirmDialog";
-import TaskEditForm from "./TaskEditForm";
+import UnifiedDialog from './shared/Dialog/UnifiedDialog';
+import ConfirmDialog from './ConfirmDialog';
+import TaskEditForm from './TaskEditForm';
 
 interface TaskEditDialogProps {
   task: Task | null;
@@ -58,18 +58,32 @@ const TaskEditDialog = memo<TaskEditDialogProps>(
     });
 
     // フォーム変更検知のためのデータ
-    const formDataForDetection = useMemo(() => ({
-      title,
-      description,
-      dueDate,
-      dueTime,
-      hasTime,
-      labels,
-      attachments,
-      columnId,
-      recurrence,
-      priority,
-    }), [title, description, dueDate, dueTime, hasTime, labels, attachments, columnId, recurrence, priority]);
+    const formDataForDetection = useMemo(
+      () => ({
+        title,
+        description,
+        dueDate,
+        dueTime,
+        hasTime,
+        labels,
+        attachments,
+        columnId,
+        recurrence,
+        priority,
+      }),
+      [
+        title,
+        description,
+        dueDate,
+        dueTime,
+        hasTime,
+        labels,
+        attachments,
+        columnId,
+        recurrence,
+        priority,
+      ]
+    );
 
     // フォーム変更検知
     const {
@@ -87,27 +101,27 @@ const TaskEditDialog = memo<TaskEditDialogProps>(
     const actions = useMemo<DialogAction[]>(
       () => [
         {
-          label: "削除",
+          label: '削除',
           onClick: handleDelete,
-          variant: "destructive" as const,
+          variant: 'destructive' as const,
           icon: Trash2,
-          position: "left",
+          position: 'left',
         },
         {
-          label: "キャンセル",
+          label: 'キャンセル',
           onClick: handleDialogClose,
-          variant: "outline" as const,
-          position: "right",
+          variant: 'outline' as const,
+          position: 'right',
         },
         {
-          label: "保存",
+          label: '保存',
           onClick: handleSave,
-          variant: "default" as const,
+          variant: 'default' as const,
           disabled: !isValid,
-          position: "right",
+          position: 'right',
         },
       ],
-      [handleDelete, handleDialogClose, handleSave, isValid],
+      [handleDelete, handleDialogClose, handleSave, isValid]
     );
 
     if (!isOpen || !task) {
@@ -117,14 +131,14 @@ const TaskEditDialog = memo<TaskEditDialogProps>(
     return (
       <>
         <UnifiedDialog
-          variant="modal"
+          variant='modal'
           isOpen={isOpen}
-          title="タスクを編集"
+          title='タスクを編集'
           onClose={handleDialogClose}
-          size="large"
-          ariaLabelledBy="task-edit-dialog-title"
+          size='large'
+          ariaLabelledBy='task-edit-dialog-title'
           actions={actions}
-          actionsLayout="split"
+          actionsLayout='split'
         >
           <TaskEditForm
             title={title}
@@ -154,7 +168,7 @@ const TaskEditDialog = memo<TaskEditDialogProps>(
 
         <ConfirmDialog
           isOpen={showDeleteConfirm}
-          title="タスクを削除"
+          title='タスクを削除'
           message={`「${task?.title}」を削除しますか？`}
           onConfirm={handleConfirmDelete}
           onCancel={() => setShowDeleteConfirm(false)}
@@ -162,16 +176,16 @@ const TaskEditDialog = memo<TaskEditDialogProps>(
 
         <ConfirmDialog
           isOpen={showCloseConfirm}
-          title="変更を破棄しますか？"
-          message="編集した内容が失われますが、よろしいですか？"
-          confirmText="破棄する"
-          cancelText="戻る"
+          title='変更を破棄しますか？'
+          message='編集した内容が失われますが、よろしいですか？'
+          confirmText='破棄する'
+          cancelText='戻る'
           onConfirm={handleConfirmClose}
           onCancel={handleCancelClose}
         />
       </>
     );
-  },
+  }
 );
 
 export default TaskEditDialog;

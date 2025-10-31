@@ -26,7 +26,14 @@ const EditorContent: React.FC<EditorContentProps> = ({
   handlers,
 }) => {
   const { editorRef, isEditorFocused } = editorState;
-  const { handleInput, handleFocus, handleBlur, handleKeyDown, handlePaste, handleLinkClick } = handlers;
+  const {
+    handleInput,
+    handleFocus,
+    handleBlur,
+    handleKeyDown,
+    handlePaste,
+    handleLinkClick,
+  } = handlers;
 
   // Update editor content when value changes
   useEffect(() => {
@@ -40,10 +47,10 @@ const EditorContent: React.FC<EditorContentProps> = ({
   const showPlaceholder = !value && !isEditorFocused;
 
   return (
-    <div className="relative">
+    <div className='relative'>
       {/* Placeholder */}
       {showPlaceholder && (
-        <div className="absolute top-0 left-0 pointer-events-none text-muted-foreground p-3 text-sm">
+        <div className='absolute top-0 left-0 pointer-events-none text-muted-foreground p-3 text-sm'>
           {placeholder}
         </div>
       )}
@@ -67,7 +74,8 @@ const EditorContent: React.FC<EditorContentProps> = ({
           minHeight,
           fontSize: '14px',
           lineHeight: '1.5',
-          fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+          fontFamily:
+            '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
         }}
       />
     </div>

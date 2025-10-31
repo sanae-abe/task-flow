@@ -1,5 +1,5 @@
-import type { Task, RecurrenceConfig } from "../types";
-import { calculateNextDueDate, isRecurrenceComplete } from "./recurrence";
+import type { Task, RecurrenceConfig } from '../types';
+import { calculateNextDueDate, isRecurrenceComplete } from './recurrence';
 
 /**
  * カレンダー表示用の仮想繰り返しタスク
@@ -11,8 +11,8 @@ export interface VirtualRecurringTask {
   description: string;
   dueDate: string;
   isVirtual: true;
-  priority: Task["priority"];
-  labels: Task["labels"];
+  priority: Task['priority'];
+  labels: Task['labels'];
   occurrenceCount: number;
   recurrence: RecurrenceConfig;
 }
@@ -24,7 +24,7 @@ export function generateRecurringTaskInstances(
   task: Task,
   startDate: Date,
   endDate: Date,
-  maxInstances: number = 50,
+  maxInstances: number = 50
 ): VirtualRecurringTask[] {
   if (!task.recurrence?.enabled || !task.dueDate) {
     return [];
@@ -40,7 +40,7 @@ export function generateRecurringTaskInstances(
     new Date(currentDueDate) <= endDate
   ) {
     currentDueDate =
-      calculateNextDueDate(currentDueDate, task.recurrence) || "";
+      calculateNextDueDate(currentDueDate, task.recurrence) || '';
     occurrenceCount++;
   }
 
@@ -94,13 +94,13 @@ export function generateRecurringTaskInstances(
 export function generateCalendarTasks(
   tasks: Task[],
   startDate: Date,
-  endDate: Date,
+  endDate: Date
 ): (Task | VirtualRecurringTask)[] {
   const calendarTasks: (Task | VirtualRecurringTask)[] = [];
 
   // 実際のタスクのID+期限日の組み合わせを収集（重複チェック用）
   const actualTaskIdAndDates = new Set<string>();
-  tasks.forEach((task) => {
+  tasks.forEach(task => {
     if (task.dueDate) {
       const dateString = new Date(task.dueDate).toDateString();
       const key = `${task.id}-${dateString}`;
@@ -109,7 +109,7 @@ export function generateCalendarTasks(
   });
 
   // 実際のタスクを作成
-  tasks.forEach((task) => {
+  tasks.forEach(task => {
     calendarTasks.push(task);
 
     // 繰り返しタスクの仮想インスタンスを生成
@@ -117,19 +117,15 @@ export function generateCalendarTasks(
       const virtualInstances = generateRecurringTaskInstances(
         task,
         startDate,
-        endDate,
+        endDate
       );
 
       // 同じタスクIDの実際のタスクと期限が重複しない仮想タスクのみを追加
-      const filteredVirtualInstances = virtualInstances.filter(
-        (virtualTask) => {
-          const virtualDateString = new Date(
-            virtualTask.dueDate,
-          ).toDateString();
-          const key = `${virtualTask.originalTaskId}-${virtualDateString}`;
-          return !actualTaskIdAndDates.has(key);
-        },
-      );
+      const filteredVirtualInstances = virtualInstances.filter(virtualTask => {
+        const virtualDateString = new Date(virtualTask.dueDate).toDateString();
+        const key = `${virtualTask.originalTaskId}-${virtualDateString}`;
+        return !actualTaskIdAndDates.has(key);
+      });
 
       calendarTasks.push(...filteredVirtualInstances);
     }
@@ -143,15 +139,15 @@ export function generateCalendarTasks(
  */
 export function getTasksForDate(
   tasks: (Task | VirtualRecurringTask)[],
-  targetDate: Date,
+  targetDate: Date
 ): (Task | VirtualRecurringTask)[] {
-  const targetDateString = targetDate.toISOString().split("T")[0];
+  const targetDateString = targetDate.toISOString().split('T')[0];
 
-  return tasks.filter((task) => {
+  return tasks.filter(task => {
     if (!task.dueDate) {
       return false;
     }
-    const taskDateString = task.dueDate.split("T")[0];
+    const taskDateString = task.dueDate.split('T')[0];
     return taskDateString === targetDateString;
   });
 }
@@ -160,9 +156,9 @@ export function getTasksForDate(
  * 仮想タスクかどうかを判定
  */
 export function isVirtualTask(
-  task: Task | VirtualRecurringTask,
+  task: Task | VirtualRecurringTask
 ): task is VirtualRecurringTask {
-  return "isVirtual" in task && task.isVirtual === true;
+  return 'isVirtual' in task && task.isVirtual === true;
 }
 
 /**

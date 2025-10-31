@@ -1,25 +1,25 @@
-import { Plus, Tag } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Plus, Tag } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { memo } from "react";
+} from '@/components/ui/dropdown-menu';
+import { memo } from 'react';
 
-import type { Label } from "../../types";
-import { LabelFormDialog } from "../LabelManagement";
+import type { Label } from '../../types';
+import { LabelFormDialog } from '../LabelManagement';
 
 import {
   EMPTY_LABELS_MESSAGE,
   SELECT_LABEL_TEXT,
   ADD_LABEL_TEXT,
-} from "./constants";
-import { CurrentBoardLabelSection } from "./CurrentBoardLabelSection";
-import { OtherBoardLabelSection } from "./OtherBoardLabelSection";
-import { SelectedLabelsDisplay } from "./SelectedLabelsDisplay";
-import { useLabelManagement } from "./useLabelManagement";
+} from './constants';
+import { CurrentBoardLabelSection } from './CurrentBoardLabelSection';
+import { OtherBoardLabelSection } from './OtherBoardLabelSection';
+import { SelectedLabelsDisplay } from './SelectedLabelsDisplay';
+import { useLabelManagement } from './useLabelManagement';
 
 interface LabelSelectorProps {
   selectedLabels: Label[];
@@ -43,7 +43,7 @@ const LabelSelector = memo<LabelSelectorProps>(
     } = useLabelManagement({ selectedLabels, onLabelsChange });
 
     return (
-      <div className="flex flex-col gap-2">
+      <div className='flex flex-col gap-2'>
         {/* 選択されたラベルを表示 */}
         <SelectedLabelsDisplay
           selectedLabels={selectedLabels}
@@ -51,16 +51,16 @@ const LabelSelector = memo<LabelSelectorProps>(
         />
 
         {/* ラベル選択・追加のアクションメニュー */}
-        <div className="flex gap-2">
+        <div className='flex gap-2'>
           {/* ラベル選択 */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
-                variant="outline"
-                className="hover:bg-gray-100"
-                aria-label="ラベル選択メニューを開く"
+                variant='outline'
+                className='hover:bg-gray-100'
+                aria-label='ラベル選択メニューを開く'
               >
-                <Tag size={16} className="mr-2" />
+                <Tag size={16} className='mr-2' />
                 {SELECT_LABEL_TEXT}
               </Button>
             </DropdownMenuTrigger>
@@ -88,19 +88,19 @@ const LabelSelector = memo<LabelSelectorProps>(
 
           {/* ラベル追加 */}
           <Button
-            variant="outline"
+            variant='outline'
             onClick={handleAddDialogOpen}
-            className="hover:bg-gray-100"
-            aria-label="新しいラベルを作成"
+            className='hover:bg-gray-100'
+            aria-label='新しいラベルを作成'
           >
-            <Plus size={16} className="mr-2" />
+            <Plus size={16} className='mr-2' />
             {ADD_LABEL_TEXT}
           </Button>
         </div>
 
         {/* ラベル追加ダイアログ */}
         <LabelFormDialog
-          mode="create"
+          mode='create'
           isOpen={isAddDialogOpen}
           onClose={handleAddDialogClose}
           onSave={handleLabelCreated}

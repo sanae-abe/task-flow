@@ -1,9 +1,9 @@
-import React, { useCallback } from "react";
-import { useDroppable } from "@dnd-kit/core";
+import React, { useCallback } from 'react';
+import { useDroppable } from '@dnd-kit/core';
 
-import type { Task } from "../../../types";
-import type { VirtualRecurringTask } from "../../../utils/calendarRecurrence";
-import CalendarTask from "./CalendarTask";
+import type { Task } from '../../../types';
+import type { VirtualRecurringTask } from '../../../utils/calendarRecurrence';
+import CalendarTask from './CalendarTask';
 
 interface CalendarDayProps {
   date: Date;
@@ -19,7 +19,7 @@ const CalendarDay: React.FC<CalendarDayProps> = React.memo(
     const { setNodeRef, isOver } = useDroppable({
       id: `calendar-day-${date.toISOString()}`,
       data: {
-        type: "calendar-date",
+        type: 'calendar-date',
         date,
       },
     });
@@ -27,32 +27,35 @@ const CalendarDay: React.FC<CalendarDayProps> = React.memo(
     // Dynamic className generation for day container
     const dayClassName = `
       min-h-[120px] rounded-none p-2 relative overflow-hidden transition-colors duration-200 ease
-      ${isCurrentMonth
-        ? "bg-background"
-        : "bg-gray-100"
+      ${isCurrentMonth ? 'bg-background' : 'bg-gray-100'}
+      ${
+        isOver
+          ? 'border border-border border-dashed border-primary'
+          : 'border border-border border-transparent'
       }
-      ${isOver
-        ? "border border-border border-dashed border-primary"
-        : "border border-border border-transparent"
-      }
-    `.trim().replace(/\s+/g, ' ');
+    `
+      .trim()
+      .replace(/\s+/g, ' ');
 
     // Dynamic className generation for day number
     const dayNumberClassName = `
       text-xs font-normal
-      ${isToday
-        ? "text-white bg-primary rounded-full w-6 h-6 flex items-center justify-center"
-        : isCurrentMonth
-          ? "text-foreground"
-          : "text-zinc-700"
+      ${
+        isToday
+          ? 'text-white bg-primary rounded-full w-6 h-6 flex items-center justify-center'
+          : isCurrentMonth
+            ? 'text-foreground'
+            : 'text-zinc-700'
       }
-    `.trim().replace(/\s+/g, ' ');
+    `
+      .trim()
+      .replace(/\s+/g, ' ');
 
     const handleTaskClick = useCallback(
       (task: Task | VirtualRecurringTask) => {
         onTaskClick(task);
       },
-      [onTaskClick],
+      [onTaskClick]
     );
 
     const handleDateClick = useCallback(
@@ -62,21 +65,21 @@ const CalendarDay: React.FC<CalendarDayProps> = React.memo(
           onDateClick(date);
         }
       },
-      [onDateClick, date],
+      [onDateClick, date]
     );
 
     return (
       <div ref={setNodeRef} className={dayClassName} onClick={handleDateClick}>
-        <div className="flex justify-between items-center min-h-6 mb-2">
+        <div className='flex justify-between items-center min-h-6 mb-2'>
           <span className={dayNumberClassName}>{date.getDate()}</span>
           {tasks.length > 3 && (
-            <span className="text-xs text-zinc-700">
+            <span className='text-xs text-zinc-700'>
               他 {tasks.length - 3} 件
             </span>
           )}
         </div>
-        <div className="flex flex-col gap-0.5 max-h-20 overflow-hidden">
-          {tasks.slice(0, 3).map((task) => (
+        <div className='flex flex-col gap-0.5 max-h-20 overflow-hidden'>
+          {tasks.slice(0, 3).map(task => (
             <CalendarTask
               key={task.id}
               task={task}
@@ -86,9 +89,9 @@ const CalendarDay: React.FC<CalendarDayProps> = React.memo(
         </div>
       </div>
     );
-  },
+  }
 );
 
-CalendarDay.displayName = "CalendarDay";
+CalendarDay.displayName = 'CalendarDay';
 
 export default CalendarDay;

@@ -1,9 +1,9 @@
-import { Upload } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import React from "react";
-import { cn } from "@/lib/utils";
+import { Upload } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import React from 'react';
+import { cn } from '@/lib/utils';
 
-import type { ImportMode } from "../types";
+import type { ImportMode } from '../types';
 
 interface UniversalDropZoneProps {
   isDragOver: boolean;
@@ -44,7 +44,7 @@ const UniversalDropZone: React.FC<UniversalDropZoneProps> = ({
   onClick,
   fileInputRef,
   onFileInputChange,
-  importMode = "both",
+  importMode = 'both',
 
   // カスタマイズ可能なプロパティ
   title,
@@ -53,17 +53,17 @@ const UniversalDropZone: React.FC<UniversalDropZoneProps> = ({
   buttonText,
   loadingText,
   showButton = false,
-  minHeight = "120px",
+  minHeight = '120px',
   ariaLabel,
 }) => {
   const getDefaultTitle = () => {
-    const fileTypeText = multiple ? "ファイル" : "ファイル";
+    const fileTypeText = multiple ? 'ファイル' : 'ファイル';
     switch (importMode) {
-      case "drag-drop":
+      case 'drag-drop':
         return `${fileTypeText}をここにドラッグ＆ドロップ`;
-      case "file-select":
+      case 'file-select':
         return `クリックして${fileTypeText}を選択`;
-      case "both":
+      case 'both':
         return `${fileTypeText}をここにドラッグ＆ドロップするか、クリックして選択`;
       default:
         return `${fileTypeText}をここにドラッグ＆ドロップするか、クリックして選択`;
@@ -82,45 +82,45 @@ const UniversalDropZone: React.FC<UniversalDropZoneProps> = ({
 
   const getDefaultSubtitle = () => {
     const sizeText = `最大${Math.round(maxFileSize / 1024 / 1024)}MB`;
-    if (allowedTypes.length > 0 && !allowedTypes.includes("*/*")) {
+    if (allowedTypes.length > 0 && !allowedTypes.includes('*/*')) {
       const extensions = allowedTypes
-        .map((type) =>
-          type.startsWith(".") ? type : (type.split("/")[1] ?? type),
+        .map(type =>
+          type.startsWith('.') ? type : (type.split('/')[1] ?? type)
         )
-        .join(", ");
+        .join(', ');
       return `${sizeText} (${extensions})`;
     }
     return sizeText;
   };
 
   const shouldShowDropZone =
-    importMode === "drag-drop" || importMode === "both";
+    importMode === 'drag-drop' || importMode === 'both';
   const shouldAllowClick =
-    importMode === "file-select" || importMode === "both";
+    importMode === 'file-select' || importMode === 'both';
 
   const getAriaLabel = () => {
     if (ariaLabel) {
       return ariaLabel;
     }
     if (
-      allowedTypes.includes("application/json") ||
-      allowedTypes.includes(".json")
+      allowedTypes.includes('application/json') ||
+      allowedTypes.includes('.json')
     ) {
-      return "JSONファイルを選択";
+      return 'JSONファイルを選択';
     }
-    return multiple ? "ファイルを選択" : "ファイルを選択";
+    return multiple ? 'ファイルを選択' : 'ファイルを選択';
   };
 
   return (
     <div
       className={cn(
-        "flex flex-col items-center justify-center gap-2 p-4 text-center transition-all duration-200 rounded-md",
-        shouldShowDropZone ? "border-2 border-dashed" : "border-2 border-solid",
-        isLoading && "opacity-70 cursor-not-allowed",
-        isDragOver && "border-primary bg-blue-50",
-        !isDragOver && !isLoading && "border-gray-300 bg-gray-50",
-        isLoading && "border-gray-200 bg-gray-100",
-        shouldAllowClick && !isLoading && "cursor-pointer"
+        'flex flex-col items-center justify-center gap-2 p-4 text-center transition-all duration-200 rounded-md',
+        shouldShowDropZone ? 'border-2 border-dashed' : 'border-2 border-solid',
+        isLoading && 'opacity-70 cursor-not-allowed',
+        isDragOver && 'border-primary bg-blue-50',
+        !isDragOver && !isLoading && 'border-gray-300 bg-gray-50',
+        isLoading && 'border-gray-200 bg-gray-100',
+        shouldAllowClick && !isLoading && 'cursor-pointer'
       )}
       style={{ minHeight }}
       onDragOver={!isLoading && shouldShowDropZone ? onDragOver : undefined}
@@ -128,49 +128,49 @@ const UniversalDropZone: React.FC<UniversalDropZoneProps> = ({
       onDragLeave={!isLoading && shouldShowDropZone ? onDragLeave : undefined}
       onDrop={!isLoading && shouldShowDropZone ? onDrop : undefined}
       onClick={!isLoading && shouldAllowClick ? onClick : undefined}
-      role="button"
+      role='button'
       tabIndex={isLoading ? -1 : 0}
       aria-label={getAriaLabel()}
     >
-      <div className={cn(isDragOver ? "text-primary" : "text-zinc-500")}>
+      <div className={cn(isDragOver ? 'text-primary' : 'text-zinc-500')}>
         <Upload size={24} />
       </div>
       <p
         className={cn(
-          "block font-normal tracking-tight text-sm",
-          isDragOver ? "text-primary" : "text-foreground"
+          'block font-normal tracking-tight text-sm',
+          isDragOver ? 'text-primary' : 'text-foreground'
         )}
       >
         {getDisplayTitle()}
       </p>
-      <p className="text-xs text-zinc-700">
+      <p className='text-xs text-zinc-700'>
         {subtitle ?? getDefaultSubtitle()}
       </p>
       {showButton && !isDragOver && (
         <Button
-          onClick={(e) => {
+          onClick={e => {
             e.stopPropagation();
             onClick();
           }}
           disabled={isLoading}
-          size="sm"
-          variant="default"
+          size='sm'
+          variant='default'
         >
           {isLoading
-            ? (loadingText ?? "アップロード中...")
-            : (buttonText ?? "ファイルを選択")}
+            ? (loadingText ?? 'アップロード中...')
+            : (buttonText ?? 'ファイルを選択')}
         </Button>
       )}
 
       <input
         ref={fileInputRef}
-        type="file"
+        type='file'
         multiple={multiple}
-        accept={allowedTypes.join(",")}
+        accept={allowedTypes.join(',')}
         onChange={onFileInputChange}
         disabled={isLoading}
-        aria-hidden="true"
-        className="hidden"
+        aria-hidden='true'
+        className='hidden'
       />
     </div>
   );

@@ -1,8 +1,8 @@
-import React, { memo } from "react";
+import React, { memo } from 'react';
 import { cn } from '@/lib/utils';
 
-import type { FormFieldConfig } from "../../../types/unified-form";
-import { shouldShowError } from "../../../utils/formHelpers";
+import type { FormFieldConfig } from '../../../types/unified-form';
+import { shouldShowError } from '../../../utils/formHelpers';
 import {
   TextField,
   DateTimeField,
@@ -14,8 +14,8 @@ import {
   FileUploaderField,
   RecurrenceSelectorField,
   CustomComponentField,
-} from "./fields";
-import InlineMessage from "../InlineMessage";
+} from './fields';
+import InlineMessage from '../InlineMessage';
 
 interface UnifiedFormFieldProps extends FormFieldConfig {
   _error?: string | null;
@@ -58,7 +58,7 @@ const UnifiedFormField = memo<UnifiedFormFieldProps>(
     step,
     min,
     max,
-    className = ""
+    className = '',
   }) => {
     // エラー表示判定
     const showError = shouldShowError(touched, _error);
@@ -82,14 +82,14 @@ const UnifiedFormField = memo<UnifiedFormFieldProps>(
         validation,
         _error,
         touched,
-        style
+        style,
       };
 
       switch (type) {
-        case "text":
-        case "email":
-        case "password":
-        case "number":
+        case 'text':
+        case 'email':
+        case 'password':
+        case 'number':
           return (
             <TextField
               {...baseProps}
@@ -100,9 +100,9 @@ const UnifiedFormField = memo<UnifiedFormFieldProps>(
             />
           );
 
-        case "date":
-        case "datetime-local":
-        case "time":
+        case 'date':
+        case 'datetime-local':
+        case 'time':
           return (
             <DateTimeField
               {...baseProps}
@@ -113,37 +113,37 @@ const UnifiedFormField = memo<UnifiedFormFieldProps>(
             />
           );
 
-        case "checkbox":
+        case 'checkbox':
           return <CheckboxField {...baseProps} />;
 
-        case "textarea":
+        case 'textarea':
           return <TextareaField {...baseProps} rows={rows} />;
 
-        case "select":
+        case 'select':
           return <SelectField {...baseProps} options={options} />;
 
-        case "label-selector":
-          return <LabelSelectorField {...baseProps} type="label-selector" />;
+        case 'label-selector':
+          return <LabelSelectorField {...baseProps} type='label-selector' />;
 
-        case "color-selector":
-          return <ColorSelectorField {...baseProps} type="color-selector" />;
+        case 'color-selector':
+          return <ColorSelectorField {...baseProps} type='color-selector' />;
 
-        case "file":
-          return <FileUploaderField {...baseProps} type="file" />;
+        case 'file':
+          return <FileUploaderField {...baseProps} type='file' />;
 
-        case "recurrence-selector":
+        case 'recurrence-selector':
           return (
             <RecurrenceSelectorField
               {...baseProps}
-              type="recurrence-selector"
+              type='recurrence-selector'
             />
           );
 
-        case "custom":
+        case 'custom':
           return (
             <CustomComponentField
               {...baseProps}
-              type="custom"
+              type='custom'
               customComponent={customComponent}
             />
           );
@@ -154,16 +154,14 @@ const UnifiedFormField = memo<UnifiedFormFieldProps>(
     };
 
     return (
-      <div
-        className={`flex flex-col space-y-2 ${className}`}
-        style={style}
-      >
+      <div className={`flex flex-col space-y-2 ${className}`} style={style}>
         {!hideLabel && (
           <label
             htmlFor={id}
             className={cn(
-              "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
-              validation?.required && "after:content-['*'] after:ml-0.5 after:text-destructive"
+              'text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70',
+              validation?.required &&
+                "after:content-['*'] after:ml-0.5 after:text-destructive"
             )}
           >
             {label}
@@ -173,20 +171,22 @@ const UnifiedFormField = memo<UnifiedFormFieldProps>(
         {renderField()}
 
         {helpText && !showError && (
-          <p className="text-sm text-muted-foreground">
-            {helpText}
-          </p>
+          <p className='text-sm text-muted-foreground'>{helpText}</p>
         )}
 
         {showError && (
-          <InlineMessage variant="critical" message={_error || "入力に誤りがあります"} size="small" />
+          <InlineMessage
+            variant='critical'
+            message={_error || '入力に誤りがあります'}
+            size='small'
+          />
         )}
       </div>
     );
-  },
+  }
 );
 
 // デバッグ用のdisplayName設定
-UnifiedFormField.displayName = "UnifiedFormField";
+UnifiedFormField.displayName = 'UnifiedFormField';
 
 export default UnifiedFormField;

@@ -1,7 +1,7 @@
-import React from "react";
+import React from 'react';
 
-import type { Label } from "../../types";
-import LabelChip from "../LabelChip";
+import type { Label } from '../../types';
+import LabelChip from '../LabelChip';
 
 interface SelectedLabelsDisplayProps {
   selectedLabels: Label[];
@@ -17,8 +17,8 @@ export const SelectedLabelsDisplay: React.FC<SelectedLabelsDisplayProps> = ({
   }
 
   return (
-    <div className="mb-2 flex flex-wrap items-center gap-1">
-      {selectedLabels.map((label) => (
+    <div className='mb-2 flex flex-wrap items-center gap-1'>
+      {selectedLabels.map(label => (
         <LabelChip
           key={label.id}
           label={label}

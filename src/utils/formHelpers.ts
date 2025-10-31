@@ -19,7 +19,7 @@
  */
 export const toStringValue = (value: unknown): string => {
   if (value === null || value === undefined) {
-    return "";
+    return '';
   }
   return String(value);
 };
@@ -35,8 +35,8 @@ export const isEmptyValue = (value: unknown): boolean => {
     return true;
   }
 
-  if (typeof value === "string") {
-    return value.trim() === "";
+  if (typeof value === 'string') {
+    return value.trim() === '';
   }
 
   if (Array.isArray(value)) {
@@ -55,7 +55,7 @@ export const isEmptyValue = (value: unknown): boolean => {
  */
 export const shouldShowError = (
   touched?: boolean,
-  _error?: string | null,
+  _error?: string | null
 ): boolean => Boolean(touched && _error);
 
 /**
@@ -64,5 +64,5 @@ export const shouldShowError = (
  * @param hasError - エラーがあるかどうか
  * @returns validationStatus
  */
-export const getValidationStatus = (hasError: boolean): "_error" | undefined =>
-  hasError ? "_error" : undefined;
+export const getValidationStatus = (hasError: boolean): '_error' | undefined =>
+  hasError ? '_error' : undefined;

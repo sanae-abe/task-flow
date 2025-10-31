@@ -4,14 +4,12 @@
  * textarea 入力タイプに対応
  */
 
-import React, { useCallback } from "react";
-import { Textarea } from "@/components/ui/textarea";
+import React, { useCallback } from 'react';
+import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
 
-import {
-  toStringValue,
-} from "../../../../utils/formHelpers";
-import type { TextareaFieldProps } from "./types";
+import { toStringValue } from '../../../../utils/formHelpers';
+import type { TextareaFieldProps } from './types';
 
 /**
  * テキストエリア入力フィールドコンポーネント
@@ -44,7 +42,7 @@ export const TextareaField: React.FC<TextareaFieldProps> = React.memo(
       (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         onChange(e.target.value);
       },
-      [onChange],
+      [onChange]
     );
 
     /**
@@ -56,7 +54,7 @@ export const TextareaField: React.FC<TextareaFieldProps> = React.memo(
           onKeyDown(e);
         }
       },
-      [onKeyDown],
+      [onKeyDown]
     );
 
     /**
@@ -94,8 +92,9 @@ export const TextareaField: React.FC<TextareaFieldProps> = React.memo(
         disabled={disabled}
         rows={rows}
         className={cn(
-          "resize-none",
-          hasError && "border-destructive focus:border-destructive focus:ring-destructive"
+          'resize-none',
+          hasError &&
+            'border-destructive focus:border-destructive focus:ring-destructive'
         )}
         style={style ? (style as React.CSSProperties) : undefined}
         aria-required={validation?.required}
@@ -103,8 +102,8 @@ export const TextareaField: React.FC<TextareaFieldProps> = React.memo(
         aria-describedby={hasError ? `${id}-_error` : undefined}
       />
     );
-  },
+  }
 );
 
 // デバッグ用のdisplayName設定
-TextareaField.displayName = "TextareaField";
+TextareaField.displayName = 'TextareaField';

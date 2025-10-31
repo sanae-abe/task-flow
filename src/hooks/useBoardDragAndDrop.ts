@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from 'react';
 import {
   useSensors,
   useSensor,
@@ -6,9 +6,9 @@ import {
   KeyboardSensor,
   DragStartEvent,
   DragEndEvent,
-} from "@dnd-kit/core";
-import { sortableKeyboardCoordinates, arrayMove } from "@dnd-kit/sortable";
-import type { KanbanBoard } from "../types";
+} from '@dnd-kit/core';
+import { sortableKeyboardCoordinates, arrayMove } from '@dnd-kit/sortable';
+import type { KanbanBoard } from '../types';
 
 interface UseBoardDragAndDropProps {
   boards: KanbanBoard[];
@@ -36,12 +36,12 @@ export const useBoardDragAndDrop = ({
     }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    }),
+    })
   );
 
   const handleDragStart = (event: DragStartEvent): void => {
     const { active } = event;
-    const board = boards.find((board) => board.id === active.id);
+    const board = boards.find(board => board.id === active.id);
     setActiveBoard(board || null);
   };
 
@@ -53,8 +53,8 @@ export const useBoardDragAndDrop = ({
       return;
     }
 
-    const oldIndex = boards.findIndex((board) => board.id === active.id);
-    const newIndex = boards.findIndex((board) => board.id === over.id);
+    const oldIndex = boards.findIndex(board => board.id === active.id);
+    const newIndex = boards.findIndex(board => board.id === over.id);
 
     if (oldIndex !== -1 && newIndex !== -1) {
       const reorderedBoards = arrayMove(boards, oldIndex, newIndex);
