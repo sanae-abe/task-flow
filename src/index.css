@@ -348,3 +348,21 @@ input[type='number']::-moz-number-spinner {
 .token-entity {
   cursor: help;
 }
+
+/* Emoji Picker - 絵文字サイズ調整 */
+.epr-emoji-category-label {
+  font-size: 12px !important;
+}
+
+.epr-emoji-native {
+  font-size: 20px !important; /* デフォルトより小さく */
+}
+
+.epr-emoji-category button {
+  width: 28px !important;
+  height: 28px !important;
+}
+
+.epr-emoji-category {
+  gap: 2px !important;
+}

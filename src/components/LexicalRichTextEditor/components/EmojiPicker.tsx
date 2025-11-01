@@ -12,7 +12,11 @@ import {
 } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
 import { Smile } from 'lucide-react';
-import EmojiPicker, { EmojiClickData, Theme } from 'emoji-picker-react';
+import EmojiPicker, {
+  EmojiClickData,
+  Theme,
+  EmojiStyle,
+} from 'emoji-picker-react';
 
 interface EmojiPickerComponentProps {
   onEmojiSelect: (emoji: string) => void;
@@ -72,12 +76,14 @@ export function EmojiPickerComponent({
           autoFocusSearch={false}
           theme={Theme.LIGHT}
           lazyLoadEmojis
+          emojiStyle={EmojiStyle.NATIVE}
           previewConfig={{
             showPreview: false,
           }}
           width={350}
           height={400}
           searchPlaceholder='絵文字を検索...'
+          emojiVersion='15.0'
         />
       </PopoverContent>
     </Popover>
