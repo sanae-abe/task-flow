@@ -187,6 +187,16 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({
         }
       );
 
+      // Lexicalインラインコード（<span class="lexical-inline-code">）を保護
+      content = content.replace(
+        /<span\s+class="lexical-inline-code"[^>]*>[\s\S]*?<\/span>/gi,
+        match => {
+          const placeholder = `__LEXICAL_INLINE_CODE_${Math.random().toString(36).substring(2, 11)}__`;
+          codeBlockMap.set(placeholder, match);
+          return placeholder;
+        }
+      );
+
       // ステップ3: URL自動リンク化（コードブロック以外）
       content = linkifyUrls(content);
 
@@ -260,6 +270,18 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({
         }
       );
 
+      // Lexicalインラインコードを一時的に保護
+      content = content.replace(
+        /<span\s+class="lexical-inline-code"[^>]*>[\s\S]*?<\/span>/gi,
+        match => {
+          const placeholder = `__FINAL_LEXICAL_INLINE_${placeholderIndex}__`;
+          finalCodeBlocks.push(match);
+          finalPlaceholders.push(placeholder);
+          placeholderIndex++;
+          return placeholder;
+        }
+      );
+
       // コードブロック以外の改行を<br>に変換
       content = content.replace(/\n/g, '<br>');
 
@@ -282,77 +304,50 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({
     }
 
     // XSS攻撃からの保護：DOMPurifyでHTMLをサニタイズ
+    // htmlConverter.tsと統一した設定で一貫性を確保
     const sanitizedContent = DOMPurify.sanitize(content, {
       ALLOWED_TAGS: [
         'p',
         'br',
         'strong',
+        'b',
         'em',
+        'i',
         'u',
+        's',
+        'strike',
         'a',
         'code',
         'pre',
-        'div',
         'ul',
         'ol',
         'li',
         'h1',
         'h2',
         'h3',
-        'h4',
-        'h5',
-        'h6',
         'blockquote',
-        'span',
-        'html',
-        'head',
-        'body',
-        'title',
-        'meta',
+        'span', // Lexicalのインラインコード（<span class="lexical-inline-code">）対応
+        'div', // 既存のコードブロック処理との互換性維持
       ],
       ALLOWED_ATTR: [
         'href',
         'target',
         'rel',
+        'style',
         'class',
-        // JSX/仮想DOM表示のための属性（表示専用、実際の実行はしない）
-        'classname',
-        'onclick',
-        'onsubmit',
-        'onchange',
-        'onfocus',
-        'onblur',
-        'onkeydown',
-        'onkeyup',
-        'onmouseover',
-        'onmouseout',
-        'onmouseenter',
-        'onmouseleave',
-        'key',
-        'ref',
-        'htmlfor',
-        'defaultvalue',
-        'defaultchecked',
-        'data-*',
-        'aria-*',
+        // アクセシビリティとHTML標準属性
         'id',
         'name',
-        'value',
-        'type',
-        'placeholder',
       ],
-      // より寛容な設定でJSX属性を保護
+      // data-*とaria-*属性を許可（アクセシビリティ対応）
       ALLOW_DATA_ATTR: true,
       ALLOW_ARIA_ATTR: true,
       // リンクの検証：httpまたはhttpsのみ許可
       ALLOWED_URI_REGEXP:
         /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|sms|cid|xmpp):|[^a-z]|[a-z+.-]+(?:[^a-z+.-:]|$))/i,
-      // 悪意のあるプロトコルをブロック（コードブロック内では表示のみなので安全）
+      // セキュリティ強化：危険な属性とタグをブロック
       FORBID_ATTR: ['onerror', 'onload'],
-      // DOM操作を防ぐ
       FORBID_TAGS: ['script', 'object', 'embed', 'form', 'input', 'button'],
-      // 新しいウィンドウで開くリンクにセキュリティ属性を追加
-      ADD_ATTR: ['target', 'rel'],
       // DOMオブジェクトではなく文字列を返す
       RETURN_DOM: false,
       RETURN_DOM_FRAGMENT: false,

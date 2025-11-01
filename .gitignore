@@ -26,3 +26,9 @@ yarn-error.log*
 # Claude Code
 .claude/*
 !.claude/CLAUDE.md
+!.claude/learning-sessions/**/*
+!.claude/commands/**/*
+!.claude/agents/**/*
+# Claude Code チーム知識共有
+!.claude/shared-knowledge/
+!.claude/shared-knowledge/**

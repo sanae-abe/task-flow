@@ -13,7 +13,7 @@ export const lexicalTheme: EditorThemeClasses = {
     italic: 'italic',
     underline: 'underline',
     strikethrough: 'line-through',
-    code: 'bg-muted text-sm font-mono px-1 py-0.5 rounded border border-border',
+    code: 'lexical-inline-code',
   },
 
   // Links
@@ -30,9 +30,38 @@ export const lexicalTheme: EditorThemeClasses = {
   },
 
   // Code blocks
-  code: 'bg-muted p-4 rounded-md border border-border font-mono text-sm my-2 block',
+  code: 'lexical-code-block bg-muted p-4 rounded-md border border-border font-mono text-sm my-2 block relative',
   codeHighlight: {
-    // Code highlighting can be added later
+    atrule: 'token-atrule',
+    attr: 'token-attr',
+    boolean: 'token-boolean',
+    builtin: 'token-builtin',
+    cdata: 'token-cdata',
+    char: 'token-char',
+    class: 'token-class',
+    'class-name': 'token-class-name',
+    comment: 'token-comment',
+    constant: 'token-constant',
+    deleted: 'token-deleted',
+    doctype: 'token-doctype',
+    entity: 'token-entity',
+    function: 'token-function',
+    important: 'token-important',
+    inserted: 'token-inserted',
+    keyword: 'token-keyword',
+    namespace: 'token-namespace',
+    number: 'token-number',
+    operator: 'token-operator',
+    prolog: 'token-prolog',
+    property: 'token-property',
+    punctuation: 'token-punctuation',
+    regex: 'token-regex',
+    selector: 'token-selector',
+    string: 'token-string',
+    symbol: 'token-symbol',
+    tag: 'token-tag',
+    url: 'token-url',
+    variable: 'token-variable',
   },
 
   // Paragraphs
