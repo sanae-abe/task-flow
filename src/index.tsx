@@ -1,4 +1,4 @@
-// import React from 'react'; // StrictMode無効時は不要
+import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { HashRouter } from 'react-router-dom';
 
@@ -30,11 +30,11 @@ const root = ReactDOM.createRoot(
 // HashRouter使用（S3環境での確実なルーティング）
 
 root.render(
-  // <React.StrictMode> - 一時的に無効化（React Hooks初期化問題のデバッグ用）
-  <HashRouter>
-    <App />
-  </HashRouter>
-  // </React.StrictMode>
+  <React.StrictMode>
+    <HashRouter>
+      <App />
+    </HashRouter>
+  </React.StrictMode>
 );
 
 // Service Worker registration - temporarily disabled for debugging
