@@ -18,6 +18,7 @@ import { HtmlPlugin } from './plugins/HtmlPlugin';
 import { OnChangePlugin } from './plugins/OnChangePlugin';
 import { CodeHighlightPlugin } from './plugins/CodeHighlightPlugin';
 import { CodeBlockLineBreakPlugin } from './plugins/CodeBlockLineBreakPlugin';
+import { CodeLanguagePlugin } from './plugins/CodeLanguagePlugin';
 
 /**
  * Props interface matching the existing RichTextEditor
@@ -97,6 +98,7 @@ export default function LexicalRichTextEditor({
         <LinkPlugin />
         <CodeBlockLineBreakPlugin />
         <CodeHighlightPlugin />
+        <CodeLanguagePlugin />
         <TabIndentationPlugin maxIndent={4} />
         <HtmlPlugin initialHtml={value} />
         <OnChangePlugin onChange={onChange} />
