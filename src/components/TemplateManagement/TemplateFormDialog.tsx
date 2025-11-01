@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, Suspense, lazy } from 'react';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 
@@ -7,9 +7,11 @@ import type { Label, Priority } from '../../types';
 import UnifiedDialog from '../shared/Dialog/UnifiedDialog';
 import TemplateCategorySelector from './TemplateCategorySelector';
 import LabelSelector from '../LabelSelector';
-import LexicalRichTextEditor from '../LexicalRichTextEditor/';
 import PrioritySelector from '../PrioritySelector';
 import InlineMessage from '../shared/InlineMessage';
+
+// 動的インポート - RichTextEditor
+const LexicalRichTextEditor = lazy(() => import('../LexicalRichTextEditor/'));
 
 interface TemplateFormDialogProps {
   isOpen: boolean;
@@ -286,15 +288,23 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
             <label className='text-sm font-medium' htmlFor='task-description'>
               タスク説明
             </label>
-            <LexicalRichTextEditor
-              value={formData.taskDescription}
-              onChange={value =>
-                setFormData(prev => ({ ...prev, taskDescription: value }))
+            <Suspense
+              fallback={
+                <div className='h-[120px] flex items-center justify-center border border-input rounded-md'>
+                  <span className='text-sm text-muted-foreground'>エディタを読み込み中...</span>
+                </div>
               }
-              placeholder='タスクの説明を入力...'
-              disabled={isLoading}
-              minHeight='120px'
-            />
+            >
+              <LexicalRichTextEditor
+                value={formData.taskDescription}
+                onChange={value =>
+                  setFormData(prev => ({ ...prev, taskDescription: value }))
+                }
+                placeholder='タスクの説明を入力...'
+                disabled={isLoading}
+                minHeight='120px'
+              />
+            </Suspense>
           </div>
 
           {/* 優先度 */}
