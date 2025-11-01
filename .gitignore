@@ -13,6 +13,7 @@
 
 # misc
 .DS_Store
+.env
 .env.local
 .env.development.local
 .env.test.local
@@ -29,6 +30,3 @@ yarn-error.log*
 !.claude/learning-sessions/**/*
 !.claude/commands/**/*
 !.claude/agents/**/*
-# Claude Code チーム知識共有
-!.claude/shared-knowledge/
-!.claude/shared-knowledge/**
