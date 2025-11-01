@@ -15,7 +15,7 @@ import UnifiedFormField from './UnifiedFormField';
 import LabelSelector from '../../LabelSelector';
 import PrioritySelector from '../../PrioritySelector';
 import RecurrenceSelector from '../../RecurrenceSelector';
-import RichTextEditor from '../../RichTextEditor/';
+import LexicalRichTextEditor from '../../LexicalRichTextEditor/';
 import TimeSelector from '../../TimeSelector';
 import DialogFlashMessage from '../DialogFlashMessage';
 import {
@@ -169,7 +169,7 @@ export const UnifiedTaskForm = memo<UnifiedTaskFormProps>(
     // カスタムコンポーネントの生成
     const descriptionComponent = useMemo(
       () => (
-        <RichTextEditor
+        <LexicalRichTextEditor
           value={description}
           onChange={setDescription}
           placeholder='タスクの説明を入力...'

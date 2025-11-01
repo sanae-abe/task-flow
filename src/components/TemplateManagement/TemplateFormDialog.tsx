@@ -7,7 +7,7 @@ import type { Label, Priority } from '../../types';
 import UnifiedDialog from '../shared/Dialog/UnifiedDialog';
 import TemplateCategorySelector from './TemplateCategorySelector';
 import LabelSelector from '../LabelSelector';
-import RichTextEditor from '../RichTextEditor/';
+import LexicalRichTextEditor from '../LexicalRichTextEditor/';
 import PrioritySelector from '../PrioritySelector';
 import InlineMessage from '../shared/InlineMessage';
 
@@ -286,7 +286,7 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
             <label className='text-sm font-medium' htmlFor='task-description'>
               タスク説明
             </label>
-            <RichTextEditor
+            <LexicalRichTextEditor
               value={formData.taskDescription}
               onChange={value =>
                 setFormData(prev => ({ ...prev, taskDescription: value }))
