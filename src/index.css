@@ -349,20 +349,17 @@ input[type='number']::-moz-number-spinner {
   cursor: help;
 }
 
-/* Emoji Picker - 絵文字サイズ調整 */
-.epr-emoji-category-label {
-  font-size: 12px !important;
-}
-
-.epr-emoji-native {
-  font-size: 20px !important; /* デフォルトより小さく */
-}
-
-.epr-emoji-category button {
-  width: 28px !important;
-  height: 28px !important;
-}
-
-.epr-emoji-category {
-  gap: 2px !important;
+/* Emoji Picker カテゴリラベルのフォントサイズ調整 */
+:root {
+  .epr-main {
+    --epr-header-padding: 8px;
+    --epr-emoji-gap: 8px;
+    --epr-emoji-size: 20px;
+    --epr-category-navigation-button-size: 24px;
+    --epr-header-padding: 8px;
+    --epr-emoji-category-label-size: 12px;
+  }
+  .epr-emoji-category-label {
+    font-size: var(--epr-emoji-category-label-size);
+  }
 }
