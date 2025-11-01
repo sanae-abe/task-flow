@@ -1,142 +1,140 @@
 /**
  * Code Language Plugin
  *
- * Adds language selection dropdown to code blocks
+ * Adds language selection dropdown to code blocks in the toolbar
  */
 
-import { useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import { $isCodeNode, CodeNode, normalizeCodeLang } from '@lexical/code';
-import { $getNodeByKey, NodeKey } from 'lexical';
+import { $isCodeNode, CodeNode } from '@lexical/code';
+import {
+  $getSelection,
+  $isRangeSelection,
+  COMMAND_PRIORITY_CRITICAL,
+  SELECTION_CHANGE_COMMAND,
+} from 'lexical';
 
-const CODE_LANGUAGE_FRIENDLY_NAME_MAP: Record<string, string> = {
-  c: 'C',
-  clike: 'C-like',
-  css: 'CSS',
-  html: 'HTML',
-  js: 'JavaScript',
-  markdown: 'Markdown',
-  objc: 'Objective-C',
-  plain: 'Plain Text',
-  py: 'Python',
-  rust: 'Rust',
-  sql: 'SQL',
-  swift: 'Swift',
-  typescript: 'TypeScript',
-  xml: 'XML',
-  tsx: 'TSX',
-  jsx: 'JSX',
-  json: 'JSON',
-};
+const CODE_LANGUAGE_OPTIONS: [string, string][] = [
+  ['plain', 'Plain Text'],
+  ['js', 'JavaScript'],
+  ['typescript', 'TypeScript'],
+  ['jsx', 'JSX'],
+  ['tsx', 'TSX'],
+  ['html', 'HTML'],
+  ['css', 'CSS'],
+  ['xml', 'XML'],
+  ['json', 'JSON'],
+  ['markdown', 'Markdown'],
+  ['python', 'Python'],
+  ['c', 'C'],
+  ['clike', 'C-like'],
+  ['rust', 'Rust'],
+  ['sql', 'SQL'],
+  ['swift', 'Swift'],
+];
 
-function getCodeLanguageOptions(): [string, string][] {
-  const options: [string, string][] = [];
-
-  for (const [lang, friendlyName] of Object.entries(
-    CODE_LANGUAGE_FRIENDLY_NAME_MAP
-  )) {
-    options.push([lang, friendlyName]);
+function getSelectedCodeNode(): CodeNode | null {
+  const selection = $getSelection();
+  if (!$isRangeSelection(selection)) {
+    return null;
   }
 
-  return options;
-}
+  const anchorNode = selection.anchor.getNode();
+  const element =
+    anchorNode.getKey() === 'root'
+      ? anchorNode
+      : anchorNode.getTopLevelElementOrThrow();
 
-interface CodeLanguageSelectorProps {
-  lang: string;
-  editor: ReturnType<typeof useLexicalComposerContext>[0];
-  nodeKey: NodeKey;
-}
+  if ($isCodeNode(element)) {
+    return element;
+  }
 
-function CodeLanguageSelector({
-  lang,
-  editor,
-  nodeKey,
-}: CodeLanguageSelectorProps): React.ReactElement {
-  const handleCodeLanguageSelect = (value: string) => {
-    editor.update(() => {
-      const node = $getNodeByKey(nodeKey);
-      if ($isCodeNode(node)) {
-        const newLang = normalizeCodeLang(value);
-        if (newLang) {
-          node.setLanguage(newLang);
-        }
-      }
-    });
-  };
+  const parent = anchorNode.getParent();
+  if ($isCodeNode(parent)) {
+    return parent;
+  }
 
-  return (
-    <select
-      className='absolute top-2 right-2 z-10 text-xs bg-background border border-border rounded px-2 py-1 cursor-pointer hover:bg-accent hover:text-accent-foreground focus:outline-none focus:ring-2 focus:ring-ring'
-      onChange={e => handleCodeLanguageSelect(e.target.value)}
-      value={lang}
-    >
-      {getCodeLanguageOptions().map(([value, label]) => (
-        <option key={value} value={value}>
-          {label}
-        </option>
-      ))}
-    </select>
-  );
+  return null;
 }
 
 /**
  * Code Language Plugin Component
  *
- * Adds language selection dropdown to code blocks
+ * Monitors selection and provides language state for toolbar
  */
-export function CodeLanguagePlugin(): React.ReactElement | null {
+export function CodeLanguagePlugin(): null {
   const [editor] = useLexicalComposerContext();
 
   useEffect(
     () =>
-      editor.registerMutationListener(CodeNode, mutations => {
-        editor.getEditorState().read(() => {
-          for (const [key, type] of mutations) {
-            if (type === 'created' || type === 'updated') {
-              const node = $getNodeByKey(key);
-              if ($isCodeNode(node)) {
-                const element = editor.getElementByKey(key);
-                if (element) {
-                  const lang = node.getLanguage() || 'plain';
-
-                  // Remove existing selector if any
-                  const existingSelector = element.querySelector(
-                    '.code-language-selector'
-                  );
-                  if (existingSelector) {
-                    existingSelector.remove();
-                  }
-
-                  // Create and append selector
-                  const selectorContainer = document.createElement('div');
-                  selectorContainer.className = 'code-language-selector';
-                  selectorContainer.style.position = 'relative';
-
-                  const parent = element.parentElement;
-                  if (parent) {
-                    parent.style.position = 'relative';
-                  }
-
-                  // Create React root and render selector
-                  import('react-dom/client').then(({ createRoot }) => {
-                    const root = createRoot(selectorContainer);
-                    root.render(
-                      <CodeLanguageSelector
-                        lang={lang}
-                        editor={editor}
-                        nodeKey={key}
-                      />
-                    );
-                    element.prepend(selectorContainer);
-                  });
-                }
-              }
-            }
-          }
-        });
-      }),
+      editor.registerCommand(
+        SELECTION_CHANGE_COMMAND,
+        () =>
+          // Selection state is managed by useCodeLanguage hook
+          false,
+        COMMAND_PRIORITY_CRITICAL
+      ),
     [editor]
   );
 
   return null;
+}
+
+/**
+ * Hook to get current code language and update function
+ * Use this in Toolbar or other components
+ */
+export function useCodeLanguage(): {
+  isCodeBlock: boolean;
+  codeLanguage: string;
+  onCodeLanguageSelect: (value: string) => void;
+  languageOptions: [string, string][];
+} {
+  const [editor] = useLexicalComposerContext();
+  const [isCodeBlock, setIsCodeBlock] = useState(false);
+  const [codeLanguage, setCodeLanguage] = useState('plain');
+
+  const updateCodeLanguageState = useCallback(() => {
+    editor.getEditorState().read(() => {
+      const codeNode = getSelectedCodeNode();
+      if (codeNode) {
+        setIsCodeBlock(true);
+        setCodeLanguage(codeNode.getLanguage() || 'plain');
+      } else {
+        setIsCodeBlock(false);
+      }
+    });
+  }, [editor]);
+
+  useEffect(
+    () =>
+      editor.registerCommand(
+        SELECTION_CHANGE_COMMAND,
+        () => {
+          updateCodeLanguageState();
+          return false;
+        },
+        COMMAND_PRIORITY_CRITICAL
+      ),
+    [editor, updateCodeLanguageState]
+  );
+
+  const onCodeLanguageSelect = useCallback(
+    (value: string) => {
+      editor.update(() => {
+        const codeNode = getSelectedCodeNode();
+        if (codeNode) {
+          codeNode.setLanguage(value);
+        }
+      });
+    },
+    [editor]
+  );
+
+  return {
+    isCodeBlock,
+    codeLanguage,
+    onCodeLanguageSelect,
+    languageOptions: CODE_LANGUAGE_OPTIONS,
+  };
 }

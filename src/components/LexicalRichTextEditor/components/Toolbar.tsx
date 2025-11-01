@@ -32,6 +32,7 @@ import {
   Redo,
 } from 'lucide-react';
 import { EmojiPickerPlugin } from '../plugins/EmojiPickerPlugin';
+import { useCodeLanguage } from '../plugins/CodeLanguagePlugin';
 
 interface ToolbarProps {
   disabled?: boolean;
@@ -41,6 +42,8 @@ export function Toolbar({
   disabled = false,
 }: ToolbarProps): React.ReactElement {
   const [editor] = useLexicalComposerContext();
+  const { isCodeBlock, codeLanguage, onCodeLanguageSelect, languageOptions } =
+    useCodeLanguage();
 
   const formatBold = useCallback(() => {
     editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold');
@@ -170,6 +173,24 @@ export function Toolbar({
       >
         <FileCode size={18} />
       </button>
+
+      {/* Code Language Selector - only show when cursor is in code block */}
+      {isCodeBlock && (
+        <select
+          value={codeLanguage}
+          onChange={e => onCodeLanguageSelect(e.target.value)}
+          disabled={disabled}
+          className='ml-2 text-xs bg-background border border-border rounded px-2 py-1 cursor-pointer hover:bg-accent hover:text-accent-foreground focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50 disabled:cursor-not-allowed'
+          title='コードブロック言語'
+          aria-label='コードブロック言語選択'
+        >
+          {languageOptions.map(([value, label]) => (
+            <option key={value} value={value}>
+              {label}
+            </option>
+          ))}
+        </select>
+      )}
 
       {/* Emoji Picker */}
       <EmojiPickerPlugin disabled={disabled} />
