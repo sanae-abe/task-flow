@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import React, { memo } from 'react';
+import { cn } from '@/lib/utils';
 import {
   DndContext,
   DragOverlay,
@@ -12,7 +12,7 @@ import {
   useSortable,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { cn } from '@/lib/utils';
+import React, { memo } from 'react';
 
 import { useBoard } from '../contexts/BoardContext';
 import { useBoardDragAndDrop } from '../hooks/useBoardDragAndDrop';
@@ -68,8 +68,8 @@ const SortableBoardTab: React.FC<SortableBoardTabProps> = memo(
           size='sm'
           onClick={() => onSelect(board.id)}
           className={cn(
-            'text-sm rounded-md px-1 py-0 whitespace-nowrap translate-y-0.5 shrink-0 cursor-grab hover:text-foreground/70 hover:bg-transparent active:cursor-grabbing focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]',
-            isSelected ? 'font-semibold text-primary' : 'font-semibold'
+            'text-sm rounded-md px-1 py-0 whitespace-nowrap translate-y-0.5 shrink-0 cursor-grab hover:bg-transparent active:cursor-grabbing focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]',
+            isSelected ? 'text-primary' : ''
           )}
           aria-label={`${board.title}ボードを選択`}
         >
@@ -91,7 +91,7 @@ const DragOverlayBoardTab: React.FC<DragOverlayBoardTabProps> = memo(
       <Button
         variant='ghost'
         size='sm'
-        className='text-sm rounded-md px-1 py-0 whitespace-nowrap shrink-0 font-semibold text-foreground bg-white hover:bg-white'
+        className='text-sm rounded-md px-1 py-0 whitespace-nowrap shrink-0 text-foreground bg-white hover:bg-white'
       >
         {board.title}
       </Button>
