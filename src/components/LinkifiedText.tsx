@@ -415,20 +415,20 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({
 
       // <pre><code> パターン
       const preCodeBlocks = containerRef.current.querySelectorAll('pre code');
-      preCodeBlocks.forEach((block) => {
+      preCodeBlocks.forEach(block => {
         allCodeBlocks.push(block as HTMLElement);
       });
 
       // <pre>のみパターン（codeタグを含まないpre）
       const preBlocks = containerRef.current.querySelectorAll('pre');
-      preBlocks.forEach((pre) => {
+      preBlocks.forEach(pre => {
         const hasCodeChild = pre.querySelector('code');
         if (!hasCodeChild) {
           allCodeBlocks.push(pre as HTMLElement);
         }
       });
 
-      allCodeBlocks.forEach((block) => {
+      allCodeBlocks.forEach(block => {
         const codeElement = block as HTMLElement;
         const text = codeElement.textContent || '';
 
@@ -442,7 +442,7 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({
             if (!codeElement.className.includes('language-')) {
               codeElement.className = 'language-javascript';
             }
-          } catch (error) {
+          } catch (_error) {
             // エラーが発生した場合は元のテキストを保持
             codeElement.textContent = text;
           }
@@ -455,12 +455,9 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({
   const applySimpleHighlight = (code: string): string => {
     // まずHTMLエスケープ（既にエスケープされている場合はそのまま）
     const isAlreadyEscaped = code.includes('&lt;') || code.includes('&gt;');
-    let escapedCode = isAlreadyEscaped
+    const escapedCode = isAlreadyEscaped
       ? code
-      : code
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;');
+      : code.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
     // すべてのマッチを位置とともに収集
     interface Match {
@@ -495,7 +492,8 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({
     }
 
     // 3. HTMLタグ（優先度2）
-    const htmlTagRegex = /&lt;(\/?)([\w-]+)((?:\s+[\w-]+(?:=(?:"[^"]*"|'[^']*'|[^\s&gt;]+))?)*)\s*(\/?)&gt;/g;
+    const htmlTagRegex =
+      /&lt;(\/?)([\w-]+)((?:\s+[\w-]+(?:=(?:"[^"]*"|'[^']*'|[^\s&gt;]+))?)*)\s*(\/?)&gt;/g;
     while ((match = htmlTagRegex.exec(escapedCode)) !== null) {
       const [fullMatch, closingSlash, tagName, attributes, selfClosing] = match;
       let highlightedTag = `<span class="token-punctuation">&lt;${closingSlash}</span><span class="token-tag">${tagName}</span>`;
@@ -503,7 +501,12 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({
       if (attributes) {
         highlightedTag += attributes.replace(
           /([\w-]+)(=)?("([^"]*)"|'([^']*)'|([^\s&gt;]+))?/g,
-          (attrMatch: string, attrName: string, equals: string, attrValue: string) => {
+          (
+            attrMatch: string,
+            attrName: string,
+            equals: string,
+            attrValue: string
+          ) => {
             if (!attrName) return attrMatch;
             let result = `<span class="token-attr">${attrName}</span>`;
             if (equals && attrValue) {
@@ -535,7 +538,8 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({
     }
 
     // 5. JSキーワード（優先度4）
-    const keywordRegex = /\b(function|const|let|var|if|else|for|while|return|class|import|export|from|default|async|await|true|false|null|undefined)\b/g;
+    const keywordRegex =
+      /\b(function|const|let|var|if|else|for|while|return|class|import|export|from|default|async|await|true|false|null|undefined)\b/g;
     while ((match = keywordRegex.exec(escapedCode)) !== null) {
       matches.push({
         start: match.index,
@@ -577,10 +581,13 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({
     const filteredMatches: Match[] = [];
     for (const currentMatch of matches) {
       const overlaps = filteredMatches.some(
-        (existing) =>
-          (currentMatch.start >= existing.start && currentMatch.start < existing.end) ||
-          (currentMatch.end > existing.start && currentMatch.end <= existing.end) ||
-          (currentMatch.start <= existing.start && currentMatch.end >= existing.end)
+        existing =>
+          (currentMatch.start >= existing.start &&
+            currentMatch.start < existing.end) ||
+          (currentMatch.end > existing.start &&
+            currentMatch.end <= existing.end) ||
+          (currentMatch.start <= existing.start &&
+            currentMatch.end >= existing.end)
       );
       if (!overlaps) {
         filteredMatches.push(currentMatch);
@@ -591,7 +598,8 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({
     filteredMatches.sort((a, b) => b.start - a.start);
     let result = escapedCode;
     for (const m of filteredMatches) {
-      result = result.substring(0, m.start) + m.replacement + result.substring(m.end);
+      result =
+        result.substring(0, m.start) + m.replacement + result.substring(m.end);
     }
 
     return result;
