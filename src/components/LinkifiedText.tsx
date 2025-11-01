@@ -560,7 +560,55 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({
       });
     }
 
-    // 7. 関数名（優先度6）
+    // 7. CSS @規則（優先度4）
+    const cssAtRuleRegex =
+      /@(media|import|keyframes|font-face|charset|namespace|supports|page|document)\b/g;
+    while ((match = cssAtRuleRegex.exec(escapedCode)) !== null) {
+      matches.push({
+        start: match.index,
+        end: match.index + match[0].length,
+        replacement: `<span class="token-atrule">${match[0]}</span>`,
+        priority: 4,
+      });
+    }
+
+    // 8. CSSプロパティ（優先度5）
+    const cssPropertyRegex =
+      /\b(color|background|border|margin|padding|width|height|display|position|font|text|flex|grid|animation|transition|transform|opacity|z-index|overflow|cursor|box-shadow|border-radius)(-[a-z]+)*\s*:/g;
+    while ((match = cssPropertyRegex.exec(escapedCode)) !== null) {
+      const propertyName = match[0].replace(/:$/, ''); // Remove trailing colon
+      matches.push({
+        start: match.index,
+        end: match.index + propertyName.length,
+        replacement: `<span class="token-property">${propertyName}</span>`,
+        priority: 5,
+      });
+    }
+
+    // 9. CSS単位・値（優先度6）
+    const cssUnitRegex =
+      /\b(\d+(?:\.\d+)?)(px|em|rem|%|vh|vw|vmin|vmax|ch|ex|cm|mm|in|pt|pc|deg|rad|grad|turn|s|ms)\b/g;
+    while ((match = cssUnitRegex.exec(escapedCode)) !== null) {
+      matches.push({
+        start: match.index,
+        end: match.index + match[0].length,
+        replacement: `<span class="token-number">${match[0]}</span>`,
+        priority: 6,
+      });
+    }
+
+    // 10. CSSセレクター（優先度6）
+    const cssSelectorRegex = /([.#][\w-]+|\*|::?[\w-]+)/g;
+    while ((match = cssSelectorRegex.exec(escapedCode)) !== null) {
+      matches.push({
+        start: match.index,
+        end: match.index + match[0].length,
+        replacement: `<span class="token-selector">${match[0]}</span>`,
+        priority: 6,
+      });
+    }
+
+    // 11. 関数名（優先度7）
     const functionRegex = /\b([a-zA-Z_$][a-zA-Z0-9_$]*)\s*\(/g;
     while ((match = functionRegex.exec(escapedCode)) !== null) {
       const funcName = match[1];
@@ -568,7 +616,7 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({
         start: match.index,
         end: match.index + funcName.length,
         replacement: `<span class="token-function">${funcName}</span>`,
-        priority: 6,
+        priority: 7,
       });
     }
 
