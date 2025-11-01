@@ -4,15 +4,19 @@
  * Wrapper component for emoji-picker-react with Lexical integration
  */
 
-import { useState, useCallback } from 'react';
+import { Button } from '@/components/ui/button';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { Button } from '@/components/ui/button';
+import EmojiPicker, {
+  EmojiClickData,
+  EmojiStyle,
+  Theme,
+} from 'emoji-picker-react';
 import { Smile } from 'lucide-react';
-import EmojiPicker, { EmojiClickData, Theme } from 'emoji-picker-react';
+import { useCallback, useState } from 'react';
 
 interface EmojiPickerComponentProps {
   onEmojiSelect: (emoji: string) => void;
@@ -72,12 +76,14 @@ export function EmojiPickerComponent({
           autoFocusSearch={false}
           theme={Theme.LIGHT}
           lazyLoadEmojis
+          emojiStyle={EmojiStyle.NATIVE}
           previewConfig={{
             showPreview: false,
           }}
-          width={350}
-          height={400}
-          searchPlaceholder='絵文字を検索...'
+          width={320}
+          height={320}
+          emojiVersion='15.0'
+          searchDisabled
         />
       </PopoverContent>
     </Popover>
