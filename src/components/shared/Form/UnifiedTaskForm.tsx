@@ -30,6 +30,9 @@ export interface UnifiedTaskFormProps {
   // モード指定
   mode: 'create' | 'edit';
 
+  // エディタの再マウント用キー（タスクIDなど）
+  editorKey?: string;
+
   // 基本フォーム状態
   title: string;
   setTitle: (value: string) => void;
@@ -81,6 +84,7 @@ export interface UnifiedTaskFormProps {
 export const UnifiedTaskForm = memo<UnifiedTaskFormProps>(
   ({
     mode,
+    editorKey,
     title,
     setTitle,
     description,
@@ -170,12 +174,13 @@ export const UnifiedTaskForm = memo<UnifiedTaskFormProps>(
     const descriptionComponent = useMemo(
       () => (
         <LexicalRichTextEditor
+          key={editorKey}
           value={description}
           onChange={setDescription}
           placeholder='タスクの説明を入力...'
         />
       ),
-      [description, setDescription]
+      [editorKey, description, setDescription]
     );
 
     const dueDateComponent = useMemo(

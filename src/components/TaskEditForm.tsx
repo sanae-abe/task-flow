@@ -10,6 +10,7 @@ import type {
 import UnifiedTaskForm from './shared/Form/UnifiedTaskForm';
 
 interface TaskEditFormProps {
+  editorKey?: string;
   title: string;
   setTitle: (value: string) => void;
   description: string;
@@ -40,6 +41,7 @@ interface TaskEditFormProps {
  */
 const TaskEditForm = memo<TaskEditFormProps>(
   ({
+    editorKey,
     title,
     setTitle,
     description,
@@ -65,6 +67,7 @@ const TaskEditForm = memo<TaskEditFormProps>(
   }) => (
     <UnifiedTaskForm
       mode='edit'
+      editorKey={editorKey}
       title={title}
       setTitle={setTitle}
       description={description}
