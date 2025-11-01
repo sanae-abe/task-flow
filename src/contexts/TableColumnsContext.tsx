@@ -11,6 +11,9 @@ import {
   type TableColumnSettings,
 } from '../types/table';
 
+// 型を再エクスポート
+export type { TableColumn };
+
 const STORAGE_KEY = 'taskflow-table-columns';
 
 interface TableColumnsContextType {
