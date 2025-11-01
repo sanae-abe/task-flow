@@ -68,7 +68,7 @@ const SortableBoardTab: React.FC<SortableBoardTabProps> = memo(
           size='sm'
           onClick={() => onSelect(board.id)}
           className={cn(
-            'text-sm rounded-md px-1 py-0 whitespace-nowrap translate-y-0.5 shrink-0 cursor-grab hover:bg-transparent active:cursor-grabbing focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]',
+            'text-sm rounded-md px-1 py-0 whitespace-nowrap translate-y-0.5 shrink-0 cursor-grab hover:bg-transparent hover:text-primary active:cursor-grabbing focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]',
             isSelected ? 'text-primary' : ''
           )}
           aria-label={`${board.title}ボードを選択`}

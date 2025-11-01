@@ -18,6 +18,18 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({
   style = {},
 }) => {
   const processedContent = useMemo(() => {
+    // コードブロック内のすべての<span>タグを除去（コンテンツのみ抽出）
+    const stripAllSpanTags = (html: string): string => {
+      let result = html;
+      // すべての<span>タグを再帰的に除去（ネストされた<span>にも対応）
+      let previousResult;
+      do {
+        previousResult = result;
+        // <span ...>content</span> を content に置換
+        result = result.replace(/<span[^>]*>([\s\S]*?)<\/span>/gi, '$1');
+      } while (result !== previousResult); // 変化がなくなるまで繰り返し
+      return result;
+    };
     // URL自動リンク化を実行する関数（コード記述を除外）
     const linkifyUrls = (text: string) =>
       text.replace(
@@ -41,11 +53,14 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({
       html.replace(
         /<code([^>]*)>([\s\S]*?)<\/code>/gi,
         (_match, attributes, content) => {
-          // リッチテキストエディタのすべての<br>タグを改行に変換
-          const processedContent = content.replace(/<br\s*\/?>/gi, '\n');
+          // ステップ1: すべての<span>タグを除去
+          let cleanContent = stripAllSpanTags(content);
 
-          // HTMLタグをエスケープ
-          const escapedContent = processedContent
+          // ステップ2: リッチテキストエディタのすべての<br>タグを改行に変換
+          cleanContent = cleanContent.replace(/<br\s*\/?>/gi, '\n');
+
+          // ステップ3: HTMLタグをエスケープ
+          const escapedContent = cleanContent
             .replace(/</g, '&lt;')
             .replace(/>/g, '&gt;')
             .replace(/\{/g, '&#123;')
@@ -55,21 +70,44 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({
         }
       );
 
+    // Lexicalインラインコード（<span class="lexical-inline-code">）の処理
+    const processLexicalInlineCode = (html: string): string =>
+      html.replace(
+        /<span\s+class="lexical-inline-code"[^>]*>([\s\S]*?)<\/span>/gi,
+        (_match, content) => {
+          // ステップ1: すべての<span>タグを除去（ネストされた<span>も除去）
+          const cleanContent = stripAllSpanTags(content);
+
+          // ステップ2: HTMLタグをエスケープ
+          const escapedContent = cleanContent
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/\{/g, '&#123;')
+            .replace(/\}/g, '&#125;');
+
+          // <code>タグに変換して返す
+          return `<code>${escapedContent}</code>`;
+        }
+      );
+
     // div+pre構造のコードブロック処理（リッチテキストエディタ由来）
     const processDivPreCodeBlock = (html: string): string =>
       html.replace(
         /<div[^>]*><pre([^>]*)>([\s\S]*?)<\/pre><\/div>/gi,
         (_match, _preAttributes, content) => {
-          // ステップ1: エディタ由来の属性を削除
-          let cleanContent = content
+          // ステップ1: すべての<span>タグを除去
+          let cleanContent = stripAllSpanTags(content);
+
+          // ステップ2: エディタ由来の属性を削除
+          cleanContent = cleanContent
             .replace(/contenteditable="[^"]*"/gi, '')
             .replace(/spellcheck="[^"]*"/gi, '')
             .replace(/style="[^"]*"/gi, '');
 
-          // ステップ2: リッチテキストエディタの<br>タグを改行に変換
+          // ステップ3: リッチテキストエディタの<br>タグを改行に変換
           cleanContent = cleanContent.replace(/<br\s*\/?>/gi, '\n');
 
-          // ステップ3: HTMLタグをエスケープ（改行は保持）
+          // ステップ4: HTMLタグをエスケープ（改行は保持）
           const escapedContent = cleanContent
             .replace(/</g, '&lt;')
             .replace(/>/g, '&gt;')
@@ -85,15 +123,18 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({
       html.replace(
         /<pre([^>]*)><code([^>]*)>([\s\S]*?)<\/code><\/pre>/gi,
         (_match, preAttributes, codeAttributes, content) => {
-          // ステップ1: エディタ由来の属性を削除
-          let cleanContent = content
+          // ステップ1: すべての<span>タグを除去
+          let cleanContent = stripAllSpanTags(content);
+
+          // ステップ2: エディタ由来の属性を削除
+          cleanContent = cleanContent
             .replace(/contenteditable="[^"]*"/gi, '')
             .replace(/spellcheck="[^"]*"/gi, '');
 
-          // ステップ2: リッチテキストエディタの<br>タグを改行に変換
+          // ステップ3: リッチテキストエディタの<br>タグを改行に変換
           cleanContent = cleanContent.replace(/<br\s*\/?>/gi, '\n');
 
-          // ステップ3: HTMLタグをエスケープ（codeタグ内のコンテンツのみ）
+          // ステップ4: HTMLタグをエスケープ（codeタグ内のコンテンツのみ）
           const escapedContent = cleanContent
             .replace(/</g, '&lt;')
             .replace(/>/g, '&gt;')
@@ -108,13 +149,16 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({
       html.replace(
         /<pre([^>]*)>([\s\S]*?)<\/pre>/gi,
         (_match, attributes, content) => {
-          // ステップ1: エディタ由来の属性を削除
-          let cleanContent = content
+          // ステップ1: すべての<span>タグを除去
+          let cleanContent = stripAllSpanTags(content);
+
+          // ステップ2: エディタ由来の属性を削除
+          cleanContent = cleanContent
             .replace(/contenteditable="[^"]*"/gi, '')
             .replace(/spellcheck="[^"]*"/gi, '')
             .replace(/style="[^"]*"/gi, '');
 
-          // ステップ2: リッチテキストエディタの<br>タグを改行に変換
+          // ステップ3: リッチテキストエディタの<br>タグを改行に変換
           // ただし、連続する<br>タグは1つの改行として処理し、コードブロックの分割を防ぐ
           cleanContent = cleanContent.replace(
             /<br\s*\/?>\s*<br\s*\/?>/gi,
@@ -122,7 +166,7 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({
           );
           cleanContent = cleanContent.replace(/<br\s*\/?>/gi, '\n');
 
-          // ステップ3: HTMLタグをエスケープ
+          // ステップ4: HTMLタグをエスケープ
           const escapedContent = cleanContent
             .replace(/</g, '&lt;')
             .replace(/>/g, '&gt;')
@@ -214,6 +258,9 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({
           processedCode = processBlockCode(originalCode);
         } else if (originalCode.startsWith('<code')) {
           processedCode = processInlineCode(originalCode);
+        } else if (placeholder.includes('LEXICAL_INLINE_CODE')) {
+          // Lexicalインラインコード処理
+          processedCode = processLexicalInlineCode(originalCode);
         }
 
         content = content.replace(placeholder, processedCode);
