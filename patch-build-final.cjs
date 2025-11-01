@@ -47,11 +47,14 @@ jsFiles.forEach(file => {
     totalPatches++;
   }
 
-  // パターン3: React.useLayoutEffect の直接参照
-  if (content.includes('React.useLayoutEffect')) {
+  // パターン3: React.useLayoutEffect の直接参照（vendor-misc のみ）
+  // ⚠️ 注意: typeof window.React.useLayoutEffect のような文脈で誤動作を防ぐため、
+  // より制限的なパターンを使用
+  if (file.includes('vendor-misc') && content.includes('React.useLayoutEffect')) {
     console.log(`📝 Patching React.useLayoutEffect in ${file}...`);
+    // 負の後読みで typeof や . の直後でないことを確認
     content = content.replace(
-      /React\.useLayoutEffect/g,
+      /(?<!typeof\s)(?<!\.)React\.useLayoutEffect/g,
       '(React&&React.useLayoutEffect?React.useLayoutEffect:(React&&React.useEffect?React.useEffect:function(){}))'
     );
     hasChanges = true;
