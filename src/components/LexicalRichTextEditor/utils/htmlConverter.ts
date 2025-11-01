@@ -72,8 +72,32 @@ export function lexicalToHtml(editor: LexicalEditor): string {
     htmlString = $generateHtmlFromNodes(editor, null);
   });
 
-  // Sanitize output HTML
-  return DOMPurify.sanitize(htmlString);
+  // Sanitize output HTML with same configuration as input
+  return DOMPurify.sanitize(htmlString, {
+    ALLOWED_TAGS: [
+      'p',
+      'br',
+      'strong',
+      'b',
+      'em',
+      'i',
+      'u',
+      's',
+      'strike',
+      'a',
+      'code',
+      'pre',
+      'ul',
+      'ol',
+      'li',
+      'h1',
+      'h2',
+      'h3',
+      'blockquote',
+      'span', // Allow span tags (Lexical may use them for formatting)
+    ],
+    ALLOWED_ATTR: ['href', 'target', 'rel', 'style', 'class'],
+  });
 }
 
 /**

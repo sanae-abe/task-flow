@@ -13,7 +13,7 @@ export const lexicalTheme: EditorThemeClasses = {
     italic: 'italic',
     underline: 'underline',
     strikethrough: 'line-through',
-    code: 'bg-muted text-sm font-mono px-1 py-0.5 rounded border border-border',
+    code: 'lexical-inline-code',
   },
 
   // Links
