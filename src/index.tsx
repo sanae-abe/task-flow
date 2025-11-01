@@ -2,6 +2,22 @@
 import ReactDOM from 'react-dom/client';
 import { HashRouter } from 'react-router-dom';
 
+// Prism.jsをグローバルに初期化（Lexical CodeHighlightPluginが依存）
+import Prism from 'prismjs';
+import 'prismjs/components/prism-markup.js'; // HTML, XML, SVG
+import 'prismjs/components/prism-javascript.js';
+import 'prismjs/components/prism-typescript.js';
+import 'prismjs/components/prism-jsx.js'; // JSX support
+import 'prismjs/components/prism-tsx.js'; // TSX support
+import 'prismjs/components/prism-css.js';
+import 'prismjs/components/prism-json.js';
+import 'prismjs/components/prism-markdown.js';
+
+// Prismをグローバルwindowオブジェクトに明示的に設定（@lexical/code が window.Prism を期待）
+if (typeof window !== 'undefined') {
+  (window as typeof window & { Prism: typeof Prism }).Prism = Prism;
+}
+
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';

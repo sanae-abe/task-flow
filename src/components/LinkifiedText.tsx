@@ -404,12 +404,206 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({
     return sanitizedContent;
   }, [children]);
 
+  // Prism.jsによるシンタックスハイライトを適用するためのref
+  const containerRef = React.useRef<HTMLSpanElement>(null);
+
+  // コンテンツが更新されたら簡易シンタックスハイライトを適用
+  React.useEffect(() => {
+    if (containerRef.current) {
+      // コードブロック内のすべてのコード要素に対してハイライトを適用
+      const allCodeBlocks: HTMLElement[] = [];
+
+      // <pre><code> パターン
+      const preCodeBlocks = containerRef.current.querySelectorAll('pre code');
+      preCodeBlocks.forEach((block) => {
+        allCodeBlocks.push(block as HTMLElement);
+      });
+
+      // <pre>のみパターン（codeタグを含まないpre）
+      const preBlocks = containerRef.current.querySelectorAll('pre');
+      preBlocks.forEach((pre) => {
+        const hasCodeChild = pre.querySelector('code');
+        if (!hasCodeChild) {
+          allCodeBlocks.push(pre as HTMLElement);
+        }
+      });
+
+      allCodeBlocks.forEach((block) => {
+        const codeElement = block as HTMLElement;
+        const text = codeElement.textContent || '';
+
+        if (text.trim()) {
+          try {
+            // 簡易的なシンタックスハイライトを適用
+            const highlightedHTML = applySimpleHighlight(text);
+            codeElement.innerHTML = highlightedHTML;
+
+            // language-javascriptクラスを追加してCSSスタイルを適用
+            if (!codeElement.className.includes('language-')) {
+              codeElement.className = 'language-javascript';
+            }
+          } catch (error) {
+            // エラーが発生した場合は元のテキストを保持
+            codeElement.textContent = text;
+          }
+        }
+      });
+    }
+  }, [processedContent]);
+
+  // 簡易的なシンタックスハイライト関数
+  const applySimpleHighlight = (code: string): string => {
+    // まずHTMLエスケープ（既にエスケープされている場合はそのまま）
+    const isAlreadyEscaped = code.includes('&lt;') || code.includes('&gt;');
+    let escapedCode = isAlreadyEscaped
+      ? code
+      : code
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;');
+
+    // すべてのマッチを位置とともに収集
+    interface Match {
+      start: number;
+      end: number;
+      replacement: string;
+      priority: number; // 優先度（低い方が先に処理）
+    }
+    const matches: Match[] = [];
+
+    // 1. HTMLコメント（優先度1）
+    const htmlCommentRegex = /&lt;!--[\s\S]*?--&gt;/g;
+    let match;
+    while ((match = htmlCommentRegex.exec(escapedCode)) !== null) {
+      matches.push({
+        start: match.index,
+        end: match.index + match[0].length,
+        replacement: `<span class="token-comment">${match[0]}</span>`,
+        priority: 1,
+      });
+    }
+
+    // 2. JSコメント（優先度1）
+    const jsCommentRegex = /(\/\/.*$|\/\*[\s\S]*?\*\/)/gm;
+    while ((match = jsCommentRegex.exec(escapedCode)) !== null) {
+      matches.push({
+        start: match.index,
+        end: match.index + match[0].length,
+        replacement: `<span class="token-comment">${match[0]}</span>`,
+        priority: 1,
+      });
+    }
+
+    // 3. HTMLタグ（優先度2）
+    const htmlTagRegex = /&lt;(\/?)([\w-]+)((?:\s+[\w-]+(?:=(?:"[^"]*"|'[^']*'|[^\s&gt;]+))?)*)\s*(\/?)&gt;/g;
+    while ((match = htmlTagRegex.exec(escapedCode)) !== null) {
+      const [fullMatch, closingSlash, tagName, attributes, selfClosing] = match;
+      let highlightedTag = `<span class="token-punctuation">&lt;${closingSlash}</span><span class="token-tag">${tagName}</span>`;
+
+      if (attributes) {
+        highlightedTag += attributes.replace(
+          /([\w-]+)(=)?("([^"]*)"|'([^']*)'|([^\s&gt;]+))?/g,
+          (attrMatch: string, attrName: string, equals: string, attrValue: string) => {
+            if (!attrName) return attrMatch;
+            let result = `<span class="token-attr">${attrName}</span>`;
+            if (equals && attrValue) {
+              result += `<span class="token-punctuation">=</span><span class="token-string">${attrValue}</span>`;
+            }
+            return result;
+          }
+        );
+      }
+
+      highlightedTag += `<span class="token-punctuation">${selfClosing}&gt;</span>`;
+      matches.push({
+        start: match.index,
+        end: match.index + fullMatch.length,
+        replacement: highlightedTag,
+        priority: 2,
+      });
+    }
+
+    // 4. 文字列（優先度3）
+    const stringRegex = /(['"`])((?:\\.|(?!\1)[^\\])*?)\1/g;
+    while ((match = stringRegex.exec(escapedCode)) !== null) {
+      matches.push({
+        start: match.index,
+        end: match.index + match[0].length,
+        replacement: `<span class="token-string">${match[0]}</span>`,
+        priority: 3,
+      });
+    }
+
+    // 5. JSキーワード（優先度4）
+    const keywordRegex = /\b(function|const|let|var|if|else|for|while|return|class|import|export|from|default|async|await|true|false|null|undefined)\b/g;
+    while ((match = keywordRegex.exec(escapedCode)) !== null) {
+      matches.push({
+        start: match.index,
+        end: match.index + match[0].length,
+        replacement: `<span class="token-keyword">${match[0]}</span>`,
+        priority: 4,
+      });
+    }
+
+    // 6. 数値（優先度5）
+    const numberRegex = /\b(\d+\.?\d*)\b/g;
+    while ((match = numberRegex.exec(escapedCode)) !== null) {
+      matches.push({
+        start: match.index,
+        end: match.index + match[0].length,
+        replacement: `<span class="token-number">${match[0]}</span>`,
+        priority: 5,
+      });
+    }
+
+    // 7. 関数名（優先度6）
+    const functionRegex = /\b([a-zA-Z_$][a-zA-Z0-9_$]*)\s*\(/g;
+    while ((match = functionRegex.exec(escapedCode)) !== null) {
+      const funcName = match[1];
+      matches.push({
+        start: match.index,
+        end: match.index + funcName.length,
+        replacement: `<span class="token-function">${funcName}</span>`,
+        priority: 6,
+      });
+    }
+
+    // 重複を排除（優先度が高い=数字が小さいものを優先）
+    matches.sort((a, b) => {
+      if (a.start !== b.start) return a.start - b.start;
+      return a.priority - b.priority;
+    });
+
+    const filteredMatches: Match[] = [];
+    for (const currentMatch of matches) {
+      const overlaps = filteredMatches.some(
+        (existing) =>
+          (currentMatch.start >= existing.start && currentMatch.start < existing.end) ||
+          (currentMatch.end > existing.start && currentMatch.end <= existing.end) ||
+          (currentMatch.start <= existing.start && currentMatch.end >= existing.end)
+      );
+      if (!overlaps) {
+        filteredMatches.push(currentMatch);
+      }
+    }
+
+    // 後ろから順に置換（インデックスがずれないように）
+    filteredMatches.sort((a, b) => b.start - a.start);
+    let result = escapedCode;
+    for (const m of filteredMatches) {
+      result = result.substring(0, m.start) + m.replacement + result.substring(m.end);
+    }
+
+    return result;
+  };
+
   const combinedStyle: React.CSSProperties = {
     ...style,
   };
 
   return (
     <span
+      ref={containerRef}
       className={`block prose prose-sm max-w-none text-foreground ${className} [&_p]:mb-[1em] [&_ul]:mb-[1em] [&_ol]:mb-[1em] [&_ul]:ml-[1em] [&_ol]:ml-[1em]] [&_ul]:list-disc [&_ol]:list-disc [&_a]:underline [&_a]:font-medium [&_pre>code]:!text-inherit [&_pre>code]:!border-0 [&_pre>code]:!p-0[&_pre>code]:!bg-transparent`}
       style={combinedStyle}
       dangerouslySetInnerHTML={{ __html: processedContent }}

@@ -220,30 +220,17 @@ input[type='number']::-moz-number-spinner {
   font-size: 13px !important;
   line-height: 1.45 !important;
   overflow-x: auto !important;
-  color: #24292f !important;
   background-color: var(--muted) !important;
 }
 
 /* Prose内のインラインコード - リッチテキストエディタと統一 */
 .prose code {
   background-color: var(--muted) !important;
-  color: #e01e5a !important;
   padding: 2px 4px !important;
   border-radius: 0.25rem !important;
   font-family: 'Monaco', 'Menlo', 'Consolas', monospace !important;
   font-size: 0.875em !important;
   border: 1px solid #d0d7de !important;
-}
-
-/* Lexical inline code - エディタ内とHTML出力で使用 */
-.lexical-inline-code {
-  background-color: var(--muted);
-  color: #e01e5a;
-  padding: 2px 4px;
-  border-radius: 0.25rem;
-  font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
-  font-size: 0.875em;
-  border: 1px solid #d0d7de;
 }
 
 /* Lexical code block - ブロックコード用スタイル */
@@ -254,15 +241,20 @@ input[type='number']::-moz-number-spinner {
 }
 
 /* Prism.js シンタックスハイライトトークン */
+/* .proseコンテキスト内でも確実に適用されるよう詳細度を上げる */
+.prose code .token-comment,
+.prose pre .token-comment,
 .token-comment,
 .token-prolog,
 .token-doctype,
 .token-cdata {
-  color: #708090; /* slate gray for comments */
+  color: #708090 !important; /* slate gray for comments */
 }
 
+.prose code .token-punctuation,
+.prose pre .token-punctuation,
 .token-punctuation {
-  color: #999;
+  color: #999 !important;
 }
 
 .token-property,
@@ -272,42 +264,76 @@ input[type='number']::-moz-number-spinner {
 .token-constant,
 .token-symbol,
 .token-deleted {
-  color: #905;
+  color: #905 !important;
 }
 
+.prose code .token-selector,
+.prose pre .token-selector,
+.prose code .token-attr,
+.prose pre .token-attr,
+.prose code .token-string,
+.prose pre .token-string,
+.prose code .token-char,
+.prose pre .token-char,
+.prose code .token-builtin,
+.prose pre .token-builtin,
+.prose code .token-inserted,
+.prose pre .token-inserted,
 .token-selector,
 .token-attr,
 .token-string,
 .token-char,
 .token-builtin,
 .token-inserted {
-  color: #690;
+  color: #690 !important;
 }
 
+.prose code .token-operator,
+.prose pre .token-operator,
+.prose code .token-entity,
+.prose pre .token-entity,
+.prose code .token-url,
+.prose pre .token-url,
 .token-operator,
 .token-entity,
 .token-url,
 .language-css .token-string,
 .style .token-string {
-  color: #9a6e3a;
+  color: #9a6e3a !important;
   background: transparent;
 }
 
+.prose code .token-atrule,
+.prose pre .token-atrule,
+.prose code .token-attr-value,
+.prose pre .token-attr-value,
+.prose code .token-keyword,
+.prose pre .token-keyword,
 .token-atrule,
 .token-attr-value,
 .token-keyword {
-  color: #07a;
+  color: #07a !important;
 }
 
+.prose code .token-function,
+.prose pre .token-function,
+.prose code .token-class-name,
+.prose pre .token-class-name,
 .token-function,
 .token-class-name {
-  color: #dd4a68;
+  color: #dd4a68 !important;
 }
 
+.prose code .token-regex,
+.prose pre .token-regex,
+.prose code .token-important,
+.prose pre .token-important,
+.prose code .token-variable,
+.prose pre .token-variable,
 .token-regex,
 .token-important,
 .token-variable {
-  color: #e90;
+  color: #e90 !important;
 }
 
 .token-important,
