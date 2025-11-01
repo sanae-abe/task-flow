@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
-import type { FormFieldConfig } from '../../../types/unified-form';
 import { useUnifiedForm } from '../../../hooks/useUnifiedForm';
+import type { FormFieldConfig } from '../../../types/unified-form';
 import UnifiedFormField from '../../shared/Form/UnifiedFormField';
 import type { RecurrenceConfig } from '../types';
 import { PATTERN_OPTIONS } from '../utils/constants';
@@ -112,7 +112,7 @@ const RecurrencePatternSelector: React.FC<RecurrencePatternSelectorProps> = ({
   }
 
   return (
-    <div className='flex flex-col gap-2'>
+    <div className='flex flex-col gap-4'>
       <UnifiedFormField
         id={patternField.id}
         name={patternField.name}
@@ -128,24 +128,26 @@ const RecurrencePatternSelector: React.FC<RecurrencePatternSelectorProps> = ({
         hideLabel={false}
         className='flex flex-row items-center gap-1 [&>label]:w-[80px] [&>label]:mb-0 [&>select]:w-auto'
       />
-      <UnifiedFormField
-        id={intervalField.id}
-        name={intervalField.name}
-        type={intervalField.type}
-        label={intervalField.label}
-        value={currentInterval}
-        validation={intervalField.validation}
-        min={intervalField.min}
-        step={intervalField.step}
-        onChange={handleIntervalChange}
-        onBlur={() => form.setTouched('interval', true)}
-        _error={form.getFieldError('interval')}
-        touched={form.state.touched['interval']}
-        disabled={form.state.isSubmitting}
-        hideLabel={false}
-        className='flex flex-row items-center gap-1 [&>label]:w-[80px] [&>label]:mb-0 [&>input]:w-auto'
-      />
-      <span className='text-sm'>{getIntervalUnit(currentPattern)}</span>
+      <div className='flex flex-row items-center gap-2'>
+        <UnifiedFormField
+          id={intervalField.id}
+          name={intervalField.name}
+          type={intervalField.type}
+          label={intervalField.label}
+          value={currentInterval}
+          validation={intervalField.validation}
+          min={intervalField.min}
+          step={intervalField.step}
+          onChange={handleIntervalChange}
+          onBlur={() => form.setTouched('interval', true)}
+          _error={form.getFieldError('interval')}
+          touched={form.state.touched['interval']}
+          disabled={form.state.isSubmitting}
+          hideLabel={false}
+          className='flex flex-row items-center gap-1 [&>label]:w-[80px] [&>label]:mb-0 [&>input]:w-auto'
+        />
+        <span className='text-sm'>{getIntervalUnit(currentPattern)}</span>
+      </div>
     </div>
   );
 };

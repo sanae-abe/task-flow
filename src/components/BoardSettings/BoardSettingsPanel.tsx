@@ -35,6 +35,8 @@ import { useSonnerNotify } from '../../hooks/useSonnerNotify';
 import { v4 as uuidv4 } from 'uuid';
 import InlineMessage from '../shared/InlineMessage';
 import IconButton from '../shared/IconButton';
+import { validateColumnName } from './utils/columnValidation';
+import { useMessageHandler } from './hooks/useMessageHandler';
 
 // デバウンス機能
 const useDebounce = <T extends unknown[]>(
@@ -53,14 +55,6 @@ const useDebounce = <T extends unknown[]>(
     [callback, delay]
   );
 };
-
-// カラム名正規化関数（大文字小文字・全角半角を統一）
-const normalizeColumnName = (name: string): string =>
-  name
-    .toLowerCase()
-    .replace(/[Ａ-Ｚａ-ｚ０-９]/g, s =>
-      String.fromCharCode(s.charCodeAt(0) - 0xfee0)
-    );
 
 // Sortable Column Item コンポーネント
 interface SortableColumnItemProps {
@@ -177,36 +171,17 @@ export const BoardSettingsPanel: React.FC = () => {
   const [newColumnName, setNewColumnName] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-  const [saveMessage, setSaveMessage] = useState<string | null>(null);
-  const [saveMessageType, setSaveMessageType] = useState<
-    'success' | '_error' | null
-  >(null);
   const [addColumnError, setAddColumnError] = useState<string | null>(null);
   const [columnErrors, setColumnErrors] = useState<Record<string, string>>({});
   const [erroredColumnName, setErroredColumnName] = useState<string>('');
   const notify = useSonnerNotify();
-  const messageTimerRef = React.useRef<NodeJS.Timeout | null>(null);
 
-  // メッセージ表示用の共通関数
-  const showMessage = useCallback(
-    (message: string, type: 'success' | '_error') => {
-      // 既存のタイマーをクリア
-      if (messageTimerRef.current) {
-        clearTimeout(messageTimerRef.current);
-      }
-
-      setSaveMessage(message);
-      setSaveMessageType(type);
-
-      // メッセージを自動消去（成功: 3秒、エラー: 5秒）
-      const delay = type === 'success' ? 3000 : 5000;
-      messageTimerRef.current = setTimeout(() => {
-        setSaveMessage(null);
-        setSaveMessageType(null);
-      }, delay);
-    },
-    []
-  );
+  // メッセージ管理
+  const {
+    message: saveMessage,
+    messageType: saveMessageType,
+    showMessage,
+  } = useMessageHandler();
 
   // カラムエラー設定用の関数
   const setColumnError = useCallback(
@@ -264,13 +239,6 @@ export const BoardSettingsPanel: React.FC = () => {
     return undefined;
   }, [columns, isLoading, hasUnsavedChanges, showMessage]);
 
-  // コンポーネントアンマウント時のクリーンアップ
-  useEffect(() => {
-    if (messageTimerRef.current) {
-      clearTimeout(messageTimerRef.current);
-    }
-  }, []);
-
   // カラム名入力変更時のエラークリア
   useEffect(() => {
     if (addColumnError) {
@@ -326,24 +294,13 @@ export const BoardSettingsPanel: React.FC = () => {
   // カラム追加
   const handleAddColumn = useCallback(() => {
     const trimmedName = newColumnName.trim();
+    const validation = validateColumnName(trimmedName, columns);
 
-    if (!trimmedName) {
-      setAddColumnError('カラム名を入力してください');
-      setErroredColumnName('');
-      return;
-    }
-
-    // 正規化した名前で重複チェック（大文字小文字・全角半角を無視）
-    const normalizedNewName = normalizeColumnName(trimmedName);
-
-    const isDuplicate = columns.some(col => {
-      const normalizedExisting = normalizeColumnName(col.name);
-      return normalizedExisting === normalizedNewName;
-    });
-
-    if (isDuplicate) {
-      setAddColumnError('同じ名前のカラムが既に存在します');
-      setErroredColumnName(trimmedName);
+    if (!validation.isValid) {
+      setAddColumnError(validation.error);
+      setErroredColumnName(
+        validation.error?.includes('既に存在') ? trimmedName : ''
+      );
       return;
     }
 
@@ -380,25 +337,10 @@ export const BoardSettingsPanel: React.FC = () => {
   const handleUpdateColumnName = useCallback(
     (columnId: string, newName: string) => {
       const trimmedName = newName.trim();
+      const validation = validateColumnName(trimmedName, columns, columnId);
 
-      if (!trimmedName) {
-        setColumnError(columnId, 'カラム名を入力してください');
-        return;
-      }
-
-      // 正規化した名前で重複チェック（大文字小文字・全角半角を無視）
-      const normalizedNewName = normalizeColumnName(trimmedName);
-
-      const isDuplicate = columns.some(col => {
-        if (col.id === columnId) {
-          return false; // 自分自身は除外
-        }
-        const normalizedExisting = normalizeColumnName(col.name);
-        return normalizedExisting === normalizedNewName;
-      });
-
-      if (isDuplicate) {
-        setColumnError(columnId, '同じ名前のカラムが既に存在します');
+      if (!validation.isValid) {
+        setColumnError(columnId, validation.error);
         return;
       }
 

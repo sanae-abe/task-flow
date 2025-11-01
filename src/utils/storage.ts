@@ -162,12 +162,16 @@ const createDemoBoard = (): KanbanBoard[] => {
   const tomorrowMorning = new Date(today.getTime() + 86400000);
   tomorrowMorning.setHours(10, 0, 0, 0); // 明日の10:00
 
+  const nextWeek = new Date(today.getTime() + 86400000 * 7);
+  nextWeek.setHours(23, 59, 0, 0); // 来週の23:59
+
   // デモ用ラベル
   const labels: Label[] = [
     { id: uuidv4(), name: 'セキュリティ', color: '#d1242f' },
-    { id: uuidv4(), name: '機能改善', color: '#1a7f37' },
+    { id: uuidv4(), name: '機能追加', color: '#1a7f37' },
     { id: uuidv4(), name: 'バグ修正', color: '#656d76' },
     { id: uuidv4(), name: 'ドキュメント', color: '#0969da' },
+    { id: uuidv4(), name: 'パフォーマンス', color: '#8250df' },
   ];
 
   const demoBoard: KanbanBoard = {
@@ -189,32 +193,38 @@ const createDemoBoard = (): KanbanBoard[] => {
         tasks: [
           {
             id: uuidv4(),
-            title: 'TaskFlow リッチテキスト機能の実装',
-            description: `<p>TaskFlowアプリにリッチテキスト編集機能を追加する。</p><p><strong>要件：</strong></p><ul><li>太字、斜体、下線のサポート</li><li>リンク挿入機能</li><li>コードブロック対応</li><li>HTML出力とMarkdown変換</li></ul><p><strong>技術調査：</strong></p><ul><li><a href="https://lexical.dev/" target="_blank" rel="noopener noreferrer">Lexical Editor</a> - Meta製の高性能エディタ</li><li><a href="https://quilljs.com/" target="_blank" rel="noopener noreferrer">React Quill</a> - 軽量なリッチテキストエディタ</li></ul><p><code style="background-color: var(--muted); color: #e01e5a; padding: 2px 4px; border-radius: 4px; font-family: 'Monaco', 'Menlo', 'Consolas', monospace; font-size: 0.875em; border: 1px solid #d0d7de;">npm install @lexical/react lexical</code></p><pre style="margin: 0 !important; white-space: pre; overflow-wrap: normal; color: inherit; background: transparent; border: none;" contenteditable="true" spellcheck="false">// エディタコンポーネントの基本実装<br>import { LexicalComposer } from '@lexical/react/LexicalComposer';<br>import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';<br><br>const RichTextEditor = () =&gt; {<br>  return (<br>    &lt;LexicalComposer initialConfig={config}&gt;<br>      &lt;RichTextPlugin /&gt;<br>    &lt;/LexicalComposer&gt;<br>  );<br>};</pre>`,
+            title: 'リッチテキストエディタのシンタックスハイライト対応',
+            description: `<p>コードブロックにシンタックスハイライト機能を追加してコードの可読性を向上させる。</p><p><strong>実装要件:</strong></p><ul><li>Prism.jsを使用したシンタックスハイライト</li><li>主要言語のサポート（JavaScript, TypeScript, HTML, CSS, Python等）</li><li>言語選択ドロップダウンの実装</li><li>カスタムテーマのサポート</li></ul><p><strong>技術調査:</strong></p><ul><li><a href="https://prismjs.com/" target="_blank" rel="noopener noreferrer">Prism.js</a> - 軽量で拡張性の高いシンタックスハイライター</li><li><a href="https://highlightjs.org/" target="_blank" rel="noopener noreferrer">Highlight.js</a> - 多言語対応のハイライター</li></ul><p><code style="background-color: var(--muted); color: #e01e5a; padding: 2px 4px; border-radius: 4px; font-family: 'Monaco', 'Menlo', 'Consolas', monospace; font-size: 0.875em; border: 1px solid #d0d7de;">npm install prismjs @types/prismjs</code></p><pre style="margin: 0 !important; white-space: pre; overflow-wrap: normal; color: inherit; background: transparent; border: none;" contenteditable="true" spellcheck="false">// Prism.js 基本実装例<br>import Prism from 'prismjs';<br>import 'prismjs/themes/prism-tomorrow.css';<br><br>const highlightCode = (code: string, language: string) => {<br>  return Prism.highlight(<br>    code,<br>    Prism.languages[language],<br>    language<br>  );<br>};</pre>`,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
             dueDate: yesterday.toISOString(), // 昨日の17:00(期限切れ)
-            priority: 'high' as Priority,
-            labels: [labels[1], labels[2]].filter((label): label is Label =>
-              Boolean(label)
-            ), // 機能改善 + バグ修正
+            priority: 'critical' as Priority,
+            labels: [labels[1], labels[2], labels[4]].filter(
+              (label): label is Label => Boolean(label)
+            ), // 機能追加 + バグ修正 + パフォーマンス
             files: [],
             subTasks: [
               {
                 id: uuidv4(),
-                title: 'Lexical vs Quill 技術調査',
+                title: 'Prism.js vs Highlight.js 比較調査',
                 completed: true,
                 createdAt: new Date().toISOString(),
               },
               {
                 id: uuidv4(),
-                title: 'プロトタイプ作成',
+                title: '言語セレクターUIの設計',
+                completed: true,
+                createdAt: new Date().toISOString(),
+              },
+              {
+                id: uuidv4(),
+                title: 'シンタックスハイライトの実装',
                 completed: false,
                 createdAt: new Date().toISOString(),
               },
               {
                 id: uuidv4(),
-                title: 'ユニットテスト作成',
+                title: 'テーマカスタマイズ機能',
                 completed: false,
                 createdAt: new Date().toISOString(),
               },
@@ -223,23 +233,12 @@ const createDemoBoard = (): KanbanBoard[] => {
           },
           {
             id: uuidv4(),
-            title: '週次レポートの作成',
-            description: `<p>チーム進捗と課題を整理した週次レポートの作成と共有。</p><p><strong>レポート内容：</strong></p><ul><li>完了タスクと進捗状況</li><li>発生した課題と解決策</li><li>来週の計画と目標</li></ul><p><strong>共有方法：</strong></p><pre style="margin: 0 !important; white-space: pre; overflow-wrap: normal; color: inherit; background: transparent; border: none; padding: 0;" contenteditable="true" spellcheck="false">// レポート自動生成スクリプト例
-const generateWeeklyReport = () => {
-  const completedTasks = getCompletedTasks(lastWeek);
-  const upcomingTasks = getUpcomingTasks(nextWeek);
-
-  return {
-    period: getWeekRange(),
-    completed: completedTasks,
-    upcoming: upcomingTasks,
-    issues: getIssues()
-  };
-};</pre>`,
+            title: '週次プロジェクトレビューの実施',
+            description: `<p>チーム全体で進捗状況を確認し、次週の計画を立てる定例会議。</p><p><strong>アジェンダ:</strong></p><ul><li>先週の完了タスクレビュー</li><li>進行中タスクの状況確認</li><li>ブロッカーと課題の共有</li><li>来週のスプリント計画</li><li>技術的な知見の共有</li></ul><p><strong>準備事項:</strong></p><ul><li>タスク完了率の集計</li><li>各メンバーの進捗レポート</li><li>課題・改善点のリスト化</li></ul>`,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
             dueDate: todayEvening.toISOString(), // 今日の18:00
-            priority: 'medium' as Priority,
+            priority: 'high' as Priority,
             labels: [labels[3]].filter((label): label is Label =>
               Boolean(label)
             ), // ドキュメント
@@ -247,19 +246,19 @@ const generateWeeklyReport = () => {
             subTasks: [
               {
                 id: uuidv4(),
-                title: 'タスク完了状況の集計',
+                title: 'タスク完了率の集計',
                 completed: true,
                 createdAt: new Date().toISOString(),
               },
               {
                 id: uuidv4(),
-                title: '課題とブロッカーの整理',
+                title: '課題リストの作成',
                 completed: false,
                 createdAt: new Date().toISOString(),
               },
               {
                 id: uuidv4(),
-                title: 'レポート作成と共有',
+                title: '会議資料の準備',
                 completed: false,
                 createdAt: new Date().toISOString(),
               },
@@ -272,6 +271,38 @@ const generateWeeklyReport = () => {
               endDate: undefined,
             },
           },
+          {
+            id: uuidv4(),
+            title: 'データベーススキーマ最適化の検討',
+            description: `<p>大量データ処理のパフォーマンス向上のため、データベーススキーマの見直しと最適化を行う。</p><p><strong>検討項目:</strong></p><ul><li>インデックス戦略の見直し</li><li>正規化レベルの最適化</li><li>クエリパフォーマンスの改善</li><li>パーティショニングの導入検討</li></ul><p><strong>参考資料:</strong></p><ul><li><a href="https://www.postgresql.org/docs/current/performance-tips.html" target="_blank" rel="noopener noreferrer">PostgreSQL Performance Tips</a></li><li><a href="https://use-the-index-luke.com/" target="_blank" rel="noopener noreferrer">Use The Index, Luke!</a></li></ul>`,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            dueDate: null, // 期限なし
+            priority: 'medium' as Priority,
+            labels: [labels[4]].filter((label): label is Label =>
+              Boolean(label)
+            ), // パフォーマンス
+            files: [
+              {
+                id: uuidv4(),
+                name: 'db-schema-analysis.xlsx',
+                size: 128000,
+                type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                data: '',
+                uploadedAt: new Date().toISOString(),
+              },
+              {
+                id: uuidv4(),
+                name: 'query-performance-report.pdf',
+                size: 512000,
+                type: 'application/pdf',
+                data: '',
+                uploadedAt: new Date().toISOString(),
+              },
+            ],
+            subTasks: [],
+            completedAt: null,
+          },
         ],
       },
       {
@@ -282,32 +313,38 @@ const generateWeeklyReport = () => {
         tasks: [
           {
             id: uuidv4(),
-            title: 'UI/UXデザイン改善',
-            description: `<p>ユーザビリティテストの結果を基にインターフェースを改善</p><p><strong>改善対象</strong></p><ul><li>タスク作成フローの簡素化</li><li>ナビゲーションの直感性向上</li><li>レスポンシブデザインの最適化</li></ul><p><strong>参考</strong></p><ul><li><a href="https://material.io/design" target="_blank" rel="noopener noreferrer">Material Design</a></li><li><a href="https://primer.style/" target="_blank" rel="noopener noreferrer">Primer Design System</a></li></ul>`,
+            title: 'モバイルレスポンシブ対応の改善',
+            description: `<p>スマートフォン・タブレットでの使いやすさを向上させるため、レスポンシブデザインを改善。</p><p><strong>対応内容:</strong></p><ul><li>タッチ操作の最適化</li><li>画面サイズに応じたレイアウト調整</li><li>カンバンビューのスワイプ操作対応</li><li>ダイアログ・モーダルのモバイル最適化</li></ul><p><strong>デザインシステム参考:</strong></p><ul><li><a href="https://m3.material.io/" target="_blank" rel="noopener noreferrer">Material Design 3</a></li><li><a href="https://tailwindcss.com/docs/responsive-design" target="_blank" rel="noopener noreferrer">Tailwind Responsive Design</a></li></ul><pre style="margin: 0 !important; white-space: pre; overflow-wrap: normal; color: inherit; background: transparent; border: none; padding: 0;" contenteditable="true" spellcheck="false">// レスポンシブブレークポイント例<br>const breakpoints = {<br>  sm: '640px',  // スマートフォン<br>  md: '768px',  // タブレット<br>  lg: '1024px', // デスクトップ<br>  xl: '1280px'  // 大画面<br>};</pre>`,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
             dueDate: tomorrowMorning.toISOString(), // 明日の10:00
-            priority: 'medium' as Priority,
-            labels: [labels[1], labels[3]].filter((label): label is Label =>
+            priority: 'high' as Priority,
+            labels: [labels[1]].filter((label): label is Label =>
               Boolean(label)
-            ), // 機能改善 + ドキュメント
+            ), // 機能追加
             files: [],
             subTasks: [
               {
                 id: uuidv4(),
-                title: 'ユーザビリティテスト分析',
+                title: 'タッチ操作のテスト',
                 completed: true,
                 createdAt: new Date().toISOString(),
               },
               {
                 id: uuidv4(),
-                title: 'ワイヤーフレーム作成',
+                title: 'レイアウト調整実装',
                 completed: true,
                 createdAt: new Date().toISOString(),
               },
               {
                 id: uuidv4(),
-                title: 'プロトタイプ実装',
+                title: 'カンバンビュー最適化',
+                completed: false,
+                createdAt: new Date().toISOString(),
+              },
+              {
+                id: uuidv4(),
+                title: '実機テスト・調整',
                 completed: false,
                 createdAt: new Date().toISOString(),
               },
@@ -316,28 +353,15 @@ const generateWeeklyReport = () => {
           },
           {
             id: uuidv4(),
-            title: 'API エンドポイント最適化',
-            description: `<p>データベースクエリの最適化とAPIレスポンス時間の改善。</p><p><strong>対象エンドポイント：</strong></p><ul><li>/api/tasks - タスク一覧取得</li><li>/api/boards - ボード情報取得</li><li>/api/search - 検索機能</li></ul><div style="margin: 0 0 8px; border-radius: 6px; font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', 'Menlo', monospace; font-size: 13px; line-height: 1.45; overflow-x: auto; color: #24292f; background-color: var(--muted);"><pre style="margin: 0 !important; white-space: pre; overflow-wrap: normal; color: inherit; background: transparent; border: none; padding: 0;" contenteditable="true" spellcheck="false">// クエリ最適化例
-const optimizedQuery = await db.task.findMany({
-  select: {
-    id: true,
-    title: true,
-    description: true,
-    dueDate: true,
-    priority: true,
-    labels: { select: { id: true, name: true, color: true } },
-    _count: { select: { subTasks: true } }
-  },
-  where: filters,
-  orderBy: { updatedAt: 'desc' }
-});</pre></div>`,
+            title: 'E2Eテストカバレッジの向上',
+            description: `<p>主要な機能フローに対してE2Eテストを追加し、リグレッション防止を強化。</p><p><strong>テスト対象:</strong></p><ul><li>タスク作成・編集・削除フロー</li><li>カンバン操作（ドラッグ&ドロップ）</li><li>フィルタリング・ソート機能</li><li>データインポート・エクスポート</li></ul><p><strong>使用ツール:</strong></p><ul><li><a href="https://playwright.dev/" target="_blank" rel="noopener noreferrer">Playwright</a> - クロスブラウザE2Eテスト</li><li><a href="https://testing-library.com/" target="_blank" rel="noopener noreferrer">Testing Library</a> - ユーザー視点のテスト</li></ul><div style="margin: 0 0 8px; border-radius: 6px; font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', 'Menlo', monospace; font-size: 13px; line-height: 1.45; overflow-x: auto; color: #24292f; background-color: var(--muted);"><pre style="margin: 0 !important; white-space: pre; overflow-wrap: normal; color: inherit; background: transparent; border: none; padding: 0;" contenteditable="true" spellcheck="false">// Playwright E2Eテスト例<br>test('タスク作成フロー', async ({ page }) => {<br>  await page.goto('/');<br>  await page.click('[data-testid="create-task-btn"]');<br>  await page.fill('[name="title"]', '新規タスク');<br>  await page.click('[data-testid="save-btn"]');<br>  await expect(page.locator('text=新規タスク')).toBeVisible();<br>});</pre></div>`,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
-            dueDate: null, // 期限なし
-            priority: 'high' as Priority,
-            labels: [labels[1], labels[2]].filter((label): label is Label =>
+            dueDate: nextWeek.toISOString(), // 来週の23:59
+            priority: 'medium' as Priority,
+            labels: [labels[1]].filter((label): label is Label =>
               Boolean(label)
-            ), // 機能改善 + バグ修正
+            ), // 機能追加
             files: [],
             subTasks: [],
             completedAt: null,
@@ -352,49 +376,38 @@ const optimizedQuery = await db.task.findMany({
         tasks: [
           {
             id: uuidv4(),
-            title: 'ユーザー認証システムの実装',
-            description: `<p>JWT ベースの認証システムを実装完了。</p><p><strong>実装内容：</strong></p><ul><li>ログイン・ログアウト機能</li><li>トークンベース認証</li><li>パスワードハッシュ化</li></ul><p><strong>使用技術：</strong></p><ul><li><a href="https://jwt.io/" target="_blank" rel="noopener noreferrer">JSON Web Tokens</a></li><li><a href="https://github.com/kelektiv/node.bcrypt.js" target="_blank" rel="noopener noreferrer">bcrypt</a> - パスワードハッシュ化</li></ul><pre style="margin: 0 !important; white-space: pre; overflow-wrap: normal; color: inherit; background: transparent; border: none; padding: 0;" contenteditable="true" spellcheck="false">// JWT 認証の実装例
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
-
-const authenticateUser = async (email, password) => {
-  const user = await User.findOne({ email });
-  const isValid = await bcrypt.compare(password, user.password);
-  if (isValid) {
-    return jwt.sign({ userId: user.id }, process.env.JWT_SECRET);
-  }
-  throw new Error('Invalid credentials');
-};</pre>`,
+            title: 'OAuth認証システムの統合',
+            description: `<p>Google・GitHub OAuth 2.0認証を統合し、ソーシャルログイン機能を実装。</p><p><strong>実装内容:</strong></p><ul><li>Google OAuth 2.0クライアント設定</li><li>GitHub OAuth Appの作成と設定</li><li>認証フロー実装（Authorization Code Flow）</li><li>セキュアなトークン管理</li><li>ユーザープロフィール情報の取得・保存</li></ul><p><strong>使用技術:</strong></p><ul><li><a href="https://developers.google.com/identity/protocols/oauth2" target="_blank" rel="noopener noreferrer">Google OAuth 2.0</a></li><li><a href="https://docs.github.com/en/apps/oauth-apps" target="_blank" rel="noopener noreferrer">GitHub OAuth Apps</a></li></ul><pre style="margin: 0 !important; white-space: pre; overflow-wrap: normal; color: inherit; background: transparent; border: none; padding: 0;" contenteditable="true" spellcheck="false">// OAuth認証フロー実装例<br>const handleOAuthCallback = async (code: string, provider: string) => {<br>  const tokenResponse = await exchangeCodeForToken(code, provider);<br>  const userInfo = await fetchUserProfile(tokenResponse.access_token);<br>  const session = await createUserSession(userInfo);<br>  return session;<br>};</pre>`,
             createdAt: new Date(today.getTime() - 86400000 * 5).toISOString(), // 5日前
             updatedAt: new Date(today.getTime() - 86400000 * 2).toISOString(), // 2日前
             dueDate: new Date(today.getTime() - 86400000 * 3).toISOString(),
-            priority: 'high' as Priority,
-            labels: [labels[0]].filter((label): label is Label =>
+            priority: 'critical' as Priority,
+            labels: [labels[0], labels[1]].filter((label): label is Label =>
               Boolean(label)
-            ), // セキュリティ
+            ), // セキュリティ + 機能追加
             files: [],
             subTasks: [
               {
                 id: uuidv4(),
-                title: 'JWT ライブラリ選定',
+                title: 'Google OAuth設定',
                 completed: true,
                 createdAt: new Date().toISOString(),
               },
               {
                 id: uuidv4(),
-                title: 'ログイン画面作成',
+                title: 'GitHub OAuth設定',
                 completed: true,
                 createdAt: new Date().toISOString(),
               },
               {
                 id: uuidv4(),
-                title: '認証ミドルウェア実装',
+                title: '認証フロー実装',
                 completed: true,
                 createdAt: new Date().toISOString(),
               },
               {
                 id: uuidv4(),
-                title: 'セキュリティテスト',
+                title: 'セキュリティ監査',
                 completed: true,
                 createdAt: new Date().toISOString(),
               },
@@ -403,21 +416,29 @@ const authenticateUser = async (email, password) => {
           },
           {
             id: uuidv4(),
-            title: 'Git ワークフロー標準化',
-            description: `<p>チーム開発効率化のためのGitワークフロー策定。</p><p><strong>策定内容：</strong></p><ul><li>ブランチ戦略（GitHub Flow）</li><li>コミットメッセージ規約</li><li>PR レビュー制度</li></ul><p><strong>参考：</strong></p><ul><li><a href="https://guides.github.com/introduction/flow/" target="_blank" rel="noopener noreferrer">GitHub Flow</a></li><li><a href="https://www.conventionalcommits.org/" target="_blank" rel="noopener noreferrer">Conventional Commits</a></li></ul>`,
-            createdAt: new Date(today.getTime() - 86400000 * 7).toISOString(), // 1週間前
-            updatedAt: new Date(today.getTime() - 86400000 * 1).toISOString(), // 1日前
+            title: 'CI/CDパイプライン構築',
+            description: `<p>GitHub Actionsを使用した自動テスト・ビルド・デプロイパイプラインの構築完了。</p><p><strong>パイプライン構成:</strong></p><ul><li>プルリクエスト時の自動テスト実行</li><li>コード品質チェック（ESLint, TypeScript）</li><li>ビルド成果物の検証</li><li>mainブランチへのマージ時自動デプロイ</li><li>Slack通知の統合</li></ul><p><strong>参考:</strong></p><ul><li><a href="https://docs.github.com/en/actions" target="_blank" rel="noopener noreferrer">GitHub Actions Documentation</a></li><li><a href="https://docs.github.com/en/actions/deployment/about-deployments/deploying-with-github-actions" target="_blank" rel="noopener noreferrer">Deploying with GitHub Actions</a></li></ul>`,
+            createdAt: new Date(today.getTime() - 86400000 * 10).toISOString(), // 10日前
+            updatedAt: new Date(today.getTime() - 86400000 * 3).toISOString(), // 3日前
             dueDate: null, // 期限なし
-            priority: 'medium' as Priority,
+            priority: 'high' as Priority,
             labels: [labels[3]].filter((label): label is Label =>
               Boolean(label)
-            ),
+            ), // ドキュメント
             files: [
               {
                 id: uuidv4(),
-                name: 'git-workflow-guide.pdf',
-                size: 245760,
-                type: 'application/pdf',
+                name: 'ci-cd-setup-guide.md',
+                size: 45000,
+                type: 'text/markdown',
+                data: '',
+                uploadedAt: new Date().toISOString(),
+              },
+              {
+                id: uuidv4(),
+                name: 'github-actions-workflow.yml',
+                size: 8000,
+                type: 'text/yaml',
                 data: '',
                 uploadedAt: new Date().toISOString(),
               },
@@ -425,18 +446,24 @@ const authenticateUser = async (email, password) => {
             subTasks: [
               {
                 id: uuidv4(),
-                title: 'ブランチ戦略ドキュメント作成',
+                title: 'テストワークフロー作成',
                 completed: true,
                 createdAt: new Date().toISOString(),
               },
               {
                 id: uuidv4(),
-                title: 'PRテンプレート作成',
+                title: 'デプロイワークフロー作成',
+                completed: true,
+                createdAt: new Date().toISOString(),
+              },
+              {
+                id: uuidv4(),
+                title: 'Slack通知設定',
                 completed: true,
                 createdAt: new Date().toISOString(),
               },
             ],
-            completedAt: new Date(today.getTime() - 86400000 * 1).toISOString(),
+            completedAt: new Date(today.getTime() - 86400000 * 3).toISOString(),
           },
         ],
       },
