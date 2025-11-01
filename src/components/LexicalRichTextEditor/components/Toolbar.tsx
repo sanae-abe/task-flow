@@ -19,6 +19,7 @@ import {
   INSERT_ORDERED_LIST_COMMAND,
 } from '@lexical/list';
 import { $createCodeNode } from '@lexical/code';
+import { $createQuoteNode } from '@lexical/rich-text';
 import {
   Bold,
   Italic,
@@ -28,6 +29,7 @@ import {
   FileCode,
   List,
   ListOrdered,
+  Quote,
   Undo,
   Redo,
 } from 'lucide-react';
@@ -79,6 +81,24 @@ export function Toolbar({
         }
 
         selection.insertNodes([codeNode]);
+      }
+    });
+  }, [editor]);
+
+  const insertQuote = useCallback(() => {
+    editor.update(() => {
+      const selection = $getSelection();
+      if ($isRangeSelection(selection)) {
+        const selectedText = selection.getTextContent();
+        const quoteNode = $createQuoteNode();
+
+        // If there's selected text, set it as the quote content
+        if (selectedText) {
+          const textNode = $createTextNode(selectedText);
+          quoteNode.append(textNode);
+        }
+
+        selection.insertNodes([quoteNode]);
       }
     });
   }, [editor]);
@@ -194,6 +214,20 @@ export function Toolbar({
 
       {/* Emoji Picker */}
       <EmojiPickerPlugin disabled={disabled} />
+
+      <div className='w-px h-6 bg-border mx-1' />
+
+      {/* Block Quote */}
+      <button
+        type='button'
+        onClick={insertQuote}
+        disabled={disabled}
+        className={buttonClass}
+        title='引用ブロック'
+        aria-label='引用ブロック'
+      >
+        <Quote size={18} />
+      </button>
 
       <div className='w-px h-6 bg-border mx-1' />
 
