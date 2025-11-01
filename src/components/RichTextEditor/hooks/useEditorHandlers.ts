@@ -121,6 +121,84 @@ export const useEditorHandlers = ({
         }
       }
 
+      // Handle ArrowUp and ArrowLeft to move cursor before code blocks and lists
+      if (key === 'ArrowUp' || key === 'ArrowLeft') {
+        const selection = window.getSelection();
+        if (selection && selection.rangeCount > 0) {
+          const range = selection.getRangeAt(0);
+
+          // Only handle when cursor is collapsed (no selection)
+          if (range.collapsed) {
+            const container = range.startContainer;
+            let blockElement: Element | null = null;
+
+            // Find if we're inside a code block or list
+            let node = container;
+            while (node && node !== editorRef.current) {
+              if (node.nodeType === Node.ELEMENT_NODE) {
+                const element = node as Element;
+                if (
+                  element.tagName === 'PRE' ||
+                  element.tagName === 'UL' ||
+                  element.tagName === 'OL'
+                ) {
+                  blockElement = element;
+                  break;
+                }
+              }
+              const parentNode = node.parentNode;
+              if (!parentNode) {
+                break;
+              }
+              node = parentNode;
+            }
+
+            // Check if we're at the start of the block
+            if (blockElement) {
+              const isAtStart = range.startOffset === 0;
+              const isFirstNode =
+                container === blockElement.firstChild ||
+                container.parentNode === blockElement.firstChild;
+
+              if (isAtStart && isFirstNode && blockElement.previousSibling) {
+                // Move cursor to the end of the previous element
+                event.preventDefault();
+
+                const prevElement = blockElement.previousSibling;
+                const newRange = document.createRange();
+
+                // Position cursor at the end of the previous element
+                if (prevElement.nodeType === Node.TEXT_NODE) {
+                  newRange.setStart(
+                    prevElement,
+                    prevElement.textContent?.length || 0
+                  );
+                } else if (prevElement.nodeType === Node.ELEMENT_NODE) {
+                  const lastChild = prevElement.lastChild;
+                  if (lastChild) {
+                    if (lastChild.nodeType === Node.TEXT_NODE) {
+                      newRange.setStart(
+                        lastChild,
+                        lastChild.textContent?.length || 0
+                      );
+                    } else {
+                      newRange.setStartAfter(lastChild);
+                    }
+                  } else {
+                    newRange.setStart(prevElement, 0);
+                  }
+                }
+
+                newRange.collapse(true);
+                selection.removeAllRanges();
+                selection.addRange(newRange);
+                return;
+              }
+            }
+          }
+        }
+      }
+
       // Handle Delete and Backspace keys for code blocks
       if (key === 'Delete' || key === 'Backspace') {
         const selection = window.getSelection();
