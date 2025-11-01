@@ -18,11 +18,11 @@ interface HtmlPluginProps {
  */
 export function HtmlPlugin({ initialHtml }: HtmlPluginProps): null {
   const [editor] = useLexicalComposerContext();
-  const prevHtmlRef = useRef<string | undefined>(undefined);
+  const hasInitialized = useRef(false);
 
   useEffect(() => {
-    // Skip if initialHtml hasn't changed
-    if (prevHtmlRef.current === initialHtml) {
+    // Only apply initialHtml on first mount
+    if (hasInitialized.current) {
       return;
     }
 
@@ -39,8 +39,8 @@ export function HtmlPlugin({ initialHtml }: HtmlPluginProps): null {
       });
     }
 
-    // Update the ref to track the current value
-    prevHtmlRef.current = initialHtml;
+    // Mark as initialized
+    hasInitialized.current = true;
   }, [editor, initialHtml]);
 
   return null;

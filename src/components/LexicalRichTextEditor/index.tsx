@@ -11,11 +11,13 @@ import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import { ListPlugin } from '@lexical/react/LexicalListPlugin';
 import { LinkPlugin } from '@lexical/react/LexicalLinkPlugin';
+import { TabIndentationPlugin } from '@lexical/react/LexicalTabIndentationPlugin';
 import { getEditorConfig } from './config';
 import { Toolbar } from './components/Toolbar';
 import { HtmlPlugin } from './plugins/HtmlPlugin';
 import { OnChangePlugin } from './plugins/OnChangePlugin';
 import { CodeHighlightPlugin } from './plugins/CodeHighlightPlugin';
+import { CodeBlockLineBreakPlugin } from './plugins/CodeBlockLineBreakPlugin';
 
 /**
  * Props interface matching the existing RichTextEditor
@@ -93,7 +95,9 @@ export default function LexicalRichTextEditor({
         <HistoryPlugin />
         <ListPlugin />
         <LinkPlugin />
+        <CodeBlockLineBreakPlugin />
         <CodeHighlightPlugin />
+        <TabIndentationPlugin maxIndent={4} />
         <HtmlPlugin initialHtml={value} />
         <OnChangePlugin onChange={onChange} />
       </div>

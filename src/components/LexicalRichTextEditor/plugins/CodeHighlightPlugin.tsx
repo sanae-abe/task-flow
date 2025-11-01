@@ -17,9 +17,7 @@ import { registerCodeHighlighting } from '@lexical/code';
 export function CodeHighlightPlugin(): null {
   const [editor] = useLexicalComposerContext();
 
-  useEffect(() => {
-    return registerCodeHighlighting(editor);
-  }, [editor]);
+  useEffect(() => registerCodeHighlighting(editor), [editor]);
 
   return null;
 }
