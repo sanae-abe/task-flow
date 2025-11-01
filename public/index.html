@@ -18,6 +18,25 @@
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/apple-touch-icon.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <title>TaskFlow - タスク管理ツール</title>
+
+    <!-- 緊急修正: React事前初期化スクリプト -->
+    <script>
+      // use-callback-refエラー対策：Reactプレースホルダーを事前に設定
+      window.React = window.React || {
+        useLayoutEffect: function() {
+          console.warn('React placeholder useLayoutEffect called');
+        },
+        useEffect: function() {
+          console.warn('React placeholder useEffect called');
+        },
+        useCallback: function(fn) { return fn; },
+        useMemo: function(fn) { return fn(); },
+        useRef: function(initial) { return { current: initial }; },
+        useState: function(initial) { return [initial, function(){}]; }
+      };
+
+      console.log('Emergency React placeholder initialized');
+    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
