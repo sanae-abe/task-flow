@@ -141,7 +141,7 @@ const TaskEditDialog = memo<TaskEditDialogProps>(
           actionsLayout='split'
         >
           <TaskEditForm
-            editorKey={task.id}
+            editorKey={`task-edit-${task.id}-${task.description?.length || 0}`}
             title={title}
             setTitle={setTitle}
             description={description}
