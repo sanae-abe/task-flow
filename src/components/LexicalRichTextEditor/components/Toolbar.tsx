@@ -12,6 +12,7 @@ import {
   REDO_COMMAND,
   $getSelection,
   $isRangeSelection,
+  $createTextNode,
 } from 'lexical';
 import {
   INSERT_UNORDERED_LIST_COMMAND,
@@ -65,7 +66,15 @@ export function Toolbar({
     editor.update(() => {
       const selection = $getSelection();
       if ($isRangeSelection(selection)) {
+        const selectedText = selection.getTextContent();
         const codeNode = $createCodeNode();
+
+        // If there's selected text, set it as the code block content
+        if (selectedText) {
+          const textNode = $createTextNode(selectedText);
+          codeNode.append(textNode);
+        }
+
         selection.insertNodes([codeNode]);
       }
     });

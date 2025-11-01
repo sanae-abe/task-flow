@@ -187,6 +187,16 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({
         }
       );
 
+      // Lexicalインラインコード（<span class="lexical-inline-code">）を保護
+      content = content.replace(
+        /<span\s+class="lexical-inline-code"[^>]*>[\s\S]*?<\/span>/gi,
+        match => {
+          const placeholder = `__LEXICAL_INLINE_CODE_${Math.random().toString(36).substring(2, 11)}__`;
+          codeBlockMap.set(placeholder, match);
+          return placeholder;
+        }
+      );
+
       // ステップ3: URL自動リンク化（コードブロック以外）
       content = linkifyUrls(content);
 
@@ -253,6 +263,18 @@ const LinkifiedText: React.FC<LinkifiedTextProps> = ({
         /<code(?:\s[^>]*)?>[\s\S]*?<\/code>/gi,
         match => {
           const placeholder = `__FINAL_INLINE_CODE_${placeholderIndex}__`;
+          finalCodeBlocks.push(match);
+          finalPlaceholders.push(placeholder);
+          placeholderIndex++;
+          return placeholder;
+        }
+      );
+
+      // Lexicalインラインコードを一時的に保護
+      content = content.replace(
+        /<span\s+class="lexical-inline-code"[^>]*>[\s\S]*?<\/span>/gi,
+        match => {
+          const placeholder = `__FINAL_LEXICAL_INLINE_${placeholderIndex}__`;
           finalCodeBlocks.push(match);
           finalPlaceholders.push(placeholder);
           placeholderIndex++;

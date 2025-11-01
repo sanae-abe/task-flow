@@ -5,7 +5,11 @@
  */
 
 import { useState, useCallback } from 'react';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
 import { Smile } from 'lucide-react';
 import EmojiPicker, { EmojiClickData, Theme } from 'emoji-picker-react';
@@ -67,7 +71,7 @@ export function EmojiPickerComponent({
           onEmojiClick={handleEmojiClick}
           autoFocusSearch={false}
           theme={Theme.LIGHT}
-          lazyLoadEmojis={true}
+          lazyLoadEmojis
           previewConfig={{
             showPreview: false,
           }}
