@@ -15,6 +15,7 @@ import { getEditorConfig } from './config';
 import { Toolbar } from './components/Toolbar';
 import { HtmlPlugin } from './plugins/HtmlPlugin';
 import { OnChangePlugin } from './plugins/OnChangePlugin';
+import { CodeHighlightPlugin } from './plugins/CodeHighlightPlugin';
 
 /**
  * Props interface matching the existing RichTextEditor
@@ -92,6 +93,7 @@ export default function LexicalRichTextEditor({
         <HistoryPlugin />
         <ListPlugin />
         <LinkPlugin />
+        <CodeHighlightPlugin />
         <HtmlPlugin initialHtml={value} />
         <OnChangePlugin onChange={onChange} />
       </div>

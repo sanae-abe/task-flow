@@ -6,22 +6,31 @@
 
 import { useCallback } from 'react';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import { FORMAT_TEXT_COMMAND, UNDO_COMMAND, REDO_COMMAND } from 'lexical';
+import {
+  FORMAT_TEXT_COMMAND,
+  UNDO_COMMAND,
+  REDO_COMMAND,
+  $getSelection,
+  $isRangeSelection,
+} from 'lexical';
 import {
   INSERT_UNORDERED_LIST_COMMAND,
   INSERT_ORDERED_LIST_COMMAND,
 } from '@lexical/list';
+import { $createCodeNode } from '@lexical/code';
 import {
   Bold,
   Italic,
   Underline,
   Strikethrough,
   Code,
+  FileCode,
   List,
   ListOrdered,
   Undo,
   Redo,
 } from 'lucide-react';
+import { EmojiPickerPlugin } from '../plugins/EmojiPickerPlugin';
 
 interface ToolbarProps {
   disabled?: boolean;
@@ -50,6 +59,16 @@ export function Toolbar({
 
   const formatCode = useCallback(() => {
     editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'code');
+  }, [editor]);
+
+  const insertCodeBlock = useCallback(() => {
+    editor.update(() => {
+      const selection = $getSelection();
+      if ($isRangeSelection(selection)) {
+        const codeNode = $createCodeNode();
+        selection.insertNodes([codeNode]);
+      }
+    });
   }, [editor]);
 
   const insertUnorderedList = useCallback(() => {
@@ -131,6 +150,20 @@ export function Toolbar({
       >
         <Code size={18} />
       </button>
+
+      <button
+        type='button'
+        onClick={insertCodeBlock}
+        disabled={disabled}
+        className={buttonClass}
+        title='コードブロック'
+        aria-label='コードブロック'
+      >
+        <FileCode size={18} />
+      </button>
+
+      {/* Emoji Picker */}
+      <EmojiPickerPlugin disabled={disabled} />
 
       <div className='w-px h-6 bg-border mx-1' />
 
