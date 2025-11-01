@@ -1,20 +1,20 @@
 import React, { useCallback, useMemo } from 'react';
 
 import type { DialogAction } from '../types/unified-dialog';
-import type { RecurrenceDetailDialogProps } from './RecurrenceDetailDialog/types';
-import UnifiedDialog from './shared/Dialog/UnifiedDialog';
+import {
+  MonthlyOptionsSelector,
+  RecurrenceEndConditions,
+  RecurrenceErrorDisplay,
+  RecurrencePatternSelector,
+  RecurrencePreview,
+  WeeklyOptionsSelector,
+} from './RecurrenceDetailDialog/components';
 import {
   useRecurrenceForm,
   useRecurrenceHandlers,
 } from './RecurrenceDetailDialog/hooks';
-import {
-  RecurrencePatternSelector,
-  WeeklyOptionsSelector,
-  MonthlyOptionsSelector,
-  RecurrenceEndConditions,
-  RecurrencePreview,
-  RecurrenceErrorDisplay,
-} from './RecurrenceDetailDialog/components';
+import type { RecurrenceDetailDialogProps } from './RecurrenceDetailDialog/types';
+import UnifiedDialog from './shared/Dialog/UnifiedDialog';
 
 const RecurrenceDetailDialog: React.FC<RecurrenceDetailDialogProps> = ({
   isOpen,
@@ -94,7 +94,7 @@ const RecurrenceDetailDialog: React.FC<RecurrenceDetailDialogProps> = ({
       actions={actions}
     >
       <div className='flex flex-col gap-3'>
-        <div className='flex flex-col gap-2'>
+        <div className='flex flex-col gap-4'>
           <RecurrencePatternSelector
             config={config}
             onPatternChange={handlePatternChange}
