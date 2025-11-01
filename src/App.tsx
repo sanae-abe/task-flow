@@ -1,18 +1,20 @@
 // Primer React ThemeProvider と BaseStyles を削除 - Shadcn/UI + Tailwind CSS 完全移行済み
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense, lazy } from 'react';
 
 import Header from './components/Header';
 import SubHeader from './components/SubHeader';
 import KanbanBoard from './components/KanbanBoard';
-import CalendarView from './components/CalendarView';
-import TableView from './components/TableView';
 import { Toaster } from '@/components/ui/sonner';
-import HelpSidebar from './components/HelpSidebar';
-import TaskDetailSidebar from './components/TaskDetailSidebar';
 import TaskCreateDialog from './components/TaskCreateDialog/TaskCreateDialog';
 import FirstTimeUserHint from './components/FirstTimeUserHint';
-import SettingsDialog from './components/SettingsDialog';
+
+// 動的インポート（コードスプリッティング対応）
+const CalendarView = lazy(() => import('./components/CalendarView'));
+const TableView = lazy(() => import('./components/TableView'));
+const SettingsDialog = lazy(() => import('./components/SettingsDialog'));
+const HelpSidebar = lazy(() => import('./components/HelpSidebar'));
+const TaskDetailSidebar = lazy(() => import('./components/TaskDetailSidebar'));
 import { useKanban } from './contexts/KanbanContext';
 import { useUI } from './contexts/UIContext';
 import AppProviders from './contexts/AppProviders';
@@ -94,8 +96,34 @@ const AppContent: React.FC = () => {
         <Routes>
           <Route path='/' element={<Navigate to='/kanban' replace />} />
           <Route path='/kanban' element={<KanbanBoard />} />
-          <Route path='/calendar' element={<CalendarView />} />
-          <Route path='/table' element={<TableView />} />
+          <Route
+            path='/calendar'
+            element={
+              <Suspense
+                fallback={
+                  <div className='flex items-center justify-center h-64'>
+                    読み込み中...
+                  </div>
+                }
+              >
+                <CalendarView />
+              </Suspense>
+            }
+          />
+          <Route
+            path='/table'
+            element={
+              <Suspense
+                fallback={
+                  <div className='flex items-center justify-center h-64'>
+                    読み込み中...
+                  </div>
+                }
+              >
+                <TableView />
+              </Suspense>
+            }
+          />
           <Route path='*' element={<Navigate to='/kanban' replace />} />
         </Routes>
       </main>
@@ -116,19 +144,36 @@ const AppContent: React.FC = () => {
         </>
       )}
       <Toaster position='top-right' richColors closeButton />
-      <HelpSidebar isOpen={uiState.isHelpOpen} onClose={closeHelp} />
-      <TaskDetailSidebar
-        task={selectedTask}
-        isOpen={uiState.isTaskDetailOpen}
-        onClose={closeTaskDetail}
-      />
+
+      {/* 動的ローディング対応のサイドバー・ダイアログ */}
+      {uiState.isHelpOpen && (
+        <Suspense fallback={null}>
+          <HelpSidebar isOpen={uiState.isHelpOpen} onClose={closeHelp} />
+        </Suspense>
+      )}
+
+      {uiState.isTaskDetailOpen && selectedTask && (
+        <Suspense fallback={null}>
+          <TaskDetailSidebar
+            task={selectedTask}
+            isOpen={uiState.isTaskDetailOpen}
+            onClose={closeTaskDetail}
+          />
+        </Suspense>
+      )}
+
       <TaskCreateDialog />
-      <SettingsDialog
-        isOpen={isSettingsOpen}
-        onClose={closeSettings}
-        onExportData={handlers.exportAllData}
-        onExportBoard={handlers.exportCurrentBoard}
-      />
+
+      {isSettingsOpen && (
+        <Suspense fallback={null}>
+          <SettingsDialog
+            isOpen={isSettingsOpen}
+            onClose={closeSettings}
+            onExportData={handlers.exportAllData}
+            onExportBoard={handlers.exportCurrentBoard}
+          />
+        </Suspense>
+      )}
     </div>
   );
 };

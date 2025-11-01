@@ -1,4 +1,4 @@
-import React, { memo, useMemo, useCallback } from 'react';
+import React, { memo, useMemo, useCallback, Suspense, lazy } from 'react';
 import { DatePicker } from '@/components/ui/date-picker';
 
 import type {
@@ -15,13 +15,15 @@ import UnifiedFormField from './UnifiedFormField';
 import LabelSelector from '../../LabelSelector';
 import PrioritySelector from '../../PrioritySelector';
 import RecurrenceSelector from '../../RecurrenceSelector';
-import LexicalRichTextEditor from '../../LexicalRichTextEditor/';
 import TimeSelector from '../../TimeSelector';
 import DialogFlashMessage from '../DialogFlashMessage';
 import {
   createTaskFormFields,
   type TaskFormFieldsConfig,
 } from '../../../utils/taskFormFields';
+
+// 動的インポート - RichTextEditor
+const LexicalRichTextEditor = lazy(() => import('../../LexicalRichTextEditor/'));
 
 /**
  * 統一タスクフォームのプロパティ
@@ -173,12 +175,20 @@ export const UnifiedTaskForm = memo<UnifiedTaskFormProps>(
     // カスタムコンポーネントの生成
     const descriptionComponent = useMemo(
       () => (
-        <LexicalRichTextEditor
-          key={editorKey}
-          value={description}
-          onChange={setDescription}
-          placeholder='タスクの説明を入力...'
-        />
+        <Suspense
+          fallback={
+            <div className='h-32 flex items-center justify-center border border-input rounded-md'>
+              <span className='text-sm text-muted-foreground'>エディタを読み込み中...</span>
+            </div>
+          }
+        >
+          <LexicalRichTextEditor
+            key={editorKey}
+            value={description}
+            onChange={setDescription}
+            placeholder='タスクの説明を入力...'
+          />
+        </Suspense>
       ),
       [editorKey, description, setDescription]
     );
