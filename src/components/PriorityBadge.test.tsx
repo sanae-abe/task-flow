@@ -198,7 +198,7 @@ describe('PriorityBadge', () => {
 
       const badge = screen.getByRole('status');
       expect(badge).toHaveClass('inline-flex', 'items-center', 'gap-1');
-      expect(badge).toHaveClass('px-2', 'py-[3px]', 'rounded-[3px]');
+      expect(badge).toHaveClass('px-2', 'py-1', 'rounded');
       expect(badge).toHaveClass('cursor-default');
     });
 

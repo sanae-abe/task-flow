@@ -23,7 +23,9 @@ import {
 } from '../../../utils/taskFormFields';
 
 // 動的インポート - RichTextEditor
-const LexicalRichTextEditor = lazy(() => import('../../LexicalRichTextEditor/'));
+const LexicalRichTextEditor = lazy(
+  () => import('../../LexicalRichTextEditor/')
+);
 
 /**
  * 統一タスクフォームのプロパティ
@@ -178,7 +180,9 @@ export const UnifiedTaskForm = memo<UnifiedTaskFormProps>(
         <Suspense
           fallback={
             <div className='h-32 flex items-center justify-center border border-input rounded-md'>
-              <span className='text-sm text-muted-foreground'>エディタを読み込み中...</span>
+              <span className='text-sm text-muted-foreground'>
+                エディタを読み込み中...
+              </span>
             </div>
           }
         >

@@ -291,7 +291,9 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
             <Suspense
               fallback={
                 <div className='h-[120px] flex items-center justify-center border border-input rounded-md'>
-                  <span className='text-sm text-muted-foreground'>エディタを読み込み中...</span>
+                  <span className='text-sm text-muted-foreground'>
+                    エディタを読み込み中...
+                  </span>
                 </div>
               }
             >
