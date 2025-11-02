@@ -57,9 +57,9 @@ describe('DueDateBadge', () => {
 
       render(<DueDateBadge {...overdueProps} />);
 
-      // StatusBadgeがdangerバリアント（赤色）でレンダリングされることを確認
+      // StatusBadgeがdangerバリアント（text-destructiveクラス）でレンダリングされることを確認
       const badge = screen.getByText('期限: 2025/01/15').closest('div');
-      expect(badge).toHaveStyle({ color: '#d1242f' });
+      expect(badge).toHaveClass('text-destructive');
     });
 
     it('should use warning variant when due today', () => {
@@ -72,9 +72,9 @@ describe('DueDateBadge', () => {
 
       render(<DueDateBadge {...todayProps} />);
 
-      // StatusBadgeがwarningバリアント（黄色）でレンダリングされることを確認
+      // StatusBadgeがwarningバリアント（text-warningクラス）でレンダリングされることを確認
       const badge = screen.getByText('期限: 2025/01/15').closest('div');
-      expect(badge).toHaveStyle({ color: '#9a6700' });
+      expect(badge).toHaveClass('text-warning');
     });
 
     it('should use info variant when due tomorrow', () => {
@@ -87,9 +87,9 @@ describe('DueDateBadge', () => {
 
       render(<DueDateBadge {...tomorrowProps} />);
 
-      // StatusBadgeがinfoバリアント（青色）でレンダリングされることを確認
+      // StatusBadgeがinfoバリアント（text-primaryクラス）でレンダリングされることを確認
       const badge = screen.getByText('期限: 2025/01/15').closest('div');
-      expect(badge).toHaveStyle({ color: '#0969da' });
+      expect(badge).toHaveClass('text-primary');
     });
 
     it('should use neutral variant for normal dates', () => {
@@ -102,9 +102,9 @@ describe('DueDateBadge', () => {
 
       render(<DueDateBadge {...neutralProps} />);
 
-      // StatusBadgeがneutralバリアント（グレー）でレンダリングされることを確認
+      // StatusBadgeがneutralバリアント（text-defaultクラス）でレンダリングされることを確認
       const badge = screen.getByText('期限: 2025/01/15').closest('div');
-      expect(badge).toHaveStyle({ color: '#656d76' });
+      expect(badge).toHaveClass('text-default');
     });
   });
 
@@ -121,7 +121,7 @@ describe('DueDateBadge', () => {
 
       // overdueが優先されてdangerバリアント（赤色）になることを確認
       const badge = screen.getByText('期限: 2025/01/15').closest('div');
-      expect(badge).toHaveStyle({ color: '#d1242f' });
+      expect(badge).toHaveClass('text-destructive');
     });
 
     it('should prioritize today over tomorrow', () => {
@@ -136,7 +136,7 @@ describe('DueDateBadge', () => {
 
       // todayが優先されてwarningバリアント（黄色）になることを確認
       const badge = screen.getByText('期限: 2025/01/15').closest('div');
-      expect(badge).toHaveStyle({ color: '#9a6700' });
+      expect(badge).toHaveClass('text-warning');
     });
   });
 

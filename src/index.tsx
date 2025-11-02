@@ -11,7 +11,10 @@ if (typeof window !== 'undefined') {
   (window as any).ReactDOM = ReactDOM;
 
   // より確実にReactを設定
-  if (!(window as any).React || typeof (window as any).React.useLayoutEffect !== 'function') {
+  if (
+    !(window as any).React ||
+    typeof (window as any).React.useLayoutEffect !== 'function'
+  ) {
     (window as any).React = React;
   }
 
@@ -37,7 +40,7 @@ if (typeof window !== 'undefined') {
     useLayoutEffectAvailable: typeof React.useLayoutEffect !== 'undefined',
     windowReact: typeof window.React !== 'undefined',
     windowReactType: typeof window.React,
-    useLayoutEffectType: typeof React.useLayoutEffect
+    useLayoutEffectType: typeof React.useLayoutEffect,
   });
 }
 import { HashRouter } from 'react-router-dom';

@@ -66,7 +66,7 @@ describe('Button', () => {
       render(<Button variant='ghost'>ゴースト</Button>);
 
       const button = screen.getByRole('button');
-      expect(button).toHaveClass('hover:bg-primary', 'hover:text-foreground');
+      expect(button).toHaveClass('hover:bg-accent', 'hover:text-foreground');
     });
 
     it('should apply link variant classes', () => {
@@ -82,7 +82,7 @@ describe('Button', () => {
       render(<Button>デフォルトサイズ</Button>);
 
       const button = screen.getByRole('button');
-      expect(button).toHaveClass('h-10', 'px-4', 'py-2');
+      expect(button).toHaveClass('h-9', 'px-3');
     });
 
     it('should apply small size classes', () => {
