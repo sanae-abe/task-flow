@@ -1,4 +1,4 @@
-import { Database, Tag, Columns, Trash2, ListTodo } from 'lucide-react';
+import { Database, Tag, Columns, Trash2, ListTodo, Info } from 'lucide-react';
 import React, { useState } from 'react';
 import { cn } from '@/lib/utils';
 
@@ -10,6 +10,7 @@ import { BoardSettingsPanel } from './BoardSettings';
 import { TemplateManagementPanel } from './TemplateManagement';
 import { RecycleBinSettingsPanel } from './RecycleBin/RecycleBinSettingsPanel';
 import UnifiedRecycleBinView from './RecycleBin/UnifiedRecycleBinView';
+import { AboutPanel } from './About';
 import type { KanbanBoard } from '../types';
 
 interface SettingsDialogProps {
@@ -26,7 +27,7 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
   onExportBoard,
 }) => {
   const [activeTab, setActiveTab] = useState<
-    'labels' | 'data' | 'board' | 'templates' | 'recycleBin'
+    'labels' | 'data' | 'board' | 'templates' | 'recycleBin' | 'about'
   >('labels');
 
   // DialogFlashMessageフック使用
@@ -109,6 +110,19 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
               <Database size={16} />
               データ管理
             </button>
+            <button
+              className={cn(
+                'flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors text-left',
+                activeTab === 'about'
+                  ? 'bg-accent text-foreground'
+                  : 'text-foreground hover:bg-accent/50'
+              )}
+              onClick={() => setActiveTab('about')}
+              aria-current={activeTab === 'about' ? 'page' : undefined}
+            >
+              <Info size={16} />
+              アプリ情報
+            </button>
           </nav>
         </div>
 
@@ -133,6 +147,8 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
                   <UnifiedRecycleBinView onMessage={handleMessage} />
                 </div>
               </div>
+            ) : activeTab === 'about' ? (
+              <AboutPanel />
             ) : (
               <DataManagementPanel
                 onExportAll={onExportData}

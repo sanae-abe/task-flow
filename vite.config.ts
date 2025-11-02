@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
 import path from 'path'
+import pkg from './package.json'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -154,6 +155,10 @@ export default defineConfig({
   define: {
     // 必要な環境変数のみを定義
     'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+    __APP_VERSION__: JSON.stringify(pkg.version),
+    __APP_NAME__: JSON.stringify(pkg.name),
+    __APP_DESCRIPTION__: JSON.stringify(pkg.description),
+    __APP_AUTHOR__: JSON.stringify(pkg.author),
   },
   // 依存関係の最適化
   optimizeDeps: {
