@@ -8,14 +8,7 @@ import { render, screen, act, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { TaskProvider, useTask } from './TaskContext';
 import { BoardProvider, useBoard } from './BoardContext';
-import type {
-  Task,
-  SubTask,
-  Label,
-  FileAttachment,
-  Priority,
-  RecurrenceConfig,
-} from '../types';
+import type { Task, SubTask, Label } from '../types';
 
 // Mock external dependencies
 vi.mock('../utils/storage', () => ({

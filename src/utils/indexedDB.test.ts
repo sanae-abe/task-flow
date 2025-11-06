@@ -10,7 +10,7 @@ import type { Task, Column, KanbanBoard, Label } from '../types';
 // Mock IndexedDB
 class MockIDBDatabase {
   objectStoreNames = {
-    contains: vi.fn((name: string) => false),
+    contains: vi.fn((_name: string) => false),
   };
   transaction = vi.fn();
   createObjectStore = vi.fn(() => ({
@@ -50,7 +50,10 @@ class MockIDBObjectStore {
 
   getAll(): MockIDBRequest {
     const request = new MockIDBRequest();
-    setTimeout(() => request.simulateSuccess(Array.from(this.data.values())), 0);
+    setTimeout(
+      () => request.simulateSuccess(Array.from(this.data.values())),
+      0
+    );
     return request;
   }
 
@@ -86,7 +89,7 @@ class MockIDBObjectStore {
 }
 
 class MockIDBTransaction {
-  objectStore = vi.fn((name: string) => new MockIDBObjectStore());
+  objectStore = vi.fn((_name: string) => new MockIDBObjectStore());
   oncomplete: (() => void) | null = null;
   onerror: ((event: any) => void) | null = null;
   error: any = null;
@@ -126,9 +129,9 @@ describe('IndexedDB Manager', () => {
     } as any;
 
     // Mock transaction to return consistent object stores
-    mockDB.transaction = vi.fn((storeNames: string[], mode: string) => {
+    mockDB.transaction = vi.fn((_storeNames: string[], _mode: string) => {
       const transaction = new MockIDBTransaction();
-      transaction.objectStore = vi.fn((name: string) => {
+      transaction.objectStore = vi.fn((_name: string) => {
         if (!mockStores.has(name)) {
           mockStores.set(name, new MockIDBObjectStore());
         }
@@ -176,7 +179,9 @@ describe('IndexedDB Manager', () => {
     });
 
     it('should save a task', async () => {
-      await expect(indexedDBManager.saveTask(mockTask)).resolves.toBeUndefined();
+      await expect(
+        indexedDBManager.saveTask(mockTask)
+      ).resolves.toBeUndefined();
     });
 
     it('should get a task by id', async () => {

@@ -18,14 +18,14 @@ vi.mock('../utils/labelHelpers', () => ({
 vi.mock('./shared/IconButton', () => ({
   default: ({ icon: Icon, onClick, size, ariaLabel }: any) => (
     <button onClick={onClick} aria-label={ariaLabel} data-size={size}>
-      <Icon data-testid="icon-component" />
+      <Icon data-testid='icon-component' />
     </button>
   ),
 }));
 
 // Mock X icon from lucide-react
 vi.mock('lucide-react', () => ({
-  X: () => <span data-testid="x-icon">X</span>,
+  X: () => <span data-testid='x-icon'>X</span>,
 }));
 
 describe('LabelChip', () => {
@@ -85,7 +85,7 @@ describe('LabelChip', () => {
 
     it('should render remove button when showRemove is true', () => {
       const onRemove = vi.fn();
-      render(<LabelChip label={mockLabel} showRemove={true} onRemove={onRemove} />);
+      render(<LabelChip label={mockLabel} showRemove onRemove={onRemove} />);
 
       expect(screen.getByRole('button')).toBeInTheDocument();
       expect(screen.getByTestId('x-icon')).toBeInTheDocument();
@@ -93,7 +93,7 @@ describe('LabelChip', () => {
 
     it('should render remove button with correct aria-label', () => {
       const onRemove = vi.fn();
-      render(<LabelChip label={mockLabel} showRemove={true} onRemove={onRemove} />);
+      render(<LabelChip label={mockLabel} showRemove onRemove={onRemove} />);
 
       const button = screen.getByRole('button');
       expect(button).toHaveAttribute('aria-label', 'Bugラベルを削除');
@@ -101,7 +101,7 @@ describe('LabelChip', () => {
 
     it('should apply small size to remove button', () => {
       const onRemove = vi.fn();
-      render(<LabelChip label={mockLabel} showRemove={true} onRemove={onRemove} />);
+      render(<LabelChip label={mockLabel} showRemove onRemove={onRemove} />);
 
       const button = screen.getByRole('button');
       expect(button).toHaveAttribute('data-size', 'small');
@@ -122,7 +122,7 @@ describe('LabelChip', () => {
     it('should be clickable when clickable prop is true', () => {
       const onClick = vi.fn();
       const { container } = render(
-        <LabelChip label={mockLabel} clickable={true} onClick={onClick} />
+        <LabelChip label={mockLabel} clickable onClick={onClick} />
       );
 
       const labelChip = container.querySelector('.inline-flex');
@@ -132,7 +132,7 @@ describe('LabelChip', () => {
     it('should call onClick when clickable and clicked', () => {
       const onClick = vi.fn();
       const { container } = render(
-        <LabelChip label={mockLabel} clickable={true} onClick={onClick} />
+        <LabelChip label={mockLabel} clickable onClick={onClick} />
       );
 
       const labelChip = container.querySelector('.inline-flex')!;
@@ -170,7 +170,7 @@ describe('LabelChip', () => {
     it('should handle Enter key when clickable', () => {
       const onClick = vi.fn();
       const { container } = render(
-        <LabelChip label={mockLabel} clickable={true} onClick={onClick} />
+        <LabelChip label={mockLabel} clickable onClick={onClick} />
       );
 
       const labelChip = container.querySelector('.inline-flex')!;
@@ -182,7 +182,7 @@ describe('LabelChip', () => {
     it('should handle Space key when clickable', () => {
       const onClick = vi.fn();
       const { container } = render(
-        <LabelChip label={mockLabel} clickable={true} onClick={onClick} />
+        <LabelChip label={mockLabel} clickable onClick={onClick} />
       );
 
       const labelChip = container.querySelector('.inline-flex')!;
@@ -194,7 +194,7 @@ describe('LabelChip', () => {
     it('should handle Enter and Space key accessibility', () => {
       const onClick = vi.fn();
       const { container } = render(
-        <LabelChip label={mockLabel} clickable={true} onClick={onClick} />
+        <LabelChip label={mockLabel} clickable onClick={onClick} />
       );
 
       const labelChip = container.querySelector('.inline-flex')!;
@@ -224,7 +224,7 @@ describe('LabelChip', () => {
     it('should not handle other keys', () => {
       const onClick = vi.fn();
       const { container } = render(
-        <LabelChip label={mockLabel} clickable={true} onClick={onClick} />
+        <LabelChip label={mockLabel} clickable onClick={onClick} />
       );
 
       const labelChip = container.querySelector('.inline-flex')!;
@@ -239,7 +239,7 @@ describe('LabelChip', () => {
   describe('Remove Button', () => {
     it('should call onRemove when remove button is clicked', () => {
       const onRemove = vi.fn();
-      render(<LabelChip label={mockLabel} showRemove={true} onRemove={onRemove} />);
+      render(<LabelChip label={mockLabel} showRemove onRemove={onRemove} />);
 
       const removeButton = screen.getByRole('button');
       fireEvent.click(removeButton);
@@ -253,7 +253,7 @@ describe('LabelChip', () => {
       render(
         <LabelChip
           label={mockLabel}
-          showRemove={true}
+          showRemove
           onRemove={onRemove}
           clickable={false}
           onClick={onClick}
@@ -284,7 +284,7 @@ describe('LabelChip', () => {
     it('should have role="button" when clickable', () => {
       const onClick = vi.fn();
       const { container } = render(
-        <LabelChip label={mockLabel} clickable={true} onClick={onClick} />
+        <LabelChip label={mockLabel} clickable onClick={onClick} />
       );
 
       const labelChip = container.querySelector('.inline-flex')!;
@@ -301,7 +301,7 @@ describe('LabelChip', () => {
     it('should have tabIndex={0} when clickable', () => {
       const onClick = vi.fn();
       const { container } = render(
-        <LabelChip label={mockLabel} clickable={true} onClick={onClick} />
+        <LabelChip label={mockLabel} clickable onClick={onClick} />
       );
 
       const labelChip = container.querySelector('.inline-flex')!;
@@ -342,7 +342,7 @@ describe('LabelChip', () => {
 
       expect(screen.queryByRole('button')).not.toBeInTheDocument();
 
-      rerender(<LabelChip label={mockLabel} showRemove={true} onRemove={onRemove} />);
+      rerender(<LabelChip label={mockLabel} showRemove onRemove={onRemove} />);
 
       expect(screen.getByRole('button')).toBeInTheDocument();
     });
@@ -356,9 +356,7 @@ describe('LabelChip', () => {
       let labelChip = container.querySelector('.inline-flex')!;
       expect(labelChip).not.toHaveClass('cursor-pointer');
 
-      rerender(
-        <LabelChip label={mockLabel} clickable={true} onClick={onClick} />
-      );
+      rerender(<LabelChip label={mockLabel} clickable onClick={onClick} />);
 
       labelChip = container.querySelector('.inline-flex')!;
       expect(labelChip).toHaveClass('cursor-pointer');
@@ -415,7 +413,7 @@ describe('LabelChip', () => {
         'danger',
       ] as const;
 
-      colors.forEach((color) => {
+      colors.forEach(color => {
         const label: Label = {
           id: `label-${color}`,
           name: color,
@@ -434,12 +432,12 @@ describe('LabelChip', () => {
     it('should handle both clickable and showRemove together without nested buttons', () => {
       const onClick = vi.fn();
       const onRemove = vi.fn();
-      const { container } = render(
+      render(
         <LabelChip
           label={mockLabel}
           clickable={false}
           onClick={onClick}
-          showRemove={true}
+          showRemove
           onRemove={onRemove}
         />
       );
@@ -455,9 +453,7 @@ describe('LabelChip', () => {
     });
 
     it('should handle undefined onClick callback', () => {
-      const { container } = render(
-        <LabelChip label={mockLabel} clickable={true} />
-      );
+      const { container } = render(<LabelChip label={mockLabel} clickable />);
 
       const labelChip = container.querySelector('.inline-flex')!;
 
@@ -469,7 +465,7 @@ describe('LabelChip', () => {
     });
 
     it('should not render remove button without onRemove callback', () => {
-      render(<LabelChip label={mockLabel} showRemove={true} />);
+      render(<LabelChip label={mockLabel} showRemove />);
 
       // No button should be rendered without onRemove
       expect(screen.queryByRole('button')).not.toBeInTheDocument();

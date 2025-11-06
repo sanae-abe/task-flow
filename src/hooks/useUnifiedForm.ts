@@ -298,15 +298,11 @@ export const useUnifiedForm = (
       if (prevInitialValuesRef.current !== initialValuesString) {
         prevInitialValuesRef.current = initialValuesString;
 
-        // フォーム全体をリセットするのではなく、個別フィールドを更新
-        Object.entries(initialValues).forEach(([fieldName, value]) => {
-          if (state.values[fieldName] !== value) {
-            setValue(fieldName, value);
-          }
-        });
+        // フォーム全体をリセット（touched状態もクリアされる）
+        resetForm(initialValues);
       }
     }
-  }, [initialValues, setValue, state.values]);
+  }, [initialValues, resetForm]);
 
   return {
     state,
