@@ -23,12 +23,12 @@ TaskFlowの開発環境を構築するための詳細ガイドです。
 
 ```bash
 # SSH（推奨）
-git clone ssh://git@rendezvous.m3.com:3789/sanae-abe/taskflow-app.git
-cd taskflow-app
+git clone git@github.com:sanae-abe/task-flow.git
+cd task-flow
 
 # または HTTPS
-git clone https://rendezvous.m3.com:3789/sanae-abe/taskflow-app.git
-cd taskflow-app
+git clone https://github.com/sanae-abe/task-flow.git
+cd task-flow
 ```
 
 ### 2. 依存関係のインストール

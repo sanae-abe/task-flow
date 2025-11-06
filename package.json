@@ -5,6 +5,13 @@
   "type": "module",
   "private": true,
   "homepage": "./",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sanae-abe/task-flow.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sanae-abe/task-flow/issues"
+  },
   "keywords": [
     "taskflow",
     "task-management",

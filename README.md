@@ -86,6 +86,10 @@
 - **アクセシビリティ**: WCAG準拠のアクセシブルUI
 - **ダークモード**: ユーザー設定に応じたテーマ対応
 
+## 🌐 デモ
+
+**本番環境**: [https://task-flow-app.vercel.app](https://task-flow-app.vercel.app)
+
 ## 🚀 クイックスタート
 
 ### 環境要件
@@ -97,8 +101,8 @@
 
 ```bash
 # リポジトリのクローン
-git clone ssh://git@rendezvous.m3.com:3789/sanae-abe/taskflow-app.git
-cd taskflow-app
+git clone git@github.com:sanae-abe/task-flow.git
+cd task-flow
 
 # 依存関係のインストール
 npm install
