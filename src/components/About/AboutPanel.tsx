@@ -32,7 +32,7 @@ const AboutPanel: React.FC = () => (
       </div>
       <div>
         <dt className='text-sm font-medium text-muted-foreground'>開発者</dt>
-        <dd className='text-base mt-1'>{__APP_AUTHOR__} (sanae-abe@m3.com)</dd>
+        <dd className='text-base mt-1'>{__APP_AUTHOR__} (sanae.a.sunny@gmail.com)</dd>
       </div>
     </div>
   </div>
