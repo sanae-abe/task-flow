@@ -362,7 +362,8 @@ describe('useTableColumns', () => {
 
       let customId: string | undefined;
       await waitFor(() => {
-        customId = result.current.columns[result.current.columns.length - 1]?.id;
+        customId =
+          result.current.columns[result.current.columns.length - 1]?.id;
         expect(customId).toBeDefined();
       });
 
@@ -415,7 +416,8 @@ describe('useTableColumns', () => {
 
       let customId: string | undefined;
       await waitFor(() => {
-        customId = result.current.columns[result.current.columns.length - 1]?.id;
+        customId =
+          result.current.columns[result.current.columns.length - 1]?.id;
       });
 
       if (customId) {
@@ -452,7 +454,9 @@ describe('useTableColumns', () => {
       });
 
       await waitFor(() => {
-        expect(result.current.columns[0]?.width).toBe(DEFAULT_COLUMNS[0]?.width);
+        expect(result.current.columns[0]?.width).toBe(
+          DEFAULT_COLUMNS[0]?.width
+        );
       });
     });
 
@@ -504,7 +508,9 @@ describe('useTableColumns', () => {
     it('should only include visible columns', () => {
       const { result } = renderHook(() => useTableColumns());
 
-      const allVisible = result.current.visibleColumns.every(col => col.visible);
+      const allVisible = result.current.visibleColumns.every(
+        col => col.visible
+      );
       expect(allVisible).toBe(true);
     });
 
@@ -609,7 +615,6 @@ describe('useTableColumns', () => {
     it('should return new object on each call', () => {
       const { result } = renderHook(() => useTableColumns());
 
-      const firstRender = result.current;
       const { rerender } = renderHook(() => useTableColumns());
 
       rerender();

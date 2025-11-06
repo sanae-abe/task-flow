@@ -204,7 +204,9 @@ describe('Template Storage', () => {
         TemplateStorageError
       );
       // isStorageAvailable()チェックで失敗するため
-      expect(() => TemplateStorage.save(templates)).toThrow('LocalStorageが利用できません');
+      expect(() => TemplateStorage.save(templates)).toThrow(
+        'LocalStorageが利用できません'
+      );
     });
   });
 
@@ -444,7 +446,7 @@ describe('Template Storage', () => {
     });
 
     it('should import templates with merge option', () => {
-      const existing = TemplateStorage.create({
+      TemplateStorage.create({
         name: 'Existing',
         description: '',
         category: 'work',
