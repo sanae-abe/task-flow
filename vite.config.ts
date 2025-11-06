@@ -1,14 +1,12 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react-swc'
-import path from 'path'
-import pkg from './package.json'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react-swc';
+import path from 'path';
+import pkg from './package.json';
 
 // https://vitejs.dev/config/
 export default defineConfig({
   base: './', // S3デプロイ用の相対パス設定
-  plugins: [
-    react(),
-  ],
+  plugins: [react()],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
@@ -31,7 +29,7 @@ export default defineConfig({
     chunkSizeWarningLimit: 800, // React + 依存ライブラリを考慮した現実的なサイズに調整
     rollupOptions: {
       output: {
-        manualChunks: (id) => {
+        manualChunks: id => {
           // Core React libraries
           if (id.includes('react') || id.includes('react-dom')) {
             return 'vendor';
@@ -43,20 +41,26 @@ export default defineConfig({
           }
 
           // Radix UI components (細分化)
-          if (id.includes('@radix-ui/react-dialog') ||
-              id.includes('@radix-ui/react-dropdown-menu') ||
-              id.includes('@radix-ui/react-slot') ||
-              id.includes('@radix-ui/react-alert-dialog')) {
+          if (
+            id.includes('@radix-ui/react-dialog') ||
+            id.includes('@radix-ui/react-dropdown-menu') ||
+            id.includes('@radix-ui/react-slot') ||
+            id.includes('@radix-ui/react-alert-dialog')
+          ) {
             return 'radix-core';
           }
-          if (id.includes('@radix-ui/react-checkbox') ||
-              id.includes('@radix-ui/react-label') ||
-              id.includes('@radix-ui/react-popover') ||
-              id.includes('@radix-ui/react-progress')) {
+          if (
+            id.includes('@radix-ui/react-checkbox') ||
+            id.includes('@radix-ui/react-label') ||
+            id.includes('@radix-ui/react-popover') ||
+            id.includes('@radix-ui/react-progress')
+          ) {
             return 'radix-form';
           }
-          if (id.includes('@radix-ui/react-tabs') ||
-              id.includes('@radix-ui/react-toast')) {
+          if (
+            id.includes('@radix-ui/react-tabs') ||
+            id.includes('@radix-ui/react-toast')
+          ) {
             return 'radix-nav';
           }
 
@@ -86,15 +90,16 @@ export default defineConfig({
           }
 
           // テーブル関連コンポーネント（アプリケーション）
-          if (id.includes('TableView') ||
-              id.includes('TableColumnManager')) {
+          if (id.includes('TableView') || id.includes('TableColumnManager')) {
             return 'app-table';
           }
 
           // テンプレート管理
-          if (id.includes('TemplateManagement') ||
-              id.includes('TemplateForm') ||
-              id.includes('TemplateCard')) {
+          if (
+            id.includes('TemplateManagement') ||
+            id.includes('TemplateForm') ||
+            id.includes('TemplateCard')
+          ) {
             return 'app-templates';
           }
 
@@ -104,17 +109,21 @@ export default defineConfig({
           }
 
           // リッチテキストエディタ
-          if (id.includes('RichTextEditor') ||
-              id.includes('LinkInsertDialog') ||
-              id.includes('MarkdownEditor')) {
+          if (
+            id.includes('RichTextEditor') ||
+            id.includes('LinkInsertDialog') ||
+            id.includes('MarkdownEditor')
+          ) {
             return 'app-editor';
           }
 
           // 設定・管理機能
-          if (id.includes('SettingsDialog') ||
-              id.includes('DataManagement') ||
-              id.includes('LabelManagement') ||
-              id.includes('BoardSettings')) {
+          if (
+            id.includes('SettingsDialog') ||
+            id.includes('DataManagement') ||
+            id.includes('LabelManagement') ||
+            id.includes('BoardSettings')
+          ) {
             return 'app-settings';
           }
 
@@ -124,23 +133,27 @@ export default defineConfig({
           }
 
           // Utilities and small libraries
-          if (id.includes('react-router-dom') ||
-              id.includes('uuid') ||
-              id.includes('dompurify') ||
-              id.includes('sonner') ||
-              id.includes('clsx') ||
-              id.includes('tailwind-merge') ||
-              id.includes('class-variance-authority')) {
+          if (
+            id.includes('react-router-dom') ||
+            id.includes('uuid') ||
+            id.includes('dompurify') ||
+            id.includes('sonner') ||
+            id.includes('clsx') ||
+            id.includes('tailwind-merge') ||
+            id.includes('class-variance-authority')
+          ) {
             return 'utilities';
           }
 
           // アプリケーション共通コンポーネント
-          if (id.includes('src/components') &&
-              (id.includes('UnifiedDialog') ||
-               id.includes('UnifiedForm') ||
-               id.includes('ActionMenu') ||
-               id.includes('ConfirmDialog') ||
-               id.includes('LoadingButton'))) {
+          if (
+            id.includes('src/components') &&
+            (id.includes('UnifiedDialog') ||
+              id.includes('UnifiedForm') ||
+              id.includes('ActionMenu') ||
+              id.includes('ConfirmDialog') ||
+              id.includes('LoadingButton'))
+          ) {
             return 'app-shared';
           }
 
@@ -159,12 +172,20 @@ export default defineConfig({
     __APP_NAME__: JSON.stringify(pkg.name),
     __APP_DESCRIPTION__: JSON.stringify(pkg.description),
     __APP_AUTHOR__: JSON.stringify(pkg.author),
+    // React 19互換性: グローバルReactを確保
+    'global.React': 'window.React',
   },
   // 依存関係の最適化
   optimizeDeps: {
-    include: [],
+    include: [
+      'react',
+      'react-dom',
+      'react/jsx-runtime',
+    ],
+    exclude: ['use-callback-ref', 'react-remove-scroll'],
+    force: true,
   },
   css: {
     postcss: './postcss.config.js',
   },
-})
+});

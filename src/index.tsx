@@ -1,47 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 
-// 本番環境でのReact初期化エラー対策（緊急修正 - 最終版）
+// 本番環境でのReact 19互換性対策
 if (typeof window !== 'undefined') {
-  // 既存のプレースホルダーを実際のReactで置換
-  console.log('Replacing React placeholder with real React');
-
-  // Reactをグローバルスコープに強制設定
+  // Reactをグローバルに設定（use-callback-ref等の依存ライブラリ用）
   (window as any).React = React;
   (window as any).ReactDOM = ReactDOM;
 
-  // より確実にReactを設定
-  if (
-    !(window as any).React ||
-    typeof (window as any).React.useLayoutEffect !== 'function'
-  ) {
-    (window as any).React = React;
+  if (process.env.NODE_ENV === 'development') {
+    console.log('✅ React initialized:', {
+      version: React.version,
+      useLayoutEffect: typeof React.useLayoutEffect !== 'undefined',
+    });
   }
-
-  // use-callback-refライブラリ用のReact確保
-  if (!React.useLayoutEffect) {
-    console.error('React.useLayoutEffect is not available');
-  } else {
-    console.log('✅ React.useLayoutEffect is available');
-  }
-
-  // 強制的にReactを全てのrequire/importで利用可能にする
-  if (typeof global !== 'undefined') {
-    (global as any).React = React;
-  }
-
-  // AMD/CommonJS環境への対応
-  if (typeof module !== 'undefined' && module.exports) {
-    (module.exports as any).React = React;
-  }
-
-  console.log('🚀 Final React fix applied:', {
-    ReactAvailable: typeof React !== 'undefined',
-    useLayoutEffectAvailable: typeof React.useLayoutEffect !== 'undefined',
-    windowReact: typeof window.React !== 'undefined',
-    windowReactType: typeof window.React,
-    useLayoutEffectType: typeof React.useLayoutEffect,
-  });
 }
 import { HashRouter } from 'react-router-dom';
 

@@ -10,18 +10,26 @@ import type { RecurrenceConfig } from '../types/recurrence';
 
 // Mock all child components to simplify testing
 vi.mock('./RecurrenceDetailDialog/components', () => ({
-  RecurrencePatternSelector: () => <div data-testid="recurrence-pattern-selector">Pattern Selector</div>,
-  WeeklyOptionsSelector: () => <div data-testid="weekly-options-selector">Weekly Options</div>,
-  MonthlyOptionsSelector: () => <div data-testid="monthly-options-selector">Monthly Options</div>,
-  RecurrenceEndConditions: () => <div data-testid="recurrence-end-conditions">End Conditions</div>,
+  RecurrencePatternSelector: () => (
+    <div data-testid='recurrence-pattern-selector'>Pattern Selector</div>
+  ),
+  WeeklyOptionsSelector: () => (
+    <div data-testid='weekly-options-selector'>Weekly Options</div>
+  ),
+  MonthlyOptionsSelector: () => (
+    <div data-testid='monthly-options-selector'>Monthly Options</div>
+  ),
+  RecurrenceEndConditions: () => (
+    <div data-testid='recurrence-end-conditions'>End Conditions</div>
+  ),
   RecurrenceErrorDisplay: () => null,
-  RecurrencePreview: () => <div data-testid="recurrence-preview">Preview</div>,
+  RecurrencePreview: () => <div data-testid='recurrence-preview'>Preview</div>,
 }));
 
 vi.mock('./shared/Dialog/UnifiedDialog', () => ({
   default: ({ isOpen, title, children }: any) =>
     isOpen ? (
-      <div data-testid="unified-dialog">
+      <div data-testid='unified-dialog'>
         <h1>{title}</h1>
         {children}
       </div>
@@ -53,7 +61,7 @@ describe('RecurrenceDetailDialog', () => {
     it('should render when isOpen is true', () => {
       render(
         <RecurrenceDetailDialog
-          isOpen={true}
+          isOpen
           onClose={mockOnClose}
           onSave={mockOnSave}
         />
@@ -65,7 +73,7 @@ describe('RecurrenceDetailDialog', () => {
     it('should render with correct title', () => {
       render(
         <RecurrenceDetailDialog
-          isOpen={true}
+          isOpen
           onClose={mockOnClose}
           onSave={mockOnSave}
         />
@@ -79,31 +87,35 @@ describe('RecurrenceDetailDialog', () => {
     it('should render RecurrencePatternSelector', () => {
       render(
         <RecurrenceDetailDialog
-          isOpen={true}
+          isOpen
           onClose={mockOnClose}
           onSave={mockOnSave}
         />
       );
 
-      expect(screen.getByTestId('recurrence-pattern-selector')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('recurrence-pattern-selector')
+      ).toBeInTheDocument();
     });
 
     it('should render RecurrenceEndConditions', () => {
       render(
         <RecurrenceDetailDialog
-          isOpen={true}
+          isOpen
           onClose={mockOnClose}
           onSave={mockOnSave}
         />
       );
 
-      expect(screen.getByTestId('recurrence-end-conditions')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('recurrence-end-conditions')
+      ).toBeInTheDocument();
     });
 
     it('should render RecurrencePreview', () => {
       render(
         <RecurrenceDetailDialog
-          isOpen={true}
+          isOpen
           onClose={mockOnClose}
           onSave={mockOnSave}
         />
@@ -125,7 +137,7 @@ describe('RecurrenceDetailDialog', () => {
     it('should render with provided recurrence', () => {
       render(
         <RecurrenceDetailDialog
-          isOpen={true}
+          isOpen
           recurrence={mockRecurrence}
           onClose={mockOnClose}
           onSave={mockOnSave}
@@ -144,7 +156,7 @@ describe('RecurrenceDetailDialog', () => {
 
       render(
         <RecurrenceDetailDialog
-          isOpen={true}
+          isOpen
           recurrence={weeklyRecurrence}
           onClose={mockOnClose}
           onSave={mockOnSave}
@@ -163,7 +175,7 @@ describe('RecurrenceDetailDialog', () => {
 
       render(
         <RecurrenceDetailDialog
-          isOpen={true}
+          isOpen
           recurrence={monthlyRecurrence}
           onClose={mockOnClose}
           onSave={mockOnSave}
@@ -186,7 +198,7 @@ describe('RecurrenceDetailDialog', () => {
 
       render(
         <RecurrenceDetailDialog
-          isOpen={true}
+          isOpen
           recurrence={yearlyRecurrence}
           onClose={mockOnClose}
           onSave={mockOnSave}
@@ -208,7 +220,7 @@ describe('RecurrenceDetailDialog', () => {
 
       render(
         <RecurrenceDetailDialog
-          isOpen={true}
+          isOpen
           recurrence={recurrenceWithEndDate}
           onClose={mockOnClose}
           onSave={mockOnSave}
@@ -230,7 +242,7 @@ describe('RecurrenceDetailDialog', () => {
 
       render(
         <RecurrenceDetailDialog
-          isOpen={true}
+          isOpen
           recurrence={recurrenceWithOccurrences}
           onClose={mockOnClose}
           onSave={mockOnSave}
@@ -243,10 +255,10 @@ describe('RecurrenceDetailDialog', () => {
     it('should handle all end types', () => {
       const endTypes = ['never', 'date', 'occurrences'] as const;
 
-      endTypes.forEach((endType) => {
+      endTypes.forEach(endType => {
         const { unmount } = render(
           <RecurrenceDetailDialog
-            isOpen={true}
+            isOpen
             recurrence={{
               pattern: 'daily',
               interval: 1,
@@ -267,10 +279,10 @@ describe('RecurrenceDetailDialog', () => {
     it('should handle all patterns', () => {
       const patterns = ['daily', 'weekly', 'monthly', 'yearly'] as const;
 
-      patterns.forEach((pattern) => {
+      patterns.forEach(pattern => {
         const { unmount } = render(
           <RecurrenceDetailDialog
-            isOpen={true}
+            isOpen
             recurrence={{
               pattern,
               interval: 1,

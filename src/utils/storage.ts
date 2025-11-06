@@ -94,15 +94,19 @@ export const loadBoards = (): KanbanBoard[] => {
     );
 
     if (!stored) {
-      // ローカルストレージにデータがない場合、デモデータを作成
+      // ローカルストレージにデータがない場合、デモデータを作成して保存
       logger.debug('📖 Creating demo data for new user');
-      return createDemoBoard();
+      const demoBoards = createDemoBoard();
+      saveBoards(demoBoards);
+      return demoBoards;
     }
 
     const boards = JSON.parse(stored);
     if (!Array.isArray(boards)) {
       logger.warn('Invalid boards data in localStorage');
-      return createDemoBoard();
+      const demoBoards = createDemoBoard();
+      saveBoards(demoBoards);
+      return demoBoards;
     }
     logger.debug('📖 Loaded', boards.length, 'boards from localStorage');
 
@@ -144,7 +148,9 @@ export const loadBoards = (): KanbanBoard[] => {
     }));
   } catch (_error) {
     logger.warn('Failed to load boards from localStorage:', _error);
-    return createDemoBoard();
+    const demoBoards = createDemoBoard();
+    saveBoards(demoBoards);
+    return demoBoards;
   }
 };
 

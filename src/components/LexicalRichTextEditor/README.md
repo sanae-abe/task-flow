@@ -83,15 +83,19 @@ import RichTextEditorWrapper from '@/components/RichTextEditorWrapper';
 ### 主要コンポーネント
 
 #### 1. LexicalRichTextEditor (index.tsx)
+
 メインのエディタコンポーネント。`LexicalComposer`でラップし、必要なプラグインを統合。
 
 #### 2. Toolbar (components/Toolbar.tsx)
+
 フォーマットボタンを提供するツールバー。Lexical commandsを使用して編集機能を実行。
 
 #### 3. HtmlPlugin (plugins/HtmlPlugin.tsx)
+
 初期HTML値をLexicalエディタステートに変換・挿入。
 
 #### 4. OnChangePlugin (plugins/OnChangePlugin.tsx)
+
 Lexicalエディタ変更を監視し、HTML文字列として親コンポーネントに通知。
 
 ### HTML変換
@@ -131,30 +135,33 @@ htmlToLexical(editor, '<p>HTMLコンテンツ</p>');
 ## 🔜 次のステップ
 
 ### Phase 1: 機能拡張 (推定3-4時間)
+
 - [ ] 絵文字ピッカー統合
 - [ ] リンク編集機能
 - [ ] コードブロック機能強化
 - [ ] ツールバーアクティブ状態表示
 
 ### Phase 2: テスト・検証 (推定2-3時間)
+
 - [ ] 既存HTMLデータとの互換性テスト
 - [ ] UnifiedTaskFormでの動作確認
 - [ ] TemplateFormDialogでの動作確認
 - [ ] パフォーマンス測定
 
 ### Phase 3: 本番展開準備 (推定2-3時間)
+
 - [ ] ユーザーフィードバック収集
 - [ ] バグ修正・安定化
 - [ ] ドキュメント更新
 
 ## 📊 パフォーマンス比較
 
-| 指標 | ContentEditable | Lexical (想定) |
-|------|----------------|---------------|
-| 初期ロード | ~50ms | ~40ms |
-| メモリ使用量 | ~2-3MB | ~1.5-2MB |
-| バンドルサイズ | ~15KB | ~52KB (+37KB) |
-| レンダリング | 中程度 | 高速（DOM差分） |
+| 指標           | ContentEditable | Lexical (想定)  |
+| -------------- | --------------- | --------------- |
+| 初期ロード     | ~50ms           | ~40ms           |
+| メモリ使用量   | ~2-3MB          | ~1.5-2MB        |
+| バンドルサイズ | ~15KB           | ~52KB (+37KB)   |
+| レンダリング   | 中程度          | 高速（DOM差分） |
 
 ## 🐛 既知の問題
 

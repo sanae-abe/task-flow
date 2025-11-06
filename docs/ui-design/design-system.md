@@ -5,6 +5,7 @@ TaskFlowのデザインシステム、Shadcn/UIコンポーネントライブラ
 ## 🎯 デザインシステム概要
 
 ### 🏆 統一原則
+
 - **Shadcn/UI**: モダンで統一されたコンポーネントライブラリ
 - **Tailwind CSS 4.1.16**: ユーティリティファーストCSS・最新版
 - **@radix-ui**: アクセシブルなプリミティブコンポーネント
@@ -12,6 +13,7 @@ TaskFlowのデザインシステム、Shadcn/UIコンポーネントライブラ
 - **一貫性**: Look & Feel・インタラクション・アクセシビリティの統一
 
 ### 🎨 デザイン哲学
+
 - **Accessibility First**: WCAG準拠のアクセシブルUI
 - **Mobile First**: レスポンシブデザイン対応
 - **Performance First**: 軽量・高速なコンポーネント
@@ -20,6 +22,7 @@ TaskFlowのデザインシステム、Shadcn/UIコンポーネントライブラ
 ## 🎨 カラーシステム
 
 ### プライマリカラーパレット
+
 ```css
 /* Tailwind CSS Variables */
 :root {
@@ -50,6 +53,7 @@ TaskFlowのデザインシステム、Shadcn/UIコンポーネントライブラ
 ```
 
 ### ステータス別カラー
+
 ```typescript
 // 優先度カラー
 export const PRIORITY_COLORS = {
@@ -57,49 +61,50 @@ export const PRIORITY_COLORS = {
     bg: 'bg-red-50',
     text: 'text-red-700',
     border: 'border-red-200',
-    badge: 'bg-red-100 text-red-800'
+    badge: 'bg-red-100 text-red-800',
   },
   high: {
     bg: 'bg-orange-50',
     text: 'text-orange-700',
     border: 'border-orange-200',
-    badge: 'bg-orange-100 text-orange-800'
+    badge: 'bg-orange-100 text-orange-800',
   },
   medium: {
     bg: 'bg-yellow-50',
     text: 'text-yellow-700',
     border: 'border-yellow-200',
-    badge: 'bg-yellow-100 text-yellow-800'
+    badge: 'bg-yellow-100 text-yellow-800',
   },
   low: {
     bg: 'bg-gray-50',
     text: 'text-gray-700',
     border: 'border-gray-200',
-    badge: 'bg-gray-100 text-gray-800'
-  }
-} as const
+    badge: 'bg-gray-100 text-gray-800',
+  },
+} as const;
 
 // ステータスカラー
 export const STATUS_COLORS = {
   todo: {
     bg: 'bg-slate-50',
     text: 'text-slate-700',
-    badge: 'bg-slate-100 text-slate-800'
+    badge: 'bg-slate-100 text-slate-800',
   },
   'in-progress': {
     bg: 'bg-blue-50',
     text: 'text-blue-700',
-    badge: 'bg-blue-100 text-blue-800'
+    badge: 'bg-blue-100 text-blue-800',
   },
   done: {
     bg: 'bg-green-50',
     text: 'text-green-700',
-    badge: 'bg-green-100 text-green-800'
-  }
-} as const
+    badge: 'bg-green-100 text-green-800',
+  },
+} as const;
 ```
 
 ### ラベルカラーパレット
+
 ```typescript
 // 10種類のPrimerカラーバリアント
 export const LABEL_COLORS = [
@@ -112,8 +117,8 @@ export const LABEL_COLORS = [
   { name: 'Blue', value: 'blue', class: 'bg-blue-100 text-blue-800' },
   { name: 'Indigo', value: 'indigo', class: 'bg-indigo-100 text-indigo-800' },
   { name: 'Purple', value: 'purple', class: 'bg-purple-100 text-purple-800' },
-  { name: 'Pink', value: 'pink', class: 'bg-pink-100 text-pink-800' }
-] as const
+  { name: 'Pink', value: 'pink', class: 'bg-pink-100 text-pink-800' },
+] as const;
 ```
 
 ## 🧩 Shadcn/UIコンポーネント活用
@@ -121,6 +126,7 @@ export const LABEL_COLORS = [
 ### 基本コンポーネント
 
 #### 1. Button
+
 ```typescript
 import { Button } from '@/components/ui/button'
 
@@ -146,6 +152,7 @@ import { Button } from '@/components/ui/button'
 ```
 
 #### 2. Card
+
 ```typescript
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card'
 
@@ -167,6 +174,7 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/componen
 ```
 
 #### 3. Dialog
+
 ```typescript
 import {
   Dialog,
@@ -200,6 +208,7 @@ import {
 ### フォームコンポーネント
 
 #### 1. Input & Label
+
 ```typescript
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -217,6 +226,7 @@ import { Label } from '@/components/ui/label'
 ```
 
 #### 2. Select
+
 ```typescript
 import {
   Select,
@@ -240,6 +250,7 @@ import {
 ```
 
 #### 3. Checkbox
+
 ```typescript
 import { Checkbox } from '@/components/ui/checkbox'
 
@@ -258,6 +269,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 ### ナビゲーション・表示コンポーネント
 
 #### 1. Tabs
+
 ```typescript
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
@@ -280,6 +292,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 ```
 
 #### 2. Badge
+
 ```typescript
 import { Badge } from '@/components/ui/badge'
 
@@ -409,6 +422,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
 ## 🎨 レスポンシブデザイン
 
 ### ブレイクポイント戦略
+
 ```css
 /* Tailwind CSS Breakpoints */
 sm: 640px   /* Mobile Large */
@@ -419,6 +433,7 @@ xl: 1280px  /* Desktop Large */
 ```
 
 ### モバイルファーストアプローチ
+
 ```typescript
 // レスポンシブコンポーネント例
 const ResponsiveTaskCard = ({ task }: { task: Task }) => {
@@ -470,6 +485,7 @@ const TaskGrid = ({ tasks }: { tasks: Task[] }) => {
 ### WCAG準拠の基本原則
 
 #### 1. フォーカス管理
+
 ```typescript
 // フォーカストラップ実装
 const TaskEditDialog = ({ task, open, onClose }: TaskEditDialogProps) => {
@@ -507,6 +523,7 @@ const TaskEditDialog = ({ task, open, onClose }: TaskEditDialogProps) => {
 ```
 
 #### 2. ARIA属性の適切な使用
+
 ```typescript
 // アクセシブルなタスクリスト
 const TaskList = ({ tasks, onTaskUpdate }: TaskListProps) => {
@@ -552,6 +569,7 @@ const TaskActionButton = ({ action, task, onAction }: TaskActionButtonProps) => 
 ```
 
 #### 3. カラーコントラスト
+
 ```css
 /* WCAG AA準拠のコントラスト比確保 */
 .priority-critical {
@@ -575,6 +593,7 @@ const TaskActionButton = ({ action, task, onAction }: TaskActionButtonProps) => 
 ## 🎨 アニメーション・トランジション
 
 ### 統一されたアニメーション
+
 ```css
 /* globals.css */
 .animate-in {
@@ -609,6 +628,7 @@ const TaskActionButton = ({ action, task, onAction }: TaskActionButtonProps) => 
 ```
 
 ### React Transitionアニメーション
+
 ```typescript
 import { Transition } from '@headlessui/react'
 
@@ -634,28 +654,29 @@ const TaskNotification = ({ show, message }: NotificationProps) => {
 ## 🔧 デザイントークン管理
 
 ### CSS Custom Properties
+
 ```css
 /* src/styles/tokens.css */
 :root {
   /* Spacing */
-  --space-xs: 0.25rem;   /* 4px */
-  --space-sm: 0.5rem;    /* 8px */
-  --space-md: 1rem;      /* 16px */
-  --space-lg: 1.5rem;    /* 24px */
-  --space-xl: 2rem;      /* 32px */
+  --space-xs: 0.25rem; /* 4px */
+  --space-sm: 0.5rem; /* 8px */
+  --space-md: 1rem; /* 16px */
+  --space-lg: 1.5rem; /* 24px */
+  --space-xl: 2rem; /* 32px */
 
   /* Typography */
-  --font-size-xs: 0.75rem;   /* 12px */
-  --font-size-sm: 0.875rem;  /* 14px */
-  --font-size-base: 1rem;    /* 16px */
-  --font-size-lg: 1.125rem;  /* 18px */
-  --font-size-xl: 1.25rem;   /* 20px */
+  --font-size-xs: 0.75rem; /* 12px */
+  --font-size-sm: 0.875rem; /* 14px */
+  --font-size-base: 1rem; /* 16px */
+  --font-size-lg: 1.125rem; /* 18px */
+  --font-size-xl: 1.25rem; /* 20px */
 
   /* Border Radius */
-  --radius-sm: 0.125rem;  /* 2px */
-  --radius-md: 0.375rem;  /* 6px */
-  --radius-lg: 0.5rem;    /* 8px */
-  --radius-xl: 0.75rem;   /* 12px */
+  --radius-sm: 0.125rem; /* 2px */
+  --radius-md: 0.375rem; /* 6px */
+  --radius-lg: 0.5rem; /* 8px */
+  --radius-xl: 0.75rem; /* 12px */
 
   /* Shadows */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
@@ -665,6 +686,7 @@ const TaskNotification = ({ show, message }: NotificationProps) => {
 ```
 
 ### TypeScriptトークン定義
+
 ```typescript
 // lib/design-tokens.ts
 export const DESIGN_TOKENS = {
@@ -673,22 +695,22 @@ export const DESIGN_TOKENS = {
     sm: 'var(--space-sm)',
     md: 'var(--space-md)',
     lg: 'var(--space-lg)',
-    xl: 'var(--space-xl)'
+    xl: 'var(--space-xl)',
   },
   typography: {
     xs: 'var(--font-size-xs)',
     sm: 'var(--font-size-sm)',
     base: 'var(--font-size-base)',
     lg: 'var(--font-size-lg)',
-    xl: 'var(--font-size-xl)'
+    xl: 'var(--font-size-xl)',
   },
   radius: {
     sm: 'var(--radius-sm)',
     md: 'var(--radius-md)',
     lg: 'var(--radius-lg)',
-    xl: 'var(--radius-xl)'
-  }
-} as const
+    xl: 'var(--radius-xl)',
+  },
+} as const;
 ```
 
 ---

@@ -368,7 +368,9 @@ describe('Label Reducer', () => {
       });
 
       expect(result.currentBoard?.columns[0]?.tasks[0]?.labels).toHaveLength(1);
-      expect(result.currentBoard?.columns[0]?.tasks[0]?.labels[0]?.id).toBe('label-2');
+      expect(result.currentBoard?.columns[0]?.tasks[0]?.labels[0]?.id).toBe(
+        'label-2'
+      );
     });
   });
 

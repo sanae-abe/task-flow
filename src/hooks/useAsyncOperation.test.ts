@@ -50,7 +50,9 @@ describe('useAsyncOperation', () => {
       // First execution - error
       await act(async () => {
         try {
-          await result.current.execute(() => Promise.reject(new Error('First error')));
+          await result.current.execute(() =>
+            Promise.reject(new Error('First error'))
+          );
         } catch {
           // Expected error
         }
@@ -80,7 +82,9 @@ describe('useAsyncOperation', () => {
     });
 
     it('should handle operations that return objects', async () => {
-      const { result } = renderHook(() => useAsyncOperation<{ data: number }>());
+      const { result } = renderHook(() =>
+        useAsyncOperation<{ data: number }>()
+      );
       const mockData = { data: 42 };
       const mockOperation = vi.fn().mockResolvedValue(mockData);
 
@@ -170,7 +174,9 @@ describe('useAsyncOperation', () => {
       // Set error first
       await act(async () => {
         try {
-          await result.current.execute(() => Promise.reject(new Error('Test error')));
+          await result.current.execute(() =>
+            Promise.reject(new Error('Test error'))
+          );
         } catch {
           // Expected error
         }
@@ -191,7 +197,9 @@ describe('useAsyncOperation', () => {
 
       await act(async () => {
         try {
-          await result.current.execute(() => Promise.reject(new Error('Error')));
+          await result.current.execute(() =>
+            Promise.reject(new Error('Error'))
+          );
         } catch {
           // Expected error
         }
@@ -214,7 +222,9 @@ describe('useAsyncOperation', () => {
       // Set error state
       await act(async () => {
         try {
-          await result.current.execute(() => Promise.reject(new Error('Error')));
+          await result.current.execute(() =>
+            Promise.reject(new Error('Error'))
+          );
         } catch {
           // Expected error
         }
@@ -268,7 +278,9 @@ describe('useAsyncOperation', () => {
       // First - error
       await act(async () => {
         try {
-          await result.current.execute(() => Promise.reject(new Error('Error 1')));
+          await result.current.execute(() =>
+            Promise.reject(new Error('Error 1'))
+          );
         } catch {
           // Expected error
         }
@@ -297,7 +309,9 @@ describe('useAsyncOperation', () => {
       // Second - error
       await act(async () => {
         try {
-          await result.current.execute(() => Promise.reject(new Error('Error 2')));
+          await result.current.execute(() =>
+            Promise.reject(new Error('Error 2'))
+          );
         } catch {
           // Expected error
         }

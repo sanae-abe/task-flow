@@ -168,9 +168,7 @@ describe('useRecycleBinOperations', () => {
     });
 
     it('should handle restore errors', async () => {
-      const { restoreTaskFromRecycleBin } = await import(
-        '../utils/recycleBin'
-      );
+      const { restoreTaskFromRecycleBin } = await import('../utils/recycleBin');
       (restoreTaskFromRecycleBin as any).mockImplementationOnce(() => {
         throw new Error('Restore failed');
       });

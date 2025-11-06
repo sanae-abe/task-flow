@@ -64,9 +64,7 @@ describe('useTaskActions', () => {
     status: 'todo',
     priority: 'medium',
     labels: [],
-    subTasks: [
-      { id: 'subtask-1', title: 'Subtask 1', completed: false },
-    ],
+    subTasks: [{ id: 'subtask-1', title: 'Subtask 1', completed: false }],
     createdAt: '2025-01-01T00:00:00.000Z',
     updatedAt: '2025-01-01T00:00:00.000Z',
     dueDate: null,

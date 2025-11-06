@@ -5,6 +5,7 @@ TaskFlowにおけるテスト戦略、Vitestの活用方法、品質保証のベ
 ## 🎯 テスト戦略概要
 
 ### テストピラミッド
+
 ```
     🔺 E2E Tests (少数・重要フロー)
        │
@@ -14,6 +15,7 @@ TaskFlowにおけるテスト戦略、Vitestの活用方法、品質保証のベ
 ```
 
 ### 📊 テストカバレッジ目標
+
 - **Branches**: 80%以上
 - **Functions**: 80%以上
 - **Lines**: 80%以上
@@ -22,11 +24,12 @@ TaskFlowにおけるテスト戦略、Vitestの活用方法、品質保証のベ
 ## 🛠️ Vitest設定・活用
 
 ### 基本設定確認
+
 ```typescript
 // vitest.config.ts
-import { defineConfig } from 'vitest/config'
-import react from '@vitejs/plugin-react'
-import path from 'path'
+import { defineConfig } from 'vitest/config';
+import react from '@vitejs/plugin-react';
+import path from 'path';
 
 export default defineConfig({
   plugins: [react()],
@@ -38,40 +41,36 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
-      exclude: [
-        'node_modules/',
-        'src/test/',
-        '**/*.d.ts',
-        '**/*.config.*'
-      ],
+      exclude: ['node_modules/', 'src/test/', '**/*.d.ts', '**/*.config.*'],
       thresholds: {
         branches: 80,
         functions: 80,
         lines: 80,
-        statements: 80
-      }
-    }
+        statements: 80,
+      },
+    },
   },
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src')
-    }
-  }
-})
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
+});
 ```
 
 ### テストセットアップ
+
 ```typescript
 // src/test/setup.ts
-import '@testing-library/jest-dom'
-import { cleanup } from '@testing-library/react'
-import { beforeEach, afterEach, vi } from 'vitest'
+import '@testing-library/jest-dom';
+import { cleanup } from '@testing-library/react';
+import { beforeEach, afterEach, vi } from 'vitest';
 
 // テスト間でのクリーンアップ
 afterEach(() => {
-  cleanup()
-  vi.clearAllMocks()
-})
+  cleanup();
+  vi.clearAllMocks();
+});
 
 // localStorage モック
 const localStorageMock = {
@@ -80,19 +79,19 @@ const localStorageMock = {
   removeItem: vi.fn(),
   clear: vi.fn(),
   length: 0,
-  key: vi.fn()
-}
+  key: vi.fn(),
+};
 
 Object.defineProperty(window, 'localStorage', {
-  value: localStorageMock
-})
+  value: localStorageMock,
+});
 
 // ResizeObserver モック
 global.ResizeObserver = vi.fn().mockImplementation(() => ({
   observe: vi.fn(),
   unobserve: vi.fn(),
-  disconnect: vi.fn()
-}))
+  disconnect: vi.fn(),
+}));
 
 // matchMedia モック
 Object.defineProperty(window, 'matchMedia', {
@@ -105,9 +104,9 @@ Object.defineProperty(window, 'matchMedia', {
     removeListener: vi.fn(),
     addEventListener: vi.fn(),
     removeEventListener: vi.fn(),
-    dispatchEvent: vi.fn()
-  }))
-})
+    dispatchEvent: vi.fn(),
+  })),
+});
 ```
 
 ## 🔧 単体テスト（Unit Tests）
@@ -116,121 +115,120 @@ Object.defineProperty(window, 'matchMedia', {
 
 ```typescript
 // utils/dateUtils.test.ts
-import { describe, it, expect } from 'vitest'
-import { formatDueDate, isOverdue, calculateRecurrence } from '../dateUtils'
+import { describe, it, expect } from 'vitest';
+import { formatDueDate, isOverdue, calculateRecurrence } from '../dateUtils';
 
 describe('dateUtils', () => {
   describe('formatDueDate', () => {
     it('should format date correctly', () => {
-      const date = new Date('2025-01-15T10:30:00')
-      expect(formatDueDate(date)).toBe('2025年1月15日 10:30')
-    })
+      const date = new Date('2025-01-15T10:30:00');
+      expect(formatDueDate(date)).toBe('2025年1月15日 10:30');
+    });
 
     it('should handle undefined date', () => {
-      expect(formatDueDate(undefined)).toBe('期限なし')
-    })
-  })
+      expect(formatDueDate(undefined)).toBe('期限なし');
+    });
+  });
 
   describe('isOverdue', () => {
     it('should return true for past dates', () => {
-      const pastDate = new Date('2020-01-01')
-      expect(isOverdue(pastDate)).toBe(true)
-    })
+      const pastDate = new Date('2020-01-01');
+      expect(isOverdue(pastDate)).toBe(true);
+    });
 
     it('should return false for future dates', () => {
-      const futureDate = new Date('2030-01-01')
-      expect(isOverdue(futureDate)).toBe(false)
-    })
+      const futureDate = new Date('2030-01-01');
+      expect(isOverdue(futureDate)).toBe(false);
+    });
 
     it('should return false for undefined date', () => {
-      expect(isOverdue(undefined)).toBe(false)
-    })
-  })
+      expect(isOverdue(undefined)).toBe(false);
+    });
+  });
 
   describe('calculateRecurrence', () => {
     it('should calculate daily recurrence correctly', () => {
-      const baseDate = new Date('2025-01-15')
-      const recurrence = { type: 'daily', interval: 2 }
-      const result = calculateRecurrence(baseDate, recurrence)
+      const baseDate = new Date('2025-01-15');
+      const recurrence = { type: 'daily', interval: 2 };
+      const result = calculateRecurrence(baseDate, recurrence);
 
-      expect(result).toEqual(new Date('2025-01-17'))
-    })
+      expect(result).toEqual(new Date('2025-01-17'));
+    });
 
     it('should calculate weekly recurrence correctly', () => {
-      const baseDate = new Date('2025-01-15') // 水曜日
-      const recurrence = { type: 'weekly', interval: 1 }
-      const result = calculateRecurrence(baseDate, recurrence)
+      const baseDate = new Date('2025-01-15'); // 水曜日
+      const recurrence = { type: 'weekly', interval: 1 };
+      const result = calculateRecurrence(baseDate, recurrence);
 
-      expect(result).toEqual(new Date('2025-01-22'))
-    })
-  })
-})
+      expect(result).toEqual(new Date('2025-01-22'));
+    });
+  });
+});
 ```
 
 ### 2. カスタムフックテスト
 
 ```typescript
 // hooks/useTaskFilters.test.ts
-import { renderHook, act } from '@testing-library/react'
-import { describe, it, expect } from 'vitest'
-import { useTaskFilters } from '../useTaskFilters'
-import { mockTasks } from '@/test/mocks'
+import { renderHook, act } from '@testing-library/react';
+import { describe, it, expect } from 'vitest';
+import { useTaskFilters } from '../useTaskFilters';
+import { mockTasks } from '@/test/mocks';
 
 describe('useTaskFilters', () => {
   it('should initialize with empty filters', () => {
-    const { result } = renderHook(() => useTaskFilters())
+    const { result } = renderHook(() => useTaskFilters());
 
     expect(result.current.filters).toEqual({
       search: '',
       status: [],
       priority: [],
       labels: [],
-      dueDateRange: {}
-    })
-  })
+      dueDateRange: {},
+    });
+  });
 
   it('should filter tasks by search term', () => {
-    const { result } = renderHook(() => useTaskFilters())
+    const { result } = renderHook(() => useTaskFilters());
 
     act(() => {
-      result.current.updateFilter('search', 'テスト')
-    })
+      result.current.updateFilter('search', 'テスト');
+    });
 
-    const filteredTasks = result.current.getFilteredTasks(mockTasks)
-    expect(filteredTasks).toHaveLength(2)
-    expect(filteredTasks.every(task =>
-      task.title.includes('テスト') ||
-      task.description?.includes('テスト')
-    )).toBe(true)
-  })
+    const filteredTasks = result.current.getFilteredTasks(mockTasks);
+    expect(filteredTasks).toHaveLength(2);
+    expect(filteredTasks.every(task => task.title.includes('テスト') || task.description?.includes('テスト'))).toBe(
+      true
+    );
+  });
 
   it('should filter tasks by status', () => {
-    const { result } = renderHook(() => useTaskFilters())
+    const { result } = renderHook(() => useTaskFilters());
 
     act(() => {
-      result.current.updateFilter('status', ['done'])
-    })
+      result.current.updateFilter('status', ['done']);
+    });
 
-    const filteredTasks = result.current.getFilteredTasks(mockTasks)
-    expect(filteredTasks.every(task => task.status === 'done')).toBe(true)
-  })
+    const filteredTasks = result.current.getFilteredTasks(mockTasks);
+    expect(filteredTasks.every(task => task.status === 'done')).toBe(true);
+  });
 
   it('should clear all filters', () => {
-    const { result } = renderHook(() => useTaskFilters())
+    const { result } = renderHook(() => useTaskFilters());
 
     act(() => {
-      result.current.updateFilter('search', 'test')
-      result.current.updateFilter('status', ['done'])
-    })
+      result.current.updateFilter('search', 'test');
+      result.current.updateFilter('status', ['done']);
+    });
 
     act(() => {
-      result.current.clearFilters()
-    })
+      result.current.clearFilters();
+    });
 
-    expect(result.current.filters.search).toBe('')
-    expect(result.current.filters.status).toEqual([])
-  })
-})
+    expect(result.current.filters.search).toBe('');
+    expect(result.current.filters.status).toEqual([]);
+  });
+});
 ```
 
 ### 3. コンポーネント単体テスト
@@ -494,17 +492,15 @@ export const mockTask: Task = {
   createdAt: new Date('2025-01-01'),
   updatedAt: new Date('2025-01-01'),
   dueDate: new Date('2025-01-31'),
-  labels: [
-    { id: 'label-1', name: '重要', color: 'red', boardId: 'board-1' }
-  ],
+  labels: [{ id: 'label-1', name: '重要', color: 'red', boardId: 'board-1' }],
   subTasks: [
     { id: 'sub-1', title: 'サブタスク1', completed: false, order: 0 },
-    { id: 'sub-2', title: 'サブタスク2', completed: true, order: 1 }
+    { id: 'sub-2', title: 'サブタスク2', completed: true, order: 1 },
   ],
   attachments: [],
   isDeleted: false,
-  boardId: 'board-1'
-}
+  boardId: 'board-1',
+};
 
 export const mockTasks: Task[] = [
   mockTask,
@@ -513,16 +509,16 @@ export const mockTasks: Task[] = [
     id: 'task-2',
     title: '完了済みタスク',
     status: 'done',
-    completedAt: new Date('2025-01-15')
+    completedAt: new Date('2025-01-15'),
   },
   {
     ...mockTask,
     id: 'task-3',
     title: '期限切れタスク',
     status: 'in-progress',
-    dueDate: new Date('2020-01-01')
-  }
-]
+    dueDate: new Date('2020-01-01'),
+  },
+];
 ```
 
 ### 2. テストプロバイダー
@@ -609,7 +605,7 @@ export { customRender as render }
 
 ```typescript
 // e2e/playwright.config.ts
-import { defineConfig, devices } from '@playwright/test'
+import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
   testDir: './e2e',
@@ -620,74 +616,74 @@ export default defineConfig({
   reporter: 'html',
   use: {
     baseURL: 'http://localhost:3000',
-    trace: 'on-first-retry'
+    trace: 'on-first-retry',
   },
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] }
+      use: { ...devices['Desktop Chrome'] },
     },
     {
       name: 'webkit',
-      use: { ...devices['Desktop Safari'] }
-    }
+      use: { ...devices['Desktop Safari'] },
+    },
   ],
   webServer: {
     command: 'npm run build && npm run preview',
-    port: 3000
-  }
-})
+    port: 3000,
+  },
+});
 ```
 
 ### 2. 重要フローのE2Eテスト
 
 ```typescript
 // e2e/task-management.spec.ts
-import { test, expect } from '@playwright/test'
+import { test, expect } from '@playwright/test';
 
 test.describe('Task Management E2E', () => {
   test('should create, edit, and complete task', async ({ page }) => {
-    await page.goto('/')
+    await page.goto('/');
 
     // タスク作成
-    await page.click('[data-testid="create-task-button"]')
-    await page.fill('[data-testid="task-title-input"]', 'E2Eテストタスク')
-    await page.fill('[data-testid="task-description-input"]', 'E2Eテスト説明')
-    await page.click('[data-testid="save-task-button"]')
+    await page.click('[data-testid="create-task-button"]');
+    await page.fill('[data-testid="task-title-input"]', 'E2Eテストタスク');
+    await page.fill('[data-testid="task-description-input"]', 'E2Eテスト説明');
+    await page.click('[data-testid="save-task-button"]');
 
     // 作成確認
-    await expect(page.locator('text=E2Eテストタスク')).toBeVisible()
+    await expect(page.locator('text=E2Eテストタスク')).toBeVisible();
 
     // タスク編集
-    await page.click('[data-testid="task-item"]:has-text("E2Eテストタスク")')
-    await page.click('[data-testid="edit-task-button"]')
-    await page.fill('[data-testid="task-title-input"]', 'E2Eテストタスク（編集済み）')
-    await page.click('[data-testid="save-task-button"]')
+    await page.click('[data-testid="task-item"]:has-text("E2Eテストタスク")');
+    await page.click('[data-testid="edit-task-button"]');
+    await page.fill('[data-testid="task-title-input"]', 'E2Eテストタスク（編集済み）');
+    await page.click('[data-testid="save-task-button"]');
 
     // 編集確認
-    await expect(page.locator('text=E2Eテストタスク（編集済み）')).toBeVisible()
+    await expect(page.locator('text=E2Eテストタスク（編集済み）')).toBeVisible();
 
     // タスク完了
-    await page.click('[data-testid="task-checkbox"]:near(text="E2Eテストタスク（編集済み）")')
+    await page.click('[data-testid="task-checkbox"]:near(text="E2Eテストタスク（編集済み）")');
 
     // 完了確認
-    await expect(page.locator('[data-testid="completed-tasks-section"]')).toContainText('E2Eテストタスク（編集済み）')
-  })
+    await expect(page.locator('[data-testid="completed-tasks-section"]')).toContainText('E2Eテストタスク（編集済み）');
+  });
 
   test('should handle drag and drop in kanban board', async ({ page }) => {
-    await page.goto('/')
-    await page.click('[data-testid="kanban-view-button"]')
+    await page.goto('/');
+    await page.click('[data-testid="kanban-view-button"]');
 
     // ドラッグ&ドロップ
-    const taskCard = page.locator('[data-testid="task-card"]').first()
-    const targetColumn = page.locator('[data-testid="column-in-progress"]')
+    const taskCard = page.locator('[data-testid="task-card"]').first();
+    const targetColumn = page.locator('[data-testid="column-in-progress"]');
 
-    await taskCard.dragTo(targetColumn)
+    await taskCard.dragTo(targetColumn);
 
     // ステータス変更確認
-    await expect(targetColumn).toContainText(await taskCard.textContent())
-  })
-})
+    await expect(targetColumn).toContainText(await taskCard.textContent());
+  });
+});
 ```
 
 ## 📊 テストカバレッジ・品質管理
@@ -737,43 +733,45 @@ jobs:
 ### よくあるテスト問題
 
 #### 1. 非同期処理のテスト
+
 ```typescript
 // ❌ Bad: 非同期処理を待たない
 test('should update task', () => {
-  const { result } = renderHook(() => useTasks())
-  result.current.updateTask('task-1', { title: 'Updated' })
-  expect(result.current.tasks[0].title).toBe('Updated') // 失敗する可能性
-})
+  const { result } = renderHook(() => useTasks());
+  result.current.updateTask('task-1', { title: 'Updated' });
+  expect(result.current.tasks[0].title).toBe('Updated'); // 失敗する可能性
+});
 
 // ✅ Good: 適切に非同期を待つ
 test('should update task', async () => {
-  const { result } = renderHook(() => useTasks())
+  const { result } = renderHook(() => useTasks());
 
   await act(async () => {
-    await result.current.updateTask('task-1', { title: 'Updated' })
-  })
+    await result.current.updateTask('task-1', { title: 'Updated' });
+  });
 
-  expect(result.current.tasks[0].title).toBe('Updated')
-})
+  expect(result.current.tasks[0].title).toBe('Updated');
+});
 ```
 
 #### 2. タイマー・日付のテスト
+
 ```typescript
 // ❌ Bad: 実際の時間に依存
 test('should show overdue status', () => {
-  const task = { dueDate: new Date('2020-01-01') }
-  expect(isOverdue(task.dueDate)).toBe(true) // 将来的に失敗する可能性
-})
+  const task = { dueDate: new Date('2020-01-01') };
+  expect(isOverdue(task.dueDate)).toBe(true); // 将来的に失敗する可能性
+});
 
 // ✅ Good: 時間をモック
 test('should show overdue status', () => {
-  vi.setSystemTime(new Date('2025-01-01'))
+  vi.setSystemTime(new Date('2025-01-01'));
 
-  const task = { dueDate: new Date('2020-01-01') }
-  expect(isOverdue(task.dueDate)).toBe(true)
+  const task = { dueDate: new Date('2020-01-01') };
+  expect(isOverdue(task.dueDate)).toBe(true);
 
-  vi.useRealTimers()
-})
+  vi.useRealTimers();
+});
 ```
 
 ---

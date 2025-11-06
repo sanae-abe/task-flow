@@ -118,7 +118,12 @@ describe('Task Reducer', () => {
 
     it('should set custom priority and labels', () => {
       const labels = [
-        { id: 'label-1', name: 'Bug', color: '#ef4444', createdAt: '2025-01-01T00:00:00.000Z' },
+        {
+          id: 'label-1',
+          name: 'Bug',
+          color: '#ef4444',
+          createdAt: '2025-01-01T00:00:00.000Z',
+        },
       ];
 
       const result = handleTaskActions(initialState, {
@@ -208,7 +213,9 @@ describe('Task Reducer', () => {
         },
       });
 
-      expect(result.currentBoard?.columns[0]?.tasks[0]?.title).toBe('Updated Task');
+      expect(result.currentBoard?.columns[0]?.tasks[0]?.title).toBe(
+        'Updated Task'
+      );
     });
 
     it('should update task description', () => {
@@ -220,7 +227,9 @@ describe('Task Reducer', () => {
         },
       });
 
-      expect(result.currentBoard?.columns[0]?.tasks[0]?.description).toBe('Updated Description');
+      expect(result.currentBoard?.columns[0]?.tasks[0]?.description).toBe(
+        'Updated Description'
+      );
     });
 
     it('should update task priority', () => {
@@ -232,7 +241,9 @@ describe('Task Reducer', () => {
         },
       });
 
-      expect(result.currentBoard?.columns[0]?.tasks[0]?.priority).toBe('critical');
+      expect(result.currentBoard?.columns[0]?.tasks[0]?.priority).toBe(
+        'critical'
+      );
     });
 
     it('should update multiple fields at once', () => {
@@ -263,7 +274,9 @@ describe('Task Reducer', () => {
         },
       });
 
-      expect(result.currentBoard?.columns[0]?.tasks[0]?.updatedAt).not.toBe(mockTask.updatedAt);
+      expect(result.currentBoard?.columns[0]?.tasks[0]?.updatedAt).not.toBe(
+        mockTask.updatedAt
+      );
     });
 
     it('should return unchanged state when no current board', () => {
@@ -292,7 +305,9 @@ describe('Task Reducer', () => {
         },
       });
 
-      expect(result.currentBoard?.columns[0]?.tasks[0]?.title).toBe('Test Task');
+      expect(result.currentBoard?.columns[0]?.tasks[0]?.title).toBe(
+        'Test Task'
+      );
     });
 
     it('should preserve other task properties when updating', () => {

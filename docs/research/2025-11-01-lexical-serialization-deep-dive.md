@@ -248,23 +248,27 @@ Lexical v0.35.0のシリアライゼーション機能（特に`$generateHtmlFro
 ## References and Sources
 
 ### Official Documentation
+
 - Lexical Serialization & Deserialization: https://lexical.dev/docs/concepts/serialization
 - @lexical/html API Reference: https://lexical.dev/docs/packages/lexical-html
 - Lexical Nodes Concept: https://lexical.dev/docs/concepts/nodes
 - CodeNode API: https://lexical.dev/docs/api/classes/lexical_code.CodeNode
 
 ### Community Resources
+
 - GitHub Issue #2452: Bug: $generateNodesFromDOM does not apply styles properly
 - GitHub Issue #5212: Excessive HTML output with formatted text
 - GitHub Discussion #3901: Can I export Lexical TextNode as DOM TextNode with exportDOM?
 - GitHub Discussion #1941: Convert nodes into HTML format
 
 ### Stack Overflow
+
 - "Unable to parse Lexical to HTML"
 - "Convert Lexical to HTML"
 - "How to use inline css with Lexical theme instead of class names"
 
 ### Project Files
+
 - `src/components/LexicalRichTextEditor/utils/htmlConverter.ts`
 - `src/components/LexicalRichTextEditor/theme.ts`
 - `src/components/LinkifiedText.tsx`
@@ -275,6 +279,7 @@ Lexical v0.35.0のシリアライゼーション機能（特に`$generateHtmlFro
 ### A. Lexical HTML出力例
 
 #### インラインコード
+
 ```html
 <!-- Lexical生成HTML -->
 <p>
@@ -286,6 +291,7 @@ Lexical v0.35.0のシリアライゼーション機能（特に`$generateHtmlFro
 ```
 
 #### コードブロック
+
 ```html
 <!-- Lexical生成HTML -->
 <pre class="lexical-code-block bg-muted p-4 rounded-md border border-border font-mono text-sm my-2 block relative">
@@ -300,9 +306,26 @@ Lexical v0.35.0のシリアライゼーション機能（特に`$generateHtmlFro
 ```typescript
 DOMPurify.sanitize(htmlString, {
   ALLOWED_TAGS: [
-    'p', 'br', 'strong', 'b', 'em', 'i', 'u', 's', 'strike',
-    'a', 'code', 'pre', 'ul', 'ol', 'li', 'h1', 'h2', 'h3',
-    'blockquote', 'span', // Lexicalインラインコード対応
+    'p',
+    'br',
+    'strong',
+    'b',
+    'em',
+    'i',
+    'u',
+    's',
+    'strike',
+    'a',
+    'code',
+    'pre',
+    'ul',
+    'ol',
+    'li',
+    'h1',
+    'h2',
+    'h3',
+    'blockquote',
+    'span', // Lexicalインラインコード対応
   ],
   ALLOWED_ATTR: ['href', 'target', 'rel', 'style', 'class'],
 });
@@ -312,14 +335,11 @@ DOMPurify.sanitize(htmlString, {
 
 ```typescript
 // Lexicalインラインコード（<span class="lexical-inline-code">）を保護
-content = content.replace(
-  /<span\s+class="lexical-inline-code"[^>]*>[\s\S]*?<\/span>/gi,
-  match => {
-    const placeholder = `__LEXICAL_INLINE_CODE_${Math.random().toString(36).substring(2, 11)}__`;
-    codeBlockMap.set(placeholder, match);
-    return placeholder;
-  }
-);
+content = content.replace(/<span\s+class="lexical-inline-code"[^>]*>[\s\S]*?<\/span>/gi, match => {
+  const placeholder = `__LEXICAL_INLINE_CODE_${Math.random().toString(36).substring(2, 11)}__`;
+  codeBlockMap.set(placeholder, match);
+  return placeholder;
+});
 ```
 
 ---
@@ -327,18 +347,22 @@ content = content.replace(
 ## Research Impact Assessment
 
 ### Immediate Impact
+
 - **Critical**: インラインコード表示問題の根本原因特定と修正完了
 - **Quality**: Lexical HTML出力の正しい処理により、ユーザー体験が大幅改善
 
 ### Strategic Impact
+
 - **Foundation**: Lexicalシリアライゼーションの深い理解により、将来のカスタマイズが容易に
 - **Best Practices**: DOMPurify統合パターンの確立
 
 ### Knowledge Impact
+
 - **Team Knowledge**: Lexical内部動作の理解がチーム内で共有可能
 - **Documentation**: 実践的な知見を含む詳細ドキュメントの作成
 
 ### Innovation Impact
+
 - **Extensibility**: カスタムノード実装の基盤が整備
 - **Scalability**: 将来的な機能拡張に対応可能なアーキテクチャ
 

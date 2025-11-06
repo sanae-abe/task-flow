@@ -16,20 +16,22 @@ import type { Task, RecurrenceConfig } from '../types';
 
 // Mock recurrence utilities
 vi.mock('./recurrence', () => ({
-  calculateNextDueDate: vi.fn((currentDate: string, config: RecurrenceConfig) => {
-    // Simple mock: add 7 days for weekly recurrence
-    if (config.frequency === 'weekly') {
-      const date = new Date(currentDate);
-      date.setDate(date.getDate() + 7);
-      return date.toISOString();
+  calculateNextDueDate: vi.fn(
+    (currentDate: string, config: RecurrenceConfig) => {
+      // Simple mock: add 7 days for weekly recurrence
+      if (config.frequency === 'weekly') {
+        const date = new Date(currentDate);
+        date.setDate(date.getDate() + 7);
+        return date.toISOString();
+      }
+      if (config.frequency === 'daily') {
+        const date = new Date(currentDate);
+        date.setDate(date.getDate() + 1);
+        return date.toISOString();
+      }
+      return null;
     }
-    if (config.frequency === 'daily') {
-      const date = new Date(currentDate);
-      date.setDate(date.getDate() + 1);
-      return date.toISOString();
-    }
-    return null;
-  }),
+  ),
   isRecurrenceComplete: vi.fn(
     (config: RecurrenceConfig, occurrenceCount: number) => {
       if (config.endAfterOccurrences) {
@@ -53,7 +55,11 @@ describe('Calendar Recurrence Utils', () => {
       const startDate = new Date('2024-01-01');
       const endDate = new Date('2024-01-31');
 
-      const instances = generateRecurringTaskInstances(task, startDate, endDate);
+      const instances = generateRecurringTaskInstances(
+        task,
+        startDate,
+        endDate
+      );
       expect(instances).toHaveLength(0);
     });
 
@@ -67,7 +73,11 @@ describe('Calendar Recurrence Utils', () => {
       const startDate = new Date('2024-01-01');
       const endDate = new Date('2024-01-31');
 
-      const instances = generateRecurringTaskInstances(task, startDate, endDate);
+      const instances = generateRecurringTaskInstances(
+        task,
+        startDate,
+        endDate
+      );
       expect(instances).toHaveLength(0);
     });
 
@@ -89,7 +99,11 @@ describe('Calendar Recurrence Utils', () => {
       const startDate = new Date('2024-01-01');
       const endDate = new Date('2024-01-31');
 
-      const instances = generateRecurringTaskInstances(task, startDate, endDate);
+      const instances = generateRecurringTaskInstances(
+        task,
+        startDate,
+        endDate
+      );
 
       expect(instances.length).toBeGreaterThan(0);
       instances.forEach((instance, index) => {
@@ -140,7 +154,11 @@ describe('Calendar Recurrence Utils', () => {
       const startDate = new Date('2024-01-01');
       const endDate = new Date('2024-12-31');
 
-      const instances = generateRecurringTaskInstances(task, startDate, endDate);
+      const instances = generateRecurringTaskInstances(
+        task,
+        startDate,
+        endDate
+      );
 
       // Should generate at most 4 more instances (since occurrenceCount starts at 1)
       expect(instances.length).toBeLessThanOrEqual(4);
@@ -160,7 +178,11 @@ describe('Calendar Recurrence Utils', () => {
       const startDate = new Date('2024-01-01');
       const endDate = new Date('2024-01-15');
 
-      const instances = generateRecurringTaskInstances(task, startDate, endDate);
+      const instances = generateRecurringTaskInstances(
+        task,
+        startDate,
+        endDate
+      );
 
       instances.forEach(instance => {
         expect(new Date(instance.dueDate).getTime()).toBeLessThanOrEqual(

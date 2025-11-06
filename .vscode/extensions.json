@@ -1,0 +1,37 @@
+{
+  "recommendations": [
+    // 必須
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    "ms-vscode.vscode-typescript-next",
+
+    // React/TypeScript開発
+    "bradlc.vscode-tailwindcss",
+    "steoates.autoimport-es6-ts",
+    "christian-kohler.path-intellisense",
+    "formulahendry.auto-rename-tag",
+    "ms-vscode.vscode-json",
+
+    // Git関連
+    "eamodio.gitlens",
+    "github.vscode-pull-request-github",
+
+    // 開発体験向上
+    "yzhang.markdown-all-in-one",
+    "ms-vscode.live-server",
+    "ritwickdey.liveserver",
+
+    // テスト関連
+    "vitest.explorer",
+
+    // その他有用
+    "usernamehw.errorlens",
+    "aaron-bond.better-comments",
+    "vscode-icons-team.vscode-icons",
+    "gruntfuggly.todo-tree"
+  ],
+  "unwantedRecommendations": [
+    "hookyqr.beautify",
+    "ms-vscode.vscode-css-peek"
+  ]
+}

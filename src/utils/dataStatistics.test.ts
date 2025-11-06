@@ -200,7 +200,10 @@ describe('dataStatistics', () => {
       expect(stats.estimatedSize).toBeGreaterThan(0);
 
       // Size should increase with more data
-      const stats2 = calculateDataStatistics([mockBoard, mockBoard], mockLabels);
+      const stats2 = calculateDataStatistics(
+        [mockBoard, mockBoard],
+        mockLabels
+      );
       expect(stats2.estimatedSize).toBeGreaterThan(stats.estimatedSize);
     });
 
@@ -381,7 +384,9 @@ describe('dataStatistics', () => {
 
       expect(emptyStats.taskCount).toBe(0);
       expect(nullStats.taskCount).toBe(0);
-      expect(formatFileSize(emptyStats.estimatedSize)).toMatch(/\d+\.\d+ (B|KB)/);
+      expect(formatFileSize(emptyStats.estimatedSize)).toMatch(
+        /\d+\.\d+ (B|KB)/
+      );
       expect(formatFileSize(nullStats.estimatedSize)).toBe('0 B');
     });
   });

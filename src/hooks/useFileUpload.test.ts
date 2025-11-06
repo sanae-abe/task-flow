@@ -136,7 +136,9 @@ describe('useFileUpload', () => {
         await result.current.handleFiles(fileList);
       });
 
-      expect(result.current._error).toContain('ファイルサイズが制限を超えています');
+      expect(result.current._error).toContain(
+        'ファイルサイズが制限を超えています'
+      );
       expect(mockOnAttachmentsChange).not.toHaveBeenCalled();
     });
 
@@ -157,7 +159,9 @@ describe('useFileUpload', () => {
         await result.current.handleFiles(fileList);
       });
 
-      expect(result.current._error).toContain('サポートされていないファイル形式です');
+      expect(result.current._error).toContain(
+        'サポートされていないファイル形式です'
+      );
       expect(mockOnAttachmentsChange).not.toHaveBeenCalled();
     });
 
