@@ -177,11 +177,7 @@ export default defineConfig({
   },
   // 依存関係の最適化
   optimizeDeps: {
-    include: [
-      'react',
-      'react-dom',
-      'react/jsx-runtime',
-    ],
+    include: ['react', 'react-dom', 'react/jsx-runtime'],
     exclude: ['use-callback-ref', 'react-remove-scroll'],
     force: true,
   },
