@@ -97,8 +97,8 @@
 
 ```bash
 # リポジトリのクローン
-git clone ssh://git@rendezvous.m3.com:3789/sanae-abe/taskflow-app.git
-cd taskflow-app
+git clone git@github.com:sanae-abe/task-flow.git
+cd task-flow
 
 # 依存関係のインストール
 npm install
