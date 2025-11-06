@@ -125,6 +125,14 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
         return;
       }
 
+      // 完了カラム（最後のカラム）で作成されたタスクは自動的に完了状態にする
+      const isCompletedColumn =
+        boardState.currentBoard.columns.length > 0 &&
+        columnId ===
+          boardState.currentBoard.columns[
+            boardState.currentBoard.columns.length - 1
+          ].id;
+
       const newTask: Task = {
         id: uuidv4(),
         title,
@@ -136,7 +144,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
         labels: labels ?? [],
         files: attachments ?? [],
         subTasks: [],
-        completedAt: null,
+        completedAt: isCompletedColumn ? new Date().toISOString() : null,
         recurrence,
         recurrenceId: recurrence ? uuidv4() : undefined,
         occurrenceCount: recurrence ? 1 : undefined,

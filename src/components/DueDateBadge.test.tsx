@@ -102,9 +102,9 @@ describe('DueDateBadge', () => {
 
       render(<DueDateBadge {...neutralProps} />);
 
-      // StatusBadgeがneutralバリアント（text-defaultクラス）でレンダリングされることを確認
+      // StatusBadgeがneutralバリアント（text-muted-foregroundクラス）でレンダリングされることを確認
       const badge = screen.getByText('期限: 2025/01/15').closest('div');
-      expect(badge).toHaveClass('text-default');
+      expect(badge).toHaveClass('text-muted-foreground');
     });
   });
 
