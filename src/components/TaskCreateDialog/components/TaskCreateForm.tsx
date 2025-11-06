@@ -27,6 +27,7 @@ export const TaskCreateForm: React.FC<TaskCreateFormProps> = memo(
       recurrence,
       priority,
       selectedBoardId,
+      editorKey,
     } = formState;
 
     const {
@@ -43,6 +44,7 @@ export const TaskCreateForm: React.FC<TaskCreateFormProps> = memo(
     return (
       <UnifiedTaskForm
         mode='create'
+        editorKey={editorKey}
         title={title}
         setTitle={setTitle}
         description={description}

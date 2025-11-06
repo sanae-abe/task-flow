@@ -34,6 +34,8 @@ export const useTaskForm = (
 
   // ダイアログが開かれた時の初期化処理
   const [isDialogFirstOpen, setIsDialogFirstOpen] = useState(false);
+  // エディタの再マウント用キー
+  const [editorKey, setEditorKey] = useState(() => `editor-${Date.now()}`);
 
   // フォームリセット
   const resetForm = useCallback(() => {
@@ -49,6 +51,8 @@ export const useTaskForm = (
     setRecurrence(undefined);
     setPriority(undefined);
     setSelectedBoardId(currentBoardId);
+    // エディタを完全にリセットするために新しいキーを生成
+    setEditorKey(`editor-${Date.now()}`);
   }, [defaultDate, currentBoardId]);
 
   // デフォルト日付が設定されている場合は期限日に設定
@@ -93,6 +97,7 @@ export const useTaskForm = (
     recurrence,
     priority,
     selectedBoardId,
+    editorKey,
   };
 
   // DatePicker対応のラッパー関数

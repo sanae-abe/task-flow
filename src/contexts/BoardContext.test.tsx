@@ -7,7 +7,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, act, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { BoardProvider, useBoard } from './BoardContext';
-import type { KanbanBoard, Column, Task, Label } from '../types';
+import type { KanbanBoard, Task, Label } from '../types';
 
 // Mock external dependencies
 vi.mock('../utils/storage', () => ({

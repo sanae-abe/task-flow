@@ -25,6 +25,7 @@ export interface TaskFormState {
   recurrence: RecurrenceConfig | undefined;
   priority: Priority | undefined;
   selectedBoardId: string | undefined;
+  editorKey: string;
 }
 
 /**

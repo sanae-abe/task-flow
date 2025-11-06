@@ -3,7 +3,7 @@
  * テキスト処理ユーティリティの包括的テスト
  */
 
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { stripHtml, truncateText } from './textHelpers';
 
 describe('textHelpers', () => {
@@ -24,7 +24,8 @@ describe('textHelpers', () => {
     });
 
     it('should strip nested HTML tags', () => {
-      const html = '<div><span><em>Nested</em> <strong>Tags</strong></span></div>';
+      const html =
+        '<div><span><em>Nested</em> <strong>Tags</strong></span></div>';
       expect(stripHtml(html)).toBe('Nested Tags');
     });
 
@@ -54,7 +55,8 @@ describe('textHelpers', () => {
     });
 
     it('should handle script tags', () => {
-      const html = '<p>Safe content</p><script>alert("xss")</script><p>More content</p>';
+      const html =
+        '<p>Safe content</p><script>alert("xss")</script><p>More content</p>';
       const result = stripHtml(html);
       // DOMParser may keep script content in some browsers, just verify HTML is stripped
       expect(result).toContain('Safe content');

@@ -5,7 +5,7 @@
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { handleColumnActions } from './columnReducer';
-import type { KanbanState, KanbanBoard, Column } from '../types';
+import type { KanbanState, KanbanBoard } from '../types';
 
 // Mock logger
 vi.mock('../utils/logger', () => ({
@@ -86,9 +86,7 @@ describe('Column Reducer', () => {
         payload: { title: 'New Column' },
       });
 
-      expect(result.currentBoard?.updatedAt).not.toBe(
-        mockBoard.updatedAt
-      );
+      expect(result.currentBoard?.updatedAt).not.toBe(mockBoard.updatedAt);
     });
 
     it('should update board in boards array', () => {
@@ -142,9 +140,7 @@ describe('Column Reducer', () => {
         payload: { columnId: 'col-1', title: 'Updated To Do' },
       });
 
-      expect(result.currentBoard?.updatedAt).not.toBe(
-        mockBoard.updatedAt
-      );
+      expect(result.currentBoard?.updatedAt).not.toBe(mockBoard.updatedAt);
     });
 
     it('should update board in boards array', () => {
@@ -177,7 +173,9 @@ describe('Column Reducer', () => {
       });
 
       expect(result.currentBoard?.columns[0]?.title).toBe('To Do');
-      expect(result.currentBoard?.columns[1]?.title).toBe('Updated In Progress');
+      expect(result.currentBoard?.columns[1]?.title).toBe(
+        'Updated In Progress'
+      );
       expect(result.currentBoard?.columns[2]?.title).toBe('Done');
     });
 
@@ -248,9 +246,7 @@ describe('Column Reducer', () => {
         payload: { columnId: 'col-2' },
       });
 
-      expect(result.currentBoard?.updatedAt).not.toBe(
-        mockBoard.updatedAt
-      );
+      expect(result.currentBoard?.updatedAt).not.toBe(mockBoard.updatedAt);
     });
 
     it('should update board in boards array', () => {
@@ -346,9 +342,7 @@ describe('Column Reducer', () => {
         payload: { sourceIndex: 0, targetIndex: 2 },
       });
 
-      expect(result.currentBoard?.updatedAt).not.toBe(
-        mockBoard.updatedAt
-      );
+      expect(result.currentBoard?.updatedAt).not.toBe(mockBoard.updatedAt);
     });
 
     it('should update board in boards array', () => {
