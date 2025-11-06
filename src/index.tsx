@@ -14,7 +14,7 @@ if (typeof window !== 'undefined') {
     });
   }
 }
-import { HashRouter } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 
 // Prism.jsをグローバルに初期化（Lexical CodeHighlightPluginが依存）
 import Prism from 'prismjs';
@@ -41,13 +41,13 @@ const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 
-// HashRouter使用（S3環境での確実なルーティング）
+// BrowserRouter使用（Vercel環境での標準的なルーティング）
 
 root.render(
   <React.StrictMode>
-    <HashRouter>
+    <BrowserRouter>
       <App />
-    </HashRouter>
+    </BrowserRouter>
   </React.StrictMode>
 );
 

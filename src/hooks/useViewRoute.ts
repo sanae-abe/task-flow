@@ -50,7 +50,7 @@ export const useViewRoute = () => {
     }
   }, []);
 
-  // HashRouter使用のため404リダイレクト処理は不要
+  // BrowserRouter使用時、Vercelのrewritesが404を処理するため特別な処理は不要
 
   // URLの変更を監視してビューモードを更新（ブラウザナビゲーション対応）
   useEffect(() => {
