@@ -239,7 +239,9 @@ describe('Kanban Reducer (Main)', () => {
         payload: { taskId: 'task-1', subTask: newSubTask },
       });
 
-      expect(result.currentBoard?.columns[0]?.tasks[1]?.subTasks).toHaveLength(0);
+      expect(result.currentBoard?.columns[0]?.tasks[1]?.subTasks).toHaveLength(
+        0
+      );
     });
   });
 

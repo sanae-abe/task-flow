@@ -27,11 +27,13 @@ src/
 ## 主要コンポーネント
 
 ### ビューコンポーネント
+
 - **KanbanBoard.tsx** - カンバンビュー
 - **TableView.tsx** - テーブルビュー
 - **CalendarView.tsx** - カレンダービュー
 
 ### ダイアログコンポーネント
+
 - **TaskCreateDialog.tsx** - タスク作成
 - **TaskEditDialog.tsx** - タスク編集
 - **CommonDialog.tsx** - 共通ダイアログ
@@ -39,6 +41,7 @@ src/
 - **TimeSelectorDialog.tsx** - 時刻選択
 
 ### カードコンポーネント
+
 - **TaskCard.tsx** - タスクカード
 - **KanbanColumn.tsx** - カンバンカラム
 - **TaskCardContent.tsx** - カード内容
@@ -46,6 +49,7 @@ src/
 ## 状態管理構造
 
 ### Context階層
+
 ```
 AppProviders
 ├── BoardContext    # ボード管理
@@ -55,6 +59,7 @@ AppProviders
 ```
 
 ### Reducer構造
+
 - **taskReducer.ts** - タスク操作ロジック
 - **boardReducer.ts** - ボード操作ロジック
 - **labelReducer.ts** - ラベル操作ロジック
@@ -63,14 +68,16 @@ AppProviders
 ## 型定義組織
 
 ### 主要型ファイル
+
 - **types/index.ts** - 基本型定義
 - **types/task.ts** - タスク関連型
 - **types/enhanced-types.ts** - 拡張型定義
-- **types/unified-*.ts** - 統合型定義
+- **types/unified-\*.ts** - 統合型定義
 
 ## ユーティリティ組織
 
 ### 主要ユーティリティ
+
 - **storage.ts** - ローカルストレージ操作
 - **dateHelpers.ts** - 日付操作
 - **taskFilter.ts / taskSort.ts** - タスク絞込・ソート
@@ -78,6 +85,7 @@ AppProviders
 - **fileUtils.ts** - ファイル操作
 
 ## エントリーポイント
+
 - **src/index.tsx** - アプリケーションエントリー
 - **src/App.tsx** - メインアプリケーション
 - **public/index.html** - HTMLテンプレート

@@ -11,7 +11,7 @@ import type { FileAttachment } from '../types';
 // Mock child components
 vi.mock('./AttachmentList', () => ({
   default: ({ attachments, onRemoveAttachment }: any) => (
-    <div data-testid="attachment-list">
+    <div data-testid='attachment-list'>
       {attachments.map((att: FileAttachment) => (
         <div key={att.id} data-testid={`attachment-${att.id}`}>
           {att.name}
@@ -37,7 +37,7 @@ vi.mock('./UniversalDropZone', () => ({
     importMode,
   }: any) => (
     <div
-      data-testid="universal-drop-zone"
+      data-testid='universal-drop-zone'
       data-is-drag-over={isDragOver}
       data-max-file-size={maxFileSize}
       data-allowed-types={JSON.stringify(allowedTypes)}
@@ -50,9 +50,9 @@ vi.mock('./UniversalDropZone', () => ({
     >
       <input
         ref={fileInputRef}
-        type="file"
+        type='file'
         onChange={onFileInputChange}
-        data-testid="file-input"
+        data-testid='file-input'
       />
       Drop files here
     </div>
@@ -61,15 +61,15 @@ vi.mock('./UniversalDropZone', () => ({
 
 vi.mock('./ImportModeSelector', () => ({
   default: ({ selectedMode, onModeChange, showModeIndicator }: any) => (
-    <div data-testid="import-mode-selector">
+    <div data-testid='import-mode-selector'>
       <select
         value={selectedMode}
-        onChange={(e) => onModeChange(e.target.value)}
-        data-testid="mode-select"
+        onChange={e => onModeChange(e.target.value)}
+        data-testid='mode-select'
       >
-        <option value="both">Both</option>
-        <option value="text">Text Only</option>
-        <option value="files">Files Only</option>
+        <option value='both'>Both</option>
+        <option value='text'>Text Only</option>
+        <option value='files'>Files Only</option>
       </select>
       {showModeIndicator && <span>Indicator</span>}
     </div>
@@ -79,11 +79,7 @@ vi.mock('./ImportModeSelector', () => ({
 vi.mock('./shared/InlineMessage', () => ({
   default: ({ variant, message, size }: any) =>
     message ? (
-      <div
-        data-testid="inline-message"
-        data-variant={variant}
-        data-size={size}
-      >
+      <div data-testid='inline-message' data-variant={variant} data-size={size}>
         {message}
       </div>
     ) : null,
@@ -183,7 +179,7 @@ describe('FileUploader', () => {
         <FileUploader
           attachments={mockAttachments}
           onAttachmentsChange={mockOnAttachmentsChange}
-          defaultImportMode="text"
+          defaultImportMode='text'
         />
       );
 
@@ -511,7 +507,7 @@ describe('FileUploader', () => {
         <FileUploader
           attachments={mockAttachments}
           onAttachmentsChange={mockOnAttachmentsChange}
-          defaultImportMode="files"
+          defaultImportMode='files'
         />
       );
 
@@ -590,8 +586,8 @@ describe('FileUploader', () => {
         <FileUploader
           attachments={mockAttachments}
           onAttachmentsChange={mockOnAttachmentsChange}
-          showModeSelector={true}
-          defaultImportMode="both"
+          showModeSelector
+          defaultImportMode='both'
         />
       );
 
@@ -602,7 +598,7 @@ describe('FileUploader', () => {
           attachments={mockAttachments}
           onAttachmentsChange={mockOnAttachmentsChange}
           showModeSelector={false}
-          defaultImportMode="text"
+          defaultImportMode='text'
         />
       );
 
@@ -639,8 +635,8 @@ describe('FileUploader', () => {
           onAttachmentsChange={mockOnAttachmentsChange}
           maxFileSize={1024}
           allowedTypes={['.txt']}
-          showModeSelector={true}
-          defaultImportMode="text"
+          showModeSelector
+          defaultImportMode='text'
         />
       );
 

@@ -18,8 +18,8 @@ export default [
       '*.config.js',
       '*.config.ts',
       'coverage',
-      '.eslintrc.js'
-    ]
+      '.eslintrc.js',
+    ],
   },
 
   // 基本設定
@@ -34,8 +34,8 @@ export default [
         ecmaVersion: 2022,
         sourceType: 'module',
         ecmaFeatures: {
-          jsx: true
-        }
+          jsx: true,
+        },
       },
       globals: {
         ...globals.browser,
@@ -47,29 +47,32 @@ export default [
         NodeJS: 'readonly',
         // Browser globals
         EventListener: 'readonly',
-        IDBTransactionMode: 'readonly'
-      }
+        IDBTransactionMode: 'readonly',
+      },
     },
     plugins: {
       '@typescript-eslint': tseslint,
-      'react': react,
+      react: react,
       'react-hooks': reactHooks,
-      'prettier': prettier,
-      'security': security
+      prettier: prettier,
+      security: security,
     },
     settings: {
       react: {
-        version: 'detect'
-      }
+        version: 'detect',
+      },
     },
     rules: {
       // TypeScript関連ルール
-      '@typescript-eslint/no-unused-vars': ['error', {
-        argsIgnorePattern: '^_',
-        varsIgnorePattern: '^_',
-        caughtErrorsIgnorePattern: '^_',
-        ignoreRestSiblings: true
-      }],
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+          ignoreRestSiblings: true,
+        },
+      ],
       '@typescript-eslint/explicit-function-return-type': 'off',
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-non-null-assertion': 'warn',
@@ -77,19 +80,28 @@ export default [
       // React関連ルール（React 19対応）
       'react/jsx-uses-react': 'off', // React 19では不要
       'react/react-in-jsx-scope': 'off', // React 19では不要
-      'react/jsx-props-no-spreading': ['warn', {
-        html: 'enforce',
-        custom: 'ignore',
-        explicitSpread: 'ignore'
-      }],
-      'react/jsx-key': ['error', {
-        checkFragmentShorthand: true,
-        checkKeyMustBeforeSpread: true
-      }],
-      'react/self-closing-comp': ['error', {
-        component: true,
-        html: true
-      }],
+      'react/jsx-props-no-spreading': [
+        'warn',
+        {
+          html: 'enforce',
+          custom: 'ignore',
+          explicitSpread: 'ignore',
+        },
+      ],
+      'react/jsx-key': [
+        'error',
+        {
+          checkFragmentShorthand: true,
+          checkKeyMustBeforeSpread: true,
+        },
+      ],
+      'react/self-closing-comp': [
+        'error',
+        {
+          component: true,
+          html: true,
+        },
+      ],
       'react/jsx-boolean-value': ['error', 'never'],
       'react/jsx-no-duplicate-props': 'error',
       'react/jsx-no-undef': 'error',
@@ -104,8 +116,8 @@ export default [
       'no-debugger': 'error',
       'prefer-const': 'error',
       'no-var': 'error',
-      'eqeqeq': ['error', 'always'],
-      'curly': ['error', 'all'],
+      eqeqeq: ['error', 'always'],
+      curly: ['error', 'all'],
       'no-eval': 'error',
       'no-implied-eval': 'error',
       'no-unused-vars': 'off', // TypeScriptルールを使用
@@ -113,10 +125,13 @@ export default [
       'no-case-declarations': 'off', // switch文での宣言を許可
 
       // 未使用変数を緩和
-      'no-unused-expressions': ['error', {
-        allowShortCircuit: true,
-        allowTernary: true
-      }],
+      'no-unused-expressions': [
+        'error',
+        {
+          allowShortCircuit: true,
+          allowTernary: true,
+        },
+      ],
       'no-duplicate-imports': 'error',
       'prefer-template': 'error',
       'prefer-arrow-callback': 'error',
@@ -127,8 +142,8 @@ export default [
       ...security.configs.recommended.rules,
 
       // Prettierルール
-      'prettier/prettier': 'error'
-    }
+      'prettier/prettier': 'error',
+    },
   },
 
   // Prettier設定（競合回避）
@@ -149,30 +164,30 @@ export default [
         afterEach: 'readonly',
         beforeAll: 'readonly',
         afterAll: 'readonly',
-        vi: 'readonly'
-      }
+        vi: 'readonly',
+      },
     },
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-non-null-assertion': 'off',
-      'no-console': 'off'
-    }
+      'no-console': 'off',
+    },
   },
 
   // React TSXファイル専用設定
   {
     files: ['**/*.tsx'],
     rules: {
-      '@typescript-eslint/explicit-function-return-type': 'off'
-    }
+      '@typescript-eslint/explicit-function-return-type': 'off',
+    },
   },
 
   // Shadcn/UI コンポーネント専用設定
   {
     files: ['src/components/ui/**/*.{ts,tsx}'],
     rules: {
-      'react/jsx-props-no-spreading': 'off'
-    }
+      'react/jsx-props-no-spreading': 'off',
+    },
   },
 
   // 設定ファイル専用設定
@@ -180,12 +195,12 @@ export default [
     files: ['**/*.config.{js,ts}', 'vite.config.*', 'vitest.config.*'],
     languageOptions: {
       globals: {
-        ...globals.node
-      }
+        ...globals.node,
+      },
     },
     rules: {
       '@typescript-eslint/no-var-requires': 'off',
-      'no-console': 'off'
-    }
-  }
+      'no-console': 'off',
+    },
+  },
 ];

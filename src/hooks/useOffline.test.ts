@@ -22,13 +22,15 @@ describe('useOffline', () => {
     });
 
     // window.addEventListenerのモック
-    vi.spyOn(window, 'addEventListener').mockImplementation((event, handler) => {
-      if (event === 'online') {
-        onlineEventListeners.push(handler as () => void);
-      } else if (event === 'offline') {
-        offlineEventListeners.push(handler as () => void);
+    vi.spyOn(window, 'addEventListener').mockImplementation(
+      (event, handler) => {
+        if (event === 'online') {
+          onlineEventListeners.push(handler as () => void);
+        } else if (event === 'offline') {
+          offlineEventListeners.push(handler as () => void);
+        }
       }
-    });
+    );
 
     // window.removeEventListenerのモック
     vi.spyOn(window, 'removeEventListener').mockImplementation(

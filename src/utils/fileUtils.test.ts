@@ -4,7 +4,12 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { formatFileSize, getFileIcon, isImageFile, isTextFile } from './fileUtils';
+import {
+  formatFileSize,
+  getFileIcon,
+  isImageFile,
+  isTextFile,
+} from './fileUtils';
 import React from 'react';
 
 describe('fileUtils', () => {
@@ -164,9 +169,7 @@ describe('fileUtils', () => {
     });
 
     it('should return true for txt files by extension', () => {
-      expect(isTextFile('application/octet-stream', 'document.txt')).toBe(
-        true
-      );
+      expect(isTextFile('application/octet-stream', 'document.txt')).toBe(true);
     });
 
     it('should return true for csv files by extension', () => {

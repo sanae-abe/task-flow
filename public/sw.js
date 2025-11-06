@@ -10,7 +10,7 @@ const urlsToCache = [
   './manifest.json',
   './favicon.ico',
   './logo192.svg',
-  './logo512.svg'
+  './logo512.svg',
 ];
 
 // Static assets patterns
@@ -18,10 +18,11 @@ const STATIC_ASSETS = /\.(css|js|png|jpg|jpeg|svg|ico|woff|woff2|ttf|eot)$/;
 const API_CACHE_DURATION = 5 * 60 * 1000; // 5分
 
 // Service Worker のインストール
-self.addEventListener('install', (event) => {
+self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(STATIC_CACHE_NAME)
-      .then((cache) => {
+    caches
+      .open(STATIC_CACHE_NAME)
+      .then(cache => {
         return cache.addAll(urlsToCache);
       })
       .then(() => {
@@ -31,26 +32,29 @@ self.addEventListener('install', (event) => {
 });
 
 // Service Worker のアクティベート
-self.addEventListener('activate', (event) => {
+self.addEventListener('activate', event => {
   const expectedCaches = [STATIC_CACHE_NAME, DYNAMIC_CACHE_NAME];
 
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (!expectedCaches.includes(cacheName)) {
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    }).then(() => {
-      return self.clients.claim();
-    })
+    caches
+      .keys()
+      .then(cacheNames => {
+        return Promise.all(
+          cacheNames.map(cacheName => {
+            if (!expectedCaches.includes(cacheName)) {
+              return caches.delete(cacheName);
+            }
+          })
+        );
+      })
+      .then(() => {
+        return self.clients.claim();
+      })
   );
 });
 
 // ネットワークリクエストの処理
-self.addEventListener('fetch', (event) => {
+self.addEventListener('fetch', event => {
   const { request } = event;
   const url = new URL(request.url);
 
@@ -142,7 +146,7 @@ async function networkFirstWithTimestamp(request) {
   // Check if cached response is still fresh
   if (cached) {
     const cachedDate = cached.headers.get('sw-cached-date');
-    if (cachedDate && (Date.now() - parseInt(cachedDate)) < API_CACHE_DURATION) {
+    if (cachedDate && Date.now() - parseInt(cachedDate) < API_CACHE_DURATION) {
       return cached;
     }
   }
@@ -155,8 +159,8 @@ async function networkFirstWithTimestamp(request) {
         statusText: response.statusText,
         headers: {
           ...response.headers,
-          'sw-cached-date': Date.now().toString()
-        }
+          'sw-cached-date': Date.now().toString(),
+        },
       });
       cache.put(request, responseWithTimestamp.clone());
       return responseWithTimestamp;
@@ -183,7 +187,7 @@ async function updateCacheInBackground(request, cache) {
 }
 
 // メッセージハンドラー
-self.addEventListener('message', (event) => {
+self.addEventListener('message', event => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
     return;
@@ -212,7 +216,7 @@ async function cacheNewRoute(url) {
 }
 
 // Background sync for offline actions
-self.addEventListener('sync', (event) => {
+self.addEventListener('sync', event => {
   if (event.tag === 'background-sync') {
     event.waitUntil(doBackgroundSync());
   }
@@ -224,12 +228,15 @@ async function doBackgroundSync() {
 }
 
 // Performance optimization - Cache cleanup
-setInterval(() => {
-  caches.keys().then((cacheNames) => {
-    cacheNames.forEach((cacheName) => {
-      if (!cacheName.includes('v2.0.0')) {
-        caches.delete(cacheName);
-      }
+setInterval(
+  () => {
+    caches.keys().then(cacheNames => {
+      cacheNames.forEach(cacheName => {
+        if (!cacheName.includes('v2.0.0')) {
+          caches.delete(cacheName);
+        }
+      });
     });
-  });
-}, 24 * 60 * 60 * 1000); // 24時間ごと
+  },
+  24 * 60 * 60 * 1000
+); // 24時間ごと

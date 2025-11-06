@@ -7,6 +7,7 @@ TaskFlowアプリケーションのシステム全体アーキテクチャと設
 TaskFlowは**React + TypeScript**で構築されたモダンなSPA（Single Page Application）で、**ローカルファースト**なタスク管理アプリケーションです。
 
 ### 🏆 アーキテクチャの特徴
+
 - **Component-based Architecture**: 再利用可能なコンポーネント設計
 - **Type-safe Development**: TypeScript strictモードによる型安全性
 - **Modern Build System**: Vite 7.x による高速ビルド・HMR
@@ -16,22 +17,26 @@ TaskFlowは**React + TypeScript**で構築されたモダンなSPA（Single Page
 ## 🏗️ 技術スタック（✅ 完全実装済み）
 
 ### フロントエンド（コア）
+
 - **React 19.2.0**: UIライブラリ・最新版 ✅
 - **TypeScript 5.7.3**: 型安全性・開発体験向上（strict設定） ✅
 - **Vite 7.1.12**: 超高速ビルドシステム（147ms起動・11種類チャンク分割） ✅
 
 ### UI・スタイリング
+
 - **Shadcn/UI**: モダンUIコンポーネントライブラリ ✅
 - **Tailwind CSS 4.1.16**: ユーティリティファーストCSS ✅
 - **@radix-ui**: 15パッケージの完全統合（アクセシブルUI） ✅
 - **lucide-react 0.546.0**: 統一アイコンライブラリ（完全統一済み） ✅
 
 ### 状態管理・ロジック
+
 - **React Context API**: 8種類の分離されたContext実装 ✅
 - **Custom Hooks**: 38ファイルの高度なビジネスロジック抽象化 ✅
 - **localStorage**: typed-storage.tsによる型安全なデータ永続化 ✅
 
 ### 高度な機能
+
 - **@dnd-kit 10.0.0**: カスタム衝突検出・キーボードアクセシビリティ対応 ✅
 - **Lexical 0.35.0**: 12モジュール分割の高性能リッチテキストエディタ ✅
 - **date-fns 4.1.0**: calendarRecurrence.tsによる高度な繰り返し処理 ✅
@@ -39,11 +44,13 @@ TaskFlowは**React + TypeScript**で構築されたモダンなSPA（Single Page
 - **emoji-picker-react 4.14.0**: 絵文字選択機能統合 ✅
 
 ### 開発・品質ツール
+
 - **Vitest 4.0.3**: カバレッジ80%目標の高速テストフレームワーク ✅
 - **ESLint**: eslint-plugin-security統合のセキュリティチェック ✅
 - **Prettier**: 統一コード整形設定 ✅
 
 ### 🚀 プロダクション強化機能（実装済み）
+
 - **重複実行防止**: Context層での排他制御システム
 - **統一コンポーネント**: UnifiedDialog/Form/Menu統合システム
 - **DialogFlashMessage**: 統一メッセージ表示システム
@@ -53,6 +60,7 @@ TaskFlowは**React + TypeScript**で構築されたモダンなSPA（Single Page
 ## 🔄 アーキテクチャパターン
 
 ### 1. レイヤー構造
+
 ```
 ┌─────────────────────────────────┐
 │          UI Components          │ ← 表示層（React コンポーネント）
@@ -66,6 +74,7 @@ TaskFlowは**React + TypeScript**で構築されたモダンなSPA（Single Page
 ```
 
 ### 2. コンポーネント階層（✅ 完全実装済み）
+
 ```
 App.tsx
 ├── Header ✅
@@ -87,6 +96,7 @@ App.tsx
 ```
 
 ### 🚀 追加実装コンポーネント
+
 ```
 統一システムコンポーネント:
 ├── UnifiedDialog ✅          ← 統一ダイアログシステム
@@ -96,6 +106,7 @@ App.tsx
 ```
 
 ### 3. 状態管理パターン（✅ 完全実装済み）
+
 ```
 Context Providers（8種類・分離設計）:
 ├── BoardContext ✅         ← ボード全体状態（1,096行・重複実行防止）
@@ -117,6 +128,7 @@ Context Providers（8種類・分離設計）:
 ## 🔌 データフロー
 
 ### ユニディレクショナルデータフロー
+
 ```
 User Action → Custom Hook → Context → Component Re-render
      ↓
@@ -124,33 +136,35 @@ localStorage ← Data Persistence
 ```
 
 ### 主要データエンティティ
+
 ```typescript
 // 核心的なデータ構造
 interface Task {
-  id: string
-  title: string
-  description?: string
-  status: 'todo' | 'in-progress' | 'done'
-  priority: 'critical' | 'high' | 'medium' | 'low'
-  dueDate?: Date
-  labels: Label[]
-  subTasks: SubTask[]
-  recurrence?: RecurrenceRule
+  id: string;
+  title: string;
+  description?: string;
+  status: 'todo' | 'in-progress' | 'done';
+  priority: 'critical' | 'high' | 'medium' | 'low';
+  dueDate?: Date;
+  labels: Label[];
+  subTasks: SubTask[];
+  recurrence?: RecurrenceRule;
   // ... その他の属性
 }
 
 interface Board {
-  id: string
-  name: string
-  columns: Column[]
-  tasks: Task[]
-  settings: BoardSettings
+  id: string;
+  name: string;
+  columns: Column[];
+  tasks: Task[];
+  settings: BoardSettings;
 }
 ```
 
 ## 🎨 デザインシステム
 
 ### UIコンポーネント階層
+
 ```
 Atomic Design Pattern:
 ├── Atoms       ← ボタン・入力フィールド・アイコン
@@ -160,6 +174,7 @@ Atomic Design Pattern:
 ```
 
 ### 統一デザイン原則
+
 - **Shadcn/UI Component Library**: 統一されたLook & Feel
 - **Tailwind CSS Variables**: 一貫したカラーパレット・スペーシング
 - **Responsive-first**: モバイル・デスクトップ対応
@@ -168,12 +183,14 @@ Atomic Design Pattern:
 ## 🚀 パフォーマンス戦略
 
 ### ビルド最適化
+
 - **Vite Code Splitting**: 効率的なバンドル分割
 - **React.lazy() + Suspense**: コンポーネント遅延読み込み
 - **Tree Shaking**: 不要コードの自動除去
 - **Bundle Analysis**: 定期的なサイズ監視
 
 ### ランタイム最適化
+
 ```typescript
 // メモ化戦略
 const OptimizedComponent = React.memo(Component)
@@ -185,6 +202,7 @@ const stableCallback = useCallback(() => handler(), [dep])
 ```
 
 ### ローカルストレージ戦略
+
 - **JSON.stringify/parse**: 軽量シリアライゼーション
 - **差分更新**: 変更されたデータのみ保存
 - **バックアップ・復元**: データ移行・復旧機能
@@ -193,12 +211,14 @@ const stableCallback = useCallback(() => handler(), [dep])
 ## 🔒 セキュリティアーキテクチャ
 
 ### フロントエンドセキュリティ
+
 - **DOMPurify**: HTMLサニタイズによるXSS防止
 - **Input Validation**: 厳密な入力検証
 - **TypeScript Type Guards**: ランタイム型安全性
 - **CSP Headers**: Content Security Policy適用
 
 ### データ保護
+
 - **No Sensitive Data**: 機密情報のlocalStorage保存禁止
 - **Data Validation**: 不正データの検証・除去
 - **Safe Parsing**: JSON解析時のエラーハンドリング
@@ -206,6 +226,7 @@ const stableCallback = useCallback(() => handler(), [dep])
 ## 🧪 テスト戦略
 
 ### テストピラミッド
+
 ```
 E2E Tests (少)
 ├── Integration Tests (中)
@@ -213,6 +234,7 @@ E2E Tests (少)
 ```
 
 ### テストフレームワーク
+
 - **Vitest**: 高速単体テスト・統合テスト
 - **React Testing Library**: UIコンポーネントテスト
 - **MSW**: APIモッキング
@@ -221,11 +243,13 @@ E2E Tests (少)
 ## 📈 スケーラビリティ設計
 
 ### 機能拡張性
+
 - **プラグインアーキテクチャ**: 新機能の追加容易性
 - **フックベース設計**: ロジック再利用・拡張
 - **コンポーネント合成**: 複雑UIの構築柔軟性
 
 ### パフォーマンススケーラビリティ
+
 - **React.lazy**: 機能別コード分割
 - **Virtual Scrolling**: 大量データ表示最適化
 - **Background Processing**: 重い処理の非同期化
@@ -233,12 +257,14 @@ E2E Tests (少)
 ## 🔧 開発体験（DX）
 
 ### 高速開発サイクル
+
 - **Vite HMR**: 147ms高速起動・即座リロード
 - **TypeScript Strict**: 実行前エラー検知
 - **ESLint + Prettier**: 自動コード品質維持
 - **Vitest Watch**: リアルタイムテスト実行
 
 ### デバッグ・監視
+
 - **React DevTools**: コンポーネント階層・状態確認
 - **Vite Dev Server**: 詳細エラー表示
 - **Source Maps**: 本番環境デバッグ対応
@@ -247,6 +273,7 @@ E2E Tests (少)
 ## 📊 実装統計（2024年11月時点）
 
 ### ✅ 実装規模
+
 - **Contextファイル**: 8個（1,000行超の大規模実装含む）
 - **コンポーネント**: 100個以上（モジュラー分割）
 - **ユーティリティ**: 28ファイル（storage, recurrence, validation等）
@@ -255,6 +282,7 @@ E2E Tests (少)
 - **テストファイル**: 5個（Vitest 4.0.3・カバレッジ80%目標）
 
 ### 🎯 コード品質指標
+
 - **TypeScript**: strict設定・型安全性100%
 - **ESLint**: security plugin統合・品質チェック
 - **Vite最適化**: 11種類のチャンク分割・高速ビルド
@@ -263,18 +291,22 @@ E2E Tests (少)
 ## 🔮 将来の拡張計画
 
 ### アーキテクチャ進化
+
 - **Web Components**: より再利用性の高いコンポーネント
 - **PWA対応**: サービスワーカー・オフライン機能
 - **WebAssembly**: 重い処理の高速化
 - **Micro Frontend**: 機能別独立デプロイ
 
 ### 技術的投資領域
+
 - **Advanced State Management**: Zustand・Jotai等の検討
 - **Server Components**: React Server Components導入
 - **Edge Computing**: CDN・エッジでの処理最適化
 
 ### 🚀 実装準備済み基盤
+
 TaskFlowは既に以下の拡張基盤を持っています：
+
 - **モジュラー設計**: 機能別独立実装で拡張容易
 - **統一コンポーネント**: 新機能の迅速な統合
 - **型安全基盤**: TypeScript 5.7の厳格設定

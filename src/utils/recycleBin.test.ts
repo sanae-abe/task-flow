@@ -313,7 +313,10 @@ describe('RecycleBin - Task Functions', () => {
     });
 
     it('should return null for unlimited retention', () => {
-      const deletionTime = calculateDeletionTime(new Date().toISOString(), null);
+      const deletionTime = calculateDeletionTime(
+        new Date().toISOString(),
+        null
+      );
       expect(deletionTime).toBeNull();
     });
   });
@@ -426,7 +429,9 @@ describe('RecycleBin - Board Functions', () => {
 
       expect(result.deletedCount).toBe(1);
       expect(result.updatedBoards).toHaveLength(2);
-      expect(result.updatedBoards.find(b => b.id === 'board-3')).toBeUndefined();
+      expect(
+        result.updatedBoards.find(b => b.id === 'board-3')
+      ).toBeUndefined();
     });
   });
 
@@ -456,7 +461,9 @@ describe('RecycleBin - Board Functions', () => {
 
       expect(result.success).toBe(true);
       expect(result.updatedBoards).toHaveLength(2);
-      expect(result.updatedBoards.find(b => b.id === 'board-2')).toBeUndefined();
+      expect(
+        result.updatedBoards.find(b => b.id === 'board-2')
+      ).toBeUndefined();
     });
   });
 

@@ -360,7 +360,7 @@ describe('useLabelSelector', () => {
       const onLabelsChange = vi.fn();
       const existingLabels = [mockLabel1];
 
-      const { result} = renderHook(() =>
+      const { result } = renderHook(() =>
         useLabelSelector({
           selectedLabels: existingLabels,
           onLabelsChange,
@@ -841,9 +841,7 @@ describe('useLabelSelector', () => {
       // when selectedLabels reference changes (even if it's empty array)
       // Only callbacks that don't depend on selectedLabels are stable
       expect(result.current.startCreating).toBe(firstFunctions.startCreating);
-      expect(result.current.cancelCreating).toBe(
-        firstFunctions.cancelCreating
-      );
+      expect(result.current.cancelCreating).toBe(firstFunctions.cancelCreating);
       expect(result.current.handleKeyDown).toBe(firstFunctions.handleKeyDown);
     });
   });

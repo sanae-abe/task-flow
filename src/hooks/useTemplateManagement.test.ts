@@ -263,7 +263,9 @@ describe('useTemplateManagement', () => {
 
       expect(success).toBe(true);
       expect(result.current.templates).toHaveLength(1);
-      expect(result.current.templates.find(t => t.id === 'template-1')).toBeUndefined();
+      expect(
+        result.current.templates.find(t => t.id === 'template-1')
+      ).toBeUndefined();
       expect(result.current._error).toBeNull();
     });
 
