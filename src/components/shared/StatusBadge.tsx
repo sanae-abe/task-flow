@@ -46,7 +46,7 @@ const StatusBadge = memo<StatusBadgeProps>(
         case 'info':
           return 'text-primary';
         default:
-          return 'text-default';
+          return 'text-muted-foreground';
       }
     };
 
