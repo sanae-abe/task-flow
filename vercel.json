@@ -5,6 +5,11 @@
   "installCommand": "npm install",
   "framework": "vite",
   "regions": ["hnd1"],
+  "git": {
+    "deploymentEnabled": {
+      "main": true
+    }
+  },
   "rewrites": [
     {
       "source": "/(.*)",
