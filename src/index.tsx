@@ -1,19 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-
-// 本番環境でのReact 19互換性対策
-if (typeof window !== 'undefined') {
-  // Reactをグローバルに設定（use-callback-ref等の依存ライブラリ用）
-  (window as any).React = React;
-  (window as any).ReactDOM = ReactDOM;
-
-  if (process.env.NODE_ENV === 'development') {
-    console.log('✅ React initialized:', {
-      version: React.version,
-      useLayoutEffect: typeof React.useLayoutEffect !== 'undefined',
-    });
-  }
-}
 import { BrowserRouter } from 'react-router-dom';
 
 // Prism.jsは使用時に動的ロード（初期バンドルサイズ削減）
@@ -29,20 +15,12 @@ const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 
-// BrowserRouter使用（Vercel環境での標準的なルーティング）
-// React 19.2.0の互換性問題のため、本番環境ではStrictMode無効化
-const app = (
-  <BrowserRouter>
-    <App />
-  </BrowserRouter>
-);
-
 root.render(
-  process.env.NODE_ENV === 'development' ? (
-    <React.StrictMode>{app}</React.StrictMode>
-  ) : (
-    app
-  )
+  <React.StrictMode>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </React.StrictMode>
 );
 
 // Service Worker registration - PWA機能を有効化

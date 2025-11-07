@@ -227,14 +227,15 @@ export default defineConfig({
     __APP_NAME__: JSON.stringify(pkg.name),
     __APP_DESCRIPTION__: JSON.stringify(pkg.description),
     __APP_AUTHOR__: JSON.stringify(pkg.author),
-    // React 19互換性: グローバルReactを確保
-    'global.React': 'window.React',
   },
   // 依存関係の最適化
   optimizeDeps: {
-    include: ['react', 'react-dom', 'react/jsx-runtime'],
-    exclude: ['use-callback-ref', 'react-remove-scroll'],
-    force: true,
+    include: [
+      'react',
+      'react-dom',
+      'react/jsx-runtime',
+    ],
+    exclude: ['use-sync-external-store'],
   },
   css: {
     postcss: './postcss.config.js',
