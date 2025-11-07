@@ -115,7 +115,6 @@
     "vitest": "^4.0.3"
   },
   "scripts": {
-    "postinstall": "node patch-react19-compat.cjs",
     "start": "vite",
     "dev": "vite",
     "build": "vite build",
