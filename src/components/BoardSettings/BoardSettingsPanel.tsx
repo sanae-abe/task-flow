@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -76,6 +77,7 @@ const SortableColumnItem: React.FC<SortableColumnItemProps> = ({
   onDeleteColumn,
   _error,
 }) => {
+  const { t } = useTranslation();
   const {
     attributes,
     listeners,
@@ -131,9 +133,9 @@ const SortableColumnItem: React.FC<SortableColumnItemProps> = ({
         <Input
           value={localName}
           onChange={handleInputChange}
-          placeholder='カラム名'
+          placeholder={t('column.columnName')}
           className='w-full'
-          aria-label={`カラム「${column.name}」の名前`}
+          aria-label={t('column.columnNameLabel', { name: column.name })}
         />
         {_error && (
           <InlineMessage variant='critical' message={_error} size='small' />
@@ -145,21 +147,21 @@ const SortableColumnItem: React.FC<SortableColumnItemProps> = ({
           size='icon'
           onClick={() => onMoveColumn(column.id, 'up')}
           disabled={index === 0}
-          ariaLabel={`${column.name}を上に移動`}
+          ariaLabel={t('column.moveUp', { name: column.name })}
         />
         <IconButton
           icon={ChevronDown}
           size='icon'
           onClick={() => onMoveColumn(column.id, 'down')}
           disabled={index === totalColumns - 1}
-          ariaLabel={`${column.name}を下に移動`}
+          ariaLabel={t('column.moveDown', { name: column.name })}
         />
         <IconButton
           size='icon'
           icon={Trash2}
           onClick={() => onDeleteColumn(column.id)}
           disabled={totalColumns <= 1}
-          ariaLabel={`${column.name}を削除`}
+          ariaLabel={t('column.deleteColumnLabel', { name: column.name })}
         />
       </div>
     </div>
@@ -167,6 +169,7 @@ const SortableColumnItem: React.FC<SortableColumnItemProps> = ({
 };
 
 export const BoardSettingsPanel: React.FC = () => {
+  const { t } = useTranslation();
   const [columns, setColumns] = useState<DefaultColumnConfig[]>([]);
   const [newColumnName, setNewColumnName] = useState('');
   const [isLoading, setIsLoading] = useState(true);
@@ -214,7 +217,7 @@ export const BoardSettingsPanel: React.FC = () => {
       const settings = loadSettings();
       setColumns(settings.defaultColumns);
     } catch (_error) {
-      notify._error('設定の読み込みに失敗しました');
+      notify._error(t('settings.boardSettings.loadError'));
     } finally {
       setIsLoading(false);
     }
@@ -228,36 +231,39 @@ export const BoardSettingsPanel: React.FC = () => {
         try {
           updateDefaultColumns(columns);
           setHasUnsavedChanges(false);
-          showMessage('設定を自動保存しました', 'success');
+          showMessage(t('settings.boardSettings.autoSaveSuccess'), 'success');
         } catch (_error) {
-          showMessage('自動保存に失敗しました', '_error');
+          showMessage(t('settings.boardSettings.autoSaveError'), '_error');
         }
       }, 1000);
 
       return () => clearTimeout(saveTimer);
     }
     return undefined;
-  }, [columns, isLoading, hasUnsavedChanges, showMessage]);
+  }, [columns, isLoading, hasUnsavedChanges, showMessage, t]);
 
   // カラム名入力変更時のエラークリア
   useEffect(() => {
     if (addColumnError) {
       const currentTrimmed = newColumnName.trim();
       // 空文字エラーの場合：入力があればクリア
-      if (addColumnError === 'カラム名を入力してください' && currentTrimmed) {
+      if (
+        addColumnError === t('validation.columnNameRequired') &&
+        currentTrimmed
+      ) {
         setAddColumnError(null);
         setErroredColumnName('');
       }
       // 重複エラーの場合：エラーが発生した値と異なる値を入力した時のみクリア
       else if (
-        addColumnError === '同じ名前のカラムが既に存在します' &&
+        addColumnError === t('validation.columnNameDuplicate') &&
         currentTrimmed !== erroredColumnName
       ) {
         setAddColumnError(null);
         setErroredColumnName('');
       }
     }
-  }, [newColumnName, addColumnError, erroredColumnName]);
+  }, [newColumnName, addColumnError, erroredColumnName, t]);
 
   // ドラッグ終了ハンドラー
   const handleDragEnd = useCallback((event: DragEndEvent) => {
@@ -278,18 +284,18 @@ export const BoardSettingsPanel: React.FC = () => {
   // 設定保存
   const handleSave = useCallback(async () => {
     if (columns.length === 0) {
-      showMessage('最低1つのカラムが必要です', '_error');
+      showMessage(t('settings.boardSettings.minColumnRequired'), '_error');
       return;
     }
 
     try {
       updateDefaultColumns(columns);
       setHasUnsavedChanges(false);
-      showMessage('設定を保存しました', 'success');
+      showMessage(t('settings.boardSettings.saveSuccess'), 'success');
     } catch (_error) {
-      showMessage('設定の保存に失敗しました', '_error');
+      showMessage(t('settings.boardSettings.saveError'), '_error');
     }
-  }, [columns, showMessage]);
+  }, [columns, showMessage, t]);
 
   // カラム追加
   const handleAddColumn = useCallback(() => {
@@ -322,7 +328,7 @@ export const BoardSettingsPanel: React.FC = () => {
   const handleDeleteColumn = useCallback(
     (columnId: string) => {
       if (columns.length <= 1) {
-        notify._error('最低1つのカラムが必要です');
+        notify._error(t('settings.boardSettings.minColumnRequired'));
         return;
       }
 
@@ -330,7 +336,7 @@ export const BoardSettingsPanel: React.FC = () => {
       setColumnError(columnId, null); // カラム削除時にエラーもクリア
       setHasUnsavedChanges(true);
     },
-    [columns.length, notify, setColumnError]
+    [columns.length, notify, setColumnError, t]
   );
 
   // カラム名更新
@@ -390,7 +396,7 @@ export const BoardSettingsPanel: React.FC = () => {
     return (
       <div className='p-3'>
         <div className='bg-blue-50 border border-border border-blue-200 rounded-md p-3 text-blue-800'>
-          設定を読み込み中...
+          {t('settings.boardSettings.loadingSettings')}
         </div>
       </div>
     );
@@ -398,9 +404,11 @@ export const BoardSettingsPanel: React.FC = () => {
 
   return (
     <div>
-      <h2 className='text-lg font-bold mb-2'>デフォルトカラム設定</h2>
+      <h2 className='text-lg font-bold mb-2'>
+        {t('settings.boardSettings.title')}
+      </h2>
       <span className='text-sm text-zinc-700 mb-5 block'>
-        新しいボードを作成する際のデフォルトカラムを設定できます。
+        {t('settings.boardSettings.description')}
       </span>
 
       {/* カラム追加フォーム */}
@@ -409,19 +417,19 @@ export const BoardSettingsPanel: React.FC = () => {
           <Input
             value={newColumnName}
             onChange={e => setNewColumnName(e.target.value)}
-            placeholder='新しいカラム名'
+            placeholder={t('column.newColumnPlaceholder')}
             className='flex-1'
             onKeyDown={e => {
               if (e.key === 'Enter') {
                 handleAddColumn();
               }
             }}
-            aria-label='新しいカラム名'
+            aria-label={t('column.newColumnPlaceholder')}
           />
           <IconButton
             icon={Plus}
             size='icon'
-            ariaLabel='カラムを追加'
+            ariaLabel={t('column.addColumn')}
             onClick={handleAddColumn}
             disabled={!newColumnName.trim()}
             className='bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground w-10 h-10'
@@ -470,7 +478,7 @@ export const BoardSettingsPanel: React.FC = () => {
           className='gap-2'
         >
           <Check size={16} />
-          保存
+          {t('common.save')}
         </Button>
       </div>
 

@@ -6,15 +6,21 @@ import Header from './components/Header';
 import SubHeader from './components/SubHeader';
 import KanbanBoard from './components/KanbanBoard';
 import { Toaster } from '@/components/ui/sonner';
-import TaskCreateDialog from './components/TaskCreateDialog/TaskCreateDialog';
-import FirstTimeUserHint from './components/FirstTimeUserHint';
-
-// 動的インポート（コードスプリッティング対応）
+// 動的インポート（コードスプリッティング対応）- 初期ロード最適化
 const CalendarView = lazy(() => import('./components/CalendarView'));
 const TableView = lazy(() => import('./components/TableView'));
 const SettingsDialog = lazy(() => import('./components/SettingsDialog'));
 const HelpSidebar = lazy(() => import('./components/HelpSidebar'));
 const TaskDetailSidebar = lazy(() => import('./components/TaskDetailSidebar'));
+const TaskCreateDialog = lazy(
+  () => import('./components/TaskCreateDialog/TaskCreateDialog')
+);
+const FirstTimeUserHint = lazy(() => import('./components/FirstTimeUserHint'));
+const OfflineIndicator = lazy(() => import('./components/OfflineIndicator'));
+const ServiceWorkerUpdateNotification = lazy(
+  () => import('./components/ServiceWorkerUpdateNotification')
+);
+const PWAInstallPrompt = lazy(() => import('./components/PWAInstallPrompt'));
 import { useKanban } from './contexts/KanbanContext';
 import { useUI } from './contexts/UIContext';
 import AppProviders from './contexts/AppProviders';
@@ -32,12 +38,28 @@ const AppContent: React.FC = () => {
     useFirstTimeUser();
   const { handlers } = useSubHeader();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [updateRegistration, setUpdateRegistration] =
+    useState<ServiceWorkerRegistration | null>(null);
 
   // データ同期の初期化
   useDataSync();
 
   // URL同期の初期化
   useViewRoute();
+
+  // Service Worker更新イベントをリスニング
+  useEffect(() => {
+    const handleServiceWorkerUpdate = (event: Event) => {
+      const customEvent = event as CustomEvent<ServiceWorkerRegistration>;
+      setUpdateRegistration(customEvent.detail);
+    };
+
+    window.addEventListener('sw-update', handleServiceWorkerUpdate);
+
+    return () => {
+      window.removeEventListener('sw-update', handleServiceWorkerUpdate);
+    };
+  }, []);
 
   // 選択されたタスクを取得
   const selectedTask = uiState.selectedTaskId
@@ -137,13 +159,26 @@ const AppContent: React.FC = () => {
             aria-label='ヒントを閉じる'
           />
 
-          {/* ツールチップ */}
+          {/* ツールチップ - 動的ロード */}
           <div className='fixed top-[100px] right-[80px] z-601 animate-fadeInSlide duration-300 ease-out'>
-            <FirstTimeUserHint onDismiss={handleDismissHint} />
+            <Suspense fallback={null}>
+              <FirstTimeUserHint onDismiss={handleDismissHint} />
+            </Suspense>
           </div>
         </>
       )}
       <Toaster position='top-right' richColors closeButton />
+
+      {/* PWA関連コンポーネント - 動的ロード */}
+      <Suspense fallback={null}>
+        <OfflineIndicator />
+      </Suspense>
+      <Suspense fallback={null}>
+        <ServiceWorkerUpdateNotification registration={updateRegistration} />
+      </Suspense>
+      <Suspense fallback={null}>
+        <PWAInstallPrompt />
+      </Suspense>
 
       {/* 動的ローディング対応のサイドバー・ダイアログ */}
       {uiState.isHelpOpen && (
@@ -162,7 +197,9 @@ const AppContent: React.FC = () => {
         </Suspense>
       )}
 
-      <TaskCreateDialog />
+      <Suspense fallback={null}>
+        <TaskCreateDialog />
+      </Suspense>
 
       {isSettingsOpen && (
         <Suspense fallback={null}>

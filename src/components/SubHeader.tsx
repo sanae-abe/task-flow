@@ -8,6 +8,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useKanban } from '../contexts/KanbanContext';
 import { useSubHeader } from '../hooks/useSubHeader';
@@ -25,6 +26,7 @@ import TaskStatsDisplay from './TaskStatsDisplay';
 import { ViewMode } from '@/types';
 
 const SubHeader: React.FC = () => {
+  const { t } = useTranslation();
   const { setSortOption, setTaskFilter } = useKanban();
   const { navigateToView } = useViewRoute();
   const {
@@ -91,7 +93,7 @@ const SubHeader: React.FC = () => {
         <div className='w-px h-6 bg-gray-200' />
         {state.viewMode === 'kanban' && (
           <SubHeaderButton icon={Plus} onClick={handlers.startCreateColumn}>
-            カラム追加
+            {t('subheader.addColumn')}
           </SubHeaderButton>
         )}
 
@@ -112,7 +114,7 @@ const SubHeader: React.FC = () => {
             <Button
               variant='ghost'
               size='sm'
-              aria-label='ビューモードを選択'
+              aria-label={t('subheader.selectViewMode')}
               className='flex items-center gap-1 text-zinc-700 text-xs'
             >
               {state.viewMode === 'kanban' ? (
@@ -123,10 +125,10 @@ const SubHeader: React.FC = () => {
                 <Table size={16} />
               )}
               {state.viewMode === 'kanban'
-                ? 'カンバン'
+                ? t('view.kanban')
                 : state.viewMode === 'calendar'
-                  ? 'カレンダー'
-                  : 'テーブル'}
+                  ? t('view.calendar')
+                  : t('view.table')}
               <ChevronDown size={16} />
             </Button>
           </DropdownMenuTrigger>
@@ -140,21 +142,21 @@ const SubHeader: React.FC = () => {
                 className='flex items-center gap-2'
               >
                 <SquareKanban size={16} />
-                カンバン
+                {t('view.kanban')}
               </DropdownMenuRadioItem>
               <DropdownMenuRadioItem
                 value='calendar'
                 className='flex items-center gap-2'
               >
                 <Calendar size={16} />
-                カレンダー
+                {t('view.calendar')}
               </DropdownMenuRadioItem>
               <DropdownMenuRadioItem
                 value='table'
                 className='flex items-center gap-2'
               >
                 <Table size={16} />
-                テーブル
+                {t('view.table')}
               </DropdownMenuRadioItem>
             </DropdownMenuRadioGroup>
           </DropdownMenuContent>
@@ -163,16 +165,18 @@ const SubHeader: React.FC = () => {
 
       <ConfirmDialog
         isOpen={dialogState.showDeleteConfirm}
-        title='プロジェクトを削除'
-        message={`「${state.currentBoard.title}」を削除しますか？`}
+        title={t('subheader.deleteBoard')}
+        message={t('subheader.deleteBoardMessage', {
+          title: state.currentBoard.title,
+        })}
         onConfirm={handlers.deleteBoard}
         onCancel={handlers.closeDeleteConfirm}
       />
 
       <ConfirmDialog
         isOpen={dialogState.showClearCompletedConfirm}
-        title='完了したタスクをクリア'
-        message='完了したタスクをすべて削除しますか？'
+        title={t('subheader.clearCompleted')}
+        message={t('subheader.clearCompletedMessage')}
         onConfirm={handlers.clearCompletedTasks}
         onCancel={handlers.closeClearCompletedConfirm}
       />

@@ -1,12 +1,14 @@
 import { Plus, HelpCircle, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useKanban } from '../contexts/KanbanContext';
 
 import OfflineIndicator from './OfflineIndicator';
 import BoardSelector from './BoardSelector';
 import Logo from './Logo';
+import LanguageSwitcher from './LanguageSwitcher';
 
 // 区切り線コンポーネント
 const VerticalDivider: React.FC = () => (
@@ -37,38 +39,43 @@ const RightSection: React.FC<RightSectionProps> = ({
   onCreateClick,
   onHelpClick,
   onSettingsClick,
-}) => (
-  <div className='flex items-center shrink-0'>
-    <OfflineIndicator />
-    <Button
-      onClick={onCreateClick}
-      variant='default'
-      aria-label='タスク作成'
-      className='bg-primary text-white hover:bg-primary/90 flex items-center gap-1'
-    >
-      <Plus size={16} />
-      タスク作成
-    </Button>
-    <Button
-      onClick={onSettingsClick}
-      variant='ghost'
-      aria-label='設定を開く'
-      className='ml-2 flex items-center gap-2'
-    >
-      <Settings size={16} />
-      設定
-    </Button>
-    <Button
-      onClick={onHelpClick}
-      variant='ghost'
-      aria-label='ヘルプを表示'
-      className='flex items-center gap-2'
-    >
-      <HelpCircle size={16} />
-      ヘルプ
-    </Button>
-  </div>
-);
+}) => {
+  const { t } = useTranslation();
+
+  return (
+    <div className='flex items-center shrink-0'>
+      <OfflineIndicator />
+      <Button
+        onClick={onCreateClick}
+        variant='default'
+        aria-label={t('header.createTask')}
+        className='bg-primary text-white hover:bg-primary/90 flex items-center gap-1'
+      >
+        <Plus size={16} />
+        {t('header.createTask')}
+      </Button>
+      <Button
+        onClick={onSettingsClick}
+        variant='ghost'
+        aria-label={t('header.settings')}
+        className='ml-2 flex items-center gap-2'
+      >
+        <Settings size={16} />
+        {t('header.settings')}
+      </Button>
+      <Button
+        onClick={onHelpClick}
+        variant='ghost'
+        aria-label={t('header.help')}
+        className='flex items-center gap-2'
+      >
+        <HelpCircle size={16} />
+        {t('header.help')}
+      </Button>
+      <LanguageSwitcher />
+    </div>
+  );
+};
 
 interface HeaderProps {
   onHelpClick: () => void;

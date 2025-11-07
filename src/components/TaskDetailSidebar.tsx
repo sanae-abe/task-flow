@@ -1,4 +1,5 @@
 import { Trash2, X, Edit, Copy } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { useEffect, useCallback, memo, useRef } from 'react';
 
@@ -22,6 +23,7 @@ interface TaskDetailSidebarProps {
 
 const TaskDetailSidebar = memo<TaskDetailSidebarProps>(
   ({ task, isOpen, onClose }) => {
+    const { t } = useTranslation();
     const { state } = useUI();
     const { columnName } = useTaskColumn(task);
     const {
@@ -97,7 +99,7 @@ const TaskDetailSidebar = memo<TaskDetailSidebarProps>(
         ref={sidebarRef}
         className='fixed top-0 right-0 w-[440px] h-screen bg-white shadow-2xl border-l border-gray-200 z-300 overflow-y-auto animate-[sidebar-slide-in-right_250ms_cubic-bezier(0.33,1,0.68,1)]'
         role='dialog'
-        aria-label='タスク詳細'
+        aria-label={t('task.taskDetails')}
         aria-modal='true'
       >
         <div className='flex h-full flex-col'>
@@ -110,7 +112,7 @@ const TaskDetailSidebar = memo<TaskDetailSidebarProps>(
               onClick={onClose}
               variant='ghost'
               size='sm'
-              aria-label='タスク詳細を閉じる'
+              aria-label={t('task.closeTaskDetail')}
               className='shrink-0 p-1 h-auto min-w-0'
             >
               <X size={16} />
@@ -145,7 +147,7 @@ const TaskDetailSidebar = memo<TaskDetailSidebarProps>(
                 className='flex-1 flex items-center justify-center gap-2'
               >
                 <Edit size={16} />
-                編集
+                {t('common.edit')}
               </Button>
               <Button
                 onClick={handleDuplicate}
@@ -154,7 +156,7 @@ const TaskDetailSidebar = memo<TaskDetailSidebarProps>(
                 className='flex-1 flex items-center justify-center gap-2'
               >
                 <Copy size={16} />
-                複製
+                {t('task.duplicate')}
               </Button>
               <TaskBoardMover onMoveTask={handleMoveToBoard} />
               <Button
@@ -164,7 +166,7 @@ const TaskDetailSidebar = memo<TaskDetailSidebarProps>(
                 className='flex-1 flex items-center justify-center gap-2'
               >
                 <Trash2 size={16} />
-                削除
+                {t('common.delete')}
               </Button>
             </div>
           </div>
@@ -180,8 +182,8 @@ const TaskDetailSidebar = memo<TaskDetailSidebarProps>(
 
         <ConfirmDialog
           isOpen={showDeleteConfirm}
-          title='タスクを削除'
-          message={`「${task.title}」を削除しますか？`}
+          title={t('task.deleteTask')}
+          message={t('task.deleteTaskConfirm', { title: task.title })}
           onConfirm={handleConfirmDelete}
           onCancel={handleDeleteConfirmCancel}
         />

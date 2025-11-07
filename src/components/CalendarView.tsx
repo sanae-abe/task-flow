@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { DndContext, DragOverlay } from '@dnd-kit/core';
@@ -16,6 +17,7 @@ import {
 } from './CalendarView/hooks';
 
 const CalendarView: React.FC = () => {
+  const { t } = useTranslation();
   const { state, openTaskDetail, updateTask, openTaskForm } = useKanban();
   const { openVirtualTaskDetail } = useUI();
 
@@ -54,7 +56,7 @@ const CalendarView: React.FC = () => {
   if (!state.currentBoard) {
     return (
       <div className='px-8 pt-6 pb-8 h-full flex flex-col'>
-        <p>ボードが選択されていません</p>
+        <p>{t('board.noBoardSelected')}</p>
       </div>
     );
   }
@@ -69,25 +71,26 @@ const CalendarView: React.FC = () => {
       <div className='px-8 pt-6 pb-8 h-full flex flex-col'>
         <div className='flex justify-between items-center mb-4'>
           <span className='text-xl font-semibold'>
-            {year}年 {monthNames[month]}
+            {year}
+            {t('calendar.year')} {monthNames[month]}
           </span>
           <div className='flex items-center gap-2'>
             <Button
               variant='ghost'
               size='sm'
               onClick={() => navigateMonth('prev')}
-              aria-label='前の月'
+              aria-label={t('calendar.previousMonth')}
             >
               <ChevronLeft size={16} />
             </Button>
             <Button variant='outline' size='sm' onClick={goToToday}>
-              今日
+              {t('calendar.today')}
             </Button>
             <Button
               variant='ghost'
               size='sm'
               onClick={() => navigateMonth('next')}
-              aria-label='次の月'
+              aria-label={t('calendar.nextMonth')}
             >
               <ChevronRight size={16} />
             </Button>

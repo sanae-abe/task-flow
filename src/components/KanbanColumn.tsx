@@ -4,6 +4,7 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import React, { useMemo, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useUI } from '../contexts/UIContext';
 import { useBoard } from '../contexts/BoardContext';
@@ -85,24 +86,30 @@ const ColumnDialogs: React.FC<ColumnDialogsProps> = ({
   onTitleCancel,
   onConfirmDeleteColumn,
   onCancelDeleteColumn,
-}) => (
-  <>
-    <ColumnEditDialog
-      isOpen={showEditDialog}
-      currentTitle={column.title}
-      onSave={onTitleSave}
-      onCancel={onTitleCancel}
-    />
+}) => {
+  const { t } = useTranslation();
 
-    <ConfirmDialog
-      isOpen={showDeleteConfirm}
-      title='カラムを削除'
-      message={`「${column.title}」カラムを削除しますか？このカラム内のすべてのタスクも削除されます。`}
-      onConfirm={onConfirmDeleteColumn}
-      onCancel={onCancelDeleteColumn}
-    />
-  </>
-);
+  return (
+    <>
+      <ColumnEditDialog
+        isOpen={showEditDialog}
+        currentTitle={column.title}
+        onSave={onTitleSave}
+        onCancel={onTitleCancel}
+      />
+
+      <ConfirmDialog
+        isOpen={showDeleteConfirm}
+        title={t('column.deleteColumn')}
+        message={t('column.deleteColumnConfirm', {
+          title: column.title,
+        })}
+        onConfirm={onConfirmDeleteColumn}
+        onCancel={onCancelDeleteColumn}
+      />
+    </>
+  );
+};
 
 const KanbanColumn: React.FC<KanbanColumnProps> = React.memo(
   ({ column, columnIndex, totalColumns, onTaskClick, keyboardDragAndDrop }) => {

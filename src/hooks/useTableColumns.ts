@@ -1,6 +1,8 @@
 import { useState, useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   DEFAULT_COLUMNS,
+  COLUMN_LABEL_KEYS,
   type TableColumn,
   type TableColumnSettings,
   type TableColumnsHookReturn,
@@ -9,6 +11,7 @@ import {
 const STORAGE_KEY = 'taskflow-table-columns';
 
 export const useTableColumns = (): TableColumnsHookReturn => {
+  const { t } = useTranslation();
   // 強制再レンダリング用のカウンター
   const [forceRender, setForceRender] = useState(0);
 
@@ -192,14 +195,26 @@ export const useTableColumns = (): TableColumnsHookReturn => {
     setSettings(defaultSettings);
   }, []);
 
+  // ラベルを翻訳したカラムを取得
+  const translatedColumns = useMemo(
+    () =>
+      settings.columns.map(col => ({
+        ...col,
+        label: COLUMN_LABEL_KEYS[col.id]
+          ? t(COLUMN_LABEL_KEYS[col.id] as string)
+          : col.label,
+      })),
+    [settings.columns, t]
+  );
+
   // 表示されているカラムを順序通りに取得
   const visibleColumns = useMemo(() => {
     const result = settings.columnOrder
-      .map(id => settings.columns.find(col => col.id === id))
+      .map(id => translatedColumns.find(col => col.id === id))
       .filter((col): col is TableColumn => col !== undefined && col.visible);
 
     return [...result];
-  }, [settings.columns, settings.columnOrder]);
+  }, [translatedColumns, settings.columnOrder]);
 
   // グリッドテンプレートカラムのCSS値を生成
   const gridTemplateColumns = useMemo(
@@ -209,7 +224,7 @@ export const useTableColumns = (): TableColumnsHookReturn => {
 
   // 毎回新しいオブジェクトを返すことを確実にする
   const returnValue = {
-    columns: [...settings.columns],
+    columns: [...translatedColumns],
     columnOrder: [...settings.columnOrder],
     visibleColumns: [...visibleColumns],
     gridTemplateColumns,

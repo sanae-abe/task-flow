@@ -1,11 +1,13 @@
 /**
- * Task validation hook
+ * Task validation hook with Zod integration
  *
- * This hook manages form validation logic including
- * title validation and overall form state validation.
+ * This hook manages form validation logic using Zod schemas
+ * for runtime type safety and comprehensive validation.
  */
 
 import { useMemo } from 'react';
+import { taskCreateInputSchema } from '@/schemas/task';
+import { getFieldErrors } from '@/schemas/validation-utils';
 import type { UseTaskFormStateReturn } from './useTaskFormState';
 
 export interface UseTaskValidationProps {
@@ -18,48 +20,84 @@ export interface UseTaskValidationReturn {
     title?: string;
     description?: string;
     dueDate?: string;
-    // Add more validation fields as needed
+    priority?: string;
+    labels?: string;
+    files?: string;
+    recurrence?: string;
   };
 }
 
 export const useTaskValidation = ({
   formState,
 }: UseTaskValidationProps): UseTaskValidationReturn => {
-  // フォームの有効性をチェック
-  const isValid = useMemo(
-    () => formState.title.trim().length > 0,
-    [formState.title]
-  );
+  // Zodスキーマを使ったバリデーション
+  const validationResult = useMemo(() => {
+    // バリデーション対象のデータを構築
+    const taskData = {
+      title: formState.title.trim(),
+      description: formState.description,
+      dueDate: formState.dueDate || null,
+      priority: formState.priority,
+      labels: formState.labels,
+      files: formState.attachments,
+      recurrence: formState.recurrence,
+    };
 
-  // バリデーションエラーメッセージ
-  const validationErrors = useMemo(() => {
-    const errors: UseTaskValidationReturn['validationErrors'] = {};
+    // Zodバリデーション実行
+    const result = taskCreateInputSchema.safeParse(taskData);
 
-    // タイトルのバリデーション
-    if (formState.title.trim().length === 0) {
-      errors.title = 'タイトルは必須です';
-    } else if (formState.title.trim().length > 100) {
-      errors.title = 'タイトルは100文字以内で入力してください';
+    if (result.success) {
+      return {
+        isValid: true,
+        errors: {},
+      };
     }
 
-    // 説明のバリデーション（オプション）
-    if (formState.description.length > 1000) {
-      errors.description = '説明は1000文字以内で入力してください';
-    }
+    // エラーをフィールド別に整理
+    const fieldErrors = getFieldErrors(taskCreateInputSchema, taskData);
 
-    // 期限のバリデーション（オプション）
+    return {
+      isValid: false,
+      errors: fieldErrors,
+    };
+  }, [
+    formState.title,
+    formState.description,
+    formState.dueDate,
+    formState.priority,
+    formState.labels,
+    formState.attachments,
+    formState.recurrence,
+  ]);
+
+  // 追加のカスタムバリデーション（Zodでカバーできない部分）
+  const customValidationErrors = useMemo(() => {
+    const errors: Partial<UseTaskValidationReturn['validationErrors']> = {};
+
+    // 時刻設定のカスタムバリデーション
     if (formState.dueDate && formState.hasTime && !formState.dueTime) {
       errors.dueDate = '時刻設定が有効な場合は時刻を入力してください';
     }
 
     return errors;
-  }, [
-    formState.title,
-    formState.description,
-    formState.dueDate,
-    formState.hasTime,
-    formState.dueTime,
-  ]);
+  }, [formState.dueDate, formState.hasTime, formState.dueTime]);
+
+  // Zodエラーとカスタムエラーを統合
+  const validationErrors = useMemo(
+    () => ({
+      ...validationResult.errors,
+      ...customValidationErrors,
+    }),
+    [validationResult.errors, customValidationErrors]
+  );
+
+  // 全体の有効性チェック
+  const isValid = useMemo(
+    () =>
+      validationResult.isValid &&
+      Object.keys(customValidationErrors).length === 0,
+    [validationResult.isValid, customValidationErrors]
+  );
 
   return {
     isValid,

@@ -1,6 +1,7 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import React, { useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 
 import { useTaskCard } from '../hooks/useTaskCard';
@@ -36,6 +37,7 @@ const getCardDynamicStyles = (
 
 const TaskCard: React.FC<TaskCardProps> = React.memo(
   ({ task, columnId, onTaskClick, keyboardDragAndDrop }) => {
+    const { t } = useTranslation();
     const taskCardData = useTaskCard(task, columnId);
 
     const {
@@ -106,7 +108,7 @@ const TaskCard: React.FC<TaskCardProps> = React.memo(
           onKeyDown={handleKeyDown}
           tabIndex={0}
           role='button'
-          aria-label={`タスク: ${task.title}. キーボードでの移動にはSpaceキーまたはEnterキーを押してください。`}
+          aria-label={`${t('task.title')}: ${task.title}. ${t('task.moveTask')}`}
           aria-pressed={isKeyboardSelected}
           data-task-id={task.id}
         >
@@ -142,8 +144,8 @@ const TaskCard: React.FC<TaskCardProps> = React.memo(
 
         <ConfirmDialog
           isOpen={taskCardData.showDeleteConfirm}
-          title='タスクを削除'
-          message={`「${task.title}」を削除しますか？`}
+          title={t('task.deleteConfirm')}
+          message={t('task.deleteConfirm', { title: task.title })}
           onConfirm={taskCardData.handleConfirmDelete}
           onCancel={taskCardData.handleCancelDelete}
         />

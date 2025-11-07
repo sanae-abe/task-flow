@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import ConfirmDialog from '../ConfirmDialog';
 import { useBoard } from '../../contexts/BoardContext';
 import { getRecycleBinTasks } from '../../utils/recycleBin';
@@ -33,6 +34,7 @@ interface RecycleBinViewProps {
 export const RecycleBinView: React.FC<RecycleBinViewProps> = ({
   onMessage,
 }) => {
+  const { t } = useTranslation();
   const { state } = useBoard();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(
     null
@@ -59,14 +61,14 @@ export const RecycleBinView: React.FC<RecycleBinViewProps> = ({
         ...task,
         boardTitle:
           state.boards.find(b => b.id === task.boardId)?.title ||
-          '不明なボード',
+          t('board.noBoards'),
         columnTitle:
           state.boards
             .find(b => b.id === task.boardId)
             ?.columns.find(c => c.id === task.columnId)?.title ||
-          '不明なカラム',
+          t('column.column'),
       })),
-    [state.boards]
+    [state.boards, t]
   );
 
   const handleRestore = async (taskId: string) => {
@@ -121,7 +123,7 @@ export const RecycleBinView: React.FC<RecycleBinViewProps> = ({
       <ConfirmDialog
         isOpen={showEmptyConfirm}
         title={MESSAGES.EMPTY_BIN.CONFIRM_TITLE}
-        message={`${deletedTasks.length}件のタスクを完全に削除しますか？この操作は元に戻せません。`}
+        message={`${deletedTasks.length}${t('recycleBin.emptyConfirm')}`}
         onConfirm={handleEmptyRecycleBin}
         onCancel={() => setShowEmptyConfirm(false)}
         confirmText={MESSAGES.EMPTY_BIN.CONFIRM_ACTION}
@@ -132,12 +134,12 @@ export const RecycleBinView: React.FC<RecycleBinViewProps> = ({
       {showDeleteConfirm && (
         <ConfirmDialog
           isOpen={!!showDeleteConfirm}
-          title='タスクの完全削除'
-          message={`タスク「${deletedTasks.find(t => t.id === showDeleteConfirm)?.title || ''}」を完全に削除しますか？この操作は元に戻せません。`}
+          title={t('recycleBin.permanentDelete')}
+          message={`${t('recycleBin.permanentDeleteConfirm')}`}
           onConfirm={() => handlePermanentDelete(showDeleteConfirm)}
           onCancel={() => setShowDeleteConfirm(null)}
-          confirmText='完全に削除'
-          cancelText='キャンセル'
+          confirmText={t('recycleBin.permanentDelete')}
+          cancelText={t('common.cancel')}
         />
       )}
     </div>

@@ -14,6 +14,7 @@ import {
 
 import { Button } from '@/components/ui/button';
 import React, { useEffect, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 
 import Logo from './Logo';
@@ -85,6 +86,8 @@ const HelpItem: React.FC<HelpItemProps> = ({ title, description }) => (
 );
 
 const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
+  const { t } = useTranslation();
+
   const handleEscape = useCallback(
     (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
@@ -137,13 +140,13 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
             className='flex items-center gap-2 text-xl font-bold'
           >
             <Logo />
-            使い方ガイド
+            {t('help.title')}
           </h1>
           <Button
             onClick={onClose}
             variant='ghost'
             size='sm'
-            aria-label='ヘルプを閉じる'
+            aria-label={t('help.closeHelp')}
             className='shrink-0 p-1 h-auto min-w-0'
           >
             <X size={16} />
@@ -153,214 +156,229 @@ const HelpSidebar: React.FC<HelpSidebarProps> = ({ isOpen, onClose }) => {
         {/* Content */}
         <div className='flex-1 p-5 overflow-y-auto'>
           <HelpSection
-            title='ビュー切り替え'
+            title={t('help.viewSwitch.title')}
             icon={Video}
             backgroundClass={SECTION_COLORS.PRIMARY_BLUE}
           >
             <HelpItem
-              title='カンバンビュー'
-              description='カラム単位でタスクを管理するプロジェクト管理方式'
+              title={t('help.viewSwitch.kanban.title')}
+              description={t('help.viewSwitch.kanban.description')}
             />
             <HelpItem
-              title='カレンダービュー'
-              description='期限日ベースでタスクを月次カレンダー表示'
+              title={t('help.viewSwitch.calendar.title')}
+              description={t('help.viewSwitch.calendar.description')}
             />
             <HelpItem
-              title='テーブルビュー'
-              description='全タスクを一覧表形式で表示・管理、カラム表示のカスタマイズが可能'
+              title={t('help.viewSwitch.table.title')}
+              description={t('help.viewSwitch.table.description')}
             />
             <HelpItem
-              title='切り替え方法'
-              description='サブヘッダー右端のメニューからビューを選択'
+              title={t('help.viewSwitch.howTo.title')}
+              description={t('help.viewSwitch.howTo.description')}
             />
           </HelpSection>
 
           <HelpSection
-            title='基本操作'
+            title={t('help.basicOperations.title')}
             icon={MousePointer}
             backgroundClass={SECTION_COLORS.SUCCESS_GREEN}
           >
             <HelpItem
-              title='ボード作成'
-              description='サブヘッダーの「ボード作成」ボタンでプロジェクトボードを作成'
+              title={t('help.basicOperations.createBoard.title')}
+              description={t('help.basicOperations.createBoard.description')}
             />
             <HelpItem
-              title='カラム追加'
-              description='サブヘッダーの「カラムを追加」ボタンで作業段階を追加（カンバンビュー時）'
+              title={t('help.basicOperations.addColumn.title')}
+              description={t('help.basicOperations.addColumn.description')}
             />
             <HelpItem
-              title='タスク作成'
-              description='ヘッダーの「タスク作成」ボタンまたは各カラムの「+」ボタンでタスクを作成'
+              title={t('help.basicOperations.createTask.title')}
+              description={t('help.basicOperations.createTask.description')}
             />
             <HelpItem
               title={
                 <>
-                  ドラッグ&
-                  <br />
-                  ドロップ
+                  {t('help.basicOperations.dragDrop.title')
+                    .split('\n')
+                    .map((line, i) => (
+                      <React.Fragment key={i}>
+                        {line}
+                        {i === 0 && <br />}
+                      </React.Fragment>
+                    ))}
                 </>
               }
-              description='タスクをドラッグしてカラム間を移動（カンバンビューで直感的操作）'
+              description={t('help.basicOperations.dragDrop.description')}
             />
             <HelpItem
-              title='カラム移動'
-              description='カラムヘッダーのkebabアイコン（⋯）から「左に移動」「右に移動」でカラムの順序変更が可能'
+              title={t('help.basicOperations.moveColumn.title')}
+              description={t('help.basicOperations.moveColumn.description')}
             />
           </HelpSection>
 
           <HelpSection
-            title='タスク管理'
+            title={t('help.taskManagement.title')}
             icon={List}
             backgroundClass={SECTION_COLORS.PRIMARY_BLUE}
           >
             <HelpItem
-              title='タスク編集'
-              description='タスクカードをクリックして詳細表示・編集'
+              title={t('help.taskManagement.editTask.title')}
+              description={t('help.taskManagement.editTask.description')}
             />
             <HelpItem
-              title='タスク複製'
-              description='タスク詳細サイドバーの複製ボタンで既存タスクを同じカラムに複製。タイトルに「(コピー)」が付与され、サブタスクも未完了状態で複製される'
+              title={t('help.taskManagement.duplicateTask.title')}
+              description={t('help.taskManagement.duplicateTask.description')}
             />
             <HelpItem
-              title='説明欄エディタ'
-              description='タスク説明欄で太字・斜体・リンク・絵文字などの書式設定が可能'
+              title={t('help.taskManagement.editor.title')}
+              description={t('help.taskManagement.editor.description')}
             />
             <HelpItem
-              title='完了機能'
-              description='タスク名左のチェックアイコンで即座に完了状態に移動。完了したタスクは完了カラムの一番上に配置される'
+              title={t('help.taskManagement.complete.title')}
+              description={t('help.taskManagement.complete.description')}
             />
             <HelpItem
-              title='サブタスク'
-              description='タスク詳細画面でチェックリスト形式のサブタスクを管理。ドラッグハンドル（⋮⋮）をドラッグして順序変更が可能'
+              title={t('help.taskManagement.subtasks.title')}
+              description={t('help.taskManagement.subtasks.description')}
             />
             <HelpItem
-              title='ラベル'
-              description='色付きラベルでタスクを分類・整理'
+              title={t('help.taskManagement.labels.title')}
+              description={t('help.taskManagement.labels.description')}
             />
             <HelpItem
-              title='期限・繰り返し設定'
-              description='期限日時の設定と毎日・毎週・毎月・毎年の繰り返しパターンを設定。期限切れタスクは自動警告'
+              title={t('help.taskManagement.dueRecurrence.title')}
+              description={t('help.taskManagement.dueRecurrence.description')}
             />
             <HelpItem
-              title='優先度設定'
-              description='Critical（緊急）・High（高）・Medium（中）・Low（低）の4段階で優先度を設定。優先度によるフィルタリング・ソート機能も利用可能'
+              title={t('help.taskManagement.priority.title')}
+              description={t('help.taskManagement.priority.description')}
             />
           </HelpSection>
 
           <HelpSection
-            title='ファイル添付'
+            title={t('help.attachments.title')}
             icon={Paperclip}
             backgroundClass={SECTION_COLORS.ATTENTION_YELLOW}
           >
             <HelpItem
-              title='ファイル管理'
-              description='ドラッグ&ドロップでファイル添付、画像・テキストのプレビュー表示、ダウンロード機能'
+              title={t('help.attachments.fileManagement.title')}
+              description={t('help.attachments.fileManagement.description')}
             />
           </HelpSection>
 
           <HelpSection
-            title='カレンダー機能'
+            title={t('help.calendarFeature.title')}
             icon={Calendar}
             backgroundClass={SECTION_COLORS.ACCENT_PURPLE}
           >
             <HelpItem
-              title='月次表示'
-              description='期限日のあるタスクを月単位のカレンダーで表示、タスクをクリックして詳細確認・編集'
+              title={t('help.calendarFeature.monthlyView.title')}
+              description={t('help.calendarFeature.monthlyView.description')}
             />
           </HelpSection>
 
           <HelpSection
-            title='フィルタリング・ソート'
+            title={t('help.filterSort.title')}
             icon={Filter}
             backgroundClass={SECTION_COLORS.DANGER_RED}
           >
             <HelpItem
-              title='絞り込み・並び替え'
-              description='期限・ラベル・優先度・完了状態でフィルタ、作成日・更新日・期限・名前・優先度順でソート可能'
+              title={t('help.filterSort.filterSort.title')}
+              description={t('help.filterSort.filterSort.description')}
             />
           </HelpSection>
 
           <HelpSection
-            title='テンプレート管理'
+            title={t('help.templateManagement.title')}
             icon={FileText}
             backgroundClass={SECTION_COLORS.MUTED_GRAY}
           >
             <HelpItem
-              title='テンプレート機能'
-              description='よく使うタスクパターンをテンプレートとして保存・管理。カテゴリー分類、お気に入り登録、検索機能で効率的に活用'
+              title={t('help.templateManagement.templates.title')}
+              description={t('help.templateManagement.templates.description')}
             />
           </HelpSection>
 
           <HelpSection
-            title='テーブルビュー'
+            title={t('help.tableView.title')}
             icon={Table}
             backgroundClass={SECTION_COLORS.PRIMARY_BLUE}
           >
             <HelpItem
-              title='カラム管理'
-              description='右上の設定ボタンから表示項目をカスタマイズ、タスク数・進捗状況を一覧表示'
+              title={t('help.tableView.columnManagement.title')}
+              description={t('help.tableView.columnManagement.description')}
             />
           </HelpSection>
 
           <HelpSection
-            title='データ管理'
+            title={t('help.dataManagement.title')}
             icon={Database}
             backgroundClass={SECTION_COLORS.SPONSOR_ORANGE}
           >
             <HelpItem
-              title='ローカル保存'
-              description='すべてのデータはブラウザに自動保存'
+              title={t('help.dataManagement.localStorage.title')}
+              description={t('help.dataManagement.localStorage.description')}
             />
             <HelpItem
-              title='データインポート'
-              description='JSONファイルでデータの一括インポート。インポート結果・エラー情報は設定画面上部にメッセージで表示'
-            />
-            <HelpItem
-              title={
-                <>
-                  ボード選択
-                  <br />
-                  エクスポート
-                </>
-              }
-              description='設定画面のデータ管理から、任意のボードを選択してJSONファイルとしてエクスポート'
-            />
-            <HelpItem
-              title='ラベル管理'
-              description='設定画面のラベル管理で全ボードのラベルを一覧表示。ラベル名・所属ボード・使用数でソート可能、新しいラベルの作成・編集・削除が可能。操作結果は設定画面上部にメッセージで表示'
+              title={t('help.dataManagement.import.title')}
+              description={t('help.dataManagement.import.description')}
             />
             <HelpItem
               title={
                 <>
-                  デフォルト
-                  <br />
-                  カラム設定
+                  {t('help.dataManagement.export.title')
+                    .split('\n')
+                    .map((line, i) => (
+                      <React.Fragment key={i}>
+                        {line}
+                        {i === 0 && <br />}
+                      </React.Fragment>
+                    ))}
                 </>
               }
-              description='設定画面のカンバン設定で、新しいボード作成時に使用されるデフォルトカラムを設定。カラム名の編集・追加・削除・順序変更（ドラッグ&ドロップ対応）が可能'
+              description={t('help.dataManagement.export.description')}
             />
             <HelpItem
-              title='管理機能'
-              description='ごみ箱でのタスク復元、完了タスククリア、テンプレートのバックアップ・復元が可能'
+              title={t('help.dataManagement.labelManagement.title')}
+              description={t('help.dataManagement.labelManagement.description')}
+            />
+            <HelpItem
+              title={
+                <>
+                  {t('help.dataManagement.defaultColumn.title')
+                    .split('\n')
+                    .map((line, i) => (
+                      <React.Fragment key={i}>
+                        {line}
+                        {i === 0 && <br />}
+                      </React.Fragment>
+                    ))}
+                </>
+              }
+              description={t('help.dataManagement.defaultColumn.description')}
+            />
+            <HelpItem
+              title={t('help.dataManagement.management.title')}
+              description={t('help.dataManagement.management.description')}
             />
           </HelpSection>
 
           <HelpSection
-            title='便利なヒント'
+            title={t('help.tips.title')}
             icon={Info}
             backgroundClass={SECTION_COLORS.SUCCESS_GREEN}
           >
             <HelpItem
-              title='キーボード操作'
-              description='Escapeキーでダイアログやサイドバーを閉じる'
+              title={t('help.tips.keyboard.title')}
+              description={t('help.tips.keyboard.description')}
             />
             <HelpItem
-              title='オフライン対応'
-              description='データはブラウザに保存されオフラインでも使用可能'
+              title={t('help.tips.offline.title')}
+              description={t('help.tips.offline.description')}
             />
             <HelpItem
-              title='効率化のコツ'
-              description='テンプレート機能、タスク複製、優先度フィルターを活用して作業効率をアップ'
+              title={t('help.tips.efficiency.title')}
+              description={t('help.tips.efficiency.description')}
             />
           </HelpSection>
         </div>

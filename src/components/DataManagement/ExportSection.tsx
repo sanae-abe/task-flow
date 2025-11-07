@@ -1,4 +1,5 @@
 import { memo, useMemo, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Download } from 'lucide-react';
 
@@ -37,6 +38,7 @@ interface ExportSectionProps {
 
 export const ExportSection = memo<ExportSectionProps>(
   ({ onExportAll, onExportCurrent, onMessage }) => {
+    const { t } = useTranslation();
     const { state } = useKanban();
 
     // 初期値の設定
@@ -50,7 +52,7 @@ export const ExportSection = memo<ExportSectionProps>(
 
     // ボード選択のオプション生成
     const boardOptions = useMemo(() => {
-      const options = [{ value: '', label: 'ボードを選択してください' }];
+      const options = [{ value: '', label: t('board.selectBoard') }];
       state.boards.forEach(board => {
         options.push({
           value: board.id,
@@ -58,7 +60,7 @@ export const ExportSection = memo<ExportSectionProps>(
         });
       });
       return options;
-    }, [state.boards]);
+    }, [state.boards, t]);
 
     // フィールド設定
     const fields: FormFieldConfig[] = useMemo(
@@ -68,11 +70,11 @@ export const ExportSection = memo<ExportSectionProps>(
           id: 'exportType',
           name: 'exportType',
           type: 'select',
-          label: 'エクスポート範囲',
+          label: t('export.exportRange'),
           value: initialValues.exportType,
           options: [
-            { value: 'all', label: '全データをエクスポート' },
-            { value: 'selected', label: '選択したボードをエクスポート' },
+            { value: 'all', label: t('export.exportAll') },
+            { value: 'selected', label: t('export.exportBoard') },
           ],
           onChange: () => {}, // フォームで管理
         },
@@ -81,13 +83,13 @@ export const ExportSection = memo<ExportSectionProps>(
           id: 'selectedBoardId',
           name: 'selectedBoardId',
           type: 'select',
-          label: 'エクスポートするボード',
+          label: t('export.selectBoards'),
           value: initialValues.selectedBoardId,
           options: boardOptions,
           onChange: () => {}, // フォームで管理
         },
       ],
-      [initialValues, boardOptions]
+      [initialValues, boardOptions, t]
     );
 
     // 統合フォーム管理
@@ -124,21 +126,21 @@ export const ExportSection = memo<ExportSectionProps>(
           onExportAll?.();
           const successMessage = {
             type: 'success' as const,
-            text: '全データをエクスポートしました',
+            text: t('notification.dataExported'),
           };
           onMessage?.(successMessage);
         } else if (selectedBoard && onExportCurrent) {
           onExportCurrent(selectedBoard);
           const successMessage = {
             type: 'success' as const,
-            text: `「${selectedBoard.title}」をエクスポートしました`,
+            text: t('notification.dataExported'),
           };
           onMessage?.(successMessage);
         }
       } catch (_error) {
         const errorMessage = {
           type: 'critical' as const,
-          text: 'エクスポートに失敗しました',
+          text: t('export.importError'),
         };
         onMessage?.(errorMessage);
       }
@@ -148,6 +150,7 @@ export const ExportSection = memo<ExportSectionProps>(
       onExportAll,
       onExportCurrent,
       onMessage,
+      t,
     ]);
 
     // 表示する統計情報を決定
@@ -155,8 +158,8 @@ export const ExportSection = memo<ExportSectionProps>(
       currentExportType === 'all' ? allDataStatistics : selectedBoardStatistics;
     const statisticsTitle =
       currentExportType === 'all'
-        ? 'エクスポートされるデータ'
-        : `「${selectedBoard?.title}」のデータ`;
+        ? t('export.allData')
+        : `${selectedBoard?.title || ''}`;
 
     // 表示するフィールドをフィルタリング
     const visibleFields = useMemo(
@@ -173,11 +176,7 @@ export const ExportSection = memo<ExportSectionProps>(
     return (
       <div className='flex flex-col gap-4'>
         {/* セクション概要 */}
-        <p className='text-sm text-zinc-700'>
-          タスク管理データをJSON形式でエクスポートします。
-          <br />
-          バックアップや他の環境への移行にご利用ください。
-        </p>
+        <p className='text-sm text-zinc-700'>{t('export.exportDescription')}</p>
 
         {/* フォームフィールド */}
         <div className='flex flex-col gap-4'>
@@ -212,7 +211,7 @@ export const ExportSection = memo<ExportSectionProps>(
               disabled={currentExportType === 'selected' && !selectedBoard}
             >
               <Download size={16} className='mr-2' />
-              エクスポート実行
+              {t('export.export')}
             </Button>
           </div>
         </div>

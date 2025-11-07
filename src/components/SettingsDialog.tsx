@@ -1,5 +1,6 @@
 import { Database, Tag, Columns, Trash2, ListTodo, Info } from 'lucide-react';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 
 import UnifiedDialog from './shared/Dialog/UnifiedDialog';
@@ -26,6 +27,7 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
   onExportData,
   onExportBoard,
 }) => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<
     'labels' | 'data' | 'board' | 'templates' | 'recycleBin' | 'about'
   >('labels');
@@ -37,7 +39,7 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
     <UnifiedDialog
       isOpen={isOpen}
       onClose={onClose}
-      title='設定'
+      title={t('settings.settings')}
       variant='modal'
       size='xl'
     >
@@ -56,7 +58,7 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
               aria-current={activeTab === 'board' ? 'page' : undefined}
             >
               <Columns size={16} />
-              カラム設定
+              {t('settings.board')}
             </button>
             <button
               className={cn(
@@ -69,7 +71,7 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
               aria-current={activeTab === 'templates' ? 'page' : undefined}
             >
               <ListTodo size={16} />
-              テンプレート管理
+              {t('template.template')}
             </button>
             <button
               className={cn(
@@ -82,7 +84,7 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
               aria-current={activeTab === 'labels' ? 'page' : undefined}
             >
               <Tag size={16} />
-              ラベル管理
+              {t('settings.labels')}
             </button>
             <button
               className={cn(
@@ -95,7 +97,7 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
               aria-current={activeTab === 'recycleBin' ? 'page' : undefined}
             >
               <Trash2 size={16} />
-              ゴミ箱管理
+              {t('settings.recycleBin')}
             </button>
             <button
               className={cn(
@@ -108,7 +110,7 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
               aria-current={activeTab === 'data' ? 'page' : undefined}
             >
               <Database size={16} />
-              データ管理
+              {t('settings.dataManagement')}
             </button>
             <button
               className={cn(
@@ -121,7 +123,7 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
               aria-current={activeTab === 'about' ? 'page' : undefined}
             >
               <Info size={16} />
-              アプリ情報
+              About
             </button>
           </nav>
         </div>

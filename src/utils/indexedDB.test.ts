@@ -131,11 +131,11 @@ describe('IndexedDB Manager', () => {
     // Mock transaction to return consistent object stores
     mockDB.transaction = vi.fn((_storeNames: string[], _mode: string) => {
       const transaction = new MockIDBTransaction();
-      transaction.objectStore = vi.fn((_name: string) => {
-        if (!mockStores.has(name)) {
-          mockStores.set(name, new MockIDBObjectStore());
+      transaction.objectStore = vi.fn((storeName: string) => {
+        if (!mockStores.has(storeName)) {
+          mockStores.set(storeName, new MockIDBObjectStore());
         }
-        return mockStores.get(name)!;
+        return mockStores.get(storeName)!;
       });
       return transaction as any;
     });
@@ -338,6 +338,8 @@ describe('IndexedDB Manager', () => {
 
   describe('Bulk Operations', () => {
     beforeEach(async () => {
+      // Clear mockStores before each test to ensure isolation
+      mockStores.clear();
       await indexedDBManager.init();
     });
 

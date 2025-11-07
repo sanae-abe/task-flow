@@ -1,4 +1,5 @@
 import { memo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
 import { ExportSection } from './ExportSection';
@@ -29,13 +30,14 @@ interface DataManagementPanelProps {
 
 export const DataManagementPanel = memo<DataManagementPanelProps>(
   ({ onExportAll, onExportCurrent, onMessage }) => {
+    const { t } = useTranslation();
     const [activeTab, setActiveTab] = useState<'export' | 'import'>('export');
 
     return (
       <div className='flex flex-col gap-3'>
         {/* ヘッダー */}
         <div className='flex items-center gap-2'>
-          <h2 className='text-lg font-bold'>データ管理</h2>
+          <h2 className='text-lg font-bold'>{t('settings.dataManagement')}</h2>
         </div>
 
         {/* タブナビゲーション */}
@@ -44,8 +46,8 @@ export const DataManagementPanel = memo<DataManagementPanelProps>(
           onValueChange={value => setActiveTab(value as 'export' | 'import')}
         >
           <TabsList className='grid w-full grid-cols-2 mb-4'>
-            <TabsTrigger value='export'>エクスポート</TabsTrigger>
-            <TabsTrigger value='import'>インポート</TabsTrigger>
+            <TabsTrigger value='export'>{t('export.export')}</TabsTrigger>
+            <TabsTrigger value='import'>{t('export.import')}</TabsTrigger>
           </TabsList>
 
           <TabsContent value='export'>

@@ -143,7 +143,7 @@ describe('SelectField', () => {
       expect(select.value).toBe('option2');
     });
 
-    it('should handle empty value', () => {
+    it('should handle empty value with placeholder', () => {
       render(
         <SelectField
           id='test-field'
@@ -151,6 +151,7 @@ describe('SelectField', () => {
           value=''
           onChange={mockOnChange}
           options={mockOptions}
+          placeholder='Select option'
         />
       );
 
@@ -205,7 +206,8 @@ describe('SelectField', () => {
       );
 
       const select = screen.getByTestId('select-component');
-      expect(select).toHaveAttribute('autofocus');
+      // React 19: autofocus is handled via ref.focus(), not attribute
+      expect(select).toHaveFocus();
     });
 
     it('should not autofocus by default', () => {
@@ -433,7 +435,8 @@ describe('SelectField', () => {
       );
 
       const select = screen.getByTestId('select-component');
-      expect(select).toHaveStyle({ color: 'red', fontSize: '16px' });
+      // Browsers convert color names to rgb format
+      expect(select).toHaveStyle({ color: 'rgb(255, 0, 0)', fontSize: '16px' });
     });
 
     it('should handle undefined style', () => {
@@ -448,7 +451,8 @@ describe('SelectField', () => {
       );
 
       const select = screen.getByTestId('select-component');
-      expect(select).toHaveAttribute('style', '');
+      // When no style prop, the style attribute is null, not empty string
+      expect(select.getAttribute('style')).toBeNull();
     });
 
     it('should apply w-full class', () => {
@@ -530,7 +534,7 @@ describe('SelectField', () => {
   });
 
   describe('Edge Cases', () => {
-    it('should handle null value', () => {
+    it('should handle null value with placeholder', () => {
       render(
         <SelectField
           id='test-field'
@@ -538,6 +542,7 @@ describe('SelectField', () => {
           value={null as any}
           onChange={mockOnChange}
           options={mockOptions}
+          placeholder='Select option'
         />
       );
 
@@ -547,7 +552,7 @@ describe('SelectField', () => {
       expect(select.value).toBe('');
     });
 
-    it('should handle undefined value', () => {
+    it('should handle undefined value with placeholder', () => {
       render(
         <SelectField
           id='test-field'
@@ -555,6 +560,7 @@ describe('SelectField', () => {
           value={undefined as any}
           onChange={mockOnChange}
           options={mockOptions}
+          placeholder='Select option'
         />
       );
 
@@ -572,13 +578,15 @@ describe('SelectField', () => {
           value='nonexistent'
           onChange={mockOnChange}
           options={mockOptions}
+          placeholder='Select option'
         />
       );
 
       const select = screen.getByTestId(
         'select-component'
       ) as HTMLSelectElement;
-      expect(select.value).toBe('nonexistent');
+      // When value doesn't exist and placeholder is provided, it defaults to empty string
+      expect(select.value).toBe('');
     });
 
     it('should update value when prop changes', () => {

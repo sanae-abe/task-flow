@@ -1,4 +1,5 @@
 import { memo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { ConfirmDialog as UnifiedConfirmDialog } from './shared/Dialog';
 
@@ -17,23 +18,27 @@ const ConfirmDialog = memo<ConfirmDialogProps>(
     isOpen,
     title,
     message,
-    confirmText = '削除',
-    cancelText = 'キャンセル',
+    confirmText,
+    cancelText,
     onConfirm,
     onCancel,
-  }) => (
-    <UnifiedConfirmDialog
-      isOpen={isOpen}
-      title={title}
-      message={message}
-      onConfirm={onConfirm}
-      onCancel={onCancel}
-      onClose={onCancel}
-      confirmText={confirmText}
-      cancelText={cancelText}
-      confirmVariant='danger'
-    />
-  )
+  }) => {
+    const { t } = useTranslation();
+
+    return (
+      <UnifiedConfirmDialog
+        isOpen={isOpen}
+        title={title}
+        message={message}
+        onConfirm={onConfirm}
+        onCancel={onCancel}
+        onClose={onCancel}
+        confirmText={confirmText ?? t('common.delete')}
+        cancelText={cancelText ?? t('common.cancel')}
+        confirmVariant='danger'
+      />
+    );
+  }
 );
 
 export default ConfirmDialog;

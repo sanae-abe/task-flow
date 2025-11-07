@@ -116,22 +116,20 @@ const UnifiedForm = memo<UnifiedFormProps>(
 
           {children}
 
-          {(showCancelButton || onCancel) && (
-            <div className='flex gap-2 mt-3'>
-              <Button
-                type='submit'
-                variant='default'
-                disabled={disabled || state.isSubmitting || !state.isValid}
-              >
-                {submitText}
+          <div className='flex gap-2 mt-3'>
+            <Button
+              type='submit'
+              variant='default'
+              disabled={disabled || state.isSubmitting || !state.isValid}
+            >
+              {submitText}
+            </Button>
+            {showCancelButton && onCancel && (
+              <Button onClick={handleCancel} variant='outline'>
+                {cancelText}
               </Button>
-              {showCancelButton && onCancel && (
-                <Button onClick={handleCancel} variant='outline'>
-                  {cancelText}
-                </Button>
-              )}
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </form>
     );

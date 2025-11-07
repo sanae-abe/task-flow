@@ -1,0 +1,549 @@
+{
+  "common": {
+    "save": "保存",
+    "cancel": "キャンセル",
+    "delete": "削除",
+    "edit": "編集",
+    "close": "閉じる",
+    "create": "作成",
+    "update": "更新",
+    "confirm": "確認",
+    "back": "戻る",
+    "next": "次へ",
+    "add": "追加",
+    "remove": "削除",
+    "search": "検索",
+    "filter": "フィルター",
+    "sort": "並び替え",
+    "clear": "クリア",
+    "reset": "リセット",
+    "apply": "適用",
+    "loading": "読み込み中...",
+    "noData": "データがありません",
+    "error": "エラーが発生しました",
+    "success": "成功しました",
+    "clearFilter": "フィルタをクリア",
+    "reload": "再読み込み",
+    "later": "後で",
+    "installing": "インストール中...",
+    "install": "インストール"
+  },
+  "header": {
+    "createTask": "タスク作成",
+    "help": "ヘルプ",
+    "settings": "設定",
+    "more": "その他",
+    "recycleBin": "ごみ箱"
+  },
+  "subheader": {
+    "addColumn": "カラム追加",
+    "selectViewMode": "ビューモードを選択",
+    "deleteBoard": "プロジェクトを削除",
+    "deleteBoardMessage": "「{{title}}」を削除しますか？",
+    "clearCompleted": "完了したタスクをクリア",
+    "clearCompletedMessage": "完了したタスクをすべて削除しますか？"
+  },
+  "task": {
+    "title": "タスク",
+    "taskTitle": "タスク名",
+    "description": "説明",
+    "dueDate": "期限",
+    "priority": "優先度",
+    "labels": "ラベル",
+    "attachments": "添付ファイル",
+    "subtasks": "サブタスク",
+    "status": "ステータス",
+    "createdAt": "作成日",
+    "updatedAt": "更新日",
+    "completedAt": "完了日",
+    "overdue": "期限切れ",
+    "dueToday": "今日が期限",
+    "dueTomorrow": "明日が期限",
+    "subtaskProgress": "サブタスク進捗",
+    "duplicate": "複製",
+    "deleteConfirm": "このタスクを削除してもよろしいですか？",
+    "duplicateConfirm": "このタスクを複製しますか？",
+    "noTasks": "タスクがありません",
+    "addTask": "タスクを追加",
+    "editTask": "タスクを編集",
+    "taskDetails": "タスク詳細",
+    "moveTask": "タスクを移動",
+    "completeTask": "タスクを完了",
+    "reopenTask": "タスクを再開",
+    "closeTaskDetail": "タスク詳細を閉じる",
+    "deleteTask": "タスクを削除",
+    "deleteTaskConfirm": "「{{title}}」を削除しますか？",
+    "noFilteredTasks": "フィルタ条件に一致するタスクがありません",
+    "createTask": "タスクを作成"
+  },
+  "board": {
+    "board": "ボード",
+    "boardName": "ボード名",
+    "createBoard": "ボードを作成",
+    "createBoardTitle": "新しいボードを作成",
+    "editBoard": "ボードを編集",
+    "deleteBoard": "ボードを削除",
+    "selectBoard": "ボードを選択",
+    "noBoards": "ボードがありません",
+    "defaultBoard": "デフォルトボード",
+    "currentBoard": "現在のボード",
+    "noBoardSelected": "ボードが選択されていません",
+    "boardSettings": "ボード設定",
+    "boardSettingsMenu": "ボード設定メニューを開く",
+    "boardManagement": "ボード管理",
+    "editBoardName": "ボード名を編集",
+    "boardNamePlaceholder": "ボード名を入力",
+    "taskManagement": "タスク管理",
+    "clearCompleted": "完了したタスクをクリア",
+    "dangerActions": "危険なアクション"
+  },
+  "column": {
+    "column": "カラム",
+    "columnName": "カラム名",
+    "addColumn": "カラムを追加",
+    "addColumnTitle": "新しいカラムを追加",
+    "editColumn": "カラムを編集",
+    "deleteColumn": "カラムを削除",
+    "moveLeft": "左に移動",
+    "moveRight": "右に移動",
+    "setAsDefault": "デフォルトに設定",
+    "defaultColumn": "デフォルトカラム",
+    "deleteColumnConfirm": "このカラムを削除してもよろしいですか?",
+    "newColumnPlaceholder": "新しいカラム名",
+    "columnNamePlaceholder": "カラム名を入力",
+    "columnNameLabel": "カラム「{{name}}」の名前",
+    "moveUp": "{{name}}を上に移動",
+    "moveDown": "{{name}}を下に移動",
+    "deleteColumnLabel": "{{name}}を削除",
+    "columnSettings": "カラム設定",
+    "columnMovement": "カラム移動",
+    "columnManagement": "カラム管理",
+    "insertPosition": "挿入位置",
+    "insertFirst": "最初",
+    "insertAfter": "「{{title}}」の後"
+  },
+  "label": {
+    "label": "ラベル",
+    "labelName": "ラベル名",
+    "labelColor": "ラベルカラー",
+    "createLabel": "ラベルを作成",
+    "editLabel": "ラベルを編集",
+    "deleteLabel": "ラベルを削除",
+    "noLabels": "ラベルがありません",
+    "selectLabel": "ラベルを選択",
+    "manageLabels": "ラベル管理",
+    "deleteLabelConfirm": "このラベルを削除してもよろしいですか？"
+  },
+  "priority": {
+    "priority": "優先度",
+    "critical": "最優先",
+    "high": "高",
+    "medium": "中",
+    "low": "低",
+    "noPriority": "なし",
+    "setPriority": "優先度を設定"
+  },
+  "recurrence": {
+    "recurrence": "繰り返し",
+    "noRecurrence": "繰り返しなし",
+    "detailTitle": "繰り返し設定の詳細",
+    "daily": "毎日",
+    "weekly": "毎週",
+    "monthly": "毎月",
+    "yearly": "毎年",
+    "custom": "カスタム",
+    "interval": "間隔",
+    "endDate": "終了日",
+    "noEndDate": "終了日なし",
+    "repeatEvery": "繰り返し間隔",
+    "repeatOn": "繰り返す曜日"
+  },
+  "calendar": {
+    "calendar": "カレンダー",
+    "today": "今日",
+    "month": "月",
+    "week": "週",
+    "day": "日",
+    "noEvents": "イベントがありません",
+    "year": "年",
+    "previousMonth": "前の月",
+    "nextMonth": "次の月"
+  },
+  "settings": {
+    "settings": "設定",
+    "general": "全般",
+    "board": "ボード",
+    "labels": "ラベル",
+    "recycleBin": "ごみ箱",
+    "dataManagement": "データ管理",
+    "language": "言語",
+    "theme": "テーマ",
+    "notifications": "通知",
+    "defaultColumn": "デフォルトカラム",
+    "autoDeleteDays": "自動削除日数",
+    "saveSettings": "設定を保存",
+    "resetSettings": "設定をリセット",
+    "boardSettings": {
+      "title": "デフォルトカラム設定",
+      "description": "新しいボードを作成する際のデフォルトカラムを設定できます。",
+      "loadingSettings": "設定を読み込み中...",
+      "autoSaveSuccess": "設定を自動保存しました",
+      "autoSaveError": "自動保存に失敗しました",
+      "saveSuccess": "設定を保存しました",
+      "saveError": "設定の保存に失敗しました",
+      "loadError": "設定の読み込みに失敗しました",
+      "minColumnRequired": "最低1つのカラムが必要です"
+    },
+    "recycleBinSettings": {
+      "title": "ごみ箱設定",
+      "description": "削除したボード、カラム、タスクをゴミ箱に保持する期間を設定します。\n期間を過ぎたデータは自動的に完全削除されます。無制限を選択すると自動削除されません。",
+      "presetTitle": "よく使われる設定",
+      "retentionLabel": "保持期間",
+      "retentionUnit": "日間",
+      "retentionHelp": "1〜365日の範囲で設定、または「無制限」ボタンで無制限に設定できます（推奨: 30日）",
+      "saveButton": "設定を保存",
+      "saving": "保存中...",
+      "importantNote": "保持期間を短くすると、既にゴミ箱にあるデータも新しい期間で再計算されます。必要なデータは期間変更前に復元することをお勧めします。",
+      "presets": {
+        "oneWeek": "1週間",
+        "oneWeekDesc": "短期間の保持。頻繁に整理したい場合に適しています",
+        "twoWeeks": "2週間",
+        "twoWeeksDesc": "適度な保持期間。日常的な作業に適しています",
+        "oneMonth": "1ヶ月",
+        "oneMonthDesc": "推奨設定。多くの用途に適したバランスの良い期間",
+        "threeMonths": "3ヶ月",
+        "threeMonthsDesc": "長期保持。重要なタスクを扱う場合に適しています",
+        "unlimited": "無制限",
+        "unlimitedDesc": "自動削除されません。手動で管理する必要があります"
+      }
+    }
+  },
+  "template": {
+    "template": "テンプレート",
+    "templateName": "テンプレート名",
+    "createTemplate": "テンプレートを作成",
+    "useTemplate": "テンプレートを使用",
+    "editTemplate": "テンプレートを編集",
+    "deleteTemplate": "テンプレートを削除",
+    "noTemplates": "テンプレートがありません",
+    "saveAsTemplate": "テンプレートとして保存",
+    "category": "カテゴリ",
+    "favorite": "お気に入り",
+    "addToFavorites": "お気に入りに追加",
+    "removeFromFavorites": "お気に入りから削除",
+    "management": {
+      "title": "テンプレート管理",
+      "loading": "テンプレートを読み込み中...",
+      "createSuccess": "テンプレート「{{name}}」を作成しました",
+      "createError": "テンプレートの作成に失敗しました",
+      "updateSuccess": "テンプレート「{{name}}」を更新しました",
+      "updateError": "テンプレートの更新に失敗しました",
+      "deleteSuccess": "テンプレート「{{name}}」を削除しました",
+      "deleteError": "テンプレートの削除に失敗しました",
+      "deleteConfirmTitle": "テンプレートの削除",
+      "deleteConfirmMessage": "テンプレート「{{name}}」を削除しますか？この操作は元に戻せません。",
+      "favoriteAdded": "テンプレート「{{name}}」をお気に入りに追加しました",
+      "favoriteRemoved": "テンプレート「{{name}}」をお気に入りから削除しました"
+    }
+  },
+  "recycleBin": {
+    "recycleBin": "ごみ箱",
+    "restore": "復元",
+    "permanentDelete": "完全に削除",
+    "emptyRecycleBin": "ごみ箱を空にする",
+    "noItems": "ごみ箱は空です",
+    "restoreConfirm": "このアイテムを復元しますか？",
+    "permanentDeleteConfirm": "このアイテムを完全に削除しますか？この操作は取り消せません。",
+    "emptyConfirm": "ごみ箱を空にしますか？この操作は取り消せません。",
+    "deletedAt": "削除日時",
+    "autoDelete": "自動削除",
+    "autoDeleteDescription": "削除後{{days}}日経過したアイテムを自動削除"
+  },
+  "filter": {
+    "filter": "フィルター",
+    "filterBy": "フィルター条件",
+    "sortBy": "並び替え",
+    "all": "すべて",
+    "completed": "完了",
+    "incomplete": "未完了",
+    "withDueDate": "期限あり",
+    "withoutDueDate": "期限なし",
+    "byPriority": "優先度順",
+    "byDueDate": "期限順",
+    "byCreatedDate": "作成日順",
+    "byUpdatedDate": "更新日順",
+    "ascending": "昇順",
+    "descending": "降順",
+    "allTasks": "すべてのタスク",
+    "selectFilter": "タスクフィルターを選択",
+    "dueWithin3Days": "期限まで3日以内",
+    "dueToday": "本日期限",
+    "overdue": "期限切れ",
+    "filterByLabel": "ラベルで絞り込み",
+    "filterByPriority": "優先度で絞り込み",
+    "labelSelected": "ラベル: {{count}}個選択",
+    "prioritySelected": "優先度: {{count}}個選択",
+    "tasksWithLabels": "ラベル付きタスク",
+    "allLabels": "すべてのラベル",
+    "currentSort": "現在のソート: {{sort}}",
+    "manual": "手動",
+    "priority": "優先度順",
+    "createdAt": "作成日順",
+    "updatedAt": "更新日順",
+    "dueDate": "期限順",
+    "title": "名前順"
+  },
+  "export": {
+    "export": "エクスポート",
+    "import": "インポート",
+    "exportData": "データをエクスポート",
+    "importData": "データをインポート",
+    "exportAll": "すべてエクスポート",
+    "exportBoard": "ボードをエクスポート",
+    "selectBoards": "ボードを選択",
+    "downloadJSON": "JSONをダウンロード",
+    "selectFile": "ファイルを選択",
+    "dragDropFile": "ファイルをドラッグ&ドロップ",
+    "importSuccess": "インポートが成功しました",
+    "importError": "インポートに失敗しました",
+    "invalidFile": "無効なファイル形式です",
+    "exportRange": "エクスポート範囲",
+    "allData": "全データ",
+    "exportDescription": "データのエクスポートを行います。全データまたは特定のボードを選択してください。"
+  },
+  "validation": {
+    "required": "必須項目です",
+    "tooLong": "入力が長すぎます（最大{{max}}文字）",
+    "tooShort": "入力が短すぎます（最小{{min}}文字）",
+    "invalidFormat": "形式が正しくありません",
+    "invalidDate": "無効な日付です",
+    "invalidEmail": "無効なメールアドレスです",
+    "invalidURL": "無効なURLです",
+    "fileTooLarge": "ファイルサイズが大きすぎます（最大{{max}}MB）",
+    "columnNameRequired": "カラム名を入力してください",
+    "columnNameDuplicate": "同じ名前のカラムが既に存在します"
+  },
+  "notification": {
+    "taskCreated": "タスクを作成しました",
+    "taskUpdated": "タスクを更新しました",
+    "taskDeleted": "タスクを削除しました",
+    "taskDuplicated": "タスクを複製しました",
+    "taskMoved": "タスクを移動しました",
+    "taskCompleted": "タスクを完了しました",
+    "boardCreated": "ボードを作成しました",
+    "boardUpdated": "ボードを更新しました",
+    "boardDeleted": "ボードを削除しました",
+    "columnCreated": "カラムを作成しました",
+    "columnUpdated": "カラムを更新しました",
+    "columnDeleted": "カラムを削除しました",
+    "labelCreated": "ラベルを作成しました",
+    "labelUpdated": "ラベルを更新しました",
+    "labelDeleted": "ラベルを削除しました",
+    "settingsSaved": "設定を保存しました",
+    "dataExported": "データをエクスポートしました",
+    "dataImported": "データをインポートしました"
+  },
+  "view": {
+    "kanban": "カンバン",
+    "table": "テーブル",
+    "calendar": "カレンダー",
+    "switchView": "表示切り替え"
+  },
+  "help": {
+    "title": "使い方ガイド",
+    "closeHelp": "ヘルプを閉じる",
+    "viewSwitch": {
+      "title": "ビュー切り替え",
+      "kanban": {
+        "title": "カンバンビュー",
+        "description": "カラム単位でタスクを管理するプロジェクト管理方式"
+      },
+      "calendar": {
+        "title": "カレンダービュー",
+        "description": "期限日ベースでタスクを月次カレンダー表示"
+      },
+      "table": {
+        "title": "テーブルビュー",
+        "description": "全タスクを一覧表形式で表示・管理、カラム表示のカスタマイズが可能"
+      },
+      "howTo": {
+        "title": "切り替え方法",
+        "description": "サブヘッダー右端のメニューからビューを選択"
+      }
+    },
+    "basicOperations": {
+      "title": "基本操作",
+      "createBoard": {
+        "title": "ボード作成",
+        "description": "サブヘッダーの「ボード作成」ボタンでプロジェクトボードを作成"
+      },
+      "addColumn": {
+        "title": "カラム追加",
+        "description": "サブヘッダーの「カラムを追加」ボタンで作業段階を追加（カンバンビュー時）"
+      },
+      "createTask": {
+        "title": "タスク作成",
+        "description": "ヘッダーの「タスク作成」ボタンまたは各カラムの「+」ボタンでタスクを作成"
+      },
+      "dragDrop": {
+        "title": "ドラッグ&\nドロップ",
+        "description": "タスクをドラッグしてカラム間を移動（カンバンビューで直感的操作）"
+      },
+      "moveColumn": {
+        "title": "カラム移動",
+        "description": "カラムヘッダーのkebabアイコン（⋯）から「左に移動」「右に移動」でカラムの順序変更が可能"
+      }
+    },
+    "taskManagement": {
+      "title": "タスク管理",
+      "editTask": {
+        "title": "タスク編集",
+        "description": "タスクカードをクリックして詳細表示・編集"
+      },
+      "duplicateTask": {
+        "title": "タスク複製",
+        "description": "タスク詳細サイドバーの複製ボタンで既存タスクを同じカラムに複製。タイトルに「(コピー)」が付与され、サブタスクも未完了状態で複製される"
+      },
+      "editor": {
+        "title": "説明欄エディタ",
+        "description": "タスク説明欄で太字・斜体・リンク・絵文字などの書式設定が可能"
+      },
+      "complete": {
+        "title": "完了機能",
+        "description": "タスク名左のチェックアイコンで即座に完了状態に移動。完了したタスクは完了カラムの一番上に配置される"
+      },
+      "subtasks": {
+        "title": "サブタスク",
+        "description": "タスク詳細画面でチェックリスト形式のサブタスクを管理。ドラッグハンドル（⋮⋮）をドラッグして順序変更が可能"
+      },
+      "labels": {
+        "title": "ラベル",
+        "description": "色付きラベルでタスクを分類・整理"
+      },
+      "dueRecurrence": {
+        "title": "期限・繰り返し設定",
+        "description": "期限日時の設定と毎日・毎週・毎月・毎年の繰り返しパターンを設定。期限切れタスクは自動警告"
+      },
+      "priority": {
+        "title": "優先度設定",
+        "description": "Critical（緊急）・High（高）・Medium（中）・Low（低）の4段階で優先度を設定。優先度によるフィルタリング・ソート機能も利用可能"
+      }
+    },
+    "attachments": {
+      "title": "ファイル添付",
+      "fileManagement": {
+        "title": "ファイル管理",
+        "description": "ドラッグ&ドロップでファイル添付、画像・テキストのプレビュー表示、ダウンロード機能"
+      }
+    },
+    "calendarFeature": {
+      "title": "カレンダー機能",
+      "monthlyView": {
+        "title": "月次表示",
+        "description": "期限日のあるタスクを月単位のカレンダーで表示、タスクをクリックして詳細確認・編集"
+      }
+    },
+    "filterSort": {
+      "title": "フィルタリング・ソート",
+      "filterSort": {
+        "title": "絞り込み・並び替え",
+        "description": "期限・ラベル・優先度・完了状態でフィルタ、作成日・更新日・期限・名前・優先度順でソート可能"
+      }
+    },
+    "templateManagement": {
+      "title": "テンプレート管理",
+      "templates": {
+        "title": "テンプレート機能",
+        "description": "よく使うタスクパターンをテンプレートとして保存・管理。カテゴリー分類、お気に入り登録、検索機能で効率的に活用"
+      }
+    },
+    "tableView": {
+      "title": "テーブルビュー",
+      "columnManagement": {
+        "title": "カラム管理",
+        "description": "右上の設定ボタンから表示項目をカスタマイズ、タスク数・進捗状況を一覧表示"
+      }
+    },
+    "dataManagement": {
+      "title": "データ管理",
+      "localStorage": {
+        "title": "ローカル保存",
+        "description": "すべてのデータはブラウザに自動保存"
+      },
+      "import": {
+        "title": "データインポート",
+        "description": "JSONファイルでデータの一括インポート。インポート結果・エラー情報は設定画面上部にメッセージで表示"
+      },
+      "export": {
+        "title": "ボード選択\nエクスポート",
+        "description": "設定画面のデータ管理から、任意のボードを選択してJSONファイルとしてエクスポート"
+      },
+      "labelManagement": {
+        "title": "ラベル管理",
+        "description": "設定画面のラベル管理で全ボードのラベルを一覧表示。ラベル名・所属ボード・使用数でソート可能、新しいラベルの作成・編集・削除が可能。操作結果は設定画面上部にメッセージで表示"
+      },
+      "defaultColumn": {
+        "title": "デフォルト\nカラム設定",
+        "description": "設定画面のカンバン設定で、新しいボード作成時に使用されるデフォルトカラムを設定。カラム名の編集・追加・削除・順序変更（ドラッグ&ドロップ対応）が可能"
+      },
+      "management": {
+        "title": "管理機能",
+        "description": "ごみ箱でのタスク復元、完了タスククリア、テンプレートのバックアップ・復元が可能"
+      }
+    },
+    "tips": {
+      "title": "便利なヒント",
+      "keyboard": {
+        "title": "キーボード操作",
+        "description": "Escapeキーでダイアログやサイドバーを閉じる"
+      },
+      "offline": {
+        "title": "オフライン対応",
+        "description": "データはブラウザに保存されオフラインでも使用可能"
+      },
+      "efficiency": {
+        "title": "効率化のコツ",
+        "description": "テンプレート機能、タスク複製、優先度フィルターを活用して作業効率をアップ"
+      }
+    }
+  },
+  "subtask": {
+    "subtask": "サブタスク",
+    "addSubtask": "サブタスクを追加",
+    "editSubtask": "サブタスクを編集",
+    "deleteSubtask": "サブタスクを削除",
+    "completeSubtask": "サブタスクを完了",
+    "noSubtasks": "サブタスクがありません",
+    "progress": "進捗"
+  },
+  "attachment": {
+    "attachment": "添付ファイル",
+    "addAttachment": "ファイルを追加",
+    "removeAttachment": "ファイルを削除",
+    "noAttachments": "添付ファイルがありません",
+    "maxSize": "最大ファイルサイズ: {{size}}MB",
+    "dragDrop": "ファイルをドラッグ&ドロップ"
+  },
+  "time": {
+    "time": "時刻",
+    "setTime": "時刻を設定",
+    "removeTime": "時刻設定を削除",
+    "noTime": "時刻なし",
+    "hours": "時間",
+    "minutes": "分"
+  },
+  "about": {
+    "title": "アプリケーション情報",
+    "appName": "アプリケーション名",
+    "version": "バージョン",
+    "developer": "開発者"
+  },
+  "pwa": {
+    "installTitle": "TaskFlowをインストール",
+    "installDescription": "ホーム画面に追加してすぐにアクセスできます",
+    "install": "インストール",
+    "installing": "インストール中...",
+    "later": "後で",
+    "close": "閉じる"
+  }
+}

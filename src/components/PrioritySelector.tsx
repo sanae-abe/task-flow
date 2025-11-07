@@ -1,5 +1,6 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
+import { useTranslation } from 'react-i18next';
 
 import type { Priority } from '../types';
 import { prioritySelectorOptions } from '../utils/priorityConfig';
@@ -17,6 +18,8 @@ const PrioritySelector: React.FC<PrioritySelectorProps> = ({
   disabled = false,
   variant = 'full',
 }) => {
+  const { t } = useTranslation();
+
   const handleChange = (value: Priority | undefined) => {
     if (disabled) {
       return;
@@ -28,7 +31,7 @@ const PrioritySelector: React.FC<PrioritySelectorProps> = ({
     <div className='space-y-3'>
       {variant === 'full' && (
         <label className='text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70'>
-          優先度
+          {t('priority.priority')}
         </label>
       )}
       <div

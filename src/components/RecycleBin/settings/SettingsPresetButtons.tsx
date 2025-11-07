@@ -1,7 +1,7 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { type RecycleBinSettings } from '../../../types/settings';
-import { RETENTION_PRESETS, UI_TEXT } from '../../../constants/recycleBin';
 
 export interface SettingsPresetButtonsProps {
   /** 現在の設定 */
@@ -17,21 +17,33 @@ export interface SettingsPresetButtonsProps {
 export const SettingsPresetButtons: React.FC<SettingsPresetButtonsProps> = ({
   settings,
   onPresetSelect,
-}) => (
-  <div className='mb-4'>
-    <span className='text-sm font-semibold mb-2 block'>
-      {UI_TEXT.PANEL.PRESET_TITLE}
-    </span>
-    <div className='flex gap-2 flex-wrap'>
-      {RETENTION_PRESETS.map(({ label, days }) => (
-        <Button
-          key={days?.toString() || 'unlimited'}
-          variant={settings.retentionDays === days ? 'default' : 'outline'}
-          onClick={() => onPresetSelect(days)}
-        >
-          {label}
-        </Button>
-      ))}
+}) => {
+  const { t } = useTranslation();
+
+  const presets = [
+    { days: 7, label: t('settings.recycleBinSettings.presets.oneWeek') },
+    { days: 14, label: t('settings.recycleBinSettings.presets.twoWeeks') },
+    { days: 30, label: t('settings.recycleBinSettings.presets.oneMonth') },
+    { days: 90, label: t('settings.recycleBinSettings.presets.threeMonths') },
+    { days: null, label: t('settings.recycleBinSettings.presets.unlimited') },
+  ];
+
+  return (
+    <div className='mb-4'>
+      <span className='text-sm font-semibold mb-2 block'>
+        {t('settings.recycleBinSettings.presetTitle')}
+      </span>
+      <div className='flex gap-2 flex-wrap'>
+        {presets.map(({ label, days }) => (
+          <Button
+            key={days?.toString() || 'unlimited'}
+            variant={settings.retentionDays === days ? 'default' : 'outline'}
+            onClick={() => onPresetSelect(days)}
+          >
+            {label}
+          </Button>
+        ))}
+      </div>
     </div>
-  </div>
-);
+  );
+};

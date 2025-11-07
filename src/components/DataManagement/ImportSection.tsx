@@ -1,4 +1,5 @@
 import { memo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Loader2, Upload, File, X } from 'lucide-react';
 
@@ -26,6 +27,7 @@ interface ImportSectionProps {
 }
 
 export const ImportSection = memo<ImportSectionProps>(({ onMessage }) => {
+  const { t } = useTranslation();
   const {
     state,
     selectFile,
@@ -56,7 +58,7 @@ export const ImportSection = memo<ImportSectionProps>(({ onMessage }) => {
     <div className='flex flex-col gap-3 w-full'>
       {/* インポートモード選択 */}
       <div>
-        <label className='text-sm font-semibold'>インポートモード</label>
+        <label className='text-sm font-semibold'>{t('export.import')}</label>
         <div className='mt-1 space-y-2'>
           <div className='flex items-center space-x-2'>
             <input
@@ -71,7 +73,7 @@ export const ImportSection = memo<ImportSectionProps>(({ onMessage }) => {
               className='h-4 w-4 text-primary focus:ring-primary border-gray-300'
             />
             <label htmlFor='merge' className='text-sm text-foreground'>
-              既存データに追加（推奨）
+              {t('export.importData')}
             </label>
           </div>
           <div className='flex items-center space-x-2'>
@@ -87,7 +89,7 @@ export const ImportSection = memo<ImportSectionProps>(({ onMessage }) => {
               className='h-4 w-4 text-primary focus:ring-primary border-gray-300'
             />
             <label htmlFor='replace' className='text-sm text-foreground'>
-              既存データを置換
+              {t('export.importData')}
             </label>
           </div>
         </div>
@@ -98,8 +100,8 @@ export const ImportSection = memo<ImportSectionProps>(({ onMessage }) => {
         <DialogFlashMessage
           message={{
             type: 'warning',
-            title: '危険: データの置換操作',
-            text: `現在のすべてのデータが削除されます。この操作は元に戻せません。`,
+            title: t('common.error'),
+            text: t('export.importError'),
           }}
           isStatic
         />
@@ -121,16 +123,16 @@ export const ImportSection = memo<ImportSectionProps>(({ onMessage }) => {
           fileInputRef={dropZoneProps.fileInputRef}
           onFileInputChange={dropZoneProps.handleFileInputChange}
           importMode='both'
-          title='JSONファイルをドラッグ&ドロップ'
-          subtitle='または クリックしてファイルを選択'
-          ariaLabel='JSONファイルを選択してデータをインポート'
+          title={t('export.dragDropFile')}
+          subtitle={t('export.selectFile')}
+          ariaLabel={t('export.importData')}
         />
       )}
 
       {/* 選択されたファイル表示 - AttachmentList風スタイル */}
       {state.selectedFile && (
         <div className='flex flex-col gap-2'>
-          <p className='text-sm font-bold'>選択されたファイル</p>
+          <p className='text-sm font-bold'>{t('export.selectFile')}</p>
           <div className='flex items-center justify-between p-2 bg-gray-50 rounded-md border border-border border-gray-200'>
             <div className='flex items-center gap-2 flex-1 min-w-0'>
               <File size={24} />
@@ -149,7 +151,7 @@ export const ImportSection = memo<ImportSectionProps>(({ onMessage }) => {
               onClick={clearSelection}
               disabled={state.isLoading}
               className='p-1 h-auto min-w-0 text-destructive hover:text-destructive'
-              aria-label='ファイルを削除'
+              aria-label={t('common.delete')}
             >
               <X size={16} />
             </Button>
@@ -161,7 +163,7 @@ export const ImportSection = memo<ImportSectionProps>(({ onMessage }) => {
       {state.isLoading && (
         <div className='flex items-center gap-2'>
           <Loader2 className='h-4 w-4 animate-spin' />
-          <p className='text-sm'>処理中...</p>
+          <p className='text-sm'>{t('common.loading')}</p>
         </div>
       )}
 
@@ -174,7 +176,7 @@ export const ImportSection = memo<ImportSectionProps>(({ onMessage }) => {
           className='self-start'
         >
           <Upload size={16} className='mr-2' />
-          {state.isLoading ? 'インポート中...' : 'インポート実行'}
+          {state.isLoading ? t('common.loading') : t('export.import')}
         </Button>
       )}
     </div>

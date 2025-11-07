@@ -18,6 +18,25 @@ export interface TableColumn {
   render?: (task: Task) => React.ReactNode;
 }
 
+// カラムIDから翻訳キーへのマッピング
+export const COLUMN_LABEL_KEYS: Record<string, string> = {
+  title: 'task.title',
+  description: 'task.description',
+  dueDate: 'task.dueDate',
+  recurrence: 'recurrence.recurrence',
+  status: 'task.status',
+  priority: 'task.priority',
+  progress: 'subtask.progress',
+  completedAt: 'task.completedAt',
+  labels: 'task.labels',
+  createdAt: 'task.createdAt',
+  updatedAt: 'task.updatedAt',
+  subTasks: 'task.subtasks',
+  files: 'task.attachments',
+  edit: 'common.edit',
+  actions: 'common.delete',
+};
+
 export interface TableColumnSettings {
   columns: TableColumn[];
   columnOrder: string[];
