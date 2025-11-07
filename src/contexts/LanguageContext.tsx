@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+import i18n from '../i18n/config'; // i18nインスタンスを直接import
 
 export type Language = 'ja' | 'en';
 
@@ -17,7 +17,7 @@ const LANGUAGE_STORAGE_KEY = 'taskflow-language';
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const { i18n } = useTranslation();
+  // useTranslationではなく直接importしたi18nを使用
 
   const [language, setLanguageState] = useState<Language>(() => {
     // SSR対応: localStorageが利用可能かチェック
