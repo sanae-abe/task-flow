@@ -44,3 +44,4 @@ yarn-error.log*
 !.claude/learning-sessions/**/*
 !.claude/commands/**/*
 !.claude/agents/**/*
+.vercel
