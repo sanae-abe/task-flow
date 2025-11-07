@@ -30,13 +30,19 @@ const root = ReactDOM.createRoot(
 );
 
 // BrowserRouter使用（Vercel環境での標準的なルーティング）
+// React 19.2.0の互換性問題のため、本番環境ではStrictMode無効化
+const app = (
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>
+);
 
 root.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  </React.StrictMode>
+  process.env.NODE_ENV === 'development' ? (
+    <React.StrictMode>{app}</React.StrictMode>
+  ) : (
+    app
+  )
 );
 
 // Service Worker registration - PWA機能を有効化
