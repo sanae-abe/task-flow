@@ -1,5 +1,6 @@
 import { Plus, Edit, Trash2, CircleCheck, MoreHorizontal } from 'lucide-react';
 import { memo, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import type { MenuGroup, MenuTrigger } from '../types/unified-menu';
 import UnifiedMenu from './shared/Menu/UnifiedMenu';
@@ -32,17 +33,19 @@ const BoardActionMenu = memo<BoardActionMenuProps>(
     onDeleteBoard,
     onClearCompletedTasks,
   }) => {
+    const { t } = useTranslation();
+
     // トリガー設定
     const trigger: MenuTrigger = useMemo(
       () => ({
         type: 'button',
-        label: 'ボード設定',
+        label: t('board.boardSettings'),
         icon: MoreHorizontal,
-        ariaLabel: 'ボード設定メニューを開く',
+        ariaLabel: t('board.boardSettingsMenu'),
         className:
           'justify-center whitespace-nowrap text-xs font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-foreground h-9 rounded-md px-2 flex items-center gap-1 text-zinc-700',
       }),
-      []
+      [t]
     );
 
     // メニューグループ設定
@@ -51,19 +54,19 @@ const BoardActionMenu = memo<BoardActionMenuProps>(
         // ボード管理グループ
         {
           id: 'board-management',
-          label: 'ボード管理',
+          label: t('board.boardManagement'),
           items: [
             {
               id: 'create-board',
               type: 'action',
-              label: 'ボード作成',
+              label: t('board.createBoard'),
               icon: Plus,
               onSelect: onCreateBoard,
             },
             {
               id: 'edit-board',
               type: 'action',
-              label: 'ボード名を編集',
+              label: t('board.editBoardName'),
               icon: Edit,
               onSelect: onEditBoard,
             },
@@ -72,13 +75,13 @@ const BoardActionMenu = memo<BoardActionMenuProps>(
         // タスク管理グループ（条件付き表示）
         {
           id: 'task-management',
-          label: 'タスク管理',
+          label: t('board.taskManagement'),
           condition: hasCompletedTasks,
           items: [
             {
               id: 'clear-completed',
               type: 'action',
-              label: '完了したタスクをクリア',
+              label: t('board.clearCompleted'),
               icon: CircleCheck,
               onSelect: onClearCompletedTasks,
             },
@@ -87,13 +90,13 @@ const BoardActionMenu = memo<BoardActionMenuProps>(
         // 危険なアクショングループ（条件付き表示）
         {
           id: 'danger-actions',
-          label: '危険なアクション',
+          label: t('board.dangerActions'),
           condition: canDeleteBoard,
           items: [
             {
               id: 'delete-board',
               type: 'action',
-              label: 'ボードを削除',
+              label: t('board.deleteBoard'),
               icon: Trash2,
               variant: 'danger',
               onSelect: onDeleteBoard,
@@ -102,6 +105,7 @@ const BoardActionMenu = memo<BoardActionMenuProps>(
         },
       ],
       [
+        t,
         hasCompletedTasks,
         canDeleteBoard,
         onCreateBoard,

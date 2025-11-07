@@ -5,6 +5,7 @@ import {
   type CollisionDetection,
 } from '@dnd-kit/core';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useBoard } from '../contexts/BoardContext';
 import { useTask } from '../contexts/TaskContext';
@@ -17,6 +18,7 @@ import KanbanColumn from './KanbanColumn';
 import TaskCard from './TaskCard';
 
 const KanbanBoard: React.FC = () => {
+  const { t } = useTranslation();
   const { currentBoard } = useBoard();
   const { moveTask } = useTask();
   const { setSortOption, openTaskDetail } = useUI();
@@ -42,7 +44,7 @@ const KanbanBoard: React.FC = () => {
   if (!currentBoard) {
     return (
       <div className='flex items-center justify-center h-96'>
-        <p className='text-base text-zinc-500'>Please select a board</p>
+        <p className='text-base text-zinc-500'>{t('board.selectBoard')}</p>
       </div>
     );
   }

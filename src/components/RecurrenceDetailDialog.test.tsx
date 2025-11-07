@@ -79,7 +79,7 @@ describe('RecurrenceDetailDialog', () => {
         />
       );
 
-      expect(screen.getByText('繰り返し設定の詳細')).toBeInTheDocument();
+      expect(screen.getByText('recurrence.detailTitle')).toBeInTheDocument();
     });
   });
 

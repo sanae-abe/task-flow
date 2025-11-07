@@ -1,0 +1,145 @@
+{
+  "$schema": "https://json.schemastore.org/performance-budget.json",
+  "budget": [
+    {
+      "path": "/*",
+      "resourceSizes": [
+        {
+          "resourceType": "script",
+          "budget": 350
+        },
+        {
+          "resourceType": "stylesheet",
+          "budget": 80
+        },
+        {
+          "resourceType": "document",
+          "budget": 50
+        },
+        {
+          "resourceType": "image",
+          "budget": 300
+        },
+        {
+          "resourceType": "font",
+          "budget": 100
+        },
+        {
+          "resourceType": "total",
+          "budget": 800
+        },
+        {
+          "resourceType": "third-party",
+          "budget": 100
+        }
+      ],
+      "resourceCounts": [
+        {
+          "resourceType": "script",
+          "budget": 15
+        },
+        {
+          "resourceType": "stylesheet",
+          "budget": 3
+        },
+        {
+          "resourceType": "image",
+          "budget": 10
+        },
+        {
+          "resourceType": "font",
+          "budget": 2
+        },
+        {
+          "resourceType": "total",
+          "budget": 40
+        },
+        {
+          "resourceType": "third-party",
+          "budget": 5
+        }
+      ],
+      "timings": [
+        {
+          "metric": "first-contentful-paint",
+          "budget": 1800
+        },
+        {
+          "metric": "largest-contentful-paint",
+          "budget": 2500
+        },
+        {
+          "metric": "cumulative-layout-shift",
+          "budget": 0.1
+        },
+        {
+          "metric": "total-blocking-time",
+          "budget": 300
+        },
+        {
+          "metric": "speed-index",
+          "budget": 3400
+        },
+        {
+          "metric": "interactive",
+          "budget": 3800
+        },
+        {
+          "metric": "max-potential-fid",
+          "budget": 100
+        }
+      ]
+    }
+  ],
+  "targets": {
+    "performance": 0.85,
+    "accessibility": 0.95,
+    "best-practices": 0.90,
+    "seo": 0.90,
+    "pwa": 0
+  },
+  "version": "1.0.0",
+  "lastUpdated": "2025-11-07",
+  "description": "TaskFlow Performance Budget - React 19.2.0 + Vite 7.1.12 + Tailwind CSS 4.1.16",
+  "notes": [
+    "リソースサイズの単位: KB (gzip圧縮前)",
+    "タイミングメトリクスの単位: ms (CLSを除く)",
+    "目標: Performance 85+, Accessibility 95+, Best Practices 90+, SEO 90+",
+    "Core Web Vitals: LCP 2.5s以下, TBT 300ms以下, CLS 0.1以下",
+    "本番環境ではgzip/brotli圧縮により、実際のサイズは約30-40%削減されます",
+    "モバイル環境では、これらのバジェットをより厳しく（-20%程度）適用することを推奨します"
+  ],
+  "recommendations": {
+    "codeOptimization": [
+      "Tree-shakingとDead code eliminationの実施",
+      "Lazy loadingによる初期バンドルサイズの削減",
+      "Code splittingによるチャンク分割最適化（vite.config.ts manualChunks設定済み）",
+      "React.memo、useMemo、useCallbackによる再レンダリング最適化"
+    ],
+    "assetOptimization": [
+      "画像のWebP/AVIF形式への変換",
+      "SVGスプライトシートの活用（lucide-reactはSVG）",
+      "システムフォントスタック優先（カスタムフォント最小限）",
+      "CSSの未使用ルール削除（Tailwind CSS PurgeCSS有効化済み）"
+    ],
+    "networkOptimization": [
+      "CDNの活用（Vercel Edge Network使用中）",
+      "HTTP/2によるマルチプレックス化",
+      "Resource hintsの活用（preload, prefetch, preconnect）",
+      "Service Workerによるキャッシュ戦略（PWA実装済み）"
+    ],
+    "renderingOptimization": [
+      "Critical CSSのインライン化",
+      "非同期CSSロード",
+      "JavaScriptの遅延ロード（defer/async）",
+      "Layout shiftの最小化（サイズ指定、Skeleton UI）"
+    ],
+    "currentImplementation": {
+      "bundling": "Vite 7.1.12 with manual chunks (vendor/lexical/radix/i18n/utilities分離)",
+      "styling": "Tailwind CSS 4.1.16 with CSS Variables + PurgeCSS",
+      "icons": "lucide-react (tree-shakable SVG icons)",
+      "pwa": "Service Worker + offline.html",
+      "deployment": "Vercel with Edge Network CDN"
+    }
+  }
+}

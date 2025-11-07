@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Input } from '@/components/ui/input';
 
 import UnifiedDialog from './shared/Dialog/UnifiedDialog';
@@ -19,6 +20,7 @@ const TimeSelectorDialog: React.FC<TimeSelectorDialogProps> = ({
   onSave,
   onClose,
 }) => {
+  const { t } = useTranslation();
   const [localDueTime, setLocalDueTime] = useState(dueTime || '23:59');
 
   useEffect(() => {
@@ -44,13 +46,13 @@ const TimeSelectorDialog: React.FC<TimeSelectorDialogProps> = ({
   const actions: DialogAction[] = useMemo(() => {
     const actionList: DialogAction[] = [
       {
-        label: 'キャンセル',
+        label: t('common.cancel'),
         onClick: handleCancel,
         variant: 'outline',
         position: 'right',
       },
       {
-        label: '保存',
+        label: t('common.save'),
         onClick: handleSave,
         variant: 'default',
         position: 'right',
@@ -60,7 +62,7 @@ const TimeSelectorDialog: React.FC<TimeSelectorDialogProps> = ({
     // hasTimeがtrueの場合は削除ボタンを追加
     if (hasTime) {
       actionList.splice(1, 0, {
-        label: '時刻設定を削除',
+        label: t('time.removeTime'),
         onClick: handleRemove,
         variant: 'destructive',
         position: 'left',
@@ -68,19 +70,19 @@ const TimeSelectorDialog: React.FC<TimeSelectorDialogProps> = ({
     }
 
     return actionList;
-  }, [handleCancel, handleSave, handleRemove, hasTime]);
+  }, [handleCancel, handleSave, handleRemove, hasTime, t]);
 
   return (
     <UnifiedDialog
       variant='modal'
       isOpen={isOpen}
-      title='時刻設定'
+      title={t('time.setTime')}
       onClose={handleCancel}
       actions={actions}
       actionsLayout='split'
     >
       <div className='flex flex-col gap-2'>
-        <label className='text-sm font-medium'>時刻</label>
+        <label className='text-sm font-medium'>{t('time.time')}</label>
         <Input
           type='time'
           value={localDueTime}

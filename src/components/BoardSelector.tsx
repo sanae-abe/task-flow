@@ -13,17 +13,21 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import React, { memo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useBoard } from '../contexts/BoardContext';
 import { useBoardDragAndDrop } from '../hooks/useBoardDragAndDrop';
 import type { KanbanBoard } from '../types';
 
 // 空状態表示コンポーネント
-const EmptyBoardsMessage: React.FC = memo(() => (
-  <div className='flex items-center'>
-    <p className='text-zinc-700 text-sm'>利用可能なボードがありません</p>
-  </div>
-));
+const EmptyBoardsMessage: React.FC = memo(() => {
+  const { t } = useTranslation();
+  return (
+    <div className='flex items-center'>
+      <p className='text-zinc-700 text-sm'>{t('board.noBoards')}</p>
+    </div>
+  );
+});
 
 // ソート可能なボードタブコンポーネント
 interface SortableBoardTabProps {

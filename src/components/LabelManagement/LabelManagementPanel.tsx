@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 
@@ -26,6 +27,7 @@ interface LabelManagementPanelProps {
 const LabelManagementPanel: React.FC<LabelManagementPanelProps> = ({
   onMessage,
 }) => {
+  const { t } = useTranslation();
   const { allLabelsWithInfo } = useLabelData('name', 'asc');
 
   // メッセージコールバック
@@ -73,11 +75,11 @@ const LabelManagementPanel: React.FC<LabelManagementPanelProps> = ({
       {/* ヘッダー */}
       <div className='flex items-center justify-between gap-2'>
         <div className='flex items-center gap-2'>
-          <h2 className='text-lg font-bold'>ラベル管理</h2>
+          <h2 className='text-lg font-bold'>{t('label.manageLabels')}</h2>
         </div>
         <Button variant='default' onClick={handleCreate} size='sm'>
           <Plus size={16} className='mr-2' />
-          ラベルを作成
+          {t('label.createLabel')}
         </Button>
       </div>
 
@@ -105,17 +107,17 @@ const LabelManagementPanel: React.FC<LabelManagementPanelProps> = ({
       {/* 削除確認ダイアログ */}
       <ConfirmDialog
         isOpen={deleteDialog.isOpen}
-        title='ラベルの削除'
+        title={t('label.deleteLabel')}
         message={
           deleteDialog.label
-            ? `ラベル「${deleteDialog.label.name}」を全ボードから削除しますか？この操作は元に戻せません。${'usageCount' in deleteDialog.label && typeof deleteDialog.label.usageCount === 'number' && deleteDialog.label.usageCount > 0 ? `\n\n${deleteDialog.label.usageCount}個のタスクからも削除されます。` : ''}`
+            ? `${t('label.deleteLabelConfirm').replace('このラベル', `ラベル「${deleteDialog.label.name}」`)}${'usageCount' in deleteDialog.label && typeof deleteDialog.label.usageCount === 'number' && deleteDialog.label.usageCount > 0 ? `\n\n${deleteDialog.label.usageCount}個のタスクからも削除されます。` : ''}`
             : ''
         }
         onClose={handleCloseDeleteDialog}
         onConfirm={handleConfirmDelete}
         onCancel={handleCloseDeleteDialog}
-        confirmText='削除'
-        cancelText='キャンセル'
+        confirmText={t('common.delete')}
+        cancelText={t('common.cancel')}
         confirmVariant='danger'
       />
     </div>

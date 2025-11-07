@@ -62,21 +62,21 @@ describe('ConfirmDialog', () => {
     it('should show default button texts', () => {
       render(<ConfirmDialog {...defaultProps} />);
 
-      expect(screen.getByText('削除')).toBeInTheDocument();
-      expect(screen.getByText('キャンセル')).toBeInTheDocument();
+      expect(screen.getByText('common.delete')).toBeInTheDocument();
+      expect(screen.getByText('common.cancel')).toBeInTheDocument();
     });
 
     it('should show custom confirm button text', () => {
       render(<ConfirmDialog {...defaultProps} confirmText='実行' />);
 
       expect(screen.getByText('実行')).toBeInTheDocument();
-      expect(screen.getByText('キャンセル')).toBeInTheDocument();
+      expect(screen.getByText('common.cancel')).toBeInTheDocument();
     });
 
     it('should show custom cancel button text', () => {
       render(<ConfirmDialog {...defaultProps} cancelText='戻る' />);
 
-      expect(screen.getByText('削除')).toBeInTheDocument();
+      expect(screen.getByText('common.delete')).toBeInTheDocument();
       expect(screen.getByText('戻る')).toBeInTheDocument();
     });
 
@@ -94,7 +94,7 @@ describe('ConfirmDialog', () => {
     it('should call onConfirm when confirm button is clicked', () => {
       render(<ConfirmDialog {...defaultProps} />);
 
-      const confirmButton = screen.getByText('削除');
+      const confirmButton = screen.getByText('common.delete');
       fireEvent.click(confirmButton);
 
       expect(mockOnConfirm).toHaveBeenCalledTimes(1);
@@ -103,7 +103,7 @@ describe('ConfirmDialog', () => {
     it('should call onCancel when cancel button is clicked', () => {
       render(<ConfirmDialog {...defaultProps} />);
 
-      const cancelButton = screen.getByText('キャンセル');
+      const cancelButton = screen.getByText('common.cancel');
       fireEvent.click(cancelButton);
 
       expect(mockOnCancel).toHaveBeenCalledTimes(1);
@@ -131,8 +131,8 @@ describe('ConfirmDialog', () => {
       render(<ConfirmDialog {...defaultProps} isOpen={false} />);
 
       // ダイアログが表示されていないため、ボタンも存在しない
-      expect(screen.queryByText('削除')).not.toBeInTheDocument();
-      expect(screen.queryByText('キャンセル')).not.toBeInTheDocument();
+      expect(screen.queryByText('common.delete')).not.toBeInTheDocument();
+      expect(screen.queryByText('common.cancel')).not.toBeInTheDocument();
       expect(mockOnConfirm).not.toHaveBeenCalled();
       expect(mockOnCancel).not.toHaveBeenCalled();
     });
@@ -142,7 +142,7 @@ describe('ConfirmDialog', () => {
     it('should handle multiple confirm clicks', () => {
       render(<ConfirmDialog {...defaultProps} />);
 
-      const confirmButton = screen.getByText('削除');
+      const confirmButton = screen.getByText('common.delete');
       fireEvent.click(confirmButton);
       fireEvent.click(confirmButton);
 
@@ -152,7 +152,7 @@ describe('ConfirmDialog', () => {
     it('should handle multiple cancel clicks', () => {
       render(<ConfirmDialog {...defaultProps} />);
 
-      const cancelButton = screen.getByText('キャンセル');
+      const cancelButton = screen.getByText('common.cancel');
       fireEvent.click(cancelButton);
       fireEvent.click(cancelButton);
 
@@ -164,8 +164,8 @@ describe('ConfirmDialog', () => {
     it('should render buttons as interactive elements', () => {
       render(<ConfirmDialog {...defaultProps} />);
 
-      const confirmButton = screen.getByText('削除');
-      const cancelButton = screen.getByText('キャンセル');
+      const confirmButton = screen.getByText('common.delete');
+      const cancelButton = screen.getByText('common.cancel');
 
       // ボタンとして機能することを確認
       expect(confirmButton).toBeInTheDocument();
@@ -177,8 +177,8 @@ describe('ConfirmDialog', () => {
     it('should be keyboard navigable', () => {
       render(<ConfirmDialog {...defaultProps} />);
 
-      const confirmButton = screen.getByText('削除');
-      const cancelButton = screen.getByText('キャンセル');
+      const confirmButton = screen.getByText('common.delete');
+      const cancelButton = screen.getByText('common.cancel');
 
       confirmButton.focus();
       expect(confirmButton).toHaveFocus();

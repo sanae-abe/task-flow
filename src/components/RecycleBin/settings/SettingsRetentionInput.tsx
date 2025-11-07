@@ -1,7 +1,7 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Input } from '@/components/ui/input';
 import { type RecycleBinSettings } from '../../../types/settings';
-import { UI_TEXT } from '../../../constants/recycleBin';
 import { InlineMessage } from '../../shared';
 
 export interface SettingsRetentionInputProps {
@@ -21,36 +21,44 @@ export const SettingsRetentionInput: React.FC<SettingsRetentionInputProps> = ({
   settings,
   validationError,
   onChange,
-}) => (
-  <div className='flex flex-col gap-2'>
-    <label className='text-sm font-medium' htmlFor='retention-input'>
-      {UI_TEXT.PANEL.RETENTION_LABEL}
-    </label>
-    <div className='flex items-center gap-2'>
-      <Input
-        id='retention-input'
-        type='number'
-        min='1'
-        max='365'
-        value={settings.retentionDays?.toString() || ''}
-        placeholder={settings.retentionDays === null ? '無制限' : ''}
-        onChange={e => onChange(e.target.value)}
-        className='w-[100px]'
-        aria-describedby='retention-help'
-      />
-      <span className='text-muted-foreground'>
-        {UI_TEXT.PANEL.RETENTION_UNIT}
-      </span>
+}) => {
+  const { t } = useTranslation();
+
+  return (
+    <div className='flex flex-col gap-2'>
+      <label className='text-sm font-medium' htmlFor='retention-input'>
+        {t('settings.recycleBinSettings.retentionLabel')}
+      </label>
+      <div className='flex items-center gap-2'>
+        <Input
+          id='retention-input'
+          type='number'
+          min='1'
+          max='365'
+          value={settings.retentionDays?.toString() || ''}
+          placeholder={
+            settings.retentionDays === null
+              ? t('settings.recycleBinSettings.presets.unlimited')
+              : ''
+          }
+          onChange={e => onChange(e.target.value)}
+          className='w-[100px]'
+          aria-describedby='retention-help'
+        />
+        <span className='text-muted-foreground'>
+          {t('settings.recycleBinSettings.retentionUnit')}
+        </span>
+      </div>
+      <small id='retention-help' className='text-xs text-muted-foreground0'>
+        {t('settings.recycleBinSettings.retentionHelp')}
+      </small>
+      {validationError && (
+        <InlineMessage
+          variant='critical'
+          message={validationError}
+          size='small'
+        />
+      )}
     </div>
-    <small id='retention-help' className='text-xs text-muted-foreground0'>
-      {UI_TEXT.PANEL.RETENTION_HELP}
-    </small>
-    {validationError && (
-      <InlineMessage
-        variant='critical'
-        message={validationError}
-        size='small'
-      />
-    )}
-  </div>
-);
+  );
+};

@@ -1,5 +1,5 @@
 import React from 'react';
-import { MESSAGES, UI_TEXT } from '../../../constants/recycleBin';
+import { useTranslation } from 'react-i18next';
 import { LoadingButton } from '../../shared/LoadingButton';
 import { InlineMessage } from '../../shared';
 
@@ -26,25 +26,29 @@ export const SettingsSaveSection: React.FC<SettingsSaveSectionProps> = ({
   hasValidationError,
   message,
   onSave,
-}) => (
-  <div className='mt-6'>
-    <LoadingButton
-      primerVariant='primary'
-      isLoading={isLoading}
-      loadingText={MESSAGES.SAVE.IN_PROGRESS}
-      onClick={onSave}
-      disabled={hasValidationError}
-    >
-      {UI_TEXT.PANEL.SAVE_BUTTON}
-    </LoadingButton>
-    <div className='mt-3'>
-      {message && (
-        <InlineMessage
-          variant={message.type === 'success' ? 'success' : 'critical'}
-          message={message.text}
-          size='small'
-        />
-      )}
+}) => {
+  const { t } = useTranslation();
+
+  return (
+    <div className='mt-6'>
+      <LoadingButton
+        primerVariant='primary'
+        isLoading={isLoading}
+        loadingText={t('settings.recycleBinSettings.saving')}
+        onClick={onSave}
+        disabled={hasValidationError}
+      >
+        {t('settings.recycleBinSettings.saveButton')}
+      </LoadingButton>
+      <div className='mt-3'>
+        {message && (
+          <InlineMessage
+            variant={message.type === 'success' ? 'success' : 'critical'}
+            message={message.text}
+            size='small'
+          />
+        )}
+      </div>
     </div>
-  </div>
-);
+  );
+};

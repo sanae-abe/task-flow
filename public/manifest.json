@@ -1,7 +1,7 @@
 {
   "short_name": "TaskFlow",
   "name": "TaskFlow - タスク管理ツール",
-  "description": "効率的なタスクフロー管理アプリケーション",
+  "description": "効率的なタスクフロー管理アプリケーション。オフライン対応、カンバンボード、テーブルビュー、カレンダービューでタスクを管理",
   "icons": [
     {
       "src": "favicon.ico",
@@ -44,5 +44,56 @@
   "scope": "/",
   "lang": "ja",
   "dir": "ltr",
-  "categories": ["productivity", "business"]
+  "categories": ["productivity", "business"],
+  "shortcuts": [
+    {
+      "name": "新しいタスク",
+      "short_name": "新規",
+      "description": "新しいタスクを作成",
+      "url": "/?action=new-task",
+      "icons": [
+        {
+          "src": "favicon-32x32.svg",
+          "sizes": "32x32",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "カンバンボード",
+      "short_name": "カンバン",
+      "description": "カンバンビューを表示",
+      "url": "/?view=kanban",
+      "icons": [
+        {
+          "src": "favicon-32x32.svg",
+          "sizes": "32x32",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "カレンダー",
+      "short_name": "カレンダー",
+      "description": "カレンダービューを表示",
+      "url": "/?view=calendar",
+      "icons": [
+        {
+          "src": "favicon-32x32.svg",
+          "sizes": "32x32",
+          "type": "image/svg+xml"
+        }
+      ]
+    }
+  ],
+  "share_target": {
+    "action": "/share",
+    "method": "GET",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  },
+  "prefer_related_applications": false
 }

@@ -6,6 +6,7 @@ import { UIProvider } from './UIContext';
 import { LabelProvider } from './LabelContext';
 import { TableColumnsProvider } from './TableColumnsContext';
 import { KanbanProvider } from './KanbanContext';
+import { LanguageProvider } from './LanguageContext';
 
 interface AppProvidersProps {
   children: ReactNode;
@@ -16,17 +17,19 @@ interface AppProvidersProps {
  * 分割されたContextを適切な順序で提供
  */
 export const AppProviders: React.FC<AppProvidersProps> = ({ children }) => (
-  <BoardProvider>
-    <TaskProvider>
-      <UIProvider>
-        <LabelProvider>
-          <TableColumnsProvider>
-            <KanbanProvider>{children}</KanbanProvider>
-          </TableColumnsProvider>
-        </LabelProvider>
-      </UIProvider>
-    </TaskProvider>
-  </BoardProvider>
+  <LanguageProvider>
+    <BoardProvider>
+      <TaskProvider>
+        <UIProvider>
+          <LabelProvider>
+            <TableColumnsProvider>
+              <KanbanProvider>{children}</KanbanProvider>
+            </TableColumnsProvider>
+          </LabelProvider>
+        </UIProvider>
+      </TaskProvider>
+    </BoardProvider>
+  </LanguageProvider>
 );
 
 export default AppProviders;

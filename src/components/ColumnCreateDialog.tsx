@@ -1,13 +1,23 @@
 import { memo, useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import { z } from 'zod';
 
 import type { ColumnCreateDialogProps } from '../types/dialog';
 import type { FormFieldConfig } from '../types/unified-form';
 import { useUnifiedForm } from '../hooks/useUnifiedForm';
+import { validateData } from '@/schemas/validation-utils';
 import UnifiedDialog from './shared/Dialog/UnifiedDialog';
 import UnifiedFormField from './shared/Form/UnifiedFormField';
 
+// Zodスキーマ - カラム名のバリデーション
+const columnTitleSchema = z
+  .string()
+  .min(1, 'カラムタイトルは必須です')
+  .max(100, 'カラムタイトルは100文字以内で入力してください');
+
 const ColumnCreateDialog = memo<ColumnCreateDialogProps>(
   ({ isOpen, onSave, onCancel, columns = [] }) => {
+    const { t } = useTranslation();
     // 初期値の設定
     const initialValues = useMemo(
       () => ({
@@ -19,17 +29,34 @@ const ColumnCreateDialog = memo<ColumnCreateDialogProps>(
 
     // 挿入位置のオプション生成
     const positionOptions = useMemo(() => {
-      const options = [{ value: '0', label: '最初' }];
+      const options = [{ value: '0', label: t('column.insertFirst') }];
 
       columns.forEach((column, index) => {
         options.push({
           value: (index + 1).toString(),
-          label: `「${column.title}」の後`,
+          label: t('column.insertAfter', { title: column.title }),
         });
       });
 
       return options;
-    }, [columns]);
+    }, [columns, t]);
+
+    // Zodバリデーション関数
+    const validateColumnTitle = useCallback((value: unknown): string | null => {
+      const trimmedTitle = String(value || '').trim();
+
+      if (!trimmedTitle) {
+        return null; // required validationで処理
+      }
+
+      const validationResult = validateData(columnTitleSchema, trimmedTitle);
+
+      if (!validationResult.success) {
+        return validationResult.errors?.[0] || 'バリデーションエラー';
+      }
+
+      return null;
+    }, []);
 
     // フィールド設定
     const fields: FormFieldConfig[] = useMemo(
@@ -39,14 +66,15 @@ const ColumnCreateDialog = memo<ColumnCreateDialogProps>(
           id: 'title',
           name: 'title',
           type: 'text',
-          label: 'カラム名',
-          placeholder: 'カラム名を入力',
+          label: t('column.columnName'),
+          placeholder: t('column.columnNamePlaceholder'),
           value: initialValues.title,
           autoFocus: true,
           validation: {
             required: true,
             minLength: 1,
-            maxLength: 50,
+            maxLength: 100,
+            custom: validateColumnTitle, // Zodバリデーション追加
           },
           onChange: () => {}, // フォームで管理
         },
@@ -55,13 +83,13 @@ const ColumnCreateDialog = memo<ColumnCreateDialogProps>(
           id: 'insertIndex',
           name: 'insertIndex',
           type: 'select',
-          label: '挿入位置',
+          label: t('column.insertPosition'),
           value: initialValues.insertIndex.toString(),
           options: positionOptions,
           onChange: () => {}, // フォームで管理
         },
       ],
-      [initialValues, positionOptions]
+      [initialValues, positionOptions, t, validateColumnTitle]
     );
 
     // 統合フォーム管理
@@ -88,12 +116,12 @@ const ColumnCreateDialog = memo<ColumnCreateDialogProps>(
     // ダイアログアクション
     const actions = [
       {
-        label: 'キャンセル',
+        label: t('common.cancel'),
         onClick: handleCancel,
         variant: 'outline' as const,
       },
       {
-        label: '追加',
+        label: t('common.add'),
         onClick: form.handleSubmit(handleSubmit),
         variant: 'default' as const,
         disabled:
@@ -106,7 +134,7 @@ const ColumnCreateDialog = memo<ColumnCreateDialogProps>(
     return (
       <UnifiedDialog
         isOpen={isOpen}
-        title='新しいカラムを追加'
+        title={t('column.addColumnTitle')}
         onClose={handleCancel}
         actions={actions}
         size='medium'

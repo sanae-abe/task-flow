@@ -1,6 +1,6 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { type RecycleBinSettings } from '../../types/settings';
-import { UI_TEXT } from '../../constants/recycleBin';
 import { useSettingsForm } from '../../hooks/useSettingsForm';
 import { InlineMessage } from '../shared';
 import { SettingsPresetButtons } from './settings/SettingsPresetButtons';
@@ -18,6 +18,7 @@ interface RecycleBinSettingsPanelProps {
 export const RecycleBinSettingsPanel: React.FC<
   RecycleBinSettingsPanelProps
 > = ({ onSave }) => {
+  const { t } = useTranslation();
   const {
     settings,
     isLoading,
@@ -36,12 +37,14 @@ export const RecycleBinSettingsPanel: React.FC<
     <div className='pb-4'>
       {/* ヘッダー */}
       <div className='flex items-center gap-2 mb-2'>
-        <h2 className='text-lg font-bold'>{UI_TEXT.PANEL.TITLE}</h2>
+        <h2 className='text-lg font-bold'>
+          {t('settings.recycleBinSettings.title')}
+        </h2>
       </div>
 
       {/* 説明 */}
       <span className='text-sm text-zinc-700 mb-5 block'>
-        {UI_TEXT.PANEL.DESCRIPTION_WITH_UNLIMITED}
+        {t('settings.recycleBinSettings.description')}
       </span>
 
       {/* プリセットボタン */}
@@ -69,7 +72,7 @@ export const RecycleBinSettingsPanel: React.FC<
       <div className='mt-5'>
         <InlineMessage
           variant='warning'
-          message={UI_TEXT.PANEL.IMPORTANT_NOTE_TEXT}
+          message={t('settings.recycleBinSettings.importantNote')}
         />
       </div>
     </div>

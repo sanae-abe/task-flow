@@ -22,6 +22,7 @@ import {
   Filter as DefaultFilter,
 } from 'lucide-react';
 import { memo, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import type { TaskFilter, FilterConfig, Label, Priority } from '../types';
 import { priorityConfig } from '../utils/priorityConfig';
@@ -39,40 +40,42 @@ interface FilterSelectorProps {
  */
 const FilterSelector = memo<FilterSelectorProps>(
   ({ currentFilter, onFilterChange, availableLabels }) => {
+    const { t } = useTranslation();
+
     const filterConfigs: FilterConfig[] = useMemo(
       () => [
         {
           type: 'all',
-          label: 'すべてのタスク',
+          label: t('filter.allTasks'),
           icon: 'filter',
         },
         {
           type: 'due-within-3-days',
-          label: '期限まで3日以内',
+          label: t('filter.dueWithin3Days'),
           icon: 'clock',
         },
         {
           type: 'due-today',
-          label: '本日期限',
+          label: t('filter.dueToday'),
           icon: 'alert',
         },
         {
           type: 'overdue',
-          label: '期限切れ',
+          label: t('filter.overdue'),
           icon: 'x-circle',
         },
         {
           type: 'label',
-          label: 'ラベルで絞り込み',
+          label: t('filter.filterByLabel'),
           icon: 'tag',
         },
         {
           type: 'priority',
-          label: '優先度で絞り込み',
+          label: t('filter.filterByPriority'),
           icon: 'star',
         },
       ],
-      []
+      [t]
     );
 
     const getFilterIcon = (iconName?: string): typeof DefaultFilter => {
@@ -99,20 +102,20 @@ const FilterSelector = memo<FilterSelectorProps>(
           currentFilter.selectedLabels?.length ??
           0;
         if (selectedCount > 0) {
-          return `ラベル: ${selectedCount}個選択`;
+          return t('filter.labelSelected', { count: selectedCount });
         }
       }
       if (currentFilter.type === 'priority') {
         const selectedCount = currentFilter.selectedPriorities?.length ?? 0;
         if (selectedCount > 0) {
-          return `優先度: ${selectedCount}個選択`;
+          return t('filter.prioritySelected', { count: selectedCount });
         }
       }
       if (currentFilter.type === 'has-labels') {
-        return 'ラベル付きタスク';
+        return t('filter.tasksWithLabels');
       }
       const config = filterConfigs.find(f => f.type === currentFilter.type);
-      return config?.label ?? 'フィルター';
+      return config?.label ?? t('filter.filter');
     };
 
     const handleFilterSelect = (filterType: string) => {
@@ -120,13 +123,13 @@ const FilterSelector = memo<FilterSelectorProps>(
         // すべてのラベル = ラベル付きタスクのみに絞り込み
         onFilterChange({
           type: 'has-labels',
-          label: 'ラベル付きタスク',
+          label: t('filter.tasksWithLabels'),
         });
       } else if (filterType === 'priority') {
         // 優先度フィルターを開く時は空の状態でスタート
         onFilterChange({
           type: 'priority',
-          label: '優先度で絞り込み',
+          label: t('filter.filterByPriority'),
           selectedPriorities: [],
         });
       } else {
@@ -154,7 +157,7 @@ const FilterSelector = memo<FilterSelectorProps>(
 
       onFilterChange({
         type: 'label',
-        label: 'ラベルで絞り込み',
+        label: t('filter.filterByLabel'),
         selectedLabelNames: newLabelNames,
       });
     };
@@ -172,7 +175,7 @@ const FilterSelector = memo<FilterSelectorProps>(
 
       onFilterChange({
         type: 'priority',
-        label: '優先度で絞り込み',
+        label: t('filter.filterByPriority'),
         selectedPriorities: newPriorities,
       });
     };
@@ -187,7 +190,7 @@ const FilterSelector = memo<FilterSelectorProps>(
           <Button
             variant='ghost'
             size='sm'
-            aria-label='タスクフィルターを選択'
+            aria-label={t('filter.selectFilter')}
             className={`flex items-center gap-1 text-xs ${
               currentFilter.type !== 'all'
                 ? 'text-primary font-semibold'
@@ -226,7 +229,7 @@ const FilterSelector = memo<FilterSelectorProps>(
                         onSelect={e => e.preventDefault()}
                       >
                         <Tag size={16} className='mr-2' />
-                        ラベルで絞り込み
+                        {t('filter.filterByLabel')}
                       </DropdownMenuSubTrigger>
                       <DropdownMenuPortal>
                         <DropdownMenuSubContent>
@@ -239,7 +242,7 @@ const FilterSelector = memo<FilterSelectorProps>(
                                 : ''
                             }
                           >
-                            すべてのラベル
+                            {t('filter.allLabels')}
                           </DropdownMenuCheckboxItem>
                           <DropdownMenuSeparator />
                           {availableLabels.map(label => {
@@ -286,7 +289,7 @@ const FilterSelector = memo<FilterSelectorProps>(
                     onSelect={e => e.preventDefault()}
                   >
                     <Star size={16} className='mr-2' />
-                    優先度で絞り込み
+                    {t('filter.filterByPriority')}
                   </DropdownMenuSubTrigger>
                   <DropdownMenuPortal>
                     <DropdownMenuSubContent>

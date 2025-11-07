@@ -100,9 +100,9 @@ export const DateTimeField: React.FC<DateTimeFieldProps> = React.memo(
         aria-required={validation?.required}
         aria-invalid={hasError}
         aria-describedby={hasError ? `${id}-_error` : undefined}
-        {...(step ? { step } : {})}
-        {...(min ? { min } : {})}
-        {...(max ? { max } : {})}
+        {...(step !== undefined ? { step: String(step) } : {})}
+        {...(min !== undefined ? { min: String(min) } : {})}
+        {...(max !== undefined ? { max: String(max) } : {})}
       />
     );
   }

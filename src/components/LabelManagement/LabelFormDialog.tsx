@@ -2,6 +2,8 @@ import React, { useMemo, useCallback } from 'react';
 
 import type { Label } from '../../types';
 import type { FormFieldConfig } from '../../types/unified-form';
+import { labelCreateInputSchema } from '@/schemas/label';
+import { validateData } from '@/schemas/validation-utils';
 import { useLabel } from '../../contexts/LabelContext';
 import { useBoard } from '../../contexts/BoardContext';
 import { useUnifiedForm } from '../../hooks/useUnifiedForm';
@@ -63,28 +65,46 @@ const LabelFormDialog: React.FC<LabelFormDialogProps> = ({
     []
   );
 
-  // カスタムバリデーション（重複チェック）
-  const validateLabelName = useCallback(
-    (value: unknown): string | null => {
-      const trimmedName = String(value || '').trim();
+  // Zodバリデーション + カスタムバリデーション（重複チェック）
+  // modeとlabelを直接使用せず、固定値として渡すためにuseMemoで生成
+  const validateLabelName = useMemo(
+    () =>
+      (value: unknown): string | null => {
+        const trimmedName = String(value || '').trim();
 
-      if (!trimmedName) {
-        return null; // required validationで処理
-      }
+        if (!trimmedName) {
+          return null; // required validationで処理
+        }
 
-      // 重複チェック（編集時は自分自身を除外）
-      const allLabels = getAllLabels();
-      const isDuplicate = allLabels.some(existingLabel => {
-        const isSameLabel =
-          mode === 'edit' && label && existingLabel.id === label.id;
-        return (
-          !isSameLabel &&
-          existingLabel.name.toLowerCase() === trimmedName.toLowerCase()
-        );
-      });
+        // Zodバリデーション
+        const labelData = {
+          name: trimmedName,
+          color: '#0969da', // バリデーションのためのダミー値
+        };
+        const zodResult = validateData(labelCreateInputSchema, labelData);
 
-      return isDuplicate ? '同じ名前のラベルが既に存在します' : null;
-    },
+        if (!zodResult.success && zodResult.errors) {
+          const nameError = zodResult.errors.find(err =>
+            err.startsWith('name:')
+          );
+          if (nameError) {
+            return nameError.replace('name:', '').trim();
+          }
+        }
+
+        // 重複チェック（編集時は自分自身を除外）
+        const allLabels = getAllLabels();
+        const isDuplicate = allLabels.some(existingLabel => {
+          const isSameLabel =
+            mode === 'edit' && label && existingLabel.id === label.id;
+          return (
+            !isSameLabel &&
+            existingLabel.name.toLowerCase() === trimmedName.toLowerCase()
+          );
+        });
+
+        return isDuplicate ? '同じ名前のラベルが既に存在します' : null;
+      },
     [getAllLabels, mode, label]
   );
 
@@ -212,12 +232,15 @@ const LabelFormDialog: React.FC<LabelFormDialogProps> = ({
   // Enterキーでの保存
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
+      // Ctrl/Cmd + Enterの組み合わせのみ許可
       if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
         e.preventDefault();
-        if (!form.state.isSubmitting && form.state.isValid) {
+        // フォームが有効で送信中でない場合のみ送信
+        if (form.state.isValid && !form.state.isSubmitting) {
           form.handleSubmit(handleSubmit)();
         }
       }
+      // Enterキー単独では何もしない（デフォルト動作を防ぐ）
     },
     [form, handleSubmit]
   );

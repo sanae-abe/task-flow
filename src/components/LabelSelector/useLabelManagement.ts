@@ -29,18 +29,23 @@ export const useLabelManagement = ({
   const selectedLabelsRef = useRef<Label[]>(selectedLabels);
   const onLabelsChangeRef = useRef<(labels: Label[]) => void>(onLabelsChange);
 
-  const allLabels = useMemo(() => getAllLabels(), [getAllLabels]);
+  // getAllLabelsの結果を取得（getAllLabelsは関数なので毎回呼ぶ）
+  const allLabels = getAllLabels();
+
   const selectedLabelIds = useMemo(
     () => new Set(selectedLabels.map(label => label.id)),
     [selectedLabels]
   );
 
   // ラベルを現在のボードとその他に分類
+  // isLabelInCurrentBoardの変化も検出するため、依存配列に含める
   const { currentBoardLabels, otherBoardLabels } = useMemo(() => {
     const current: Label[] = [];
     const other: Label[] = [];
 
-    allLabels.forEach(label => {
+    // 最新のallLabelsを使用
+    const labels = getAllLabels();
+    labels.forEach(label => {
       if (isLabelInCurrentBoard(label.id)) {
         current.push(label);
       } else {
@@ -52,7 +57,7 @@ export const useLabelManagement = ({
       currentBoardLabels: current,
       otherBoardLabels: other,
     };
-  }, [allLabels, isLabelInCurrentBoard]);
+  }, [getAllLabels, isLabelInCurrentBoard]);
 
   // LabelContextからのメッセージを受信する設定
   useEffect(() => {
@@ -123,26 +128,34 @@ export const useLabelManagement = ({
     setIsAddDialogOpen(true);
   }, []);
 
-  // ラベルを追加/削除
+  // ラベルを追加/削除（refを使用して参照を安定化）
   const toggleLabel = useCallback(
     (label: Label) => {
-      if (selectedLabelIds.has(label.id)) {
+      const currentSelected = selectedLabelsRef.current;
+      const currentSelectedIds = new Set(currentSelected.map(l => l.id));
+
+      if (currentSelectedIds.has(label.id)) {
         // 削除
-        onLabelsChange(selectedLabels.filter(l => l.id !== label.id));
+        onLabelsChangeRef.current(
+          currentSelected.filter(l => l.id !== label.id)
+        );
       } else {
         // 追加
-        onLabelsChange([...selectedLabels, label]);
+        onLabelsChangeRef.current([...currentSelected, label]);
       }
     },
-    [selectedLabels, selectedLabelIds, onLabelsChange]
+    [] // 依存配列を空にして参照を安定化
   );
 
-  // ラベル削除
+  // ラベル削除（refを使用して参照を安定化）
   const removeLabel = useCallback(
     (labelId: string) => {
-      onLabelsChange(selectedLabels.filter(label => label.id !== labelId));
+      const currentSelected = selectedLabelsRef.current;
+      onLabelsChangeRef.current(
+        currentSelected.filter(label => label.id !== labelId)
+      );
     },
-    [selectedLabels, onLabelsChange]
+    [] // 依存配列を空にして参照を安定化
   );
 
   // 新しいラベル作成後の処理

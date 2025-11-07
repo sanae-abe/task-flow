@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import type { EmptyStateProps } from '../types';
 
@@ -12,17 +13,16 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   taskFilter,
   onClearFilter,
 }) => {
+  const { t } = useTranslation();
   const isFiltered = taskFilter.type !== 'all';
-  const message = isFiltered
-    ? 'フィルタ条件に一致するタスクがありません'
-    : 'タスクがありません';
+  const message = isFiltered ? t('task.noFilteredTasks') : t('task.noTasks');
 
   return (
     <div className='flex flex-col items-center justify-center py-8 text-foreground'>
       <p className='text-sm mb-2'>{message}</p>
       {isFiltered && (
         <Button variant='ghost' size='sm' onClick={onClearFilter}>
-          フィルタをクリア
+          {t('common.clearFilter')}
         </Button>
       )}
     </div>

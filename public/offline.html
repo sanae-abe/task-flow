@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>オフライン - TaskFlow</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+          'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
+          'Helvetica Neue', sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #333;
+        padding: 20px;
+      }
+
+      .container {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        padding: 60px 40px;
+        text-align: center;
+        max-width: 500px;
+        width: 100%;
+        animation: fadeInUp 0.6s ease;
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .icon {
+        width: 120px;
+        height: 120px;
+        margin: 0 auto 30px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: pulse 2s ease infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+      }
+
+      .icon svg {
+        width: 60px;
+        height: 60px;
+        stroke: white;
+        stroke-width: 2;
+        fill: none;
+      }
+
+      h1 {
+        font-size: 28px;
+        font-weight: 700;
+        color: #1a202c;
+        margin-bottom: 16px;
+      }
+
+      p {
+        font-size: 16px;
+        color: #718096;
+        line-height: 1.6;
+        margin-bottom: 32px;
+      }
+
+      .features {
+        background: #f7fafc;
+        border-radius: 12px;
+        padding: 24px;
+        margin-bottom: 32px;
+        text-align: left;
+      }
+
+      .features h2 {
+        font-size: 18px;
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 16px;
+      }
+
+      .feature-list {
+        list-style: none;
+      }
+
+      .feature-list li {
+        padding: 8px 0;
+        color: #4a5568;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+      }
+
+      .feature-list li::before {
+        content: '✓';
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        background: #48bb78;
+        color: white;
+        border-radius: 50%;
+        text-align: center;
+        line-height: 20px;
+        margin-right: 12px;
+        font-size: 12px;
+        font-weight: bold;
+      }
+
+      .button {
+        display: inline-block;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 14px 32px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 16px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+      }
+
+      .button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+      }
+
+      .button:active {
+        transform: translateY(0);
+      }
+
+      .status {
+        margin-top: 24px;
+        padding: 12px;
+        background: #fed7d7;
+        border-radius: 8px;
+        color: #c53030;
+        font-size: 14px;
+        font-weight: 500;
+      }
+
+      .status.online {
+        background: #c6f6d5;
+        color: #22543d;
+      }
+
+      @media (max-width: 480px) {
+        .container {
+          padding: 40px 24px;
+        }
+
+        h1 {
+          font-size: 24px;
+        }
+
+        .icon {
+          width: 100px;
+          height: 100px;
+        }
+
+        .icon svg {
+          width: 50px;
+          height: 50px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="icon">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+          <polyline points="16 6 12 2 8 6"></polyline>
+          <line x1="12" y1="2" x2="12" y2="15"></line>
+        </svg>
+      </div>
+
+      <h1>オフラインモード</h1>
+      <p>
+        インターネット接続が利用できません。<br />
+        TaskFlowはオフラインでも使用できます。
+      </p>
+
+      <div class="features">
+        <h2>オフラインで利用可能な機能</h2>
+        <ul class="feature-list">
+          <li>保存済みタスクの閲覧</li>
+          <li>新規タスクの作成（同期は接続時）</li>
+          <li>タスクの編集と削除</li>
+          <li>カンバンボードの操作</li>
+          <li>カレンダービューの表示</li>
+        </ul>
+      </div>
+
+      <a href="/" class="button" id="retryButton">再接続を試す</a>
+
+      <div class="status" id="connectionStatus">
+        オフラインです
+      </div>
+    </div>
+
+    <script>
+      // オンライン/オフライン状態の監視
+      function updateConnectionStatus() {
+        const status = document.getElementById('connectionStatus');
+        const retryButton = document.getElementById('retryButton');
+
+        if (navigator.onLine) {
+          status.textContent = 'オンラインに復帰しました';
+          status.classList.add('online');
+          retryButton.textContent = 'TaskFlowに戻る';
+
+          // 自動的にリダイレクト
+          setTimeout(() => {
+            window.location.href = '/';
+          }, 1500);
+        } else {
+          status.textContent = 'オフラインです';
+          status.classList.remove('online');
+          retryButton.textContent = '再接続を試す';
+        }
+      }
+
+      // イベントリスナー設定
+      window.addEventListener('online', updateConnectionStatus);
+      window.addEventListener('offline', updateConnectionStatus);
+
+      // 初期状態チェック
+      updateConnectionStatus();
+
+      // 再接続ボタンのクリックハンドラ
+      document.getElementById('retryButton').addEventListener('click', e => {
+        if (!navigator.onLine) {
+          e.preventDefault();
+          updateConnectionStatus();
+        }
+      });
+    </script>
+  </body>
+</html>

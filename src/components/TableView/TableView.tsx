@@ -1,4 +1,5 @@
 import React, { useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { TaskWithColumn } from '../../types/table';
 import type { Task } from '../../types';
 
@@ -30,6 +31,7 @@ import { getCompletionRate } from './utils/tableHelpers';
  * - EmptyState：空状態の表示
  */
 const TableView: React.FC = () => {
+  const { t } = useTranslation();
   const {
     state,
     moveTask,
@@ -121,8 +123,8 @@ const TableView: React.FC = () => {
 
   // フィルタクリア処理
   const handleClearFilter = useCallback(() => {
-    setTaskFilter({ type: 'all', label: 'すべてのタスク' });
-  }, [setTaskFilter]);
+    setTaskFilter({ type: 'all', label: t('filter.allTasks') });
+  }, [setTaskFilter, t]);
 
   // 早期リターン：ボードが選択されていない場合
   if (!state.currentBoard) {
@@ -136,7 +138,7 @@ const TableView: React.FC = () => {
           color: 'var(--foreground)',
         }}
       >
-        <span className='text-foreground'>ボードを選択してください</span>
+        <span className='text-foreground'>{t('board.noBoardSelected')}</span>
       </div>
     );
   }

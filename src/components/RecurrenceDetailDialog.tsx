@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import type { DialogAction } from '../types/unified-dialog';
 import {
@@ -22,6 +23,7 @@ const RecurrenceDetailDialog: React.FC<RecurrenceDetailDialogProps> = ({
   onClose,
   onSave,
 }) => {
+  const { t } = useTranslation();
   const { config, setConfig, errors, isFormValid } = useRecurrenceForm({
     isOpen,
     recurrence,
@@ -55,12 +57,12 @@ const RecurrenceDetailDialog: React.FC<RecurrenceDetailDialogProps> = ({
   const actions: DialogAction[] = useMemo(() => {
     const actionList: DialogAction[] = [
       {
-        label: 'キャンセル',
+        label: t('common.cancel'),
         onClick: handleCancel,
         variant: 'outline',
       },
       {
-        label: '保存',
+        label: t('common.save'),
         onClick: handleSave,
         variant: 'default',
         disabled: !isFormValid,
@@ -70,7 +72,7 @@ const RecurrenceDetailDialog: React.FC<RecurrenceDetailDialogProps> = ({
     // 既存の繰り返し設定がある場合は削除ボタンを追加
     if (recurrence?.enabled) {
       actionList.splice(1, 0, {
-        label: '削除',
+        label: t('common.delete'),
         onClick: handleDelete,
         variant: 'destructive',
       });
@@ -83,13 +85,14 @@ const RecurrenceDetailDialog: React.FC<RecurrenceDetailDialogProps> = ({
     handleDelete,
     isFormValid,
     recurrence?.enabled,
+    t,
   ]);
 
   return (
     <UnifiedDialog
       variant='modal'
       isOpen={isOpen}
-      title='繰り返し設定の詳細'
+      title={t('recurrence.detailTitle')}
       onClose={onClose}
       actions={actions}
     >

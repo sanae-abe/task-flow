@@ -84,6 +84,13 @@ vi.mock('./hooks/useLabelDialogs', () => ({
   useLabelDialogs: (onMessage: any) => mockUseLabelDialogs(onMessage),
 }));
 
+// Mock react-i18next
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: string) => key,
+  }),
+}));
+
 describe('LabelManagementPanel', () => {
   const mockLabels: LabelWithInfo[] = [
     {
@@ -144,14 +151,14 @@ describe('LabelManagementPanel', () => {
     it('should render label management panel', () => {
       render(<LabelManagementPanel onMessage={mockOnMessage} />);
 
-      expect(screen.getByText('ラベル管理')).toBeInTheDocument();
+      expect(screen.getByText('label.manageLabels')).toBeInTheDocument();
     });
 
     it('should render create button', () => {
       render(<LabelManagementPanel onMessage={mockOnMessage} />);
 
       const createButton = screen.getByRole('button', {
-        name: /ラベルを作成/i,
+        name: /label\.createLabel/i,
       });
       expect(createButton).toBeInTheDocument();
     });
@@ -189,7 +196,7 @@ describe('LabelManagementPanel', () => {
       render(<LabelManagementPanel onMessage={mockOnMessage} />);
 
       const createButton = screen.getByRole('button', {
-        name: /ラベルを作成/i,
+        name: /label\.createLabel/i,
       });
       fireEvent.click(createButton);
 
@@ -336,8 +343,9 @@ describe('LabelManagementPanel', () => {
       render(<LabelManagementPanel onMessage={mockOnMessage} />);
 
       const message = screen.getByTestId('confirm-message');
-      expect(message).toHaveTextContent('Bug');
-      expect(message).toHaveTextContent('全ボードから削除');
+      // i18nモックでは翻訳キーがそのまま返されるため、キーとラベル名の存在を確認
+      expect(message.textContent).toContain('label.deleteLabelConfirm');
+      expect(message.textContent).toContain('5個のタスクからも削除されます');
     });
 
     it('should call handleConfirmDelete when confirm is clicked', () => {
@@ -585,7 +593,7 @@ describe('LabelManagementPanel', () => {
     it('should have proper heading structure', () => {
       render(<LabelManagementPanel onMessage={mockOnMessage} />);
 
-      const heading = screen.getByText('ラベル管理');
+      const heading = screen.getByText('label.manageLabels');
       expect(heading.tagName.toLowerCase()).toBe('h2');
     });
 
@@ -593,7 +601,7 @@ describe('LabelManagementPanel', () => {
       render(<LabelManagementPanel onMessage={mockOnMessage} />);
 
       const createButton = screen.getByRole('button', {
-        name: /ラベルを作成/i,
+        name: /label\.createLabel/i,
       });
       expect(createButton).toBeInTheDocument();
     });

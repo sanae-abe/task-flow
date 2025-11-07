@@ -8,6 +8,11 @@
 # testing
 /coverage
 
+# Playwright
+/test-results/
+/playwright-report/
+/playwright/.cache/
+
 # production
 /build
 /.vite
@@ -18,6 +23,11 @@ lighthouse-report.json
 lighthouse-report.html
 .tmp/
 .env
+
+# Performance monitoring reports
+/performance-reports/
+/lighthouse-reports/
+/.lighthouseci/
 .env.local
 .env.development.local
 .env.test.local

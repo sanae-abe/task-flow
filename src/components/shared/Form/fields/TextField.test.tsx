@@ -158,7 +158,8 @@ describe('TextField', () => {
       );
 
       const input = screen.getByTestId('input-component');
-      expect(input).toHaveAttribute('autofocus');
+      // React 19: autofocus is handled via ref.focus(), not attribute
+      expect(input).toHaveFocus();
     });
 
     it('should not autofocus by default', () => {
@@ -504,7 +505,8 @@ describe('TextField', () => {
       );
 
       const input = screen.getByTestId('input-component');
-      expect(input).toHaveStyle({ color: 'red', fontSize: '16px' });
+      // Browsers convert color names to rgb format
+      expect(input).toHaveStyle({ color: 'rgb(255, 0, 0)', fontSize: '16px' });
     });
 
     it('should handle undefined style', () => {
@@ -519,7 +521,8 @@ describe('TextField', () => {
       );
 
       const input = screen.getByTestId('input-component');
-      expect(input).toHaveAttribute('style', '');
+      // When no style prop, the style attribute is null, not empty string
+      expect(input.getAttribute('style')).toBeNull();
     });
   });
 

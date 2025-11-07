@@ -114,9 +114,11 @@ describe('UnifiedForm', () => {
 
   describe('Rendering', () => {
     it('should render form element', () => {
-      render(<UnifiedForm fields={mockFields} onSubmit={mockOnSubmit} />);
+      const { container } = render(
+        <UnifiedForm fields={mockFields} onSubmit={mockOnSubmit} />
+      );
 
-      const form = screen.getByRole('form', { hidden: true });
+      const form = container.querySelector('form');
       expect(form).toBeInTheDocument();
     });
 
@@ -181,12 +183,16 @@ describe('UnifiedForm', () => {
       );
 
       expect(screen.queryByTestId('button-キャンセル')).not.toBeInTheDocument();
+      // Submit button should still be present
+      expect(screen.getByTestId('button-保存')).toBeInTheDocument();
     });
 
     it('should not render cancel button when onCancel is not provided', () => {
       render(<UnifiedForm fields={mockFields} onSubmit={mockOnSubmit} />);
 
       expect(screen.queryByTestId('button-キャンセル')).not.toBeInTheDocument();
+      // Submit button should still be present
+      expect(screen.getByTestId('button-保存')).toBeInTheDocument();
     });
 
     it('should render children when provided', () => {
@@ -246,9 +252,11 @@ describe('UnifiedForm', () => {
     });
 
     it('should prevent default form submission', () => {
-      render(<UnifiedForm fields={mockFields} onSubmit={mockOnSubmit} />);
+      const { container } = render(
+        <UnifiedForm fields={mockFields} onSubmit={mockOnSubmit} />
+      );
 
-      const form = screen.getByRole('form', { hidden: true });
+      const form = container.querySelector('form')!;
       const submitEvent = new Event('submit', {
         bubbles: true,
         cancelable: true,
@@ -431,11 +439,13 @@ describe('UnifiedForm', () => {
       expect(mockOnCancel).toHaveBeenCalled();
     });
 
-    it('should not throw when cancel button is clicked without onCancel', () => {
+    it('should not render cancel button when onCancel is not provided', () => {
       render(<UnifiedForm fields={mockFields} onSubmit={mockOnSubmit} />);
 
       // No cancel button should be rendered
       expect(screen.queryByTestId('button-キャンセル')).not.toBeInTheDocument();
+      // Submit button should still be present
+      expect(screen.getByTestId('button-保存')).toBeInTheDocument();
     });
   });
 
@@ -564,20 +574,38 @@ describe('UnifiedForm', () => {
       expect(mockFormState.handleSubmit).toHaveBeenCalled();
     });
 
-    it('should maintain form state across re-renders', () => {
+    it('should update when initialValues prop changes', () => {
+      const initialValues = { name: 'Initial', email: 'initial@example.com' };
+
       const { rerender } = render(
-        <UnifiedForm fields={mockFields} onSubmit={mockOnSubmit} />
+        <UnifiedForm
+          fields={mockFields}
+          onSubmit={mockOnSubmit}
+          initialValues={initialValues}
+        />
       );
 
-      mockFormState.state.values = {
-        name: 'Updated',
-        email: 'updated@example.com',
-      };
+      // Verify initial values were passed to useUnifiedForm
+      expect(mockUseUnifiedForm).toHaveBeenCalledWith(
+        mockFields,
+        initialValues
+      );
 
-      rerender(<UnifiedForm fields={mockFields} onSubmit={mockOnSubmit} />);
+      const updatedValues = { name: 'Updated', email: 'updated@example.com' };
 
-      const nameInput = screen.getByTestId('input-name') as HTMLInputElement;
-      expect(nameInput.value).toBe('Updated');
+      rerender(
+        <UnifiedForm
+          fields={mockFields}
+          onSubmit={mockOnSubmit}
+          initialValues={updatedValues}
+        />
+      );
+
+      // Verify updated values were passed to useUnifiedForm
+      expect(mockUseUnifiedForm).toHaveBeenCalledWith(
+        mockFields,
+        updatedValues
+      );
     });
   });
 

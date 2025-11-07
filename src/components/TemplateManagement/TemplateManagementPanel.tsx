@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 
@@ -25,6 +26,8 @@ interface TemplateManagementPanelProps {
 const TemplateManagementPanel: React.FC<TemplateManagementPanelProps> = ({
   onMessage,
 }) => {
+  const { t } = useTranslation();
+
   // カスタムフック
   const {
     templates,
@@ -71,12 +74,12 @@ const TemplateManagementPanel: React.FC<TemplateManagementPanelProps> = ({
       if (success && template) {
         onMessage?.({
           type: 'success',
-          text: `テンプレート「${template.name}」を作成しました`,
+          text: t('template.management.createSuccess', { name: template.name }),
         });
       } else {
         onMessage?.({
           type: 'danger',
-          text: 'テンプレートの作成に失敗しました',
+          text: t('template.management.createError'),
         });
       }
     } else if (editDialog.template) {
@@ -85,12 +88,12 @@ const TemplateManagementPanel: React.FC<TemplateManagementPanelProps> = ({
       if (success && template) {
         onMessage?.({
           type: 'success',
-          text: `テンプレート「${template.name}」を更新しました`,
+          text: t('template.management.updateSuccess', { name: template.name }),
         });
       } else {
         onMessage?.({
           type: 'danger',
-          text: 'テンプレートの更新に失敗しました',
+          text: t('template.management.updateError'),
         });
       }
     }
@@ -108,13 +111,13 @@ const TemplateManagementPanel: React.FC<TemplateManagementPanelProps> = ({
       if (success) {
         onMessage?.({
           type: 'success',
-          text: `テンプレート「${templateName}」を削除しました`,
+          text: t('template.management.deleteSuccess', { name: templateName }),
         });
         closeDeleteDialog();
       } else {
         onMessage?.({
           type: 'danger',
-          text: 'テンプレートの削除に失敗しました',
+          text: t('template.management.deleteError'),
         });
       }
     }
@@ -123,10 +126,12 @@ const TemplateManagementPanel: React.FC<TemplateManagementPanelProps> = ({
   // お気に入りトグルハンドラー（型適合用ラッパー）
   const handleToggleFavorite = async (template: TaskTemplate) => {
     const newFavoriteState = await toggleFavorite(template.id);
-    const action = newFavoriteState ? 'お気に入りに追加' : 'お気に入りから削除';
+    const messageKey = newFavoriteState
+      ? 'template.management.favoriteAdded'
+      : 'template.management.favoriteRemoved';
     onMessage?.({
       type: 'success',
-      text: `テンプレート「${template.name}」を${action}しました`,
+      text: t(messageKey, { name: template.name }),
     });
   };
 
@@ -138,7 +143,9 @@ const TemplateManagementPanel: React.FC<TemplateManagementPanelProps> = ({
   if (loading) {
     return (
       <div className='flex justify-center p-6'>
-        <p className='text-muted-foreground'>テンプレートを読み込み中...</p>
+        <p className='text-muted-foreground'>
+          {t('template.management.loading')}
+        </p>
       </div>
     );
   }
@@ -152,7 +159,7 @@ const TemplateManagementPanel: React.FC<TemplateManagementPanelProps> = ({
           className='mt-2'
           onClick={() => window.location.reload()}
         >
-          再読み込み
+          {t('common.reload')}
         </Button>
       </div>
     );
@@ -162,10 +169,10 @@ const TemplateManagementPanel: React.FC<TemplateManagementPanelProps> = ({
     <div className='flex flex-col gap-3'>
       {/* ヘッダー */}
       <div className='flex items-center justify-between gap-2 flex-wrap'>
-        <h2 className='text-lg font-bold'>テンプレート管理</h2>
+        <h2 className='text-lg font-bold'>{t('template.management.title')}</h2>
         <Button variant='default' size='sm' onClick={openCreateDialog}>
           <Plus size={16} className='mr-2' />
-          テンプレートを作成
+          {t('template.createTemplate')}
         </Button>
       </div>
 
@@ -204,17 +211,19 @@ const TemplateManagementPanel: React.FC<TemplateManagementPanelProps> = ({
       {/* 削除確認ダイアログ */}
       <ConfirmDialog
         isOpen={deleteDialog.isOpen}
-        title='テンプレートの削除'
+        title={t('template.management.deleteConfirmTitle')}
         message={
           deleteDialog.template
-            ? `テンプレート「${deleteDialog.template.name}」を削除しますか？この操作は元に戻せません。`
+            ? t('template.management.deleteConfirmMessage', {
+                name: deleteDialog.template.name,
+              })
             : ''
         }
         onClose={closeDeleteDialog}
         onConfirm={handleConfirmDelete}
         onCancel={closeDeleteDialog}
-        confirmText='削除'
-        cancelText='キャンセル'
+        confirmText={t('common.delete')}
+        cancelText={t('common.cancel')}
         confirmVariant='danger'
       />
     </div>
