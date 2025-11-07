@@ -4,11 +4,6 @@
   "devCommand": "npm run dev",
   "installCommand": "npm install",
   "framework": "vite",
-  "functions": {
-    "node": {
-      "runtime": "nodejs20.x"
-    }
-  },
   "regions": ["hnd1"],
   "git": {
     "deploymentEnabled": {
