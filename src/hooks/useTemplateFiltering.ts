@@ -1,11 +1,12 @@
 import { useState, useMemo, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import type {
   TaskTemplate,
   TemplateSortField,
   TemplateSortDirection,
   TemplateCategory,
 } from '../types/template';
-import { TEMPLATE_CATEGORIES } from '../components/TemplateManagement/TemplateCategorySelector';
+import { getTemplateCategories } from '../components/TemplateManagement/TemplateCategorySelector';
 
 interface UseTemplateFilteringReturn {
   // フィルター状態
@@ -34,6 +35,8 @@ interface UseTemplateFilteringReturn {
 export const useTemplateFiltering = (
   templates: TaskTemplate[]
 ): UseTemplateFilteringReturn => {
+  const { t } = useTranslation();
+
   // フィルター状態
   const [searchQuery, setSearchQuery] = useState('');
   const [filterCategory, setFilterCategory] = useState<
@@ -102,11 +105,12 @@ export const useTemplateFiltering = (
           comparison = a.name.localeCompare(b.name);
           break;
         case 'category': {
+          const templateCategories = getTemplateCategories(t);
           const catA =
-            TEMPLATE_CATEGORIES.find(cat => cat.id === a.category)?.label ||
+            templateCategories.find(cat => cat.id === a.category)?.label ||
             a.category;
           const catB =
-            TEMPLATE_CATEGORIES.find(cat => cat.id === b.category)?.label ||
+            templateCategories.find(cat => cat.id === b.category)?.label ||
             b.category;
           comparison = catA.localeCompare(catB);
           break;
@@ -147,6 +151,7 @@ export const useTemplateFiltering = (
     filterFavorite,
     sortField,
     sortDirection,
+    t,
   ]);
 
   return {

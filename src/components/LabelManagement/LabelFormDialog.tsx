@@ -1,4 +1,5 @@
 import React, { useMemo, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import type { Label } from '../../types';
 import type { FormFieldConfig } from '../../types/unified-form';
@@ -33,6 +34,7 @@ const LabelFormDialog: React.FC<LabelFormDialogProps> = ({
   mode,
   enableBoardSelection = false,
 }) => {
+  const { t } = useTranslation();
   const { getAllLabels } = useLabel();
   const { state: boardState } = useBoard();
 

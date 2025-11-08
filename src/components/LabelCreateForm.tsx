@@ -1,4 +1,5 @@
 import React, { memo, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { UnifiedForm, type FormFieldConfig } from './shared/Form';
 
@@ -24,6 +25,8 @@ const LabelCreateForm = memo<LabelCreateFormProps>(
     onKeyDown,
     isValid,
   }) => {
+    const { t } = useTranslation();
+
     // フォームフィールドを直接定義
     const formFields = useMemo(
       (): FormFieldConfig[] => [
@@ -31,9 +34,9 @@ const LabelCreateForm = memo<LabelCreateFormProps>(
           id: 'label-name',
           name: 'name',
           type: 'text',
-          label: 'ラベル名',
+          label: t('label.labelName'),
           value: labelName,
-          placeholder: 'ラベル名を入力',
+          placeholder: t('label.labelNamePlaceholder'),
           onChange: onLabelNameChange as (value: unknown) => void,
           onKeyDown,
           autoFocus: true,
@@ -45,7 +48,7 @@ const LabelCreateForm = memo<LabelCreateFormProps>(
           id: 'label-color',
           name: 'color',
           type: 'color-selector',
-          label: '色',
+          label: t('label.color'),
           value: selectedColor,
           onChange: onColorSelect as (value: unknown) => void,
           autoFocus: false,
@@ -53,7 +56,7 @@ const LabelCreateForm = memo<LabelCreateFormProps>(
           disabled: false,
         },
       ],
-      [labelName, selectedColor, onLabelNameChange, onColorSelect, onKeyDown]
+      [labelName, selectedColor, onLabelNameChange, onColorSelect, onKeyDown, t]
     );
 
     return (
@@ -62,8 +65,8 @@ const LabelCreateForm = memo<LabelCreateFormProps>(
           fields={formFields}
           onSubmit={onSave}
           onCancel={onCancel}
-          submitText='作成'
-          cancelText='キャンセル'
+          submitText={t('common.create')}
+          cancelText={t('common.cancel')}
           disabled={!isValid}
           validateOnChange
           validateOnBlur

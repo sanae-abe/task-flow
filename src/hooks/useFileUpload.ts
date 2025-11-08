@@ -22,7 +22,7 @@ export interface UseFileUploadOptions {
 export interface UseFileUploadReturn {
   isDragOver: boolean;
   _error: string | null;
-  fileInputRef: React.RefObject<HTMLInputElement | null>;
+  fileInputRef: React.RefObject<HTMLInputElement>;
   handleDragOver: (e: React.DragEvent) => void;
   handleDragLeave: (e: React.DragEvent) => void;
   handleDrop: (e: React.DragEvent) => void;

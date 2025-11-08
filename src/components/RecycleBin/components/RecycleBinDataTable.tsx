@@ -7,6 +7,7 @@
 import React from 'react';
 import { ColumnDef, SortingState } from '@tanstack/react-table';
 import { FolderKanban, List, Columns, Clock } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 import { DataTable } from '@/components/ui/data-table';
 import { RecycleBinItemActions } from './RecycleBinItemActions';
@@ -40,10 +41,12 @@ export const RecycleBinDataTable: React.FC<RecycleBinDataTableProps> = ({
   sortDirection,
   onSort,
 }) => {
+  const { t } = useTranslation();
+
   const columns: ColumnDef<RecycleBinItemWithMeta>[] = [
     {
       accessorKey: 'type',
-      header: '種別',
+      header: t('recycleBin.type'),
       cell: ({ row }) => {
         const item = row.original;
         return (
@@ -65,10 +68,10 @@ export const RecycleBinDataTable: React.FC<RecycleBinDataTableProps> = ({
               }`}
             >
               {item.type === 'board'
-                ? 'ボード'
+                ? t('recycleBin.typeBoard')
                 : item.type === 'column'
-                  ? 'カラム'
-                  : 'タスク'}
+                  ? t('recycleBin.typeColumn')
+                  : t('recycleBin.typeTask')}
             </span>
           </div>
         );
@@ -76,7 +79,7 @@ export const RecycleBinDataTable: React.FC<RecycleBinDataTableProps> = ({
     },
     {
       accessorKey: 'title',
-      header: 'タイトル',
+      header: t('recycleBin.title'),
       cell: ({ row }) => {
         const item = row.original;
         return <>{item.title}</>;
@@ -84,7 +87,7 @@ export const RecycleBinDataTable: React.FC<RecycleBinDataTableProps> = ({
     },
     {
       accessorKey: 'timeUntilDeletion',
-      header: '削除予定',
+      header: t('recycleBin.scheduledDeletion'),
       cell: ({ row }) => {
         const item = row.original;
         return (
@@ -103,7 +106,7 @@ export const RecycleBinDataTable: React.FC<RecycleBinDataTableProps> = ({
                 </span>
               </>
             ) : (
-              <span className='text-zinc-500 text-center'>未設定</span>
+              <span className='text-zinc-500 text-center'>{t('recycleBin.notSet')}</span>
             )}
           </div>
         );
@@ -152,7 +155,7 @@ export const RecycleBinDataTable: React.FC<RecycleBinDataTableProps> = ({
       data={items}
       initialSorting={initialSorting}
       onSortingChange={handleSortingChange}
-      emptyMessage='ゴミ箱にアイテムはありません'
+      emptyMessage={t('recycleBin.noItems')}
       className='border-border max-h-[500px] overflow-auto'
     />
   );

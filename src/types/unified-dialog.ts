@@ -2,6 +2,8 @@
  * 統合ダイアログシステムの型定義
  */
 
+import type { LucideIcon } from 'lucide-react';
+
 export type DialogVariant = 'modal' | 'overlay' | 'inline';
 export type DialogSize = 'small' | 'medium' | 'large' | 'xl';
 export type DialogType = 'confirm' | 'form' | 'complex' | 'custom';
@@ -43,7 +45,7 @@ export interface DialogAction {
   /** ローディング状態 */
   loading?: boolean;
   /** アイコン（オプション） */
-  icon?: React.ComponentType<{ size: number }>;
+  icon?: LucideIcon;
   /** ボタンの位置（splitレイアウト用） */
   position?: 'left' | 'right';
 }

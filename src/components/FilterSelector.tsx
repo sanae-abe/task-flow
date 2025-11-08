@@ -25,7 +25,7 @@ import { memo, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { TaskFilter, FilterConfig, Label, Priority } from '../types';
-import { priorityConfig } from '../utils/priorityConfig';
+import { buildPriorityConfig } from '../utils/priorityConfig';
 import { getLabelColors } from '../utils/labelHelpers';
 
 interface FilterSelectorProps {
@@ -41,6 +41,7 @@ interface FilterSelectorProps {
 const FilterSelector = memo<FilterSelectorProps>(
   ({ currentFilter, onFilterChange, availableLabels }) => {
     const { t } = useTranslation();
+    const priorityConfig = buildPriorityConfig(t);
 
     const filterConfigs: FilterConfig[] = useMemo(
       () => [

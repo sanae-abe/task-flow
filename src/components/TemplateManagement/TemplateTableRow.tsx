@@ -1,9 +1,10 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Star, Edit, Trash2 } from 'lucide-react';
 import type { TaskTemplate } from '../../types/template';
-import { TEMPLATE_CATEGORIES } from './TemplateCategorySelector';
+import { getTemplateCategories } from './TemplateCategorySelector';
 import IconButton from '../shared/IconButton';
 
 interface TemplateTableRowProps {
@@ -24,7 +25,8 @@ const TemplateTableRow: React.FC<TemplateTableRowProps> = ({
   onDelete,
   onToggleFavorite,
 }) => {
-  const categoryInfo = TEMPLATE_CATEGORIES.find(
+  const { t } = useTranslation();
+  const categoryInfo = getTemplateCategories(t).find(
     cat => cat.id === template.category
   );
 

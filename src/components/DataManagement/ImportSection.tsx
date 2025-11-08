@@ -73,7 +73,7 @@ export const ImportSection = memo<ImportSectionProps>(({ onMessage }) => {
               className='h-4 w-4 text-primary focus:ring-primary border-gray-300'
             />
             <label htmlFor='merge' className='text-sm text-foreground'>
-              {t('export.importData')}
+              {t('export.importMerge')}
             </label>
           </div>
           <div className='flex items-center space-x-2'>
@@ -89,7 +89,7 @@ export const ImportSection = memo<ImportSectionProps>(({ onMessage }) => {
               className='h-4 w-4 text-primary focus:ring-primary border-gray-300'
             />
             <label htmlFor='replace' className='text-sm text-foreground'>
-              {t('export.importData')}
+              {t('export.importReplace')}
             </label>
           </div>
         </div>

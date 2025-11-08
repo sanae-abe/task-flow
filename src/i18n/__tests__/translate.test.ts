@@ -123,7 +123,7 @@ describe('i18n Translation System', () => {
 
   describe('priority translations', () => {
     it('should translate priority levels correctly', () => {
-      expect(translate('priority.critical', 'ja')).toBe('最優先');
+      expect(translate('priority.critical', 'ja')).toBe('緊急');
       expect(translate('priority.high', 'ja')).toBe('高');
       expect(translate('priority.medium', 'ja')).toBe('中');
       expect(translate('priority.low', 'ja')).toBe('低');

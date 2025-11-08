@@ -1,4 +1,5 @@
 import React from 'react';
+import type { TFunction } from 'i18next';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -36,13 +37,14 @@ import IconButton from '@/components/shared/IconButton';
  */
 export const renderActionsCell = (
   task: TaskWithColumn,
-  onDeleteClick: (task: TaskWithColumn) => void
+  onDeleteClick: (task: TaskWithColumn) => void,
+  t: TFunction
 ) => (
   <div onClick={(e: React.MouseEvent) => e.stopPropagation()}>
     <IconButton
       icon={Trash2}
       size='icon'
-      ariaLabel='タスクを削除'
+      ariaLabel={t('task.deleteTask')}
       onClick={() => onDeleteClick(task)}
       className='w-8 h-8 p-2 hover:bg-gray-200'
     />
@@ -54,13 +56,14 @@ export const renderActionsCell = (
  */
 export const renderEditCell = (
   task: TaskWithColumn,
-  onEditClick: (task: TaskWithColumn) => void
+  onEditClick: (task: TaskWithColumn) => void,
+  t: TFunction
 ) => (
   <div onClick={(e: React.MouseEvent) => e.stopPropagation()}>
     <IconButton
       icon={Edit}
       size='icon'
-      ariaLabel='タスクを編集'
+      ariaLabel={t('task.editTask')}
       onClick={() => onEditClick(task)}
       className='w-8 h-8 p-2 hover:bg-gray-200'
     />
@@ -86,7 +89,8 @@ export const renderTitleCell = (task: TaskWithColumn) => (
 export const renderStatusCell = (
   task: TaskWithColumn,
   currentBoard: KanbanBoard | null,
-  onStatusChange: (task: TaskWithColumn, newColumnId: string) => void
+  onStatusChange: (task: TaskWithColumn, newColumnId: string) => void,
+  t: TFunction
 ) => (
   <div onClick={(e: React.MouseEvent) => e.stopPropagation()}>
     <DropdownMenu>
@@ -107,7 +111,7 @@ export const renderStatusCell = (
           value={task.columnId}
           onValueChange={value => onStatusChange(task, value)}
         >
-          <DropdownMenuLabel>ステータス変更</DropdownMenuLabel>
+          <DropdownMenuLabel>{t('task.changeStatus')}</DropdownMenuLabel>
           {currentBoard?.columns.map(column => (
             <DropdownMenuRadioItem value={column.id} key={column.id}>
               {column.title}
@@ -122,11 +126,11 @@ export const renderStatusCell = (
 /**
  * 優先度セルの描画
  */
-export const renderPriorityCell = (task: TaskWithColumn) => (
+export const renderPriorityCell = (task: TaskWithColumn, t: TFunction) => (
   <div>
     {task.priority ? (
       <span className='text-foreground text-sm'>
-        {getPriorityText(task.priority)}
+        {getPriorityText(task.priority, t)}
       </span>
     ) : (
       <span className='text-foreground text-sm'>-</span>
@@ -288,7 +292,7 @@ export const renderDescriptionCell = (task: TaskWithColumn) => (
 /**
  * 繰り返しセルの描画
  */
-export const renderRecurrenceCell = (task: TaskWithColumn) => (
+export const renderRecurrenceCell = (task: TaskWithColumn, t: TFunction) => (
   <div
     style={{
       color: 'var(--foreground)',
@@ -299,10 +303,10 @@ export const renderRecurrenceCell = (task: TaskWithColumn) => (
       <>
         <RotateCcw size={12} />
         <span className='text-sm'>
-          {task.recurrence.pattern === 'daily' && '毎日'}
-          {task.recurrence.pattern === 'weekly' && '毎週'}
-          {task.recurrence.pattern === 'monthly' && '毎月'}
-          {task.recurrence.pattern === 'yearly' && '毎年'}
+          {task.recurrence.pattern === 'daily' && t('recurrence.daily')}
+          {task.recurrence.pattern === 'weekly' && t('recurrence.weekly')}
+          {task.recurrence.pattern === 'monthly' && t('recurrence.monthly')}
+          {task.recurrence.pattern === 'yearly' && t('recurrence.yearly')}
         </span>
       </>
     ) : (

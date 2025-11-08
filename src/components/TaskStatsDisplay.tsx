@@ -1,5 +1,6 @@
-import { Clock, AlertTriangle, CircleCheck, Info, XCircle } from 'lucide-react';
+import { Clock, AlertTriangle, CircleCheck, Info, XCircle, type LucideIcon } from 'lucide-react';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import type { TaskStats } from '../hooks/useTaskStats';
 import StatusBadge from './shared/StatusBadge';
@@ -10,7 +11,7 @@ interface TaskStatsDisplayProps {
 
 interface UrgentLabelProps {
   variant: 'danger' | 'warning' | 'info';
-  icon: React.ComponentType<{ size: number }>;
+  icon: LucideIcon;
   count: number;
   label: string;
 }
@@ -32,6 +33,7 @@ const UrgentLabel: React.FC<UrgentLabelProps> = ({
 );
 
 const TaskStatsDisplay: React.FC<TaskStatsDisplayProps> = ({ stats }) => {
+  const { t } = useTranslation();
   const {
     totalTasks,
     overdueTasks,
@@ -46,21 +48,21 @@ const TaskStatsDisplay: React.FC<TaskStatsDisplayProps> = ({ stats }) => {
       variant: 'danger' as const,
       icon: XCircle,
       count: overdueTasks,
-      label: '期限切れ',
+      label: t('task.overdue'),
     },
     {
       condition: dueTodayTasks > 0,
       variant: 'warning' as const,
       icon: AlertTriangle,
       count: dueTodayTasks,
-      label: '本日期限',
+      label: t('task.dueToday'),
     },
     {
       condition: dueTomorrowTasks > 0,
       variant: 'info' as const,
       icon: Clock,
       count: dueTomorrowTasks,
-      label: '明日期限',
+      label: t('task.dueTomorrow'),
     },
   ].filter(item => item.condition);
 
@@ -69,7 +71,7 @@ const TaskStatsDisplay: React.FC<TaskStatsDisplayProps> = ({ stats }) => {
       <div className='flex items-center gap-1 shrink-0 text-xs text-zinc-700'>
         <CircleCheck size={16} />
         <span className='text-xs text-zinc-700'>
-          未完了タスク数: {totalTasks}
+          {t('task.incompleteTaskCount')}: {totalTasks}
         </span>
       </div>
 
@@ -91,7 +93,7 @@ const TaskStatsDisplay: React.FC<TaskStatsDisplayProps> = ({ stats }) => {
         <div className='flex items-center gap-1 text-xs text-zinc-700'>
           <Info size={16} />
           <span className='text-xs text-zinc-700'>
-            緊急なタスクはありません
+            {t('task.noUrgentTasks')}
           </span>
         </div>
       )}

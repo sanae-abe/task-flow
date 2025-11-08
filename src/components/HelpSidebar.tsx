@@ -10,6 +10,7 @@ import {
   Paperclip,
   MousePointer,
   FileText,
+  type LucideIcon,
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -42,7 +43,7 @@ interface HelpSidebarProps {
 
 interface HelpSectionProps {
   title: string;
-  icon: React.ComponentType<{ size?: number }>;
+  icon: LucideIcon;
   children: React.ReactNode;
   backgroundClass?: string;
 }

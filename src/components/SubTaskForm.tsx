@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { UnifiedForm, type FormFieldConfig } from './shared/Form';
 
@@ -17,6 +18,8 @@ const SubTaskForm: React.FC<SubTaskFormProps> = ({
   onCancel,
   onKeyDown,
 }) => {
+  const { t } = useTranslation();
+
   // フォームフィールドを直接定義
   const formFields = useMemo(
     (): FormFieldConfig[] => [
@@ -24,9 +27,9 @@ const SubTaskForm: React.FC<SubTaskFormProps> = ({
         id: 'subtask-title',
         name: 'title',
         type: 'text',
-        label: 'サブタスク名',
+        label: t('subtask.subtask'),
         value: title,
-        placeholder: 'サブタスク名を入力...',
+        placeholder: t('subtask.addSubtask'),
         onChange: onTitleChange as (value: unknown) => void,
         onKeyDown,
         autoFocus: true,
@@ -35,7 +38,7 @@ const SubTaskForm: React.FC<SubTaskFormProps> = ({
         validation: { required: true, minLength: 1, maxLength: 100 },
       },
     ],
-    [title, onTitleChange, onKeyDown]
+    [title, onTitleChange, onKeyDown, t]
   );
 
   return (
@@ -43,8 +46,8 @@ const SubTaskForm: React.FC<SubTaskFormProps> = ({
       fields={formFields}
       onSubmit={onSubmit}
       onCancel={onCancel}
-      submitText='追加'
-      cancelText='キャンセル'
+      submitText={t('common.add')}
+      cancelText={t('common.cancel')}
       validateOnChange={false}
       validateOnBlur={false}
       className='flex-1 mb-0 [&>div]:flex [&>div]:flex-col [&>div]:gap-2 [&_div_div]:mt-0 [&_div_div]:mb-0'

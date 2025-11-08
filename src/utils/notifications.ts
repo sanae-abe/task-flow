@@ -3,6 +3,8 @@
  * プッシュ通知機能の基盤（将来の拡張用）
  */
 
+import i18n from '../i18n/config';
+
 export type NotificationPermission = 'default' | 'granted' | 'denied';
 
 // NotificationAction型定義
@@ -98,7 +100,7 @@ export async function notifyTaskDue(
   dueDate: Date
 ): Promise<void> {
   const options: ExtendedNotificationOptions = {
-    body: `タスク「${taskTitle}」の期限が近づいています`,
+    body: i18n.t('notification.taskDueBody', { taskTitle }),
     tag: `task-due-${taskTitle}`,
     icon: '/logo192.svg',
     badge: '/favicon.ico',
@@ -112,16 +114,16 @@ export async function notifyTaskDue(
     actions: [
       {
         action: 'view',
-        title: '表示',
+        title: i18n.t('notification.actions.view'),
       },
       {
         action: 'dismiss',
-        title: '閉じる',
+        title: i18n.t('notification.actions.dismiss'),
       },
     ],
   };
 
-  await showLocalNotification('TaskFlow - タスク期限', options);
+  await showLocalNotification(i18n.t('notification.taskDueTitle'), options);
 }
 
 /**
@@ -129,7 +131,7 @@ export async function notifyTaskDue(
  */
 export async function notifyTaskCompleted(taskTitle: string): Promise<void> {
   const options: ExtendedNotificationOptions = {
-    body: `タスク「${taskTitle}」を完了しました`,
+    body: i18n.t('notification.taskCompletedBody', { taskTitle }),
     tag: `task-completed-${taskTitle}`,
     icon: '/logo192.svg',
     badge: '/favicon.ico',
@@ -141,7 +143,10 @@ export async function notifyTaskCompleted(taskTitle: string): Promise<void> {
     },
   };
 
-  await showLocalNotification('TaskFlow - タスク完了', options);
+  await showLocalNotification(
+    i18n.t('notification.taskCompletedTitle'),
+    options
+  );
 }
 
 /**

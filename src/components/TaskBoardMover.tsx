@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, FolderKanban } from 'lucide-react';
 import { useBoard } from '../contexts/BoardContext';
@@ -15,6 +16,7 @@ export const TaskBoardMover: React.FC<TaskBoardMoverProps> = ({
   onMoveTask,
   disabled = false,
 }) => {
+  const { t } = useTranslation();
   const { state, currentBoard } = useBoard();
 
   // 現在のボード以外のボード（削除されたボードを除く）を取得
@@ -46,11 +48,11 @@ export const TaskBoardMover: React.FC<TaskBoardMoverProps> = ({
           className='flex-1 flex items-center justify-center gap-2'
         >
           <ArrowRight size={16} />
-          移動
+          {t('task.move')}
         </Button>
       ),
     }),
-    [disabled]
+    [disabled, t]
   );
 
   // メニューグループ設定
@@ -61,16 +63,25 @@ export const TaskBoardMover: React.FC<TaskBoardMoverProps> = ({
     if (availableBoards.length > 0) {
       groups.push({
         id: 'available-boards',
-        label: '移動先のボードを選択',
-        items: availableBoards.map(board => ({
-          id: board.id,
-          type: 'selectable',
-          label: board.title,
-          icon: FolderKanban,
-          selected: false,
-          description: `${board.columns.length} カラム・${board.columns.reduce((sum, col) => sum + col.tasks.length, 0)} タスク`,
-          onSelect: () => handleBoardSelect(board.id),
-        })),
+        label: t('task.selectTargetBoard'),
+        items: availableBoards.map(board => {
+          const taskCount = board.columns.reduce(
+            (sum, col) => sum + col.tasks.length,
+            0
+          );
+          return {
+            id: board.id,
+            type: 'selectable',
+            label: board.title,
+            icon: FolderKanban,
+            selected: false,
+            description: t('task.boardInfo', {
+              columns: board.columns.length,
+              tasks: taskCount,
+            }),
+            onSelect: () => handleBoardSelect(board.id),
+          };
+        }),
       });
     }
 
@@ -78,7 +89,7 @@ export const TaskBoardMover: React.FC<TaskBoardMoverProps> = ({
     if (currentBoard) {
       groups.push({
         id: 'current-board',
-        label: '現在のボード',
+        label: t('board.currentBoard'),
         items: [
           {
             id: 'current',
@@ -87,7 +98,7 @@ export const TaskBoardMover: React.FC<TaskBoardMoverProps> = ({
             icon: FolderKanban,
             selected: true,
             disabled: true,
-            description: '現在のボード',
+            description: t('board.currentBoard'),
             onSelect: () => {}, // 何もしない
           },
         ],
@@ -95,7 +106,7 @@ export const TaskBoardMover: React.FC<TaskBoardMoverProps> = ({
     }
 
     return groups;
-  }, [availableBoards, currentBoard, handleBoardSelect]);
+  }, [availableBoards, currentBoard, handleBoardSelect, t]);
 
   // 移動可能なボードがない場合は表示しない
   if (availableBoards.length === 0) {

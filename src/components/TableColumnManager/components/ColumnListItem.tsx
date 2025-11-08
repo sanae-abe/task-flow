@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Input } from '@/components/ui/input';
 import {
   Trash2,
@@ -48,6 +49,7 @@ export const ColumnListItem: React.FC<ColumnListItemProps> = ({
   onMoveDown,
   onRemove,
 }) => {
+  const { t } = useTranslation();
   const isFirst = index === 0;
   const isLast = index === totalCount - 1;
 
@@ -73,7 +75,9 @@ export const ColumnListItem: React.FC<ColumnListItemProps> = ({
           icon={column.visible ? Eye : EyeOff}
           size='icon'
           ariaLabel={
-            column.visible ? 'カラムを非表示にする' : 'カラムを表示する'
+            column.visible
+              ? t('table.columnSettings.hideColumn')
+              : t('table.columnSettings.showColumn')
           }
           onClick={e => {
             e.stopPropagation();
@@ -90,13 +94,15 @@ export const ColumnListItem: React.FC<ColumnListItemProps> = ({
 
       {/* 幅設定 */}
       <div className='flex items-center gap-1'>
-        <label className='text-sm text-zinc-500 hidden sm:block'>幅:</label>
+        <label className='text-sm text-zinc-500 hidden sm:block'>
+          {t('table.columnSettings.widthLabel')}
+        </label>
         <Input
           value={column.width}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             onWidthChange(column.id, e.target.value)
           }
-          placeholder='幅'
+          placeholder={t('table.columnSettings.width')}
           className='w-20 h-8 text-xs'
           aria-describedby={`width-help-${column.id}`}
         />
@@ -108,7 +114,7 @@ export const ColumnListItem: React.FC<ColumnListItemProps> = ({
           <IconButton
             icon={ChevronUp}
             size='icon'
-            ariaLabel='カラムを上に移動'
+            ariaLabel={t('table.columnSettings.moveUp')}
             onClick={e => {
               e.stopPropagation();
               onMoveUp(column.id);
@@ -122,7 +128,7 @@ export const ColumnListItem: React.FC<ColumnListItemProps> = ({
           <IconButton
             icon={ChevronDown}
             size='icon'
-            ariaLabel='カラムを下に移動'
+            ariaLabel={t('table.columnSettings.moveDown')}
             onClick={e => {
               e.stopPropagation();
               onMoveDown(column.id);
@@ -139,7 +145,7 @@ export const ColumnListItem: React.FC<ColumnListItemProps> = ({
           <IconButton
             icon={Trash2}
             size='icon'
-            ariaLabel='カラムを削除'
+            ariaLabel={t('table.columnSettings.deleteColumn')}
             onClick={() => onRemove(column.id)}
             className='w-8 h-8 p-2 hover:bg-gray-200'
           />

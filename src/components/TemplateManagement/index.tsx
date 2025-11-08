@@ -7,7 +7,7 @@ export { default as TemplateManagementPanel } from './TemplateManagementPanel';
 export { default as TemplateFormDialog } from './TemplateFormDialog';
 export { default as TemplateCard } from './TemplateCard';
 export { default as TemplateCategorySelector } from './TemplateCategorySelector';
-export { TEMPLATE_CATEGORIES } from './TemplateCategorySelector';
+export { getTemplateCategories } from './TemplateCategorySelector';
 
 // 型のエクスポート
 export type { TemplateCategoryInfo } from './TemplateCategorySelector';

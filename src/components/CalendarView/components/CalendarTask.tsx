@@ -1,6 +1,7 @@
 import React from 'react';
 import { useDraggable } from '@dnd-kit/core';
 import { RotateCcw } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 import type { Task } from '../../../types';
 import {
@@ -15,6 +16,7 @@ interface CalendarTaskProps {
 
 const CalendarTask: React.FC<CalendarTaskProps> = React.memo(
   ({ task, onTaskClick }) => {
+    const { t } = useTranslation();
     const isVirtual = isVirtualTask(task);
     const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
       id: task.id,
@@ -51,7 +53,7 @@ const CalendarTask: React.FC<CalendarTaskProps> = React.memo(
           e.stopPropagation();
           onTaskClick(task);
         }}
-        title={`${task.title}${isVirtual ? ' (繰り返し予定)' : ''}`}
+        title={`${task.title}${isVirtual ? ` ${t('recurrence.virtualTaskLabel')}` : ''}`}
         role='button'
         tabIndex={0}
         onKeyDown={e => {

@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
 
 import type { Priority } from '../types';
-import { prioritySelectorOptions } from '../utils/priorityConfig';
+import { buildPrioritySelectorOptions } from '../utils/priorityConfig';
 
 interface PrioritySelectorProps {
   priority?: Priority;
@@ -19,6 +19,7 @@ const PrioritySelector: React.FC<PrioritySelectorProps> = ({
   variant = 'full',
 }) => {
   const { t } = useTranslation();
+  const prioritySelectorOptions = buildPrioritySelectorOptions(t);
 
   const handleChange = (value: Priority | undefined) => {
     if (disabled) {

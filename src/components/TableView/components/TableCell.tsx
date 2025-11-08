@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import type { TableCellProps } from '../types';
 import {
   renderActionsCell,
@@ -33,21 +34,23 @@ export const TableCell: React.FC<TableCellProps> = ({
   onDeleteClick,
   onEditClick,
 }) => {
+  const { t } = useTranslation();
+
   switch (columnId) {
     case 'actions':
-      return renderActionsCell(task, onDeleteClick);
+      return renderActionsCell(task, onDeleteClick, t);
 
     case 'edit':
-      return renderEditCell(task, onEditClick);
+      return renderEditCell(task, onEditClick, t);
 
     case 'title':
       return renderTitleCell(task);
 
     case 'status':
-      return renderStatusCell(task, currentBoard, onStatusChange);
+      return renderStatusCell(task, currentBoard, onStatusChange, t);
 
     case 'priority':
-      return renderPriorityCell(task);
+      return renderPriorityCell(task, t);
 
     case 'dueDate':
       return renderDueDateCell(task);
@@ -77,7 +80,7 @@ export const TableCell: React.FC<TableCellProps> = ({
       return renderDescriptionCell(task);
 
     case 'recurrence':
-      return renderRecurrenceCell(task);
+      return renderRecurrenceCell(task, t);
 
     default:
       return renderDefaultCell();
