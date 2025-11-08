@@ -1,5 +1,5 @@
-import React from 'react';
-import { Zap, ChevronUp, Minus, ChevronDown } from 'lucide-react';
+import { Zap, ChevronUp, Minus, ChevronDown, type LucideIcon } from 'lucide-react';
+import type { TFunction } from 'i18next';
 
 import type { Priority } from '../types';
 
@@ -24,11 +24,7 @@ export interface PriorityConfig {
   label: string;
   labelEn: string;
   description: string;
-  icon: React.ComponentType<{
-    size?: number;
-    fill?: string;
-    'aria-hidden'?: boolean;
-  }>;
+  icon: LucideIcon;
   variant: 'danger' | 'attention' | 'accent' | 'secondary';
   colors: PriorityColors;
 }
@@ -143,11 +139,7 @@ export interface PrioritySelectorOption {
   value: Priority | undefined;
   label: string;
   description: string;
-  icon: React.ComponentType<{
-    size?: number;
-    fill?: string;
-    'aria-hidden'?: boolean;
-  }> | null;
+  icon: LucideIcon | null;
   color: string;
 }
 
@@ -250,4 +242,107 @@ export const getPriorityAriaLabel = (
   }
   const config = priorityConfig[priority];
   return `優先度: ${config.label} - ${config.description}`;
+};
+
+/**
+ * i18n対応の優先度設定を生成
+ * @param t - i18next翻訳関数
+ * @returns 翻訳された優先度設定マップ
+ */
+export const buildPriorityConfig = (t: TFunction): Record<Priority, PriorityConfig> => ({
+  critical: {
+    label: t('priority.critical'),
+    labelEn: 'Critical',
+    description: t('priority.criticalDesc'),
+    icon: Zap,
+    variant: 'danger',
+    colors: priorityConfig.critical.colors,
+  },
+  high: {
+    label: t('priority.high'),
+    labelEn: 'High',
+    description: t('priority.highDesc'),
+    icon: ChevronUp,
+    variant: 'attention',
+    colors: priorityConfig.high.colors,
+  },
+  medium: {
+    label: t('priority.medium'),
+    labelEn: 'Medium',
+    description: t('priority.mediumDesc'),
+    icon: Minus,
+    variant: 'accent',
+    colors: priorityConfig.medium.colors,
+  },
+  low: {
+    label: t('priority.low'),
+    labelEn: 'Low',
+    description: t('priority.lowDesc'),
+    icon: ChevronDown,
+    variant: 'secondary',
+    colors: priorityConfig.low.colors,
+  },
+});
+
+/**
+ * i18n対応のセレクター用優先度オプションを生成
+ * @param t - i18next翻訳関数
+ * @returns 翻訳された優先度オプション配列
+ */
+export const buildPrioritySelectorOptions = (t: TFunction): PrioritySelectorOption[] => {
+  const config = buildPriorityConfig(t);
+  return [
+    {
+      value: undefined,
+      label: t('priority.noPriority'),
+      description: t('priority.noPriorityDesc'),
+      icon: null,
+      color: '#656d76',
+    },
+    {
+      value: 'critical',
+      label: config.critical.label,
+      description: config.critical.description,
+      icon: config.critical.icon,
+      color: config.critical.colors.filled.bg,
+    },
+    {
+      value: 'high',
+      label: config.high.label,
+      description: config.high.description,
+      icon: config.high.icon,
+      color: config.high.colors.filled.bg,
+    },
+    {
+      value: 'medium',
+      label: config.medium.label,
+      description: config.medium.description,
+      icon: config.medium.icon,
+      color: config.medium.colors.filled.bg,
+    },
+    {
+      value: 'low',
+      label: config.low.label,
+      description: config.low.description,
+      icon: config.low.icon,
+      color: config.low.colors.filled.bg,
+    },
+  ];
+};
+
+/**
+ * i18n対応のaria-label生成
+ * @param priority - 優先度
+ * @param t - i18next翻訳関数
+ * @returns aria-label文字列
+ */
+export const buildPriorityAriaLabel = (
+  priority: Priority | undefined,
+  t: TFunction
+): string => {
+  if (!priority) {
+    return `${t('priority.ariaLabel')}: ${t('priority.unset')}`;
+  }
+  const config = buildPriorityConfig(t)[priority];
+  return `${t('priority.ariaLabel')}: ${config.label} - ${config.description}`;
 };

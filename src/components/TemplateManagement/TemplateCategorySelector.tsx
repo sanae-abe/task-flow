@@ -1,4 +1,6 @@
 import React, { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 
 import type {
   TemplateCategory,
@@ -16,38 +18,41 @@ interface TemplateCategorySelectorProps {
 }
 
 /**
- * テンプレートカテゴリー定義
+ * テンプレートカテゴリー定義を取得する関数
+ * 翻訳関数を受け取り、国際化されたカテゴリー情報を返す
  */
-const TEMPLATE_CATEGORIES: TemplateCategoryInfo[] = [
+export const getTemplateCategories = (
+  t: TFunction
+): TemplateCategoryInfo[] => [
   {
     id: 'work',
-    label: '仕事',
-    description: '業務関連のタスク',
+    label: t('template.categories.work'),
+    description: t('template.categories.workDesc'),
   },
   {
     id: 'personal',
-    label: '個人',
-    description: 'プライベートなタスク',
+    label: t('template.categories.personal'),
+    description: t('template.categories.personalDesc'),
   },
   {
     id: 'project',
-    label: 'プロジェクト',
-    description: 'プロジェクト関連のタスク',
+    label: t('template.categories.project'),
+    description: t('template.categories.projectDesc'),
   },
   {
     id: 'meeting',
-    label: '会議',
-    description: '会議の準備や議事録',
+    label: t('template.categories.meeting'),
+    description: t('template.categories.meetingDesc'),
   },
   {
     id: 'routine',
-    label: 'ルーティン',
-    description: '定期的な作業',
+    label: t('template.categories.routine'),
+    description: t('template.categories.routineDesc'),
   },
   {
     id: 'other',
-    label: 'その他',
-    description: 'その他のタスク',
+    label: t('template.categories.other'),
+    description: t('template.categories.otherDesc'),
   },
 ];
 
@@ -60,13 +65,16 @@ const TemplateCategorySelector: React.FC<TemplateCategorySelectorProps> = ({
   onChange,
   disabled = false,
   required = false,
-  label = 'カテゴリー',
+  label,
   showDescription = false,
 }) => {
+  const { t } = useTranslation();
+  const templateCategories = useMemo(() => getTemplateCategories(t), [t]);
+
   // 選択中のカテゴリー情報（説明文表示用）
   const selectedCategory = useMemo(
-    () => TEMPLATE_CATEGORIES.find(cat => cat.id === value),
-    [value]
+    () => templateCategories.find(cat => cat.id === value),
+    [value, templateCategories]
   );
 
   // 動的な説明文
@@ -80,10 +88,10 @@ const TemplateCategorySelector: React.FC<TemplateCategorySelectorProps> = ({
       id='template-category'
       name='category'
       type='select'
-      label={label}
+      label={label || t('template.category')}
       value={value}
       onChange={newValue => onChange(newValue as TemplateCategory)}
-      options={TEMPLATE_CATEGORIES.map(cat => ({
+      options={templateCategories.map(cat => ({
         value: cat.id,
         label: cat.label,
       }))}
@@ -95,5 +103,4 @@ const TemplateCategorySelector: React.FC<TemplateCategorySelectorProps> = ({
 };
 
 export default TemplateCategorySelector;
-export { TEMPLATE_CATEGORIES };
 export type { TemplateCategoryInfo };

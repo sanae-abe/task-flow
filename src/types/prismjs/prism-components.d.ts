@@ -42,3 +42,13 @@ declare module 'prismjs/components/prism-markdown.js' {
   const content: unknown;
   export default content;
 }
+
+/**
+ * Global Prism type definition for window.Prism
+ * Used by @lexical/code for syntax highlighting
+ */
+declare global {
+  interface Window {
+    Prism: any;
+  }
+}

@@ -1,4 +1,5 @@
 import { memo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import type { DataStatistics as DataStatisticsType } from './types';
 import { formatFileSize } from '../../utils/dataStatistics';
@@ -14,22 +15,35 @@ interface DataStatisticsProps {
 }
 
 export const DataStatistics = memo<DataStatisticsProps>(
-  ({ statistics, title = 'データ概要' }) => (
-    <div className='flex flex-col gap-2'>
-      {title && (
-        <span className='text-sm font-semibold text-zinc-700'>{title}</span>
-      )}
+  ({ statistics, title }) => {
+    const { t } = useTranslation();
+    const defaultTitle = t('export.dataOverview');
 
-      {/* シンプルな1行統計表示 */}
-      <div className='px-3 py-2 bg-neutral-100 rounded-md border border-border'>
-        <span className='text-sm text-foreground'>
-          {statistics.taskCount}タスク / {statistics.boardCount}ボード /{' '}
-          {statistics.labelCount}ラベル / {statistics.attachmentCount}
-          添付ファイル（約 {formatFileSize(statistics.estimatedSize)}）
-        </span>
+    return (
+      <div className='flex flex-col gap-2'>
+        {(title || defaultTitle) && (
+          <span className='text-sm font-semibold text-zinc-700'>
+            {title || defaultTitle}
+          </span>
+        )}
+
+        {/* シンプルな1行統計表示 */}
+        <div className='px-3 py-2 bg-neutral-100 rounded-md border border-border'>
+          <span className='text-sm text-foreground'>
+            {t('export.taskCount', { count: statistics.taskCount })} /{' '}
+            {t('export.boardCount', { count: statistics.boardCount })} /{' '}
+            {t('export.labelCount', { count: statistics.labelCount })} /{' '}
+            {t('export.attachmentCount', { count: statistics.attachmentCount })}
+            （
+            {t('export.approximateSize', {
+              size: formatFileSize(statistics.estimatedSize),
+            })}
+            ）
+          </span>
+        </div>
       </div>
-    </div>
-  )
+    );
+  }
 );
 
 DataStatistics.displayName = 'DataStatistics';

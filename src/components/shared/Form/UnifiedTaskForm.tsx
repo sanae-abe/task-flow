@@ -1,4 +1,5 @@
 import React, { memo, useMemo, useCallback, Suspense, lazy } from 'react';
+import { useTranslation } from 'react-i18next';
 import { DatePicker } from '@/components/ui/date-picker';
 
 import type {
@@ -113,6 +114,8 @@ export const UnifiedTaskForm = memo<UnifiedTaskFormProps>(
     createOptions,
     className = '',
   }) => {
+    const { t } = useTranslation();
+
     // 時刻変更ハンドラー
     const handleTimeChange = useCallback(
       (newHasTime: boolean, newTime: string) => {
@@ -181,7 +184,7 @@ export const UnifiedTaskForm = memo<UnifiedTaskFormProps>(
           fallback={
             <div className='h-32 flex items-center justify-center border border-input rounded-md'>
               <span className='text-sm text-muted-foreground'>
-                エディタを読み込み中...
+                {t('common.loadingEditor')}
               </span>
             </div>
           }
@@ -190,11 +193,11 @@ export const UnifiedTaskForm = memo<UnifiedTaskFormProps>(
             key={editorKey}
             value={description}
             onChange={setDescription}
-            placeholder='タスクの説明を入力...'
+            placeholder={t('task.descriptionPlaceholder')}
           />
         </Suspense>
       ),
-      [editorKey, description, setDescription]
+      [editorKey, description, setDescription, t]
     );
 
     const dueDateComponent = useMemo(
@@ -202,10 +205,10 @@ export const UnifiedTaskForm = memo<UnifiedTaskFormProps>(
         <DatePicker
           value={dueDate}
           onChange={date => setDueDate(date || '')}
-          placeholder='期限を選択'
+          placeholder={t('task.selectDueDate')}
         />
       ),
-      [dueDate, setDueDate]
+      [dueDate, setDueDate, t]
     );
 
     const timeRecurrenceComponent = useMemo(
@@ -299,7 +302,9 @@ export const UnifiedTaskForm = memo<UnifiedTaskFormProps>(
               <DialogFlashMessage
                 message={{
                   type: 'info',
-                  text: `テンプレート「${createOptions.selectedTemplate.name}」から作成中`,
+                  text: t('template.creatingFromTemplate', {
+                    name: createOptions.selectedTemplate.name,
+                  }),
                 }}
                 isStatic
               />

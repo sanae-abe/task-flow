@@ -6,7 +6,7 @@ import IconButton from '../../shared/IconButton';
 interface EditingViewProps {
   editTitle: string;
   setEditTitle: (title: string) => void;
-  inputRef: React.RefObject<HTMLInputElement | null>;
+  inputRef: React.RefObject<HTMLInputElement>;
   onSave: () => void;
   onCancel: () => void;
   onKeyDown: (event: React.KeyboardEvent) => void;

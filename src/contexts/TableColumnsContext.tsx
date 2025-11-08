@@ -5,8 +5,10 @@ import React, {
   useCallback,
   useMemo,
 } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   DEFAULT_COLUMNS,
+  COLUMN_LABEL_KEYS,
   type TableColumn,
   type TableColumnSettings,
 } from '../types/table';
@@ -36,6 +38,7 @@ const TableColumnsContext = createContext<TableColumnsContextType | undefined>(
 export const TableColumnsProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
+  const { t } = useTranslation();
   const [forceRender, setForceRender] = useState(0);
 
   const [settings, setSettings] = useState<TableColumnSettings>(() => {
@@ -197,14 +200,26 @@ export const TableColumnsProvider: React.FC<{ children: React.ReactNode }> = ({
     setSettings(defaultSettings);
   }, []);
 
+  // ラベルを翻訳したカラムを取得
+  const translatedColumns = useMemo(
+    () =>
+      settings.columns.map(col => ({
+        ...col,
+        label: COLUMN_LABEL_KEYS[col.id]
+          ? t(COLUMN_LABEL_KEYS[col.id] as string)
+          : col.label,
+      })),
+    [settings.columns, t]
+  );
+
   // 表示されているカラムを順序通りに取得
   const visibleColumns = useMemo(() => {
     const result = settings.columnOrder
-      .map(id => settings.columns.find(col => col.id === id))
+      .map(id => translatedColumns.find(col => col.id === id))
       .filter((col): col is TableColumn => col !== undefined && col.visible);
 
     return result;
-  }, [settings.columns, settings.columnOrder]);
+  }, [translatedColumns, settings.columnOrder]);
 
   // グリッドテンプレートカラムのCSS値を生成
   const gridTemplateColumns = useMemo(
@@ -214,7 +229,7 @@ export const TableColumnsProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const contextValue = useMemo(
     () => ({
-      columns: settings.columns,
+      columns: translatedColumns,
       columnOrder: settings.columnOrder,
       visibleColumns,
       gridTemplateColumns,
@@ -226,7 +241,7 @@ export const TableColumnsProvider: React.FC<{ children: React.ReactNode }> = ({
       forceRender,
     }),
     [
-      settings.columns,
+      translatedColumns,
       settings.columnOrder,
       visibleColumns,
       gridTemplateColumns,

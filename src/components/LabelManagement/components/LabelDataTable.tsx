@@ -7,6 +7,7 @@
 import React from 'react';
 import { ColumnDef } from '@tanstack/react-table';
 import { Edit, Trash2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 import { DataTable } from '@/components/ui/data-table';
 import type { LabelWithInfo } from '../../../types/labelManagement';
@@ -24,10 +25,12 @@ export const LabelDataTable: React.FC<LabelDataTableProps> = ({
   onEdit,
   onDelete,
 }) => {
+  const { t } = useTranslation();
+
   const columns: ColumnDef<LabelWithInfo>[] = [
     {
       accessorKey: 'name',
-      header: 'ラベル',
+      header: t('label.label'),
       cell: ({ row }) => {
         const label = row.original;
         const colors = getLabelColors(label.color);
@@ -47,15 +50,15 @@ export const LabelDataTable: React.FC<LabelDataTableProps> = ({
     },
     {
       accessorKey: 'boardName',
-      header: '所属ボード',
+      header: t('label.boardName'),
       cell: ({ row }) => {
         const boardName = row.getValue('boardName') as string;
-        return <>{boardName || '不明'}</>;
+        return <>{boardName || t('label.unknown')}</>;
       },
     },
     {
       accessorKey: 'usageCount',
-      header: '使用数',
+      header: t('label.usageCount'),
       cell: ({ row }) => {
         const count = row.getValue('usageCount') as number;
         return (
@@ -81,14 +84,14 @@ export const LabelDataTable: React.FC<LabelDataTableProps> = ({
               size='icon'
               onClick={() => onEdit(label)}
               className='h-8 w-8 p-0'
-              ariaLabel='編集'
+              ariaLabel={t('common.edit')}
             />
             <IconButton
               icon={Trash2}
               size='icon'
               onClick={() => onDelete(label)}
               className='h-8 w-8 p-0'
-              ariaLabel='削除'
+              ariaLabel={t('common.delete')}
             />
           </div>
         );
@@ -100,7 +103,7 @@ export const LabelDataTable: React.FC<LabelDataTableProps> = ({
     <DataTable
       columns={columns}
       data={labels}
-      emptyMessage='ラベルがありません'
+      emptyMessage={t('label.noLabels')}
       className='border-border'
     />
   );

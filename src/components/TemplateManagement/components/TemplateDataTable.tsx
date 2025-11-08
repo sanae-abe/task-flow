@@ -5,6 +5,7 @@
  */
 
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { ColumnDef, SortingState } from '@tanstack/react-table';
 import { Star, Edit, Trash2 } from 'lucide-react';
 
@@ -38,6 +39,8 @@ export const TemplateDataTable: React.FC<TemplateDataTableProps> = ({
   onToggleFavorite,
   hasActiveFilters,
 }) => {
+  const { t } = useTranslation();
+
   const columns: ColumnDef<TaskTemplate>[] = [
     {
       accessorKey: 'favorite',
@@ -51,7 +54,9 @@ export const TemplateDataTable: React.FC<TemplateDataTableProps> = ({
             onClick={() => onToggleFavorite(template)}
             className='h-8 w-8 p-0'
             title={
-              template.isFavorite ? 'お気に入りから削除' : 'お気に入りに追加'
+              template.isFavorite
+                ? t('template.removeFromFavorites')
+                : t('template.addToFavorites')
             }
           >
             <Star
@@ -64,7 +69,7 @@ export const TemplateDataTable: React.FC<TemplateDataTableProps> = ({
     },
     {
       accessorKey: 'name',
-      header: 'テンプレート名',
+      header: t('template.templateName'),
       cell: ({ row }) => {
         const template = row.original;
         return (
@@ -81,32 +86,25 @@ export const TemplateDataTable: React.FC<TemplateDataTableProps> = ({
     },
     {
       accessorKey: 'category',
-      header: 'カテゴリー',
+      header: t('template.category'),
       cell: ({ row }) => {
-        const categoryMap = {
-          work: '仕事',
-          personal: '個人',
-          project: 'プロジェクト',
-          meeting: '会議',
-          routine: 'ルーティン',
-          other: 'その他',
-        };
         const category = row.getValue('category') as string;
+        const categoryKey = `template.categories.${category}` as const;
         return (
           <span className='text-sm text-zinc-700'>
-            {categoryMap[category as keyof typeof categoryMap] || category}
+            {t(categoryKey, { defaultValue: category })}
           </span>
         );
       },
     },
     {
       accessorKey: 'usageCount',
-      header: '使用回数',
+      header: t('template.usageCount'),
       cell: ({ row }) => {
         const count = row.getValue('usageCount') as number;
         return (
           <div className='text-center'>
-            <span className='text-sm'>{count}回</span>
+            <span className='text-sm'>{t('template.timesUsed', { count })}</span>
           </div>
         );
       },
@@ -121,13 +119,15 @@ export const TemplateDataTable: React.FC<TemplateDataTableProps> = ({
             <IconButton
               icon={Edit}
               size='icon'
-              ariaLabel={`テンプレート「${template.name}」を編集`}
+              ariaLabel={t('template.editTemplateAria', { name: template.name })}
               onClick={() => onEdit(template)}
             />
             <IconButton
               icon={Trash2}
               size='icon'
-              ariaLabel={`テンプレート「${template.name}」を削除`}
+              ariaLabel={t('template.deleteTemplateAria', {
+                name: template.name,
+              })}
               onClick={() => onDelete(template)}
             />
           </div>
@@ -153,8 +153,8 @@ export const TemplateDataTable: React.FC<TemplateDataTableProps> = ({
   };
 
   const emptyMessage = hasActiveFilters
-    ? '条件に一致するテンプレートが見つかりません'
-    : 'まだテンプレートがありません';
+    ? t('template.noMatchingTemplates')
+    : t('template.noTemplates');
 
   return (
     <DataTable

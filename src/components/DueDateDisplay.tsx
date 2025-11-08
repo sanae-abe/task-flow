@@ -1,5 +1,6 @@
-import { AlertTriangle, Clock, XCircle } from 'lucide-react';
+import { AlertTriangle, Clock, XCircle, type LucideIcon } from 'lucide-react';
 import { memo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import {
   getDateStatus,
@@ -16,40 +17,41 @@ interface DueDateDisplayProps {
 interface BadgeConfig {
   variant: 'danger' | 'warning' | 'info';
   text: string;
-  icon: React.ComponentType<{ size: number }>;
+  icon: LucideIcon;
 }
 
-const BADGE_CONFIGS = {
+const getBadgeConfigs = (t: (key: string) => string) => ({
   overdue: {
     variant: 'danger' as const,
-    text: '期限切れ',
+    text: t('task.overdue'),
     icon: XCircle,
   },
   today: {
     variant: 'warning' as const,
-    text: '本日期限',
+    text: t('task.dueToday'),
     icon: AlertTriangle,
   },
   tomorrow: {
     variant: 'info' as const,
-    text: '明日期限',
+    text: t('task.dueTomorrow'),
     icon: Clock,
   },
-} as const;
+} as const);
 
 const getBadgeConfig = (
   isOverdue: boolean,
   isDueToday: boolean,
-  isDueTomorrow: boolean
+  isDueTomorrow: boolean,
+  badgeConfigs: ReturnType<typeof getBadgeConfigs>
 ): BadgeConfig | null => {
   if (isOverdue) {
-    return BADGE_CONFIGS['overdue'];
+    return badgeConfigs.overdue;
   }
   if (isDueToday) {
-    return BADGE_CONFIGS['today'];
+    return badgeConfigs.today;
   }
   if (isDueTomorrow) {
-    return BADGE_CONFIGS['tomorrow'];
+    return badgeConfigs.tomorrow;
   }
   return null;
 };
@@ -73,8 +75,10 @@ const getTextColor = (
 
 const DueDateDisplay = memo<DueDateDisplayProps>(
   ({ dueDate, showYear = false }) => {
+    const { t } = useTranslation();
     const { isOverdue, isDueToday, isDueTomorrow } = getDateStatus(dueDate);
-    const badgeConfig = getBadgeConfig(isOverdue, isDueToday, isDueTomorrow);
+    const badgeConfigs = getBadgeConfigs(t);
+    const badgeConfig = getBadgeConfig(isOverdue, isDueToday, isDueTomorrow, badgeConfigs);
     const textColorClass = getTextColor(isOverdue, isDueToday, isDueTomorrow);
     const formattedDate = showYear
       ? formatDueDateWithYear(dueDate)

@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { Task, Column } from '../../../types';
 import { sortTasks } from '../../../utils/taskSort';
 import { filterTasks } from '../../../utils/taskFilter';
@@ -47,6 +48,8 @@ export const useCalendarData = ({
   currentDate,
   state,
 }: UseCalendarDataParams): UseCalendarDataReturn => {
+  const { t } = useTranslation();
+
   const { year, month } = useMemo(
     () => ({
       year: currentDate.getFullYear(),
@@ -140,25 +143,33 @@ export const useCalendarData = ({
 
   const monthNames = useMemo(
     () => [
-      '1月',
-      '2月',
-      '3月',
-      '4月',
-      '5月',
-      '6月',
-      '7月',
-      '8月',
-      '9月',
-      '10月',
-      '11月',
-      '12月',
+      t('calendar.months.january'),
+      t('calendar.months.february'),
+      t('calendar.months.march'),
+      t('calendar.months.april'),
+      t('calendar.months.may'),
+      t('calendar.months.june'),
+      t('calendar.months.july'),
+      t('calendar.months.august'),
+      t('calendar.months.september'),
+      t('calendar.months.october'),
+      t('calendar.months.november'),
+      t('calendar.months.december'),
     ],
-    []
+    [t]
   );
 
   const weekDays = useMemo(
-    () => ['日', '月', '火', '水', '木', '金', '土'],
-    []
+    () => [
+      t('calendar.weekdays.sunday'),
+      t('calendar.weekdays.monday'),
+      t('calendar.weekdays.tuesday'),
+      t('calendar.weekdays.wednesday'),
+      t('calendar.weekdays.thursday'),
+      t('calendar.weekdays.friday'),
+      t('calendar.weekdays.saturday'),
+    ],
+    [t]
   );
 
   return {

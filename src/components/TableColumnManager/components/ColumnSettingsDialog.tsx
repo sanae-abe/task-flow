@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import UnifiedDialog from '@/components/shared/Dialog/UnifiedDialog';
 import { InlineMessage } from '@/components/shared';
 import { ColumnListItem } from './ColumnListItem';
@@ -44,6 +45,7 @@ export const ColumnSettingsDialog: React.FC<ColumnSettingsDialogProps> = ({
   onDrop,
   onDragEnd,
 }) => {
+  const { t } = useTranslation();
   const isCustomColumn = useCallback(
     (columnId: string) => columnId.startsWith('custom-'),
     []
@@ -53,17 +55,17 @@ export const ColumnSettingsDialog: React.FC<ColumnSettingsDialogProps> = ({
     <UnifiedDialog
       isOpen={isOpen}
       onClose={onCancel}
-      title='カラム詳細設定'
+      title={t('table.columnSettings.title')}
       variant='modal'
       size='large'
       actions={[
         {
-          label: 'キャンセル',
+          label: t('common.cancel'),
           onClick: onCancel,
           variant: 'outline',
         },
         {
-          label: '保存',
+          label: t('common.save'),
           onClick: onSave,
           variant: 'default',
           disabled: !hasUnsavedChanges,
@@ -71,13 +73,13 @@ export const ColumnSettingsDialog: React.FC<ColumnSettingsDialogProps> = ({
       ]}
     >
       <div className='mb-5 text-zinc-700 text-sm'>
-        カラムをドラッグして並び替え、表示切り替え、幅の調整ができます。
+        {t('table.columnSettings.description')}
         <br />
-        幅は50px〜1000pxの範囲で入力してください。
+        {t('table.columnSettings.widthHelp')}
         {hasUnsavedChanges && (
           <InlineMessage
             variant='warning'
-            message='未保存の変更があります'
+            message={t('table.columnSettings.unsavedChanges')}
             className='mt-2'
           />
         )}

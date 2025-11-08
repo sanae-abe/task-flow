@@ -1,19 +1,23 @@
-import { memo } from 'react';
+import { memo, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 
 import type { BoardCreateDialogProps } from '../types/dialog';
 import { SimpleFormDialogWithZod } from './shared/Dialog/SimpleFormDialogWithZod';
 
-// Board名のバリデーションスキーマ
-const boardNameSchema = z
-  .string()
-  .min(1, 'ボードタイトルは必須です')
-  .max(100, 'ボードタイトルは100文字以内で入力してください');
-
 const BoardCreateDialog = memo<BoardCreateDialogProps>(
   ({ isOpen, onSave, onCancel }) => {
     const { t } = useTranslation();
+
+    // Board名のバリデーションスキーマ（翻訳対応）
+    const boardNameSchema = useMemo(
+      () =>
+        z
+          .string()
+          .min(1, t('validation.required'))
+          .max(100, t('validation.tooLong', { max: 100 })),
+      [t]
+    );
 
     return (
       <SimpleFormDialogWithZod

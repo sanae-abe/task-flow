@@ -81,8 +81,10 @@ export default defineConfig({
       'react',
       'react-dom',
       'react/jsx-runtime',
+      'react-i18next',
+      'i18next',
+      'i18next-browser-languagedetector',
     ],
-    exclude: ['use-sync-external-store'],
   },
   css: {
     postcss: './postcss.config.js',

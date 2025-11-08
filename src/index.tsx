@@ -2,8 +2,14 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 
-// Prism.jsは使用時に動的ロード（初期バンドルサイズ削減）
-// loadPrism()をRichTextEditor内で呼び出す
+// Prism.jsをアプリ起動時にプリロード開始（RichTextEditorの遅延ロードに備える）
+// @lexical/codeがCodeNode/CodeHighlightNode初期化時にwindow.Prismを必要とするため
+import { loadPrism } from './utils/prismLoader';
+
+// Prismのプリロードを開始（非ブロッキング）
+loadPrism().catch(error => {
+  console.warn('[App] Prism preload failed, will retry on demand:', error);
+});
 
 import './index.css';
 import './i18n/config'; // i18n初期化

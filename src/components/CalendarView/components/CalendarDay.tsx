@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 import { useDroppable } from '@dnd-kit/core';
+import { useTranslation } from 'react-i18next';
 
 import type { Task } from '../../../types';
 import type { VirtualRecurringTask } from '../../../utils/calendarRecurrence';
@@ -16,6 +17,7 @@ interface CalendarDayProps {
 
 const CalendarDay: React.FC<CalendarDayProps> = React.memo(
   ({ date, tasks, isToday, isCurrentMonth, onTaskClick, onDateClick }) => {
+    const { t } = useTranslation();
     const { setNodeRef, isOver } = useDroppable({
       id: `calendar-day-${date.toISOString()}`,
       data: {
@@ -74,7 +76,7 @@ const CalendarDay: React.FC<CalendarDayProps> = React.memo(
           <span className={dayNumberClassName}>{date.getDate()}</span>
           {tasks.length > 3 && (
             <span className='text-xs text-zinc-700'>
-              他 {tasks.length - 3} 件
+              {t('calendar.moreTasksCount', { count: tasks.length - 3 })}
             </span>
           )}
         </div>

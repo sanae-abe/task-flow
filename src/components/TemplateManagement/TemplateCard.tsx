@@ -1,9 +1,10 @@
 import React, { memo, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Star, Edit, Trash2 } from 'lucide-react';
 
 import type { TaskTemplate } from '../../types/template';
-import { TEMPLATE_CATEGORIES } from './TemplateCategorySelector';
+import { getTemplateCategories } from './TemplateCategorySelector';
 import LabelChip from '../LabelChip';
 import IconButton from '../shared/IconButton';
 
@@ -31,8 +32,10 @@ const TemplateCard: React.FC<TemplateCardProps> = memo(
     showActions = true,
     compact = false,
   }) => {
+    const { t } = useTranslation();
+
     // カテゴリー情報取得
-    const categoryInfo = TEMPLATE_CATEGORIES.find(
+    const categoryInfo = getTemplateCategories(t).find(
       cat => cat.id === template.category
     );
 

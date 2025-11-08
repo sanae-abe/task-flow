@@ -33,12 +33,14 @@ interface RightSectionProps {
   onCreateClick: () => void;
   onHelpClick: () => void;
   onSettingsClick: () => void;
+  disableCreateButton?: boolean;
 }
 
 const RightSection: React.FC<RightSectionProps> = ({
   onCreateClick,
   onHelpClick,
   onSettingsClick,
+  disableCreateButton = false,
 }) => {
   const { t } = useTranslation();
 
@@ -50,6 +52,7 @@ const RightSection: React.FC<RightSectionProps> = ({
         variant='default'
         aria-label={t('header.createTask')}
         className='bg-primary text-white hover:bg-primary/90 flex items-center gap-1'
+        disabled={disableCreateButton}
       >
         <Plus size={16} />
         {t('header.createTask')}
@@ -83,11 +86,13 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ onHelpClick, onSettingsClick }) => {
-  const { openTaskForm } = useKanban();
+  const { openTaskForm, state } = useKanban();
 
   const handleStartCreateTask = () => {
     openTaskForm();
   };
+
+  const hasCurrentBoard = !!state.currentBoard;
 
   return (
     <header
@@ -100,6 +105,7 @@ const Header: React.FC<HeaderProps> = ({ onHelpClick, onSettingsClick }) => {
           onCreateClick={handleStartCreateTask}
           onHelpClick={onHelpClick}
           onSettingsClick={onSettingsClick}
+          disableCreateButton={!hasCurrentBoard}
         />
       </div>
     </header>

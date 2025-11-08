@@ -1,4 +1,5 @@
 import { memo, useMemo, useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
 import type { TaskTemplate } from '../../types/template';
@@ -30,6 +31,7 @@ import { TemplateSelector, TaskCreateForm } from './components';
  * - TaskCreateForm：フォームフィールド群
  */
 const TaskCreateDialog = memo(() => {
+  const { t } = useTranslation();
   const { state, closeTaskForm, createTask } = useKanban();
   const { state: boardState, setCurrentBoard } = useBoard();
   const notify = useSonnerNotify();
@@ -139,7 +141,7 @@ const TaskCreateDialog = memo(() => {
       <UnifiedDialog
         variant='modal'
         isOpen={state.isTaskFormOpen}
-        title='新しいタスクを作成'
+        title={t('task.createTask')}
         onClose={handleDialogClose}
         ariaLabelledBy='task-create-dialog-title'
         size='large'
@@ -153,8 +155,8 @@ const TaskCreateDialog = memo(() => {
           >
             {/* タブナビゲーション */}
             <TabsList className='grid w-full grid-cols-2 mb-4'>
-              <TabsTrigger value='normal'>通常作成</TabsTrigger>
-              <TabsTrigger value='template'>テンプレートから作成</TabsTrigger>
+              <TabsTrigger value='normal'>{t('template.createNormal')}</TabsTrigger>
+              <TabsTrigger value='template'>{t('template.createFromTemplate')}</TabsTrigger>
             </TabsList>
 
             {/* 通常作成フォーム */}
@@ -184,10 +186,10 @@ const TaskCreateDialog = memo(() => {
 
       <ConfirmDialog
         isOpen={showCloseConfirm}
-        title='変更を破棄しますか？'
-        message='編集した内容が失われますが、よろしいですか？'
-        confirmText='破棄する'
-        cancelText='戻る'
+        title={t('common.discardChanges')}
+        message={t('common.discardChangesMessage')}
+        confirmText={t('common.discard')}
+        cancelText={t('common.back')}
         onConfirm={handleConfirmClose}
         onCancel={handleCancelClose}
       />

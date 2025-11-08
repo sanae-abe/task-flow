@@ -5,6 +5,7 @@
  * with the same interface as the existing ContentEditable-based RichTextEditor.
  */
 
+import { useEffect, useState } from 'react';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
@@ -19,6 +20,7 @@ import { OnChangePlugin } from './plugins/OnChangePlugin';
 import { CodeHighlightPlugin } from './plugins/CodeHighlightPlugin';
 import { CodeBlockLineBreakPlugin } from './plugins/CodeBlockLineBreakPlugin';
 import { CodeLanguagePlugin } from './plugins/CodeLanguagePlugin';
+import { loadPrism, isPrismLoaded } from '@/utils/prismLoader';
 
 /**
  * Props interface matching the existing RichTextEditor
@@ -48,10 +50,66 @@ export default function LexicalRichTextEditor({
   disabled = false,
   minHeight = '120px',
 }: LexicalRichTextEditorProps): React.ReactElement {
+  const [prismReady, setPrismReady] = useState(isPrismLoaded());
+
+  // Prismを事前にロード
+  useEffect(() => {
+    if (prismReady) return;
+
+    let mounted = true;
+    loadPrism()
+      .then(() => {
+        if (mounted) {
+          // 追加の確認: window.Prismが確実に設定されるまで待機
+          const checkInterval = setInterval(() => {
+            if (window.Prism && isPrismLoaded()) {
+              clearInterval(checkInterval);
+              if (mounted) {
+                setPrismReady(true);
+              }
+            }
+          }, 50);
+
+          // タイムアウト: 5秒経っても読み込めない場合は諦める
+          setTimeout(() => {
+            clearInterval(checkInterval);
+            if (mounted && !prismReady) {
+              console.warn('[LexicalRichTextEditor] Prism load timeout');
+              setPrismReady(true); // エディタは表示（ハイライトなし）
+            }
+          }, 5000);
+        }
+      })
+      .catch(error => {
+        console.error('[LexicalRichTextEditor] Failed to load Prism:', error);
+        if (mounted) {
+          setPrismReady(true); // エディタは表示（ハイライトなし）
+        }
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, [prismReady]);
+
   const initialConfig = {
     ...getEditorConfig(),
     editable: !disabled,
   };
+
+  // Prismロード中はローディング表示
+  if (!prismReady) {
+    return (
+      <div
+        className='w-full border border-border rounded-md p-3 flex items-center justify-center bg-muted'
+        style={{ minHeight }}
+      >
+        <span className='text-muted-foreground text-sm'>
+          エディタを読み込んでいます...
+        </span>
+      </div>
+    );
+  }
 
   return (
     <LexicalComposer initialConfig={initialConfig}>
@@ -97,7 +155,8 @@ export default function LexicalRichTextEditor({
         <ListPlugin />
         <LinkPlugin />
         <CodeBlockLineBreakPlugin />
-        <CodeHighlightPlugin />
+        {/* CodeHighlightPluginはPrismロード完了後のみ有効化 */}
+        {prismReady && <CodeHighlightPlugin />}
         <CodeLanguagePlugin />
         <TabIndentationPlugin maxIndent={4} />
         <HtmlPlugin initialHtml={value} />

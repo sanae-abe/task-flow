@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
 
@@ -20,6 +21,7 @@ interface UnifiedRecycleBinViewProps {
 const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
   onMessage,
 }) => {
+  const { t } = useTranslation();
   const {
     state,
     restoreBoard,
@@ -171,7 +173,7 @@ const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
       <div className='flex items-center justify-between gap-2'>
         <div className='flex items-center gap-2'>
           <h2 className='text-lg font-bold text-foreground'>
-            ゴミ箱 ({allRecycleBinItems.length}件)
+            {t('recycleBin.recycleBinWithCount', { count: allRecycleBinItems.length })}
           </h2>
         </div>
         <Button
@@ -185,10 +187,10 @@ const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
           {emptyingRecycleBin || isEmptying ? (
             <>
               <Loader2 size={16} className='animate-spin mr-2' />
-              削除中...
+              {t('recycleBin.deleting')}
             </>
           ) : (
-            'ゴミ箱を空にする'
+            t('recycleBin.emptyRecycleBin')
           )}
         </Button>
       </div>
@@ -209,12 +211,12 @@ const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
       {/* ゴミ箱を空にする確認ダイアログ */}
       <ConfirmDialog
         isOpen={showEmptyConfirm}
-        title='ゴミ箱を空にする'
-        message={`ゴミ箱内の${allRecycleBinItems.length}件のアイテムをすべて完全削除します。この操作は取り消すことができません。本当に実行しますか？`}
+        title={t('recycleBin.emptyRecycleBin')}
+        message={t('recycleBin.emptyAllConfirm', { count: allRecycleBinItems.length })}
         onConfirm={handleEmptyRecycleBin}
         onCancel={() => setShowEmptyConfirm(false)}
-        confirmText='完全削除'
-        cancelText='キャンセル'
+        confirmText={t('recycleBin.permanentDelete')}
+        cancelText={t('common.cancel')}
       />
 
       {/* 個別完全削除の確認ダイアログ */}

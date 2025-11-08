@@ -7,7 +7,6 @@
 
 import { useEffect, useState } from 'react';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import { registerCodeHighlighting } from '@lexical/code';
 import { loadPrism, isPrismLoaded } from '@/utils/prismLoader';
 
 /**
@@ -18,37 +17,79 @@ import { loadPrism, isPrismLoaded } from '@/utils/prismLoader';
  */
 export function CodeHighlightPlugin(): null {
   const [editor] = useLexicalComposerContext();
-  const [prismReady, setPrismReady] = useState(isPrismLoaded());
+  const [prismReady, setPrismReady] = useState(false);
 
+  // Prismを動的にロード
   useEffect(() => {
-    // Prismが既にロード済みの場合は即座に登録
-    if (prismReady) {
-      return registerCodeHighlighting(editor);
-    }
-
-    // Prismを動的にロード
     let mounted = true;
-    loadPrism()
-      .then(() => {
-        if (mounted) {
-          setPrismReady(true);
-        }
-      })
-      .catch(error => {
+    let timeoutId: NodeJS.Timeout;
+
+    const loadPrismWithRetry = async () => {
+      try {
+        await loadPrism();
+
+        // Prismがグローバルに設定されるまで待機
+        const checkPrismReady = () => {
+          if (!mounted) return;
+
+          if (window.Prism && isPrismLoaded()) {
+            setPrismReady(true);
+          } else {
+            timeoutId = setTimeout(checkPrismReady, 50);
+          }
+        };
+
+        checkPrismReady();
+      } catch (error) {
         console.error('[CodeHighlightPlugin] Failed to load Prism:', error);
-      });
+      }
+    };
+
+    loadPrismWithRetry();
 
     return () => {
       mounted = false;
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
     };
-  }, [editor, prismReady]);
+  }, []);
 
-  // Prismロード後にハイライト登録
+  // Prismロード完了後にハイライト登録（@lexical/codeを動的インポート）
   useEffect(() => {
-    if (prismReady) {
-      return registerCodeHighlighting(editor);
+    if (!prismReady) {
+      return undefined;
     }
-    return undefined;
+
+    let mounted = true;
+
+    // @lexical/codeを動的にインポートしてregisterCodeHighlightingを取得
+    const registerHighlighting = async () => {
+      try {
+        const { registerCodeHighlighting } = await import('@lexical/code');
+
+        if (!mounted) return;
+
+        return registerCodeHighlighting(editor);
+      } catch (error) {
+        console.error('[CodeHighlightPlugin] Failed to register highlighting:', error);
+        return undefined;
+      }
+    };
+
+    let cleanup: (() => void) | undefined;
+    registerHighlighting().then(unregister => {
+      if (mounted && unregister) {
+        cleanup = unregister;
+      }
+    });
+
+    return () => {
+      mounted = false;
+      if (cleanup) {
+        cleanup();
+      }
+    };
   }, [editor, prismReady]);
 
   return null;

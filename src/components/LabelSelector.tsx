@@ -6,15 +6,11 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { memo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import type { Label } from '../types';
 import { LabelFormDialog } from './LabelManagement';
 
-import {
-  EMPTY_LABELS_MESSAGE,
-  SELECT_LABEL_TEXT,
-  ADD_LABEL_TEXT,
-} from './LabelSelector/constants';
 import { CurrentBoardLabelSection } from './LabelSelector/CurrentBoardLabelSection';
 import { OtherBoardLabelSection } from './LabelSelector/OtherBoardLabelSection';
 import { SelectedLabelsDisplay } from './LabelSelector/SelectedLabelsDisplay';
@@ -27,6 +23,7 @@ interface LabelSelectorProps {
 
 const LabelSelector = memo<LabelSelectorProps>(
   ({ selectedLabels, onLabelsChange }) => {
+    const { t } = useTranslation();
     const {
       allLabels,
       currentBoardLabels,
@@ -57,10 +54,10 @@ const LabelSelector = memo<LabelSelectorProps>(
               <Button
                 variant='outline'
                 className='hover:text-foreground hover:bg-gray-100'
-                aria-label='ラベル選択メニューを開く'
+                aria-label={t('label.openLabelMenu')}
               >
                 <Tag size={16} className='mr-2' />
-                {SELECT_LABEL_TEXT}
+                {t('label.selectLabel')}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
@@ -79,7 +76,7 @@ const LabelSelector = memo<LabelSelectorProps>(
 
               {allLabels.length === 0 && (
                 <div className='px-2 py-1.5 text-sm text-muted-foreground'>
-                  {EMPTY_LABELS_MESSAGE}
+                  {t('label.noLabels')}
                 </div>
               )}
             </DropdownMenuContent>
@@ -90,10 +87,10 @@ const LabelSelector = memo<LabelSelectorProps>(
             variant='outline'
             onClick={handleAddDialogOpen}
             className='hover:text-foreground hover:bg-gray-100'
-            aria-label='新しいラベルを作成'
+            aria-label={t('label.createLabel')}
           >
             <Plus size={16} className='mr-2' />
-            {ADD_LABEL_TEXT}
+            {t('label.addNewLabel')}
           </Button>
         </div>
 

@@ -8,6 +8,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Loader2, RotateCcw, Trash2, MoreHorizontal } from 'lucide-react';
 import React, { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useBoard } from '../../contexts/BoardContext';
 import { getRecycleBinBoards } from '../../utils/recycleBin';
@@ -22,6 +23,7 @@ interface BoardRecycleBinViewProps {
 const BoardRecycleBinView: React.FC<BoardRecycleBinViewProps> = ({
   onMessage,
 }) => {
+  const { t } = useTranslation();
   const { state, restoreBoard, permanentlyDeleteBoard, emptyBoardRecycleBin } =
     useBoard();
   const [restoringBoardId, setRestoringBoardId] = useState<string | null>(null);
@@ -212,12 +214,12 @@ const BoardRecycleBinView: React.FC<BoardRecycleBinViewProps> = ({
 
       <ConfirmDialog
         isOpen={showEmptyConfirm}
-        title='ボードゴミ箱を空にする'
-        message={`ゴミ箱内の${deletedBoards.length}件のボードをすべて完全削除します。この操作は取り消すことができません。本当に実行しますか？`}
+        title={t('recycleBin.emptyRecycleBin')}
+        message={t('recycleBin.emptyAllBoardsConfirm', { count: deletedBoards.length })}
         onConfirm={handleEmptyRecycleBin}
         onCancel={() => setShowEmptyConfirm(false)}
-        confirmText='完全削除'
-        cancelText='キャンセル'
+        confirmText={t('recycleBin.permanentDelete')}
+        cancelText={t('common.cancel')}
       />
 
       {/* 個別完全削除の確認ダイアログ */}

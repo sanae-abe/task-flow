@@ -1,5 +1,7 @@
+import type { TFunction } from 'i18next';
 import type { Task, Priority } from '../../../types';
 import type { TaskWithColumn } from '../../../types/table';
+import { buildPriorityConfig } from '../../../utils/priorityConfig';
 
 /**
  * 型ガード関数：TaskWithColumn型かどうかを判定
@@ -8,23 +10,14 @@ export const isTaskWithColumn = (task: Task): task is TaskWithColumn =>
   'columnId' in task && 'columnTitle' in task && 'status' in task;
 
 /**
- * 優先度を日本語テキストに変換
+ * 優先度をローカライズされたテキストに変換
  * @param priority 優先度
- * @returns 日本語の優先度テキスト
+ * @param t 翻訳関数
+ * @returns ローカライズされた優先度テキスト
  */
-export const getPriorityText = (priority: Priority): string => {
-  switch (priority) {
-    case 'low':
-      return '低';
-    case 'medium':
-      return '中';
-    case 'high':
-      return '高';
-    case 'critical':
-      return '緊急';
-    default:
-      return '';
-  }
+export const getPriorityText = (priority: Priority, t: TFunction): string => {
+  const priorityConfig = buildPriorityConfig(t);
+  return priorityConfig[priority]?.label || '';
 };
 
 /**
