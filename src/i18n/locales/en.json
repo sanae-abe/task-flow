@@ -19,6 +19,7 @@
     "reset": "Reset",
     "apply": "Apply",
     "loading": "Loading...",
+    "loadingEditor": "Loading editor...",
     "noData": "No data available",
     "error": "An error occurred",
     "success": "Success",
@@ -26,7 +27,10 @@
     "reload": "Reload",
     "later": "Later",
     "installing": "Installing...",
-    "install": "Install"
+    "install": "Install",
+    "discardChanges": "Discard changes?",
+    "discardChangesMessage": "Are you sure you want to lose your edits?",
+    "discard": "Discard"
   },
   "header": {
     "createTask": "Create Task",
@@ -47,15 +51,21 @@
     "title": "Task",
     "taskTitle": "Task Title",
     "description": "Description",
+    "descriptionNotSet": "No description set",
     "dueDate": "Due Date",
     "priority": "Priority",
     "labels": "Labels",
     "attachments": "Attachments",
+    "fileAttachments": "File Attachments",
     "subtasks": "Subtasks",
     "status": "Status",
     "createdAt": "Created At",
     "updatedAt": "Updated At",
     "completedAt": "Completed At",
+    "completedDateTime": "Completed Date/Time",
+    "createdDateTime": "Created Date/Time",
+    "updatedDateTime": "Updated Date/Time",
+    "createdUpdatedDateTime": "Created/Updated Date/Time",
     "overdue": "Overdue",
     "dueToday": "Due Today",
     "dueTomorrow": "Due Tomorrow",
@@ -68,13 +78,23 @@
     "editTask": "Edit Task",
     "taskDetails": "Task Details",
     "moveTask": "Move Task",
+    "move": "Move",
+    "selectTargetBoard": "Select target board",
+    "boardInfo": "{{columns}} column / {{tasks}} task",
+    "boardInfo_other": "{{columns}} columns / {{tasks}} tasks",
     "completeTask": "Complete Task",
     "reopenTask": "Reopen Task",
     "closeTaskDetail": "Close Task Details",
     "deleteTask": "Delete Task",
     "deleteTaskConfirm": "Delete \"{{title}}\"?",
     "noFilteredTasks": "No tasks match the filter criteria",
-    "createTask": "Create Task"
+    "createTask": "Create Task",
+    "changeStatus": "Change Status",
+    "incompleteTaskCount": "Incomplete Tasks",
+    "noUrgentTasks": "No urgent tasks",
+    "recurrenceSettings": "Recurrence Settings",
+    "descriptionPlaceholder": "Enter task description...",
+    "selectDueDate": "Select due date"
   },
   "board": {
     "board": "Board",
@@ -125,23 +145,43 @@
   "label": {
     "label": "Label",
     "labelName": "Label Name",
+    "labelNamePlaceholder": "Enter label name",
     "labelColor": "Label Color",
+    "color": "Color",
+    "preview": "Preview",
+    "targetBoard": "Target Board",
     "createLabel": "Create Label",
     "editLabel": "Edit Label",
     "deleteLabel": "Delete Label",
     "noLabels": "No labels available",
     "selectLabel": "Select Label",
+    "addNewLabel": "Add New Label",
+    "openLabelMenu": "Open label selection menu",
     "manageLabels": "Manage Labels",
-    "deleteLabelConfirm": "Are you sure you want to delete this label?"
+    "deleteLabelConfirm": "Are you sure you want to delete this label?",
+    "deleteMessage": "Delete label \"{{name}}\"?",
+    "deleteWithTasks": "Will also be removed from {{count}} tasks.",
+    "saveFailed": "Failed to save label",
+    "duplicateName": "A label with the same name already exists",
+    "boardName": "Board",
+    "usageCount": "Usage",
+    "unknown": "Unknown"
   },
   "priority": {
     "priority": "Priority",
     "critical": "Critical",
+    "criticalDesc": "Immediate action required",
     "high": "High",
+    "highDesc": "Action needed soon",
     "medium": "Medium",
+    "mediumDesc": "Normal priority",
     "low": "Low",
+    "lowDesc": "Address when time permits",
     "noPriority": "None",
-    "setPriority": "Set Priority"
+    "noPriorityDesc": "No priority set",
+    "unset": "Not set",
+    "setPriority": "Set Priority",
+    "ariaLabel": "Priority"
   },
   "recurrence": {
     "recurrence": "Recurrence",
@@ -152,11 +192,26 @@
     "monthly": "Monthly",
     "yearly": "Yearly",
     "custom": "Custom",
+    "pattern": "Pattern",
     "interval": "Interval",
+    "intervalUnit": {
+      "daily": "day(s)",
+      "weekly": "week(s)",
+      "monthly": "month(s)",
+      "yearly": "year(s)"
+    },
     "endDate": "End Date",
     "noEndDate": "No End Date",
+    "endCondition": "End Condition",
+    "maxOccurrences": "Max Occurrences",
+    "times": "times",
+    "occurrences": "Occurrences",
+    "selectDueDate": "Select Due Date",
+    "openCalendar": "Open Calendar",
     "repeatEvery": "Repeat Every",
-    "repeatOn": "Repeat On"
+    "repeatOn": "Repeat On",
+    "previewLabel": "Configuration",
+    "virtualTaskLabel": "(Recurring)"
   },
   "calendar": {
     "calendar": "Calendar",
@@ -167,7 +222,31 @@
     "noEvents": "No events",
     "year": "Year",
     "previousMonth": "Previous Month",
-    "nextMonth": "Next Month"
+    "nextMonth": "Next Month",
+    "months": {
+      "january": "January",
+      "february": "February",
+      "march": "March",
+      "april": "April",
+      "may": "May",
+      "june": "June",
+      "july": "July",
+      "august": "August",
+      "september": "September",
+      "october": "October",
+      "november": "November",
+      "december": "December"
+    },
+    "weekdays": {
+      "sunday": "Sun",
+      "monday": "Mon",
+      "tuesday": "Tue",
+      "wednesday": "Wed",
+      "thursday": "Thu",
+      "friday": "Fri",
+      "saturday": "Sat"
+    },
+    "moreTasksCount": "+{{count}} more"
   },
   "settings": {
     "settings": "Settings",
@@ -231,6 +310,35 @@
     "favorite": "Favorite",
     "addToFavorites": "Add to Favorites",
     "removeFromFavorites": "Remove from Favorites",
+    "createNormal": "Normal Creation",
+    "createFromTemplate": "Create from Template",
+    "creatingFromTemplate": "Creating from template \"{{name}}\"",
+    "searchPlaceholder": "Search templates...",
+    "allCategories": "All Categories",
+    "usageCount": "Usage Count",
+    "timesUsed": "{{count}} times",
+    "editTemplateAria": "Edit template \"{{name}}\"",
+    "deleteTemplateAria": "Delete template \"{{name}}\"",
+    "noMatchingTemplates": "No templates match the criteria",
+    "noTemplatesRegistered": "No templates registered.",
+    "createTemplateInSettings": "Please create templates in the settings screen.",
+    "favoriteTemplates": "Favorite Templates",
+    "otherTemplates": "Other Templates",
+    "categoryAndUsage": "Category: {{category}} | Usage: {{count}} times",
+    "categories": {
+      "work": "Work",
+      "workDesc": "Work-related tasks",
+      "personal": "Personal",
+      "personalDesc": "Personal tasks",
+      "project": "Project",
+      "projectDesc": "Project-related tasks",
+      "meeting": "Meeting",
+      "meetingDesc": "Meeting preparation and minutes",
+      "routine": "Routine",
+      "routineDesc": "Regular tasks",
+      "other": "Other",
+      "otherDesc": "Other tasks"
+    },
     "management": {
       "title": "Template Management",
       "loading": "Loading templates...",
@@ -257,7 +365,19 @@
     "emptyConfirm": "Do you want to empty the recycle bin? This action cannot be undone.",
     "deletedAt": "Deleted At",
     "autoDelete": "Auto-delete",
-    "autoDeleteDescription": "Automatically delete items {{days}} days after deletion"
+    "autoDeleteDescription": "Automatically delete items {{days}} days after deletion",
+    "itemCount": "{{count}} items",
+    "recycleBinWithCount": "Recycle Bin ({{count}} items)",
+    "emptyAllConfirm": "Permanently delete all {{count}} items in the recycle bin. This action cannot be undone. Are you sure?",
+    "emptyAllBoardsConfirm": "Permanently delete all {{count}} boards in the recycle bin. This action cannot be undone. Are you sure?",
+    "type": "Type",
+    "typeBoard": "Board",
+    "typeColumn": "Column",
+    "typeTask": "Task",
+    "title": "Title",
+    "deleting": "Deleting...",
+    "scheduledDeletion": "Scheduled Deletion",
+    "notSet": "Not Set"
   },
   "filter": {
     "filter": "Filter",
@@ -298,6 +418,8 @@
     "import": "Import",
     "exportData": "Export Data",
     "importData": "Import Data",
+    "importMerge": "Merge with existing data",
+    "importReplace": "Replace all data",
     "exportAll": "Export All",
     "exportBoard": "Export Board",
     "selectBoards": "Select Boards",
@@ -309,7 +431,17 @@
     "invalidFile": "Invalid file format",
     "exportRange": "Export Range",
     "allData": "All Data",
-    "exportDescription": "Export your data. Select all data or a specific board."
+    "exportDescription": "Export your data. Select all data or a specific board.",
+    "dataOverview": "Data Overview",
+    "taskCount": "{{count}} task",
+    "taskCount_other": "{{count}} tasks",
+    "boardCount": "{{count}} board",
+    "boardCount_other": "{{count}} boards",
+    "labelCount": "{{count}} label",
+    "labelCount_other": "{{count}} labels",
+    "attachmentCount": "{{count}} attachment",
+    "attachmentCount_other": "{{count}} attachments",
+    "approximateSize": "Approximately {{size}}"
   },
   "validation": {
     "required": "This field is required",
@@ -341,7 +473,15 @@
     "labelDeleted": "Label deleted",
     "settingsSaved": "Settings saved",
     "dataExported": "Data exported",
-    "dataImported": "Data imported"
+    "dataImported": "Data imported",
+    "taskDueTitle": "TaskFlow - Task Due",
+    "taskDueBody": "Task \"{{taskTitle}}\" is due soon",
+    "taskCompletedTitle": "TaskFlow - Task Completed",
+    "taskCompletedBody": "Task \"{{taskTitle}}\" completed",
+    "actions": {
+      "view": "View",
+      "dismiss": "Dismiss"
+    }
   },
   "view": {
     "kanban": "Kanban",
@@ -518,11 +658,14 @@
   },
   "attachment": {
     "attachment": "Attachment",
+    "fileAttachment": "File Attachment",
     "addAttachment": "Add Attachment",
     "removeAttachment": "Remove Attachment",
     "noAttachments": "No attachments",
     "maxSize": "Max file size: {{size}}MB",
-    "dragDrop": "Drag & drop file"
+    "maxSizeLabel": "Max {{size}}MB",
+    "dragDrop": "Drag & drop file",
+    "dragDropOrClick": "Drag & drop files here or click to select"
   },
   "time": {
     "time": "Time",
@@ -545,5 +688,23 @@
     "installing": "Installing...",
     "later": "Later",
     "close": "Close"
+  },
+  "table": {
+    "columnSettings": {
+      "title": "Column Detail Settings",
+      "description": "You can drag columns to reorder, toggle visibility, and adjust width.",
+      "widthHelp": "Please enter width between 50px-1000px.",
+      "unsavedChanges": "You have unsaved changes",
+      "displayColumns": "Display Columns",
+      "detailSettings": "Detail Settings",
+      "resetToDefault": "Reset to Default",
+      "width": "Width",
+      "widthLabel": "Width:",
+      "hideColumn": "Hide column",
+      "showColumn": "Show column",
+      "moveUp": "Move column up",
+      "moveDown": "Move column down",
+      "deleteColumn": "Delete column"
+    }
   }
 }

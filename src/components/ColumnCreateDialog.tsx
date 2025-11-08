@@ -9,15 +9,20 @@ import { validateData } from '@/schemas/validation-utils';
 import UnifiedDialog from './shared/Dialog/UnifiedDialog';
 import UnifiedFormField from './shared/Form/UnifiedFormField';
 
-// Zodスキーマ - カラム名のバリデーション
-const columnTitleSchema = z
-  .string()
-  .min(1, 'カラムタイトルは必須です')
-  .max(100, 'カラムタイトルは100文字以内で入力してください');
+// Zodスキーマ - カラム名のバリデーション（動的生成に変更）
+const createColumnTitleSchema = (t: (key: string, options?: Record<string, unknown>) => string) =>
+  z
+    .string()
+    .min(1, t('validation.required'))
+    .max(100, t('validation.tooLong', { max: 100 }));
 
 const ColumnCreateDialog = memo<ColumnCreateDialogProps>(
   ({ isOpen, onSave, onCancel, columns = [] }) => {
     const { t } = useTranslation();
+
+    // Zodスキーマを動的生成
+    const columnTitleSchema = useMemo(() => createColumnTitleSchema(t), [t]);
+
     // 初期値の設定
     const initialValues = useMemo(
       () => ({
@@ -52,11 +57,11 @@ const ColumnCreateDialog = memo<ColumnCreateDialogProps>(
       const validationResult = validateData(columnTitleSchema, trimmedTitle);
 
       if (!validationResult.success) {
-        return validationResult.errors?.[0] || 'バリデーションエラー';
+        return validationResult.errors?.[0] || t('validation.invalidFormat');
       }
 
       return null;
-    }, []);
+    }, [columnTitleSchema, t]);
 
     // フィールド設定
     const fields: FormFieldConfig[] = useMemo(

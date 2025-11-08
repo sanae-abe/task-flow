@@ -1,5 +1,6 @@
 import { Trash2 } from 'lucide-react';
 import { memo, useMemo, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useTaskEdit } from '../hooks/useTaskEdit';
 import { useFormChangeDetector } from '../hooks/useFormChangeDetector';
@@ -57,6 +58,8 @@ const TaskEditDialog = memo<TaskEditDialogProps>(
       onCancel,
     });
 
+    const { t } = useTranslation();
+
     // フォーム変更検知のためのデータ
     const formDataForDetection = useMemo(
       () => ({
@@ -101,27 +104,27 @@ const TaskEditDialog = memo<TaskEditDialogProps>(
     const actions = useMemo<DialogAction[]>(
       () => [
         {
-          label: '削除',
+          label: t('common.delete'),
           onClick: handleDelete,
           variant: 'destructive' as const,
           icon: Trash2,
           position: 'left',
         },
         {
-          label: 'キャンセル',
+          label: t('common.cancel'),
           onClick: handleDialogClose,
           variant: 'outline' as const,
           position: 'right',
         },
         {
-          label: '保存',
+          label: t('common.save'),
           onClick: handleSave,
           variant: 'default' as const,
           disabled: !isValid,
           position: 'right',
         },
       ],
-      [handleDelete, handleDialogClose, handleSave, isValid]
+      [handleDelete, handleDialogClose, handleSave, isValid, t]
     );
 
     if (!isOpen || !task) {
@@ -133,7 +136,7 @@ const TaskEditDialog = memo<TaskEditDialogProps>(
         <UnifiedDialog
           variant='modal'
           isOpen={isOpen}
-          title='タスクを編集'
+          title={t('task.editTask')}
           onClose={handleDialogClose}
           size='large'
           ariaLabelledBy='task-edit-dialog-title'
@@ -169,18 +172,18 @@ const TaskEditDialog = memo<TaskEditDialogProps>(
 
         <ConfirmDialog
           isOpen={showDeleteConfirm}
-          title='タスクを削除'
-          message={`「${task?.title}」を削除しますか？`}
+          title={t('task.deleteTask')}
+          message={t('task.deleteTaskConfirm', { title: task?.title })}
           onConfirm={handleConfirmDelete}
           onCancel={() => setShowDeleteConfirm(false)}
         />
 
         <ConfirmDialog
           isOpen={showCloseConfirm}
-          title='変更を破棄しますか？'
-          message='編集した内容が失われますが、よろしいですか？'
-          confirmText='破棄する'
-          cancelText='戻る'
+          title={t('common.discardChanges')}
+          message={t('common.discardChangesMessage')}
+          confirmText={t('common.discard')}
+          cancelText={t('common.back')}
           onConfirm={handleConfirmClose}
           onCancel={handleCancelClose}
         />

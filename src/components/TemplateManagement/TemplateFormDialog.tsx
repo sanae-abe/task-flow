@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, Suspense, lazy } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 
@@ -32,6 +33,8 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
   template,
   mode,
 }) => {
+  const { t } = useTranslation();
+
   const [formData, setFormData] = useState<TemplateFormData>({
     name: '',
     description: '',
@@ -319,7 +322,7 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
 
           {/* ラベル */}
           <div>
-            <label className='text-sm font-medium'>ラベル</label>
+            <label className='text-sm font-medium'>{t('label.labels')}</label>
             <LabelSelector
               selectedLabels={formData.labels}
               onLabelsChange={handleLabelsChange}

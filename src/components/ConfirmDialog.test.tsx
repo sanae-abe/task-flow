@@ -14,8 +14,8 @@ describe('ConfirmDialog', () => {
 
   const defaultProps = {
     isOpen: true,
-    title: 'テスト確認',
-    message: 'この操作を実行しますか？',
+    title: 'Test Confirmation',
+    message: 'Do you want to proceed with this operation?',
     onConfirm: mockOnConfirm,
     onCancel: mockOnCancel,
   };
@@ -28,22 +28,22 @@ describe('ConfirmDialog', () => {
     it('should render dialog when isOpen is true', () => {
       render(<ConfirmDialog {...defaultProps} />);
 
-      expect(screen.getByText('テスト確認')).toBeInTheDocument();
-      expect(screen.getByText('この操作を実行しますか？')).toBeInTheDocument();
+      expect(screen.getByText('Test Confirmation')).toBeInTheDocument();
+      expect(screen.getByText('Do you want to proceed with this operation?')).toBeInTheDocument();
     });
 
     it('should not render dialog when isOpen is false', () => {
       render(<ConfirmDialog {...defaultProps} isOpen={false} />);
 
-      expect(screen.queryByText('テスト確認')).not.toBeInTheDocument();
+      expect(screen.queryByText('Test Confirmation')).not.toBeInTheDocument();
       expect(
-        screen.queryByText('この操作を実行しますか？')
+        screen.queryByText('Do you want to proceed with this operation?')
       ).not.toBeInTheDocument();
     });
 
     it('should render title and message correctly', () => {
-      const customTitle = 'カスタムタイトル';
-      const customMessage = 'カスタムメッセージです。';
+      const customTitle = 'Custom Title';
+      const customMessage = 'This is a custom message.';
 
       render(
         <ConfirmDialog
@@ -67,26 +67,26 @@ describe('ConfirmDialog', () => {
     });
 
     it('should show custom confirm button text', () => {
-      render(<ConfirmDialog {...defaultProps} confirmText='実行' />);
+      render(<ConfirmDialog {...defaultProps} confirmText='Execute' />);
 
-      expect(screen.getByText('実行')).toBeInTheDocument();
+      expect(screen.getByText('Execute')).toBeInTheDocument();
       expect(screen.getByText('common.cancel')).toBeInTheDocument();
     });
 
     it('should show custom cancel button text', () => {
-      render(<ConfirmDialog {...defaultProps} cancelText='戻る' />);
+      render(<ConfirmDialog {...defaultProps} cancelText='Back' />);
 
       expect(screen.getByText('common.delete')).toBeInTheDocument();
-      expect(screen.getByText('戻る')).toBeInTheDocument();
+      expect(screen.getByText('Back')).toBeInTheDocument();
     });
 
     it('should show custom texts for both buttons', () => {
       render(
-        <ConfirmDialog {...defaultProps} confirmText='保存' cancelText='破棄' />
+        <ConfirmDialog {...defaultProps} confirmText='Save' cancelText='Discard' />
       );
 
-      expect(screen.getByText('保存')).toBeInTheDocument();
-      expect(screen.getByText('破棄')).toBeInTheDocument();
+      expect(screen.getByText('Save')).toBeInTheDocument();
+      expect(screen.getByText('Discard')).toBeInTheDocument();
     });
   });
 
@@ -110,18 +110,18 @@ describe('ConfirmDialog', () => {
     });
 
     it('should call onConfirm with custom button text', () => {
-      render(<ConfirmDialog {...defaultProps} confirmText='保存' />);
+      render(<ConfirmDialog {...defaultProps} confirmText='Save' />);
 
-      const confirmButton = screen.getByText('保存');
+      const confirmButton = screen.getByText('Save');
       fireEvent.click(confirmButton);
 
       expect(mockOnConfirm).toHaveBeenCalledTimes(1);
     });
 
     it('should call onCancel with custom button text', () => {
-      render(<ConfirmDialog {...defaultProps} cancelText='戻る' />);
+      render(<ConfirmDialog {...defaultProps} cancelText='Back' />);
 
-      const cancelButton = screen.getByText('戻る');
+      const cancelButton = screen.getByText('Back');
       fireEvent.click(cancelButton);
 
       expect(mockOnCancel).toHaveBeenCalledTimes(1);
@@ -192,12 +192,12 @@ describe('ConfirmDialog', () => {
     it('should render consistently on re-renders', () => {
       const { rerender } = render(<ConfirmDialog {...defaultProps} />);
 
-      expect(screen.getByText('テスト確認')).toBeInTheDocument();
+      expect(screen.getByText('Test Confirmation')).toBeInTheDocument();
 
-      rerender(<ConfirmDialog {...defaultProps} title='新しいタイトル' />);
+      rerender(<ConfirmDialog {...defaultProps} title='New Title' />);
 
-      expect(screen.getByText('新しいタイトル')).toBeInTheDocument();
-      expect(screen.queryByText('テスト確認')).not.toBeInTheDocument();
+      expect(screen.getByText('New Title')).toBeInTheDocument();
+      expect(screen.queryByText('Test Confirmation')).not.toBeInTheDocument();
     });
 
     it('should toggle visibility correctly', () => {
@@ -205,11 +205,11 @@ describe('ConfirmDialog', () => {
         <ConfirmDialog {...defaultProps} isOpen={false} />
       );
 
-      expect(screen.queryByText('テスト確認')).not.toBeInTheDocument();
+      expect(screen.queryByText('Test Confirmation')).not.toBeInTheDocument();
 
       rerender(<ConfirmDialog {...defaultProps} isOpen />);
 
-      expect(screen.getByText('テスト確認')).toBeInTheDocument();
+      expect(screen.getByText('Test Confirmation')).toBeInTheDocument();
     });
   });
 });
