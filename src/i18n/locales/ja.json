@@ -19,6 +19,7 @@
     "reset": "リセット",
     "apply": "適用",
     "loading": "読み込み中...",
+    "loadingEditor": "エディタを読み込み中...",
     "noData": "データがありません",
     "error": "エラーが発生しました",
     "success": "成功しました",
@@ -26,7 +27,10 @@
     "reload": "再読み込み",
     "later": "後で",
     "installing": "インストール中...",
-    "install": "インストール"
+    "install": "インストール",
+    "discardChanges": "変更を破棄しますか？",
+    "discardChangesMessage": "編集した内容が失われますが、よろしいですか？",
+    "discard": "破棄する"
   },
   "header": {
     "createTask": "タスク作成",
@@ -47,15 +51,21 @@
     "title": "タスク",
     "taskTitle": "タスク名",
     "description": "説明",
+    "descriptionNotSet": "説明が設定されていません",
     "dueDate": "期限",
     "priority": "優先度",
     "labels": "ラベル",
     "attachments": "添付ファイル",
+    "fileAttachments": "ファイル添付",
     "subtasks": "サブタスク",
     "status": "ステータス",
     "createdAt": "作成日",
     "updatedAt": "更新日",
     "completedAt": "完了日",
+    "completedDateTime": "完了日時",
+    "createdDateTime": "作成日時",
+    "updatedDateTime": "更新日時",
+    "createdUpdatedDateTime": "作成/更新日時",
     "overdue": "期限切れ",
     "dueToday": "今日が期限",
     "dueTomorrow": "明日が期限",
@@ -68,13 +78,22 @@
     "editTask": "タスクを編集",
     "taskDetails": "タスク詳細",
     "moveTask": "タスクを移動",
+    "move": "移動",
+    "selectTargetBoard": "移動先のボードを選択",
+    "boardInfo": "{{columns}}カラム・{{tasks}}タスク",
     "completeTask": "タスクを完了",
     "reopenTask": "タスクを再開",
     "closeTaskDetail": "タスク詳細を閉じる",
     "deleteTask": "タスクを削除",
     "deleteTaskConfirm": "「{{title}}」を削除しますか？",
     "noFilteredTasks": "フィルタ条件に一致するタスクがありません",
-    "createTask": "タスクを作成"
+    "createTask": "タスクを作成",
+    "changeStatus": "ステータス変更",
+    "incompleteTaskCount": "未完了タスク数",
+    "noUrgentTasks": "緊急なタスクはありません",
+    "recurrenceSettings": "繰り返し設定",
+    "descriptionPlaceholder": "タスクの説明を入力...",
+    "selectDueDate": "期限を選択"
   },
   "board": {
     "board": "ボード",
@@ -125,23 +144,43 @@
   "label": {
     "label": "ラベル",
     "labelName": "ラベル名",
+    "labelNamePlaceholder": "ラベル名を入力",
     "labelColor": "ラベルカラー",
+    "color": "色",
+    "preview": "プレビュー",
+    "targetBoard": "作成先ボード",
     "createLabel": "ラベルを作成",
     "editLabel": "ラベルを編集",
     "deleteLabel": "ラベルを削除",
     "noLabels": "ラベルがありません",
     "selectLabel": "ラベルを選択",
+    "addNewLabel": "新しいラベルを追加",
+    "openLabelMenu": "ラベル選択メニューを開く",
     "manageLabels": "ラベル管理",
-    "deleteLabelConfirm": "このラベルを削除してもよろしいですか？"
+    "deleteLabelConfirm": "このラベルを削除してもよろしいですか？",
+    "deleteMessage": "ラベル「{{name}}」を削除してもよろしいですか？",
+    "deleteWithTasks": "{{count}}個のタスクからも削除されます。",
+    "saveFailed": "ラベルの保存に失敗しました",
+    "duplicateName": "同じ名前のラベルが既に存在します",
+    "boardName": "所属ボード",
+    "usageCount": "使用数",
+    "unknown": "不明"
   },
   "priority": {
     "priority": "優先度",
-    "critical": "最優先",
+    "critical": "緊急",
+    "criticalDesc": "今すぐ対応が必要",
     "high": "高",
+    "highDesc": "近日中に対応が必要",
     "medium": "中",
+    "mediumDesc": "通常の優先度",
     "low": "低",
-    "noPriority": "なし",
-    "setPriority": "優先度を設定"
+    "lowDesc": "時間があるときに対応",
+    "noPriority": "選択なし",
+    "noPriorityDesc": "優先度を設定しない",
+    "unset": "未設定",
+    "setPriority": "優先度を設定",
+    "ariaLabel": "優先度"
   },
   "recurrence": {
     "recurrence": "繰り返し",
@@ -152,11 +191,26 @@
     "monthly": "毎月",
     "yearly": "毎年",
     "custom": "カスタム",
+    "pattern": "パターン",
     "interval": "間隔",
+    "intervalUnit": {
+      "daily": "日ごと",
+      "weekly": "週間ごと",
+      "monthly": "ヶ月ごと",
+      "yearly": "年ごと"
+    },
     "endDate": "終了日",
     "noEndDate": "終了日なし",
+    "endCondition": "終了条件",
+    "maxOccurrences": "最大回数",
+    "times": "回",
+    "occurrences": "回数",
+    "selectDueDate": "期限を選択",
+    "openCalendar": "カレンダーを開く",
     "repeatEvery": "繰り返し間隔",
-    "repeatOn": "繰り返す曜日"
+    "repeatOn": "繰り返す曜日",
+    "previewLabel": "設定内容",
+    "virtualTaskLabel": "(繰り返し予定)"
   },
   "calendar": {
     "calendar": "カレンダー",
@@ -167,7 +221,31 @@
     "noEvents": "イベントがありません",
     "year": "年",
     "previousMonth": "前の月",
-    "nextMonth": "次の月"
+    "nextMonth": "次の月",
+    "months": {
+      "january": "1月",
+      "february": "2月",
+      "march": "3月",
+      "april": "4月",
+      "may": "5月",
+      "june": "6月",
+      "july": "7月",
+      "august": "8月",
+      "september": "9月",
+      "october": "10月",
+      "november": "11月",
+      "december": "12月"
+    },
+    "weekdays": {
+      "sunday": "日",
+      "monday": "月",
+      "tuesday": "火",
+      "wednesday": "水",
+      "thursday": "木",
+      "friday": "金",
+      "saturday": "土"
+    },
+    "moreTasksCount": "他 {{count}} 件"
   },
   "settings": {
     "settings": "設定",
@@ -231,6 +309,35 @@
     "favorite": "お気に入り",
     "addToFavorites": "お気に入りに追加",
     "removeFromFavorites": "お気に入りから削除",
+    "createNormal": "通常作成",
+    "createFromTemplate": "テンプレートから作成",
+    "creatingFromTemplate": "テンプレート「{{name}}」から作成中",
+    "searchPlaceholder": "テンプレートを検索...",
+    "allCategories": "すべてのカテゴリー",
+    "usageCount": "使用回数",
+    "timesUsed": "{{count}}回",
+    "editTemplateAria": "テンプレート「{{name}}」を編集",
+    "deleteTemplateAria": "テンプレート「{{name}}」を削除",
+    "noMatchingTemplates": "条件に一致するテンプレートが見つかりません",
+    "noTemplatesRegistered": "テンプレートが登録されていません。",
+    "createTemplateInSettings": "設定画面からテンプレートを作成してください。",
+    "favoriteTemplates": "お気に入りテンプレート",
+    "otherTemplates": "その他のテンプレート",
+    "categoryAndUsage": "カテゴリー: {{category}} | 使用回数: {{count}}回",
+    "categories": {
+      "work": "仕事",
+      "workDesc": "業務関連のタスク",
+      "personal": "個人",
+      "personalDesc": "プライベートなタスク",
+      "project": "プロジェクト",
+      "projectDesc": "プロジェクト関連のタスク",
+      "meeting": "会議",
+      "meetingDesc": "会議の準備や議事録",
+      "routine": "ルーティン",
+      "routineDesc": "定期的な作業",
+      "other": "その他",
+      "otherDesc": "その他のタスク"
+    },
     "management": {
       "title": "テンプレート管理",
       "loading": "テンプレートを読み込み中...",
@@ -257,7 +364,19 @@
     "emptyConfirm": "ごみ箱を空にしますか？この操作は取り消せません。",
     "deletedAt": "削除日時",
     "autoDelete": "自動削除",
-    "autoDeleteDescription": "削除後{{days}}日経過したアイテムを自動削除"
+    "autoDeleteDescription": "削除後{{days}}日経過したアイテムを自動削除",
+    "itemCount": "{{count}}件",
+    "recycleBinWithCount": "ごみ箱 ({{count}}件)",
+    "emptyAllConfirm": "ゴミ箱内の{{count}}件のアイテムをすべて完全削除します。この操作は取り消すことができません。本当に実行しますか？",
+    "emptyAllBoardsConfirm": "ゴミ箱内の{{count}}件のボードをすべて完全削除します。この操作は取り消すことができません。本当に実行しますか？",
+    "type": "種別",
+    "typeBoard": "ボード",
+    "typeColumn": "カラム",
+    "typeTask": "タスク",
+    "title": "タイトル",
+    "deleting": "削除中...",
+    "scheduledDeletion": "削除予定",
+    "notSet": "未設定"
   },
   "filter": {
     "filter": "フィルター",
@@ -298,6 +417,8 @@
     "import": "インポート",
     "exportData": "データをエクスポート",
     "importData": "データをインポート",
+    "importMerge": "データを追加・マージ",
+    "importReplace": "すべてのデータを置換",
     "exportAll": "すべてエクスポート",
     "exportBoard": "ボードをエクスポート",
     "selectBoards": "ボードを選択",
@@ -309,7 +430,13 @@
     "invalidFile": "無効なファイル形式です",
     "exportRange": "エクスポート範囲",
     "allData": "全データ",
-    "exportDescription": "データのエクスポートを行います。全データまたは特定のボードを選択してください。"
+    "exportDescription": "データのエクスポートを行います。全データまたは特定のボードを選択してください。",
+    "dataOverview": "データ概要",
+    "taskCount": "{{count}}タスク",
+    "boardCount": "{{count}}ボード",
+    "labelCount": "{{count}}ラベル",
+    "attachmentCount": "{{count}}添付ファイル",
+    "approximateSize": "約 {{size}}"
   },
   "validation": {
     "required": "必須項目です",
@@ -341,7 +468,15 @@
     "labelDeleted": "ラベルを削除しました",
     "settingsSaved": "設定を保存しました",
     "dataExported": "データをエクスポートしました",
-    "dataImported": "データをインポートしました"
+    "dataImported": "データをインポートしました",
+    "taskDueTitle": "TaskFlow - タスク期限",
+    "taskDueBody": "タスク「{{taskTitle}}」の期限が近づいています",
+    "taskCompletedTitle": "TaskFlow - タスク完了",
+    "taskCompletedBody": "タスク「{{taskTitle}}」を完了しました",
+    "actions": {
+      "view": "表示",
+      "dismiss": "閉じる"
+    }
   },
   "view": {
     "kanban": "カンバン",
@@ -518,11 +653,14 @@
   },
   "attachment": {
     "attachment": "添付ファイル",
+    "fileAttachment": "ファイル添付",
     "addAttachment": "ファイルを追加",
     "removeAttachment": "ファイルを削除",
     "noAttachments": "添付ファイルがありません",
     "maxSize": "最大ファイルサイズ: {{size}}MB",
-    "dragDrop": "ファイルをドラッグ&ドロップ"
+    "maxSizeLabel": "最大{{size}}MB",
+    "dragDrop": "ファイルをドラッグ&ドロップ",
+    "dragDropOrClick": "ファイルをここにドラッグ＆ドロップするか、クリックして選択"
   },
   "time": {
     "time": "時刻",
@@ -545,5 +683,23 @@
     "installing": "インストール中...",
     "later": "後で",
     "close": "閉じる"
+  },
+  "table": {
+    "columnSettings": {
+      "title": "カラム詳細設定",
+      "description": "カラムをドラッグして並び替え、表示切り替え、幅の調整ができます。",
+      "widthHelp": "幅は50px〜1000pxの範囲で入力してください。",
+      "unsavedChanges": "未保存の変更があります",
+      "displayColumns": "表示カラム",
+      "detailSettings": "詳細設定",
+      "resetToDefault": "デフォルトに戻す",
+      "width": "幅",
+      "widthLabel": "幅:",
+      "hideColumn": "カラムを非表示にする",
+      "showColumn": "カラムを表示する",
+      "moveUp": "カラムを上に移動",
+      "moveDown": "カラムを下に移動",
+      "deleteColumn": "カラムを削除"
+    }
   }
 }

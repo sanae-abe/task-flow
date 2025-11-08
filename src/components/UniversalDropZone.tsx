@@ -1,6 +1,7 @@
 import { Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 
 import type { ImportMode } from '../types';
@@ -16,7 +17,7 @@ interface UniversalDropZoneProps {
   onDragLeave: (e: React.DragEvent) => void;
   onDrop: (e: React.DragEvent) => void;
   onClick: () => void;
-  fileInputRef: React.RefObject<HTMLInputElement | null>;
+  fileInputRef: React.RefObject<HTMLInputElement>;
   onFileInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   importMode?: ImportMode;
 
@@ -56,17 +57,19 @@ const UniversalDropZone: React.FC<UniversalDropZoneProps> = ({
   minHeight = '120px',
   ariaLabel,
 }) => {
+  const { t } = useTranslation();
+
   const getDefaultTitle = () => {
-    const fileTypeText = multiple ? 'ファイル' : 'ファイル';
+    const fileTypeText = t('attachment.attachment');
     switch (importMode) {
       case 'drag-drop':
-        return `${fileTypeText}をここにドラッグ＆ドロップ`;
+        return t('attachment.dragDrop');
       case 'file-select':
-        return `クリックして${fileTypeText}を選択`;
+        return t('attachment.addAttachment');
       case 'both':
-        return `${fileTypeText}をここにドラッグ＆ドロップするか、クリックして選択`;
+        return t('attachment.dragDropOrClick');
       default:
-        return `${fileTypeText}をここにドラッグ＆ドロップするか、クリックして選択`;
+        return t('attachment.dragDropOrClick');
     }
   };
 
@@ -81,7 +84,9 @@ const UniversalDropZone: React.FC<UniversalDropZoneProps> = ({
   };
 
   const getDefaultSubtitle = () => {
-    const sizeText = `最大${Math.round(maxFileSize / 1024 / 1024)}MB`;
+    const sizeText = t('attachment.maxSizeLabel', {
+      size: Math.round(maxFileSize / 1024 / 1024),
+    });
     if (allowedTypes.length > 0 && !allowedTypes.includes('*/*')) {
       const extensions = allowedTypes
         .map(type =>

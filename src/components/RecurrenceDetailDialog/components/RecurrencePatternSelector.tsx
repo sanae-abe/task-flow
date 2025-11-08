@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useUnifiedForm } from '../../../hooks/useUnifiedForm';
 import type { FormFieldConfig } from '../../../types/unified-form';
 import UnifiedFormField from '../../shared/Form/UnifiedFormField';
@@ -16,6 +17,8 @@ const RecurrencePatternSelector: React.FC<RecurrencePatternSelectorProps> = ({
   onPatternChange,
   onIntervalChange,
 }) => {
+  const { t } = useTranslation();
+
   // 初期値の設定
   const initialValues = useMemo(
     () => ({
@@ -39,15 +42,15 @@ const RecurrencePatternSelector: React.FC<RecurrencePatternSelectorProps> = ({
   const getIntervalUnit = (pattern: string) => {
     switch (pattern) {
       case 'daily':
-        return '日ごと';
+        return t('recurrence.intervalUnit.daily');
       case 'weekly':
-        return '週間ごと';
+        return t('recurrence.intervalUnit.weekly');
       case 'monthly':
-        return 'ヶ月ごと';
+        return t('recurrence.intervalUnit.monthly');
       case 'yearly':
-        return '年ごと';
+        return t('recurrence.intervalUnit.yearly');
       default:
-        return '日ごと';
+        return t('recurrence.intervalUnit.daily');
     }
   };
 
@@ -59,7 +62,7 @@ const RecurrencePatternSelector: React.FC<RecurrencePatternSelectorProps> = ({
         id: 'pattern',
         name: 'pattern',
         type: 'select',
-        label: 'パターン',
+        label: t('recurrence.pattern'),
         value: initialValues.pattern,
         options: patternOptions,
         onChange: () => {}, // フォームで管理
@@ -69,7 +72,7 @@ const RecurrencePatternSelector: React.FC<RecurrencePatternSelectorProps> = ({
         id: 'interval',
         name: 'interval',
         type: 'number',
-        label: '間隔',
+        label: t('recurrence.interval'),
         value: initialValues.interval,
         validation: {
           required: true,
@@ -80,7 +83,7 @@ const RecurrencePatternSelector: React.FC<RecurrencePatternSelectorProps> = ({
         onChange: () => {}, // フォームで管理
       },
     ],
-    [initialValues, patternOptions]
+    [initialValues, patternOptions, t]
   );
 
   // 統合フォーム管理
