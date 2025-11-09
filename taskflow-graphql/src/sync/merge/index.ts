@@ -12,3 +12,13 @@ export {
   type MergeResult,
   type MergeReport,
 } from './three-way-merger';
+
+export {
+  ConflictResolver,
+  type ResolverOptions,
+  type ResolutionResult,
+  type ManualResolutionRecord,
+  type ResolutionSuggestion,
+  type BatchResolutionResult,
+  type ResolutionStatistics,
+} from './conflict-resolver';
