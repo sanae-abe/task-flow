@@ -7,6 +7,33 @@
 let prismLoaded = false;
 let prismLoadPromise: Promise<typeof import('prismjs')> | null = null;
 
+/**
+ * 言語が正しくロードされているか確認（ポーリング）
+ */
+async function ensureLanguageLoaded(languageName: string): Promise<void> {
+  return new Promise(resolve => {
+    let attempts = 0;
+    const maxAttempts = 30; // 最大3秒待機（100ms * 30）
+
+    const checkLanguage = () => {
+      attempts++;
+
+      if (window.Prism?.languages?.[languageName]) {
+        resolve();
+      } else if (attempts >= maxAttempts) {
+        console.warn(
+          `[PrismLoader] Language '${languageName}' not loaded after ${maxAttempts} attempts`
+        );
+        resolve(); // エラーにせず、警告のみで続行
+      } else {
+        setTimeout(checkLanguage, 100);
+      }
+    };
+
+    checkLanguage();
+  });
+}
+
 export async function loadPrism(): Promise<typeof import('prismjs')> {
   // 既にロード済みの場合は即座に返す
   if (prismLoaded && window.Prism) {
@@ -31,8 +58,8 @@ export async function loadPrism(): Promise<typeof import('prismjs')> {
       }
 
       // 3. Prismが完全に初期化されるまで待機（ポーリング）
-      const waitForPrism = (): Promise<void> => {
-        return new Promise((resolve, reject) => {
+      const waitForPrism = (): Promise<void> =>
+        new Promise((resolve, reject) => {
           let attempts = 0;
           const maxAttempts = 50; // 最大5秒待機（100ms * 50）
 
@@ -57,24 +84,53 @@ export async function loadPrism(): Promise<typeof import('prismjs')> {
 
           checkPrism();
         });
-      };
 
       await waitForPrism();
 
-      // 4. 言語サポートを非同期でロード（Prism完全初期化後）
-      // markup (HTML) は他の多くの言語の依存関係なので最初にロード
-      await import('prismjs/components/prism-markup.js');
+      // 4. 言語サポートを依存関係順にロード（Prism完全初期化後）
+      // 重要: 言語には依存関係があるため、順序が重要
+      // 各言語ロード後にPrism.languagesに正しく登録されているか確認
+      try {
+        // markup (HTML) は多くの言語の依存関係
+        await import('prismjs/components/prism-markup.js');
+        await ensureLanguageLoaded('markup');
 
-      // 残りの言語を並列ロード
-      await Promise.all([
-        import('prismjs/components/prism-css.js'),
-        import('prismjs/components/prism-javascript.js'),
-        import('prismjs/components/prism-typescript.js'),
-        import('prismjs/components/prism-jsx.js'),
-        import('prismjs/components/prism-tsx.js'),
-        import('prismjs/components/prism-json.js'),
-        import('prismjs/components/prism-markdown.js'),
-      ]);
+        // clike は JavaScript/TypeScriptの依存関係
+        // @ts-ignore - prismjs components don't have type declarations
+        await import('prismjs/components/prism-clike.js');
+        await ensureLanguageLoaded('clike');
+
+        // JavaScript は TypeScript/JSX/TSXの依存関係
+        await import('prismjs/components/prism-javascript.js');
+        await ensureLanguageLoaded('javascript');
+
+        // TypeScript は TSXの依存関係
+        await import('prismjs/components/prism-typescript.js');
+        await ensureLanguageLoaded('typescript');
+
+        // JSX（JavaScriptに依存）
+        await import('prismjs/components/prism-jsx.js');
+        await ensureLanguageLoaded('jsx');
+
+        // TSX（TypeScriptとJSXに依存）
+        await import('prismjs/components/prism-tsx.js');
+        await ensureLanguageLoaded('tsx');
+
+        // その他の独立した言語
+        await import('prismjs/components/prism-css.js');
+        await import('prismjs/components/prism-json.js');
+        await import('prismjs/components/prism-markdown.js');
+
+        console.log(
+          '[PrismLoader] All language components loaded successfully'
+        );
+      } catch (langError) {
+        console.error(
+          '[PrismLoader] Failed to load language components:',
+          langError
+        );
+        // 言語ロードに失敗してもPrism自体は使用可能なので続行
+      }
 
       prismLoaded = true;
       return Prism;

@@ -106,7 +106,9 @@ export const RecycleBinDataTable: React.FC<RecycleBinDataTableProps> = ({
                 </span>
               </>
             ) : (
-              <span className='text-zinc-500 text-center'>{t('recycleBin.notSet')}</span>
+              <span className='text-zinc-500 text-center'>
+                {t('recycleBin.notSet')}
+              </span>
             )}
           </div>
         );

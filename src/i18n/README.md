@@ -19,7 +19,9 @@ src/i18n/
 ## Translation Categories
 
 ### 1. common (27 keys)
+
 Common UI elements used throughout the application:
+
 - Actions: save, cancel, delete, edit, create, close, confirm
 - Navigation: back, next
 - Selection: select, unselect, selectAll, unselectAll
@@ -27,134 +29,180 @@ Common UI elements used throughout the application:
 - Data states: noData, noResults
 
 ### 2. app (7 keys)
+
 Application-level strings:
+
 - title, description
 - offline, online
 - settings, help, about
 
 ### 3. task (34 keys)
+
 Task-related translations:
+
 - Fields: title, description, status, priority, dueDate, labels, attachments, subtasks
 - Actions: create, edit, delete, complete, uncomplete, duplicate, move, archive, restore
 - Success messages: deleteSuccess, createSuccess, updateSuccess, etc.
 - States: overdue, dueToday, dueTomorrow, noDueDate
 
 ### 4. priority (10 keys)
+
 Priority levels and descriptions:
+
 - Levels: critical, high, medium, low, none
 - Descriptions for each priority level
 
 ### 5. subtask (10 keys)
+
 Subtask management:
+
 - Actions: add, edit, delete, complete
 - Display: progress, completed count
 - States: noSubtasks
 
 ### 6. label (16 keys)
+
 Label management:
+
 - Fields: name, color
 - Actions: create, edit, delete, manage
 - Selection: selectLabel, selectedLabels
 - Categories: currentBoard, otherBoards
 
 ### 7. board (14 keys)
+
 Board management:
+
 - Fields: name, description
 - Actions: create, edit, delete, select
 - Settings: defaultColumn, defaultColumnDescription
 
 ### 8. column (13 keys)
+
 Column management:
+
 - Actions: create, edit, delete, moveLeft, moveRight
 - Display: taskCount
 - Settings: settings
 
 ### 9. view (5 keys)
+
 View types and switching:
+
 - kanban, table, calendar, list
 - switchView
 
 ### 10. tableView (6 keys)
+
 Table view specific:
+
 - columns, showColumns, hideColumns
 - customizeColumns
 - taskCount, noTasks
 
 ### 11. calendarView (5 keys)
+
 Calendar view specific:
+
 - Navigation: today, month, week, day
 - noEvents
 
 ### 12. template (18 keys)
+
 Template management:
+
 - Fields: name, category
 - Actions: create, edit, delete, manage, use
 - Favorites: favorite, addToFavorites, removeFromFavorites
 - Categories: work, personal, shopping, health, study, other
 
 ### 13. recycleBin (15 keys)
+
 Recycle bin functionality:
+
 - Actions: manage, empty, restore, permanentDelete
 - Settings: retentionPeriod, autoDelete
 - Display: deletedAt, noItems
 
 ### 14. data (13 keys)
+
 Data management:
+
 - Actions: export, import, exportAll, exportCurrent
 - Statistics: totalTasks, completedTasks, totalBoards, totalLabels
 
 ### 15. settings (10 keys)
+
 Application settings:
+
 - Categories: general, appearance, notifications
 - Options: language, theme, lightMode, darkMode, autoMode
 
 ### 16. filter (9 keys)
+
 Filtering options:
+
 - States: all, completed, incomplete, overdue, dueToday, noDueDate
 - Types: priority, label
 - Actions: clearFilters
 
 ### 17. sort (7 keys)
+
 Sorting options:
+
 - Fields: priority, dueDate, createdAt, updatedAt, title
 - Directions: ascending, descending
 
 ### 18. recurrence (15 keys)
+
 Task recurrence settings:
+
 - Types: none, daily, weekly, monthly, yearly, custom
 - Settings: interval, endDate, endAfter, noEnd, occurrences
 - Weekdays: monday through sunday
 
 ### 19. form (8 keys)
+
 Form validation and file upload:
+
 - Validation: required, invalidEmail, invalidUrl, tooLong, tooShort
 - File upload: uploadFile, dragDropFile, maxFileSize
 
 ### 20. message (8 keys)
+
 User feedback messages:
+
 - Types: success, error, warning, info
 - Confirmations: confirmAction, unsavedChanges
 - Errors: networkError, sessionExpired
 
 ### 21. error (8 keys)
+
 Error messages:
+
 - Types: unknown, notFound, unauthorized, forbidden
 - Server: serverError, validationError
 - Network: networkError, timeout
 
 ### 22. attachment (11 keys)
+
 File attachment management:
+
 - Actions: add, delete, download, preview
 - States: uploading, uploadSuccess, uploadError
 
 ### 23. time (15 keys)
+
 Time-related strings:
+
 - Selection: selectTime, hour, minute, am, pm
 - Relative: now, today, tomorrow, yesterday
 - Periods: thisWeek, nextWeek, lastWeek, thisMonth, nextMonth, lastMonth
 
 ### 24. accessibility (8 keys)
+
 Accessibility labels:
+
 - States: loading
 - Actions: closeDialog, openMenu, closeMenu, selectOption, clearSelection
 - Features: dragHandle, sortable
@@ -170,11 +218,7 @@ import { translate, buildKey } from '@/i18n';
 const saveText = translate('common.save'); // "保存" (ja) or "Save" (en)
 
 // Translation with variables
-const deleteConfirm = translate(
-  'task.deleteConfirm',
-  'ja',
-  { title: 'My Task' }
-); // "「My Task」を削除しますか？"
+const deleteConfirm = translate('task.deleteConfirm', 'ja', { title: 'My Task' }); // "「My Task」を削除しますか？"
 
 // Type-safe key building
 const taskCreateKey = buildKey('task', 'create'); // "task.create"
@@ -261,12 +305,14 @@ t('task.deleteConfirm', { title: 'Task 1' }); // With interpolation
 ## Translation Guidelines
 
 ### Japanese (ja)
+
 - Use polite form (です・ます調)
 - Keep professional tone
 - Use appropriate kanji/hiragana balance
 - Consistent terminology across all strings
 
 ### English (en)
+
 - Use clear, concise language
 - Maintain consistent terminology
 - Follow UI/UX writing best practices

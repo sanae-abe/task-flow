@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import i18n from '../i18n/config'; // i18nインスタンスを直接import
 
-export type Language = 'ja' | 'en';
+export type Language = 'ja' | 'en' | 'zh-CN' | 'ko';
 
 interface LanguageContextType {
   language: Language;
@@ -26,7 +26,12 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({
     }
     // localStorage から初期値を取得
     const stored = localStorage.getItem(LANGUAGE_STORAGE_KEY);
-    if (stored === 'ja' || stored === 'en') {
+    if (
+      stored === 'ja' ||
+      stored === 'en' ||
+      stored === 'zh-CN' ||
+      stored === 'ko'
+    ) {
       return stored;
     }
     // デフォルトは日本語

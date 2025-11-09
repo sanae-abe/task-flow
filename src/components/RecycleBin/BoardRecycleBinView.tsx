@@ -215,7 +215,9 @@ const BoardRecycleBinView: React.FC<BoardRecycleBinViewProps> = ({
       <ConfirmDialog
         isOpen={showEmptyConfirm}
         title={t('recycleBin.emptyRecycleBin')}
-        message={t('recycleBin.emptyAllBoardsConfirm', { count: deletedBoards.length })}
+        message={t('recycleBin.emptyAllBoardsConfirm', {
+          count: deletedBoards.length,
+        })}
         onConfirm={handleEmptyRecycleBin}
         onCancel={() => setShowEmptyConfirm(false)}
         confirmText={t('recycleBin.permanentDelete')}

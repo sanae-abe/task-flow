@@ -2,7 +2,10 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { Priority } from '../types';
-import { buildPriorityConfig, buildPriorityAriaLabel } from '../utils/priorityConfig';
+import {
+  buildPriorityConfig,
+  buildPriorityAriaLabel,
+} from '../utils/priorityConfig';
 import { cn } from '@/lib/utils';
 
 interface PriorityBadgeProps {

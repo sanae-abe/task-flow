@@ -15,6 +15,7 @@ import {
   INSERT_PARAGRAPH_COMMAND,
 } from 'lexical';
 import { $isCodeNode } from '@lexical/code';
+import { logger } from '@/utils/logger';
 
 /**
  * Debug Plugin Component
@@ -25,12 +26,12 @@ export function DebugPlugin(): null {
   const [editor] = useLexicalComposerContext();
 
   useEffect(() => {
-    console.log('[DebugPlugin] Plugin mounted');
+    logger.debug('[DebugPlugin] Plugin mounted');
 
     const unregister1 = editor.registerCommand(
       KEY_ENTER_COMMAND,
       (event: KeyboardEvent | null) => {
-        console.log('[DebugPlugin] KEY_ENTER_COMMAND triggered', {
+        logger.debug('[DebugPlugin] KEY_ENTER_COMMAND triggered', {
           shift: event?.shiftKey,
           ctrl: event?.ctrlKey,
           alt: event?.altKey,
@@ -39,14 +40,14 @@ export function DebugPlugin(): null {
         editor.getEditorState().read(() => {
           const selection = $getSelection();
           if (!$isRangeSelection(selection)) {
-            console.log('[DebugPlugin] Not a range selection');
+            logger.debug('[DebugPlugin] Not a range selection');
             return;
           }
 
           const anchorNode = selection.anchor.getNode();
           const parent = anchorNode.getParent();
 
-          console.log('[DebugPlugin] Selection info:', {
+          logger.debug('[DebugPlugin] Selection info:', {
             anchorNodeType: anchorNode.getType(),
             parentType: parent?.getType(),
             isInCodeBlock: $isCodeNode(parent),
@@ -64,21 +65,21 @@ export function DebugPlugin(): null {
     const unregister2 = editor.registerCommand(
       INSERT_LINE_BREAK_COMMAND,
       selectStart => {
-        console.log('[DebugPlugin] INSERT_LINE_BREAK_COMMAND triggered', {
+        logger.debug('[DebugPlugin] INSERT_LINE_BREAK_COMMAND triggered', {
           selectStart,
         });
 
         editor.getEditorState().read(() => {
           const selection = $getSelection();
           if (!$isRangeSelection(selection)) {
-            console.log('[DebugPlugin] Not a range selection');
+            logger.debug('[DebugPlugin] Not a range selection');
             return;
           }
 
           const anchorNode = selection.anchor.getNode();
           const parent = anchorNode.getParent();
 
-          console.log('[DebugPlugin] Before insertLineBreak:', {
+          logger.debug('[DebugPlugin] Before insertLineBreak:', {
             anchorNodeType: anchorNode.getType(),
             parentType: parent?.getType(),
             isInCodeBlock: $isCodeNode(parent),
@@ -86,7 +87,7 @@ export function DebugPlugin(): null {
 
           if ($isCodeNode(parent)) {
             const children = parent.getChildren();
-            console.log('[DebugPlugin] CodeNode children before:', {
+            logger.debug('[DebugPlugin] CodeNode children before:', {
               count: children.length,
               types: children.map(c => c.getType()),
               keys: children.map(c => c.getKey()),
@@ -105,7 +106,7 @@ export function DebugPlugin(): null {
 
             if ($isCodeNode(parent)) {
               const children = parent.getChildren();
-              console.log(
+              logger.debug(
                 '[DebugPlugin] CodeNode children after insertLineBreak:',
                 {
                   count: children.length,
@@ -126,19 +127,19 @@ export function DebugPlugin(): null {
     const unregister3 = editor.registerCommand(
       INSERT_PARAGRAPH_COMMAND,
       () => {
-        console.log('[DebugPlugin] INSERT_PARAGRAPH_COMMAND triggered');
+        logger.debug('[DebugPlugin] INSERT_PARAGRAPH_COMMAND triggered');
 
         editor.getEditorState().read(() => {
           const selection = $getSelection();
           if (!$isRangeSelection(selection)) {
-            console.log('[DebugPlugin] Not a range selection');
+            logger.debug('[DebugPlugin] Not a range selection');
             return;
           }
 
           const anchorNode = selection.anchor.getNode();
           const parent = anchorNode.getParent();
 
-          console.log('[DebugPlugin] Before insertParagraph:', {
+          logger.debug('[DebugPlugin] Before insertParagraph:', {
             anchorNodeType: anchorNode.getType(),
             parentType: parent?.getType(),
             isInCodeBlock: $isCodeNode(parent),
@@ -146,7 +147,7 @@ export function DebugPlugin(): null {
 
           if ($isCodeNode(parent)) {
             const children = parent.getChildren();
-            console.log('[DebugPlugin] CodeNode children before:', {
+            logger.debug('[DebugPlugin] CodeNode children before:', {
               count: children.length,
               types: children.map(c => c.getType()),
               keys: children.map(c => c.getKey()),
@@ -165,7 +166,7 @@ export function DebugPlugin(): null {
 
             if ($isCodeNode(parent)) {
               const children = parent.getChildren();
-              console.log(
+              logger.debug(
                 '[DebugPlugin] CodeNode children after insertParagraph:',
                 {
                   count: children.length,
@@ -174,7 +175,7 @@ export function DebugPlugin(): null {
                 }
               );
             } else {
-              console.log(
+              logger.debug(
                 '[DebugPlugin] After insertParagraph - not in CodeNode anymore:',
                 {
                   anchorNodeType: anchorNode.getType(),
@@ -191,10 +192,10 @@ export function DebugPlugin(): null {
       COMMAND_PRIORITY_LOW
     );
 
-    console.log('[DebugPlugin] All commands registered');
+    logger.debug('[DebugPlugin] All commands registered');
 
     return () => {
-      console.log('[DebugPlugin] Plugin unmounting');
+      logger.debug('[DebugPlugin] Plugin unmounting');
       unregister1();
       unregister2();
       unregister3();

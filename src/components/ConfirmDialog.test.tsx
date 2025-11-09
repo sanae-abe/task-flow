@@ -29,7 +29,9 @@ describe('ConfirmDialog', () => {
       render(<ConfirmDialog {...defaultProps} />);
 
       expect(screen.getByText('Test Confirmation')).toBeInTheDocument();
-      expect(screen.getByText('Do you want to proceed with this operation?')).toBeInTheDocument();
+      expect(
+        screen.getByText('Do you want to proceed with this operation?')
+      ).toBeInTheDocument();
     });
 
     it('should not render dialog when isOpen is false', () => {
@@ -82,7 +84,11 @@ describe('ConfirmDialog', () => {
 
     it('should show custom texts for both buttons', () => {
       render(
-        <ConfirmDialog {...defaultProps} confirmText='Save' cancelText='Discard' />
+        <ConfirmDialog
+          {...defaultProps}
+          confirmText='Save'
+          cancelText='Discard'
+        />
       );
 
       expect(screen.getByText('Save')).toBeInTheDocument();

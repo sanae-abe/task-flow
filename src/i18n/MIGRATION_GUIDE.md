@@ -84,6 +84,7 @@ const MyComponent = () => {
 ### Example 1: Hardcoded Strings
 
 **Before:**
+
 ```typescript
 const Header = () => (
   <header>
@@ -95,6 +96,7 @@ const Header = () => (
 ```
 
 **After:**
+
 ```typescript
 import { useTranslation } from 'react-i18next';
 
@@ -114,6 +116,7 @@ const Header = () => {
 ### Example 2: Confirmation Dialogs
 
 **Before:**
+
 ```typescript
 const TaskCard = ({ task }) => {
   const handleDelete = () => {
@@ -127,6 +130,7 @@ const TaskCard = ({ task }) => {
 ```
 
 **After:**
+
 ```typescript
 import { useTranslation } from 'react-i18next';
 
@@ -146,6 +150,7 @@ const TaskCard = ({ task }) => {
 ### Example 3: Priority Selector
 
 **Before:**
+
 ```typescript
 const PrioritySelector = () => (
   <select>
@@ -158,6 +163,7 @@ const PrioritySelector = () => (
 ```
 
 **After:**
+
 ```typescript
 import { useTranslation } from 'react-i18next';
 
@@ -178,6 +184,7 @@ const PrioritySelector = () => {
 ### Example 4: Success Messages
 
 **Before:**
+
 ```typescript
 const DataManagement = () => {
   const handleExport = () => {
@@ -195,6 +202,7 @@ const DataManagement = () => {
 ```
 
 **After:**
+
 ```typescript
 import { useTranslation } from 'react-i18next';
 
@@ -218,6 +226,7 @@ const DataManagement = () => {
 ### Example 5: Accessibility Labels
 
 **Before:**
+
 ```typescript
 const TaskCard = ({ task }) => (
   <div
@@ -230,6 +239,7 @@ const TaskCard = ({ task }) => (
 ```
 
 **After:**
+
 ```typescript
 import { useTranslation } from 'react-i18next';
 
@@ -314,18 +324,14 @@ describe('MyComponent', () => {
 ```typescript
 const { t } = useTranslation();
 
-const message = isCompleted
-  ? t('task.completeSuccess')
-  : t('task.updateSuccess');
+const message = isCompleted ? t('task.completeSuccess') : t('task.updateSuccess');
 ```
 
 ### Pattern 2: Pluralization (Future Enhancement)
 
 ```typescript
 // Current (manual)
-const taskCount = count === 1
-  ? t('task.task')
-  : t('task.tasks');
+const taskCount = count === 1 ? t('task.task') : t('task.tasks');
 
 // Future (with i18next pluralization)
 const taskCount = t('task.taskCount', { count });
@@ -342,12 +348,15 @@ const message = t('task.deleteConfirm', {
 ## Troubleshooting
 
 ### Issue: Translation not updating
+
 **Solution**: Ensure i18n is initialized before rendering components
 
 ### Issue: Type errors with translation keys
+
 **Solution**: Run `npm run typecheck` to verify type definitions
 
 ### Issue: Missing translations
+
 **Solution**: Check both `ja.json` and `en.json` have the same keys
 
 ## Next Steps

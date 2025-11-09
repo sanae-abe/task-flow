@@ -1,0 +1,666 @@
+# TaskFlow GraphQL Schema
+# Version: 1.0.0
+# Created: 2025-11-08
+
+# ============================================================================
+# Scalar Types
+# ============================================================================
+
+"""ISO 8601 date-time string (e.g., "2025-11-08T10:30:00Z")"""
+scalar DateTime
+
+"""Arbitrary JSON data"""
+scalar JSON
+
+# ============================================================================
+# Enums
+# ============================================================================
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  COMPLETED
+  DELETED
+}
+
+enum Priority {
+  CRITICAL
+  HIGH
+  MEDIUM
+  LOW
+}
+
+enum RecurrencePattern {
+  DAILY
+  WEEKLY
+  MONTHLY
+  YEARLY
+}
+
+enum BreakdownStrategy {
+  BY_FEATURE
+  BY_PHASE
+  BY_COMPONENT
+  BY_COMPLEXITY
+}
+
+enum SuggestionType {
+  BREAKDOWN_RECOMMENDED
+  PRIORITY_ADJUSTMENT
+  RELATED_TASKS
+  NEXT_TASK
+  DEADLINE_ALERT
+}
+
+# ============================================================================
+# Object Types
+# ============================================================================
+
+type Task {
+  id: ID!
+  boardId: ID!
+  columnId: ID!
+  title: String!
+  description: String
+  status: TaskStatus!
+  priority: Priority!
+  dueDate: DateTime
+  dueTime: String
+  labels: [Label!]!
+  subtasks: [SubTask!]!
+  files: [Attachment!]!
+  recurrence: RecurrenceConfig
+  position: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  completedAt: DateTime
+  deletedAt: DateTime
+
+  # Computed fields
+  isOverdue: Boolean!
+  completionPercentage: Float!
+  estimatedDuration: Int
+}
+
+type SubTask {
+  id: ID!
+  title: String!
+  completed: Boolean!
+  position: Int!
+  createdAt: DateTime!
+}
+
+type Label {
+  id: ID!
+  name: String!
+  color: String!
+  boardId: ID
+  taskCount: Int!
+  createdAt: DateTime!
+}
+
+type Attachment {
+  id: ID!
+  name: String!
+  type: String!
+  size: Int!
+  data: String!
+  storagePath: String
+  uploadedAt: DateTime!
+}
+
+type Board {
+  id: ID!
+  name: String!
+  description: String
+  columns: [BoardColumn!]!
+  settings: BoardSettings!
+  isShared: Boolean!
+  taskCount: Int!
+  completedTaskCount: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type BoardColumn {
+  id: ID!
+  title: String!
+  color: String
+  position: Int!
+  taskCount: Int!
+}
+
+type BoardSettings {
+  defaultColumnId: ID
+  completedColumnId: ID
+  autoArchiveCompleted: Boolean!
+  recycleBinRetentionDays: Int!
+}
+
+type RecurrenceConfig {
+  enabled: Boolean!
+  pattern: RecurrencePattern!
+  interval: Int!
+  daysOfWeek: [Int!]
+  dayOfMonth: Int
+  weekOfMonth: Int
+  dayOfWeekInMonth: Int
+  endDate: DateTime
+  maxOccurrences: Int
+}
+
+type Template {
+  id: ID!
+  name: String!
+  category: String
+  taskTemplate: TaskTemplateData!
+  isFavorite: Boolean!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type TaskTemplateData {
+  title: String!
+  description: String
+  priority: Priority
+  labels: [Label!]!
+  dueDate: String
+  recurrence: RecurrenceConfig
+  subtasks: [SubTask!]!
+}
+
+# ============================================================================
+# Statistics & Analytics
+# ============================================================================
+
+type TaskStatistics {
+  total: Int!
+  byStatus: StatusBreakdown!
+  byPriority: PriorityBreakdown!
+  completionRate: Float!
+  averageCompletionTime: Int
+  overdueCount: Int!
+}
+
+type StatusBreakdown {
+  todo: Int!
+  inProgress: Int!
+  completed: Int!
+  deleted: Int!
+}
+
+type PriorityBreakdown {
+  critical: Int!
+  high: Int!
+  medium: Int!
+  low: Int!
+}
+
+# ============================================================================
+# AI-specific types
+# ============================================================================
+
+type ScheduleOptimization {
+  optimizedTasks: [Task!]!
+  estimatedCompletionDate: DateTime!
+  suggestions: [String!]!
+}
+
+type AISuggestion {
+  type: SuggestionType!
+  task: Task
+  message: String!
+  confidence: Float!
+  actions: [SuggestedAction!]!
+}
+
+type SuggestedAction {
+  type: String!
+  description: String!
+  parameters: JSON
+}
+
+# ============================================================================
+# Markdown Export Types
+# ============================================================================
+
+enum MarkdownFormat {
+  STANDARD
+  GITHUB_FLAVORED
+  OBSIDIAN
+}
+
+type MarkdownReport {
+  content: String!
+  generatedAt: DateTime!
+  format: MarkdownFormat!
+  metadata: MarkdownMetadata!
+}
+
+type MarkdownMetadata {
+  boardName: String!
+  taskCount: Int!
+  completedCount: Int!
+  includeSubtasks: Boolean!
+  includeLabels: Boolean!
+  includeAttachments: Boolean!
+}
+
+# ============================================================================
+# Query Root
+# ============================================================================
+
+type Query {
+  # Task queries
+  task(id: ID!): Task
+  tasks(
+    boardId: ID
+    status: TaskStatus
+    priority: Priority
+    labels: [String!]
+    dueBefore: DateTime
+    dueAfter: DateTime
+    search: String
+    limit: Int
+    offset: Int
+  ): [Task!]!
+
+  # Board queries
+  board(id: ID!): Board
+  boards: [Board!]!
+  currentBoard: Board
+
+  # Label queries
+  label(id: ID!): Label
+  labels(boardId: ID): [Label!]!
+
+  # Template queries
+  template(id: ID!): Template
+  templates(category: String, isFavorite: Boolean): [Template!]!
+
+  # Statistics
+  taskStatistics(boardId: ID): TaskStatistics!
+
+  # AI-optimized queries
+  aiSuggestedTasks(context: AIContextInput!): [Task!]!
+  nextRecommendedTask(boardId: ID!): Task
+  searchTasksByNaturalLanguage(query: String!): [Task!]!
+
+  # Markdown Export queries
+  exportBoardAsMarkdown(boardId: ID!, filters: TaskFilters): String!
+  exportTaskAsMarkdown(taskId: ID!): String!
+  exportTasksAsMarkdown(boardId: ID!, filters: TaskFilters): String!
+
+  # Webhook queries
+  webhook(id: ID!): Webhook
+  webhooks: [Webhook!]!
+  webhookDelivery(id: ID!): WebhookDelivery
+  webhookDeliveries(webhookId: ID!, limit: Int, offset: Int): [WebhookDelivery!]!
+  webhookStats: WebhookStats!
+
+  # IP Geolocation queries (Week 8)
+  """Get geolocation data for client IP"""
+  getClientGeolocation: GeolocationData
+
+  """Get geolocation data for specific IP"""
+  getIPGeolocation(ip: String!): GeolocationData
+
+  """Get access statistics with geolocation data"""
+  getAccessStats(limit: Int): AccessStats!
+}
+
+# ============================================================================
+# Mutation Root
+# ============================================================================
+
+type Mutation {
+  # Task mutations
+  createTask(input: CreateTaskInput!): Task!
+  updateTask(id: ID!, input: UpdateTaskInput!): Task!
+  deleteTask(id: ID!): Boolean!
+  restoreTask(id: ID!): Task!
+  moveTask(id: ID!, targetColumnId: ID!, targetPosition: Int!): Task!
+  duplicateTask(id: ID!): Task!
+
+  # Batch mutations
+  createTasks(inputs: [CreateTaskInput!]!): [Task!]!
+  updateTasks(ids: [ID!]!, input: UpdateTaskInput!): [Task!]!
+  deleteTasks(ids: [ID!]!): Boolean!
+
+  # Board mutations
+  createBoard(input: CreateBoardInput!): Board!
+  updateBoard(id: ID!, input: UpdateBoardInput!): Board!
+  deleteBoard(id: ID!): Boolean!
+
+  # Label mutations
+  createLabel(input: CreateLabelInput!): Label!
+  updateLabel(id: ID!, input: UpdateLabelInput!): Label!
+  deleteLabel(id: ID!): Boolean!
+
+  # Template mutations
+  createTemplate(input: CreateTemplateInput!): Template!
+  updateTemplate(id: ID!, input: UpdateTemplateInput!): Template!
+  deleteTemplate(id: ID!): Boolean!
+
+  # AI-driven mutations
+  createTaskFromNaturalLanguage(
+    query: String!
+    context: AIContextInput
+  ): Task!
+
+  breakdownTask(
+    taskId: ID!
+    strategy: BreakdownStrategy
+  ): [Task!]!
+
+  optimizeTaskSchedule(
+    boardId: ID!
+    constraints: ScheduleConstraints
+  ): ScheduleOptimization!
+
+  # Markdown Export mutation
+  generateMarkdownReport(input: MarkdownReportInput!): MarkdownReport!
+
+  # Webhook mutations
+  createWebhook(input: CreateWebhookInput!): Webhook!
+  updateWebhook(id: ID!, input: UpdateWebhookInput!): Webhook!
+  deleteWebhook(id: ID!): Boolean!
+  testWebhook(id: ID!): WebhookDelivery!
+}
+
+# ============================================================================
+# Webhook Types
+# ============================================================================
+
+enum WebhookEvent {
+  TASK_CREATED
+  TASK_UPDATED
+  TASK_COMPLETED
+  TASK_DELETED
+  BOARD_CREATED
+  BOARD_UPDATED
+  BOARD_DELETED
+}
+
+type Webhook {
+  id: ID!
+  url: String!
+  events: [WebhookEvent!]!
+  active: Boolean!
+  secret: String
+  allowedIPs: [String!]
+  rateLimit: Int
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type WebhookDelivery {
+  id: ID!
+  webhookId: ID!
+  event: WebhookEvent!
+  payload: JSON!
+  response: JSON
+  status: Int
+  success: Boolean!
+  deliveredAt: DateTime!
+}
+
+type WebhookStats {
+  totalWebhooks: Int!
+  activeWebhooks: Int!
+  totalDeliveries: Int!
+  successfulDeliveries: Int!
+  failedDeliveries: Int!
+  successRate: Float!
+}
+
+input CreateWebhookInput {
+  url: String!
+  events: [WebhookEvent!]!
+  secret: String
+  allowedIPs: [String!]
+  rateLimit: Int
+}
+
+input UpdateWebhookInput {
+  url: String
+  events: [WebhookEvent!]
+  active: Boolean
+  secret: String
+  allowedIPs: [String!]
+  rateLimit: Int
+}
+
+# ============================================================================
+# Subscription Root (for Webhooks)
+# ============================================================================
+
+type Subscription {
+  taskCreated(boardId: ID): Task!
+  taskUpdated(boardId: ID): Task!
+  taskCompleted(boardId: ID): Task!
+  taskDeleted(boardId: ID): Task!
+  boardUpdated(boardId: ID): Board!
+  aiSuggestionAvailable(boardId: ID!): AISuggestion!
+}
+
+# ============================================================================
+# Input Types
+# ============================================================================
+
+input CreateTaskInput {
+  boardId: ID!
+  columnId: ID!
+  title: String!
+  description: String
+  priority: Priority
+  dueDate: DateTime
+  dueTime: String
+  labels: [ID!]
+  subtasks: [CreateSubTaskInput!]
+  files: [AttachmentInput!]
+  recurrence: RecurrenceConfigInput
+}
+
+input UpdateTaskInput {
+  title: String
+  description: String
+  status: TaskStatus
+  priority: Priority
+  dueDate: DateTime
+  dueTime: String
+  labels: [ID!]
+  subtasks: [UpdateSubTaskInput!]
+  files: [AttachmentInput!]
+  recurrence: RecurrenceConfigInput
+}
+
+input CreateSubTaskInput {
+  title: String!
+  position: Int
+}
+
+input UpdateSubTaskInput {
+  id: ID!
+  title: String
+  completed: Boolean
+  position: Int
+}
+
+input AttachmentInput {
+  name: String!
+  type: String!
+  size: Int!
+  data: String!
+}
+
+input RecurrenceConfigInput {
+  enabled: Boolean!
+  pattern: RecurrencePattern!
+  interval: Int!
+  daysOfWeek: [Int!]
+  dayOfMonth: Int
+  weekOfMonth: Int
+  dayOfWeekInMonth: Int
+  endDate: DateTime
+  maxOccurrences: Int
+}
+
+input CreateBoardInput {
+  name: String!
+  description: String
+  columns: [BoardColumnInput!]
+}
+
+input UpdateBoardInput {
+  name: String
+  description: String
+  columns: [BoardColumnInput!]
+  settings: BoardSettingsInput
+}
+
+input BoardColumnInput {
+  id: ID
+  title: String!
+  color: String
+  position: Int!
+}
+
+input BoardSettingsInput {
+  defaultColumnId: ID
+  completedColumnId: ID
+  autoArchiveCompleted: Boolean
+  recycleBinRetentionDays: Int
+}
+
+input CreateLabelInput {
+  name: String!
+  color: String!
+  boardId: ID
+}
+
+input UpdateLabelInput {
+  name: String
+  color: String
+}
+
+input CreateTemplateInput {
+  name: String!
+  category: String
+  taskTemplate: TaskTemplateDataInput!
+  isFavorite: Boolean
+}
+
+input UpdateTemplateInput {
+  name: String
+  category: String
+  taskTemplate: TaskTemplateDataInput
+  isFavorite: Boolean
+}
+
+input TaskTemplateDataInput {
+  title: String!
+  description: String
+  priority: Priority
+  labels: [ID!]!
+  dueDate: String
+  recurrence: RecurrenceConfigInput
+  subtasks: [CreateSubTaskInput!]
+}
+
+# AI-specific inputs
+input AIContextInput {
+  boardId: ID
+  recentActivity: [String!]
+  preferences: UserPreferencesInput
+}
+
+input UserPreferencesInput {
+  workingHours: WorkingHoursInput
+  preferredPriority: Priority
+  autoBreakdownEnabled: Boolean
+}
+
+input WorkingHoursInput {
+  start: String!
+  end: String!
+}
+
+input ScheduleConstraints {
+  workingHoursPerDay: Int
+  deadline: DateTime
+  prioritizeBy: Priority
+}
+
+# Markdown Export inputs
+input MarkdownReportInput {
+  boardId: ID!
+  includeCompleted: Boolean
+  includeSubtasks: Boolean
+  includeLabels: Boolean
+  includeAttachments: Boolean
+  format: MarkdownFormat
+  filters: TaskFilters
+}
+
+input TaskFilters {
+  status: TaskStatus
+  priority: Priority
+  labels: [String!]
+  dueBefore: DateTime
+  dueAfter: DateTime
+  search: String
+}
+
+# ============================================================================
+# IP Geolocation Types (Week 8)
+# ============================================================================
+
+"""Geographic information from IP address"""
+type GeolocationData {
+  ip: String!
+  city: String
+  region: String
+  country: String
+  countryCode: String
+  timezone: String
+  latitude: Float
+  longitude: Float
+  org: String
+  asn: String
+}
+
+"""Access log entry with geolocation data"""
+type AccessLog {
+  id: ID!
+  ip: String!
+  geolocation: GeolocationData
+  userAgent: String
+  endpoint: String
+  timestamp: DateTime!
+}
+
+"""Geographic access statistics"""
+type AccessStats {
+  totalRequests: Int!
+  uniqueIPs: Int!
+  topCountries: [CountryStats!]!
+  topCities: [CityStats!]!
+  recentAccess: [AccessLog!]!
+}
+
+"""Statistics by country"""
+type CountryStats {
+  country: String!
+  countryCode: String!
+  count: Int!
+  percentage: Float!
+}
+
+"""Statistics by city"""
+type CityStats {
+  city: String!
+  country: String!
+  count: Int!
+  percentage: Float!
+}

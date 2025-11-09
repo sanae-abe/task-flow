@@ -163,16 +163,14 @@ describe('UniversalDropZone', () => {
       render(<UniversalDropZone {...defaultProps} importMode='drag-drop' />);
 
       expect(
-        screen.getByText('ファイルをここにドラッグ＆ドロップ')
+        screen.getByText('ファイルをドラッグ&ドロップ')
       ).toBeInTheDocument();
     });
 
     it('should render title for "file-select" mode', () => {
       render(<UniversalDropZone {...defaultProps} importMode='file-select' />);
 
-      expect(
-        screen.getByText('クリックしてファイルを選択')
-      ).toBeInTheDocument();
+      expect(screen.getByText('ファイルを追加')).toBeInTheDocument();
     });
 
     it('should show dashed border for "both" mode', () => {

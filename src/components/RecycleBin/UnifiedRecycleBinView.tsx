@@ -173,7 +173,9 @@ const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
       <div className='flex items-center justify-between gap-2'>
         <div className='flex items-center gap-2'>
           <h2 className='text-lg font-bold text-foreground'>
-            {t('recycleBin.recycleBinWithCount', { count: allRecycleBinItems.length })}
+            {t('recycleBin.recycleBinWithCount', {
+              count: allRecycleBinItems.length,
+            })}
           </h2>
         </div>
         <Button
@@ -212,7 +214,9 @@ const UnifiedRecycleBinView: React.FC<UnifiedRecycleBinViewProps> = ({
       <ConfirmDialog
         isOpen={showEmptyConfirm}
         title={t('recycleBin.emptyRecycleBin')}
-        message={t('recycleBin.emptyAllConfirm', { count: allRecycleBinItems.length })}
+        message={t('recycleBin.emptyAllConfirm', {
+          count: allRecycleBinItems.length,
+        })}
         onConfirm={handleEmptyRecycleBin}
         onCancel={() => setShowEmptyConfirm(false)}
         confirmText={t('recycleBin.permanentDelete')}

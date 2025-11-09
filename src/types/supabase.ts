@@ -254,7 +254,9 @@ export interface Database {
         Row: SupabaseTask;
         Insert: Omit<SupabaseTask, 'id' | 'created_at' | 'updated_at'> &
           Partial<Pick<SupabaseTask, 'id' | 'created_at' | 'updated_at'>>;
-        Update: Partial<Omit<SupabaseTask, 'id' | 'board_id' | 'user_id' | 'created_at'>>;
+        Update: Partial<
+          Omit<SupabaseTask, 'id' | 'board_id' | 'user_id' | 'created_at'>
+        >;
       };
       team_boards: {
         Row: TeamBoard;
@@ -272,7 +274,9 @@ export interface Database {
         Row: SupabaseTemplate;
         Insert: Omit<SupabaseTemplate, 'id' | 'created_at' | 'updated_at'> &
           Partial<Pick<SupabaseTemplate, 'id' | 'created_at' | 'updated_at'>>;
-        Update: Partial<Omit<SupabaseTemplate, 'id' | 'user_id' | 'created_at'>>;
+        Update: Partial<
+          Omit<SupabaseTemplate, 'id' | 'user_id' | 'created_at'>
+        >;
       };
     };
     Views: Record<string, never>;
@@ -303,12 +307,14 @@ export type Row<T extends TableName> = Database['public']['Tables'][T]['Row'];
 /**
  * Extract Insert type from table name
  */
-export type Insert<T extends TableName> = Database['public']['Tables'][T]['Insert'];
+export type Insert<T extends TableName> =
+  Database['public']['Tables'][T]['Insert'];
 
 /**
  * Extract Update type from table name
  */
-export type Update<T extends TableName> = Database['public']['Tables'][T]['Update'];
+export type Update<T extends TableName> =
+  Database['public']['Tables'][T]['Update'];
 
 // ============================================================================
 // Extended Team Member Type (with profile data)
@@ -419,7 +425,9 @@ export function hasAdminPrivileges(role: TeamRole): role is 'owner' | 'admin' {
 /**
  * Type guard to check if team role can edit tasks
  */
-export function canEditTasks(role: TeamRole): role is 'owner' | 'admin' | 'member' {
+export function canEditTasks(
+  role: TeamRole
+): role is 'owner' | 'admin' | 'member' {
   return role === 'owner' || role === 'admin' || role === 'member';
 }
 
@@ -430,7 +438,9 @@ export function canEditTasks(role: TeamRole): role is 'owner' | 'admin' | 'membe
 /**
  * Create a branded type for UUID strings (nominal typing)
  */
-export type UUID<Brand extends string = string> = string & { readonly __brand: Brand };
+export type UUID<Brand extends string = string> = string & {
+  readonly __brand: Brand;
+};
 
 /**
  * Branded UUID types for type-safe ID handling

@@ -68,7 +68,10 @@ export const ColumnDropdownMenu: React.FC<ColumnDropdownMenuProps> = ({
           {t('table.columnSettings.detailSettings')}
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={onResetToDefaults} className='cursor-pointer'>
+        <DropdownMenuItem
+          onClick={onResetToDefaults}
+          className='cursor-pointer'
+        >
           {t('table.columnSettings.resetToDefault')}
         </DropdownMenuItem>
       </DropdownMenuContent>

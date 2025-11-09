@@ -60,7 +60,6 @@ const UniversalDropZone: React.FC<UniversalDropZoneProps> = ({
   const { t } = useTranslation();
 
   const getDefaultTitle = () => {
-    const fileTypeText = t('attachment.attachment');
     switch (importMode) {
       case 'drag-drop':
         return t('attachment.dragDrop');

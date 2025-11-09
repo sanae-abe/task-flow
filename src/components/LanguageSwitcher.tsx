@@ -19,6 +19,8 @@ interface LanguageOption {
 const LANGUAGE_OPTIONS: LanguageOption[] = [
   { value: 'ja', label: 'Japanese', nativeLabel: '日本語' },
   { value: 'en', label: 'English', nativeLabel: 'English' },
+  { value: 'zh-CN', label: 'Chinese (Simplified)', nativeLabel: '简体中文' },
+  { value: 'ko', label: 'Korean', nativeLabel: '한국어' },
 ];
 
 const LanguageSwitcher: React.FC = () => {
@@ -29,7 +31,12 @@ const LanguageSwitcher: React.FC = () => {
     '日本語';
 
   const handleLanguageChange = (value: string) => {
-    if (value === 'ja' || value === 'en') {
+    if (
+      value === 'ja' ||
+      value === 'en' ||
+      value === 'zh-CN' ||
+      value === 'ko'
+    ) {
       setLanguage(value);
     }
   };

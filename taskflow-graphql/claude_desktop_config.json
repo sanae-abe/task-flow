@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "taskflow": {
+      "command": "node",
+      "args": [
+        "/Users/sanae.abe/workspace/taskflow-app/taskflow-graphql/dist/mcp/server.js"
+      ],
+      "env": {
+        "NODE_ENV": "production",
+        "AI_API_ENABLED": "false"
+      }
+    }
+  }
+}

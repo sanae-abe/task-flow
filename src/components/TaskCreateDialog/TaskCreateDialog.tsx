@@ -155,8 +155,12 @@ const TaskCreateDialog = memo(() => {
           >
             {/* タブナビゲーション */}
             <TabsList className='grid w-full grid-cols-2 mb-4'>
-              <TabsTrigger value='normal'>{t('template.createNormal')}</TabsTrigger>
-              <TabsTrigger value='template'>{t('template.createFromTemplate')}</TabsTrigger>
+              <TabsTrigger value='normal'>
+                {t('template.createNormal')}
+              </TabsTrigger>
+              <TabsTrigger value='template'>
+                {t('template.createFromTemplate')}
+              </TabsTrigger>
             </TabsList>
 
             {/* 通常作成フォーム */}

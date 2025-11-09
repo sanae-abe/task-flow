@@ -21,9 +21,7 @@ interface TemplateCategorySelectorProps {
  * テンプレートカテゴリー定義を取得する関数
  * 翻訳関数を受け取り、国際化されたカテゴリー情報を返す
  */
-export const getTemplateCategories = (
-  t: TFunction
-): TemplateCategoryInfo[] => [
+export const getTemplateCategories = (t: TFunction): TemplateCategoryInfo[] => [
   {
     id: 'work',
     label: t('template.categories.work'),

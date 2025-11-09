@@ -104,7 +104,9 @@ export const TemplateDataTable: React.FC<TemplateDataTableProps> = ({
         const count = row.getValue('usageCount') as number;
         return (
           <div className='text-center'>
-            <span className='text-sm'>{t('template.timesUsed', { count })}</span>
+            <span className='text-sm'>
+              {t('template.timesUsed', { count })}
+            </span>
           </div>
         );
       },
@@ -119,7 +121,9 @@ export const TemplateDataTable: React.FC<TemplateDataTableProps> = ({
             <IconButton
               icon={Edit}
               size='icon'
-              ariaLabel={t('template.editTemplateAria', { name: template.name })}
+              ariaLabel={t('template.editTemplateAria', {
+                name: template.name,
+              })}
               onClick={() => onEdit(template)}
             />
             <IconButton

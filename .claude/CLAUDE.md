@@ -1,532 +1,521 @@
-# CLAUDE.md
+# CLAUDE.md - TaskFlow Project Guide
 
-> **📝 このファイルについて**
-> このファイルはClaude Code専用の技術詳細・設定ファイルです。
-> 一般的なプロジェクト情報は [README.md](../README.md) を、
-> 開発者向けドキュメントは [docs/](../docs/) を参照してください。
+> **設計方針**: AIと人間の両方が効率的に利用できる実用的な単一ファイル設計
+> **最終更新**: 2025-11-09
 
-## プロジェクト概要
+## 📋 Quick Reference（最優先・常時参照）
 
-React + TypeScriptで構築されたモダンなタスク管理アプリケーション（TaskFlow）
+### プロジェクト識別
 
-## 技術スタック
+```yaml
+project:
+  type: "Frontend Web App"
+  framework: "React 19.2.0"
+  language: "TypeScript 5.7.3 (strict mode)"
+  build_tool: "Vite 7.1.12"
+  test_framework: "Vitest 4.0.3"
+  package_manager: "npm"
+  total_components: 226  # TSXファイル数
+```
 
-- Frontend: React 19.2.0 + TypeScript 5.7.3
-- UI Framework: Shadcn/UI + @radix-ui/\* (モダンなUIコンポーネント)
-- Styling: Tailwind CSS 4.1.16 + CSS Variables
-- State Management: React Context API
-- Build Tool: Vite 7.1.12 (高速ビルド・HMR対応)
-- Test Framework: Vitest 4.0.3 (高速テスト実行)
-- Package Manager: npm
-- Drag & Drop: @dnd-kit
-- Icons: lucide-react (完全統一済み)
-- Color Picker: カスタム実装（CircleColorPicker）
-- Emoji Picker: emoji-picker-react
-- Rich Text Editor: Lexical 0.35.0
-- Date Utilities: date-fns 4.1.0 + react-day-picker
-- Security: DOMPurify (HTMLサニタイズ) + ESLint security plugin
+### 緊急時対応（P0）
 
-## 開発コマンド
+| トリガーキーワード | 推奨Agent | 即座に実行 |
+|------------------|----------|-----------|
+| 型エラー・ビルド失敗 | **typescript-pro** | `npm run typecheck` |
+| XSS・セキュリティインシデント | **security-auditor** | `npm audit` + skill:owasp-compliance-checker |
+| React エラー・動かない | **react-specialist** | デバッグ・原因特定 |
+| パフォーマンス劣化 | **performance-engineer** | `npm run build` + `npm run analyze` |
+
+### 必須開発コマンド
 
 ```bash
-# 開発サーバー起動（Vite）
-npm start
+# 開発
+npm start                # 開発サーバー起動（Vite、ポート5173）
+npm run typecheck        # TypeScript型チェック（最重要・頻繁に実行）
+npm test                 # Vitestウォッチモード
+npm run test:run         # 単発テスト実行
 
-# 本番ビルド（Vite）
-npm run build
+# 品質チェック
+npm run lint             # ESLintチェック
+npm run quality          # 型チェック + リント
+npm audit                # セキュリティ監査
 
-# 型チェック
-npm run typecheck
-
-# リント
-npm run lint
-
-# 品質チェック（全体）
-npm run quality
-
-# テスト実行（Vitest）
-npm test
-npm run test:run      # 単発テスト実行
-npm run test:ui       # Vitest UIダッシュボード
-
-# Bundle分析
-npm run analyze       # ANALYZE=true でビルド分析
+# ビルド・分析
+npm run build            # 本番ビルド（目標: 30秒以内）
+npm run analyze          # バンドルサイズ分析
 ```
 
-## 主要機能
+---
 
-- **タスク管理**: 作成・編集・削除・完了・複製機能
-- **期限・時刻設定**: 詳細な日時管理（デフォルト23:59）
-- **繰り返し設定**: 毎日・毎週・毎月・毎年の自動再作成・期限なし繰り返し対応
-- **サブタスク**: チェックリスト形式の進捗管理・ドラッグ&ドロップ並び替え
-- **ラベル機能**: カスタムカラーラベルによる分類・ソート機能付き管理テーブル
-- **ファイル添付**: ドラッグ&ドロップ対応（5MBまで）
-- **リッチテキストエディタ**: Lexicalベースの高性能エディタ（太字・斜体・下線・取り消し線・リンク・コードブロック・emoji picker対応）
-- **複数ビュー**: カンバン・テーブル・カレンダービュー
-- **カンバン機能**: カラム移動・デフォルトカラム設定・完了タスク自動配置
-- **テーブルカスタマイズ**: カラム表示/非表示切り替え
-- **フィルタリング・ソート**: 多角的なタスク整理・優先度フィルター・優先度ソート対応
-- **優先度管理**: Critical/High/Medium/Low 4段階優先度システム
-- **テンプレート管理**: タスクテンプレートの作成・編集・削除・お気に入り機能
-- **ごみ箱機能**: 削除されたタスクの一時保存・復元機能
-- **設定管理**: デフォルトカラム設定・ごみ箱設定・各種カスタマイズ
-- **データ管理**: ローカル保存・ボード選択エクスポート・インポート機能
-- **通知システム**: DialogFlashMessage統合による統一されたメッセージ表示
-- **セキュリティ**: DOMPurifyによるHTMLサニタイズ機能（ESLintセキュリティ警告の段階的改善中）
+## 🤖 Agent活用ガイド（優先度順）
 
-## ビュー詳細
+### P0 Agents（最優先・常時活用）
 
-### カンバンビュー
+#### 1. react-specialist（最重要）
 
-- ドラッグ&ドロップによる直感的なタスク管理
-- カラム間でのタスク移動
-- カラム位置移動（kebabメニューから左右移動）
-- デフォルトカラム設定機能
-- 完了タスクの自動上部配置
-- ステータス別のビジュアル管理
+**活用シーン**:
+- `src/components/**/*.tsx` の作業
+- `src/hooks/**/*.ts` のカスタムフック設計
+- `src/contexts/**/*.tsx` の状態管理
+- React 19新機能の活用
+- パフォーマンス最適化（React.memo、useMemo、useCallback）
 
-### テーブルビュー
+**トリガーキーワード**:
+`React`, `コンポーネント`, `hooks`, `useState`, `useEffect`, `useCallback`, `useMemo`, `Context API`, `レンダリング`, `カスタムフック`
 
-- 12種類のカラム表示項目
-- リアルタイムタスク件数表示
-- サブタスク進捗の視覚化
-- 柔軟なカラム管理機能
+**優先タスク**:
+1. React 19新機能積極活用
+2. カスタムフック抽出・設計（例: `useLabelManagement`）
+3. Context API + useReducer パターン適用
+4. パフォーマンス最適化（不要な再レンダリング削減）
 
-### カレンダービュー
+**重要ファイル**:
+- `src/components/RichTextEditor/` - Lexicalエディタ（12モジュール、セキュリティクリティカル）
+- `src/components/KanbanBoard/` - Drag & Drop、高複雑度
+- `src/components/TableView/` - 23ファイル分割、12種類カラム
+- `src/hooks/useLabelManagement.ts` - 複雑なカスタムフック
 
-- 月次カレンダー表示
-- 期限ベースのタスク管理
-- 直接編集・詳細確認
+**ツール**: `Read`, `Edit`, `mcp__serena__find_symbol`, `Task(Explore)`
 
-## 主要コンポーネント
+---
 
-### フォーム・ダイアログ
+#### 2. typescript-pro
 
-- `TaskCreateDialog`/`TaskEditDialog`: タスクの作成・編集フォーム（モジュラー分割済み）
-- `TemplateFormDialog`: テンプレート作成・編集フォーム
+**活用シーン**:
+- `src/types/**/*.ts` の型定義設計
+- 型エラー解決（ビルド失敗時）
+- any型排除・型推論最適化
+- ジェネリクス・ユーティリティ型の活用
 
-### エディタ・表示
+**トリガーキーワード**:
+`TypeScript`, `型定義`, `型エラー`, `any型`, `ジェネリクス`, `型推論`, `型ガード`, `ユーティリティ型`
 
-- `RichTextEditor`: Lexicalベースのリッチテキストエディタ（emoji picker対応・12モジュール分割）
-- `LinkifiedText`: HTMLサニタイズ対応のテキスト表示コンポーネント
-- `TaskCard`: 個別タスクカード
-- `TaskDetailSidebar`: タスク詳細・編集・複製サイドバー
+**優先タスク**:
+1. strict mode 型定義厳密化
+2. any型完全排除（プロジェクト全体で禁止）
+3. ジェネリクスの積極活用
+4. 型推論最適化（明示的型定義とバランス）
 
-### ビュー・レイアウト
+**必須コマンド**: `npm run typecheck`
 
-- `KanbanBoard`: カンバン形式の表示
-- `TableView`: テーブル形式の表示・カラム管理（23ファイル分割）
-- `CalendarView`: カレンダー形式の表示
+**重要ファイル**:
+- `src/types/` - 全型定義
+- `tsconfig.json` - strict: true 必須
 
-### タスク管理
+---
 
-- `SubTaskList`/`SubTaskItem`: サブタスク管理（ドラッグ&ドロップ対応・モジュラー分割）
-- `PrioritySelector`: 優先度選択（ラジオボタン形式）
-- `PriorityBadge`: 優先度表示バッジ
+#### 3. security-auditor
 
-### テンプレート管理
+**活用シーン**:
+- `src/components/RichTextEditor/**` の作業（XSSリスク最高）
+- `src/components/FileUploader.tsx` の作業
+- `src/utils/sanitize.ts` などユーティリティ関数
+- データインポート機能の実装
 
-- `TemplateManagementPanel`: テンプレート管理メインパネル
-- `TemplateCard`: テンプレート表示カード
-- `TemplateCategorySelector`: カテゴリー選択
+**トリガーキーワード**:
+`セキュリティ`, `XSS`, `DOMPurify`, `サニタイズ`, `入力検証`, `脆弱性`, `OWASP`
 
-### 設定・管理
+**セキュリティクリティカルコンポーネント**:
 
-- `LabelManagementPanel`: ラベル管理テーブル（ソート機能付き・DialogFlashMessage統合）
-- `BoardSettingsPanel`: デフォルトカラム設定パネル
-- `RecycleBinSettingsPanel`: ごみ箱設定パネル
-- `DataManagementPanel`: データ管理パネル（DialogFlashMessage統合）
-- `ExportSection`: ボード選択エクスポート機能
-- `ImportSection`: インポート機能（DialogFlashMessage統合）
+| Component | Path | リスク | 必須対策 |
+|-----------|------|-------|---------|
+| **RichTextEditor** | `src/components/RichTextEditor/` | XSS（最高） | DOMPurify必須 |
+| **LinkifiedText** | `src/components/LinkifiedText.tsx` | XSS | HTMLサニタイズ |
+| **FileUploader** | `src/components/FileUploader.tsx` | ファイルアップロード | 5MB制限・MIME検証 |
+| **DataManagementPanel** | `src/components/DataManagementPanel.tsx` | データインポート | 入力検証 |
 
-### 通知・メッセージシステム
+**必須コマンド**: `npm audit`, `npm audit --json`
 
-- `DialogFlashMessage`: 統一されたダイアログ内メッセージ表示
-- `NotificationContainer`: Toast通知システム
-- `InlineMessage`: インライン形式のメッセージ表示
+**推奨スキル**: `owasp-compliance-checker`, `xss-vulnerability-scanner`
 
-### ごみ箱機能
+---
 
-- `RecycleBinView`: ソフトデリートされたタスクの復元（DialogFlashMessage統合）
-- `RecycleBinItemDetailDialog`: ごみ箱アイテム詳細ダイアログ
-- `DeletionCandidateBadge`: 削除候補表示バッジ
-- `DeletionNotificationBanner`: 削除通知バナー
-- `RecycleBinTaskActions`: 操作ActionMenu（復元・完全削除）
+### P1 Agents（高優先度・定期活用）
 
-### 時刻・日付
+#### 4. performance-engineer
 
-- `TimeSelector`/`TimeSelectorDialog`: 時刻設定機能
-- `RecurrenceSelector`/`RecurrenceDetailDialog`: 繰り返し設定機能（モジュラー分割済み）
+**活用シーン**:
+- バンドルサイズ削減
+- Lighthouseスコア改善
+- Core Web Vitals最適化
+- ビルド時間短縮
 
-### ラベル・セレクター
-
-- `LabelSelector`: 統合ラベル選択システム（現在ボード・他ボード選択）
-- `LabelColorCircle`: ラベル色表示コンポーネント
-- `useLabelManagement`: ラベル管理ロジック
-
-### 共有コンポーネント・システム
-
-- `UnifiedDialog`: 統一ダイアログシステム
-- `UnifiedForm`: 統一フォームシステム
-- `ActionMenu`: 統一アクションメニューシステム
-- `ConfirmDialog`: 確認ダイアログ
-- `LoadingButton`: ローディング状態付きボタン
-- `FlexBox`: レイアウト用フレックスコンテナ
-
-### その他
-
-- `Header`: アプリケーションヘッダー
-- `Logo`: アプリケーションロゴコンポーネント
-- `HelpSidebar`: 機能説明サイドバー
-- `SettingsDialog`: 設定ダイアログ（タブ形式・DialogFlashMessage統合）
-- `OfflineIndicator`: オフライン状態表示
-- `TaskStatsDisplay`: タスク統計表示
-- `BoardSelector`: ボード選択コンポーネント
-- `LinkifiedText`: リンク対応・HTMLサニタイズテキスト表示
-
-## 🤖 推奨Subagents（プロジェクト特化）
-
-このプロジェクトでは以下のsubagentsを**積極的に活用**してください：
-
-### 🔴 最優先Agents（常時活用）
-
-#### 1. **react-specialist** - React専門家（最重要）
+**パフォーマンス目標**:
 ```yaml
-活用シーン:
-  - React 19.2.0の最新機能活用
-  - カスタムフック設計（useLabelManagement等）
-  - Context API最適化
-  - パフォーマンス最適化（React.memo、useMemo、useCallback）
-  - コンポーネント設計パターン
-
-優先タスク:
-  - src/hooks/: カスタムフックの最適化
-  - src/contexts/: Context API設計改善
-  - 226個のTSXファイルのパフォーマンスレビュー
-  - React 19新機能の積極活用
-```
-
-#### 2. **typescript-pro** - TypeScript専門家
-```yaml
-活用シーン:
-  - TypeScript 5.7.3の最新機能活用
-  - 型安全性の強化（strict mode）
-  - src/types/: 型定義の最適化
-  - ジェネリクス・条件型の活用
-  - 型推論の改善
-
-優先タスク:
-  - 型定義の厳密化
-  - any型の排除
-  - 型推論の最適化
-  - ユーティリティ型の活用
-```
-
-#### 3. **frontend-developer** - フロントエンド開発
-```yaml
-活用シーン:
-  - Shadcn/UI + Radix UIの最適活用
-  - Tailwind CSS 4.1.16設計
-  - アクセシビリティ（WCAG準拠）
-  - レスポンシブデザイン
-  - PWA対応
-
-優先タスク:
-  - src/components/: UIコンポーネント改善
-  - アクセシビリティ強化
-  - モバイル対応の最適化
-  - PWA機能の実装・強化
-```
-
-### 🟡 高優先Agents（定期活用）
-
-#### 4. **security-auditor** - セキュリティ監査
-```yaml
-活用シーン:
-  - XSS対策（DOMPurify使用確認）
-  - eslint-plugin-security対応
-  - 入力検証・サニタイズ
-  - 依存関係の脆弱性監査
-
-優先タスク:
-  - RichTextEditor: HTMLサニタイズ強化
-  - FileUploader: ファイルアップロードセキュリティ
-  - データインポート機能の安全性確認
-```
-
-#### 5. **performance-engineer** - パフォーマンス最適化
-```yaml
-活用シーン:
-  - Vite 7.1.12ビルド最適化
-  - バンドルサイズ削減
-  - Lighthouse スコア改善
-  - レンダリングパフォーマンス
-  - Core Web Vitals最適化
-
-優先タスク:
-  - バンドルサイズ分析・削減
-  - 遅延ローディング実装
-  - 画像最適化
-  - Service Worker最適化
-```
-
-#### 6. **test-automator** - テスト自動化
-```yaml
-活用シーン:
-  - Vitest 4.0.3テスト設計
-  - Playwright E2Eテスト
-  - React Testing Libraryテスト
-  - カバレッジ80%目標達成
-
-優先タスク:
-  - テストカバレッジ向上
-  - E2Eテストシナリオ追加
-  - コンポーネントテスト強化
-```
-
-### 🟢 中優先Agents（特定領域強化）
-
-#### 7. **accessibility-tester** - アクセシビリティ
-```yaml
-活用シーン:
-  - WCAG準拠確認
-  - Radix UIのa11y活用
-  - キーボードナビゲーション
-  - スクリーンリーダー対応
-
-優先タスク:
-  - アクセシビリティ監査
-  - aria属性の適切な使用
-  - フォーカス管理の改善
-```
-
-#### 8. **ui-ux-designer** - UI/UX設計
-```yaml
-活用シーン:
-  - Shadcn/UI デザインシステム
-  - ユーザー体験改善
-  - デザイントークン管理
-  - インタラクションデザイン
-
-優先タスク:
-  - デザインシステムの一貫性確認
-  - ユーザーフロー最適化
-  - マイクロインタラクション改善
-```
-
-#### 9. **code-reviewer** - コード品質
-```yaml
-活用シーン:
-  - ESLint準拠確認
-  - コード品質レビュー
-  - ベストプラクティス適用
-  - リファクタリング提案
-
-優先タスク:
-  - 226個のTSXファイルの品質確認
-  - モジュラー設計の一貫性確認
-```
-
-### 💡 状況依存Agents（特定タスク時）
-
-#### 10. **nextjs-developer** - Next.js移行検討
-```yaml
-活用シーン: 将来的なNext.js移行時
-タスク: SSR/SSG対応、ルーティング設計
-```
-
-#### 11. **devops-engineer** - CI/CD・デプロイ
-```yaml
-活用シーン: Vercel デプロイ最適化
-タスク: GitHub Actions CI/CD、ビルドパイプライン
-```
-
-#### 12. **multi-agent-coordinator** - 複数エージェント協調
-```yaml
-活用シーン: 大規模リファクタリング、総合レビュー
-タスク: react-specialist + typescript-pro + security-auditor 並列実行
-```
-
-## 📋 Agent活用戦略
-
-### 🎯 開発フェーズ別の推奨Agent
-
-```yaml
-新機能実装:
-  1. react-specialist: コンポーネント設計レビュー
-  2. typescript-pro: 型定義設計
-  3. frontend-developer: UI/UX評価
-  4. test-automator: テスト設計
-
-パフォーマンス改善:
-  1. performance-engineer: ボトルネック特定
-  2. react-specialist: React最適化実装
-  3. test-automator: パフォーマンステスト
-
-リリース準備:
-  1. security-auditor: セキュリティ監査
-  2. accessibility-tester: アクセシビリティ確認
-  3. test-automator: 統合テスト
-  4. performance-engineer: Lighthouseスコア確認
-```
-
-### 🚀 Agent活用の具体例
-
-```bash
-# React最適化
-Task(react-specialist, "src/components/RichTextEditor/ のReact 19パフォーマンス最適化")
-
-# TypeScript型安全性強化
-Task(typescript-pro, "src/types/ の型定義を厳密化し、any型を排除")
-
-# セキュリティ監査
-Task(security-auditor, "RichTextEditorとFileUploaderのXSS脆弱性監査")
-
-# パフォーマンス最適化
-Task(performance-engineer, "Viteバンドルサイズ削減とCore Web Vitals改善")
-
-# 総合レビュー（複数Agent協調）
-Task(multi-agent-coordinator, "react-specialist、typescript-pro、security-auditorでtaskflow-app全体を包括的にレビュー")
-```
-
-## 🔧 プロジェクト固有の開発ガイドライン
-
-### React開発規約
-
-```typescript
-// 推奨パターン
-- React 19機能積極活用
-- カスタムフック抽出（ロジック再利用）
-- Context API + useReducer（状態管理）
-- React.memo、useMemo、useCallback（最適化）
-- TypeScript strict mode必須
-
-// 避けるパターン
-- 過度なprop drilling
-- useEffectの過剰使用
-- any型の使用
-- 不要な再レンダリング
-```
-
-### TypeScript規約
-
-```typescript
-// 推奨パターン
-- strict: true必須
-- 明示的な型定義
-- ジェネリクスの積極活用
-- ユーティリティ型の活用
-- 型ガード・型推論
-
-// 避けるパターン
-- any、unknown の無差別使用
-- type assertion（as）の多用
-- @ts-ignore の使用
-```
-
-### セキュリティ基準
-
-```yaml
-必須チェック項目:
-  XSS対策:
-    - DOMPurify使用（RichTextEditor）
-    - 入力検証・サニタイズ
-    - CSP設定
-
-  ファイル処理:
-    - アップロードサイズ制限（5MB）
-    - MIME type検証
-    - Base64エンコード
-
-  依存関係:
-    - npm audit定期実行
-    - eslint-plugin-security使用
-```
-
-### パフォーマンス目標
-
-```yaml
-Lighthouse スコア:
+lighthouse:
   Performance: 90+
   Accessibility: 100
   Best Practices: 100
   SEO: 90+
 
-Core Web Vitals:
-  LCP: 2.5s以下
-  FID: 100ms以下
-  CLS: 0.1以下
+core_web_vitals:
+  LCP: <2.5秒
+  FID: <100ms
+  CLS: <0.1
 
-バンドルサイズ: 500KB以下（gzip圧縮後）
+bundle_size:
+  JavaScript: <300KB (gzip)
+  CSS: <50KB (gzip)
+  Total: <500KB (gzip)
 ```
 
-## 📁 重要ディレクトリ構造とAgent対応
+**コマンド**: `npm run build`, `npm run analyze`
 
-```
-src/
-├── components/                 # UIコンポーネント → react-specialist, frontend-developer
-│   ├── RichTextEditor/         # Lexicalエディタ → react-specialist, security-auditor
-│   ├── CalendarView/           # カレンダービュー → react-specialist
-│   ├── TableView/              # テーブルビュー → react-specialist
-│   ├── LabelManagement/        # ラベル管理 → react-specialist
-│   ├── TemplateManagement/     # テンプレート管理 → react-specialist
-│   └── shared/                 # 共有コンポーネント → react-specialist
-├── contexts/                   # 状態管理 → react-specialist
-├── hooks/                      # カスタムフック → react-specialist, typescript-pro
-├── types/                      # 型定義 → typescript-pro
-├── utils/                      # ユーティリティ → typescript-pro, security-auditor
-└── App.tsx                     # メインアプリ → react-specialist
+---
 
-tests/                          # テスト → test-automator
-e2e/                            # E2Eテスト → test-automator
+#### 5. test-automator
 
-public/                         # PWA → frontend-developer, performance-engineer
+**活用シーン**:
+- テストカバレッジ向上（目標: 80%）
+- Vitest テスト設計
+- E2Eテスト実装（Playwright）
+
+**コマンド**:
+```bash
+npm test                  # Vitestウォッチモード
+npm run test:run          # 単発実行
+npm run test:coverage     # カバレッジ測定
+npm run test:ui           # Vitest UIダッシュボード
 ```
 
-## 🎯 今後の開発方向性
+**推奨スキル**: `unit-test-generator`, `e2e-test-framework`, `test-coverage-analyzer`
 
-### Phase 1: 品質・パフォーマンス強化（現在）
-- React 19最適化 → **react-specialist**
-- TypeScript型安全性強化 → **typescript-pro**
-- セキュリティ強化 → **security-auditor**
-- テストカバレッジ80%達成 → **test-automator**
+---
 
-### Phase 2: PWA機能拡張
-- オフライン対応強化 → **frontend-developer**
-- Service Worker最適化 → **performance-engineer**
-- プッシュ通知実装 → **frontend-developer**
+#### 6. frontend-developer
 
-### Phase 3: 機能拡張
-- コラボレーション機能 → **fullstack-developer**
-- バックエンドAPI統合 → **backend-developer**
-- リアルタイム同期 → **websocket-engineer**
+**活用シーン**:
+- Shadcn/UI + Radix UI コンポーネント
+- Tailwind CSS 4.1.16 スタイリング
+- アクセシビリティ（WCAG準拠）
+- レスポンシブデザイン
 
-### Phase 4: スケーリング
-- Next.js移行検討 → **nextjs-developer**
-- マイクロフロントエンド化 → **microservices-architect**
-- パフォーマンス最適化 → **performance-engineer**
+---
 
-## 📊 パフォーマンスベンチマーク目標
+### P2 Agents（中優先度・特定領域）
+
+- **accessibility-tester** - WCAG準拠確認、ARIA属性
+- **code-reviewer** - コード品質レビュー、ESLint準拠
+- **ui-ux-designer** - デザインシステム一貫性
+
+---
+
+## 📦 主要コンポーネント一覧
+
+### セキュリティクリティカル（P0 - 要security-auditor協調）
+
+| Component | Path | Modules | Agent | Security |
+|-----------|------|---------|-------|----------|
+| **RichTextEditor** | `src/components/RichTextEditor/` | 12 | react-specialist + **security-auditor** | XSS（DOMPurify） |
+| **LinkifiedText** | `src/components/LinkifiedText.tsx` | - | react-specialist + **security-auditor** | XSS（自動リンク） |
+| **FileUploader** | `src/components/FileUploader.tsx` | - | react-specialist + **security-auditor** | ファイル検証 |
+
+### 高複雑度コンポーネント（P1）
+
+| Component | Path | Modules/Files | 特徴 |
+|-----------|------|--------------|------|
+| **TableView** | `src/components/TableView/` | 23 | 12種類カラム、表示/非表示切替 |
+| **RichTextEditor** | `src/components/RichTextEditor/` | 12 | Lexical、Emoji、コードハイライト |
+| **KanbanBoard** | `src/components/KanbanBoard/` | - | @dnd-kit、カラム管理 |
+| **TaskCreateDialog** | `src/components/TaskCreateDialog/` | 8 | モジュラー分割、複雑フォーム |
+
+### 主要機能別コンポーネント
+
+**タスク管理**:
+- `TaskCreateDialog`, `TaskEditDialog` - タスク作成・編集
+- `TaskCard`, `TaskDetailSidebar` - タスク表示・詳細
+- `SubTaskList`, `SubTaskItem` - サブタスク管理（Drag & Drop）
+
+**ビューシステム**:
+- `KanbanBoard` - カンバンビュー
+- `TableView` - テーブルビュー
+- `CalendarView` - カレンダービュー
+
+**ラベル・テンプレート**:
+- `LabelSelector`, `LabelManagementPanel` - ラベル管理
+- `TemplateManagementPanel`, `TemplateFormDialog` - テンプレート管理
+
+**セレクター・入力**:
+- `PrioritySelector` - 優先度選択（4段階）
+- `TimeSelector`, `TimeSelectorDialog` - 時刻選択
+- `RecurrenceSelector` - 繰り返し設定
+
+**共有システム**:
+- `UnifiedDialog` - 統一ダイアログシステム
+- `UnifiedForm` - 統一フォームシステム
+- `ActionMenu` - 統一アクションメニュー
+- `ConfirmDialog` - 確認ダイアログ
+
+---
+
+## 🛠️ 技術スタック詳細
+
+### コアフレームワーク
+
+| 技術 | バージョン | 担当Agent | 重要度 |
+|-----|-----------|----------|--------|
+| **React** | 19.2.0 | react-specialist | P0 |
+| **TypeScript** | 5.7.3 (strict) | typescript-pro | P0 |
+| **Vite** | 7.1.12 | performance-engineer | P1 |
+| **Vitest** | 4.0.3 | test-automator | P1 |
+
+### UIフレームワーク
+
+- **Shadcn/UI** + **Radix UI** - アクセシブルなプリミティブ（frontend-developer）
+- **Tailwind CSS** 4.1.16 - ユーティリティファーストCSS（frontend-developer）
+- **Lucide React** - アイコン（完全統一済み）
+
+### 特殊ライブラリ
+
+| ライブラリ | 用途 | 担当Agent | セキュリティ |
+|-----------|------|----------|------------|
+| **Lexical** 0.35.0 | リッチテキストエディタ | react-specialist | - |
+| **DOMPurify** | HTMLサニタイズ | **security-auditor** | **P0** |
+| **@dnd-kit** | Drag & Drop | react-specialist | - |
+| **date-fns** 4.1.0 | 日付処理 | react-specialist | - |
+| **emoji-picker-react** | Emoji選択 | react-specialist | - |
+| **react-day-picker** | カレンダー | react-specialist | - |
+
+### セキュリティツール
+
+- **DOMPurify** - XSS防止（RichTextEditor、LinkifiedText）
+- **eslint-plugin-security** - セキュリティリンティング
+- **npm audit** - 依存関係脆弱性監査
+
+---
+
+## 🎯 開発フェーズ別Agent活用戦略
+
+### 新機能実装フロー
+
+1. **設計フェーズ** - `react-specialist`
+   - コンポーネント設計レビュー
+   - 既存パターンとの一貫性確認
+
+2. **型定義フェーズ** - `typescript-pro`
+   - インターフェース・型定義設計
+   - ジェネリクス活用検討
+
+3. **UI実装フェーズ** - `frontend-developer`
+   - Shadcn/UI コンポーネント選定
+   - アクセシビリティ確認
+
+4. **テスト設計フェーズ** - `test-automator`
+   - Vitestテスト設計
+   - カバレッジ目標設定
+
+### パフォーマンス改善フロー
+
+1. **ボトルネック特定** - `performance-engineer`
+   - `npm run analyze` でバンドル分析
+   - Lighthouseスコア測定
+
+2. **React最適化** - `react-specialist`
+   - React.memo、useMemo、useCallback 適用
+   - 不要な再レンダリング削減
+
+3. **パフォーマンステスト** - `test-automator`
+   - ビルド時間測定
+   - バンドルサイズ検証
+
+### リリース準備チェックリスト
 
 ```yaml
-ビルド時間:
-  開発ビルド: 1秒以下（Vite HMR）
-  本番ビルド: 30秒以下
+Phase 1 - テスト:
+  - agent: test-automator
+  - tasks:
+      - npm run test:run（全テストパス）
+      - npm run test:coverage（80%以上）
 
-バンドルサイズ:
-  JavaScript: 300KB以下（gzip）
-  CSS: 50KB以下（gzip）
-  Total: 500KB以下（gzip）
+Phase 2 - セキュリティ:
+  - agent: security-auditor
+  - tasks:
+      - npm audit（脆弱性0件）
+      - RichTextEditor XSS確認
+      - skill: owasp-compliance-checker
 
-レンダリング:
-  初期表示: 1秒以下
-  インタラクション応答: 100ms以下
+Phase 3 - パフォーマンス:
+  - agent: performance-engineer
+  - tasks:
+      - npm run build（30秒以内）
+      - Lighthouseスコア確認（90+）
+      - バンドルサイズ確認（<500KB gzip）
+
+Phase 4 - アクセシビリティ:
+  - agent: accessibility-tester
+  - tasks:
+      - WCAG 2.1準拠確認
+      - キーボードナビゲーション確認
 ```
 
 ---
 
-**💡 開発時のヒント**:
-- **React 19の新機能を積極活用** - react-specialist に相談
-- **型安全性を最優先** - typescript-pro でany型を排除
-- **セキュリティファースト** - security-auditor で定期監査
-- **複雑なタスクは multi-agent-coordinator で複数agentを協調**
+## 📏 品質基準・開発ガイドライン
+
+### セキュリティ基準（P0 - 最優先）
+
+**XSS対策**:
+- RichTextEditor: DOMPurify必須（HTML出力前に必ずサニタイズ）
+- LinkifiedText: 自動リンク検出時のサニタイズ
+- ユーザー入力: 全て検証・エスケープ
+
+**ファイルアップロード**:
+- 最大サイズ: 5MB
+- MIME type検証必須
+- Base64エンコード保存
+
+**依存関係管理**:
+- `npm audit` 定期実行（週1回）
+- eslint-plugin-security 有効化
+
+### TypeScript規約
+
+**必須ルール**:
+```typescript
+// ✅ 推奨
+- strict: true 必須
+- 明示的な型定義
+- ジェネリクスの積極活用
+- ユーティリティ型（Partial, Pick, Omit等）活用
+- 型ガード・型推論
+
+// ❌ 禁止
+- any型の使用
+- @ts-ignore の使用
+- type assertion（as）の多用
+```
+
+### React開発規約
+
+**パフォーマンス最適化**:
+```typescript
+// ✅ 推奨パターン
+- React.memo() でコンポーネントメモ化
+- useMemo() で高コスト計算のメモ化
+- useCallback() でイベントハンドラーのメモ化
+- カスタムフック抽出（ロジック再利用）
+- Context API + useReducer（状態管理）
+
+// ❌ 避けるパターン
+- 過度なprop drilling
+- useEffectの過剰使用
+- 不要な再レンダリング
+```
+
+### テスト基準
+
+```yaml
+coverage_target: 80%
+execution_time: <30秒
+
+unit_tests:
+  - 全カスタムフック
+  - 複雑なユーティリティ関数
+  - 状態管理ロジック
+
+integration_tests:
+  - 主要ユーザーフロー
+  - フォーム送信
+  - データ永続化
+```
+
+---
+
+## 📁 ディレクトリ構造とAgent対応
+
+```
+src/
+├── components/           # 226 TSXファイル → react-specialist
+│   ├── RichTextEditor/   # 12モジュール → react-specialist + security-auditor
+│   ├── CalendarView/     # → react-specialist
+│   ├── TableView/        # 23ファイル → react-specialist
+│   ├── KanbanBoard/      # → react-specialist
+│   ├── LabelManagement/  # → react-specialist
+│   ├── TemplateManagement/ # → react-specialist
+│   └── shared/           # 共有コンポーネント → react-specialist
+│
+├── contexts/             # 状態管理 → react-specialist
+│   ├── TaskContext.tsx
+│   ├── BoardContext.tsx
+│   └── LanguageContext.tsx
+│
+├── hooks/                # カスタムフック → react-specialist + typescript-pro
+│   ├── useTasks.ts
+│   ├── useLabelManagement.ts
+│   └── useBoards.ts
+│
+├── types/                # 型定義 → typescript-pro
+│   ├── types.ts
+│   └── supabase.ts
+│
+├── utils/                # ユーティリティ → typescript-pro + security-auditor
+│   ├── sanitize.ts       # セキュリティクリティカル
+│   └── priorityConfig.ts
+│
+└── i18n/                 # 国際化 → frontend-developer
+    ├── config.ts
+    └── locales/
+        ├── en.json
+        ├── ja.json
+        ├── ko.json
+        └── zh-CN.json
+```
+
+---
+
+## 🔍 トラブルシューティング
+
+### 型エラー発生時
+
+1. `npm run typecheck` で詳細確認
+2. **typescript-pro** に相談
+3. `src/types/` の型定義を確認
+4. any型で回避しない（必ず適切な型定義）
+
+### パフォーマンス問題
+
+1. `npm run analyze` でバンドル分析
+2. **performance-engineer** に相談
+3. React DevTools Profilerで再レンダリング確認
+4. 不要なuseEffect、依存配列を確認
+
+### セキュリティ懸念
+
+1. `npm audit` で脆弱性確認
+2. **security-auditor** に即座に相談
+3. RichTextEditor使用箇所のDOMPurify適用確認
+4. skill: `owasp-compliance-checker` 実行
+
+---
+
+## 📊 統計情報
+
+```yaml
+project_stats:
+  total_components: 226
+  total_tsx_files: 226
+  total_contexts: 3
+  total_custom_hooks: 10+
+
+  security_critical_components: 3
+  high_complexity_components: 4
+
+  primary_agents: 3  # react-specialist, typescript-pro, security-auditor
+  total_agents: 8
+
+last_updated: "2025-11-09"
+file_size: "~8KB"
+```
+
+---
+
+**💡 開発のヒント**:
+- **React 19の新機能を積極活用** → react-specialist に相談
+- **型安全性を最優先** → typescript-pro でany型を排除
+- **セキュリティファースト** → security-auditor で定期監査
+- **パフォーマンス目標を常に意識** → Lighthouse 90+、Bundle <500KB
+
+**🔗 関連ドキュメント**:
+- README.md - プロジェクト概要
+- docs/ - 開発者向け詳細ドキュメント

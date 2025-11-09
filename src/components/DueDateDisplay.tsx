@@ -20,23 +20,24 @@ interface BadgeConfig {
   icon: LucideIcon;
 }
 
-const getBadgeConfigs = (t: (key: string) => string) => ({
-  overdue: {
-    variant: 'danger' as const,
-    text: t('task.overdue'),
-    icon: XCircle,
-  },
-  today: {
-    variant: 'warning' as const,
-    text: t('task.dueToday'),
-    icon: AlertTriangle,
-  },
-  tomorrow: {
-    variant: 'info' as const,
-    text: t('task.dueTomorrow'),
-    icon: Clock,
-  },
-} as const);
+const getBadgeConfigs = (t: (key: string) => string) =>
+  ({
+    overdue: {
+      variant: 'danger' as const,
+      text: t('task.overdue'),
+      icon: XCircle,
+    },
+    today: {
+      variant: 'warning' as const,
+      text: t('task.dueToday'),
+      icon: AlertTriangle,
+    },
+    tomorrow: {
+      variant: 'info' as const,
+      text: t('task.dueTomorrow'),
+      icon: Clock,
+    },
+  }) as const;
 
 const getBadgeConfig = (
   isOverdue: boolean,
@@ -78,7 +79,12 @@ const DueDateDisplay = memo<DueDateDisplayProps>(
     const { t } = useTranslation();
     const { isOverdue, isDueToday, isDueTomorrow } = getDateStatus(dueDate);
     const badgeConfigs = getBadgeConfigs(t);
-    const badgeConfig = getBadgeConfig(isOverdue, isDueToday, isDueTomorrow, badgeConfigs);
+    const badgeConfig = getBadgeConfig(
+      isOverdue,
+      isDueToday,
+      isDueTomorrow,
+      badgeConfigs
+    );
     const textColorClass = getTextColor(isOverdue, isDueToday, isDueTomorrow);
     const formattedDate = showYear
       ? formatDueDateWithYear(dueDate)

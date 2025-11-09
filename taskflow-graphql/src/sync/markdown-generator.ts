@@ -1,5 +1,6 @@
 import { Task, TaskStatus, Priority, Label } from '../types';
 import type { FileSystem } from './interfaces/file-system.interface';
+import { MarkdownSanitizer } from './security/sanitizer';
 
 /**
  * Markdown Generator for TaskFlow GraphQL
@@ -12,9 +13,14 @@ import type { FileSystem } from './interfaces/file-system.interface';
  * - Date formatting (YYYY-MM-DD)
  * - Completed tasks section
  * - Excludes DELETED tasks
+ * - XSS protection via MarkdownSanitizer
  */
 export class MarkdownGenerator {
-  constructor(private fs: FileSystem) {}
+  private sanitizer: MarkdownSanitizer;
+
+  constructor(private fs: FileSystem) {
+    this.sanitizer = new MarkdownSanitizer();
+  }
 
   /**
    * Generate markdown file from tasks
@@ -128,7 +134,8 @@ export class MarkdownGenerator {
    */
   private generateTaskLine(lines: string[], task: Task): void {
     const checkbox = this.statusToCheckbox(task.status);
-    const title = task.title;
+    // XSS対策: タイトルをサニタイズ
+    const title = this.sanitizer.sanitizeTitle(task.title);
     const tags = this.formatTags(task.labels);
     const dates = this.formatDates(task.createdAt, task.completedAt);
 
@@ -176,7 +183,10 @@ export class MarkdownGenerator {
       return '';
     }
 
-    return labels.map(label => `#${label.name}`).join(' ');
+    // XSS対策: ラベル名をサニタイズ
+    return labels
+      .map(label => `#${this.sanitizer.sanitizeTitle(label.name)}`)
+      .join(' ');
   }
 
   /**

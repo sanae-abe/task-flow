@@ -1,4 +1,11 @@
-import { Clock, AlertTriangle, CircleCheck, Info, XCircle, type LucideIcon } from 'lucide-react';
+import {
+  Clock,
+  AlertTriangle,
+  CircleCheck,
+  Info,
+  XCircle,
+  type LucideIcon,
+} from 'lucide-react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 

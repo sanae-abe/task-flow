@@ -55,13 +55,7 @@ type PlanTier = 'free' | 'pro' | 'team';
 ### SubscriptionStatus
 
 ```typescript
-type SubscriptionStatus =
-  | 'active'
-  | 'canceled'
-  | 'past_due'
-  | 'trialing'
-  | 'incomplete'
-  | 'incomplete_expired';
+type SubscriptionStatus = 'active' | 'canceled' | 'past_due' | 'trialing' | 'incomplete' | 'incomplete_expired';
 ```
 
 ### TeamRole
@@ -287,9 +281,7 @@ function supportsAIFeatures(plan: PlanTier): plan is 'pro' | 'team';
 
 ```typescript
 // Check if subscription is active
-function isActiveSubscription(
-  status: SubscriptionStatus | null
-): status is 'active' | 'trialing';
+function isActiveSubscription(status: SubscriptionStatus | null): status is 'active' | 'trialing';
 ```
 
 ### Team Role Checks
@@ -312,21 +304,14 @@ function canEditTasks(role: TeamRole): role is 'owner' | 'admin' | 'member';
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types/supabase';
 
-const supabase = createClient<Database>(
-  process.env.VITE_SUPABASE_URL!,
-  process.env.VITE_SUPABASE_ANON_KEY!
-);
+const supabase = createClient<Database>(process.env.VITE_SUPABASE_URL!, process.env.VITE_SUPABASE_ANON_KEY!);
 ```
 
 ### 2. Type-Safe Query (Select)
 
 ```typescript
 // Fetch user profile with full type safety
-const { data, error } = await supabase
-  .from('profiles')
-  .select('*')
-  .eq('id', userId)
-  .single();
+const { data, error } = await supabase.from('profiles').select('*').eq('id', userId).single();
 
 // data is typed as Profile | null
 // error is typed as SupabaseError | null
@@ -347,11 +332,7 @@ const newBoard: Insert<'boards'> = {
   is_shared: false,
 };
 
-const { data, error } = await supabase
-  .from('boards')
-  .insert(newBoard)
-  .select()
-  .single();
+const { data, error } = await supabase.from('boards').insert(newBoard).select().single();
 
 // data is typed as SupabaseBoard | null
 ```
@@ -368,12 +349,7 @@ const updateData: Update<'tasks'> = {
   completed_at: new Date().toISOString(),
 };
 
-const { data, error } = await supabase
-  .from('tasks')
-  .update(updateData)
-  .eq('id', taskId)
-  .select()
-  .single();
+const { data, error } = await supabase.from('tasks').update(updateData).eq('id', taskId).select().single();
 ```
 
 ### 5. Plan Feature Check
@@ -448,7 +424,9 @@ const userId: UserId = createBrandedUUID<'UserId'>('uuid-string');
 const boardId: BoardId = createBrandedUUID<'BoardId'>('uuid-string');
 
 // Type safety - prevents mixing different ID types
-function getBoard(boardId: BoardId) { /* ... */ }
+function getBoard(boardId: BoardId) {
+  /* ... */
+}
 
 getBoard(userId); // ❌ Type error!
 getBoard(boardId); // ✅ Correct
@@ -550,10 +528,14 @@ if (plan === 'pro' || plan === 'team') {
 
 ```typescript
 // ✅ Correct - prevents ID mixing
-function getTask(taskId: TaskId) { /* ... */ }
+function getTask(taskId: TaskId) {
+  /* ... */
+}
 
 // ❌ Incorrect - allows any string
-function getTask(taskId: string) { /* ... */ }
+function getTask(taskId: string) {
+  /* ... */
+}
 ```
 
 ---

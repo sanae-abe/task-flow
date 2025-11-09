@@ -1,4 +1,10 @@
-import { Zap, ChevronUp, Minus, ChevronDown, type LucideIcon } from 'lucide-react';
+import {
+  Zap,
+  ChevronUp,
+  Minus,
+  ChevronDown,
+  type LucideIcon,
+} from 'lucide-react';
 import type { TFunction } from 'i18next';
 
 import type { Priority } from '../types';
@@ -249,7 +255,9 @@ export const getPriorityAriaLabel = (
  * @param t - i18next翻訳関数
  * @returns 翻訳された優先度設定マップ
  */
-export const buildPriorityConfig = (t: TFunction): Record<Priority, PriorityConfig> => ({
+export const buildPriorityConfig = (
+  t: TFunction
+): Record<Priority, PriorityConfig> => ({
   critical: {
     label: t('priority.critical'),
     labelEn: 'Critical',
@@ -289,7 +297,9 @@ export const buildPriorityConfig = (t: TFunction): Record<Priority, PriorityConf
  * @param t - i18next翻訳関数
  * @returns 翻訳された優先度オプション配列
  */
-export const buildPrioritySelectorOptions = (t: TFunction): PrioritySelectorOption[] => {
+export const buildPrioritySelectorOptions = (
+  t: TFunction
+): PrioritySelectorOption[] => {
   const config = buildPriorityConfig(t);
   return [
     {

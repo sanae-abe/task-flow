@@ -8,6 +8,7 @@
 import { useEffect, useState } from 'react';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { loadPrism, isPrismLoaded } from '@/utils/prismLoader';
+import { logger } from '@/utils/logger';
 
 /**
  * Code Highlight Plugin Component
@@ -41,7 +42,7 @@ export function CodeHighlightPlugin(): null {
 
         checkPrismReady();
       } catch (error) {
-        console.error('[CodeHighlightPlugin] Failed to load Prism:', error);
+        logger._error('[CodeHighlightPlugin] Failed to load Prism:', error);
       }
     };
 
@@ -72,7 +73,10 @@ export function CodeHighlightPlugin(): null {
 
         return registerCodeHighlighting(editor);
       } catch (error) {
-        console.error('[CodeHighlightPlugin] Failed to register highlighting:', error);
+        logger._error(
+          '[CodeHighlightPlugin] Failed to register highlighting:',
+          error
+        );
         return undefined;
       }
     };

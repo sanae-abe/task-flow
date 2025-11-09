@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Download, X } from 'lucide-react';
+import { logger } from '@/utils/logger';
 
 interface BeforeInstallPromptEvent extends Event {
   readonly platforms: string[];
@@ -38,7 +39,7 @@ const PWAInstallPrompt: React.FC = () => {
       const expiryDate = new Date(dismissedUntil);
       return expiryDate <= new Date();
     } catch (error) {
-      console.error('[PWA] Invalid dismiss date:', error);
+      logger._error('[PWA] Invalid dismiss date:', error);
       localStorage.removeItem(DISMISS_KEY);
       return true;
     }
@@ -71,7 +72,7 @@ const PWAInstallPrompt: React.FC = () => {
           setShowPrompt(true);
         }, 3000);
       } catch (error) {
-        console.error('[PWA] Error handling beforeinstallprompt:', error);
+        logger._error('[PWA] Error handling beforeinstallprompt:', error);
       }
     };
 
@@ -87,7 +88,7 @@ const PWAInstallPrompt: React.FC = () => {
 
   const handleInstall = async () => {
     if (!deferredPrompt) {
-      console.warn('[PWA] Install prompt not available');
+      logger.warn('[PWA] Install prompt not available');
       return;
     }
 
@@ -101,12 +102,12 @@ const PWAInstallPrompt: React.FC = () => {
       const { outcome } = await deferredPrompt.userChoice;
 
       if (outcome === 'accepted') {
-        console.log('[PWA] User accepted the install prompt');
+        logger.debug('[PWA] User accepted the install prompt');
       } else {
-        console.log('[PWA] User dismissed the install prompt');
+        logger.debug('[PWA] User dismissed the install prompt');
       }
     } catch (error) {
-      console.error('[PWA] Error during installation:', error);
+      logger._error('[PWA] Error during installation:', error);
     } finally {
       // プロンプトをクリア
       setDeferredPrompt(null);
@@ -124,7 +125,7 @@ const PWAInstallPrompt: React.FC = () => {
       dismissedUntil.setDate(dismissedUntil.getDate() + DISMISS_DURATION_DAYS);
       localStorage.setItem(DISMISS_KEY, dismissedUntil.toISOString());
     } catch (error) {
-      console.error('[PWA] Error saving dismiss state:', error);
+      logger._error('[PWA] Error saving dismiss state:', error);
     }
   }, []);
 

@@ -29,7 +29,7 @@
     "installing": "Installing...",
     "install": "Install",
     "discardChanges": "Discard changes?",
-    "discardChangesMessage": "Are you sure you want to lose your edits?",
+    "discardChangesMessage": "Are you sure you want to discard your changes?",
     "discard": "Discard"
   },
   "header": {
@@ -41,7 +41,7 @@
   },
   "subheader": {
     "addColumn": "Add Column",
-    "selectViewMode": "Select view mode",
+    "selectViewMode": "Select View Mode",
     "deleteBoard": "Delete Project",
     "deleteBoardMessage": "Delete \"{{title}}\"?",
     "clearCompleted": "Clear Completed Tasks",
@@ -319,7 +319,7 @@
     "timesUsed": "{{count}} times",
     "editTemplateAria": "Edit template \"{{name}}\"",
     "deleteTemplateAria": "Delete template \"{{name}}\"",
-    "noMatchingTemplates": "No templates match the criteria",
+    "noMatchingTemplates": "No matching templates",
     "noTemplatesRegistered": "No templates registered.",
     "createTemplateInSettings": "Please create templates in the settings screen.",
     "favoriteTemplates": "Favorite Templates",
@@ -395,7 +395,7 @@
     "ascending": "Ascending",
     "descending": "Descending",
     "allTasks": "All Tasks",
-    "selectFilter": "Select task filter",
+    "selectFilter": "Select Filter",
     "dueWithin3Days": "Due within 3 days",
     "dueToday": "Due today",
     "overdue": "Overdue",
@@ -526,7 +526,7 @@
         "description": "Create tasks with the \"Create Task\" button in the header or \"+\" button in each column"
       },
       "dragDrop": {
-        "title": "Drag &\nDrop",
+        "title": "Drag & Drop",
         "description": "Drag tasks to move between columns (intuitive operation in Kanban view)"
       },
       "moveColumn": {
@@ -615,7 +615,7 @@
         "description": "Batch import data with JSON file. Import results and error information are displayed in messages at the top of settings screen"
       },
       "export": {
-        "title": "Board Selection\nExport",
+        "title": "Board Selection Export",
         "description": "From data management in settings screen, select any boards and export as JSON file"
       },
       "labelManagement": {
@@ -623,7 +623,7 @@
         "description": "Display all board labels in settings label management. Sort by label name, board, usage count. Create, edit, delete new labels. Operation results are displayed in messages at the top of settings screen"
       },
       "defaultColumn": {
-        "title": "Default\nColumn Settings",
+        "title": "Default Column Settings",
         "description": "In kanban settings in settings screen, set default columns for new board creation. Edit, add, delete, reorder column names (drag & drop supported)"
       },
       "management": {
@@ -665,7 +665,7 @@
     "maxSize": "Max file size: {{size}}MB",
     "maxSizeLabel": "Max {{size}}MB",
     "dragDrop": "Drag & drop file",
-    "dragDropOrClick": "Drag & drop files here or click to select"
+    "dragDropOrClick": "Drag and drop files here, or click to select"
   },
   "time": {
     "time": "Time",

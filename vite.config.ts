@@ -3,9 +3,10 @@ import react from '@vitejs/plugin-react-swc';
 import path from 'path';
 import pkg from './package.json';
 import { visualizer } from 'rollup-plugin-visualizer';
+import { sentryVitePlugin } from '@sentry/vite-plugin';
 
 // https://vitejs.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   base: './', // S3デプロイ用の相対パス設定
   plugins: [
     react(),
@@ -17,6 +18,18 @@ export default defineConfig({
           gzipSize: true,
           brotliSize: true,
           template: 'treemap', // 'treemap', 'sunburst', 'network'
+        })
+      : undefined,
+    // Sentryソースマップアップロード（本番ビルド時のみ）
+    mode === 'production' && process.env.SENTRY_AUTH_TOKEN
+      ? sentryVitePlugin({
+          org: process.env.SENTRY_ORG,
+          project: process.env.SENTRY_PROJECT,
+          authToken: process.env.SENTRY_AUTH_TOKEN,
+          sourcemaps: {
+            assets: './build/**',
+          },
+          telemetry: false, // テレメトリーを無効化
         })
       : undefined,
   ].filter(Boolean),
@@ -34,7 +47,9 @@ export default defineConfig({
   server: {
     port: 3000,
     open: true,
-    host: true,
+    // host設定を削除してデフォルトのlocalhostを使用
+    // これによりWebSocketの接続問題を解消
+    // host: true, // ← 削除（0.0.0.0でリッスンするとWebSocketエラーの原因）
   },
   build: {
     outDir: 'build',
@@ -91,4 +106,4 @@ export default defineConfig({
   },
   // PWA用のpublicディレクトリ設定
   publicDir: 'public',
-});
+}));

@@ -21,6 +21,7 @@ import { CodeHighlightPlugin } from './plugins/CodeHighlightPlugin';
 import { CodeBlockLineBreakPlugin } from './plugins/CodeBlockLineBreakPlugin';
 import { CodeLanguagePlugin } from './plugins/CodeLanguagePlugin';
 import { loadPrism, isPrismLoaded } from '@/utils/prismLoader';
+import { logger } from '@/utils/logger';
 
 /**
  * Props interface matching the existing RichTextEditor
@@ -74,14 +75,14 @@ export default function LexicalRichTextEditor({
           setTimeout(() => {
             clearInterval(checkInterval);
             if (mounted && !prismReady) {
-              console.warn('[LexicalRichTextEditor] Prism load timeout');
+              logger.warn('[LexicalRichTextEditor] Prism load timeout');
               setPrismReady(true); // エディタは表示（ハイライトなし）
             }
           }, 5000);
         }
       })
       .catch(error => {
-        console.error('[LexicalRichTextEditor] Failed to load Prism:', error);
+        logger._error('[LexicalRichTextEditor] Failed to load Prism:', error);
         if (mounted) {
           setPrismReady(true); // エディタは表示（ハイライトなし）
         }

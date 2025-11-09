@@ -10,7 +10,9 @@ import UnifiedDialog from './shared/Dialog/UnifiedDialog';
 import UnifiedFormField from './shared/Form/UnifiedFormField';
 
 // Zodスキーマ - カラム名のバリデーション（動的生成に変更）
-const createColumnTitleSchema = (t: (key: string, options?: Record<string, unknown>) => string) =>
+const createColumnTitleSchema = (
+  t: (key: string, options?: Record<string, unknown>) => string
+) =>
   z
     .string()
     .min(1, t('validation.required'))
@@ -47,21 +49,24 @@ const ColumnCreateDialog = memo<ColumnCreateDialogProps>(
     }, [columns, t]);
 
     // Zodバリデーション関数
-    const validateColumnTitle = useCallback((value: unknown): string | null => {
-      const trimmedTitle = String(value || '').trim();
+    const validateColumnTitle = useCallback(
+      (value: unknown): string | null => {
+        const trimmedTitle = String(value || '').trim();
 
-      if (!trimmedTitle) {
-        return null; // required validationで処理
-      }
+        if (!trimmedTitle) {
+          return null; // required validationで処理
+        }
 
-      const validationResult = validateData(columnTitleSchema, trimmedTitle);
+        const validationResult = validateData(columnTitleSchema, trimmedTitle);
 
-      if (!validationResult.success) {
-        return validationResult.errors?.[0] || t('validation.invalidFormat');
-      }
+        if (!validationResult.success) {
+          return validationResult.errors?.[0] || t('validation.invalidFormat');
+        }
 
-      return null;
-    }, [columnTitleSchema, t]);
+        return null;
+      },
+      [columnTitleSchema, t]
+    );
 
     // フィールド設定
     const fields: FormFieldConfig[] = useMemo(

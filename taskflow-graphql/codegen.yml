@@ -1,0 +1,56 @@
+# GraphQL Code Generator Configuration
+# Version: 2.1.0
+# Updated: 2025-11-08
+# Strategy: Generate only Resolver types, use existing types from src/types/index.ts
+
+schema: './src/schema/schema.graphql'
+generates:
+  # Generate only Resolver types (no duplicate base types)
+  ./src/generated/graphql.ts:
+    plugins:
+      - typescript
+      - typescript-resolvers
+    config:
+      # Type safety settings
+      useIndexSignature: false
+      strictScalars: true
+      skipTypename: false
+      avoidOptionals: false
+
+      # Only generate resolver types, skip base types
+      onlyResolversTypes: true
+
+      # Context type configuration
+      contextType: ../types#GraphQLContext
+
+      # Use database record types from ../types/database for resolver return values
+      # This maps GraphQL types to database record types
+      mappers:
+        # Core domain types - use Record types from database
+        Task: ../types/database#TaskRecord
+        Board: ../types/database#BoardRecord
+        Label: ../types/database#LabelRecord
+        Template: ../types/database#TemplateRecord
+        SubTask: ../types/database#SubTaskRecord
+        Attachment: ../types/database#AttachmentRecord
+        RecurrenceConfig: ../types/database#RecurrenceConfigRecord
+        BoardColumn: ../types/database#BoardColumnRecord
+        BoardSettings: ../types/database#BoardSettingsRecord
+        TaskTemplateData: ../types/database#TaskTemplateDataRecord
+
+      # Custom scalar types
+      scalars:
+        DateTime: Date
+        JSON: any
+
+      # Enum configuration
+      enumsAsTypes: false
+
+      # Nullability configuration
+      maybeValue: T | null
+
+      # Use type imports instead of code generation for these types
+      useTypeImports: true
+
+      # Default resolver type to match database record types
+      defaultMapper: Partial<{T}>

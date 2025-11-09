@@ -11,6 +11,10 @@ vi.mock('react-i18next', () => ({
       language: 'ja',
     },
   }),
+  initReactI18next: {
+    type: '3rdParty',
+    init: () => {},
+  },
 }));
 
 describe('LanguageContext', () => {
