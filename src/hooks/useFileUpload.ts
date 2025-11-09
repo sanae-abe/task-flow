@@ -44,7 +44,7 @@ export const useFileUpload = (
 
   const [isDragOver, setIsDragOver] = useState(false);
   const [_error, setError] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null!);
 
   const generateFileId = useCallback(
     (): string =>

@@ -13,7 +13,7 @@ export const useSubTaskEdit = ({
 }: UseSubTaskEditOptions) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(initialTitle);
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null!);
 
   // 編集開始
   const startEdit = (event: React.MouseEvent) => {
