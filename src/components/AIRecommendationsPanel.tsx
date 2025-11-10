@@ -26,37 +26,16 @@ import React, { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Sparkles, RefreshCw, AlertCircle, Calendar, Flag } from 'lucide-react';
 import { Button } from './ui/button';
-// TODO: Create card.tsx and badge.tsx components
-// import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
-// import { Badge } from './ui/badge';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from './ui/card';
+import { Badge } from './ui/badge';
 import { useAIRecommendations } from '../hooks/useAIRecommendations';
 import type { Task } from '../types';
-
-// Temporary placeholder components until card.tsx and badge.tsx are created
-const Card = ({
-  children,
-  className,
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) => <div className={className}>{children}</div>;
-const CardHeader = ({ children }: { children: React.ReactNode }) => (
-  <div>{children}</div>
-);
-const CardTitle = ({ children }: { children: React.ReactNode }) => (
-  <h2>{children}</h2>
-);
-const CardDescription = ({ children }: { children: React.ReactNode }) => (
-  <p>{children}</p>
-);
-const CardContent = ({ children }: { children: React.ReactNode }) => (
-  <div>{children}</div>
-);
-const Badge = ({ children, className, style }: any) => (
-  <span className={className} style={style}>
-    {children}
-  </span>
-);
 
 /**
  * Props for AIRecommendationsPanel component
