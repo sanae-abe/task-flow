@@ -25,6 +25,19 @@ export default defineConfig({
     include: ['src/**/*.{test,spec}.{js,ts,jsx,tsx}'],
     exclude: ['e2e/**', 'node_modules/**', 'build/**', 'public/**'],
     includeSource: ['src/**/*.{js,ts,jsx,tsx}'],
+    // ワーカープロセス制御（CPUリソース最適化）
+    maxWorkers: 4, // 最大ワーカー数を4に制限
+    minWorkers: 1, // 最小ワーカー数
+    pool: 'forks', // フォークモード使用
+    poolOptions: {
+      forks: {
+        singleFork: false, // 並列実行を有効化
+      },
+    },
+    // テストタイムアウト設定
+    testTimeout: 10000, // 10秒
+    hookTimeout: 10000, // 10秒
+    teardownTimeout: 5000, // 5秒
     coverage: {
       reporter: ['text', 'json', 'html'],
       exclude: [
