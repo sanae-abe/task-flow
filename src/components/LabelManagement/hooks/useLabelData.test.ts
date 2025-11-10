@@ -144,7 +144,9 @@ describe('useLabelData', () => {
     const { result } = renderHook(() => useLabelData('name', 'asc'));
 
     expect(result.current.allLabelsWithInfo).toHaveLength(1);
-    expect(result.current.allLabelsWithInfo[0].boardName).toBe('Board A, Board B, Board C');
+    expect(result.current.allLabelsWithInfo[0].boardName).toBe(
+      'Board A, Board B, Board C'
+    );
   });
 
   it('should handle multiple unique and duplicate labels', () => {
@@ -161,11 +163,15 @@ describe('useLabelData', () => {
 
     expect(result.current.allLabelsWithInfo).toHaveLength(3);
     expect(result.current.allLabelsWithInfo[0].id).toBe('1');
-    expect(result.current.allLabelsWithInfo[0].boardName).toBe('Board A, Board B');
+    expect(result.current.allLabelsWithInfo[0].boardName).toBe(
+      'Board A, Board B'
+    );
     expect(result.current.allLabelsWithInfo[1].id).toBe('2');
     expect(result.current.allLabelsWithInfo[1].boardName).toBe('Board C');
     expect(result.current.allLabelsWithInfo[2].id).toBe('3');
-    expect(result.current.allLabelsWithInfo[2].boardName).toBe('Board D, Board E');
+    expect(result.current.allLabelsWithInfo[2].boardName).toBe(
+      'Board D, Board E'
+    );
   });
 
   it('should default to name sorting when sortField is invalid', () => {
@@ -191,7 +197,12 @@ describe('useLabelData', () => {
 
     const { result, rerender } = renderHook(
       ({ sortField, sortDirection }) => useLabelData(sortField, sortDirection),
-      { initialProps: { sortField: 'name' as const, sortDirection: 'asc' as const } }
+      {
+        initialProps: {
+          sortField: 'name' as const,
+          sortDirection: 'asc' as const,
+        },
+      }
     );
 
     expect(result.current.allLabelsWithInfo[0].name).toBe('Apple');

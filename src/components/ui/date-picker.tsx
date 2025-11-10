@@ -1,8 +1,11 @@
 'use client';
 
 import * as React from 'react';
-import { format, parse, parseISO, isValid } from 'date-fns';
-import { ja } from 'date-fns/locale';
+import { format } from 'date-fns/format';
+import { parse } from 'date-fns/parse';
+import { parseISO } from 'date-fns/parseISO';
+import { isValid } from 'date-fns/isValid';
+import { ja } from 'date-fns/locale/ja';
 import { Calendar as CalendarIcon } from 'lucide-react';
 
 import { cn } from '@/lib/utils';

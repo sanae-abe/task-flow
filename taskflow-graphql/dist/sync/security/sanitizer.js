@@ -108,9 +108,7 @@ export class MarkdownSanitizer {
                 // リンク（hrefは後で許可）
                 'a',
             ],
-            ALLOWED_ATTR: {
-                a: ['href'], // リンクのhref属性のみ許可
-            },
+            ALLOWED_ATTR: ['href'], // リンクのhref属性のみ許可
             ALLOWED_URI_REGEXP: /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|cid|xmpp):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i,
             KEEP_CONTENT: true,
         });

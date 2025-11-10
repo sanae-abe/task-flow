@@ -50,7 +50,9 @@ describe('RecurrenceErrorDisplay', () => {
     const errors = ['Error with <special> & "characters"'];
     render(<RecurrenceErrorDisplay errors={errors} />);
     // Use regex for special characters
-    expect(screen.getByText(/Error with <special> & "characters"/)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Error with <special> & "characters"/)
+    ).toBeInTheDocument();
   });
 
   it('should render correct number of error messages', () => {

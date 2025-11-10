@@ -139,7 +139,7 @@ describe('SyncCoordinator', () => {
   });
 
   // ==============================================
-  // 1. Lifecycle Tests (5 tests)
+  // 1. Lifecycle Tests (7 tests - added 2 validation tests)
   // ==============================================
   describe('Lifecycle Management', () => {
     it('should initialize with correct configuration', () => {
@@ -152,6 +152,32 @@ describe('SyncCoordinator', () => {
 
       expect(coordinator).toBeDefined();
       expect(coordinator.getStats().totalSyncs).toBe(0);
+    });
+
+    it('should reject invalid configuration - missing todoPath', () => {
+      const invalidConfig = { ...config, todoPath: '' };
+
+      expect(() => {
+        new SyncCoordinator({
+          config: invalidConfig,
+          fileWatcher: mockFileWatcher,
+          fileSystem: mockFileSystem,
+          database: mockDatabase as IDBPDatabase,
+        });
+      }).toThrow('Invalid config: todoPath is required');
+    });
+
+    it('should reject invalid configuration - invalid debounceMs', () => {
+      const invalidConfig = { ...config, debounceMs: -100 };
+
+      expect(() => {
+        new SyncCoordinator({
+          config: invalidConfig,
+          fileWatcher: mockFileWatcher,
+          fileSystem: mockFileSystem,
+          database: mockDatabase as IDBPDatabase,
+        });
+      }).toThrow('Invalid config: debounceMs must be >= 0');
     });
 
     it('should start successfully', async () => {
@@ -419,6 +445,8 @@ describe('SyncCoordinator', () => {
       mockCircuitBreaker.prototype.getBreaker = vi.fn().mockReturnValue({
         fire: vi.fn().mockRejectedValue(new Error('File read failed')),
       });
+      mockCircuitBreaker.prototype.createBreaker = vi.fn();
+      mockCircuitBreaker.prototype.removeAll = vi.fn();
 
       coordinator = new SyncCoordinator({
         config,
@@ -426,10 +454,14 @@ describe('SyncCoordinator', () => {
         database: mockDatabase as IDBPDatabase,
       });
 
+      const syncErrorSpy = vi.fn();
+      coordinator.on('sync-error', syncErrorSpy);
+
       await expect(coordinator.syncFileToApp()).rejects.toThrow('File read failed');
 
       const stats = coordinator.getStats();
       expect(stats.failedSyncs).toBe(1);
+      expect(syncErrorSpy).toHaveBeenCalled();
     });
 
     it('should detect conflicts during sync', async () => {
@@ -534,6 +566,8 @@ describe('SyncCoordinator', () => {
       mockCircuitBreaker.prototype.getBreaker = vi.fn().mockReturnValue({
         fire: vi.fn().mockRejectedValue(new Error('Sync failed')),
       });
+      mockCircuitBreaker.prototype.createBreaker = vi.fn();
+      mockCircuitBreaker.prototype.removeAll = vi.fn();
 
       coordinator = new SyncCoordinator({
         config,
@@ -544,7 +578,7 @@ describe('SyncCoordinator', () => {
       const syncErrorSpy = vi.fn();
       coordinator.on('sync-error', syncErrorSpy);
 
-      await expect(coordinator.syncFileToApp()).rejects.toThrow();
+      await expect(coordinator.syncFileToApp()).rejects.toThrow('Sync failed');
 
       expect(syncErrorSpy).toHaveBeenCalled();
     });
@@ -1447,30 +1481,61 @@ describe('SyncCoordinator', () => {
   // 7. Error Handling Tests (5 tests)
   // ==============================================
   describe('Error Handling', () => {
-    it('should retry on transient errors', async () => {
+    it('should retry on transient file read errors', async () => {
       const { PathValidator } = await import('../../security/path-validator');
       const { CircuitBreakerManager } = await import('../../resilience/circuit-breaker');
       const { Retry } = await import('../../resilience/retry');
+      const { MarkdownParser } = await import('../../parsers/markdown-parser');
+      const { DiffDetector } = await import('../../performance/diff-detector');
+      const { BatchWriter } = await import('../../performance/batch-writer');
 
       const mockPathValidator = PathValidator as any;
       mockPathValidator.prototype.validate = vi.fn().mockReturnValue('/test/TODO.md');
 
-      let attemptCount = 0;
-      const mockRetry = Retry as any;
-      mockRetry.prototype.execute = vi.fn().mockImplementation(async (fn, options) => {
-        attemptCount++;
-        if (attemptCount < 3) {
-          throw new Error('Transient error');
-        }
-        return await fn();
-      });
-
+      let fireAttemptCount = 0;
       const mockCircuitBreaker = CircuitBreakerManager as any;
       mockCircuitBreaker.prototype.createBreaker = vi.fn();
       mockCircuitBreaker.prototype.getBreaker = vi.fn().mockReturnValue({
-        fire: vi.fn().mockResolvedValue('# Test'),
+        fire: vi.fn().mockImplementation(async () => {
+          fireAttemptCount++;
+          if (fireAttemptCount < 3) {
+            throw new Error('Transient error');
+          }
+          return '# Test';
+        }),
       });
       mockCircuitBreaker.prototype.removeAll = vi.fn();
+
+      const mockRetry = Retry as any;
+      mockRetry.prototype.execute = vi.fn().mockImplementation(async (fn, options) => {
+        // Simulate retry logic: attempt up to 3 times
+        let lastError;
+        for (let i = 0; i < 3; i++) {
+          try {
+            return await fn();
+          } catch (error) {
+            lastError = error;
+            if (i < 2) continue; // retry
+          }
+        }
+        throw lastError;
+      });
+
+      const mockParser = MarkdownParser as any;
+      mockParser.prototype.parse = vi.fn().mockResolvedValue({ sections: [], tasks: [] });
+      mockParser.prototype.extractTasks = vi.fn().mockReturnValue([]);
+
+      const mockDiffDetector = DiffDetector as any;
+      mockDiffDetector.prototype.isIdentical = vi.fn().mockReturnValue(false);
+      mockDiffDetector.prototype.detectDiff = vi.fn().mockReturnValue([]);
+      mockDiffDetector.prototype.getSummary = vi.fn().mockReturnValue({
+        addedChars: 0,
+        deletedChars: 0,
+        changeSeverity: 'minor',
+      });
+
+      const mockBatchWriter = BatchWriter as any;
+      mockBatchWriter.prototype.bulkUpsertTasks = vi.fn().mockResolvedValue(undefined);
 
       coordinator = new SyncCoordinator({
         config,
@@ -1479,8 +1544,10 @@ describe('SyncCoordinator', () => {
       });
 
       // Should succeed after retries
+      await coordinator.syncFileToApp();
       const stats = coordinator.getStats();
-      expect(stats).toBeDefined();
+      expect(stats.successfulSyncs).toBe(1);
+      expect(fireAttemptCount).toBe(3); // Retried 3 times before success
     });
 
     it('should trigger circuit breaker on repeated failures', async () => {

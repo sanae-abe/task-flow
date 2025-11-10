@@ -1,0 +1,98 @@
+---
+title: TaskFlow TODO.md Sync System Architecture
+---
+
+graph TB
+    subgraph "Claude Code Integration"
+        CC[Claude Code]
+    end
+
+    subgraph "MCP Layer"
+        MCP[MCP Server<br/>todo_sync tool]
+    end
+
+    subgraph "Sync Engine (Phase 3)"
+        SC[SyncCoordinator]
+        SCM[SyncStateManager]
+        CR[ConflictResolver]
+        TWM[ThreeWayMerger]
+    end
+
+    subgraph "Parsers (Phase 1)"
+        MP[MarkdownParser]
+        MS[MarkdownSerializer]
+    end
+
+    subgraph "File System (Phase 2)"
+        FW[FileWatcher<br/>chokidar]
+        FS[FileSystem<br/>Abstraction]
+    end
+
+    subgraph "Performance"
+        DD[DiffDetector]
+        BW[BatchWriter]
+        RL[RateLimiter]
+    end
+
+    subgraph "Resilience"
+        RT[Retry<br/>Exponential Backoff]
+        CB[CircuitBreaker]
+    end
+
+    subgraph "Security"
+        PV[PathValidator]
+        SAN[Sanitizer<br/>DOMPurify]
+    end
+
+    subgraph "Data Stores"
+        TODO[TODO.md<br/>Markdown File]
+        IDB[(IndexedDB<br/>Tasks)]
+    end
+
+    %% MCP Integration
+    CC -->|MCP Protocol| MCP
+    MCP -->|file_to_app<br/>app_to_file<br/>status| SC
+
+    %% Sync Engine
+    SC -->|parse| MP
+    SC -->|serialize| MS
+    SC -->|detect changes| DD
+    SC -->|batch ops| BW
+    SC -->|resolve| CR
+    SC -->|3-way merge| TWM
+    SC -->|state| SCM
+
+    %% File Operations
+    SC -->|watch| FW
+    SC -->|read/write| FS
+    FW -->|change events| SC
+
+    %% Data Flow
+    FS -->|read| TODO
+    FS -->|write| TODO
+    BW -->|upsert/delete| IDB
+    SCM -->|base versions| IDB
+
+    %% Resilience
+    SC -->|retry| RT
+    SC -->|circuit breaker| CB
+
+    %% Security
+    FS -->|validate| PV
+    MP -->|sanitize| SAN
+    MS -->|sanitize| SAN
+
+    %% Rate Limiting
+    FW -->|debounce/throttle| RL
+
+    classDef mcp fill:#e1f5ff,stroke:#01579b,stroke-width:2px
+    classDef sync fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef parser fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    classDef store fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px
+    classDef security fill:#ffebee,stroke:#b71c1c,stroke-width:2px
+
+    class CC,MCP mcp
+    class SC,SCM,CR,TWM sync
+    class MP,MS parser
+    class TODO,IDB store
+    class PV,SAN security

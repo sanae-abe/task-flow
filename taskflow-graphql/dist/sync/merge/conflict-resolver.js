@@ -267,7 +267,7 @@ export class ConflictResolver {
         };
     }
     resolveMerge(conflict) {
-        const mergeResult = this.merger.merge(conflict.baseVersion, conflict.fileVersion, conflict.appVersion);
+        const mergeResult = this.merger.merge(conflict.baseVersion || conflict.fileVersion, conflict.fileVersion, conflict.appVersion);
         if (!mergeResult.hasConflicts) {
             return {
                 method: 'auto_merge',

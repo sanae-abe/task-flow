@@ -728,6 +728,17 @@
       "networkError": "Network error occurred",
       "taskCreationFailed": "Task creation failed",
       "unexpectedError": "Unexpected error occurred"
+    },
+    "recommendations": {
+      "title": "AI Recommendations",
+      "description": "AI suggests the next task you should work on",
+      "refresh": "Refresh recommendations",
+      "loading": "Loading recommendations...",
+      "errorTitle": "Failed to load recommendations",
+      "noRecommendations": "No recommendations available",
+      "noRecommendationsHint": "All tasks are completed or create new tasks",
+      "viewTask": "View task \"{{title}}\"",
+      "aiReasoning": "Recommended based on AI priority analysis"
     }
   }
 }

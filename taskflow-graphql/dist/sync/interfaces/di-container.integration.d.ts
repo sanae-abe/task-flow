@@ -37,7 +37,11 @@ export declare function setupEnvironmentContainer(workspacePath: string): DICont
  */
 export declare function exampleDiagnostics(): void;
 /**
- * Example 6: Error Handling in Integration
+ * Example 6: FileWatcher Integration
+ */
+export declare function exampleFileWatcherIntegration(): Promise<void>;
+/**
+ * Example 7: Error Handling in Integration
  */
 export declare function exampleErrorHandling(): Promise<void>;
 /**

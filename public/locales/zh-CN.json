@@ -723,6 +723,17 @@
       "networkError": "发生网络错误",
       "taskCreationFailed": "任务创建失败",
       "unexpectedError": "发生意外错误"
+    },
+    "recommendations": {
+      "title": "AI推荐",
+      "description": "AI建议您接下来应该处理的任务",
+      "refresh": "刷新推荐",
+      "loading": "正在加载推荐...",
+      "errorTitle": "加载推荐失败",
+      "noRecommendations": "暂无推荐",
+      "noRecommendationsHint": "所有任务已完成或创建新任务",
+      "viewTask": "查看任务"{{title}}"",
+      "aiReasoning": "基于AI优先级分析的推荐"
     }
   }
 }

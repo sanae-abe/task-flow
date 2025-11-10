@@ -217,9 +217,20 @@ const AppContent: React.FC = () => {
 
 function App() {
   return (
-    <AppProviders>
-      <AppContent />
-    </AppProviders>
+    <Suspense
+      fallback={
+        <div className='flex items-center justify-center h-screen'>
+          <div className='text-center'>
+            <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4' />
+            <p>読み込み中...</p>
+          </div>
+        </div>
+      }
+    >
+      <AppProviders>
+        <AppContent />
+      </AppProviders>
+    </Suspense>
   );
 }
 

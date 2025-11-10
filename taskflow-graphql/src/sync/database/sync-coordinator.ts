@@ -131,6 +131,9 @@ export class SyncCoordinator extends EventEmitter {
   constructor(options: SyncCoordinatorOptions) {
     super();
 
+    // Validate configuration before initializing
+    this.validateConfig(options.config);
+
     this.config = options.config;
     this.fileWatcher = options.fileWatcher;
     this.fileSystem = options.fileSystem;
@@ -166,6 +169,31 @@ export class SyncCoordinator extends EventEmitter {
   }
 
   /**
+   * 設定を検証します
+   */
+  private validateConfig(config: SyncConfig): void {
+    // Validate todoPath is non-empty string
+    if (!config.todoPath || typeof config.todoPath !== 'string' || config.todoPath.trim() === '') {
+      throw new Error('Invalid config: todoPath is required');
+    }
+
+    // Validate debounceMs >= 0
+    if (typeof config.debounceMs !== 'number' || config.debounceMs < 0) {
+      throw new Error('Invalid config: debounceMs must be >= 0');
+    }
+
+    // Validate throttleMs >= 0
+    if (typeof config.throttleMs !== 'number' || config.throttleMs < 0) {
+      throw new Error('Invalid config: throttleMs must be >= 0');
+    }
+
+    // Validate maxFileSizeMB > 0
+    if (typeof config.maxFileSizeMB !== 'number' || config.maxFileSizeMB <= 0) {
+      throw new Error('Invalid config: maxFileSizeMB must be > 0');
+    }
+  }
+
+  /**
    * Circuit Breakerを設定します
    */
   private setupCircuitBreakers(): void {
@@ -183,7 +211,8 @@ export class SyncCoordinator extends EventEmitter {
         errorThresholdPercentage: 50,
         resetTimeoutMs: 30000,
         fallback: error => {
-          logger.error({ err: error }, 'File read circuit breaker triggered');
+          logger.error({ err: error }, 'File read circuit breaker triggered - using empty content fallback');
+          // Return empty string for graceful degradation (file not found, network errors, etc.)
           return '';
         },
       }
@@ -340,6 +369,8 @@ export class SyncCoordinator extends EventEmitter {
       operation: 'syncFileToApp',
     });
 
+    this.emit('sync-start', { direction: 'file_to_app', timestamp: startTime });
+
     const history: SyncHistory = {
       id: syncId,
       startedAt: startTime,
@@ -377,6 +408,23 @@ export class SyncCoordinator extends EventEmitter {
       );
       if (!hasChanges && this.lastFileContent !== '') {
         logger.debug('No changes detected in TODO.md, skipping sync');
+
+        // Still update statistics and history for skipped syncs
+        this.statistics.totalSyncs++;
+        this.statistics.successfulSyncs++;
+        this.statistics.lastSyncAt = new Date();
+        this.statistics.lastSuccessfulSyncAt = new Date();
+
+        history.success = true;
+        history.completedAt = new Date();
+        history.durationMs = history.completedAt.getTime() - startTime.getTime();
+
+        this.updateAverageDuration(history.durationMs);
+        this.syncHistory.push(history);
+
+        this.emit('sync-completed', history);
+        this.stateManager.markSyncComplete(true);
+
         this.isSyncing = false;
         return;
       }
@@ -825,18 +873,39 @@ export class SyncCoordinator extends EventEmitter {
         return null;
       }
 
-      const content = await fs.readFile(validatedPath, 'utf-8');
+      // Use FileSystem if available, fallback to fs
+      let content: string;
+      if (this.fileSystem) {
+        content = await this.fileSystem.readFile(validatedPath);
+      } else {
+        content = await fs.readFile(validatedPath, 'utf-8');
+      }
+
       const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
       const backupPath = `${validatedPath}.backup.${timestamp}`;
 
-      await fs.writeFile(backupPath, content, 'utf-8');
+      // Use FileSystem if available, fallback to fs
+      if (this.fileSystem) {
+        await this.fileSystem.writeFile(backupPath, content);
+      } else {
+        await fs.writeFile(backupPath, content, 'utf-8');
+      }
 
-      const stats = await fs.stat(backupPath);
+      // Get file stats for size
+      let size: number;
+      if (this.fileSystem) {
+        const fileStats = await this.fileSystem.stat(backupPath);
+        size = fileStats.size;
+      } else {
+        const stats = await fs.stat(backupPath);
+        size = stats.size;
+      }
+
       const backup: BackupInfo = {
         id: this.generateSyncId(),
         path: backupPath,
         createdAt: new Date(),
-        size: stats.size,
+        size,
         sourceHash: this.calculateHash(content),
         reason,
       };

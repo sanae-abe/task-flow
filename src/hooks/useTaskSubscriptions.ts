@@ -94,7 +94,13 @@ export interface UseTaskSubscriptionsReturn {
 export const useTaskSubscriptions = (
   options: UseTaskSubscriptionsOptions = {}
 ): UseTaskSubscriptionsReturn => {
-  const { boardId, skip = false, onTaskCreated, onTaskUpdated, onTaskDeleted } = options;
+  const {
+    boardId,
+    skip = false,
+    onTaskCreated,
+    onTaskUpdated,
+    onTaskDeleted,
+  } = options;
   const { dispatch } = useKanban();
   const [connected, setConnected] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -109,7 +115,7 @@ export const useTaskSubscriptions = (
   } = useOnTaskCreatedSubscription({
     variables: { boardId: boardId || null },
     skip,
-    onError: (err) => {
+    onError: err => {
       console.error('Task created subscription error:', err);
       setError(new Error(err.message));
       setConnected(false);
@@ -126,7 +132,7 @@ export const useTaskSubscriptions = (
   } = useOnTaskUpdatedSubscription({
     variables: { boardId: boardId || null },
     skip,
-    onError: (err) => {
+    onError: err => {
       console.error('Task updated subscription error:', err);
       setError(new Error(err.message));
       setConnected(false);
@@ -143,7 +149,7 @@ export const useTaskSubscriptions = (
   } = useOnTaskDeletedSubscription({
     variables: { boardId: boardId || null },
     skip,
-    onError: (err) => {
+    onError: err => {
       console.error('Task deleted subscription error:', err);
       setError(new Error(err.message));
       setConnected(false);

@@ -4,4 +4,5 @@
  * Exports merge utilities for resolving conflicts between file and app versions.
  */
 export { ThreeWayMerger, createThreeWayMerger, performThreeWayMerge, detectTaskConflicts, type MergeResult, type MergeReport, } from './three-way-merger';
+export { ConflictResolver, type ResolverOptions, type ResolutionResult, type ManualResolutionRecord, type ResolutionSuggestion, type BatchResolutionResult, type ResolutionStatistics, } from './conflict-resolver';
 //# sourceMappingURL=index.d.ts.map

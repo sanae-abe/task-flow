@@ -19,6 +19,11 @@ export class AuthValidator {
     expectedToken;
     constructor() {
         this.expectedToken = process.env.MCP_AUTH_TOKEN;
+        // 本番環境では環境変数を強制
+        if (process.env.NODE_ENV === 'production' && !this.expectedToken) {
+            throw new Error('SECURITY ERROR: MCP_AUTH_TOKEN must be set in production environment. ' +
+                'Generate a secure token with: openssl rand -base64 32');
+        }
         // 開発環境での警告
         if (!this.expectedToken && process.env.NODE_ENV !== 'test') {
             console.warn('⚠️  MCP_AUTH_TOKEN is not set. MCP Tool access will be denied. ' +
@@ -74,7 +79,7 @@ export class AuthValidator {
      * @param apiKey 検証するAPI Key
      * @returns API Keyが有効な場合はtrue
      */
-    validateApiKey(apiKey) {
+    validateApiKey(_apiKey) {
         // 将来実装予定
         // 現在はMCP認証のみサポート
         return false;
@@ -85,7 +90,7 @@ export class AuthValidator {
      * @param jwtToken 検証するJWTトークン
      * @returns JWTが有効な場合はtrue
      */
-    validateJwtToken(jwtToken) {
+    validateJwtToken(_jwtToken) {
         // 将来実装予定（Phase 6以降）
         return false;
     }

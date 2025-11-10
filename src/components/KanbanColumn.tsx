@@ -168,7 +168,13 @@ const KanbanColumn: React.FC<KanbanColumnProps> = React.memo(
           canMoveRight={canMoveRight}
         />
 
-        <div ref={setNodeRef} style={COLUMN_STYLES.taskList}>
+        <div
+          ref={setNodeRef}
+          role='region'
+          aria-label={`${column.title}カラム - ${sortedTasks.length}件のタスク`}
+          aria-dropeffect={isOver ? 'move' : 'none'}
+          style={COLUMN_STYLES.taskList}
+        >
           <SortableContext
             items={taskIds}
             strategy={verticalListSortingStrategy}
@@ -188,7 +194,10 @@ const KanbanColumn: React.FC<KanbanColumnProps> = React.memo(
 
             {/* カラムの一番下のドロップエリア - 残り空間を最大活用 */}
             {sortedTasks.length > 0 && (
-              <div className='flex-1 min-h-[200px] h-auto flex items-center justify-center rounded-sm mt-2 mb-[100px]' />
+              <div
+                className='flex-1 min-h-[200px] h-auto flex items-center justify-center rounded-sm mt-2 mb-[100px]'
+                aria-hidden='true'
+              />
             )}
           </SortableContext>
         </div>

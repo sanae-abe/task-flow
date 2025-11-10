@@ -117,9 +117,9 @@ export const KanbanProvider: React.FC<KanbanProviderProps> = ({ children }) => {
         case 'ADD_TASK': {
           const { boardId, columnId, task: newTask } = action.payload;
           // BoardContextのupdateBoardを使ってタスクを追加
-          const targetBoard = board.state.boards.find((b) => b.id === boardId);
+          const targetBoard = board.state.boards.find(b => b.id === boardId);
           if (targetBoard) {
-            const updatedColumns = targetBoard.columns.map((col) =>
+            const updatedColumns = targetBoard.columns.map(col =>
               col.id === columnId
                 ? { ...col, tasks: [...col.tasks, newTask] }
                 : col

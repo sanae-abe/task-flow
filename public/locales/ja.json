@@ -723,6 +723,17 @@
       "networkError": "ネットワークエラーが発生しました",
       "taskCreationFailed": "タスク作成に失敗しました",
       "unexpectedError": "予期しないエラーが発生しました"
+    },
+    "recommendations": {
+      "title": "AI推奨タスク",
+      "description": "AIがあなたの次に取り組むべきタスクを提案します",
+      "refresh": "推奨を更新",
+      "loading": "推奨を取得中...",
+      "errorTitle": "推奨の取得に失敗しました",
+      "noRecommendations": "現在推奨するタスクはありません",
+      "noRecommendationsHint": "すべてのタスクが完了しているか、新しいタスクを作成してください",
+      "viewTask": "タスク「{{title}}」を表示",
+      "aiReasoning": "AIによる優先度分析に基づいた推奨です"
     }
   }
 }

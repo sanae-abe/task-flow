@@ -1,0 +1,77 @@
+---
+title: TODO.md Sync Flow (File → App)
+---
+
+sequenceDiagram
+    participant CC as Claude Code
+    participant MCP as MCP Server
+    participant SC as SyncCoordinator
+    participant FW as FileWatcher
+    participant MP as MarkdownParser
+    participant DD as DiffDetector
+    participant CR as ConflictResolver
+    participant BW as BatchWriter
+    participant IDB as IndexedDB
+    participant FS as FileSystem
+    participant TODO as TODO.md
+
+    %% MCP-triggered sync
+    CC->>MCP: todo_sync(action: file_to_app)
+    MCP->>SC: syncFileToApp()
+
+    activate SC
+    SC->>SC: emit('sync-start')
+
+    %% Read file with circuit breaker
+    SC->>FS: readFile(TODO.md)
+    FS->>TODO: read
+    TODO-->>FS: content
+    FS-->>SC: content
+
+    %% Differential sync
+    SC->>DD: isIdentical(lastContent, newContent)
+    DD-->>SC: hasChanges = true
+
+    SC->>DD: detectDiff()
+    DD-->>SC: diffs
+
+    %% Parse markdown
+    SC->>MP: parse(content)
+    MP->>MP: sanitize (DOMPurify)
+    MP-->>SC: ParsedTask[]
+
+    %% Get current tasks
+    SC->>IDB: getAllTasks()
+    IDB-->>SC: currentTasks
+
+    %% Conflict detection
+    SC->>CR: detectConflicts(currentTasks, newTasks)
+    CR-->>SC: conflicts[]
+
+    alt Conflicts detected
+        SC->>CR: resolve(conflicts)
+        CR-->>SC: resolvedTasks
+    end
+
+    %% Detect changes
+    SC->>SC: detectTaskChanges()
+    SC-->>SC: {created, updated, deleted}
+
+    %% Batch write
+    SC->>BW: bulkUpsertTasks(created + updated)
+    BW->>IDB: transaction.put()
+    IDB-->>BW: success
+    BW-->>SC: success
+
+    SC->>BW: bulkDeleteTasks(deleted)
+    BW->>IDB: transaction.delete()
+    IDB-->>BW: success
+    BW-->>SC: success
+
+    %% Update state
+    SC->>SC: updateStatistics()
+    SC->>SC: emit('sync-completed', history)
+    deactivate SC
+
+    SC-->>MCP: SyncHistory
+    MCP-->>CC: {success, tasksChanged, statistics}

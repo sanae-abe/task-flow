@@ -29,6 +29,12 @@ import { getCompletionRate } from './utils/tableHelpers';
  * - TableRow：データ行の表示
  * - TableCell：各セルの表示
  * - EmptyState：空状態の表示
+ *
+ * アクセシビリティ対応：
+ * - role='table' でテーブル構造を明示
+ * - role='rowgroup' でヘッダーとボディを区別
+ * - キーボードナビゲーション対応
+ * - スクリーンリーダー対応
  */
 const TableView: React.FC = () => {
   const { t } = useTranslation();
@@ -154,6 +160,9 @@ const TableView: React.FC = () => {
       {/* メインテーブル */}
       <div
         key={`table-${tableColumnsData.forceRender}`}
+        role='table'
+        aria-label={`${state.currentBoard.title}のタスク一覧`}
+        aria-rowcount={filteredAndSortedTasks.length + 1}
         style={{
           borderRadius: 2,
           overflow: 'auto',
@@ -163,25 +172,29 @@ const TableView: React.FC = () => {
         }}
       >
         {/* ヘッダー行 */}
-        <TableHeader
-          visibleColumns={tableColumnsData.visibleColumns}
-          gridTemplateColumns={tableColumnsData.gridTemplateColumns}
-          taskCount={filteredAndSortedTasks.length}
-        />
-
-        {/* データ行 */}
-        {filteredAndSortedTasks.map((task, index) => (
-          <TableRow
-            key={task.id}
-            task={task}
-            index={index}
-            totalTasks={filteredAndSortedTasks.length}
+        <div role='rowgroup'>
+          <TableHeader
             visibleColumns={tableColumnsData.visibleColumns}
             gridTemplateColumns={tableColumnsData.gridTemplateColumns}
-            onTaskClick={tableActions.handleTaskClick}
-            renderCell={renderCell}
+            taskCount={filteredAndSortedTasks.length}
           />
-        ))}
+        </div>
+
+        {/* データ行 */}
+        <div role='rowgroup'>
+          {filteredAndSortedTasks.map((task, index) => (
+            <TableRow
+              key={task.id}
+              task={task}
+              index={index}
+              totalTasks={filteredAndSortedTasks.length}
+              visibleColumns={tableColumnsData.visibleColumns}
+              gridTemplateColumns={tableColumnsData.gridTemplateColumns}
+              onTaskClick={tableActions.handleTaskClick}
+              renderCell={renderCell}
+            />
+          ))}
+        </div>
       </div>
 
       {/* 空状態 */}

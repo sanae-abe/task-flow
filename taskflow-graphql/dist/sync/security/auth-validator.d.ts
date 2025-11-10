@@ -38,14 +38,14 @@ export declare class AuthValidator {
      * @param apiKey 検証するAPI Key
      * @returns API Keyが有効な場合はtrue
      */
-    validateApiKey(apiKey: string | undefined): boolean;
+    validateApiKey(_apiKey: string | undefined): boolean;
     /**
      * JWTトークン検証（将来拡張用）
      *
      * @param jwtToken 検証するJWTトークン
      * @returns JWTが有効な場合はtrue
      */
-    validateJwtToken(jwtToken: string | undefined): boolean;
+    validateJwtToken(_jwtToken: string | undefined): boolean;
     /**
      * 認証が設定されているかを確認
      *

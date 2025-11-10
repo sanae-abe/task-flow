@@ -73,11 +73,7 @@ describe('TimeSelector', () => {
 
     it('should show time when hasTime is true', () => {
       render(
-        <TimeSelector
-          hasTime={true}
-          dueTime='14:30'
-          onTimeChange={mockOnTimeChange}
-        />
+        <TimeSelector hasTime dueTime='14:30' onTimeChange={mockOnTimeChange} />
       );
 
       expect(screen.getByText('14:30 まで')).toBeInTheDocument();
@@ -115,11 +111,7 @@ describe('TimeSelector', () => {
 
     it('should show time text when hasTime is true and dueTime is provided', () => {
       render(
-        <TimeSelector
-          hasTime={true}
-          dueTime='09:00'
-          onTimeChange={mockOnTimeChange}
-        />
+        <TimeSelector hasTime dueTime='09:00' onTimeChange={mockOnTimeChange} />
       );
 
       expect(screen.getByText('09:00 まで')).toBeInTheDocument();
@@ -127,11 +119,7 @@ describe('TimeSelector', () => {
 
     it('should show default text when hasTime is true but dueTime is empty', () => {
       render(
-        <TimeSelector
-          hasTime={true}
-          dueTime=''
-          onTimeChange={mockOnTimeChange}
-        />
+        <TimeSelector hasTime dueTime='' onTimeChange={mockOnTimeChange} />
       );
 
       expect(screen.getByText('時刻を設定')).toBeInTheDocument();
@@ -143,11 +131,7 @@ describe('TimeSelector', () => {
       expect(screen.getByText('時刻を設定')).toBeInTheDocument();
 
       rerender(
-        <TimeSelector
-          hasTime={true}
-          dueTime='15:45'
-          onTimeChange={mockOnTimeChange}
-        />
+        <TimeSelector hasTime dueTime='15:45' onTimeChange={mockOnTimeChange} />
       );
 
       expect(screen.getByText('15:45 まで')).toBeInTheDocument();
@@ -159,7 +143,7 @@ describe('TimeSelector', () => {
       times.forEach(time => {
         const { rerender } = render(
           <TimeSelector
-            hasTime={true}
+            hasTime
             dueTime={time}
             onTimeChange={mockOnTimeChange}
           />
@@ -185,7 +169,7 @@ describe('TimeSelector', () => {
     });
 
     it('should not open dialog when button is clicked and disabled', () => {
-      render(<TimeSelector {...defaultProps} disabled={true} />);
+      render(<TimeSelector {...defaultProps} disabled />);
 
       const button = screen.getByRole('button');
       fireEvent.click(button);
@@ -197,11 +181,7 @@ describe('TimeSelector', () => {
 
     it('should pass correct props to dialog', async () => {
       render(
-        <TimeSelector
-          hasTime={true}
-          dueTime='14:30'
-          onTimeChange={mockOnTimeChange}
-        />
+        <TimeSelector hasTime dueTime='14:30' onTimeChange={mockOnTimeChange} />
       );
 
       const button = screen.getByRole('button');
@@ -256,11 +236,7 @@ describe('TimeSelector', () => {
 
     it('should call onTimeChange when remove is clicked in dialog', async () => {
       render(
-        <TimeSelector
-          hasTime={true}
-          dueTime='14:30'
-          onTimeChange={mockOnTimeChange}
-        />
+        <TimeSelector hasTime dueTime='14:30' onTimeChange={mockOnTimeChange} />
       );
 
       const button = screen.getByRole('button');
@@ -292,7 +268,7 @@ describe('TimeSelector', () => {
 
   describe('Disabled state', () => {
     it('should be disabled when disabled prop is true', () => {
-      render(<TimeSelector {...defaultProps} disabled={true} />);
+      render(<TimeSelector {...defaultProps} disabled />);
 
       const button = screen.getByRole('button');
       expect(button).toBeDisabled();
@@ -314,7 +290,7 @@ describe('TimeSelector', () => {
 
     it('should not open dialog when disabled', async () => {
       const user = userEvent.setup();
-      render(<TimeSelector {...defaultProps} disabled={true} />);
+      render(<TimeSelector {...defaultProps} disabled />);
 
       const button = screen.getByRole('button');
       await user.click(button);
@@ -332,7 +308,7 @@ describe('TimeSelector', () => {
       let button = screen.getByRole('button');
       expect(button).not.toBeDisabled();
 
-      rerender(<TimeSelector {...defaultProps} disabled={true} />);
+      rerender(<TimeSelector {...defaultProps} disabled />);
 
       button = screen.getByRole('button');
       expect(button).toBeDisabled();
@@ -404,11 +380,7 @@ describe('TimeSelector', () => {
       expect(screen.getByText('時刻を設定')).toBeInTheDocument();
 
       rerender(
-        <TimeSelector
-          hasTime={true}
-          dueTime='18:00'
-          onTimeChange={mockOnTimeChange}
-        />
+        <TimeSelector hasTime dueTime='18:00' onTimeChange={mockOnTimeChange} />
       );
 
       expect(screen.getByText('18:00 まで')).toBeInTheDocument();
@@ -416,21 +388,13 @@ describe('TimeSelector', () => {
 
     it('should update when dueTime changes', () => {
       const { rerender } = render(
-        <TimeSelector
-          hasTime={true}
-          dueTime='10:00'
-          onTimeChange={mockOnTimeChange}
-        />
+        <TimeSelector hasTime dueTime='10:00' onTimeChange={mockOnTimeChange} />
       );
 
       expect(screen.getByText('10:00 まで')).toBeInTheDocument();
 
       rerender(
-        <TimeSelector
-          hasTime={true}
-          dueTime='20:00'
-          onTimeChange={mockOnTimeChange}
-        />
+        <TimeSelector hasTime dueTime='20:00' onTimeChange={mockOnTimeChange} />
       );
 
       expect(screen.getByText('20:00 まで')).toBeInTheDocument();
@@ -467,11 +431,7 @@ describe('TimeSelector', () => {
   describe('Edge cases', () => {
     it('should handle empty dueTime with hasTime true', () => {
       render(
-        <TimeSelector
-          hasTime={true}
-          dueTime=''
-          onTimeChange={mockOnTimeChange}
-        />
+        <TimeSelector hasTime dueTime='' onTimeChange={mockOnTimeChange} />
       );
 
       expect(screen.getByText('時刻を設定')).toBeInTheDocument();
@@ -479,11 +439,7 @@ describe('TimeSelector', () => {
 
     it('should handle whitespace dueTime', () => {
       render(
-        <TimeSelector
-          hasTime={true}
-          dueTime='   '
-          onTimeChange={mockOnTimeChange}
-        />
+        <TimeSelector hasTime dueTime='   ' onTimeChange={mockOnTimeChange} />
       );
 
       // Whitespace is truthy, shows formatted time
@@ -514,7 +470,7 @@ describe('TimeSelector', () => {
       edgeTimes.forEach(time => {
         const { rerender } = render(
           <TimeSelector
-            hasTime={true}
+            hasTime
             dueTime={time}
             onTimeChange={mockOnTimeChange}
           />

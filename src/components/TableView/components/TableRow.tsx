@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import type { TableRowProps } from '../types';
 import { isTaskWithColumn } from '../utils/tableHelpers';
 import { logger } from '../../../utils/logger';
@@ -8,6 +8,7 @@ import { logger } from '../../../utils/logger';
  *
  * 個別のタスク行を描画します。
  * ホバー効果とクリック処理を含みます。
+ * アクセシビリティ対応：キーボード操作、ARIA属性
  */
 export const TableRow: React.FC<TableRowProps> = ({
   task,
@@ -18,6 +19,17 @@ export const TableRow: React.FC<TableRowProps> = ({
   onTaskClick,
   renderCell,
 }) => {
+  // キーボードアクセシビリティ: Enter/Spaceでタスク詳細を開く
+  const handleKeyDown = useCallback(
+    (event: React.KeyboardEvent) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        onTaskClick(task);
+      }
+    },
+    [onTaskClick, task]
+  );
+
   // 型ガードチェック
   if (!isTaskWithColumn(task)) {
     logger.warn('Task is missing required column properties:', task);
@@ -27,6 +39,9 @@ export const TableRow: React.FC<TableRowProps> = ({
   return (
     <div
       key={task.id}
+      role='row'
+      tabIndex={0}
+      aria-label={`タスク: ${task.title}`}
       style={{
         gridTemplateColumns,
         display: 'grid',
@@ -45,9 +60,12 @@ export const TableRow: React.FC<TableRowProps> = ({
         e.currentTarget.style.backgroundColor = '';
       }}
       onClick={() => onTaskClick(task)}
+      onKeyDown={handleKeyDown}
     >
       {visibleColumns.map(column => (
-        <div key={column.id}>{renderCell(task, column.id)}</div>
+        <div key={column.id} role='cell'>
+          {renderCell(task, column.id)}
+        </div>
       ))}
     </div>
   );

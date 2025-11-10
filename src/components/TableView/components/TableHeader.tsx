@@ -7,6 +7,7 @@ import TableColumnManager from '../../TableColumnManager';
  *
  * テーブルのヘッダー行を描画します。
  * カラム名、タスク数、設定ボタンを含みます。
+ * アクセシビリティ対応：role='row'、role='columnheader'
  */
 export const TableHeader: React.FC<TableHeaderProps> = ({
   visibleColumns,
@@ -14,6 +15,7 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
   taskCount,
 }) => (
   <div
+    role='row'
     style={{
       gridTemplateColumns,
       display: 'grid',
@@ -27,10 +29,18 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
     }}
   >
     {visibleColumns.map(column => (
-      <div key={column.id} className='flex items-center gap-1'>
+      <div
+        key={column.id}
+        role='columnheader'
+        aria-sort='none'
+        className='flex items-center gap-1'
+      >
         <span className='font-bold text-sm'>{column.label}</span>
         {column.id === 'title' && (
-          <span className='ml-1 shrink-0 bg-neutral-100 text-zinc-900 text-xs px-1.5 py-0.5 rounded-full'>
+          <span
+            className='ml-1 shrink-0 bg-neutral-100 text-zinc-900 text-xs px-1.5 py-0.5 rounded-full'
+            aria-label={`${taskCount}件のタスク`}
+          >
             {taskCount}
           </span>
         )}

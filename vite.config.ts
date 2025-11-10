@@ -77,8 +77,53 @@ export default defineConfig(({ mode }) => ({
         },
         chunkFileNames: 'assets/js/[name]-[hash].js',
         entryFileNames: 'assets/js/[name]-[hash].js',
-        // manualChunks無効化: use-sync-external-store解決のため全て1バンドルに統合
-        // manualChunks: undefined, // デフォルトの自動分割を使用
+        // Manual chunks for GraphQL and heavy dependencies
+        manualChunks: id => {
+          // Apollo Client chunk (GraphQL client)
+          if (id.includes('@apollo/client') || id.includes('@apollo')) {
+            return 'apollo-client';
+          }
+          // GraphQL core chunk
+          if (id.includes('graphql') && !id.includes('@apollo')) {
+            return 'graphql-core';
+          }
+          // Lexical editor chunk (heavy rich text editor)
+          if (id.includes('lexical') || id.includes('@lexical')) {
+            return 'lexical-editor';
+          }
+          // DnD Kit chunk (drag and drop)
+          if (id.includes('@dnd-kit')) {
+            return 'dnd-kit';
+          }
+          // Radix UI chunk (component library)
+          if (id.includes('@radix-ui')) {
+            return 'radix-ui';
+          }
+          // i18next chunk (internationalization) - split from vendor
+          if (id.includes('i18next') || id.includes('react-i18next')) {
+            return 'i18n';
+          }
+          // date-fns chunk (date utilities) - split from vendor
+          if (id.includes('date-fns')) {
+            return 'date-utils';
+          }
+          // react-day-picker chunk (calendar component)
+          if (id.includes('react-day-picker')) {
+            return 'calendar';
+          }
+          // React core libraries
+          if (
+            id.includes('react') &&
+            !id.includes('react-day-picker') &&
+            !id.includes('react-router')
+          ) {
+            return 'react-vendor';
+          }
+          // Node modules (other vendors)
+          if (id.includes('node_modules')) {
+            return 'vendor';
+          }
+        },
       },
     },
   },
@@ -99,6 +144,7 @@ export default defineConfig(({ mode }) => ({
       'react-i18next',
       'i18next',
       'i18next-browser-languagedetector',
+      'i18next-http-backend',
     ],
   },
   css: {

@@ -102,7 +102,7 @@ const collectedErrors: Array<{
 // コンソールエラーのインターセプト
 const originalConsoleError = console.error;
 console.error = (...args: any[]) => {
-  const message = args.map((arg) => String(arg)).join(' ');
+  const message = args.map(arg => String(arg)).join(' ');
 
   // React の警告など、意図的なエラーは除外
   const isExpectedError =
@@ -132,19 +132,24 @@ globalThis.addEventListener?.('error', (event: ErrorEvent) => {
 });
 
 // 未処理のPromise拒否をキャッチ
-globalThis.addEventListener?.('unhandledrejection', (event: PromiseRejectionEvent) => {
-  collectedErrors.push({
-    type: 'promise',
-    message: String(event.reason),
-    timestamp: Date.now(),
-  });
-});
+globalThis.addEventListener?.(
+  'unhandledrejection',
+  (event: PromiseRejectionEvent) => {
+    collectedErrors.push({
+      type: 'promise',
+      message: String(event.reason),
+      timestamp: Date.now(),
+    });
+  }
+);
 
 // テスト終了時にエラーレポート出力
 if (typeof afterAll !== 'undefined') {
   afterAll(() => {
     if (collectedErrors.length > 0) {
-      console.log('\n========== 収集されたエラー（Claude Code検出用） ==========');
+      console.log(
+        '\n========== 収集されたエラー（Claude Code検出用） =========='
+      );
       collectedErrors.forEach((error, index) => {
         console.log(`\n[${index + 1}] ${error.type.toUpperCase()} エラー`);
         console.log(`時刻: ${new Date(error.timestamp).toISOString()}`);
@@ -153,7 +158,9 @@ if (typeof afterAll !== 'undefined') {
           console.log(`スタックトレース:\n${error.stack}`);
         }
       });
-      console.log('=========================================================\n');
+      console.log(
+        '=========================================================\n'
+      );
     }
   });
 }

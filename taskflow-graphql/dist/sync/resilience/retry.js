@@ -1,4 +1,4 @@
-import { retryAsync, } from '@lifeomic/attempt';
+import { retry as retryAsync } from '@lifeomic/attempt';
 /**
  * Retry - リトライ機構
  *
@@ -44,7 +44,7 @@ export class Retry {
             delay: initialDelayMs,
             factor: backoffStrategy === 'exponential' ? multiplier : 1,
             maxDelay: maxDelayMs,
-            jitter: jitter ? 'full' : false,
+            jitter: jitter,
             handleError: (error, context) => {
                 const typedError = error instanceof Error ? error : new Error(String(error));
                 // リトライ不可能なエラーの場合は即座に失敗

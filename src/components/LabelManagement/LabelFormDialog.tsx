@@ -61,10 +61,10 @@ const LabelFormDialog: React.FC<LabelFormDialogProps> = ({
   const createPreviewLabel = useCallback(
     (formValues: Record<string, unknown>): Label => ({
       id: 'preview',
-      name: String(formValues['name'] || 'ラベル名'),
+      name: String(formValues['name'] || t('label.labelName')),
       color: String(formValues['color'] || '#0969da'),
     }),
-    []
+    [t]
   );
 
   // Zodバリデーション + カスタムバリデーション（重複チェック）
@@ -105,9 +105,9 @@ const LabelFormDialog: React.FC<LabelFormDialogProps> = ({
           );
         });
 
-        return isDuplicate ? '同じ名前のラベルが既に存在します' : null;
+        return isDuplicate ? t('label.duplicateName') : null;
       },
-    [getAllLabels, mode, label]
+    [getAllLabels, mode, label, t]
   );
 
   // フィールド設定
@@ -118,7 +118,7 @@ const LabelFormDialog: React.FC<LabelFormDialogProps> = ({
         id: 'preview',
         name: 'preview',
         type: 'custom',
-        label: 'プレビュー',
+        label: t('label.preview'),
         value: '',
         customComponent: null, // 後で動的に設定
         onChange: () => {}, // プレビューは読み取り専用
@@ -128,8 +128,8 @@ const LabelFormDialog: React.FC<LabelFormDialogProps> = ({
         id: 'name',
         name: 'name',
         type: 'text',
-        label: 'ラベル名',
-        placeholder: 'ラベル名を入力',
+        label: t('label.labelName'),
+        placeholder: t('label.labelNamePlaceholder'),
         value: initialValues.name,
         autoFocus: true,
         validation: {
@@ -145,7 +145,7 @@ const LabelFormDialog: React.FC<LabelFormDialogProps> = ({
         id: 'color',
         name: 'color',
         type: 'color-selector',
-        label: '色',
+        label: t('label.color'),
         value: initialValues.color,
         onChange: () => {}, // フォームで管理
       },
@@ -162,7 +162,7 @@ const LabelFormDialog: React.FC<LabelFormDialogProps> = ({
         id: 'boardId',
         name: 'boardId',
         type: 'select',
-        label: '作成先ボード',
+        label: t('label.targetBoard'),
         value: initialValues.boardId,
         options: boardOptions,
         onChange: () => {}, // フォームで管理
@@ -176,6 +176,7 @@ const LabelFormDialog: React.FC<LabelFormDialogProps> = ({
     mode,
     boardState.boards,
     validateLabelName,
+    t,
   ]);
 
   // 統合フォーム管理
@@ -220,10 +221,10 @@ const LabelFormDialog: React.FC<LabelFormDialogProps> = ({
 
         onClose();
       } catch (_error) {
-        form.setError('name', 'ラベルの保存に失敗しました');
+        form.setError('name', t('label.saveFailed'));
       }
     },
-    [onSave, onClose, form]
+    [onSave, onClose, form, t]
   );
 
   // キャンセル処理
@@ -250,12 +251,12 @@ const LabelFormDialog: React.FC<LabelFormDialogProps> = ({
   // ダイアログアクション
   const actions = [
     {
-      label: 'キャンセル',
+      label: t('common.cancel'),
       variant: 'outline' as const,
       onClick: handleCancel,
     },
     {
-      label: mode === 'create' ? '作成' : '更新',
+      label: mode === 'create' ? t('common.create') : t('common.update'),
       variant: 'default' as const,
       onClick: form.handleSubmit(handleSubmit),
       disabled:
@@ -269,7 +270,7 @@ const LabelFormDialog: React.FC<LabelFormDialogProps> = ({
     <UnifiedDialog
       isOpen={isOpen}
       onClose={onClose}
-      title={mode === 'create' ? 'ラベルを作成' : 'ラベルを編集'}
+      title={mode === 'create' ? t('label.createLabel') : t('label.editLabel')}
       variant='modal'
       size='medium'
       actions={actions}

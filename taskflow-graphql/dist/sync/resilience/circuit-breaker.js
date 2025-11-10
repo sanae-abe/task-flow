@@ -299,7 +299,8 @@ export class CircuitBreakerManager {
         if (name) {
             const breaker = this.breakers.get(name);
             if (breaker) {
-                breaker.clearStats();
+                // clearStats() is not available in all opossum versions
+                // Reset by deleting and reinitializing stats
             }
             this.stats.delete(name);
             this.initStats(name);

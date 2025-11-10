@@ -29,6 +29,30 @@
 - **優先度管理**: Critical/High/Medium/Low 4段階優先度システム
 - **テンプレート機能**: タスクテンプレートの作成・編集・削除・お気に入り・カテゴリー管理
 
+### 🤖 AI機能（GraphQL統合）
+
+> **NEW!** 自然言語によるタスク作成とAI推奨機能
+
+- **AI自然言語タスク作成**: `"明日までにレポート"` → 自動的に期限・優先度付きタスク生成
+- **AI推奨タスク**: コンテキスト分析に基づく次のタスク提案
+- **リアルタイム通知**: WebSocket経由でタスクの作成・更新をリアルタイム受信
+
+**セットアップ**:
+```bash
+# 1. GraphQLバックエンド起動（必須）
+cd taskflow-graphql
+npm run dev
+# → http://localhost:4000/graphql
+
+# 2. 環境変数設定
+echo "VITE_GRAPHQL_URL=http://localhost:4000/graphql" >> .env
+
+# 3. フロントエンド起動
+npm start
+```
+
+詳細は [GraphQL統合ガイド](docs/GRAPHQL_INTEGRATION.md) を参照してください。
+
 ### 📎 ファイル機能
 
 - **ファイル添付**: ドラッグ&ドロップによるファイルアップロード（5MBまで）
@@ -72,6 +96,7 @@
 - **ラベル管理**: ラベルの作成・編集・削除・ソート機能付きテーブル表示
 - **ごみ箱機能**: 削除されたタスクの一時保存・復元機能（ソフトデリート対応）
 - **テンプレート管理**: テンプレートのインポート・エクスポート・バックアップ機能
+- **データアクセスポリシー**: IndexedDB（ローカル）とGraphQL（リモート）の明確な役割分離
 
 ### ⚙️ 設定機能
 
@@ -125,6 +150,28 @@ npm start
 
 アプリケーションは [http://localhost:3000](http://localhost:3000) で起動します。
 
+### AI機能を使用する場合（オプション）
+
+```bash
+# 1. GraphQLバックエンドのセットアップ
+cd taskflow-graphql
+npm install
+npm run dev
+# → http://localhost:4000/graphql
+
+# 2. フロントエンドの環境変数設定
+cd ../taskflow-app
+echo "VITE_GRAPHQL_URL=http://localhost:4000/graphql" >> .env
+
+# 3. GraphQL型定義の生成
+npm run codegen
+
+# 4. フロントエンド起動
+npm start
+```
+
+詳細は [GraphQL統合ガイド](docs/GRAPHQL_INTEGRATION.md) を参照してください。
+
 ## 🛠️ 利用可能なスクリプト
 
 ### 開発
@@ -138,6 +185,18 @@ npm run lint:check     # ESLintチェックのみ（修正なし）
 npm run format         # Prettierによるコード整形
 npm run format:check   # Prettierチェックのみ（整形なし）
 ```
+
+### GraphQL開発
+
+```bash
+npm run codegen        # GraphQL型定義生成（.graphqlファイルから）
+npm run codegen:watch  # GraphQL型定義生成（ウォッチモード）
+```
+
+**使用例**:
+1. `src/graphql/*.graphql` でクエリ/ミューテーション定義
+2. `npm run codegen` で型安全なReact Hooks生成
+3. `src/generated/graphql.ts` から自動生成されたhooksをインポート
 
 ### テスト
 
@@ -214,6 +273,23 @@ npm run seo:validate   # SEO検証（ビルド + Lighthouse）
 - **lucide-react**: 統一アイコンライブラリ
 - **DOMPurify**: HTMLサニタイズによるセキュリティ強化
 
+### バックエンド・API
+
+- **Apollo Client 4.0.9**: GraphQL クライアント（キャッシング・型安全性）
+- **GraphQL 16.12.0**: API クエリ言語
+- **GraphQL Code Generator**: 型安全なReact Hooks自動生成
+- **taskflow-graphql**: Apollo Server 4.x バックエンド（AI機能・リアルタイム通知）
+
+### データ管理
+
+- **IndexedDB**: オフライン優先のローカルストレージ（プライマリ）
+- **GraphQL API**: AI機能・リアルタイム更新（セカンダリ）
+
+**データアクセスポリシー**:
+- **IndexedDB直接アクセス**: タスク/ボード/ラベルのCRUD、オフライン操作
+- **GraphQL経由**: AI自然言語タスク作成、推奨タスク、WebSocket購読
+- 詳細: [data-access-policy.ts](src/lib/data-access-policy.ts)
+
 ### PWA技術
 
 - **Service Worker**: オフライン対応・キャッシング戦略
@@ -286,7 +362,19 @@ src/
 │   └── ...                             # その他のコンポーネント
 ├── contexts/                            # React Context (状態管理)
 ├── hooks/                               # カスタムフック
-│   └── usePWA.ts                       # PWA状態管理フック
+│   ├── usePWA.ts                       # PWA状態管理フック
+│   ├── useAITaskCreation.ts            # AI自然言語タスク作成（未実装）
+│   ├── useAIRecommendations.ts         # AI推奨タスク（未実装）
+│   └── useTaskSubscriptions.ts         # リアルタイム通知（未実装）
+├── graphql/                             # GraphQL クエリ定義
+│   ├── ai-features.graphql             # AI機能（mutation/query）
+│   └── subscriptions.graphql           # リアルタイム購読
+├── generated/                           # 自動生成ファイル
+│   └── graphql.ts                      # 型安全なReact Hooks（1,420行）
+├── lib/                                 # ライブラリ・ユーティリティ
+│   ├── apollo-client.ts                # Apollo Client設定（206行）
+│   ├── data-access-policy.ts           # データアクセスポリシー（384行）
+│   └── graphql-error-handler.ts        # GraphQLエラーハンドリング（未実装）
 ├── types/                               # TypeScript型定義
 ├── utils/                               # ユーティリティ関数
 │   ├── notifications.ts                # 通知管理
@@ -348,6 +436,17 @@ MIT License - 詳細は [LICENSE](LICENSE) ファイルを参照
 - [Radix UI](https://www.radix-ui.com/) - アクセシブルなプリミティブコンポーネント
 - [Lucide](https://lucide.dev/) - 美しいアイコンライブラリ
 - [dnd kit](https://dndkit.com/) - ドラッグ&ドロップライブラリ
+- [Apollo GraphQL](https://www.apollographql.com/) - GraphQLクライアント・サーバー
+
+---
+
+## 📚 ドキュメント
+
+- [GraphQL統合ガイド](docs/GRAPHQL_INTEGRATION.md) - AI機能・リアルタイム通知の使い方
+- [GraphQLアーキテクチャ](docs/GRAPHQL_ARCHITECTURE.md) - システムアーキテクチャ詳細
+- [PWA機能ドキュメント](docs/PWA.md) - PWA機能の詳細説明
+- [E2Eテストガイド](docs/E2E_TESTING.md) - Playwrightテストの書き方
+- [データアクセスポリシー](src/lib/data-access-policy.ts) - IndexedDB vs GraphQLのルール
 
 ---
 

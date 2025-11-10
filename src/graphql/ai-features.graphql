@@ -1,0 +1,128 @@
+# AI Features - GraphQL Operations
+#
+# Type-safe queries and mutations for AI-powered task management.
+# These operations interact with the backend GraphQL API for:
+# - Natural language task creation
+# - AI task recommendations
+# - Intelligent task suggestions
+#
+# Important:
+# - All AI-generated content MUST be sanitized with DOMPurify (XSS protection)
+# - Results are synced to IndexedDB (Data Access Policy compliance)
+# - Network-only fetch policy for fresh AI recommendations
+#
+# @see /Users/sanae.abe/workspace/taskflow-app/src/lib/apollo-client.ts
+# @see /Users/sanae.abe/workspace/taskflow-app/src/lib/data-access-policy.ts
+
+# ===========================
+# Mutations
+# ===========================
+
+# Create task from natural language input
+#
+# Example: "明日までにレポート" → Task with dueDate, priority, etc.
+#
+# Security: AI-generated title/description sanitized with DOMPurify
+#
+# Usage:
+#   const [createTask] = useMutation(CREATE_TASK_FROM_NL);
+#   const result = await createTask({
+#     variables: { query: '明日までにレポート' }
+#   });
+#   await addTask(result.data.createTaskFromNaturalLanguage);
+mutation CreateTaskFromNaturalLanguage($query: String!, $context: AIContextInput) {
+  createTaskFromNaturalLanguage(query: $query, context: $context) {
+    id
+    title
+    description
+    priority
+    dueDate
+    dueTime
+    labels {
+      id
+      name
+      color
+    }
+    columnId
+    boardId
+    estimatedDuration
+    status
+    position
+    createdAt
+    updatedAt
+  }
+}
+
+# ===========================
+# Queries
+# ===========================
+
+# Get AI-suggested tasks based on context
+#
+# Context includes: current board, time of day, recent activity
+# Returns: Suggested tasks based on AI analysis
+#
+# Fetch Policy: network-only (always fresh recommendations)
+#
+# Usage:
+#   const { data, loading } = useQuery(AI_SUGGESTED_TASKS, {
+#     variables: { context: { boardId: 'board-1' } }
+#   });
+query GetAISuggestedTasks($context: AIContextInput!) {
+  aiSuggestedTasks(context: $context) {
+    id
+    title
+    description
+    priority
+    status
+    dueDate
+    dueTime
+    labels {
+      id
+      name
+      color
+    }
+    estimatedDuration
+    isOverdue
+    completionPercentage
+  }
+}
+
+# Get next recommended task to work on
+#
+# AI analyzes: priority, deadlines, dependencies, user patterns
+# Returns: Single highest-priority task recommendation (nullable if no tasks)
+#
+# Fetch Policy: network-only (real-time prioritization)
+#
+# Usage:
+#   const { data } = useQuery(NEXT_RECOMMENDED_TASK, {
+#     variables: { boardId: 'board-1' }
+#   });
+query NextRecommendedTask($boardId: ID!) {
+  nextRecommendedTask(boardId: $boardId) {
+    id
+    title
+    description
+    priority
+    status
+    dueDate
+    dueTime
+    labels {
+      id
+      name
+      color
+    }
+    columnId
+    boardId
+    estimatedDuration
+    isOverdue
+    completionPercentage
+    subtasks {
+      id
+      title
+      completed
+      position
+    }
+  }
+}

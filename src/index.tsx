@@ -71,11 +71,13 @@ root.render(
 // Error Boundaryのフォールバックコンポーネント
 function ErrorFallback() {
   return (
-    <div style={{
-      padding: '2rem',
-      textAlign: 'center',
-      fontFamily: 'system-ui, sans-serif'
-    }}>
+    <div
+      style={{
+        padding: '2rem',
+        textAlign: 'center',
+        fontFamily: 'system-ui, sans-serif',
+      }}
+    >
       <h1>エラーが発生しました</h1>
       <p>申し訳ございません。予期しないエラーが発生しました。</p>
       <p>ページを再読み込みしてください。</p>
@@ -85,7 +87,7 @@ function ErrorFallback() {
           marginTop: '1rem',
           padding: '0.5rem 1rem',
           fontSize: '1rem',
-          cursor: 'pointer'
+          cursor: 'pointer',
         }}
       >
         ページを再読み込み

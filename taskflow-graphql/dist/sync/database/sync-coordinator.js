@@ -86,6 +86,8 @@ export class SyncCoordinator extends EventEmitter {
     };
     constructor(options) {
         super();
+        // Validate configuration before initializing
+        this.validateConfig(options.config);
         this.config = options.config;
         this.fileWatcher = options.fileWatcher;
         this.fileSystem = options.fileSystem;
@@ -114,6 +116,27 @@ export class SyncCoordinator extends EventEmitter {
         }, 'SyncCoordinator initialized');
     }
     /**
+     * 設定を検証します
+     */
+    validateConfig(config) {
+        // Validate todoPath is non-empty string
+        if (!config.todoPath || typeof config.todoPath !== 'string' || config.todoPath.trim() === '') {
+            throw new Error('Invalid config: todoPath is required');
+        }
+        // Validate debounceMs >= 0
+        if (typeof config.debounceMs !== 'number' || config.debounceMs < 0) {
+            throw new Error('Invalid config: debounceMs must be >= 0');
+        }
+        // Validate throttleMs >= 0
+        if (typeof config.throttleMs !== 'number' || config.throttleMs < 0) {
+            throw new Error('Invalid config: throttleMs must be >= 0');
+        }
+        // Validate maxFileSizeMB > 0
+        if (typeof config.maxFileSizeMB !== 'number' || config.maxFileSizeMB <= 0) {
+            throw new Error('Invalid config: maxFileSizeMB must be > 0');
+        }
+    }
+    /**
      * Circuit Breakerを設定します
      */
     setupCircuitBreakers() {
@@ -129,7 +152,7 @@ export class SyncCoordinator extends EventEmitter {
             resetTimeoutMs: 30000,
             fallback: error => {
                 logger.error({ err: error }, 'File read circuit breaker triggered');
-                return '';
+                throw error; // Propagate error instead of returning empty string
             },
         });
         // File write operations
@@ -254,6 +277,7 @@ export class SyncCoordinator extends EventEmitter {
             syncDirection: 'file_to_app',
             operation: 'syncFileToApp',
         });
+        this.emit('sync-start', { direction: 'file_to_app', timestamp: startTime });
         const history = {
             id: syncId,
             startedAt: startTime,
@@ -282,6 +306,18 @@ export class SyncCoordinator extends EventEmitter {
             const hasChanges = !this.diffDetector.isIdentical(this.lastFileContent, fileContent);
             if (!hasChanges && this.lastFileContent !== '') {
                 logger.debug('No changes detected in TODO.md, skipping sync');
+                // Still update statistics and history for skipped syncs
+                this.statistics.totalSyncs++;
+                this.statistics.successfulSyncs++;
+                this.statistics.lastSyncAt = new Date();
+                this.statistics.lastSuccessfulSyncAt = new Date();
+                history.success = true;
+                history.completedAt = new Date();
+                history.durationMs = history.completedAt.getTime() - startTime.getTime();
+                this.updateAverageDuration(history.durationMs);
+                this.syncHistory.push(history);
+                this.emit('sync-completed', history);
+                this.stateManager.markSyncComplete(true);
                 this.isSyncing = false;
                 return;
             }
@@ -314,10 +350,10 @@ export class SyncCoordinator extends EventEmitter {
                         if (baseVersion) {
                             // Perform 3-way merge
                             const mergeResult = this.threeWayMerger.merge(baseVersion.task, newTask, currentTask);
-                            if (mergeResult.success && mergeResult.mergedTask) {
+                            if (!mergeResult.hasConflicts && mergeResult.mergedTask) {
                                 mergedTasks.push(mergeResult.mergedTask);
                             }
-                            else if (mergeResult.conflictingFields.length > 0) {
+                            else if (mergeResult.conflicts.length > 0) {
                                 // Create conflict object
                                 const conflict = {
                                     id: this.generateSyncId(),
@@ -622,16 +658,38 @@ export class SyncCoordinator extends EventEmitter {
                 logger.debug('TODO.md does not exist, skipping backup');
                 return null;
             }
-            const content = await fs.readFile(validatedPath, 'utf-8');
+            // Use FileSystem if available, fallback to fs
+            let content;
+            if (this.fileSystem) {
+                content = await this.fileSystem.readFile(validatedPath);
+            }
+            else {
+                content = await fs.readFile(validatedPath, 'utf-8');
+            }
             const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
             const backupPath = `${validatedPath}.backup.${timestamp}`;
-            await fs.writeFile(backupPath, content, 'utf-8');
-            const stats = await fs.stat(backupPath);
+            // Use FileSystem if available, fallback to fs
+            if (this.fileSystem) {
+                await this.fileSystem.writeFile(backupPath, content);
+            }
+            else {
+                await fs.writeFile(backupPath, content, 'utf-8');
+            }
+            // Get file stats for size
+            let size;
+            if (this.fileSystem) {
+                const fileStats = await this.fileSystem.stat(backupPath);
+                size = fileStats.size;
+            }
+            else {
+                const stats = await fs.stat(backupPath);
+                size = stats.size;
+            }
             const backup = {
                 id: this.generateSyncId(),
                 path: backupPath,
                 createdAt: new Date(),
-                size: stats.size,
+                size,
                 sourceHash: this.calculateHash(content),
                 reason,
             };
@@ -712,7 +770,7 @@ export class SyncCoordinator extends EventEmitter {
     /**
      * 競合を解決します
      */
-    resolveConflicts(conflicts, fileTasks, appTasks) {
+    resolveConflicts(conflicts, fileTasks, _appTasks) {
         const resolvedTasks = [...fileTasks];
         for (const conflict of conflicts) {
             const index = resolvedTasks.findIndex(t => t.title === conflict.fileVersion.title);

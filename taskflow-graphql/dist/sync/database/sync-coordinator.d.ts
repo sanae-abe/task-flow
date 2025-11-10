@@ -85,6 +85,10 @@ export declare class SyncCoordinator extends EventEmitter {
     private statistics;
     constructor(options: SyncCoordinatorOptions);
     /**
+     * 設定を検証します
+     */
+    private validateConfig;
+    /**
      * Circuit Breakerを設定します
      */
     private setupCircuitBreakers;

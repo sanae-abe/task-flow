@@ -4,7 +4,7 @@ import {
   pointerWithin,
   type CollisionDetection,
 } from '@dnd-kit/core';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useBoard } from '../contexts/BoardContext';
@@ -23,6 +23,9 @@ const KanbanBoard: React.FC = () => {
   const { moveTask } = useTask();
   const { setSortOption, openTaskDetail } = useUI();
 
+  // ドラッグ状態のライブアナウンス用
+  const [dragAnnouncement, setDragAnnouncement] = useState<string>('');
+
   const {
     activeTask,
     sensors,
@@ -40,6 +43,17 @@ const KanbanBoard: React.FC = () => {
     onMoveTask: moveTask,
     onSortToManual: () => setSortOption('manual'),
   });
+
+  // ドラッグ開始時のアナウンス
+  useEffect(() => {
+    if (activeTask) {
+      setDragAnnouncement(
+        `${activeTask.title}をドラッグ中です。移動先のカラムにドロップしてください。`
+      );
+    } else {
+      setDragAnnouncement('');
+    }
+  }, [activeTask]);
 
   if (!currentBoard) {
     return (
@@ -81,6 +95,16 @@ const KanbanBoard: React.FC = () => {
 
   return (
     <div className='bg-neutral-100 w-screen'>
+      {/* アクセシビリティ: ドラッグ操作のライブリージョン */}
+      <div
+        role='status'
+        aria-live='assertive'
+        aria-atomic='true'
+        className='sr-only'
+      >
+        {dragAnnouncement}
+      </div>
+
       <DndContext
         sensors={sensors}
         collisionDetection={collisionDetectionStrategy}
@@ -89,6 +113,8 @@ const KanbanBoard: React.FC = () => {
         onDragEnd={handleDragEnd}
       >
         <div
+          role='region'
+          aria-label='カンバンボード'
           className='flex overflow-auto gap-4 p-5 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100'
           style={{
             willChange: 'scroll-position',

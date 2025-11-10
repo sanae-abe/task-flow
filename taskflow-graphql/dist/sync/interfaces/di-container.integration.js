@@ -11,6 +11,7 @@ import { MockFileSystem } from '../file-system/mock-file-system';
 import { MarkdownParser } from '../parsers/markdown-parser';
 import { MarkdownSerializer } from '../parsers/markdown-serializer';
 import { PathValidator } from '../security/path-validator';
+import { createFileWatcher } from '../file-system/file-watcher';
 // ========================================
 // Production Container Setup
 // ========================================
@@ -38,9 +39,8 @@ export function setupProductionContainer(workspacePath) {
     // ========================================
     // PathValidator - パス検証
     container.registerSingleton('pathValidator', () => {
-        const logger = container.resolve('logger');
-        return new PathValidator(workspacePath, logger);
-    }, ['logger']);
+        return new PathValidator(workspacePath);
+    });
     // ========================================
     // パフォーマンス（Singleton）
     // ========================================
@@ -59,11 +59,14 @@ export function setupProductionContainer(workspacePath) {
         const logger = container.resolve('logger');
         const validator = container.resolve('pathValidator');
         // パスを検証
-        if (!validator.isValidPath(basePath)) {
+        try {
+            validator.validate(basePath);
+        }
+        catch (error) {
             throw new Error(`Invalid path: ${basePath}`);
         }
         logger.debug({ basePath }, 'Creating FileSystem instance');
-        return new RealFileSystem(basePath);
+        return new RealFileSystem();
     });
     // ========================================
     // パーサー（Singleton）
@@ -80,6 +83,36 @@ export function setupProductionContainer(workspacePath) {
         logger.info('MarkdownSerializer initialized');
         return new MarkdownSerializer();
     }, ['logger']);
+    // ========================================
+    // ファイル監視（Factory）
+    // ========================================
+    // FileWatcher - TODO.mdファイル監視
+    // パスとオプションごとに異なるウォッチャーインスタンスを作成
+    container.registerFactory('fileWatcher', (filePath, options) => {
+        const logger = container.resolve('logger');
+        // デフォルトSyncConfig
+        const defaultConfig = {
+            todoPath: filePath,
+            direction: 'bidirectional',
+            strategy: 'three_way_merge',
+            conflictResolution: 'merge',
+            debounceMs: 300,
+            throttleMs: 1000,
+            maxFileSizeMB: 5,
+            maxTasks: 1000,
+            webhooksEnabled: false,
+            autoBackup: true,
+            backupRetentionDays: 7,
+            dryRun: false,
+        };
+        const watcherOptions = {
+            filePath,
+            config: defaultConfig,
+            ...options,
+        };
+        logger.info({ filePath, options }, 'Creating FileWatcher instance');
+        return createFileWatcher(watcherOptions);
+    });
     // ========================================
     // 同期サービス（Singleton）
     // ========================================
@@ -307,7 +340,48 @@ export function exampleDiagnostics() {
     });
 }
 /**
- * Example 6: Error Handling in Integration
+ * Example 6: FileWatcher Integration
+ */
+export async function exampleFileWatcherIntegration() {
+    const container = setupProductionContainer('/workspace/tasks');
+    // FileWatcherを作成（ファクトリー経由）
+    const todoPath = '/workspace/tasks/TODO.md';
+    const watcher = container.resolveFactory('fileWatcher', todoPath, {
+        debounceMs: 500,
+        throttleMs: 2000,
+        maxFileSizeMB: 10,
+    });
+    // イベントハンドラを登録
+    watcher.on('change', async (event) => {
+        const logger = container.resolve('logger');
+        logger.info({ event }, 'File changed, triggering sync');
+        // 変更を同期サービスに通知
+        const syncService = container.resolve('syncService');
+        await syncService.syncFromFile(event.path);
+    });
+    watcher.on('add', async (event) => {
+        const logger = container.resolve('logger');
+        logger.info({ event }, 'File added');
+    });
+    watcher.on('unlink', async (event) => {
+        const logger = container.resolve('logger');
+        logger.warn({ event }, 'File deleted');
+    });
+    watcher.on('error', (event) => {
+        const logger = container.resolve('logger');
+        logger.error({ error: event.error }, 'FileWatcher error occurred');
+    });
+    // 監視開始
+    await watcher.start();
+    console.log('FileWatcher started, monitoring:', todoPath);
+    // 統計情報を確認
+    const stats = watcher.getStats();
+    console.log('Watcher statistics:', stats);
+    // クリーンアップ（アプリケーション終了時）
+    // await watcher.dispose();
+}
+/**
+ * Example 7: Error Handling in Integration
  */
 export async function exampleErrorHandling() {
     const container = setupProductionContainer('/workspace');

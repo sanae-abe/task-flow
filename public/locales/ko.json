@@ -723,6 +723,17 @@
       "networkError": "네트워크 오류가 발생했습니다",
       "taskCreationFailed": "작업 생성 실패",
       "unexpectedError": "예기치 않은 오류가 발생했습니다"
+    },
+    "recommendations": {
+      "title": "AI 추천",
+      "description": "AI가 다음에 작업해야 할 작업을 제안합니다",
+      "refresh": "추천 새로고침",
+      "loading": "추천 로딩 중...",
+      "errorTitle": "추천 로딩 실패",
+      "noRecommendations": "사용 가능한 추천이 없습니다",
+      "noRecommendationsHint": "모든 작업이 완료되었거나 새 작업을 생성하세요",
+      "viewTask": "작업 \"{{title}}\" 보기",
+      "aiReasoning": "AI 우선순위 분석을 기반으로 추천됨"
     }
   }
 }

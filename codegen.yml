@@ -1,0 +1,89 @@
+# GraphQL Code Generator Configuration
+#
+# Generates TypeScript types from GraphQL schema and operations.
+# This ensures type-safe GraphQL queries/mutations for AI features.
+#
+# Schema Source: Backend GraphQL server at http://localhost:4000/graphql
+# Output: src/generated/graphql.ts
+#
+# Usage:
+#   npm run codegen        - Generate types once
+#   npm run codegen:watch  - Watch mode for development
+#
+# Important:
+#   - DO NOT run codegen until backend BE-1 is complete
+#   - Backend server must be running at http://localhost:4000/graphql
+#   - Generated types are committed to version control for type safety
+
+schema: '../taskflow-graphql/src/schema/schema.graphql'
+
+documents:
+  - 'src/graphql/**/*.graphql'
+
+generates:
+  src/generated/graphql.ts:
+    plugins:
+      # Core TypeScript type generation
+      - typescript
+
+      # GraphQL operation types (Query, Mutation, Subscription)
+      - typescript-operations
+
+      # React Apollo hooks (useQuery, useMutation, useSubscription)
+      - typescript-react-apollo
+
+    config:
+      # TypeScript strict mode compatibility
+      strictScalars: true
+
+      # Use React 19 hooks
+      withHooks: true
+
+      # Generate custom React Apollo hooks
+      withComponent: false
+      withHOC: false
+
+      # Optimize imports for tree-shaking
+      dedupeFragments: true
+
+      # Skip typename for cleaner types
+      skipTypename: false
+
+      # Scalars mapping (Date handling)
+      scalars:
+        DateTime: string
+        Date: string
+        JSON: Record<string, unknown>
+
+      # Naming conventions (consistent with project)
+      namingConvention:
+        typeNames: pascal-case#pascalCase
+        enumValues: upper-case#upperCase
+        transformUnderscore: true
+
+      # Import @apollo/client from project dependency
+      # Use correct React hooks import path
+      reactApolloVersion: 4
+      withRefetchFn: true
+
+      # Fix import paths for Apollo Client 4
+      apolloClientPath: '@apollo/client/react'
+
+      # Generate immutable types
+      immutableTypes: true
+
+      # Add eslint-disable comments to generated file
+      addDocBlocks: true
+
+      # Avoid 'any' types
+      avoidOptionals:
+        field: false
+        inputValue: false
+        object: false
+        defaultValue: false
+
+# Watch mode configuration (development)
+watch: true
+
+# Require GraphQL schema to be available
+overwrite: true

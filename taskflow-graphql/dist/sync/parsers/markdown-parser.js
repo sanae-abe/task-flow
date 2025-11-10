@@ -141,20 +141,36 @@ export class MarkdownParser {
     parseSections(lines, startLine) {
         const sections = [];
         const sectionStack = [];
+        // ワンパス最適化: 見出し位置を事前収集（O(n)）
+        const headingIndices = [];
         for (let i = startLine; i < lines.length; i++) {
+            const match = lines[i].match(this.HEADING_PATTERN);
+            if (match) {
+                headingIndices.push({ index: i, level: match[1].length });
+            }
+        }
+        // 各セクションを処理（O(n)）
+        for (let hi = 0; hi < headingIndices.length; hi++) {
+            const i = headingIndices[hi].index;
             const line = lines[i];
             const match = line.match(this.HEADING_PATTERN);
-            if (!match)
-                continue;
             const level = match[1].length;
             const name = sanitizer.sanitizeSection(match[2]);
-            // セクションの終了行を計算（次のセクションまで、またはファイル終端）
+            // 終了行を計算（次の同レベル以上の見出しまで）
             let endLine = lines.length - 1;
-            for (let j = i + 1; j < lines.length; j++) {
-                const nextMatch = lines[j].match(this.HEADING_PATTERN);
-                if (nextMatch && nextMatch[1].length <= level) {
-                    endLine = j - 1;
-                    break;
+            if (hi + 1 < headingIndices.length) {
+                const nextHeading = headingIndices[hi + 1];
+                if (nextHeading.level <= level) {
+                    endLine = nextHeading.index - 1;
+                }
+                else {
+                    // 次が子セクション: 次の同レベル以上を探す
+                    for (let hj = hi + 2; hj < headingIndices.length; hj++) {
+                        if (headingIndices[hj].level <= level) {
+                            endLine = headingIndices[hj].index - 1;
+                            break;
+                        }
+                    }
                 }
             }
             // セクションの内容を抽出

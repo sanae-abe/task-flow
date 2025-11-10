@@ -19,7 +19,7 @@ import {
 // Mock LabelColorCircle
 vi.mock('./LabelColorCircle', () => ({
   LabelColorCircle: ({ color }: { color: string }) => (
-    <div data-testid={`color-circle-${color}`} className="color-circle">
+    <div data-testid={`color-circle-${color}`} className='color-circle'>
       {color}
     </div>
   ),
@@ -36,7 +36,7 @@ vi.mock('../LabelChip', () => ({
     showRemove?: boolean;
     onRemove?: (id: string) => void;
   }) => (
-    <div data-testid={`label-chip-${label.id}`} className="label-chip">
+    <div data-testid={`label-chip-${label.id}`} className='label-chip'>
       <span>{label.name}</span>
       {showRemove && (
         <button
@@ -59,14 +59,13 @@ const createMockLabel = (overrides?: Partial<Label>): Label => ({
 });
 
 // Helper to wrap components in DropdownMenu context
-const renderInDropdownMenu = (component: React.ReactElement) => {
-  return render(
-    <DropdownMenu open={true}>
+const renderInDropdownMenu = (component: React.ReactElement) =>
+  render(
+    <DropdownMenu open>
       <DropdownMenuTrigger>Trigger</DropdownMenuTrigger>
       <DropdownMenuContent>{component}</DropdownMenuContent>
     </DropdownMenu>
   );
-};
 
 describe('CurrentBoardLabelSection', () => {
   const mockOnToggleLabel = vi.fn();
@@ -87,7 +86,7 @@ describe('CurrentBoardLabelSection', () => {
 
   describe('Basic rendering', () => {
     it('should render null when labels array is empty', () => {
-      const { container } = renderInDropdownMenu(
+      const { container: _container } = renderInDropdownMenu(
         <CurrentBoardLabelSection
           labels={[]}
           selectedLabelIds={new Set()}
@@ -238,7 +237,7 @@ describe('OtherBoardLabelSection', () => {
 
   describe('Basic rendering', () => {
     it('should render null when labels array is empty', () => {
-      const { container } = renderInDropdownMenu(
+      const { container: _container } = renderInDropdownMenu(
         <OtherBoardLabelSection
           labels={[]}
           onCopyAndSelectLabel={mockOnCopyAndSelectLabel}
@@ -371,7 +370,9 @@ describe('SelectedLabelsDisplay', () => {
     });
 
     it('should render single selected label', () => {
-      const singleLabel = [createMockLabel({ id: '1', name: 'Single Selected' })];
+      const singleLabel = [
+        createMockLabel({ id: '1', name: 'Single Selected' }),
+      ];
       render(
         <SelectedLabelsDisplay
           selectedLabels={singleLabel}

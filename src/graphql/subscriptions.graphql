@@ -1,0 +1,140 @@
+# GraphQL Subscriptions - Real-time Features
+#
+# WebSocket-based subscriptions for live task updates.
+# Enables real-time collaboration and instant UI updates.
+#
+# Important:
+# - Subscription data MUST be synced to IndexedDB (Data Access Policy)
+# - Auto-reconnect on connection loss (Apollo Client config)
+# - Fallback to polling if WebSocket unavailable
+#
+# WebSocket URL: ws://localhost:4000/graphql (development)
+#
+# @see /Users/sanae.abe/workspace/taskflow-app/src/lib/apollo-client.ts
+
+# ===========================
+# Task Subscriptions
+# ===========================
+
+# Subscribe to task creation events
+#
+# Triggers: New task created in specified board
+# Use Case: Real-time kanban updates, team collaboration
+#
+# Usage:
+#   useSubscription(TASK_CREATED, {
+#     variables: { boardId: 'board-1' },
+#     onData: ({ data }) => addTask(data.taskCreated)
+#   });
+subscription OnTaskCreated($boardId: ID) {
+  taskCreated(boardId: $boardId) {
+    id
+    title
+    description
+    priority
+    status
+    dueDate
+    dueTime
+    labels {
+      id
+      name
+      color
+    }
+    columnId
+    boardId
+    position
+    createdAt
+    updatedAt
+  }
+}
+
+# Subscribe to task update events
+#
+# Triggers: Task modified (title, status, priority, etc.)
+# Use Case: Multi-user editing, optimistic UI updates
+#
+# Usage:
+#   useSubscription(TASK_UPDATED, {
+#     variables: { boardId: 'board-1' },
+#     onData: ({ data }) => updateTask(data.taskUpdated)
+#   });
+subscription OnTaskUpdated($boardId: ID) {
+  taskUpdated(boardId: $boardId) {
+    id
+    title
+    description
+    priority
+    status
+    dueDate
+    dueTime
+    labels {
+      id
+      name
+      color
+    }
+    columnId
+    boardId
+    position
+    isOverdue
+    completionPercentage
+    updatedAt
+  }
+}
+
+# Subscribe to task deletion events
+#
+# Triggers: Task deleted or moved to recycle bin
+# Use Case: Sync deletions across devices, team visibility
+#
+# Usage:
+#   useSubscription(TASK_DELETED, {
+#     variables: { boardId: 'board-1' },
+#     onData: ({ data }) => removeTask(data.taskDeleted.id)
+#   });
+subscription OnTaskDeleted($boardId: ID) {
+  taskDeleted(boardId: $boardId) {
+    id
+    title
+    status
+    deletedAt
+  }
+}
+
+# ===========================
+# Board Subscriptions
+# ===========================
+
+# Subscribe to board update events
+#
+# Triggers: Board settings changed (name, columns, etc.)
+# Use Case: Team board management, real-time settings sync
+#
+# Usage:
+#   useSubscription(BOARD_UPDATED, {
+#     variables: { boardId: 'board-1' },
+#     onData: ({ data }) => updateBoard(data.boardUpdated)
+#   });
+subscription OnBoardUpdated($boardId: ID) {
+  boardUpdated(boardId: $boardId) {
+    id
+    name
+    description
+    columns {
+      id
+      title
+      color
+      position
+      taskCount
+    }
+    settings {
+      defaultColumnId
+      completedColumnId
+      autoArchiveCompleted
+      recycleBinRetentionDays
+    }
+    isShared
+    taskCount
+    completedTaskCount
+    updatedAt
+  }
+}

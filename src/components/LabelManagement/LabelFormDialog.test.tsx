@@ -75,6 +75,13 @@ vi.mock('../LabelChip', () => ({
   ),
 }));
 
+// Mock react-i18next
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: string) => key,
+  }),
+}));
+
 // Mock contexts
 const mockGetAllLabels = vi.fn();
 vi.mock('../../contexts/LabelContext', () => ({
@@ -179,7 +186,7 @@ describe('LabelFormDialog', () => {
     it('should render create dialog when open', () => {
       render(<LabelFormDialog isOpen onClose={mockOnClose} mode='create' />);
 
-      expect(screen.getByText('ラベルを作成')).toBeInTheDocument();
+      expect(screen.getByText('label.createLabel')).toBeInTheDocument();
       expect(screen.getByTestId('unified-dialog')).toBeInTheDocument();
     });
 
@@ -202,7 +209,7 @@ describe('LabelFormDialog', () => {
     it('should render preview field with label chip', () => {
       render(<LabelFormDialog isOpen onClose={mockOnClose} mode='create' />);
 
-      expect(screen.getByText('プレビュー')).toBeInTheDocument();
+      expect(screen.getByText('label.preview')).toBeInTheDocument();
       expect(screen.getByTestId('label-chip')).toBeInTheDocument();
     });
 
@@ -215,13 +222,13 @@ describe('LabelFormDialog', () => {
     it('should render create button', () => {
       render(<LabelFormDialog isOpen onClose={mockOnClose} mode='create' />);
 
-      expect(screen.getByTestId('action-作成')).toBeInTheDocument();
+      expect(screen.getByTestId('action-common.create')).toBeInTheDocument();
     });
 
     it('should render cancel button', () => {
       render(<LabelFormDialog isOpen onClose={mockOnClose} mode='create' />);
 
-      expect(screen.getByTestId('action-キャンセル')).toBeInTheDocument();
+      expect(screen.getByTestId('action-common.cancel')).toBeInTheDocument();
     });
 
     it('should render board selection field when enableBoardSelection is true', () => {
@@ -279,7 +286,7 @@ describe('LabelFormDialog', () => {
         />
       );
 
-      expect(screen.getByText('ラベルを編集')).toBeInTheDocument();
+      expect(screen.getByText('label.editLabel')).toBeInTheDocument();
     });
 
     it('should render with label values in edit mode', () => {
@@ -308,7 +315,7 @@ describe('LabelFormDialog', () => {
         />
       );
 
-      expect(screen.getByTestId('action-更新')).toBeInTheDocument();
+      expect(screen.getByTestId('action-common.update')).toBeInTheDocument();
     });
 
     it('should not render board selection field in edit mode', () => {
@@ -373,7 +380,7 @@ describe('LabelFormDialog', () => {
       // バリデーション関数を実行
       const validationResult = nameField.validation.custom('Existing Label');
 
-      expect(validationResult).toBe('同じ名前のラベルが既に存在します');
+      expect(validationResult).toBe('label.duplicateName');
     });
 
     it('should allow same name in edit mode for the same label', () => {
@@ -417,7 +424,7 @@ describe('LabelFormDialog', () => {
       const validationResult =
         nameField.validation.custom('  Existing Label  ');
 
-      expect(validationResult).toBe('同じ名前のラベルが既に存在します');
+      expect(validationResult).toBe('label.duplicateName');
     });
 
     it('should perform case-insensitive duplicate check', () => {
@@ -434,7 +441,7 @@ describe('LabelFormDialog', () => {
       const nameField = formFields.find((field: any) => field.id === 'name');
       const validationResult = nameField.validation.custom('EXISTING LABEL');
 
-      expect(validationResult).toBe('同じ名前のラベルが既に存在します');
+      expect(validationResult).toBe('label.duplicateName');
     });
   });
 
@@ -465,7 +472,7 @@ describe('LabelFormDialog', () => {
         />
       );
 
-      const createButton = screen.getByTestId('action-作成');
+      const createButton = screen.getByTestId('action-common.create');
       fireEvent.click(createButton);
 
       await waitFor(() => {
@@ -500,7 +507,7 @@ describe('LabelFormDialog', () => {
         />
       );
 
-      const createButton = screen.getByTestId('action-作成');
+      const createButton = screen.getByTestId('action-common.create');
       fireEvent.click(createButton);
 
       await waitFor(() => {
@@ -531,7 +538,7 @@ describe('LabelFormDialog', () => {
         />
       );
 
-      const createButton = screen.getByTestId('action-作成');
+      const createButton = screen.getByTestId('action-common.create');
       fireEvent.click(createButton);
 
       await waitFor(() => {
@@ -568,7 +575,7 @@ describe('LabelFormDialog', () => {
         />
       );
 
-      const createButton = screen.getByTestId('action-作成');
+      const createButton = screen.getByTestId('action-common.create');
       fireEvent.click(createButton);
 
       await waitFor(() => {
@@ -608,13 +615,13 @@ describe('LabelFormDialog', () => {
         />
       );
 
-      const createButton = screen.getByTestId('action-作成');
+      const createButton = screen.getByTestId('action-common.create');
       fireEvent.click(createButton);
 
       await waitFor(() => {
         expect(mockFormState.setError).toHaveBeenCalledWith(
           'name',
-          'ラベルの保存に失敗しました'
+          'label.saveFailed'
         );
       });
     });
@@ -629,7 +636,7 @@ describe('LabelFormDialog', () => {
 
       render(<LabelFormDialog isOpen onClose={mockOnClose} mode='create' />);
 
-      const createButton = screen.getByTestId('action-作成');
+      const createButton = screen.getByTestId('action-common.create');
       expect(createButton).toBeDisabled();
     });
 
@@ -638,7 +645,7 @@ describe('LabelFormDialog', () => {
 
       render(<LabelFormDialog isOpen onClose={mockOnClose} mode='create' />);
 
-      const createButton = screen.getByTestId('action-作成');
+      const createButton = screen.getByTestId('action-common.create');
       expect(createButton).toBeDisabled();
     });
   });
@@ -647,7 +654,7 @@ describe('LabelFormDialog', () => {
     it('should call onClose when cancel button is clicked', () => {
       render(<LabelFormDialog isOpen onClose={mockOnClose} mode='create' />);
 
-      const cancelButton = screen.getByTestId('action-キャンセル');
+      const cancelButton = screen.getByTestId('action-common.cancel');
       fireEvent.click(cancelButton);
 
       expect(mockOnClose).toHaveBeenCalled();
@@ -796,8 +803,8 @@ describe('LabelFormDialog', () => {
 
       // 代わりに、初期値が正しくプレビューに反映されることをテスト
       const labelChip = screen.getByTestId('label-chip');
-      // 初期値は空なので、'ラベル名'がデフォルト表示される
-      expect(labelChip).toHaveAttribute('data-label-name', 'ラベル名');
+      // 初期値は空なので、'label.labelName'がデフォルト表示される
+      expect(labelChip).toHaveAttribute('data-label-name', 'label.labelName');
     });
 
     it('should show default preview text when name is empty', () => {
@@ -809,7 +816,7 @@ describe('LabelFormDialog', () => {
       render(<LabelFormDialog isOpen onClose={mockOnClose} mode='create' />);
 
       const labelChip = screen.getByTestId('label-chip');
-      expect(labelChip).toHaveAttribute('data-label-name', 'ラベル名');
+      expect(labelChip).toHaveAttribute('data-label-name', 'label.labelName');
     });
   });
 
@@ -824,7 +831,7 @@ describe('LabelFormDialog', () => {
         />
       );
 
-      expect(screen.getByText('ラベルを編集')).toBeInTheDocument();
+      expect(screen.getByText('label.editLabel')).toBeInTheDocument();
     });
 
     it('should handle empty boards array', () => {

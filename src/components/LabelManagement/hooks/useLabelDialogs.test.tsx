@@ -1,7 +1,10 @@
 import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { useLabelDialogs } from './useLabelDialogs';
-import type { LabelWithInfo, LabelFormData } from '../../../types/labelManagement';
+import type {
+  LabelWithInfo,
+  LabelFormData,
+} from '../../../types/labelManagement';
 
 // Mock useLabel context
 const mockCreateLabel = vi.fn();
@@ -167,7 +170,11 @@ describe('useLabelDialogs', () => {
       result.current.handleSave(labelData);
     });
 
-    expect(mockCreateLabelInBoard).toHaveBeenCalledWith('New Label', 'green', 'board-123');
+    expect(mockCreateLabelInBoard).toHaveBeenCalledWith(
+      'New Label',
+      'green',
+      'board-123'
+    );
     expect(mockCreateLabel).not.toHaveBeenCalled();
     expect(result.current.editDialog.isOpen).toBe(false);
   });

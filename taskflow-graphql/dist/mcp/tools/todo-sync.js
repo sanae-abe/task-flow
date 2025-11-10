@@ -200,19 +200,22 @@ async function handleFileToApp(coordinator, options) {
                         success: true,
                         action: 'file_to_app',
                         dryRun: options?.dryRun || false,
-                        result: lastSync ? {
-                            tasksChanged: lastSync.tasksChanged,
-                            tasksCreated: lastSync.tasksCreated,
-                            tasksUpdated: lastSync.tasksUpdated,
-                            tasksDeleted: lastSync.tasksDeleted,
-                            conflictsDetected: lastSync.conflictsDetected,
-                            conflictsResolved: lastSync.conflictsResolved,
-                            durationMs: lastSync.durationMs,
-                        } : null,
+                        result: lastSync
+                            ? {
+                                tasksChanged: lastSync.tasksChanged,
+                                tasksCreated: lastSync.tasksCreated,
+                                tasksUpdated: lastSync.tasksUpdated,
+                                tasksDeleted: lastSync.tasksDeleted,
+                                conflictsDetected: lastSync.conflictsDetected,
+                                conflictsResolved: lastSync.conflictsResolved,
+                                durationMs: lastSync.durationMs,
+                            }
+                            : null,
                         statistics: {
                             totalSyncs: stats.totalSyncs,
                             successRate: stats.totalSyncs > 0
-                                ? ((stats.successfulSyncs / stats.totalSyncs) * 100).toFixed(2) + '%'
+                                ? ((stats.successfulSyncs / stats.totalSyncs) *
+                                    100).toFixed(2) + '%'
                                 : '0%',
                         },
                     }, null, 2),
@@ -252,14 +255,17 @@ async function handleAppToFile(coordinator, options) {
                         success: true,
                         action: 'app_to_file',
                         dryRun: options?.dryRun || false,
-                        result: lastSync ? {
-                            tasksWritten: lastSync.tasksChanged,
-                            durationMs: lastSync.durationMs,
-                        } : null,
+                        result: lastSync
+                            ? {
+                                tasksWritten: lastSync.tasksChanged,
+                                durationMs: lastSync.durationMs,
+                            }
+                            : null,
                         statistics: {
                             totalSyncs: stats.totalSyncs,
                             successRate: stats.totalSyncs > 0
-                                ? ((stats.successfulSyncs / stats.totalSyncs) * 100).toFixed(2) + '%'
+                                ? ((stats.successfulSyncs / stats.totalSyncs) *
+                                    100).toFixed(2) + '%'
                                 : '0%',
                         },
                     }, null, 2),
@@ -323,7 +329,7 @@ async function handleStatus(coordinator, options) {
 /**
  * Handle backup action
  */
-async function handleBackup(coordinator, options) {
+async function handleBackup(coordinator, _options) {
     try {
         // Backup functionality is handled automatically by SyncCoordinator
         // This action provides a manual trigger
@@ -363,7 +369,9 @@ async function handleBackup(coordinator, options) {
  * Handle restore action
  */
 async function handleRestore(coordinator, options) {
+    const timer = logger.startTimer('mcp-restore');
     try {
+        // Validate backupPath parameter
         if (!options?.backupPath) {
             return {
                 content: [
@@ -375,20 +383,215 @@ async function handleRestore(coordinator, options) {
                 isError: true,
             };
         }
+        const backupPath = options.backupPath;
+        const todoPath = options.todoPath || process.env.TODO_PATH || './TODO.md';
+        // Import required modules for restore operation
+        const { promises: fs } = await import('fs');
+        const path = await import('path');
+        const { PathValidator } = await import('../../sync/security/path-validator.js');
+        // 1. Validate backup path with PathValidator
+        const backupValidator = new PathValidator(process.cwd());
+        let validatedBackupPath;
+        try {
+            validatedBackupPath = await backupValidator.validateAsync(backupPath);
+        }
+        catch (error) {
+            logger.logSecurityEvent('path_traversal', { backupPath, feature: 'mcp-restore' }, `Invalid backup path: ${error instanceof Error ? error.message : 'Unknown error'}`);
+            return {
+                content: [
+                    {
+                        type: 'text',
+                        text: `Error: Invalid backup path - ${error instanceof Error ? error.message : 'Path validation failed'}`,
+                    },
+                ],
+                isError: true,
+            };
+        }
+        // 2. Validate backup file exists and is readable
+        const backupExists = await backupValidator.exists(validatedBackupPath);
+        if (!backupExists) {
+            return {
+                content: [
+                    {
+                        type: 'text',
+                        text: `Error: Backup file not found at path: ${backupPath}`,
+                    },
+                ],
+                isError: true,
+            };
+        }
+        const backupReadable = await backupValidator.isReadable(validatedBackupPath);
+        if (!backupReadable) {
+            return {
+                content: [
+                    {
+                        type: 'text',
+                        text: `Error: Backup file is not readable: ${backupPath}`,
+                    },
+                ],
+                isError: true,
+            };
+        }
+        // 3. Validate file size (prevent memory exhaustion)
+        try {
+            await backupValidator.validateFileSize(validatedBackupPath, 5);
+        }
+        catch (error) {
+            return {
+                content: [
+                    {
+                        type: 'text',
+                        text: `Error: ${error instanceof Error ? error.message : 'Backup file too large'}`,
+                    },
+                ],
+                isError: true,
+            };
+        }
+        // 4. Read backup file content
+        let backupContent;
+        let backupStats;
+        try {
+            backupContent = await fs.readFile(validatedBackupPath, 'utf-8');
+            backupStats = await fs.stat(validatedBackupPath);
+        }
+        catch (error) {
+            logger.error({ err: error, backupPath: validatedBackupPath }, 'Failed to read backup file');
+            return {
+                content: [
+                    {
+                        type: 'text',
+                        text: `Error: Failed to read backup file - ${error instanceof Error ? error.message : 'Unknown error'}`,
+                    },
+                ],
+                isError: true,
+            };
+        }
+        // 5. Validate TODO.md path with PathValidator
+        const todoValidator = new PathValidator(process.cwd());
+        let validatedTodoPath;
+        try {
+            validatedTodoPath = await todoValidator.validateAsync(todoPath);
+        }
+        catch (error) {
+            logger.logSecurityEvent('path_traversal', { todoPath, feature: 'mcp-restore' }, `Invalid TODO.md path: ${error instanceof Error ? error.message : 'Unknown error'}`);
+            return {
+                content: [
+                    {
+                        type: 'text',
+                        text: `Error: Invalid TODO.md path - ${error instanceof Error ? error.message : 'Path validation failed'}`,
+                    },
+                ],
+                isError: true,
+            };
+        }
+        // 6. Create backup of current TODO.md before restoring (if it exists)
+        let currentBackupPath = null;
+        if (await todoValidator.exists(validatedTodoPath)) {
+            const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+            const dirname = path.dirname(validatedTodoPath);
+            const basename = path.basename(validatedTodoPath, '.md');
+            currentBackupPath = path.join(dirname, `.backup/${basename}_before_restore_${timestamp}.md`);
+            try {
+                // Ensure backup directory exists
+                const backupDir = path.dirname(currentBackupPath);
+                await fs.mkdir(backupDir, { recursive: true });
+                // Copy current TODO.md to backup
+                await fs.copyFile(validatedTodoPath, currentBackupPath);
+                logger.info({ currentBackupPath }, 'Created backup of current TODO.md before restore');
+            }
+            catch (error) {
+                logger.warn({ err: error }, 'Failed to backup current TODO.md before restore');
+                // Continue with restore even if backup fails
+            }
+        }
+        // 7. Write backup content to TODO.md path
+        try {
+            await fs.writeFile(validatedTodoPath, backupContent, 'utf-8');
+            logger.info({ backupPath: validatedBackupPath, todoPath: validatedTodoPath }, 'Successfully restored backup to TODO.md');
+        }
+        catch (error) {
+            logger.error({ err: error, todoPath: validatedTodoPath }, 'Failed to write restored content');
+            return {
+                content: [
+                    {
+                        type: 'text',
+                        text: `Error: Failed to write restored content to TODO.md - ${error instanceof Error ? error.message : 'Unknown error'}`,
+                    },
+                ],
+                isError: true,
+            };
+        }
+        // 8. Trigger file_to_app sync after restore
+        let syncResult = null;
+        try {
+            await coordinator.syncFileToApp();
+            const history = coordinator.getSyncHistory(1);
+            syncResult = history[0];
+            logger.info({ tasksChanged: syncResult?.tasksChanged || 0 }, 'Successfully synced restored TODO.md to app');
+        }
+        catch (error) {
+            logger.error({ err: error }, 'Failed to sync restored TODO.md to app');
+            // Restore was successful but sync failed - this is a partial success
+            return {
+                content: [
+                    {
+                        type: 'text',
+                        text: JSON.stringify({
+                            success: true,
+                            action: 'restore',
+                            warning: 'Restore succeeded but sync to app failed',
+                            restore: {
+                                backupPath: validatedBackupPath,
+                                todoPath: validatedTodoPath,
+                                backupSize: backupStats.size,
+                                backupModified: backupStats.mtime.toISOString(),
+                                currentBackupPath,
+                            },
+                            syncError: error instanceof Error ? error.message : 'Unknown sync error',
+                            recommendation: 'Run file_to_app action manually to complete the restore',
+                        }, null, 2),
+                    },
+                ],
+            };
+        }
+        // 9. Return success message with restore details
+        const stats = coordinator.getStats();
+        timer.done({ itemsProcessed: syncResult?.tasksChanged || 0 });
         return {
             content: [
                 {
                     type: 'text',
                     text: JSON.stringify({
-                        success: false,
+                        success: true,
                         action: 'restore',
-                        message: 'Restore functionality is not yet implemented',
-                        note: 'Manual restore: Copy backup file to TODO.md path and run file_to_app sync',
-                        providedBackupPath: options.backupPath,
+                        restore: {
+                            backupPath: validatedBackupPath,
+                            todoPath: validatedTodoPath,
+                            backupSize: backupStats.size,
+                            backupModified: backupStats.mtime.toISOString(),
+                            currentBackupPath,
+                        },
+                        sync: syncResult
+                            ? {
+                                tasksChanged: syncResult.tasksChanged,
+                                tasksCreated: syncResult.tasksCreated,
+                                tasksUpdated: syncResult.tasksUpdated,
+                                tasksDeleted: syncResult.tasksDeleted,
+                                conflictsDetected: syncResult.conflictsDetected,
+                                conflictsResolved: syncResult.conflictsResolved,
+                                durationMs: syncResult.durationMs,
+                            }
+                            : null,
+                        statistics: {
+                            totalSyncs: stats.totalSyncs,
+                            successRate: stats.totalSyncs > 0
+                                ? ((stats.successfulSyncs / stats.totalSyncs) *
+                                    100).toFixed(2) + '%'
+                                : '0%',
+                        },
                     }, null, 2),
                 },
             ],
-            isError: true,
         };
     }
     catch (error) {
