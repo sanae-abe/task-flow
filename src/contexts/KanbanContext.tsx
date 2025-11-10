@@ -17,6 +17,15 @@ import type {
   Priority,
 } from '../types';
 
+// Task操作用のアクション型定義
+type TaskAction =
+  | {
+      type: 'ADD_TASK';
+      payload: { boardId: string; columnId: string; task: Task };
+    }
+  | { type: 'UPDATE_TASK'; payload: { taskId: string; updates: Partial<Task> } }
+  | { type: 'DELETE_TASK'; payload: { taskId: string } };
+
 // KanbanContextのレガシー互換性を保つためのブリッジ
 interface KanbanContextType {
   state: {
@@ -33,6 +42,8 @@ interface KanbanContextType {
     taskFormDefaultDate: Date | null;
     taskFormDefaultStatus?: string;
   };
+  // GraphQL統合用のdispatchメソッド（BoardContext互換）
+  dispatch: (action: TaskAction) => void;
   // Board関連のメソッド
   createBoard: (title: string) => void;
   updateBoard: (boardId: string, updates: Partial<KanbanBoard>) => void;
@@ -96,6 +107,45 @@ export const KanbanProvider: React.FC<KanbanProviderProps> = ({ children }) => {
   const label = useLabel();
   const ui = useUI();
 
+  /**
+   * GraphQL統合用のdispatchメソッド
+   * BoardContext/TaskContextの既存メソッドにアクションをブリッジ
+   */
+  const dispatch = React.useCallback(
+    (action: TaskAction) => {
+      switch (action.type) {
+        case 'ADD_TASK': {
+          const { boardId, columnId, task: newTask } = action.payload;
+          // BoardContextのupdateBoardを使ってタスクを追加
+          const targetBoard = board.state.boards.find((b) => b.id === boardId);
+          if (targetBoard) {
+            const updatedColumns = targetBoard.columns.map((col) =>
+              col.id === columnId
+                ? { ...col, tasks: [...col.tasks, newTask] }
+                : col
+            );
+            board.updateBoard(boardId, { columns: updatedColumns });
+          }
+          break;
+        }
+        case 'UPDATE_TASK': {
+          const { taskId, updates } = action.payload;
+          task.updateTask(taskId, updates);
+          break;
+        }
+        case 'DELETE_TASK': {
+          const { taskId } = action.payload;
+          const columnId = task.findTaskColumnId(taskId);
+          if (columnId) {
+            task.deleteTask(taskId, columnId);
+          }
+          break;
+        }
+      }
+    },
+    [board, task]
+  );
+
   const value = useMemo<KanbanContextType>(
     () => ({
       state: {
@@ -112,6 +162,8 @@ export const KanbanProvider: React.FC<KanbanProviderProps> = ({ children }) => {
         taskFormDefaultDate: ui.state.taskFormDefaultDate || null,
         taskFormDefaultStatus: ui.state.taskFormDefaultStatus,
       },
+      // GraphQL統合用のdispatchメソッド（BoardContext互換）
+      dispatch,
       // Board関連のメソッド
       createBoard: board.createBoard,
       updateBoard: board.updateBoard,
@@ -149,7 +201,7 @@ export const KanbanProvider: React.FC<KanbanProviderProps> = ({ children }) => {
       openTaskForm: ui.openTaskForm,
       closeTaskForm: ui.closeTaskForm,
     }),
-    [board, task, label, ui]
+    [board, task, label, ui, dispatch]
   );
 
   return (
