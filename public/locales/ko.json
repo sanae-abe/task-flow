@@ -1,0 +1,728 @@
+{
+  "common": {
+    "save": "저장",
+    "cancel": "취소",
+    "delete": "삭제",
+    "edit": "편집",
+    "close": "닫기",
+    "create": "만들기",
+    "update": "업데이트",
+    "confirm": "확인",
+    "back": "뒤로",
+    "next": "다음",
+    "add": "추가",
+    "remove": "제거",
+    "search": "검색",
+    "filter": "필터",
+    "sort": "정렬",
+    "clear": "지우기",
+    "reset": "초기화",
+    "apply": "적용",
+    "loading": "로딩 중...",
+    "loadingEditor": "에디터 로딩 중...",
+    "noData": "데이터가 없습니다",
+    "error": "오류가 발생했습니다",
+    "success": "성공",
+    "clearFilter": "필터 지우기",
+    "reload": "새로고침",
+    "later": "나중에",
+    "installing": "설치 중...",
+    "install": "설치",
+    "discardChanges": "변경사항을 취소하시겠습니까?",
+    "discardChangesMessage": "편집한 내용이 손실됩니다. 계속하시겠습니까?",
+    "discard": "취소"
+  },
+  "header": {
+    "createTask": "작업 만들기",
+    "help": "도움말",
+    "settings": "설정",
+    "more": "더보기",
+    "recycleBin": "휴지통"
+  },
+  "subheader": {
+    "addColumn": "컬럼 추가",
+    "selectViewMode": "보기 모드 선택",
+    "deleteBoard": "프로젝트 삭제",
+    "deleteBoardMessage": "「{{title}}」을(를) 삭제하시겠습니까?",
+    "clearCompleted": "완료된 작업 지우기",
+    "clearCompletedMessage": "완료된 모든 작업을 삭제하시겠습니까?"
+  },
+  "task": {
+    "title": "작업",
+    "taskTitle": "작업 이름",
+    "description": "설명",
+    "descriptionNotSet": "설명이 설정되지 않았습니다",
+    "dueDate": "마감일",
+    "priority": "우선순위",
+    "labels": "라벨",
+    "attachments": "첨부파일",
+    "fileAttachments": "파일 첨부",
+    "subtasks": "하위 작업",
+    "status": "상태",
+    "createdAt": "생성일",
+    "updatedAt": "수정일",
+    "completedAt": "완료일",
+    "completedDateTime": "완료 날짜/시간",
+    "createdDateTime": "생성 날짜/시간",
+    "updatedDateTime": "수정 날짜/시간",
+    "createdUpdatedDateTime": "생성/수정 날짜/시간",
+    "overdue": "기한 초과",
+    "dueToday": "오늘 마감",
+    "dueTomorrow": "내일 마감",
+    "subtaskProgress": "하위 작업 진행률",
+    "duplicate": "복제",
+    "deleteConfirm": "이 작업을 삭제하시겠습니까?",
+    "duplicateConfirm": "이 작업을 복제하시겠습니까?",
+    "noTasks": "작업이 없습니다",
+    "addTask": "작업 추가",
+    "editTask": "작업 편집",
+    "taskDetails": "작업 상세",
+    "moveTask": "작업 이동",
+    "move": "이동",
+    "selectTargetBoard": "대상 보드 선택",
+    "boardInfo": "{{columns}}개 컬럼 · {{tasks}}개 작업",
+    "completeTask": "작업 완료",
+    "reopenTask": "작업 다시 열기",
+    "closeTaskDetail": "작업 상세 닫기",
+    "deleteTask": "작업 삭제",
+    "deleteTaskConfirm": "「{{title}}」을(를) 삭제하시겠습니까?",
+    "noFilteredTasks": "필터 조건에 맞는 작업이 없습니다",
+    "createTask": "작업 만들기",
+    "changeStatus": "상태 변경",
+    "incompleteTaskCount": "미완료 작업 수",
+    "noUrgentTasks": "긴급한 작업이 없습니다",
+    "recurrenceSettings": "반복 설정",
+    "descriptionPlaceholder": "작업 설명을 입력하세요...",
+    "selectDueDate": "마감일 선택"
+  },
+  "board": {
+    "board": "보드",
+    "boardName": "보드 이름",
+    "createBoard": "보드 만들기",
+    "createBoardTitle": "새 보드 만들기",
+    "editBoard": "보드 편집",
+    "deleteBoard": "보드 삭제",
+    "selectBoard": "보드 선택",
+    "noBoards": "보드가 없습니다",
+    "defaultBoard": "기본 보드",
+    "currentBoard": "현재 보드",
+    "noBoardSelected": "선택된 보드가 없습니다",
+    "boardSettings": "보드 설정",
+    "boardSettingsMenu": "보드 설정 메뉴 열기",
+    "boardManagement": "보드 관리",
+    "editBoardName": "보드 이름 편집",
+    "boardNamePlaceholder": "보드 이름 입력",
+    "taskManagement": "작업 관리",
+    "clearCompleted": "완료된 작업 지우기",
+    "dangerActions": "위험한 작업"
+  },
+  "column": {
+    "column": "컬럼",
+    "columnName": "컬럼 이름",
+    "addColumn": "컬럼 추가",
+    "addColumnTitle": "새 컬럼 추가",
+    "editColumn": "컬럼 편집",
+    "deleteColumn": "컬럼 삭제",
+    "moveLeft": "왼쪽으로 이동",
+    "moveRight": "오른쪽으로 이동",
+    "setAsDefault": "기본으로 설정",
+    "defaultColumn": "기본 컬럼",
+    "deleteColumnConfirm": "이 컬럼을 삭제하시겠습니까?",
+    "newColumnPlaceholder": "새 컬럼 이름",
+    "columnNamePlaceholder": "컬럼 이름 입력",
+    "columnNameLabel": "컬럼 「{{name}}」 이름",
+    "moveUp": "{{name}} 위로 이동",
+    "moveDown": "{{name}} 아래로 이동",
+    "deleteColumnLabel": "{{name}} 삭제",
+    "columnSettings": "컬럼 설정",
+    "columnMovement": "컬럼 이동",
+    "columnManagement": "컬럼 관리",
+    "insertPosition": "삽입 위치",
+    "insertFirst": "맨 앞",
+    "insertAfter": "「{{title}}」 뒤"
+  },
+  "label": {
+    "label": "라벨",
+    "labelName": "라벨 이름",
+    "labelNamePlaceholder": "라벨 이름 입력",
+    "labelColor": "라벨 색상",
+    "color": "색상",
+    "preview": "미리보기",
+    "targetBoard": "대상 보드",
+    "createLabel": "라벨 만들기",
+    "editLabel": "라벨 편집",
+    "deleteLabel": "라벨 삭제",
+    "noLabels": "라벨이 없습니다",
+    "selectLabel": "라벨 선택",
+    "addNewLabel": "새 라벨 추가",
+    "openLabelMenu": "라벨 선택 메뉴 열기",
+    "manageLabels": "라벨 관리",
+    "deleteLabelConfirm": "이 라벨을 삭제하시겠습니까?",
+    "deleteMessage": "라벨 「{{name}}」을(를) 삭제하시겠습니까?",
+    "deleteWithTasks": "{{count}}개의 작업에서도 제거됩니다.",
+    "saveFailed": "라벨 저장에 실패했습니다",
+    "duplicateName": "같은 이름의 라벨이 이미 존재합니다",
+    "boardName": "소속 보드",
+    "usageCount": "사용 횟수",
+    "unknown": "알 수 없음"
+  },
+  "priority": {
+    "priority": "우선순위",
+    "critical": "긴급",
+    "criticalDesc": "즉시 처리 필요",
+    "high": "높음",
+    "highDesc": "조만간 처리 필요",
+    "medium": "보통",
+    "mediumDesc": "일반 우선순위",
+    "low": "낮음",
+    "lowDesc": "시간이 있을 때 처리",
+    "noPriority": "없음",
+    "noPriorityDesc": "우선순위 설정 안 함",
+    "unset": "미설정",
+    "setPriority": "우선순위 설정",
+    "ariaLabel": "우선순위"
+  },
+  "recurrence": {
+    "recurrence": "반복",
+    "noRecurrence": "반복 안 함",
+    "detailTitle": "반복 설정 상세",
+    "daily": "매일",
+    "weekly": "매주",
+    "monthly": "매월",
+    "yearly": "매년",
+    "custom": "사용자 정의",
+    "pattern": "패턴",
+    "interval": "간격",
+    "intervalUnit": {
+      "daily": "일",
+      "weekly": "주",
+      "monthly": "개월",
+      "yearly": "년"
+    },
+    "endDate": "종료일",
+    "noEndDate": "종료일 없음",
+    "endCondition": "종료 조건",
+    "maxOccurrences": "최대 횟수",
+    "times": "회",
+    "occurrences": "횟수",
+    "selectDueDate": "마감일 선택",
+    "openCalendar": "달력 열기",
+    "repeatEvery": "반복 간격",
+    "repeatOn": "반복 요일",
+    "previewLabel": "설정 내용",
+    "virtualTaskLabel": "(반복 예정)"
+  },
+  "calendar": {
+    "calendar": "달력",
+    "today": "오늘",
+    "month": "월",
+    "week": "주",
+    "day": "일",
+    "noEvents": "이벤트가 없습니다",
+    "year": "년",
+    "previousMonth": "이전 달",
+    "nextMonth": "다음 달",
+    "months": {
+      "january": "1월",
+      "february": "2월",
+      "march": "3월",
+      "april": "4월",
+      "may": "5월",
+      "june": "6월",
+      "july": "7월",
+      "august": "8월",
+      "september": "9월",
+      "october": "10월",
+      "november": "11월",
+      "december": "12월"
+    },
+    "weekdays": {
+      "sunday": "일",
+      "monday": "월",
+      "tuesday": "화",
+      "wednesday": "수",
+      "thursday": "목",
+      "friday": "금",
+      "saturday": "토"
+    },
+    "moreTasksCount": "외 {{count}}개"
+  },
+  "settings": {
+    "settings": "설정",
+    "general": "일반",
+    "board": "보드",
+    "labels": "라벨",
+    "recycleBin": "휴지통",
+    "dataManagement": "데이터 관리",
+    "language": "언어",
+    "theme": "테마",
+    "notifications": "알림",
+    "defaultColumn": "기본 컬럼",
+    "autoDeleteDays": "자동 삭제 일수",
+    "saveSettings": "설정 저장",
+    "resetSettings": "설정 초기화",
+    "boardSettings": {
+      "title": "기본 컬럼 설정",
+      "description": "새 보드를 만들 때의 기본 컬럼을 설정할 수 있습니다.",
+      "loadingSettings": "설정 로딩 중...",
+      "autoSaveSuccess": "설정이 자동 저장되었습니다",
+      "autoSaveError": "자동 저장에 실패했습니다",
+      "saveSuccess": "설정이 저장되었습니다",
+      "saveError": "설정 저장에 실패했습니다",
+      "loadError": "설정 로딩에 실패했습니다",
+      "minColumnRequired": "최소 1개의 컬럼이 필요합니다"
+    },
+    "recycleBinSettings": {
+      "title": "휴지통 설정",
+      "description": "삭제한 보드, 컬럼, 작업을 휴지통에 보관하는 기간을 설정합니다.\n기간이 지난 데이터는 자동으로 영구 삭제됩니다. 무제한을 선택하면 자동 삭제되지 않습니다.",
+      "presetTitle": "자주 사용하는 설정",
+      "retentionLabel": "보관 기간",
+      "retentionUnit": "일",
+      "retentionHelp": "1~365일 범위로 설정하거나 「무제한」 버튼으로 무제한 설정 가능 (권장: 30일)",
+      "saveButton": "설정 저장",
+      "saving": "저장 중...",
+      "importantNote": "보관 기간을 줄이면 휴지통에 있는 기존 데이터도 새로운 기간으로 재계산됩니다. 필요한 데이터는 기간 변경 전에 복원하는 것을 권장합니다.",
+      "presets": {
+        "oneWeek": "1주",
+        "oneWeekDesc": "단기 보관. 자주 정리하는 경우에 적합",
+        "twoWeeks": "2주",
+        "twoWeeksDesc": "적절한 보관 기간. 일상적인 작업에 적합",
+        "oneMonth": "1개월",
+        "oneMonthDesc": "권장 설정. 대부분의 용도에 적합한 균형잡힌 기간",
+        "threeMonths": "3개월",
+        "threeMonthsDesc": "장기 보관. 중요한 작업을 다루는 경우에 적합",
+        "unlimited": "무제한",
+        "unlimitedDesc": "자동 삭제되지 않음. 수동 관리 필요"
+      }
+    }
+  },
+  "template": {
+    "template": "템플릿",
+    "templateName": "템플릿 이름",
+    "createTemplate": "템플릿 만들기",
+    "useTemplate": "템플릿 사용",
+    "editTemplate": "템플릿 편집",
+    "deleteTemplate": "템플릿 삭제",
+    "noTemplates": "템플릿이 없습니다",
+    "saveAsTemplate": "템플릿으로 저장",
+    "category": "카테고리",
+    "favorite": "즐겨찾기",
+    "addToFavorites": "즐겨찾기에 추가",
+    "removeFromFavorites": "즐겨찾기에서 제거",
+    "createNormal": "일반 만들기",
+    "createFromTemplate": "템플릿에서 만들기",
+    "creatingFromTemplate": "템플릿 「{{name}}」에서 만드는 중",
+    "searchPlaceholder": "템플릿 검색...",
+    "allCategories": "모든 카테고리",
+    "usageCount": "사용 횟수",
+    "timesUsed": "{{count}}회",
+    "editTemplateAria": "템플릿 「{{name}}」 편집",
+    "deleteTemplateAria": "템플릿 「{{name}}」 삭제",
+    "noMatchingTemplates": "조건에 맞는 템플릿이 없습니다",
+    "noTemplatesRegistered": "등록된 템플릿이 없습니다.",
+    "createTemplateInSettings": "설정 화면에서 템플릿을 만들어주세요.",
+    "favoriteTemplates": "즐겨찾기 템플릿",
+    "otherTemplates": "기타 템플릿",
+    "categoryAndUsage": "카테고리: {{category}} | 사용 횟수: {{count}}회",
+    "categories": {
+      "work": "업무",
+      "workDesc": "업무 관련 작업",
+      "personal": "개인",
+      "personalDesc": "개인 작업",
+      "project": "프로젝트",
+      "projectDesc": "프로젝트 관련 작업",
+      "meeting": "회의",
+      "meetingDesc": "회의 준비 및 기록",
+      "routine": "루틴",
+      "routineDesc": "정기 작업",
+      "other": "기타",
+      "otherDesc": "기타 작업"
+    },
+    "management": {
+      "title": "템플릿 관리",
+      "loading": "템플릿 로딩 중...",
+      "createSuccess": "템플릿 「{{name}}」을(를) 만들었습니다",
+      "createError": "템플릿 만들기에 실패했습니다",
+      "updateSuccess": "템플릿 「{{name}}」을(를) 업데이트했습니다",
+      "updateError": "템플릿 업데이트에 실패했습니다",
+      "deleteSuccess": "템플릿 「{{name}}」을(를) 삭제했습니다",
+      "deleteError": "템플릿 삭제에 실패했습니다",
+      "deleteConfirmTitle": "템플릿 삭제",
+      "deleteConfirmMessage": "템플릿 「{{name}}」을(를) 삭제하시겠습니까? 이 작업은 취소할 수 없습니다.",
+      "favoriteAdded": "템플릿 「{{name}}」을(를) 즐겨찾기에 추가했습니다",
+      "favoriteRemoved": "템플릿 「{{name}}」을(를) 즐겨찾기에서 제거했습니다"
+    }
+  },
+  "recycleBin": {
+    "recycleBin": "휴지통",
+    "restore": "복원",
+    "permanentDelete": "영구 삭제",
+    "emptyRecycleBin": "휴지통 비우기",
+    "noItems": "휴지통이 비어있습니다",
+    "restoreConfirm": "이 항목을 복원하시겠습니까?",
+    "permanentDeleteConfirm": "이 항목을 영구 삭제하시겠습니까? 이 작업은 취소할 수 없습니다.",
+    "emptyConfirm": "휴지통을 비우시겠습니까? 이 작업은 취소할 수 없습니다.",
+    "deletedAt": "삭제 시간",
+    "autoDelete": "자동 삭제",
+    "autoDeleteDescription": "삭제 후 {{days}}일이 지난 항목을 자동 삭제",
+    "itemCount": "{{count}}개",
+    "recycleBinWithCount": "휴지통 ({{count}}개)",
+    "emptyAllConfirm": "휴지통의 {{count}}개 항목을 모두 영구 삭제합니다. 이 작업은 취소할 수 없습니다. 정말 실행하시겠습니까?",
+    "emptyAllBoardsConfirm": "휴지통의 {{count}}개 보드를 모두 영구 삭제합니다. 이 작업은 취소할 수 없습니다. 정말 실행하시겠습니까?",
+    "type": "유형",
+    "typeBoard": "보드",
+    "typeColumn": "컬럼",
+    "typeTask": "작업",
+    "title": "제목",
+    "deleting": "삭제 중...",
+    "scheduledDeletion": "삭제 예정",
+    "notSet": "미설정"
+  },
+  "filter": {
+    "filter": "필터",
+    "filterBy": "필터 조건",
+    "sortBy": "정렬",
+    "all": "전체",
+    "completed": "완료됨",
+    "incomplete": "미완료",
+    "withDueDate": "마감일 있음",
+    "withoutDueDate": "마감일 없음",
+    "byPriority": "우선순위순",
+    "byDueDate": "마감일순",
+    "byCreatedDate": "생성일순",
+    "byUpdatedDate": "수정일순",
+    "ascending": "오름차순",
+    "descending": "내림차순",
+    "allTasks": "모든 작업",
+    "selectFilter": "필터 선택",
+    "dueWithin3Days": "3일 이내 마감",
+    "dueToday": "오늘 마감",
+    "overdue": "기한 초과",
+    "filterByLabel": "라벨로 필터",
+    "filterByPriority": "우선순위로 필터",
+    "labelSelected": "라벨: {{count}}개 선택됨",
+    "prioritySelected": "우선순위: {{count}}개 선택됨",
+    "tasksWithLabels": "라벨이 있는 작업",
+    "allLabels": "모든 라벨",
+    "currentSort": "현재 정렬: {{sort}}",
+    "manual": "수동",
+    "priority": "우선순위순",
+    "createdAt": "생성일순",
+    "updatedAt": "수정일순",
+    "dueDate": "마감일순",
+    "title": "이름순"
+  },
+  "export": {
+    "export": "내보내기",
+    "import": "가져오기",
+    "exportData": "데이터 내보내기",
+    "importData": "데이터 가져오기",
+    "importMerge": "기존 데이터와 병합",
+    "importReplace": "모든 데이터 교체",
+    "exportAll": "전체 내보내기",
+    "exportBoard": "보드 내보내기",
+    "selectBoards": "보드 선택",
+    "downloadJSON": "JSON 다운로드",
+    "selectFile": "파일 선택",
+    "dragDropFile": "파일 드롭",
+    "importSuccess": "가져오기 성공",
+    "importError": "가져오기 실패",
+    "invalidFile": "잘못된 파일 형식입니다",
+    "exportRange": "내보내기 범위",
+    "allData": "전체 데이터",
+    "exportDescription": "데이터를 내보냅니다. 전체 데이터 또는 특정 보드를 선택하세요.",
+    "dataOverview": "데이터 개요",
+    "taskCount": "{{count}}개 작업",
+    "boardCount": "{{count}}개 보드",
+    "labelCount": "{{count}}개 라벨",
+    "attachmentCount": "{{count}}개 첨부파일",
+    "approximateSize": "약 {{size}}"
+  },
+  "validation": {
+    "required": "필수 항목입니다",
+    "tooLong": "입력이 너무 깁니다 (최대 {{max}}자)",
+    "tooShort": "입력이 너무 짧습니다 (최소 {{min}}자)",
+    "invalidFormat": "형식이 올바르지 않습니다",
+    "invalidDate": "잘못된 날짜입니다",
+    "invalidEmail": "잘못된 이메일 주소입니다",
+    "invalidURL": "잘못된 URL입니다",
+    "fileTooLarge": "파일이 너무 큽니다 (최대 {{max}}MB)",
+    "columnNameRequired": "컬럼 이름을 입력하세요",
+    "columnNameDuplicate": "같은 이름의 컬럼이 이미 존재합니다"
+  },
+  "notification": {
+    "taskCreated": "작업을 만들었습니다",
+    "taskUpdated": "작업을 업데이트했습니다",
+    "taskDeleted": "작업을 삭제했습니다",
+    "taskDuplicated": "작업을 복제했습니다",
+    "taskMoved": "작업을 이동했습니다",
+    "taskCompleted": "작업을 완료했습니다",
+    "boardCreated": "보드를 만들었습니다",
+    "boardUpdated": "보드를 업데이트했습니다",
+    "boardDeleted": "보드를 삭제했습니다",
+    "columnCreated": "컬럼을 만들었습니다",
+    "columnUpdated": "컬럼을 업데이트했습니다",
+    "columnDeleted": "컬럼을 삭제했습니다",
+    "labelCreated": "라벨을 만들었습니다",
+    "labelUpdated": "라벨을 업데이트했습니다",
+    "labelDeleted": "라벨을 삭제했습니다",
+    "settingsSaved": "설정을 저장했습니다",
+    "dataExported": "데이터를 내보냈습니다",
+    "dataImported": "데이터를 가져왔습니다",
+    "taskDueTitle": "TaskFlow - 작업 마감",
+    "taskDueBody": "작업 「{{taskTitle}}」의 마감일이 다가오고 있습니다",
+    "taskCompletedTitle": "TaskFlow - 작업 완료",
+    "taskCompletedBody": "작업 「{{taskTitle}}」을(를) 완료했습니다",
+    "actions": {
+      "view": "보기",
+      "dismiss": "닫기"
+    }
+  },
+  "view": {
+    "kanban": "칸반",
+    "table": "테이블",
+    "calendar": "달력",
+    "switchView": "보기 전환"
+  },
+  "help": {
+    "title": "사용 가이드",
+    "closeHelp": "도움말 닫기",
+    "viewSwitch": {
+      "title": "보기 전환",
+      "kanban": {
+        "title": "칸반 보기",
+        "description": "컬럼 단위로 작업을 관리하는 프로젝트 관리 방식"
+      },
+      "calendar": {
+        "title": "달력 보기",
+        "description": "마감일 기준으로 작업을 월별 달력에 표시"
+      },
+      "table": {
+        "title": "테이블 보기",
+        "description": "모든 작업을 목록 형식으로 표시 및 관리, 컬럼 표시 커스터마이징 가능"
+      },
+      "howTo": {
+        "title": "전환 방법",
+        "description": "하위 헤더 오른쪽 끝의 메뉴에서 보기 선택"
+      }
+    },
+    "basicOperations": {
+      "title": "기본 조작",
+      "createBoard": {
+        "title": "보드 만들기",
+        "description": "하위 헤더의 「보드 만들기」 버튼으로 프로젝트 보드 만들기"
+      },
+      "addColumn": {
+        "title": "컬럼 추가",
+        "description": "하위 헤더의 「컬럼 추가」 버튼으로 작업 단계 추가 (칸반 보기 시)"
+      },
+      "createTask": {
+        "title": "작업 만들기",
+        "description": "헤더의 「작업 만들기」 버튼 또는 각 컬럼의 「+」 버튼으로 작업 만들기"
+      },
+      "dragDrop": {
+        "title": "드래그 앤 드롭",
+        "description": "작업을 드래그하여 컬럼 간 이동 (칸반 보기에서 직관적 조작)"
+      },
+      "moveColumn": {
+        "title": "컬럼 이동",
+        "description": "컬럼 헤더의 kebab 아이콘 (⋯)에서 「왼쪽으로 이동」 또는 「오른쪽으로 이동」으로 컬럼 순서 변경 가능"
+      }
+    },
+    "taskManagement": {
+      "title": "작업 관리",
+      "editTask": {
+        "title": "작업 편집",
+        "description": "작업 카드를 클릭하여 상세 보기 및 편집"
+      },
+      "duplicateTask": {
+        "title": "작업 복제",
+        "description": "작업 상세 사이드바의 복제 버튼으로 기존 작업을 같은 컬럼에 복제. 제목에 「(사본)」이 추가되고 하위 작업도 미완료 상태로 복제됨"
+      },
+      "editor": {
+        "title": "설명 에디터",
+        "description": "작업 설명란에서 굵게, 기울임, 링크, 이모지 등의 서식 설정 가능"
+      },
+      "complete": {
+        "title": "완료 기능",
+        "description": "작업 이름 왼쪽의 체크 아이콘으로 즉시 완료 상태로 이동. 완료된 작업은 완료 컬럼 맨 위에 배치됨"
+      },
+      "subtasks": {
+        "title": "하위 작업",
+        "description": "작업 상세 화면에서 체크리스트 형식의 하위 작업 관리. 드래그 핸들 (⋮⋮)을 드래그하여 순서 변경 가능"
+      },
+      "labels": {
+        "title": "라벨",
+        "description": "컬러 라벨로 작업 분류 및 정리"
+      },
+      "dueRecurrence": {
+        "title": "마감일 및 반복 설정",
+        "description": "마감 날짜 시간 설정과 매일, 매주, 매월, 매년 반복 패턴 설정. 기한 초과 작업은 자동 경고"
+      },
+      "priority": {
+        "title": "우선순위 설정",
+        "description": "긴급, 높음, 보통, 낮음 4단계로 우선순위 설정. 우선순위별 필터링 및 정렬 기능 사용 가능"
+      }
+    },
+    "attachments": {
+      "title": "파일 첨부",
+      "fileManagement": {
+        "title": "파일 관리",
+        "description": "드래그 앤 드롭으로 파일 첨부, 이미지 및 텍스트 미리보기, 다운로드 기능"
+      }
+    },
+    "calendarFeature": {
+      "title": "달력 기능",
+      "monthlyView": {
+        "title": "월별 보기",
+        "description": "마감일이 있는 작업을 월별 달력에 표시, 작업을 클릭하여 상세 확인 및 편집"
+      }
+    },
+    "filterSort": {
+      "title": "필터 및 정렬",
+      "filterSort": {
+        "title": "필터 및 정렬",
+        "description": "마감일, 라벨, 우선순위, 완료 상태로 필터. 생성일, 수정일, 마감일, 이름, 우선순위순 정렬 가능"
+      }
+    },
+    "templateManagement": {
+      "title": "템플릿 관리",
+      "templates": {
+        "title": "템플릿 기능",
+        "description": "자주 사용하는 작업 패턴을 템플릿으로 저장 및 관리. 카테고리 분류, 즐겨찾기 등록, 검색 기능으로 효율적 활용"
+      }
+    },
+    "tableView": {
+      "title": "테이블 보기",
+      "columnManagement": {
+        "title": "컬럼 관리",
+        "description": "오른쪽 위 설정 버튼에서 표시 항목 커스터마이징, 작업 수 및 진행 상황을 한눈에 확인"
+      }
+    },
+    "dataManagement": {
+      "title": "데이터 관리",
+      "localStorage": {
+        "title": "로컬 저장",
+        "description": "모든 데이터가 브라우저에 자동 저장"
+      },
+      "import": {
+        "title": "데이터 가져오기",
+        "description": "JSON 파일로 데이터 일괄 가져오기. 가져오기 결과 및 오류 정보는 설정 화면 상단에 메시지로 표시"
+      },
+      "export": {
+        "title": "보드 선택 내보내기",
+        "description": "설정 화면의 데이터 관리에서 원하는 보드를 선택하여 JSON 파일로 내보내기"
+      },
+      "labelManagement": {
+        "title": "라벨 관리",
+        "description": "설정 화면의 라벨 관리에서 모든 보드의 라벨 목록 표시. 라벨 이름, 소속 보드, 사용 횟수로 정렬 가능. 새 라벨 만들기, 편집, 삭제 가능. 작업 결과는 설정 화면 상단에 메시지로 표시"
+      },
+      "defaultColumn": {
+        "title": "기본 컬럼 설정",
+        "description": "설정 화면의 칸반 설정에서 새 보드 만들 때 사용되는 기본 컬럼 설정. 컬럼 이름 편집, 추가, 삭제, 순서 변경 (드래그 앤 드롭 지원) 가능"
+      },
+      "management": {
+        "title": "관리 기능",
+        "description": "휴지통에서 작업 복원, 완료된 작업 지우기, 템플릿 백업 및 복원 가능"
+      }
+    },
+    "tips": {
+      "title": "유용한 팁",
+      "keyboard": {
+        "title": "키보드 조작",
+        "description": "Escape 키로 대화상자 및 사이드바 닫기"
+      },
+      "offline": {
+        "title": "오프라인 지원",
+        "description": "데이터가 브라우저에 저장되어 오프라인에서도 사용 가능"
+      },
+      "efficiency": {
+        "title": "효율성 팁",
+        "description": "템플릿 기능, 작업 복제, 우선순위 필터를 활용하여 작업 효율 향상"
+      }
+    }
+  },
+  "subtask": {
+    "subtask": "하위 작업",
+    "addSubtask": "하위 작업 추가",
+    "editSubtask": "하위 작업 편집",
+    "deleteSubtask": "하위 작업 삭제",
+    "completeSubtask": "하위 작업 완료",
+    "noSubtasks": "하위 작업이 없습니다",
+    "progress": "진행률"
+  },
+  "attachment": {
+    "attachment": "첨부파일",
+    "fileAttachment": "파일 첨부",
+    "addAttachment": "첨부파일 추가",
+    "removeAttachment": "첨부파일 제거",
+    "noAttachments": "첨부파일이 없습니다",
+    "maxSize": "최대 파일 크기: {{size}}MB",
+    "maxSizeLabel": "최대 {{size}}MB",
+    "dragDrop": "파일 드래그 앤 드롭",
+    "dragDropOrClick": "파일을 여기로 드래그하거나 클릭하여 선택"
+  },
+  "time": {
+    "time": "시간",
+    "setTime": "시간 설정",
+    "removeTime": "시간 설정 제거",
+    "noTime": "시간 없음",
+    "hours": "시간",
+    "minutes": "분"
+  },
+  "about": {
+    "title": "애플리케이션 정보",
+    "appName": "애플리케이션 이름",
+    "version": "버전",
+    "developer": "개발자"
+  },
+  "pwa": {
+    "installTitle": "TaskFlow 설치",
+    "installDescription": "홈 화면에 추가하여 빠르게 액세스",
+    "install": "설치",
+    "installing": "설치 중...",
+    "later": "나중에",
+    "close": "닫기"
+  },
+  "table": {
+    "columnSettings": {
+      "title": "컬럼 상세 설정",
+      "description": "컬럼을 드래그하여 정렬, 표시 전환, 너비 조정이 가능합니다.",
+      "widthHelp": "너비는 50px~1000px 범위로 입력하세요.",
+      "unsavedChanges": "저장되지 않은 변경사항이 있습니다",
+      "displayColumns": "표시 컬럼",
+      "detailSettings": "상세 설정",
+      "resetToDefault": "기본값으로 복원",
+      "width": "너비",
+      "widthLabel": "너비:",
+      "hideColumn": "컬럼 숨기기",
+      "showColumn": "컬럼 표시",
+      "moveUp": "컬럼 위로 이동",
+      "moveDown": "컬럼 아래로 이동",
+      "deleteColumn": "컬럼 삭제"
+    }
+  },
+  "ai": {
+    "input": {
+      "placeholder": "예: 내일까지 보고서 제출...",
+      "ariaLabel": "AI 자연어 작업 입력",
+      "description": "자연어로 작업을 입력하세요. AI가 자동으로 분석하여 작업을 생성합니다."
+    },
+    "button": {
+      "create": "생성",
+      "creating": "생성 중..."
+    },
+    "success": {
+      "taskCreated": "작업 \"{{title}}\" 생성됨"
+    },
+    "errors": {
+      "emptyQuery": "입력 내용이 비어있습니다",
+      "queryTooLong": "입력이 너무 깁니다 (최대 1000자)",
+      "graphqlError": "GraphQL 오류가 발생했습니다",
+      "noDataReturned": "데이터가 반환되지 않았습니다",
+      "networkError": "네트워크 오류가 발생했습니다",
+      "taskCreationFailed": "작업 생성 실패",
+      "unexpectedError": "예기치 않은 오류가 발생했습니다"
+    }
+  }
+}

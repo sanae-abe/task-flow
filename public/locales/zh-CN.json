@@ -1,0 +1,728 @@
+{
+  "common": {
+    "save": "保存",
+    "cancel": "取消",
+    "delete": "删除",
+    "edit": "编辑",
+    "close": "关闭",
+    "create": "创建",
+    "update": "更新",
+    "confirm": "确认",
+    "back": "返回",
+    "next": "下一步",
+    "add": "添加",
+    "remove": "移除",
+    "search": "搜索",
+    "filter": "筛选",
+    "sort": "排序",
+    "clear": "清除",
+    "reset": "重置",
+    "apply": "应用",
+    "loading": "加载中...",
+    "loadingEditor": "编辑器加载中...",
+    "noData": "暂无数据",
+    "error": "发生错误",
+    "success": "成功",
+    "clearFilter": "清除筛选",
+    "reload": "重新加载",
+    "later": "稍后",
+    "installing": "安装中...",
+    "install": "安装",
+    "discardChanges": "放弃更改？",
+    "discardChangesMessage": "确定要放弃您的编辑内容吗？",
+    "discard": "放弃"
+  },
+  "header": {
+    "createTask": "创建任务",
+    "help": "帮助",
+    "settings": "设置",
+    "more": "更多",
+    "recycleBin": "回收站"
+  },
+  "subheader": {
+    "addColumn": "添加栏目",
+    "selectViewMode": "选择视图模式",
+    "deleteBoard": "删除项目",
+    "deleteBoardMessage": "删除「{{title}}」？",
+    "clearCompleted": "清除已完成任务",
+    "clearCompletedMessage": "删除所有已完成的任务？"
+  },
+  "task": {
+    "title": "任务",
+    "taskTitle": "任务名称",
+    "description": "描述",
+    "descriptionNotSet": "未设置描述",
+    "dueDate": "截止日期",
+    "priority": "优先级",
+    "labels": "标签",
+    "attachments": "附件",
+    "fileAttachments": "文件附件",
+    "subtasks": "子任务",
+    "status": "状态",
+    "createdAt": "创建日期",
+    "updatedAt": "更新日期",
+    "completedAt": "完成日期",
+    "completedDateTime": "完成日期时间",
+    "createdDateTime": "创建日期时间",
+    "updatedDateTime": "更新日期时间",
+    "createdUpdatedDateTime": "创建/更新日期时间",
+    "overdue": "已逾期",
+    "dueToday": "今日到期",
+    "dueTomorrow": "明日到期",
+    "subtaskProgress": "子任务进度",
+    "duplicate": "复制",
+    "deleteConfirm": "确定要删除此任务吗？",
+    "duplicateConfirm": "确定要复制此任务吗？",
+    "noTasks": "暂无任务",
+    "addTask": "添加任务",
+    "editTask": "编辑任务",
+    "taskDetails": "任务详情",
+    "moveTask": "移动任务",
+    "move": "移动",
+    "selectTargetBoard": "选择目标看板",
+    "boardInfo": "{{columns}}栏·{{tasks}}任务",
+    "completeTask": "完成任务",
+    "reopenTask": "重新打开任务",
+    "closeTaskDetail": "关闭任务详情",
+    "deleteTask": "删除任务",
+    "deleteTaskConfirm": "删除「{{title}}」？",
+    "noFilteredTasks": "没有符合筛选条件的任务",
+    "createTask": "创建任务",
+    "changeStatus": "更改状态",
+    "incompleteTaskCount": "未完成任务数",
+    "noUrgentTasks": "没有紧急任务",
+    "recurrenceSettings": "重复设置",
+    "descriptionPlaceholder": "输入任务描述...",
+    "selectDueDate": "选择截止日期"
+  },
+  "board": {
+    "board": "看板",
+    "boardName": "看板名称",
+    "createBoard": "创建看板",
+    "createBoardTitle": "创建新看板",
+    "editBoard": "编辑看板",
+    "deleteBoard": "删除看板",
+    "selectBoard": "选择看板",
+    "noBoards": "暂无看板",
+    "defaultBoard": "默认看板",
+    "currentBoard": "当前看板",
+    "noBoardSelected": "未选择看板",
+    "boardSettings": "看板设置",
+    "boardSettingsMenu": "打开看板设置菜单",
+    "boardManagement": "看板管理",
+    "editBoardName": "编辑看板名称",
+    "boardNamePlaceholder": "输入看板名称",
+    "taskManagement": "任务管理",
+    "clearCompleted": "清除已完成任务",
+    "dangerActions": "危险操作"
+  },
+  "column": {
+    "column": "栏目",
+    "columnName": "栏目名称",
+    "addColumn": "添加栏目",
+    "addColumnTitle": "添加新栏目",
+    "editColumn": "编辑栏目",
+    "deleteColumn": "删除栏目",
+    "moveLeft": "向左移动",
+    "moveRight": "向右移动",
+    "setAsDefault": "设为默认",
+    "defaultColumn": "默认栏目",
+    "deleteColumnConfirm": "确定要删除此栏目吗？",
+    "newColumnPlaceholder": "新栏目名称",
+    "columnNamePlaceholder": "输入栏目名称",
+    "columnNameLabel": "栏目「{{name}}」的名称",
+    "moveUp": "向上移动{{name}}",
+    "moveDown": "向下移动{{name}}",
+    "deleteColumnLabel": "删除{{name}}",
+    "columnSettings": "栏目设置",
+    "columnMovement": "栏目移动",
+    "columnManagement": "栏目管理",
+    "insertPosition": "插入位置",
+    "insertFirst": "第一个",
+    "insertAfter": "在「{{title}}」之后"
+  },
+  "label": {
+    "label": "标签",
+    "labelName": "标签名称",
+    "labelNamePlaceholder": "输入标签名称",
+    "labelColor": "标签颜色",
+    "color": "颜色",
+    "preview": "预览",
+    "targetBoard": "目标看板",
+    "createLabel": "创建标签",
+    "editLabel": "编辑标签",
+    "deleteLabel": "删除标签",
+    "noLabels": "暂无标签",
+    "selectLabel": "选择标签",
+    "addNewLabel": "添加新标签",
+    "openLabelMenu": "打开标签选择菜单",
+    "manageLabels": "管理标签",
+    "deleteLabelConfirm": "确定要删除此标签吗？",
+    "deleteMessage": "删除标签「{{name}}」？",
+    "deleteWithTasks": "将从{{count}}个任务中移除。",
+    "saveFailed": "标签保存失败",
+    "duplicateName": "已存在同名标签",
+    "boardName": "所属看板",
+    "usageCount": "使用次数",
+    "unknown": "未知"
+  },
+  "priority": {
+    "priority": "优先级",
+    "critical": "紧急",
+    "criticalDesc": "需要立即处理",
+    "high": "高",
+    "highDesc": "近期需要处理",
+    "medium": "中",
+    "mediumDesc": "正常优先级",
+    "low": "低",
+    "lowDesc": "有时间时处理",
+    "noPriority": "无",
+    "noPriorityDesc": "未设置优先级",
+    "unset": "未设置",
+    "setPriority": "设置优先级",
+    "ariaLabel": "优先级"
+  },
+  "recurrence": {
+    "recurrence": "重复",
+    "noRecurrence": "不重复",
+    "detailTitle": "重复设置详情",
+    "daily": "每天",
+    "weekly": "每周",
+    "monthly": "每月",
+    "yearly": "每年",
+    "custom": "自定义",
+    "pattern": "模式",
+    "interval": "间隔",
+    "intervalUnit": {
+      "daily": "天",
+      "weekly": "周",
+      "monthly": "月",
+      "yearly": "年"
+    },
+    "endDate": "结束日期",
+    "noEndDate": "无结束日期",
+    "endCondition": "结束条件",
+    "maxOccurrences": "最大次数",
+    "times": "次",
+    "occurrences": "次数",
+    "selectDueDate": "选择截止日期",
+    "openCalendar": "打开日历",
+    "repeatEvery": "重复间隔",
+    "repeatOn": "重复日期",
+    "previewLabel": "设置内容",
+    "virtualTaskLabel": "(重复计划)"
+  },
+  "calendar": {
+    "calendar": "日历",
+    "today": "今天",
+    "month": "月",
+    "week": "周",
+    "day": "日",
+    "noEvents": "无事件",
+    "year": "年",
+    "previousMonth": "上个月",
+    "nextMonth": "下个月",
+    "months": {
+      "january": "1月",
+      "february": "2月",
+      "march": "3月",
+      "april": "4月",
+      "may": "5月",
+      "june": "6月",
+      "july": "7月",
+      "august": "8月",
+      "september": "9月",
+      "october": "10月",
+      "november": "11月",
+      "december": "12月"
+    },
+    "weekdays": {
+      "sunday": "日",
+      "monday": "一",
+      "tuesday": "二",
+      "wednesday": "三",
+      "thursday": "四",
+      "friday": "五",
+      "saturday": "六"
+    },
+    "moreTasksCount": "还有{{count}}项"
+  },
+  "settings": {
+    "settings": "设置",
+    "general": "通用",
+    "board": "看板",
+    "labels": "标签",
+    "recycleBin": "回收站",
+    "dataManagement": "数据管理",
+    "language": "语言",
+    "theme": "主题",
+    "notifications": "通知",
+    "defaultColumn": "默认栏目",
+    "autoDeleteDays": "自动删除天数",
+    "saveSettings": "保存设置",
+    "resetSettings": "重置设置",
+    "boardSettings": {
+      "title": "默认栏目设置",
+      "description": "可以设置创建新看板时的默认栏目。",
+      "loadingSettings": "设置加载中...",
+      "autoSaveSuccess": "设置已自动保存",
+      "autoSaveError": "自动保存失败",
+      "saveSuccess": "设置已保存",
+      "saveError": "设置保存失败",
+      "loadError": "设置加载失败",
+      "minColumnRequired": "至少需要一个栏目"
+    },
+    "recycleBinSettings": {
+      "title": "回收站设置",
+      "description": "设置已删除看板、栏目、任务在回收站中的保留时间。\n超过期限的数据将自动永久删除。选择无限制则不会自动删除。",
+      "presetTitle": "常用设置",
+      "retentionLabel": "保留期限",
+      "retentionUnit": "天",
+      "retentionHelp": "可设置1~365天范围，或点击「无限制」按钮设为无限制（推荐：30天）",
+      "saveButton": "保存设置",
+      "saving": "保存中...",
+      "importantNote": "缩短保留期限将重新计算回收站中现有数据的期限。建议在更改期限前恢复所需数据。",
+      "presets": {
+        "oneWeek": "1周",
+        "oneWeekDesc": "短期保留。适合频繁整理的情况",
+        "twoWeeks": "2周",
+        "twoWeeksDesc": "适中的保留期限。适合日常工作",
+        "oneMonth": "1个月",
+        "oneMonthDesc": "推荐设置。适合大多数用途的平衡期限",
+        "threeMonths": "3个月",
+        "threeMonthsDesc": "长期保留。适合处理重要任务的情况",
+        "unlimited": "无限制",
+        "unlimitedDesc": "不会自动删除。需要手动管理"
+      }
+    }
+  },
+  "template": {
+    "template": "模板",
+    "templateName": "模板名称",
+    "createTemplate": "创建模板",
+    "useTemplate": "使用模板",
+    "editTemplate": "编辑模板",
+    "deleteTemplate": "删除模板",
+    "noTemplates": "暂无模板",
+    "saveAsTemplate": "另存为模板",
+    "category": "分类",
+    "favorite": "收藏",
+    "addToFavorites": "添加到收藏",
+    "removeFromFavorites": "从收藏中移除",
+    "createNormal": "常规创建",
+    "createFromTemplate": "从模板创建",
+    "creatingFromTemplate": "从模板「{{name}}」创建中",
+    "searchPlaceholder": "搜索模板...",
+    "allCategories": "所有分类",
+    "usageCount": "使用次数",
+    "timesUsed": "{{count}}次",
+    "editTemplateAria": "编辑模板「{{name}}」",
+    "deleteTemplateAria": "删除模板「{{name}}」",
+    "noMatchingTemplates": "没有符合条件的模板",
+    "noTemplatesRegistered": "未注册模板。",
+    "createTemplateInSettings": "请从设置页面创建模板。",
+    "favoriteTemplates": "收藏的模板",
+    "otherTemplates": "其他模板",
+    "categoryAndUsage": "分类：{{category}} | 使用次数：{{count}}次",
+    "categories": {
+      "work": "工作",
+      "workDesc": "工作相关任务",
+      "personal": "个人",
+      "personalDesc": "私人任务",
+      "project": "项目",
+      "projectDesc": "项目相关任务",
+      "meeting": "会议",
+      "meetingDesc": "会议准备和记录",
+      "routine": "例行",
+      "routineDesc": "定期工作",
+      "other": "其他",
+      "otherDesc": "其他任务"
+    },
+    "management": {
+      "title": "模板管理",
+      "loading": "模板加载中...",
+      "createSuccess": "模板「{{name}}」已创建",
+      "createError": "模板创建失败",
+      "updateSuccess": "模板「{{name}}」已更新",
+      "updateError": "模板更新失败",
+      "deleteSuccess": "模板「{{name}}」已删除",
+      "deleteError": "模板删除失败",
+      "deleteConfirmTitle": "删除模板",
+      "deleteConfirmMessage": "删除模板「{{name}}」？此操作无法撤销。",
+      "favoriteAdded": "模板「{{name}}」已添加到收藏",
+      "favoriteRemoved": "模板「{{name}}」已从收藏中移除"
+    }
+  },
+  "recycleBin": {
+    "recycleBin": "回收站",
+    "restore": "恢复",
+    "permanentDelete": "永久删除",
+    "emptyRecycleBin": "清空回收站",
+    "noItems": "回收站为空",
+    "restoreConfirm": "确定要恢复此项吗？",
+    "permanentDeleteConfirm": "确定要永久删除此项吗？此操作无法撤销。",
+    "emptyConfirm": "确定要清空回收站吗？此操作无法撤销。",
+    "deletedAt": "删除时间",
+    "autoDelete": "自动删除",
+    "autoDeleteDescription": "删除后{{days}}天自动删除项目",
+    "itemCount": "{{count}}项",
+    "recycleBinWithCount": "回收站（{{count}}项）",
+    "emptyAllConfirm": "永久删除回收站中的所有{{count}}项。此操作无法撤销。确定要执行吗？",
+    "emptyAllBoardsConfirm": "永久删除回收站中的所有{{count}}个看板。此操作无法撤销。确定要执行吗？",
+    "type": "类型",
+    "typeBoard": "看板",
+    "typeColumn": "栏目",
+    "typeTask": "任务",
+    "title": "标题",
+    "deleting": "删除中...",
+    "scheduledDeletion": "计划删除",
+    "notSet": "未设置"
+  },
+  "filter": {
+    "filter": "筛选",
+    "filterBy": "筛选条件",
+    "sortBy": "排序",
+    "all": "全部",
+    "completed": "已完成",
+    "incomplete": "未完成",
+    "withDueDate": "有截止日期",
+    "withoutDueDate": "无截止日期",
+    "byPriority": "按优先级",
+    "byDueDate": "按截止日期",
+    "byCreatedDate": "按创建日期",
+    "byUpdatedDate": "按更新日期",
+    "ascending": "升序",
+    "descending": "降序",
+    "allTasks": "所有任务",
+    "selectFilter": "选择筛选",
+    "dueWithin3Days": "3天内到期",
+    "dueToday": "今日到期",
+    "overdue": "已逾期",
+    "filterByLabel": "按标签筛选",
+    "filterByPriority": "按优先级筛选",
+    "labelSelected": "标签：已选择{{count}}个",
+    "prioritySelected": "优先级：已选择{{count}}个",
+    "tasksWithLabels": "有标签的任务",
+    "allLabels": "所有标签",
+    "currentSort": "当前排序：{{sort}}",
+    "manual": "手动",
+    "priority": "按优先级",
+    "createdAt": "按创建日期",
+    "updatedAt": "按更新日期",
+    "dueDate": "按截止日期",
+    "title": "按名称"
+  },
+  "export": {
+    "export": "导出",
+    "import": "导入",
+    "exportData": "导出数据",
+    "importData": "导入数据",
+    "importMerge": "合并现有数据",
+    "importReplace": "替换所有数据",
+    "exportAll": "导出全部",
+    "exportBoard": "导出看板",
+    "selectBoards": "选择看板",
+    "downloadJSON": "下载JSON",
+    "selectFile": "选择文件",
+    "dragDropFile": "拖放文件",
+    "importSuccess": "导入成功",
+    "importError": "导入失败",
+    "invalidFile": "无效的文件格式",
+    "exportRange": "导出范围",
+    "allData": "全部数据",
+    "exportDescription": "导出数据。选择全部数据或特定看板。",
+    "dataOverview": "数据概览",
+    "taskCount": "{{count}}个任务",
+    "boardCount": "{{count}}个看板",
+    "labelCount": "{{count}}个标签",
+    "attachmentCount": "{{count}}个附件",
+    "approximateSize": "约{{size}}"
+  },
+  "validation": {
+    "required": "必填项",
+    "tooLong": "输入过长（最多{{max}}个字符）",
+    "tooShort": "输入过短（至少{{min}}个字符）",
+    "invalidFormat": "格式不正确",
+    "invalidDate": "无效日期",
+    "invalidEmail": "无效的电子邮件地址",
+    "invalidURL": "无效的URL",
+    "fileTooLarge": "文件太大（最大{{max}}MB）",
+    "columnNameRequired": "请输入栏目名称",
+    "columnNameDuplicate": "已存在同名栏目"
+  },
+  "notification": {
+    "taskCreated": "任务已创建",
+    "taskUpdated": "任务已更新",
+    "taskDeleted": "任务已删除",
+    "taskDuplicated": "任务已复制",
+    "taskMoved": "任务已移动",
+    "taskCompleted": "任务已完成",
+    "boardCreated": "看板已创建",
+    "boardUpdated": "看板已更新",
+    "boardDeleted": "看板已删除",
+    "columnCreated": "栏目已创建",
+    "columnUpdated": "栏目已更新",
+    "columnDeleted": "栏目已删除",
+    "labelCreated": "标签已创建",
+    "labelUpdated": "标签已更新",
+    "labelDeleted": "标签已删除",
+    "settingsSaved": "设置已保存",
+    "dataExported": "数据已导出",
+    "dataImported": "数据已导入",
+    "taskDueTitle": "TaskFlow - 任务到期",
+    "taskDueBody": "任务「{{taskTitle}}」即将到期",
+    "taskCompletedTitle": "TaskFlow - 任务已完成",
+    "taskCompletedBody": "任务「{{taskTitle}}」已完成",
+    "actions": {
+      "view": "查看",
+      "dismiss": "关闭"
+    }
+  },
+  "view": {
+    "kanban": "看板",
+    "table": "表格",
+    "calendar": "日历",
+    "switchView": "切换视图"
+  },
+  "help": {
+    "title": "使用指南",
+    "closeHelp": "关闭帮助",
+    "viewSwitch": {
+      "title": "视图切换",
+      "kanban": {
+        "title": "看板视图",
+        "description": "以栏目为单位管理任务的项目管理方式"
+      },
+      "calendar": {
+        "title": "日历视图",
+        "description": "基于截止日期在月历中显示任务"
+      },
+      "table": {
+        "title": "表格视图",
+        "description": "以列表形式显示和管理所有任务，可自定义栏目显示"
+      },
+      "howTo": {
+        "title": "切换方法",
+        "description": "从副标题栏右端的菜单中选择视图"
+      }
+    },
+    "basicOperations": {
+      "title": "基本操作",
+      "createBoard": {
+        "title": "创建看板",
+        "description": "使用副标题栏的「创建看板」按钮创建项目看板"
+      },
+      "addColumn": {
+        "title": "添加栏目",
+        "description": "使用副标题栏的「添加栏目」按钮添加工作阶段（看板视图时）"
+      },
+      "createTask": {
+        "title": "创建任务",
+        "description": "使用标题栏的「创建任务」按钮或各栏目的「+」按钮创建任务"
+      },
+      "dragDrop": {
+        "title": "拖放",
+        "description": "拖动任务在栏目间移动（看板视图中的直观操作）"
+      },
+      "moveColumn": {
+        "title": "移动栏目",
+        "description": "从栏目标题的菜单图标（⋯）中选择「向左移动」或「向右移动」来更改栏目顺序"
+      }
+    },
+    "taskManagement": {
+      "title": "任务管理",
+      "editTask": {
+        "title": "编辑任务",
+        "description": "点击任务卡片查看和编辑详情"
+      },
+      "duplicateTask": {
+        "title": "复制任务",
+        "description": "使用任务详情侧边栏的复制按钮将现有任务复制到同一栏目。标题会添加「(副本)」，子任务也会以未完成状态复制"
+      },
+      "editor": {
+        "title": "描述编辑器",
+        "description": "在任务描述栏中可以设置粗体、斜体、链接、表情符号等格式"
+      },
+      "complete": {
+        "title": "完成功能",
+        "description": "点击任务名称左侧的勾选图标可立即移至完成状态。已完成的任务会放置在完成栏目的顶部"
+      },
+      "subtasks": {
+        "title": "子任务",
+        "description": "在任务详情页面以清单形式管理子任务。拖动拖动手柄（⋮⋮）可更改顺序"
+      },
+      "labels": {
+        "title": "标签",
+        "description": "使用彩色标签对任务进行分类和整理"
+      },
+      "dueRecurrence": {
+        "title": "截止日期和重复设置",
+        "description": "设置截止日期时间以及每天、每周、每月、每年的重复模式。逾期任务会自动警告"
+      },
+      "priority": {
+        "title": "优先级设置",
+        "description": "设置紧急、高、中、低4个级别的优先级。可按优先级筛选和排序"
+      }
+    },
+    "attachments": {
+      "title": "文件附件",
+      "fileManagement": {
+        "title": "文件管理",
+        "description": "支持拖放附加文件、预览图片和文本、下载功能"
+      }
+    },
+    "calendarFeature": {
+      "title": "日历功能",
+      "monthlyView": {
+        "title": "月视图",
+        "description": "在月历中显示有截止日期的任务，点击任务可查看和编辑详情"
+      }
+    },
+    "filterSort": {
+      "title": "筛选和排序",
+      "filterSort": {
+        "title": "筛选和排序",
+        "description": "按截止日期、标签、优先级、完成状态筛选。按创建日期、更新日期、截止日期、名称、优先级排序"
+      }
+    },
+    "templateManagement": {
+      "title": "模板管理",
+      "templates": {
+        "title": "模板功能",
+        "description": "将常用任务模式保存和管理为模板。通过分类、收藏、搜索功能高效使用"
+      }
+    },
+    "tableView": {
+      "title": "表格视图",
+      "columnManagement": {
+        "title": "栏目管理",
+        "description": "从右上角的设置按钮自定义显示项目，一目了然地查看任务数量和进度"
+      }
+    },
+    "dataManagement": {
+      "title": "数据管理",
+      "localStorage": {
+        "title": "本地存储",
+        "description": "所有数据自动保存到浏览器"
+      },
+      "import": {
+        "title": "数据导入",
+        "description": "使用JSON文件批量导入数据。导入结果和错误信息会在设置页面顶部显示"
+      },
+      "export": {
+        "title": "选择看板导出",
+        "description": "从设置页面的数据管理中选择任意看板并导出为JSON文件"
+      },
+      "labelManagement": {
+        "title": "标签管理",
+        "description": "在设置页面的标签管理中显示所有看板的标签。可按标签名称、所属看板、使用次数排序。可创建、编辑、删除新标签。操作结果会在设置页面顶部显示"
+      },
+      "defaultColumn": {
+        "title": "默认栏目设置",
+        "description": "在设置页面的看板设置中，设置创建新看板时使用的默认栏目。可编辑、添加、删除、重新排序栏目名称（支持拖放）"
+      },
+      "management": {
+        "title": "管理功能",
+        "description": "从回收站恢复任务、清除已完成任务、备份和恢复模板"
+      }
+    },
+    "tips": {
+      "title": "实用技巧",
+      "keyboard": {
+        "title": "键盘操作",
+        "description": "使用Escape键关闭对话框和侧边栏"
+      },
+      "offline": {
+        "title": "离线支持",
+        "description": "数据保存在浏览器中，可离线使用"
+      },
+      "efficiency": {
+        "title": "效率提示",
+        "description": "利用模板功能、任务复制、优先级筛选提高工作效率"
+      }
+    }
+  },
+  "subtask": {
+    "subtask": "子任务",
+    "addSubtask": "添加子任务",
+    "editSubtask": "编辑子任务",
+    "deleteSubtask": "删除子任务",
+    "completeSubtask": "完成子任务",
+    "noSubtasks": "暂无子任务",
+    "progress": "进度"
+  },
+  "attachment": {
+    "attachment": "附件",
+    "fileAttachment": "文件附件",
+    "addAttachment": "添加附件",
+    "removeAttachment": "删除附件",
+    "noAttachments": "暂无附件",
+    "maxSize": "最大文件大小：{{size}}MB",
+    "maxSizeLabel": "最大{{size}}MB",
+    "dragDrop": "拖放文件",
+    "dragDropOrClick": "将文件拖放到此处，或点击选择"
+  },
+  "time": {
+    "time": "时间",
+    "setTime": "设置时间",
+    "removeTime": "删除时间设置",
+    "noTime": "无时间",
+    "hours": "小时",
+    "minutes": "分钟"
+  },
+  "about": {
+    "title": "应用信息",
+    "appName": "应用名称",
+    "version": "版本",
+    "developer": "开发者"
+  },
+  "pwa": {
+    "installTitle": "安装TaskFlow",
+    "installDescription": "添加到主屏幕以快速访问",
+    "install": "安装",
+    "installing": "安装中...",
+    "later": "稍后",
+    "close": "关闭"
+  },
+  "table": {
+    "columnSettings": {
+      "title": "栏目详细设置",
+      "description": "可以拖动栏目进行排序、切换显示、调整宽度。",
+      "widthHelp": "请输入50px~1000px范围内的宽度。",
+      "unsavedChanges": "有未保存的更改",
+      "displayColumns": "显示栏目",
+      "detailSettings": "详细设置",
+      "resetToDefault": "恢复默认",
+      "width": "宽度",
+      "widthLabel": "宽度：",
+      "hideColumn": "隐藏栏目",
+      "showColumn": "显示栏目",
+      "moveUp": "向上移动栏目",
+      "moveDown": "向下移动栏目",
+      "deleteColumn": "删除栏目"
+    }
+  },
+  "ai": {
+    "input": {
+      "placeholder": "例如：明天之前提交报告...",
+      "ariaLabel": "AI自然语言任务输入",
+      "description": "请用自然语言输入任务。AI将自动解析并创建任务。"
+    },
+    "button": {
+      "create": "创建",
+      "creating": "创建中..."
+    },
+    "success": {
+      "taskCreated": "任务"{{title}}"已创建"
+    },
+    "errors": {
+      "emptyQuery": "输入内容为空",
+      "queryTooLong": "输入过长（最多1000个字符）",
+      "graphqlError": "发生GraphQL错误",
+      "noDataReturned": "未返回数据",
+      "networkError": "发生网络错误",
+      "taskCreationFailed": "任务创建失败",
+      "unexpectedError": "发生意外错误"
+    }
+  }
+}
