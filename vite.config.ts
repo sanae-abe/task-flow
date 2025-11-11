@@ -42,6 +42,9 @@ export default defineConfig(({ mode }) => ({
       '@/utils': path.resolve(__dirname, 'src/utils'),
       '@/contexts': path.resolve(__dirname, 'src/contexts'),
       '@/lib': path.resolve(__dirname, 'src/lib'),
+      // Force single React instance by aliasing to specific paths
+      'react': path.resolve(__dirname, 'node_modules/react'),
+      'react-dom': path.resolve(__dirname, 'node_modules/react-dom'),
     },
     // React重複排除（Apollo Clientとの競合を防ぐ）
     dedupe: ['react', 'react-dom'],
@@ -81,17 +84,25 @@ export default defineConfig(({ mode }) => ({
         entryFileNames: 'assets/js/[name]-[hash].js',
         // Manual chunks for GraphQL and heavy dependencies
         manualChunks: id => {
-          // React core libraries - MUST be first to ensure single instance
-          if (id.includes('node_modules/react/') || id.includes('node_modules/react-dom/')) {
+          // React core libraries - MUST be first and catch ALL react imports
+          // This prevents React from being duplicated in other chunks
+          // Enhanced pattern to catch React in all possible paths + React ecosystem packages
+          if (
+            id.includes('node_modules/react/') ||
+            id.includes('node_modules/react-dom/') ||
+            id.includes('/react/') ||
+            id.includes('/react-dom/') ||
+            // Windows paths
+            id.includes('\\react\\') ||
+            id.includes('\\react-dom\\') ||
+            // Direct package names
+            id.match(/[\\/]node_modules[\\/]react[\\/]/) ||
+            id.match(/[\\/]node_modules[\\/]react-dom[\\/]/) ||
+            // React ecosystem packages (scheduler, use-sync-external-store, etc.)
+            id.includes('node_modules/scheduler/') ||
+            id.includes('node_modules/use-sync-external-store/')
+          ) {
             return 'react-vendor';
-          }
-          // Apollo Client chunk (GraphQL client) - should NOT include react
-          if (id.includes('@apollo/client') || id.includes('@apollo')) {
-            return 'apollo-client';
-          }
-          // GraphQL core chunk
-          if (id.includes('graphql') && !id.includes('@apollo')) {
-            return 'graphql-core';
           }
           // Lexical editor chunk (heavy rich text editor)
           if (id.includes('lexical') || id.includes('@lexical')) {
@@ -117,15 +128,25 @@ export default defineConfig(({ mode }) => ({
           if (id.includes('react-day-picker')) {
             return 'calendar';
           }
-          // Other React libraries (not core react/react-dom)
-          if (
-            id.includes('react') &&
-            !id.includes('node_modules/react/') &&
-            !id.includes('node_modules/react-dom/') &&
-            !id.includes('react-day-picker') &&
-            !id.includes('react-router')
-          ) {
-            return 'react-vendor';
+          // React Router chunk (depends on React, must be separate from vendor)
+          if (id.includes('react-router') || id.includes('react-router-dom')) {
+            return 'react-router';
+          }
+          // Apollo Client chunk (GraphQL client) - AFTER React check
+          if (id.includes('@apollo/client') || id.includes('@apollo')) {
+            return 'apollo-client';
+          }
+          // GraphQL core chunk
+          if (id.includes('graphql') && !id.includes('@apollo')) {
+            return 'graphql-core';
+          }
+          // Sentry chunk (monitoring, separate from vendor)
+          if (id.includes('@sentry')) {
+            return 'sentry';
+          }
+          // Vercel Analytics chunk (separate from vendor)
+          if (id.includes('@vercel/analytics') || id.includes('@vercel/speed-insights')) {
+            return 'vercel';
           }
           // Node modules (other vendors)
           if (id.includes('node_modules')) {

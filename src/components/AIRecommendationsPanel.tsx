@@ -22,9 +22,10 @@
  * @see /Users/sanae.abe/workspace/taskflow-app/src/hooks/useAIRecommendations.ts
  */
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Sparkles, RefreshCw, AlertCircle, Calendar, Flag } from 'lucide-react';
+import DOMPurify from 'dompurify';
 import { Button } from './ui/button';
 import {
   Card,
@@ -96,6 +97,42 @@ export const AIRecommendationsPanel: React.FC<AIRecommendationsPanelProps> = ({
       pollInterval,
     }
   );
+
+  /**
+   * Sanitize HTML description for safe rendering
+   */
+  const sanitizedDescription = useMemo(() => {
+    if (!recommendation?.description) {
+      return null;
+    }
+
+    // Sanitize HTML to prevent XSS attacks
+    return DOMPurify.sanitize(recommendation.description, {
+      ALLOWED_TAGS: [
+        'p',
+        'br',
+        'strong',
+        'em',
+        'u',
+        's',
+        'a',
+        'ul',
+        'ol',
+        'li',
+        'h1',
+        'h2',
+        'h3',
+        'h4',
+        'h5',
+        'h6',
+        'code',
+        'pre',
+        'blockquote',
+      ],
+      ALLOWED_ATTR: ['href', 'target', 'rel', 'class'],
+      ALLOW_DATA_ATTR: false,
+    });
+  }, [recommendation?.description]);
 
   /**
    * Handle refresh button click
@@ -282,10 +319,11 @@ export const AIRecommendationsPanel: React.FC<AIRecommendationsPanelProps> = ({
             </div>
 
             {/* Task Description (if available) */}
-            {recommendation.description && (
-              <p className='line-clamp-2 text-sm text-muted-foreground'>
-                {recommendation.description}
-              </p>
+            {sanitizedDescription && (
+              <div
+                className='line-clamp-2 text-sm text-muted-foreground [&_p]:m-0 [&_strong]:font-semibold [&_em]:italic [&_code]:rounded [&_code]:bg-muted [&_code]:px-1 [&_code]:py-0.5 [&_code]:text-xs'
+                dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
+              />
             )}
 
             {/* AI Reasoning (future enhancement placeholder) */}
