@@ -84,23 +84,45 @@ export default defineConfig(({ mode }) => ({
         entryFileNames: 'assets/js/[name]-[hash].js',
         // Manual chunks for GraphQL and heavy dependencies
         manualChunks: id => {
-          // React core libraries - MUST be first and catch ALL react imports
-          // This prevents React from being duplicated in other chunks
-          // Enhanced pattern to catch React in all possible paths + React ecosystem packages
+          // PRIORITY 1: React CORE only (react + react-dom + internals)
+          // This chunk MUST load FIRST before any other code that uses React
+          // Separated from react-vendor to ensure maximum priority in modulepreload order
           if (
+            // Core React packages
             id.includes('node_modules/react/') ||
             id.includes('node_modules/react-dom/') ||
-            id.includes('/react/') ||
-            id.includes('/react-dom/') ||
+            id.includes('/react/index') ||
+            id.includes('/react-dom/index') ||
             // Windows paths
             id.includes('\\react\\') ||
             id.includes('\\react-dom\\') ||
-            // Direct package names
+            // Direct package names (exact match to avoid catching react-router etc)
             id.match(/[\\/]node_modules[\\/]react[\\/]/) ||
             id.match(/[\\/]node_modules[\\/]react-dom[\\/]/) ||
-            // React ecosystem packages (scheduler, use-sync-external-store, etc.)
+            // React internal dependencies
             id.includes('node_modules/scheduler/') ||
             id.includes('node_modules/use-sync-external-store/')
+          ) {
+            return 'react-core';
+          }
+          // PRIORITY 2: React-dependent packages (AFTER react-core)
+          // These packages use React APIs like createContext, hooks, etc.
+          if (
+            // React Router (depends on React)
+            id.includes('react-router') ||
+            // Sentry React integration (depends on React)
+            id.includes('@sentry/react') ||
+            // Vercel Analytics React (depends on React)
+            id.includes('@vercel/analytics/react') ||
+            id.includes('@vercel/speed-insights/react') ||
+            // React-i18next (depends on React)
+            id.includes('react-i18next') ||
+            // Radix UI (React component library)
+            id.includes('@radix-ui') ||
+            // DnD Kit (React drag & drop)
+            id.includes('@dnd-kit') ||
+            // React Day Picker (calendar component)
+            id.includes('react-day-picker')
           ) {
             return 'react-vendor';
           }
@@ -108,29 +130,14 @@ export default defineConfig(({ mode }) => ({
           if (id.includes('lexical') || id.includes('@lexical')) {
             return 'lexical-editor';
           }
-          // DnD Kit chunk (drag and drop)
-          if (id.includes('@dnd-kit')) {
-            return 'dnd-kit';
-          }
-          // Radix UI chunk (component library)
-          if (id.includes('@radix-ui')) {
-            return 'radix-ui';
-          }
-          // i18next chunk (internationalization) - split from vendor
-          if (id.includes('i18next') || id.includes('react-i18next')) {
+          // i18next chunk (internationalization, core only) - split from vendor
+          // Note: react-i18next is in react-vendor chunk
+          if (id.includes('i18next') && !id.includes('react-i18next')) {
             return 'i18n';
           }
           // date-fns chunk (date utilities) - split from vendor
           if (id.includes('date-fns')) {
             return 'date-utils';
-          }
-          // react-day-picker chunk (calendar component)
-          if (id.includes('react-day-picker')) {
-            return 'calendar';
-          }
-          // React Router chunk (depends on React, must be separate from vendor)
-          if (id.includes('react-router') || id.includes('react-router-dom')) {
-            return 'react-router';
           }
           // Apollo Client chunk (GraphQL client) - AFTER React check
           if (id.includes('@apollo/client') || id.includes('@apollo')) {
@@ -139,14 +146,6 @@ export default defineConfig(({ mode }) => ({
           // GraphQL core chunk
           if (id.includes('graphql') && !id.includes('@apollo')) {
             return 'graphql-core';
-          }
-          // Sentry chunk (monitoring, separate from vendor)
-          if (id.includes('@sentry')) {
-            return 'sentry';
-          }
-          // Vercel Analytics chunk (separate from vendor)
-          if (id.includes('@vercel/analytics') || id.includes('@vercel/speed-insights')) {
-            return 'vercel';
           }
           // Node modules (other vendors)
           if (id.includes('node_modules')) {
