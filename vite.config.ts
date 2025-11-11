@@ -81,7 +81,11 @@ export default defineConfig(({ mode }) => ({
         entryFileNames: 'assets/js/[name]-[hash].js',
         // Manual chunks for GraphQL and heavy dependencies
         manualChunks: id => {
-          // Apollo Client chunk (GraphQL client)
+          // React core libraries - MUST be first to ensure single instance
+          if (id.includes('node_modules/react/') || id.includes('node_modules/react-dom/')) {
+            return 'react-vendor';
+          }
+          // Apollo Client chunk (GraphQL client) - should NOT include react
           if (id.includes('@apollo/client') || id.includes('@apollo')) {
             return 'apollo-client';
           }
@@ -113,9 +117,11 @@ export default defineConfig(({ mode }) => ({
           if (id.includes('react-day-picker')) {
             return 'calendar';
           }
-          // React core libraries
+          // Other React libraries (not core react/react-dom)
           if (
             id.includes('react') &&
+            !id.includes('node_modules/react/') &&
+            !id.includes('node_modules/react-dom/') &&
             !id.includes('react-day-picker') &&
             !id.includes('react-router')
           ) {

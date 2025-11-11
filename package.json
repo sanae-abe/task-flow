@@ -208,5 +208,9 @@
       "last 2 safari version",
       "last 2 edge version"
     ]
+  },
+  "overrides": {
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
   }
 }
