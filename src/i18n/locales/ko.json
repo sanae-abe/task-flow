@@ -311,6 +311,7 @@
     "removeFromFavorites": "즐겨찾기에서 제거",
     "createNormal": "일반 만들기",
     "createFromTemplate": "템플릿에서 만들기",
+    "createWithAI": "AI로 만들기",
     "creatingFromTemplate": "템플릿 「{{name}}」에서 만드는 중",
     "searchPlaceholder": "템플릿 검색...",
     "allCategories": "모든 카테고리",
@@ -700,6 +701,31 @@
       "moveUp": "컬럼 위로 이동",
       "moveDown": "컬럼 아래로 이동",
       "deleteColumn": "컬럼 삭제"
+    }
+  },
+  "ai": {
+    "input": {
+      "placeholder": "자연어로 작업을 설명하세요 (예: 매주 월요일에 주간 보고서 작성)",
+      "description": "AI가 자연어에서 작업을 자동 생성합니다. 작업 세부 정보를 자유롭게 설명하세요.",
+      "button": "AI로 작업 만들기"
+    },
+    "success": {
+      "taskCreated": "작업 '{{title}}'을(를) AI로 만들었습니다"
+    },
+    "error": {
+      "creationFailed": "AI 작업 만들기 실패",
+      "invalidInput": "잘못된 입력"
+    },
+    "recommendations": {
+      "title": "AI 추천 작업",
+      "description": "우선순위, 마감일, 의존성을 분석하여 다음에 수행할 작업을 AI가 추천합니다",
+      "refresh": "추천 새로고침",
+      "loading": "추천 가져오는 중...",
+      "errorTitle": "추천 가져오기 실패",
+      "noRecommendations": "현재 추천할 작업이 없습니다",
+      "noRecommendationsHint": "작업을 추가하면 AI가 최적의 작업을 추천합니다",
+      "viewTask": "작업 '{{title}}' 보기",
+      "aiReasoning": "AI가 분석한 추천 이유"
     }
   }
 }

@@ -3,12 +3,14 @@ import { useTranslation } from 'react-i18next';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
 import type { TaskTemplate } from '../../types/template';
+import type { Task } from '../../types';
 import { useKanban } from '../../contexts/KanbanContext';
 import { useBoard } from '../../contexts/BoardContext';
 import { useSonnerNotify } from '../../hooks/useSonnerNotify';
 import { useFormChangeDetector } from '../../hooks/useFormChangeDetector';
 import UnifiedDialog from '../shared/Dialog/UnifiedDialog';
 import ConfirmDialog from '../ConfirmDialog';
+import AITaskInput from '../AITaskInput';
 
 // カスタムフック
 import { useTaskForm, useTemplateSelection, useTaskSubmission } from './hooks';
@@ -22,6 +24,7 @@ import { TemplateSelector, TaskCreateForm } from './components';
  * タスクの新規作成機能を提供します：
  * - 通常作成モード：フォームから手動でタスクを作成
  * - テンプレート作成モード：事前定義されたテンプレートから作成
+ * - AI作成モード：自然言語からタスクを作成（Phase FE-8）
  *
  * モジュラー化により以下の責任分離を実現：
  * - useTaskForm：フォーム状態管理
@@ -29,6 +32,7 @@ import { TemplateSelector, TaskCreateForm } from './components';
  * - useTaskSubmission：保存・送信処理
  * - TemplateSelector：テンプレート選択UI
  * - TaskCreateForm：フォームフィールド群
+ * - AITaskInput：AI自然言語入力UI（DOMPurify統合済み）
  */
 const TaskCreateDialog = memo(() => {
   const { t } = useTranslation();
@@ -111,6 +115,22 @@ const TaskCreateDialog = memo(() => {
     setActiveTab('normal');
   };
 
+  // AI作成成功時の処理
+  const handleAITaskCreated = useCallback(
+    (task: Task) => {
+      // AI作成成功後、ダイアログを閉じる
+      closeTaskForm();
+      notify.success(t('ai.success.taskCreated', { title: task.title }));
+    },
+    [closeTaskForm, notify, t]
+  );
+
+  // AI作成エラー時の処理
+  const handleAITaskError = useCallback((error: string) => {
+    // エラーはAITaskInput内で既にtoast表示済み
+    console.error('AI task creation error:', error);
+  }, []);
+
   // ダイアログが閉じられた時の処理（確認機能付き）
   const handleDialogClose = useCallback(() => {
     const closeAction = () => {
@@ -154,13 +174,14 @@ const TaskCreateDialog = memo(() => {
             className='w-full'
           >
             {/* タブナビゲーション */}
-            <TabsList className='grid w-full grid-cols-2 mb-4'>
+            <TabsList className='grid w-full grid-cols-3 mb-4'>
               <TabsTrigger value='normal'>
                 {t('template.createNormal')}
               </TabsTrigger>
               <TabsTrigger value='template'>
                 {t('template.createFromTemplate')}
               </TabsTrigger>
+              <TabsTrigger value='ai'>{t('template.createWithAI')}</TabsTrigger>
             </TabsList>
 
             {/* 通常作成フォーム */}
@@ -181,6 +202,22 @@ const TaskCreateDialog = memo(() => {
                 <TemplateSelector
                   templates={templateState.templates}
                   onSelect={handleTemplateSelect}
+                />
+              </div>
+            </TabsContent>
+
+            {/* AI作成モード（Phase FE-8） */}
+            <TabsContent value='ai'>
+              <div className='mb-6 flex-1 min-h-[200px]'>
+                <div className='mb-4'>
+                  <p className='text-sm text-muted-foreground mb-2'>
+                    {t('ai.input.description')}
+                  </p>
+                </div>
+                <AITaskInput
+                  onTaskCreated={handleAITaskCreated}
+                  onError={handleAITaskError}
+                  placeholder={t('ai.input.placeholder')}
                 />
               </div>
             </TabsContent>

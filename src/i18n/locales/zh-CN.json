@@ -311,6 +311,7 @@
     "removeFromFavorites": "从收藏中移除",
     "createNormal": "常规创建",
     "createFromTemplate": "从模板创建",
+    "createWithAI": "AI创建",
     "creatingFromTemplate": "从模板「{{name}}」创建中",
     "searchPlaceholder": "搜索模板...",
     "allCategories": "所有分类",
@@ -700,6 +701,31 @@
       "moveUp": "向上移动栏目",
       "moveDown": "向下移动栏目",
       "deleteColumn": "删除栏目"
+    }
+  },
+  "ai": {
+    "input": {
+      "placeholder": "用自然语言描述任务（例如：每周一创建周报）",
+      "description": "AI将从自然语言自动生成任务。请自由描述任务详情。",
+      "button": "用AI创建任务"
+    },
+    "success": {
+      "taskCreated": "任务'{{title}}'已由AI创建"
+    },
+    "error": {
+      "creationFailed": "AI任务创建失败",
+      "invalidInput": "无效输入"
+    },
+    "recommendations": {
+      "title": "AI任务推荐",
+      "description": "AI通过分析优先级、截止日期和依赖关系来推荐下一个要处理的任务",
+      "refresh": "刷新推荐",
+      "loading": "获取推荐中...",
+      "errorTitle": "获取推荐失败",
+      "noRecommendations": "当前没有可推荐的任务",
+      "noRecommendationsHint": "添加任务后，AI会推荐最适合处理的任务",
+      "viewTask": "查看任务'{{title}}'",
+      "aiReasoning": "AI分析的推荐理由"
     }
   }
 }

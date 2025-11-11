@@ -15,6 +15,9 @@ const TaskDetailSidebar = lazy(() => import('./components/TaskDetailSidebar'));
 const TaskCreateDialog = lazy(
   () => import('./components/TaskCreateDialog/TaskCreateDialog')
 );
+const AIRecommendationsPanel = lazy(
+  () => import('./components/AIRecommendationsPanel')
+);
 const FirstTimeUserHint = lazy(() => import('./components/FirstTimeUserHint'));
 const OfflineIndicator = lazy(() => import('./components/OfflineIndicator'));
 const ServiceWorkerUpdateNotification = lazy(
@@ -32,7 +35,13 @@ import { useSubHeader } from './hooks/useSubHeader';
 
 const AppContent: React.FC = () => {
   const { state } = useKanban();
-  const { openHelp, closeHelp, closeTaskDetail, state: uiState } = useUI();
+  const {
+    openHelp,
+    closeHelp,
+    closeTaskDetail,
+    openTaskDetail,
+    state: uiState,
+  } = useUI();
   const { findTaskById } = useTaskFinder(state.currentBoard);
   const { shouldShowHint, markAsExistingUser, markHintAsShown } =
     useFirstTimeUser();
@@ -65,6 +74,7 @@ const AppContent: React.FC = () => {
   const selectedTask = uiState.selectedTaskId
     ? findTaskById(uiState.selectedTaskId)
     : null;
+
 
   // 選択されたタスクが削除された場合の処理
   useEffect(() => {
@@ -105,50 +115,84 @@ const AppContent: React.FC = () => {
         <Header onHelpClick={handleOpenHelp} onSettingsClick={openSettings} />
         <SubHeader />
       </div>
-      <main
-        aria-label={
-          uiState.viewMode === 'kanban'
-            ? 'カンバンボード'
-            : uiState.viewMode === 'calendar'
-              ? 'カレンダービュー'
-              : 'テーブルビュー'
-        }
-        className='transition-opacity duration-150 will-change-opacity'
-      >
-        <Routes>
-          <Route path='/' element={<Navigate to='/kanban' replace />} />
-          <Route path='/kanban' element={<KanbanBoard />} />
-          <Route
-            path='/calendar'
-            element={
-              <Suspense
-                fallback={
-                  <div className='flex items-center justify-center h-64'>
-                    読み込み中...
-                  </div>
-                }
-              >
-                <CalendarView />
-              </Suspense>
-            }
-          />
-          <Route
-            path='/table'
-            element={
-              <Suspense
-                fallback={
-                  <div className='flex items-center justify-center h-64'>
-                    読み込み中...
-                  </div>
-                }
-              >
-                <TableView />
-              </Suspense>
-            }
-          />
-          <Route path='*' element={<Navigate to='/kanban' replace />} />
-        </Routes>
-      </main>
+      <div className='flex'>
+        <main
+          aria-label={
+            uiState.viewMode === 'kanban'
+              ? 'カンバンボード'
+              : uiState.viewMode === 'calendar'
+                ? 'カレンダービュー'
+                : 'テーブルビュー'
+          }
+          className='flex-1 transition-opacity duration-150 will-change-opacity'
+        >
+          <Routes>
+            <Route path='/' element={<Navigate to='/kanban' replace />} />
+            <Route path='/kanban' element={<KanbanBoard />} />
+            <Route
+              path='/calendar'
+              element={
+                <Suspense
+                  fallback={
+                    <div className='flex items-center justify-center h-64'>
+                      読み込み中...
+                    </div>
+                  }
+                >
+                  <CalendarView />
+                </Suspense>
+              }
+            />
+            <Route
+              path='/table'
+              element={
+                <Suspense
+                  fallback={
+                    <div className='flex items-center justify-center h-64'>
+                      読み込み中...
+                    </div>
+                  }
+                >
+                  <TableView />
+                </Suspense>
+              }
+            />
+            <Route path='*' element={<Navigate to='/kanban' replace />} />
+          </Routes>
+        </main>
+
+        {/* AI推薦パネル - カンバンビュー時のみ表示 */}
+        {uiState.viewMode === 'kanban' && (
+          <aside
+            className='w-80 overflow-y-auto'
+            style={{ backgroundColor: '#f8f9fa' }}
+            aria-label='AI推薦タスクパネル'
+          >
+            <div className='p-4'>
+              {state.currentBoard ? (
+                <Suspense fallback={<div className='p-4'>読み込み中...</div>}>
+                  <AIRecommendationsPanel
+                    boardId={state.currentBoard.id}
+                    className='border-0 shadow-none'
+                    onTaskClick={task => {
+                      if (task && task.id) {
+                        openTaskDetail(task.id);
+                      }
+                    }}
+                  />
+                </Suspense>
+              ) : (
+                <div className='text-center text-muted-foreground py-8'>
+                  <p className='text-sm'>ボードを選択してください</p>
+                  <p className='text-xs mt-2'>
+                    AI推薦機能を利用するにはボードが必要です
+                  </p>
+                </div>
+              )}
+            </div>
+          </aside>
+        )}
+      </div>
       {shouldShowHint && (
         <>
           {/* オーバーレイ背景 */}

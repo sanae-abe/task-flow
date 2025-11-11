@@ -1,4 +1,5 @@
 import React, { type ReactNode } from 'react';
+import { ApolloProvider } from '@apollo/client/react';
 
 import { BoardProvider } from './BoardContext';
 import { TaskProvider } from './TaskContext';
@@ -7,6 +8,7 @@ import { LabelProvider } from './LabelContext';
 import { TableColumnsProvider } from './TableColumnsContext';
 import { KanbanProvider } from './KanbanContext';
 import { LanguageProvider } from './LanguageContext';
+import { apolloClient } from '@/lib/apollo-client';
 
 interface AppProvidersProps {
   children: ReactNode;
@@ -17,19 +19,21 @@ interface AppProvidersProps {
  * 分割されたContextを適切な順序で提供
  */
 export const AppProviders: React.FC<AppProvidersProps> = ({ children }) => (
-  <LanguageProvider>
-    <BoardProvider>
-      <TaskProvider>
-        <UIProvider>
-          <LabelProvider>
-            <TableColumnsProvider>
-              <KanbanProvider>{children}</KanbanProvider>
-            </TableColumnsProvider>
-          </LabelProvider>
-        </UIProvider>
-      </TaskProvider>
-    </BoardProvider>
-  </LanguageProvider>
+  <ApolloProvider client={apolloClient}>
+    <LanguageProvider>
+      <BoardProvider>
+        <TaskProvider>
+          <UIProvider>
+            <LabelProvider>
+              <TableColumnsProvider>
+                <KanbanProvider>{children}</KanbanProvider>
+              </TableColumnsProvider>
+            </LabelProvider>
+          </UIProvider>
+        </TaskProvider>
+      </BoardProvider>
+    </LanguageProvider>
+  </ApolloProvider>
 );
 
 export default AppProviders;

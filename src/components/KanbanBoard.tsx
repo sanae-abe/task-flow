@@ -94,7 +94,7 @@ const KanbanBoard: React.FC = () => {
   };
 
   return (
-    <div className='bg-neutral-100 w-screen'>
+    <div className='bg-neutral-100 w-full'>
       {/* アクセシビリティ: ドラッグ操作のライブリージョン */}
       <div
         role='status'

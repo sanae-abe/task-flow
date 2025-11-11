@@ -312,6 +312,7 @@
     "removeFromFavorites": "Remove from Favorites",
     "createNormal": "Normal Creation",
     "createFromTemplate": "Create from Template",
+    "createWithAI": "Create with AI",
     "creatingFromTemplate": "Creating from template \"{{name}}\"",
     "searchPlaceholder": "Search templates...",
     "allCategories": "All Categories",
@@ -705,6 +706,31 @@
       "moveUp": "Move column up",
       "moveDown": "Move column down",
       "deleteColumn": "Delete column"
+    }
+  },
+  "ai": {
+    "input": {
+      "placeholder": "Describe your task in natural language (e.g., Create weekly report every Monday)",
+      "description": "AI will automatically generate tasks from natural language. Feel free to describe task details.",
+      "button": "Create Task with AI"
+    },
+    "success": {
+      "taskCreated": "Task '{{title}}' created with AI"
+    },
+    "error": {
+      "creationFailed": "AI task creation failed",
+      "invalidInput": "Invalid input"
+    },
+    "recommendations": {
+      "title": "AI Task Recommendations",
+      "description": "AI recommends the next task to work on by analyzing priority, due date, and dependencies",
+      "refresh": "Refresh recommendations",
+      "loading": "Getting recommendations...",
+      "errorTitle": "Failed to get recommendations",
+      "noRecommendations": "No task recommendations available",
+      "noRecommendationsHint": "Add tasks and AI will recommend the best task to work on",
+      "viewTask": "View task '{{title}}'",
+      "aiReasoning": "AI analysis and recommendation reason"
     }
   }
 }

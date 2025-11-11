@@ -601,6 +601,25 @@ npm run audit         # セキュリティ監査
 npm run lighthouse    # Lighthouseパフォーマンス監査
 ```
 
+#### デプロイ（Vercel CLI）
+```bash
+# デプロイ確認
+vercel whoami          # ログイン状態確認
+vercel ls              # デプロイメント一覧
+vercel inspect [url]   # デプロイ詳細情報
+
+# 本番デプロイ（Git push推奨）
+git push origin main   # Vercel自動デプロイ（推奨）
+vercel --prod          # 手動本番デプロイ
+
+# プレビューデプロイ
+vercel                 # プレビューURLでデプロイ
+
+# ログ・デバッグ
+vercel logs [url]      # デプロイログ確認
+vercel build           # ローカルビルド検証
+```
+
 ### 開発前チェックリスト
 
 - [ ] `npm run typecheck` でTypeScriptエラー0件確認

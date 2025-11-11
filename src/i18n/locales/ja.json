@@ -311,6 +311,7 @@
     "removeFromFavorites": "お気に入りから削除",
     "createNormal": "通常作成",
     "createFromTemplate": "テンプレートから作成",
+    "createWithAI": "AIで作成",
     "creatingFromTemplate": "テンプレート「{{name}}」から作成中",
     "searchPlaceholder": "テンプレートを検索...",
     "allCategories": "すべてのカテゴリー",
@@ -700,6 +701,31 @@
       "moveUp": "カラムを上に移動",
       "moveDown": "カラムを下に移動",
       "deleteColumn": "カラムを削除"
+    }
+  },
+  "ai": {
+    "input": {
+      "placeholder": "自然な言葉でタスクを説明してください（例：毎週月曜日に週次レポートを作成する）",
+      "description": "AIが自然言語からタスクを自動生成します。タスクの詳細を自由に記述してください。",
+      "button": "AIでタスク作成"
+    },
+    "success": {
+      "taskCreated": "タスク「{{title}}」をAIで作成しました"
+    },
+    "error": {
+      "creationFailed": "AIタスク作成に失敗しました",
+      "invalidInput": "入力内容が不正です"
+    },
+    "recommendations": {
+      "title": "AI推薦タスク",
+      "description": "優先度・期限・依存関係を分析して次に取り組むべきタスクをAIが推薦します",
+      "refresh": "推薦を更新",
+      "loading": "推薦を取得中...",
+      "errorTitle": "推薦の取得に失敗しました",
+      "noRecommendations": "現在推薦できるタスクがありません",
+      "noRecommendationsHint": "タスクを追加すると、AIが最適なタスクを推薦します",
+      "viewTask": "タスク「{{title}}」を表示",
+      "aiReasoning": "AIが分析したおすすめの理由"
     }
   }
 }
