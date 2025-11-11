@@ -1,6 +1,6 @@
 # 📋 TaskFlow開発TODO
 
-**最終更新**: 2025-11-09
+**最終更新**: 2025-11-11
 **プロジェクト**: TaskFlow（タスク管理アプリケーション）
 **技術スタック**: React 19.2.0 + TypeScript 5.7.3 + Vite 7.1.12 + Vitest 4.0.3 + Tailwind CSS 4.1.16
 **現在の実装**: TODO.md ↔ TaskFlow App 双方向同期（Phase 0開始）
@@ -648,9 +648,27 @@ npm run lighthouse    # Lighthouseパフォーマンス監査
 - [x] **Phase 6: ドキュメント整備**（2-3日）- ✅ GRAPHQL_INTEGRATION.md 770行作成完了
 - [x] **Phase 7: バンドル最適化**（3-5日）- ✅ 476KB < 500KB目標達成
 
-#### GraphQL Phase FE-8 残存課題（新規）
+#### GraphQL Phase FE-8 実装完了・残存課題（2025-11-11更新）
+
+- [x] **AI推奨機能の実装変更** ✅ **完了**（IndexedDBベース）
+  - [x] useAIRecommendations.tsをGraphQLベースからIndexedDBベースに変更
+  - [x] AI推奨スコア計算ロジック実装（優先度+期限スコア）
+  - [x] データアクセスポリシー準拠
+  - [x] オフライン対応・低レイテンシー実現
+
+- [x] **本番環境エラー修正** ✅ **完了**
+  - [x] vite.config.tsにresolve.dedupe追加（React重複排除）
+  - [x] Apollo Client React重複バンドル問題解決
+  - [x] `Cannot read properties of undefined (reading 'createContext')`エラー解決
+
+- [x] **開発環境の改善** ✅ **完了**
+  - [x] apollo-client.tsで開発環境でのPro認証を自動化
+  - [x] import.meta.env.DEVで開発/本番分岐
+  - [x] 開発中はAI機能が常に利用可能
+
+- [ ] **AI推奨パネルのUI改善** - HTMLタグ表示問題修正（優先度: 低）
 - [ ] **KanbanContext dispatch API追加** - useTaskSubscriptions 7テスト修正
-- [ ] **AI機能UI実装** - AITaskInput.tsx、AIRecommendationsPanel.tsx
+- [ ] **AI機能UI実装** - AITaskInput.tsx（既存）、AIRecommendationsPanel.tsx改善
 - [ ] **E2Eテスト実装** - Playwright（AI UI実装後）
 
 #### その他
@@ -665,7 +683,7 @@ npm run lighthouse    # Lighthouseパフォーマンス監査
 ---
 
 **作成日**: 2025-11-07
-**最終更新**: 2025-11-09
+**最終更新**: 2025-11-11
 **バージョン**: 1.9
 **ステータス**: 🟢 高品質・本番環境デプロイ可能・監視体制完備・GraphQL統合完了
 

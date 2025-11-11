@@ -147,7 +147,10 @@ export default defineConfig(({ mode }) => ({
       'i18next',
       'i18next-browser-languagedetector',
       'i18next-http-backend',
+      '@apollo/client',
     ],
+    // Apollo Clientでのreact-dom重複を防ぐ
+    exclude: [],
   },
   css: {
     postcss: './postcss.config.js',
