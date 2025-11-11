@@ -43,6 +43,8 @@ export default defineConfig(({ mode }) => ({
       '@/contexts': path.resolve(__dirname, 'src/contexts'),
       '@/lib': path.resolve(__dirname, 'src/lib'),
     },
+    // React重複排除（Apollo Clientとの競合を防ぐ）
+    dedupe: ['react', 'react-dom'],
   },
   server: {
     port: 3000,

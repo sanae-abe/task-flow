@@ -30,9 +30,12 @@ const GRAPHQL_URL =
  * ヘッダーベース認証（x-user-plan, x-user-id）を送信。
  */
 const authLink = setContext((_, { headers }) => {
-  // LocalStorageから認証情報を取得（暫定運用）
-  const userPlan = localStorage.getItem('userPlan') || 'free';
-  const userId = localStorage.getItem('userId') || 'anonymous';
+  // 開発環境では自動的にProプランを使用
+  const isDev = import.meta.env.DEV;
+
+  // LocalStorageから認証情報を取得（開発環境ではPro、本番環境ではFree）
+  const userPlan = localStorage.getItem('userPlan') || (isDev ? 'pro' : 'free');
+  const userId = localStorage.getItem('userId') || (isDev ? 'dev-user' : 'anonymous');
 
   return {
     headers: {
